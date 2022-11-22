@@ -246,7 +246,7 @@
         {"shape":"ConnectorServerException"},
         {"shape":"ConnectorAuthenticationException"}
       ],
-      "documentation":"<p>Registers a new connector with your Amazon Web Services account. Before you can register the connector, you must deploy lambda in your account.</p>"
+      "documentation":"<p>Registers a new custom connector with your Amazon Web Services account. Before you can register the connector, you must deploy the associated AWS lambda function in your account.</p>"
     },
     "StartFlow":{
       "name":"StartFlow",
@@ -308,7 +308,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Unregisters the custom connector registered in your account that matches the connectorLabel provided in the request.</p>"
+      "documentation":"<p>Unregisters the custom connector registered in your account that matches the connector label provided in the request.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -341,6 +341,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Updates a given connector profile associated with your account. </p>"
+    },
+    "UpdateConnectorRegistration":{
+      "name":"UpdateConnectorRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/update-connector-registration"
+      },
+      "input":{"shape":"UpdateConnectorRegistrationRequest"},
+      "output":{"shape":"UpdateConnectorRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConnectorServerException"},
+        {"shape":"ConnectorAuthenticationException"}
+      ],
+      "documentation":"<p>Updates a custom connector that you've previously registered. This operation updates the connector with one of the following:</p> <ul> <li> <p>The latest version of the AWS Lambda function that's assigned to the connector</p> </li> <li> <p>A new AWS Lambda function that you specify</p> </li> </ul>"
     },
     "UpdateFlow":{
       "name":"UpdateFlow",
@@ -4149,7 +4170,7 @@
         },
         "dataTransferApi":{
           "shape":"SalesforceDataTransferApi",
-          "documentation":"<p>Specifies which Salesforce API is used by Amazon AppFlow when your flow transfers data from Salesforce.</p> <dl> <dt>AUTOMATIC</dt> <dd> <p>The default. Amazon AppFlow selects which API to use based on the number of records that your flow transfers from Salesforce. If your flow transfers fewer than 1,000,000 records, Amazon AppFlow uses Salesforce REST API. If your flow transfers 1,000,000 records or more, Amazon AppFlow uses Salesforce Bulk API 2.0.</p> <p>Each of these Salesforce APIs structures data differently. If Amazon AppFlow selects the API automatically, be aware that, for recurring flows, the data output might vary from one flow run to the next. For example, if a flow runs daily, it might use REST API on one day to transfer 900,000 records, and it might use Bulk API 2.0 on the next day to transfer 1,100,000 records. For each of these flow runs, the respective Salesforce API formats the data differently. Some of the differences include how dates are formatted and null values are represented. Also, Bulk API 2.0 doesn't transfer Salesforce compound fields.</p> <p>By choosing this option, you optimize flow performance for both small and large data transfers, but the tradeoff is inconsistent formatting in the output.</p> </dd> <dt>BULKV2</dt> <dd> <p>Amazon AppFlow uses only Salesforce Bulk API 2.0. This API runs asynchronous data transfers, and it's optimal for large sets of data. By choosing this option, you ensure that your flow writes consistent output, but you optimize performance only for large data transfers.</p> <p>Note that Bulk API 2.0 does not transfer Salesforce compound fields.</p> </dd> <dt>REST_SYNC</dt> <dd> <p>Amazon AppFlow uses only Salesforce REST API. By choosing this option, you ensure that your flow writes consistent output, but you decrease performance for large data transfers that are better suited for Bulk API 2.0. In some cases, if your flow attempts to transfer a vary large set of data, it might fail with a timed out error.</p> </dd> </dl>"
+          "documentation":"<p>Specifies which Salesforce API is used by Amazon AppFlow when your flow transfers data from Salesforce.</p> <dl> <dt>AUTOMATIC</dt> <dd> <p>The default. Amazon AppFlow selects which API to use based on the number of records that your flow transfers from Salesforce. If your flow transfers fewer than 1,000,000 records, Amazon AppFlow uses Salesforce REST API. If your flow transfers 1,000,000 records or more, Amazon AppFlow uses Salesforce Bulk API 2.0.</p> <p>Each of these Salesforce APIs structures data differently. If Amazon AppFlow selects the API automatically, be aware that, for recurring flows, the data output might vary from one flow run to the next. For example, if a flow runs daily, it might use REST API on one day to transfer 900,000 records, and it might use Bulk API 2.0 on the next day to transfer 1,100,000 records. For each of these flow runs, the respective Salesforce API formats the data differently. Some of the differences include how dates are formatted and null values are represented. Also, Bulk API 2.0 doesn't transfer Salesforce compound fields.</p> <p>By choosing this option, you optimize flow performance for both small and large data transfers, but the tradeoff is inconsistent formatting in the output.</p> </dd> <dt>BULKV2</dt> <dd> <p>Amazon AppFlow uses only Salesforce Bulk API 2.0. This API runs asynchronous data transfers, and it's optimal for large sets of data. By choosing this option, you ensure that your flow writes consistent output, but you optimize performance only for large data transfers.</p> <p>Note that Bulk API 2.0 does not transfer Salesforce compound fields.</p> </dd> <dt>REST_SYNC</dt> <dd> <p>Amazon AppFlow uses only Salesforce REST API. By choosing this option, you ensure that your flow writes consistent output, but you decrease performance for large data transfers that are better suited for Bulk API 2.0. In some cases, if your flow attempts to transfer a vary large set of data, it might fail wituh a timed out error.</p> </dd> </dl>"
         }
       },
       "documentation":"<p> The properties that are applied when Salesforce is being used as a source. </p>"
@@ -5061,6 +5082,30 @@
         "connectorProfileArn":{
           "shape":"ConnectorProfileArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the connector profile. </p>"
+        }
+      }
+    },
+    "UpdateConnectorRegistrationRequest":{
+      "type":"structure",
+      "required":["connectorLabel"],
+      "members":{
+        "connectorLabel":{
+          "shape":"ConnectorLabel",
+          "documentation":"<p>The name of the connector. The name is unique for each connector registration in your AWS account.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description about the update that you're applying to the connector.</p>"
+        },
+        "connectorProvisioningConfig":{"shape":"ConnectorProvisioningConfig"}
+      }
+    },
+    "UpdateConnectorRegistrationResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the connector being updated.</p>"
         }
       }
     },

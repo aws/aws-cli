@@ -390,6 +390,25 @@
       ],
       "documentation":"<p>Deletes all Amazon QuickSight customizations in this Amazon Web Services Region for the specified Amazon Web Services account and Amazon QuickSight namespace.</p>"
     },
+    "DeleteAccountSubscription":{
+      "name":"DeleteAccountSubscription",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/account/{AwsAccountId}"
+      },
+      "input":{"shape":"DeleteAccountSubscriptionRequest"},
+      "output":{"shape":"DeleteAccountSubscriptionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Use the <code>DeleteAccountSubscription</code> operation to delete an Amazon QuickSight account. This operation will result in an error message if you have configured your account termination protection settings to <code>True</code>. To change this setting and delete your account, call the <code>UpdateAccountSettings</code> API and set the value of the <code>TerminationProtectionEnabled</code> parameter to <code>False</code>, then make another call to the <code>DeleteAccountSubscription</code> API.</p>"
+    },
     "DeleteAnalysis":{
       "name":"DeleteAnalysis",
       "http":{
@@ -737,7 +756,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceUnavailableException"}
       ],
-      "documentation":"<p>Use the DescribeAccountSubscription operation to receive a description of a Amazon QuickSight account's subscription. A successful API call returns an <code>AccountInfo</code> object that includes an account's name, subscription status, authentication type, edition, and notification email address.</p>"
+      "documentation":"<p>Use the DescribeAccountSubscription operation to receive a description of an Amazon QuickSight account's subscription. A successful API call returns an <code>AccountInfo</code> object that includes an account's name, subscription status, authentication type, edition, and notification email address.</p>"
     },
     "DescribeAnalysis":{
       "name":"DescribeAnalysis",
@@ -1733,6 +1752,42 @@
       ],
       "documentation":"<p>Searches for dashboards that belong to a user. </p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
     },
+    "SearchDataSets":{
+      "name":"SearchDataSets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/data-sets"
+      },
+      "input":{"shape":"SearchDataSetsRequest"},
+      "output":{"shape":"SearchDataSetsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Use the <code>SearchDataSets</code> operation to search for datasets that belong to an account.</p>"
+    },
+    "SearchDataSources":{
+      "name":"SearchDataSources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/data-sources"
+      },
+      "input":{"shape":"SearchDataSourcesRequest"},
+      "output":{"shape":"SearchDataSourcesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Use the <code>SearchDataSources</code> operation to search for data sources that belong to an account.</p>"
+    },
     "SearchFolders":{
       "name":"SearchFolders",
       "http":{
@@ -1748,6 +1803,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidNextTokenException"},
         {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Searches the subfolders in a folder.</p>"
@@ -2332,6 +2388,10 @@
         "PublicSharingEnabled":{
           "shape":"Boolean",
           "documentation":"<p>A Boolean value that indicates whether public sharing is turned on for an Amazon QuickSight account. For more information about turning on public sharing, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdatePublicSharingSettings.html\">UpdatePublicSharingSettings</a>.</p>"
+        },
+        "TerminationProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that determines whether or not an Amazon QuickSight account can be deleted. A <code>True</code> value doesn't allow the account to be deleted and results in an error message if a user tries to make a <code>DeleteAccountSubsctiption</code> request. A <code>False</code> value will allow the ccount to be deleted. </p>"
         }
       },
       "documentation":"<p>The Amazon QuickSight settings associated with your Amazon Web Services account.</p>"
@@ -2486,7 +2546,15 @@
     },
     "AnalysisFilterAttribute":{
       "type":"string",
-      "enum":["QUICKSIGHT_USER"]
+      "enum":[
+        "QUICKSIGHT_USER",
+        "QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "ANALYSIS_NAME"
+      ]
     },
     "AnalysisName":{
       "type":"string",
@@ -2498,11 +2566,11 @@
       "members":{
         "Operator":{
           "shape":"FilterOperator",
-          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>.</p>"
+          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>. Valid values are <code>\"StringEquals\"</code> and <code>\"StringLike\"</code>.</p> <p>If you set the operator value to <code>\"StringEquals\"</code>, you need to provide an ownership related filter in the <code>\"NAME\"</code> field and the arn of the user or group whose folders you want to search in the <code>\"Value\"</code> field. For example, <code>\"Name\":\"DIRECT_QUICKSIGHT_OWNER\", \"Operator\": \"StringEquals\", \"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p> <p>If you set the value to <code>\"StringLike\"</code>, you need to provide the name of the folders you are searching for. For example, <code>\"Name\":\"ANALYSIS_NAME\", \"Operator\": \"StringLike\", \"Value\": \"Test\"</code>. The <code>\"StringLike\"</code> operator only supports the <code>NAME</code> value <code>ANALYSIS_NAME</code>.</p>"
         },
         "Name":{
           "shape":"AnalysisFilterAttribute",
-          "documentation":"<p>The name of the value that you want to use as a filter, for example <code>\"Name\": \"QUICKSIGHT_USER\"</code>.</p>"
+          "documentation":"<p>The name of the value that you want to use as a filter, for example <code>\"Name\": \"QUICKSIGHT_OWNER\"</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any analyses with that ARN listed as one of the analysis' owners or viewers are returned. Implicit permissions from folders or groups are considered. </p> </li> <li> <p> <code>QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any analyses with that ARN listed as one of the owners of the analyses are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code>: Provide an ARN of a user or group, and any analyses with that ARN listed as the only owner of the analysis are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any analyses with that ARN listed as one of the owners of the analyses are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any analyses with that ARN listed as one of the owners or viewers of the analyses are returned. Implicit permissions from folders or groups are not considered. </p> </li> <li> <p> <code>ANALYSIS_NAME</code>: Any analyses whose names have a substring match to this value will be returned.</p> </li> </ul>"
         },
         "Value":{
           "shape":"String",
@@ -2612,9 +2680,24 @@
         "DashboardVisual":{
           "shape":"AnonymousUserDashboardVisualEmbeddingConfiguration",
           "documentation":"<p>The type of embedding experience. In this case, Amazon QuickSight visuals.</p>"
+        },
+        "QSearchBar":{
+          "shape":"AnonymousUserQSearchBarEmbeddingConfiguration",
+          "documentation":"<p>The Q search bar that you want to use for anonymous user embedding.</p>"
         }
       },
       "documentation":"<p>The type of experience you want to embed. For anonymous users, you can embed Amazon QuickSight dashboards.</p>"
+    },
+    "AnonymousUserQSearchBarEmbeddingConfiguration":{
+      "type":"structure",
+      "required":["InitialTopicId"],
+      "members":{
+        "InitialTopicId":{
+          "shape":"RestrictiveResourceId",
+          "documentation":"<p>The QuickSight Q topic ID of the topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Q search bar with this topic pre-selected.</p> <p>The Amazon Resource Name (ARN) of this Q topic must be included in the <code>AuthorizedResourceArns</code> parameter. Otherwise, the request will fail with <code>InvalidParameterValueException</code>.</p>"
+        }
+      },
+      "documentation":"<p>The settings that you want to use with the Q search bar.</p>"
     },
     "Arn":{"type":"string"},
     "ArnList":{
@@ -2635,6 +2718,10 @@
         "WorkGroup":{
           "shape":"WorkGroup",
           "documentation":"<p>The workgroup that Amazon Athena uses.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Use the <code>RoleArn</code> structure to override an account-wide role for a specific Athena data source. For example, say an account administrator has turned off all Athena access with an account-wide role. The administrator can then use <code>RoleArn</code> to bypass the account-wide role and allow Athena access for the single Athena data source that is specified in the structure, even if the account-wide role forbidding Athena access is still active.</p>"
         }
       },
       "documentation":"<p>Parameters for Amazon Athena.</p>"
@@ -4335,7 +4422,15 @@
     },
     "DashboardFilterAttribute":{
       "type":"string",
-      "enum":["QUICKSIGHT_USER"]
+      "enum":[
+        "QUICKSIGHT_USER",
+        "QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "DASHBOARD_NAME"
+      ]
     },
     "DashboardName":{
       "type":"string",
@@ -4366,11 +4461,11 @@
       "members":{
         "Operator":{
           "shape":"FilterOperator",
-          "documentation":"<p>The comparison operator that you want to use as a filter, for example, <code>\"Operator\": \"StringEquals\"</code>.</p>"
+          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>. Valid values are <code>\"StringEquals\"</code> and <code>\"StringLike\"</code>.</p> <p>If you set the operator value to <code>\"StringEquals\"</code>, you need to provide an ownership related filter in the <code>\"NAME\"</code> field and the arn of the user or group whose folders you want to search in the <code>\"Value\"</code> field. For example, <code>\"Name\":\"DIRECT_QUICKSIGHT_OWNER\", \"Operator\": \"StringEquals\", \"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p> <p>If you set the value to <code>\"StringLike\"</code>, you need to provide the name of the folders you are searching for. For example, <code>\"Name\":\"DASHBOARD_NAME\", \"Operator\": \"StringLike\", \"Value\": \"Test\"</code>. The <code>\"StringLike\"</code> operator only supports the <code>NAME</code> value <code>DASHBOARD_NAME</code>.</p>"
         },
         "Name":{
           "shape":"DashboardFilterAttribute",
-          "documentation":"<p>The name of the value that you want to use as a filter, for example, <code>\"Name\": \"QUICKSIGHT_USER\"</code>. </p>"
+          "documentation":"<p>The name of the value that you want to use as a filter, for example, <code>\"Name\": \"QUICKSIGHT_OWNER\"</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any dashboards with that ARN listed as one of the dashboards's owners or viewers are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any dashboards with that ARN listed as one of the owners of the dashboards are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code>: Provide an ARN of a user or group, and any dashboards with that ARN listed as the only owner of the dashboard are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any dashboards with that ARN listed as one of the owners of the dashboards are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any dashboards with that ARN listed as one of the owners or viewers of the dashboards are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DASHBOARD_NAME</code>: Any dashboards whose names have a substring match to this value will be returned.</p> </li> </ul>"
         },
         "Value":{
           "shape":"String",
@@ -4679,6 +4774,17 @@
       "member":{"shape":"DataSetConfiguration"},
       "max":30
     },
+    "DataSetFilterAttribute":{
+      "type":"string",
+      "enum":[
+        "QUICKSIGHT_VIEWER_OR_OWNER",
+        "QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "DATASET_NAME"
+      ]
+    },
     "DataSetImportMode":{
       "type":"string",
       "enum":[
@@ -4723,6 +4829,35 @@
         }
       },
       "documentation":"<p>Dataset schema.</p>"
+    },
+    "DataSetSearchFilter":{
+      "type":"structure",
+      "required":[
+        "Operator",
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>. Valid values are <code>\"StringEquals\"</code> and <code>\"StringLike\"</code>.</p> <p>If you set the operator value to <code>\"StringEquals\"</code>, you need to provide an ownership related filter in the <code>\"NAME\"</code> field and the arn of the user or group whose datasets you want to search in the <code>\"Value\"</code> field. For example, <code>\"Name\":\"QUICKSIGHT_OWNER\", \"Operator\": \"StringEquals\", \"Value\": \"arn:aws:quicksight:us-east- 1:1:user/default/UserName1\"</code>.</p> <p>If you set the value to <code>\"StringLike\"</code>, you need to provide the name of the datasets you are searching for. For example, <code>\"Name\":\"DATASET_NAME\", \"Operator\": \"StringLike\", \"Value\": \"Test\"</code>. The <code>\"StringLike\"</code> operator only supports the <code>NAME</code> value <code>DATASET_NAME</code>.</p>"
+        },
+        "Name":{
+          "shape":"DataSetFilterAttribute",
+          "documentation":"<p>The name of the value that you want to use as a filter, for example, <code>\"Name\": \"QUICKSIGHT_OWNER\"</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any datasets with that ARN listed as one of the dataset owners or viewers are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any datasets with that ARN listed as one of the owners of the dataset are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code>: Provide an ARN of a user or group, and any datasets with that ARN listed as the only owner of the dataset are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any datasets with that ARN listed as one of the owners if the dataset are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any datasets with that ARN listed as one of the owners or viewers of the dataset are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DATASET_NAME</code>: Any datasets whose names have a substring match to this value will be returned.</p> </li> </ul>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the named item, in this case <code>QUICKSIGHT_OWNER</code>, that you want to use as a filter, for example, <code>\"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that you apply when searching for datasets.</p>"
+    },
+    "DataSetSearchFilterList":{
+      "type":"list",
+      "member":{"shape":"DataSetSearchFilter"},
+      "max":1,
+      "min":1
     },
     "DataSetSummary":{
       "type":"structure",
@@ -4888,6 +5023,15 @@
         "UNKNOWN"
       ]
     },
+    "DataSourceFilterAttribute":{
+      "type":"string",
+      "enum":[
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "DATASOURCE_NAME"
+      ]
+    },
     "DataSourceList":{
       "type":"list",
       "member":{"shape":"DataSource"}
@@ -4982,6 +5126,10 @@
         "ExasolParameters":{
           "shape":"ExasolParameters",
           "documentation":"<p>The parameters for Exasol.</p>"
+        },
+        "DatabricksParameters":{
+          "shape":"DatabricksParameters",
+          "documentation":"<p>The required parameters that are needed to connect to a Databricks data source.</p>"
         }
       },
       "documentation":"<p>The parameters that Amazon QuickSight uses to connect to your underlying data source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
@@ -4991,6 +5139,69 @@
       "member":{"shape":"DataSourceParameters"},
       "max":50,
       "min":1
+    },
+    "DataSourceSearchFilter":{
+      "type":"structure",
+      "required":[
+        "Operator",
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>. Valid values are <code>\"StringEquals\"</code> and <code>\"StringLike\"</code>.</p> <p>If you set the operator value to <code>\"StringEquals\"</code>, you need to provide an ownership related filter in the <code>\"NAME\"</code> field and the arn of the user or group whose data sources you want to search in the <code>\"Value\"</code> field. For example, <code>\"Name\":\"DIRECT_QUICKSIGHT_OWNER\", \"Operator\": \"StringEquals\", \"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p> <p>If you set the value to <code>\"StringLike\"</code>, you need to provide the name of the data sources you are searching for. For example, <code>\"Name\":\"DATASOURCE_NAME\", \"Operator\": \"StringLike\", \"Value\": \"Test\"</code>. The <code>\"StringLike\"</code> operator only supports the <code>NAME</code> value <code>DATASOURCE_NAME</code>.</p>"
+        },
+        "Name":{
+          "shape":"DataSourceFilterAttribute",
+          "documentation":"<p>The name of the value that you want to use as a filter, for example, <code>\"Name\": \"DIRECT_QUICKSIGHT_OWNER\"</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any data sources with that ARN listed as one of the owners or viewers of the data sources are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any data sources with that ARN listed as one of the owners if the data source are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code>: Provide an ARN of a user or group, and any data sources with that ARN listed as the only owner of the data source are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DATASOURCE_NAME</code>: Any data sources whose names have a substring match to the provided value are returned.</p> </li> </ul>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the named item, for example <code>DIRECT_QUICKSIGHT_OWNER</code>, that you want to use as a filter, for example, <code>\"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that you apply when searching for data sources.</p>"
+    },
+    "DataSourceSearchFilterList":{
+      "type":"list",
+      "member":{"shape":"DataSourceSearchFilter"},
+      "max":1,
+      "min":1
+    },
+    "DataSourceSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The arn of the datasource.</p>"
+        },
+        "DataSourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the data source.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Type":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of the data source.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the data source was created. This value is expressed in MM-DD-YYYY HH:MM:SS format.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the data source was last updated. This value is expressed in MM-DD-YYYY HH:MM:SS format.</p>"
+        }
+      },
+      "documentation":"<p>A <code>DataSourceSummary</code> object that returns a summary of a data source.</p>"
+    },
+    "DataSourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"DataSourceSummary"}
     },
     "DataSourceType":{
       "type":"string",
@@ -5019,13 +5230,37 @@
         "TWITTER",
         "TIMESTREAM",
         "AMAZON_OPENSEARCH",
-        "EXASOL"
+        "EXASOL",
+        "DATABRICKS"
       ]
     },
     "Database":{
       "type":"string",
       "max":128,
       "min":1
+    },
+    "DatabricksParameters":{
+      "type":"structure",
+      "required":[
+        "Host",
+        "Port",
+        "SqlEndpointPath"
+      ],
+      "members":{
+        "Host":{
+          "shape":"Host",
+          "documentation":"<p>The host name of the Databricks data source.</p>"
+        },
+        "Port":{
+          "shape":"Port",
+          "documentation":"<p>The port for the Databricks data source.</p>"
+        },
+        "SqlEndpointPath":{
+          "shape":"SqlEndpointPath",
+          "documentation":"<p>The HTTP path of the Databricks data source.</p>"
+        }
+      },
+      "documentation":"<p>The required parameters that are needed to connect to a Databricks data source.</p>"
     },
     "DateTimeParameter":{
       "type":"structure",
@@ -5092,6 +5327,32 @@
       }
     },
     "DeleteAccountCustomizationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DeleteAccountSubscriptionRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DeleteAccountSubscriptionResponse":{
       "type":"structure",
       "members":{
         "RequestId":{
@@ -7230,7 +7491,10 @@
     },
     "FilterOperator":{
       "type":"string",
-      "enum":["StringEquals"]
+      "enum":[
+        "StringEquals",
+        "StringLike"
+      ]
     },
     "Folder":{
       "type":"structure",
@@ -7273,7 +7537,15 @@
     },
     "FolderFilterAttribute":{
       "type":"string",
-      "enum":["PARENT_FOLDER_ARN"]
+      "enum":[
+        "PARENT_FOLDER_ARN",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "QUICKSIGHT_OWNER",
+        "QUICKSIGHT_VIEWER_OR_OWNER",
+        "FOLDER_NAME"
+      ]
     },
     "FolderMember":{
       "type":"structure",
@@ -7304,18 +7576,18 @@
       "members":{
         "Operator":{
           "shape":"FilterOperator",
-          "documentation":"<p>The comparison operator that you want to use in the filter. For example, <code>\"Operator\": \"StringEquals\"</code>.</p>"
+          "documentation":"<p>The comparison operator that you want to use as a filter, for example <code>\"Operator\": \"StringEquals\"</code>. Valid values are <code>\"StringEquals\"</code> and <code>\"StringLike\"</code>.</p> <p>If you set the operator value to <code>\"StringEquals\"</code>, you need to provide an ownership related filter in the <code>\"NAME\"</code> field and the arn of the user or group whose folders you want to search in the <code>\"Value\"</code> field. For example, <code>\"Name\":\"DIRECT_QUICKSIGHT_OWNER\", \"Operator\": \"StringEquals\", \"Value\": \"arn:aws:quicksight:us-east-1:1:user/default/UserName1\"</code>.</p> <p>If you set the value to <code>\"StringLike\"</code>, you need to provide the name of the folders you are searching for. For example, <code>\"Name\":\"FOLDER_NAME\", \"Operator\": \"StringLike\", \"Value\": \"Test\"</code>. The <code>\"StringLike\"</code> operator only supports the <code>NAME</code> value <code>FOLDER_NAME</code>.</p>"
         },
         "Name":{
           "shape":"FolderFilterAttribute",
-          "documentation":"<p>The name of a value that you want to use in the filter. For example, <code>\"Name\": \"PARENT_FOLDER_ARN\"</code>.</p>"
+          "documentation":"<p>The name of a value that you want to use in the filter. For example, <code>\"Name\": \"QUICKSIGHT_OWNER\"</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any folders with that ARN listed as one of the folder's owners or viewers are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any folders with that ARN listed as one of the owners of the folders are returned. Implicit permissions from folders or groups are considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code>: Provide an ARN of a user or group, and any folders with that ARN listed as the only owner of the folder are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code>: Provide an ARN of a user or group, and any folders with that ARN listed as one of the owners of the folders are returned. Implicit permissions from folders or groups are not considered.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code>: Provide an ARN of a user or group, and any folders with that ARN listed as one of the owners or viewers of the folders are returned. Implicit permissions from folders or groups are not considered. </p> </li> <li> <p> <code>FOLDER_NAME</code>: Any folders whose names have a substring match to this value will be returned.</p> </li> <li> <p> <code>PARENT_FOLDER_ARN</code>: Provide an ARN of a folder, and any folders that are directly under that parent folder are returned. If you choose to use this option and leave the value blank, all root-level folders in the account are returned. </p> </li> </ul>"
         },
         "Value":{
           "shape":"String",
           "documentation":"<p>The value of the named item (in this example, <code>PARENT_FOLDER_ARN</code>), that you want to use as a filter. For example, <code>\"Value\": \"arn:aws:quicksight:us-east-1:1:folder/folderId\"</code>.</p>"
         }
       },
-      "documentation":"<p>A filter to use to search a Amazon QuickSight folder.</p>"
+      "documentation":"<p>A filter to use to search an Amazon QuickSight folder.</p>"
     },
     "FolderSearchFilterList":{
       "type":"list",
@@ -7407,7 +7679,8 @@
       "required":[
         "EmbedUrl",
         "Status",
-        "RequestId"
+        "RequestId",
+        "AnonymousUserArn"
       ],
       "members":{
         "EmbedUrl":{
@@ -7422,6 +7695,10 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "AnonymousUserArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use for the anonymous Amazon QuickSight user.</p>"
         }
       }
     },
@@ -8119,6 +8396,19 @@
         }
       },
       "documentation":"<p>One or more parameters has a value that isn't valid.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "InvalidRequestException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this request.</p>"
+        }
+      },
+      "documentation":"<p>You don't have this feature activated for your account. To fix this issue, contact Amazon Web Services support.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -10282,6 +10572,11 @@
       "min":1,
       "pattern":"[\\w\\-]+"
     },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
     "RoleName":{
       "type":"string",
       "max":64,
@@ -10541,6 +10836,106 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "SearchDataSetsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"DataSetSearchFilterList",
+          "documentation":"<p>The filters to apply to the search.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true
+        }
+      }
+    },
+    "SearchDataSetsResponse":{
+      "type":"structure",
+      "members":{
+        "DataSetSummaries":{
+          "shape":"DataSetSummaryList",
+          "documentation":"<p>A <code>DataSetSummaries</code> object that returns a summary of a dataset.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "SearchDataSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"DataSourceSearchFilterList",
+          "documentation":"<p>The filters to apply to the search.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true
+        }
+      }
+    },
+    "SearchDataSourcesResponse":{
+      "type":"structure",
+      "members":{
+        "DataSourceSummaries":{
+          "shape":"DataSourceSummaryList",
+          "documentation":"<p>A <code>DataSourceSummaries</code> object that returns a summary of a data source.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
         },
         "Status":{
           "shape":"StatusCode",
@@ -10844,6 +11239,11 @@
         }
       },
       "documentation":"<p>The parameters for Spark.</p>"
+    },
+    "SqlEndpointPath":{
+      "type":"string",
+      "max":4096,
+      "min":1
     },
     "SqlQuery":{
       "type":"string",
@@ -11814,6 +12214,10 @@
         "NotificationEmail":{
           "shape":"String",
           "documentation":"<p>The email address that you want Amazon QuickSight to send notifications to regarding your Amazon Web Services account or Amazon QuickSight subscription.</p>"
+        },
+        "TerminationProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that determines whether or not an Amazon QuickSight account can be deleted. A <code>True</code> value doesn't allow the account to be deleted and results in an error message if a user tries to make a <code>DeleteAccountSubscription</code> request. A <code>False</code> value will allow the account to be deleted.</p>"
         }
       }
     },

@@ -56,7 +56,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Associates the specified principal ARN with the specified portfolio.</p>"
+      "documentation":"<p>Associates the specified principal ARN with the specified portfolio.</p> <p>If you share the portfolio with principal name sharing enabled, the <code>PrincipalARN</code> association is included in the share. </p> <p>The <code>PortfolioID</code>, <code>PrincipalARN</code>, and <code>PrincipalType</code> parameters are required. </p> <p>You can associate a maximum of 10 Principals with a portfolio using <code>PrincipalType</code> as <code>IAM_PATTERN</code> </p> <note> <p>When you associate a principal with portfolio, a potential privilege escalation path may occur when that portfolio is then shared with other accounts. For a user in a recipient account who is <i>not</i> an Service Catalog Admin, but still has the ability to create Principals (Users/Groups/Roles), that user could create a role that matches a principal name association for the portfolio. Although this user may not know which principal names are associated through Service Catalog, they may be able to guess the user. If this potential escalation path is a concern, then Service Catalog recommends using <code>PrincipalType</code> as <code>IAM</code>. With this configuration, the <code>PrincipalARN</code> must already exist in the recipient account before it can be associated. </p> </note>"
     },
     "AssociateProductWithPortfolio":{
       "name":"AssociateProductWithPortfolio",
@@ -192,7 +192,7 @@
         {"shape":"OperationNotSupportedException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Shares the specified portfolio with the specified account or organization node. Shares to an organization node can only be created by the management account of an organization or by a delegated administrator. You can share portfolios to an organization, an organizational unit, or a specific account.</p> <p>Note that if a delegated admin is de-registered, they can no longer create portfolio shares.</p> <p> <code>AWSOrganizationsAccess</code> must be enabled in order to create a portfolio share to an organization node.</p> <p>You can't share a shared resource, including portfolios that contain a shared product.</p> <p>If the portfolio share with the specified account or organization node already exists, this action will have no effect and will not return an error. To update an existing share, you must use the <code> UpdatePortfolioShare</code> API instead.</p>"
+      "documentation":"<p>Shares the specified portfolio with the specified account or organization node. Shares to an organization node can only be created by the management account of an organization or by a delegated administrator. You can share portfolios to an organization, an organizational unit, or a specific account.</p> <p>Note that if a delegated admin is de-registered, they can no longer create portfolio shares.</p> <p> <code>AWSOrganizationsAccess</code> must be enabled in order to create a portfolio share to an organization node.</p> <p>You can't share a shared resource, including portfolios that contain a shared product.</p> <p>If the portfolio share with the specified account or organization node already exists, this action will have no effect and will not return an error. To update an existing share, you must use the <code> UpdatePortfolioShare</code> API instead. </p> <note> <p>When you associate a principal with portfolio, a potential privilege escalation path may occur when that portfolio is then shared with other accounts. For a user in a recipient account who is <i>not</i> an Service Catalog Admin, but still has the ability to create Principals (Users/Groups/Roles), that user could create a role that matches a principal name association for the portfolio. Although this user may not know which principal names are associated through Service Catalog, they may be able to guess the user. If this potential escalation path is a concern, then Service Catalog recommends using <code>PrincipalType</code> as <code>IAM</code>. With this configuration, the <code>PrincipalARN</code> must already exist in the recipient account before it can be associated. </p> </note>"
     },
     "CreateProduct":{
       "name":"CreateProduct",
@@ -648,7 +648,7 @@
         {"shape":"InvalidParametersException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Disassociates a previously associated principal ARN from a specified portfolio.</p>"
+      "documentation":"<p>Disassociates a previously associated principal ARN from a specified portfolio.</p> <p>The <code>PrincipalType</code> and <code>PrincipalARN</code> must match the <code>AssociatePrincipalWithPortfolio</code> call request details. For example, to disassociate an association created with a <code>PrincipalARN</code> of <code>PrincipalType</code> IAM you must use the <code>PrincipalType</code> IAM when calling <code>DisassociatePrincipalFromPortfolio</code>. </p> <p>For portfolios that have been shared with principal name sharing enabled: after disassociating a principal, share recipient accounts will no longer be able to provision products in this portfolio using a role matching the name of the associated principal. </p>"
     },
     "DisassociateProductFromPortfolio":{
       "name":"DisassociateProductFromPortfolio",
@@ -779,7 +779,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParametersException"}
       ],
-      "documentation":"<p>Requests the import of a resource as a Amazon Web Services Service Catalog provisioned product that is associated to a Amazon Web Services Service Catalog product and provisioning artifact. Once imported, all supported Amazon Web Services Service Catalog governance actions are supported on the provisioned product.</p> <p>Resource import only supports CloudFormation stack ARNs. CloudFormation StackSets and non-root nested stacks are not supported.</p> <p>The CloudFormation stack must have one of the following statuses to be imported: <code>CREATE_COMPLETE</code>, <code>UPDATE_COMPLETE</code>, <code>UPDATE_ROLLBACK_COMPLETE</code>, <code>IMPORT_COMPLETE</code>, <code>IMPORT_ROLLBACK_COMPLETE</code>.</p> <p>Import of the resource requires that the CloudFormation stack template matches the associated Amazon Web Services Service Catalog product provisioning artifact. </p> <p>The user or role that performs this operation must have the <code>cloudformation:GetTemplate</code> and <code>cloudformation:DescribeStacks</code> IAM policy permissions. </p>"
+      "documentation":"<p>Requests the import of a resource as an Service Catalog provisioned product that is associated to an Service Catalog product and provisioning artifact. Once imported, all supported Service Catalog governance actions are supported on the provisioned product.</p> <p>Resource import only supports CloudFormation stack ARNs. CloudFormation StackSets and non-root nested stacks are not supported.</p> <p>The CloudFormation stack must have one of the following statuses to be imported: <code>CREATE_COMPLETE</code>, <code>UPDATE_COMPLETE</code>, <code>UPDATE_ROLLBACK_COMPLETE</code>, <code>IMPORT_COMPLETE</code>, <code>IMPORT_ROLLBACK_COMPLETE</code>.</p> <p>Import of the resource requires that the CloudFormation stack template matches the associated Service Catalog product provisioning artifact. </p> <p>The user or role that performs this operation must have the <code>cloudformation:GetTemplate</code> and <code>cloudformation:DescribeStacks</code> IAM policy permissions. </p>"
     },
     "ListAcceptedPortfolioShares":{
       "name":"ListAcceptedPortfolioShares",
@@ -905,7 +905,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParametersException"}
       ],
-      "documentation":"<p>Lists all principal ARNs associated with the specified portfolio.</p>"
+      "documentation":"<p>Lists all <code>PrincipalARN</code>s and corresponding <code>PrincipalType</code>s associated with the specified portfolio.</p>"
     },
     "ListProvisionedProductPlans":{
       "name":"ListProvisionedProductPlans",
@@ -1170,7 +1170,7 @@
         {"shape":"OperationNotSupportedException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Updates the specified portfolio share. You can use this API to enable or disable TagOptions sharing for an existing portfolio share. </p> <p>The portfolio share cannot be updated if the <code> CreatePortfolioShare</code> operation is <code>IN_PROGRESS</code>, as the share is not available to recipient entities. In this case, you must wait for the portfolio share to be COMPLETED.</p> <p>You must provide the <code>accountId</code> or organization node in the input, but not both.</p> <p>If the portfolio is shared to both an external account and an organization node, and both shares need to be updated, you must invoke <code>UpdatePortfolioShare</code> separately for each share type. </p> <p>This API cannot be used for removing the portfolio share. You must use <code>DeletePortfolioShare</code> API for that action. </p>"
+      "documentation":"<p>Updates the specified portfolio share. You can use this API to enable or disable <code>TagOptions</code> sharing or Principal sharing for an existing portfolio share. </p> <p>The portfolio share cannot be updated if the <code>CreatePortfolioShare</code> operation is <code>IN_PROGRESS</code>, as the share is not available to recipient entities. In this case, you must wait for the portfolio share to be COMPLETED.</p> <p>You must provide the <code>accountId</code> or organization node in the input, but not both.</p> <p>If the portfolio is shared to both an external account and an organization node, and both shares need to be updated, you must invoke <code>UpdatePortfolioShare</code> separately for each share type. </p> <p>This API cannot be used for removing the portfolio share. You must use <code>DeletePortfolioShare</code> API for that action. </p> <note> <p>When you associate a principal with portfolio, a potential privilege escalation path may occur when that portfolio is then shared with other accounts. For a user in a recipient account who is <i>not</i> an Service Catalog Admin, but still has the ability to create Principals (Users/Groups/Roles), that user could create a role that matches a principal name association for the portfolio. Although this user may not know which principal names are associated through Service Catalog, they may be able to guess the user. If this potential escalation path is a concern, then Service Catalog recommends using <code>PrincipalType</code> as <code>IAM</code>. With this configuration, the <code>PrincipalARN</code> must already exist in the recipient account before it can be associated. </p> </note>"
     },
     "UpdateProduct":{
       "name":"UpdateProduct",
@@ -1378,11 +1378,11 @@
         },
         "PrincipalARN":{
           "shape":"PrincipalARN",
-          "documentation":"<p>The ARN of the principal (IAM user, role, or group).</p>"
+          "documentation":"<p>The ARN of the principal (IAM user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>. </p> <p>You can associate multiple <code>IAM</code> patterns even if the account has no principal with that name. This is useful in Principal Name Sharing if you want to share a principal without creating it in the account that owns the portfolio. </p>"
         },
         "PrincipalType":{
           "shape":"PrincipalType",
-          "documentation":"<p>The principal type. The supported value is <code>IAM</code>.</p>"
+          "documentation":"<p>The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. </p>"
         }
       }
     },
@@ -1564,6 +1564,40 @@
     "CloudWatchDashboards":{
       "type":"list",
       "member":{"shape":"CloudWatchDashboard"}
+    },
+    "CodeStarConnectionArn":{
+      "type":"string",
+      "max":1224,
+      "min":1,
+      "pattern":"arn:[a-z0-9][-.a-z0-9]{0,62}:codestar-connections:([a-z0-9][-.a-z0-9]{0,62})?:([a-z0-9][-.a-z0-9]{0,62})?:[^/].{0,1023}$"
+    },
+    "CodeStarParameters":{
+      "type":"structure",
+      "required":[
+        "ConnectionArn",
+        "Repository",
+        "Branch",
+        "ArtifactPath"
+      ],
+      "members":{
+        "ConnectionArn":{
+          "shape":"CodeStarConnectionArn",
+          "documentation":"<p>The CodeStar ARN, which is the connection between Service Catalog and the external repository.</p>"
+        },
+        "Repository":{
+          "shape":"Repository",
+          "documentation":"<p>The specific repository where the product’s artifact-to-be-synced resides, formatted as \"Account/Repo.\" </p>"
+        },
+        "Branch":{
+          "shape":"RepositoryBranch",
+          "documentation":"<p>The specific branch where the artifact resides. </p>"
+        },
+        "ArtifactPath":{
+          "shape":"RepositoryArtifactPath",
+          "documentation":"<p>The absolute path wehre the artifact resides within the repo and branch, formatted as \"folder/file.json.\" </p>"
+        }
+      },
+      "documentation":"<p>The subtype containing details about the Codestar connection <code>Type</code>. </p>"
     },
     "ConstraintDescription":{
       "type":"string",
@@ -1819,6 +1853,10 @@
         "ShareTagOptions":{
           "shape":"Boolean",
           "documentation":"<p>Enables or disables <code>TagOptions </code> sharing when creating the portfolio share. If this flag is not provided, TagOptions sharing is disabled.</p>"
+        },
+        "SharePrincipals":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables or disables <code>Principal</code> sharing when creating the portfolio share. If this flag is not provided, principal sharing is disabled. </p> <p>When you enable Principal Name Sharing for a portfolio share, the share recipient account end users with a principal that matches any of the associated IAM patterns can provision products from the portfolio. Once shared, the share recipient can view associations of <code>PrincipalType</code>: <code>IAM_PATTERN</code> on their portfolio. You can create the principals in the recipient account before or after creating the share. </p>"
         }
       }
     },
@@ -1837,7 +1875,6 @@
         "Name",
         "Owner",
         "ProductType",
-        "ProvisioningArtifactParameters",
         "IdempotencyToken"
       ],
       "members":{
@@ -1889,6 +1926,10 @@
           "shape":"IdempotencyToken",
           "documentation":"<p>A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.</p>",
           "idempotencyToken":true
+        },
+        "SourceConnection":{
+          "shape":"SourceConnection",
+          "documentation":"<p>Specifies connection details for the created product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>"
         }
       }
     },
@@ -2028,7 +2069,7 @@
         },
         "Info":{
           "shape":"ProvisioningArtifactInfo",
-          "documentation":"<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ].</p> <p>The URL of the CloudFormation template in Amazon S3, Amazon Web Services CodeCommit, or GitHub in JSON format. </p> <p> <code>LoadTemplateFromURL</code> </p> <p>Use the URL of the CloudFormation template in Amazon S3, Amazon Web Services CodeCommit, or GitHub in JSON format.</p> <p> <code>ImportFromPhysicalId</code> </p> <p>Use the physical id of the resource that contains the template; currently supports CloudFormation stack ARN.</p>"
+          "documentation":"<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ].</p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. </p> <p> <code>LoadTemplateFromURL</code> </p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.</p> <p> <code>ImportFromPhysicalId</code> </p> <p>Use the physical id of the resource that contains the template; currently supports CloudFormation stack ARN.</p>"
         },
         "Status":{
           "shape":"Status",
@@ -2679,7 +2720,7 @@
         },
         "Info":{
           "shape":"ProvisioningArtifactInfo",
-          "documentation":"<p>The URL of the CloudFormation template in Amazon S3, Amazon Web Services CodeCommit, or GitHub in JSON format.</p>"
+          "documentation":"<p>The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.</p>"
         },
         "Status":{
           "shape":"Status",
@@ -2917,7 +2958,11 @@
         },
         "PrincipalARN":{
           "shape":"PrincipalARN",
-          "documentation":"<p>The ARN of the principal (IAM user, role, or group).</p>"
+          "documentation":"<p>The ARN of the principal (IAM user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>.</p>"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use no <code>accountID</code>. </p>"
         }
       }
     },
@@ -3314,6 +3359,42 @@
       "exception":true
     },
     "LastRequestId":{"type":"string"},
+    "LastSuccessfulSyncTime":{"type":"timestamp"},
+    "LastSync":{
+      "type":"structure",
+      "members":{
+        "LastSyncTime":{
+          "shape":"LastSyncTime",
+          "documentation":"<p>The time of the last attempted sync from the repository to the Service Catalog product. </p>"
+        },
+        "LastSyncStatus":{
+          "shape":"LastSyncStatus",
+          "documentation":"<p>The current status of the sync. Responses include <code>SUCCEEDED</code> or <code>FAILED</code>. </p>"
+        },
+        "LastSyncStatusMessage":{
+          "shape":"LastSyncStatusMessage",
+          "documentation":"<p>The sync's status message. </p>"
+        },
+        "LastSuccessfulSyncTime":{
+          "shape":"LastSuccessfulSyncTime",
+          "documentation":"<p>The time of the latest successful sync from the source repo artifact to the Service Catalog product.</p>"
+        },
+        "LastSuccessfulSyncProvisioningArtifactId":{
+          "shape":"Id",
+          "documentation":"<p>The ProvisioningArtifactID of the ProvisioningArtifact created from the latest successful sync. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about the product's connection sync and contains the following sub-fields. </p> <ul> <li> <p> <code>LastSyncTime</code> </p> </li> <li> <p> <code>LastSyncStatus</code> </p> </li> <li> <p> <code>LastSyncStatusMessage</code> </p> </li> <li> <p> <code>LastSuccessfulSyncTime</code> </p> </li> <li> <p> <code>LastSuccessfulSyncProvisioningArtifactID</code> </p> </li> </ul>"
+    },
+    "LastSyncStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "LastSyncStatusMessage":{"type":"string"},
+    "LastSyncTime":{"type":"timestamp"},
     "LaunchPath":{
       "type":"structure",
       "members":{
@@ -3681,7 +3762,7 @@
       "members":{
         "Principals":{
           "shape":"Principals",
-          "documentation":"<p>The IAM principals (users or roles) associated with the portfolio.</p>"
+          "documentation":"<p>The <code>PrincipalARN</code>s and corresponding <code>PrincipalType</code>s associated with the portfolio.</p>"
         },
         "NextPageToken":{
           "shape":"PageToken",
@@ -4217,7 +4298,7 @@
       "members":{
         "PrincipalId":{
           "shape":"Id",
-          "documentation":"<p>The identifier of the recipient entity that received the portfolio share. The recipient entities can be one of the following: </p> <p>1. An external account.</p> <p>2. An organziation member account.</p> <p>3. An organzational unit (OU).</p> <p>4. The organization itself. (This shares with every account in the organization).</p>"
+          "documentation":"<p>The identifier of the recipient entity that received the portfolio share. The recipient entity can be one of the following:</p> <p>1. An external account.</p> <p>2. An organziation member account.</p> <p>3. An organzational unit (OU).</p> <p>4. The organization itself. (This shares with every account in the organization).</p>"
         },
         "Type":{
           "shape":"DescribePortfolioShareType",
@@ -4230,6 +4311,10 @@
         "ShareTagOptions":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether TagOptions sharing is enabled or disabled for the portfolio share.</p>"
+        },
+        "SharePrincipals":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if <code>Principal</code> sharing is enabled or disabled for the portfolio share. </p>"
         }
       },
       "documentation":"<p>Information about the portfolio share.</p>"
@@ -4251,11 +4336,11 @@
       "members":{
         "PrincipalARN":{
           "shape":"PrincipalARN",
-          "documentation":"<p>The ARN of the principal (IAM user, role, or group).</p>"
+          "documentation":"<p>The ARN of the principal (IAM user, role, or group). This field allows for an ARN with no <code>accountID</code> if the <code>PrincipalType</code> is an <code>IAM_PATTERN</code>. </p>"
         },
         "PrincipalType":{
           "shape":"PrincipalType",
-          "documentation":"<p>The principal type. The supported value is <code>IAM</code>.</p>"
+          "documentation":"<p>The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. </p>"
         }
       },
       "documentation":"<p>Information about a principal.</p>"
@@ -4267,7 +4352,10 @@
     },
     "PrincipalType":{
       "type":"string",
-      "enum":["IAM"]
+      "enum":[
+        "IAM",
+        "IAM_PATTERN"
+      ]
     },
     "Principals":{
       "type":"list",
@@ -4333,6 +4421,10 @@
         "CreatedTime":{
           "shape":"CreatedTime",
           "documentation":"<p>The UTC time stamp of the creation time.</p>"
+        },
+        "SourceConnection":{
+          "shape":"SourceConnectionDetail",
+          "documentation":"<p>A top level <code>ProductViewDetail</code> response containing details about the product’s connection. Service Catalog returns this field for the <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, and <code>SearchProductAsAdmin</code> APIs. This response contains the same fields as the <code>ConnectionParameters</code> request, with the addition of the <code>LastSync</code> response.</p>"
         }
       },
       "documentation":"<p>Information about a product view.</p>"
@@ -4741,7 +4833,7 @@
         },
         "UpdatedTime":{
           "shape":"UpdatedTime",
-          "documentation":"<p>The time when the plan was last updated.</p>"
+          "documentation":"<p>The UTC time stamp when the plan was last updated.</p>"
         },
         "NotificationArns":{
           "shape":"NotificationArns",
@@ -4902,6 +4994,10 @@
         "Guidance":{
           "shape":"ProvisioningArtifactGuidance",
           "documentation":"<p>Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.</p>"
+        },
+        "SourceRevision":{
+          "shape":"SourceRevision",
+          "documentation":"<p>Specifies the revision of the external artifact that was used to automatically sync the Service Catalog product and create the provisioning artifact. Service Catalog includes this response parameter as a high level field to the existing <code>ProvisioningArtifactDetail</code> type, which is returned as part of the response for <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, <code>DescribeProvisioningArtifact</code>, <code>ListProvisioningArtifact</code>, and <code>UpdateProvisioningArticat</code> APIs. </p> <p>This field only exists for Repo-Synced products. </p>"
         }
       },
       "documentation":"<p>Information about a provisioning artifact (also known as a version) for a product.</p>"
@@ -5005,7 +5101,6 @@
     },
     "ProvisioningArtifactProperties":{
       "type":"structure",
-      "required":["Info"],
       "members":{
         "Name":{
           "shape":"ProvisioningArtifactName",
@@ -5017,7 +5112,7 @@
         },
         "Info":{
           "shape":"ProvisioningArtifactInfo",
-          "documentation":"<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ]</p> <p>The URL of the CloudFormation template in Amazon S3, Amazon Web Services CodeCommit, or GitHub in JSON format. Specify the URL in JSON format as follows:</p> <p> <code>\"LoadTemplateFromURL\": \"https://s3.amazonaws.com/cf-templates-ozkq9d3hgiq2-us-east-1/...\"</code> </p> <p> <code>ImportFromPhysicalId</code>: The physical id of the resource that contains the template. Currently only supports CloudFormation stack arn. Specify the physical id in JSON format as follows: <code>ImportFromPhysicalId: “arn:aws:cloudformation:[us-east-1]:[accountId]:stack/[StackName]/[resourceId]</code> </p>"
+          "documentation":"<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ]</p> <p>The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. Specify the URL in JSON format as follows:</p> <p> <code>\"LoadTemplateFromURL\": \"https://s3.amazonaws.com/cf-templates-ozkq9d3hgiq2-us-east-1/...\"</code> </p> <p> <code>ImportFromPhysicalId</code>: The physical id of the resource that contains the template. Currently only supports CloudFormation stack arn. Specify the physical id in JSON format as follows: <code>ImportFromPhysicalId: “arn:aws:cloudformation:[us-east-1]:[accountId]:stack/[StackName]/[resourceId]</code> </p>"
         },
         "Type":{
           "shape":"ProvisioningArtifactType",
@@ -5025,7 +5120,7 @@
         },
         "DisableTemplateValidation":{
           "shape":"DisableTemplateValidation",
-          "documentation":"<p>If set to true, Amazon Web Services Service Catalog stops validating the specified provisioning artifact even if it is invalid.</p>"
+          "documentation":"<p>If set to true, Service Catalog stops validating the specified provisioning artifact even if it is invalid.</p>"
         }
       },
       "documentation":"<p>Information about a provisioning artifact (also known as a version) for a product.</p>"
@@ -5322,6 +5417,21 @@
         "FALSE",
         "CONDITIONAL"
       ]
+    },
+    "Repository":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "RepositoryArtifactPath":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "RepositoryBranch":{
+      "type":"string",
+      "max":250,
+      "min":1
     },
     "RequiresRecreation":{
       "type":"string",
@@ -5847,6 +5957,49 @@
         "DESCENDING"
       ]
     },
+    "SourceConnection":{
+      "type":"structure",
+      "required":["ConnectionParameters"],
+      "members":{
+        "Type":{
+          "shape":"SourceType",
+          "documentation":"<p>The only supported <code>SourceConnection</code> type is Codestar. </p>"
+        },
+        "ConnectionParameters":{
+          "shape":"SourceConnectionParameters",
+          "documentation":"<p>The connection details based on the connection <code>Type</code>. </p>"
+        }
+      },
+      "documentation":"<p>A top level <code>ProductViewDetail</code> response containing details about the product’s connection. Service Catalog returns this field for the <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, and <code>SearchProductAsAdmin</code> APIs. This response contains the same fields as the <code>ConnectionParameters</code> request, with the addition of the <code>LastSync</code> response.</p>"
+    },
+    "SourceConnectionDetail":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"SourceType",
+          "documentation":"<p>The only supported <code>SourceConnection</code> type is Codestar.</p>"
+        },
+        "ConnectionParameters":{
+          "shape":"SourceConnectionParameters",
+          "documentation":"<p>The connection details based on the connection <code>Type</code>.</p>"
+        },
+        "LastSync":{
+          "shape":"LastSync",
+          "documentation":"<p>Provides details about the product's connection sync and contains the following sub-fields. </p> <ul> <li> <p> <code>LastSyncTime</code> </p> </li> <li> <p> <code>LastSyncStatus</code> </p> </li> <li> <p> <code>LastSyncStatusMessage</code> </p> </li> <li> <p> <code>LastSuccessfulSyncTime</code> </p> </li> <li> <p> <code>LastSuccessfulSyncProvisioningArtifactID</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides details about the configured <code>SourceConnection</code>. </p>"
+    },
+    "SourceConnectionParameters":{
+      "type":"structure",
+      "members":{
+        "CodeStar":{
+          "shape":"CodeStarParameters",
+          "documentation":"<p>Provides <code>ConnectionType</code> details.</p>"
+        }
+      },
+      "documentation":"<p>Provides connection details.</p>"
+    },
     "SourceProvisioningArtifactProperties":{
       "type":"list",
       "member":{"shape":"SourceProvisioningArtifactPropertiesMap"}
@@ -5855,6 +6008,15 @@
       "type":"map",
       "key":{"shape":"ProvisioningArtifactPropertyName"},
       "value":{"shape":"ProvisioningArtifactPropertyValue"}
+    },
+    "SourceRevision":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "SourceType":{
+      "type":"string",
+      "enum":["CODESTAR"]
     },
     "StackInstance":{
       "type":"structure",
@@ -6212,7 +6374,11 @@
         "OrganizationNode":{"shape":"OrganizationNode"},
         "ShareTagOptions":{
           "shape":"NullableBoolean",
-          "documentation":"<p>A flag to enable or disable TagOptions sharing for the portfolio share. If this field is not provided, the current state of TagOptions sharing on the portfolio share will not be modified.</p>"
+          "documentation":"<p>Enables or disables <code>TagOptions</code> sharing for the portfolio share. If this field is not provided, the current state of TagOptions sharing on the portfolio share will not be modified.</p>"
+        },
+        "SharePrincipals":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A flag to enables or disables <code>Principals</code> sharing in the portfolio. If this field is not provided, the current state of the <code>Principals</code> sharing on the portfolio share will not be modified. </p>"
         }
       }
     },
@@ -6276,6 +6442,10 @@
         "RemoveTags":{
           "shape":"TagKeys",
           "documentation":"<p>The tags to remove from the product.</p>"
+        },
+        "SourceConnection":{
+          "shape":"SourceConnection",
+          "documentation":"<p>Specifies connection details for the updated product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>"
         }
       }
     },
@@ -6454,7 +6624,7 @@
         },
         "Info":{
           "shape":"ProvisioningArtifactInfo",
-          "documentation":"<p>The URL of the CloudFormation template in Amazon S3, Amazon Web Services CodeCommit, or GitHub in JSON format.</p>"
+          "documentation":"<p>The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.</p>"
         },
         "Status":{
           "shape":"Status",
@@ -6604,5 +6774,5 @@
     "UserArnSession":{"type":"string"},
     "Verbose":{"type":"boolean"}
   },
-  "documentation":"<fullname>AWS Service Catalog</fullname> <p> <a href=\"https://aws.amazon.com/servicecatalog/\">Service Catalog</a> enables organizations to create and manage catalogs of IT services that are approved for Amazon Web Services. To get the most out of this documentation, you should be familiar with the terminology discussed in <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/what-is_concepts.html\">Service Catalog Concepts</a>.</p>"
+  "documentation":"<fullname>Service Catalog</fullname> <p> <a href=\"http://aws.amazon.com/servicecatalog\">Service Catalog</a> enables organizations to create and manage catalogs of IT services that are approved for Amazon Web Services. To get the most out of this documentation, you should be familiar with the terminology discussed in <a href=\"http://docs.aws.amazon.com/servicecatalog/latest/adminguide/what-is_concepts.html\">Service Catalog Concepts</a>.</p>"
 }

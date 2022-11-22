@@ -4428,6 +4428,13 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.15
+=======
+
+* api-change:``appflow``: Adding support for Amazon AppFlow to transfer the data to Amazon Redshift databases through Amazon Redshift Data API service. This feature will support the Redshift destination connector on both public and private accessible Amazon Redshift Clusters and Amazon Redshift Serverless.
+* api-change:``kinesisanalyticsv2``: Support for Apache Flink 1.15 in Kinesis Data Analytics.
+
+
 1.27.14
 =======
 

@@ -203,8 +203,9 @@ def test_endpoint_resolution(
     assert endpoint.headers == expected_endpoint.get("headers", {})
 
 
-def test_none_doesnt_use_default_partition(rule_lib):
-    assert rule_lib.aws_partition(None) is None
+def test_none_returns_default_partition(rule_lib):
+    partition_dict = rule_lib.aws_partition(None)
+    assert partition_dict['name'] == "aws"
 
 
 def test_no_match_region_returns_default_partition(rule_lib):

@@ -28,6 +28,9 @@
       "ap-south-1" : {
         "description" : "Asia Pacific (Mumbai)"
       },
+      "ap-south-2" : {
+        "description" : "Asia Pacific (Hyderabad)"
+      },
       "ap-southeast-1" : {
         "description" : "Asia Pacific (Singapore)"
       },

@@ -138,7 +138,7 @@ class TestResolveIMDSEndpointMode(unittest.TestCase):
         session = self.create_session_with_config('IPv6', None)
         self.assertEqual(resolve_imds_endpoint_mode(session), 'ipv6')
 
-    def test_resolve_endpoint_mode_IPv6(self):
+    def test_resolve_endpoint_mode_IPv4(self):
         session = self.create_session_with_config('IPv4', None)
         self.assertEqual(resolve_imds_endpoint_mode(session), 'ipv4')
 

@@ -202,13 +202,12 @@ class RuleSetStandardLibary:
         :type value: str
         :rtype: dict
         """
-        if value is None:
-            return None
-
         partitions = self.partitions_data['partitions']
-        for partition in partitions:
-            if self.is_partition_match(value, partition):
-                return self.format_partition_output(partition)
+
+        if value is not None:
+            for partition in partitions:
+                if self.is_partition_match(value, partition):
+                    return self.format_partition_output(partition)
 
         # return the default partition if no matches were found
         aws_partition = partitions[0]

@@ -878,6 +878,9 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
             'myBanner-123456789012.s3-object-lambda.us-west-2.amazonaws.com'
         )
         self.assert_endpoint(request, expected_endpoint)
+        sha_header = request.headers.get("x-amz-content-sha256")
+        self.assertIsNotNone(sha_header)
+        self.assertNotEqual(sha_header, b"UNSIGNED-PAYLOAD")
 
     def test_outposts_raise_exception_if_fips_region(self):
         outpost_arn = (

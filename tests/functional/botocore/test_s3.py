@@ -312,16 +312,6 @@ class TestS3ClientConfigResolution(BaseS3ClientConfigurationTest):
             }
         )
 
-    def test_use_arn_region_is_case_insensitive(self):
-        self.environ['AWS_S3_USE_ARN_REGION'] = 'True'
-        client = self.create_s3_client()
-        self.assertEqual(
-            client.meta.config.s3,
-            {
-                'use_arn_region': True,
-            }
-        )
-
     def test_client_region_defaults_to_aws_global(self):
         client = self.create_s3_client(region_name=None)
         self.assertEqual(client.meta.region_name, 'aws-global')
@@ -653,7 +643,7 @@ class TestAccesspointArn(BaseS3ClientConfigurationTest):
         self.assertIsNotNone(sha_header)
         self.assertNotEqual(sha_header, b"UNSIGNED-PAYLOAD")
 
-    def test_basic_outpost_arn(self):
+    def test_basic_outpost_arn_custom_endpoint(self):
         outpost_arn = (
             'arn:aws:s3-outposts:us-west-2:123456789012:outpost:'
             'op-01234567890123456:accesspoint:myaccesspoint'

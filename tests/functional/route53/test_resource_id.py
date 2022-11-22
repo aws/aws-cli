@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You

@@ -309,17 +309,6 @@ class TestTopicTagDBQuery(TestTopicTagDB):
         self.assertEqual(query_dict,
                          {'foo': ['topic-name-1'], 'bar': ['topic-name-1']})
 
-    def test_query_tag_multi_values(self):
-        tag_dict = {
-            'topic-name-1': {
-                'related topic': ['foo', 'bar']
-            }
-        }
-        self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query('related topic')
-        self.assertEqual(query_dict,
-                         {'foo': ['topic-name-1'], 'bar': ['topic-name-1']})
-
     def test_query_multiple_topics(self):
         tag_dict = {
             'topic-name-1': {

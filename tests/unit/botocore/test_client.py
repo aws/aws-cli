@@ -1702,16 +1702,6 @@ class TestClientEndpointBridge(unittest.TestCase):
         resolved = bridge.resolve('myservice', 'us-foo-baz', is_secure=False)
         self.assertEqual('http://host.com', resolved['endpoint_url'])
 
-    def test_can_create_http_urls(self):
-        resolver = mock.Mock()
-        resolver.construct_endpoint.return_value = {
-            'partition': 'aws', 'hostname': 'host.com',
-            'signatureVersions': ['v4'],
-            'endpointName': 'us-foo-baz'}
-        bridge = ClientEndpointBridge(resolver)
-        resolved = bridge.resolve('myservice', 'us-foo-baz', is_secure=False)
-        self.assertEqual('http://host.com', resolved['endpoint_url'])
-
     def test_credential_scope_overrides_signing_region(self):
         resolver = mock.Mock()
         resolver.construct_endpoint.return_value = {

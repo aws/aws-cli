@@ -2226,7 +2226,7 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
 
     @mock.patch('s3transfer.crt.ClientTlsContext')
-    def test_respects_ca_bundle_parameter(self, mock_client_tls_context_options):
+    def test_respects_ca_bundle_parameter_no_verify(self, mock_client_tls_context_options):
         filename = self.files.create_file('myfile', 'mycontent')
         ca_bundle = self.files.create_file('fake_ca', 'mycontent')
         cmdline = [

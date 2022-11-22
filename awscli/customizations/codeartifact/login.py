@@ -310,7 +310,7 @@ class NpmLogin(BaseLogin):
         self._run_commands('npm', commands, dry_run)
 
     def _run_command(self, tool, command):
-        if any('always-auth' in arg for arg in command):
+        if any("always-auth" in arg for arg in command):
             super()._run_command(tool, command, ignore_errors=True)
         else:
             super()._run_command(tool, command)

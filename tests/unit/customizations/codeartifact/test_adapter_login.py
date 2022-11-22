@@ -452,30 +452,26 @@ class TestNpmLogin(unittest.TestCase):
         )
 
     def test_login_always_auth_not_allowed(self):
-        def side_effect(command, stdout, stderr):
-            if any('always-auth' in arg for arg in command):
-                raise subprocess.CalledProcessError(
-                    returncode=1,
-                    cmd=command
-                )
+        self.test_subject.login()
 
-            return mock.DEFAULT
-
-        self.subprocess_utils.check_call.side_effect = side_effect
         expected_calls = []
-
+        mock_subprocess = mock.Mock()
         for command in self.commands:
+            if any("always-auth" in arg for arg in command):
+                mock_subprocess.check_output.side_effect = subprocess.CalledProcessError(
+                    returncode=1,
+                    cmd=["Invalid"]
+                )
             expected_calls.append(mock.call(
                     command,
                     stdout=self.subprocess_utils.PIPE,
                     stderr=self.subprocess_utils.PIPE,
                 )
             )
-        self.test_subject.login()
 
         self.subprocess_utils.check_call.assert_has_calls(
-                expected_calls, any_order=True
-            )
+            expected_calls, any_order=True
+        )
 
     def test_get_scope(self):
         expected_value = '@{}'.format(self.namespace)

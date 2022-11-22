@@ -1,5 +1,6 @@
 import errno
 import os
+import subprocess
 
 from datetime import datetime
 from dateutil.tz import tzlocal, tzutc
@@ -449,6 +450,32 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils.check_call.assert_has_calls(
             expected_calls, any_order=True
         )
+
+    def test_login_always_auth_not_allowed(self):
+        def side_effect(command, stdout, stderr):
+            if any('always-auth' in arg for arg in command):
+                raise subprocess.CalledProcessError(
+                    returncode=1,
+                    cmd=command
+                )
+
+            return mock.DEFAULT
+
+        self.subprocess_utils.check_call.side_effect = side_effect
+        expected_calls = []
+
+        for command in self.commands:
+            expected_calls.append(mock.call(
+                    command,
+                    stdout=self.subprocess_utils.PIPE,
+                    stderr=self.subprocess_utils.PIPE,
+                )
+            )
+        self.test_subject.login()
+
+        self.subprocess_utils.check_call.assert_has_calls(
+                expected_calls, any_order=True
+            )
 
     def test_get_scope(self):
         expected_value = '@{}'.format(self.namespace)

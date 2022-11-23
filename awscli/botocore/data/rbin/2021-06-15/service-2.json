@@ -40,7 +40,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-delete-rule\"> Delete Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
@@ -91,6 +92,23 @@
       ],
       "documentation":"<p>Lists the tags assigned to a retention rule.</p>"
     },
+    "LockRule":{
+      "name":"LockRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/rules/{identifier}/lock",
+        "responseCode":200
+      },
+      "input":{"shape":"LockRuleRequest"},
+      "output":{"shape":"LockRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Locks a retention rule. A locked retention rule can't be modified or deleted.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -107,6 +125,23 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Assigns tags to the specified retention rule.</p>"
+    },
+    "UnlockRule":{
+      "name":"UnlockRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/rules/{identifier}/unlock",
+        "responseCode":200
+      },
+      "input":{"shape":"UnlockRuleRequest"},
+      "output":{"shape":"UnlockRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Unlocks a retention rule. After a retention rule is unlocked, it can be modified or deleted only after the unlock delay period expires.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -136,12 +171,30 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates an existing Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-update-rule\"> Update Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Updates an existing Recycle Bin retention rule. You can update a retention rule's description, resource tags, and retention period at any time after creation. You can't update a retention rule's resource type after creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-update-rule\"> Update Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     }
   },
   "shapes":{
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "Reason":{
+          "shape":"ConflictExceptionReason",
+          "documentation":"<p>The reason for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The specified retention rule lock request can't be completed.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "ConflictExceptionReason":{
+      "type":"string",
+      "enum":["INVALID_RULE_STATE"]
+    },
     "CreateRuleRequest":{
       "type":"structure",
       "required":[
@@ -168,6 +221,10 @@
         "ResourceTags":{
           "shape":"ResourceTags",
           "documentation":"<p>Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
         }
       }
     },
@@ -198,6 +255,14 @@
         "Status":{
           "shape":"RuleStatus",
           "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         }
       }
     },
@@ -261,6 +326,18 @@
         "Status":{
           "shape":"RuleStatus",
           "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "LockEndTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
         }
       }
     },
@@ -293,6 +370,10 @@
         "ResourceTags":{
           "shape":"ResourceTags",
           "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state of the retention rules to list. Only retention rules with the specified lock state are returned.</p>"
         }
       }
     },
@@ -329,6 +410,78 @@
           "documentation":"<p>Information about the tags assigned to the retention rule.</p>"
         }
       }
+    },
+    "LockConfiguration":{
+      "type":"structure",
+      "required":["UnlockDelay"],
+      "members":{
+        "UnlockDelay":{
+          "shape":"UnlockDelay",
+          "documentation":"<p>Information about the retention rule unlock delay.</p>"
+        }
+      },
+      "documentation":"<p>Information about a retention rule lock configuration.</p>"
+    },
+    "LockRuleRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "LockConfiguration"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The unique ID of the retention rule.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        }
+      }
+    },
+    "LockRuleResponse":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The unique ID of the retention rule.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The retention rule description.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type retained by the retention rule.</p>"
+        },
+        "RetentionPeriod":{"shape":"RetentionPeriod"},
+        "ResourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+        },
+        "Status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        }
+      }
+    },
+    "LockState":{
+      "type":"string",
+      "enum":[
+        "locked",
+        "pending_unlock",
+        "unlocked"
+      ]
     },
     "MaxResults":{
       "type":"integer",
@@ -450,6 +603,10 @@
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
           "documentation":"<p>Information about the retention period for which the retention rule is to retain resources.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Information about a Recycle Bin retention rule.</p>"
@@ -541,6 +698,84 @@
       "min":0,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
+    "TimeStamp":{"type":"timestamp"},
+    "UnlockDelay":{
+      "type":"structure",
+      "required":[
+        "UnlockDelayValue",
+        "UnlockDelayUnit"
+      ],
+      "members":{
+        "UnlockDelayValue":{
+          "shape":"UnlockDelayValue",
+          "documentation":"<p>The unlock delay period, measured in the unit specified for <b> UnlockDelayUnit</b>.</p>"
+        },
+        "UnlockDelayUnit":{
+          "shape":"UnlockDelayUnit",
+          "documentation":"<p>The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measure only in days.</p>"
+        }
+      },
+      "documentation":"<p>Information about the retention rule unlock delay. The unlock delay is the period after which a retention rule can be modified or edited after it has been unlocked by a user with the required permissions. The retention rule can't be modified or deleted during the unlock delay.</p>"
+    },
+    "UnlockDelayUnit":{
+      "type":"string",
+      "enum":["DAYS"]
+    },
+    "UnlockDelayValue":{
+      "type":"integer",
+      "max":30,
+      "min":7
+    },
+    "UnlockRuleRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The unique ID of the retention rule.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "UnlockRuleResponse":{
+      "type":"structure",
+      "members":{
+        "Identifier":{
+          "shape":"RuleIdentifier",
+          "documentation":"<p>The unique ID of the retention rule.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The retention rule description.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type retained by the retention rule.</p>"
+        },
+        "RetentionPeriod":{"shape":"RetentionPeriod"},
+        "ResourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+        },
+        "Status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
+        },
+        "LockConfiguration":{
+          "shape":"LockConfiguration",
+          "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "LockEndTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
+        }
+      }
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -587,7 +822,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To retain snapshots, specify <code>EBS_SNAPSHOT</code>. To retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
+          "documentation":"<note> <p>This parameter is currently not supported. You can't update a retention rule's resource type after creation.</p> </note>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
@@ -618,6 +853,14 @@
         "Status":{
           "shape":"RuleStatus",
           "documentation":"<p>The state of the retention rule. Only retention rules that are in the <code>available</code> state retain resources.</p>"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "LockEndTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
         }
       }
     },

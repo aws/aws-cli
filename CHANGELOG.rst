@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.16
+=======
+
+* api-change:``grafana``: This release includes support for configuring a Grafana workspace to connect to a datasource within a VPC as well as new APIs for configuring Grafana settings.
+* api-change:``rbin``: This release adds support for Rule Lock for Recycle Bin, which allows you to lock retention rules so that they can no longer be modified or deleted.
+
+
 1.27.15
 =======
 

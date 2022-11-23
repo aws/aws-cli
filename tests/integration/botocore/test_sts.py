@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest, ClientHTTPStubber
+from tests import unittest
 
 import botocore.session
 from botocore.exceptions import ClientError
@@ -40,29 +40,3 @@ class TestSTS(unittest.TestCase):
         # Signing error will be thrown with the incorrect region name included.
         with self.assertRaisesRegex(ClientError, 'ap-southeast-1') as e:
             sts.get_session_token()
-
-
-def test_assume_role_with_saml_no_region_custom_endpoint(patched_session):
-    # When an endpoint_url and no region are given, AssumeRoleWithSAML should
-    # resolve to the endpoint_url and succeed, not fail in endpoint resolution:
-    # https://github.com/aws/aws-cli/issues/7455
-
-    client = patched_session.create_client(
-        'sts', region_name=None, endpoint_url="https://custom.endpoint.aws"
-    )
-    assert client.meta.region_name is None
-
-    mock_response_body = b"""\
-<AssumeRoleWithSAMLResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
-    <AssumeRoleWithSAMLResult></AssumeRoleWithSAMLResult>
-</AssumeRoleWithSAMLResponse>
-"""
-    with ClientHTTPStubber(client) as http_stubber:
-        http_stubber.add_response(body=mock_response_body)
-        client.assume_role_with_saml(
-            RoleArn='arn:aws:iam::123456789:role/RoleA',
-            PrincipalArn='arn:aws:iam::123456789:role/RoleB',
-            SAMLAssertion='xxxx',
-        )
-    captured_request = http_stubber.requests[0]
-    assert captured_request.url == "https://custom.endpoint.aws/"

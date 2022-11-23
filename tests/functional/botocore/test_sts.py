@@ -149,3 +149,29 @@ class TestSTSEndpoints(BaseSessionTest):
             expected_url='https://sts.not-real.amazonaws.com/',
             expected_signing_region='not-real'
         )
+
+
+def test_assume_role_with_saml_no_region_custom_endpoint(patched_session):
+    # When an endpoint_url and no region are given, AssumeRoleWithSAML should
+    # resolve to the endpoint_url and succeed, not fail in endpoint resolution:
+    # https://github.com/aws/aws-cli/issues/7455
+
+    client = patched_session.create_client(
+        'sts', region_name=None, endpoint_url="https://custom.endpoint.aws"
+    )
+    assert client.meta.region_name is None
+
+    mock_response_body = b"""\
+<AssumeRoleWithSAMLResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
+    <AssumeRoleWithSAMLResult></AssumeRoleWithSAMLResult>
+</AssumeRoleWithSAMLResponse>
+"""
+    with ClientHTTPStubber(client) as http_stubber:
+        http_stubber.add_response(body=mock_response_body)
+        client.assume_role_with_saml(
+            RoleArn='arn:aws:iam::123456789:role/RoleA',
+            PrincipalArn='arn:aws:iam::123456789:role/RoleB',
+            SAMLAssertion='xxxx',
+        )
+    captured_request = http_stubber.requests[0]
+    assert captured_request.url == "https://custom.endpoint.aws/"

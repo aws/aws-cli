@@ -332,6 +332,14 @@ class GraphQLSchemaResource(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
+class AppSyncResolverCodeResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::Resolver"
+    PROPERTY_NAME = "CodeS3Location"
+    # Don't package the directory if CodeS3Location is omitted.
+    # Necessary to support Code
+    PACKAGE_NULL_PROPERTY = False
+
+
 class AppSyncResolverRequestTemplateResource(Resource):
     RESOURCE_TYPE = "AWS::AppSync::Resolver"
     PROPERTY_NAME = "RequestMappingTemplateS3Location"
@@ -345,6 +353,14 @@ class AppSyncResolverResponseTemplateResource(Resource):
     PROPERTY_NAME = "ResponseMappingTemplateS3Location"
     # Don't package the directory if ResponseMappingTemplateS3Location is omitted.
     # Necessary to support ResponseMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncFunctionConfigurationCodeResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::FunctionConfiguration"
+    PROPERTY_NAME = "CodeS3Location"
+    # Don't package the directory if CodeS3Location is omitted.
+    # Necessary to support Code
     PACKAGE_NULL_PROPERTY = False
 
 

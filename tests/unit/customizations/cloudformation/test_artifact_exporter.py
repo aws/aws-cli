@@ -88,12 +88,22 @@ RESOURCE_EXPORT_TEST_CASES = [
     },
 
     {
+        "class": AppSyncResolverCodeTemplateResource,
+        "expected_result": UPLOADED_S3_URL
+    },
+
+    {
         "class": AppSyncResolverRequestTemplateResource,
         "expected_result": UPLOADED_S3_URL
     },
 
     {
         "class": AppSyncResolverResponseTemplateResource,
+        "expected_result": UPLOADED_S3_URL
+    },
+
+    {
+        "class": AppSyncFunctionConfigurationCodeTemplateResource,
         "expected_result": UPLOADED_S3_URL
     },
 

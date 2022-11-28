@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+1.27.17
+=======
+
+* api-change:``backup``: AWS Backup introduces support for legal hold and application stack backups. AWS Backup Audit Manager introduces support for cross-Region, cross-account reports.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``drs``: Non breaking changes to existing APIs, and additional APIs added to support in-AWS failing back using AWS Elastic Disaster Recovery.
+* api-change:``ecs``: This release adds support for ECS Service Connect, a new capability that simplifies writing and operating resilient distributed applications. This release updates the TaskDefinition, Cluster, Service mutation APIs with Service connect constructs and also adds a new ListServicesByNamespace API.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``iot-data``: This release adds support for MQTT5 properties to AWS IoT HTTP Publish API.
+* api-change:``iot``: Job scheduling enables the scheduled rollout of a Job with start and end times and a customizable end behavior when end time is reached. This is available for continuous and snapshot jobs. Added support for MQTT5 properties to AWS IoT TopicRule Republish Action.
+* api-change:``iotwireless``: This release includes a new feature for customers to calculate the position of their devices by adding three new APIs: UpdateResourcePosition, GetResourcePosition, and GetPositionEstimate.
+* api-change:``kendra``: Amazon Kendra now supports preview of table information from HTML tables in the search results. The most relevant cells with their corresponding rows, columns are displayed as a preview in the search result. The most relevant table cell or cells are also highlighted in table preview.
+* api-change:``logs``: Updates to support CloudWatch Logs data protection and CloudWatch cross-account observability
+* api-change:``mgn``: This release adds support for Application and Wave management. We also now support custom post-launch actions.
+* api-change:``oam``: Amazon CloudWatch Observability Access Manager is a new service that allows configuration of the CloudWatch cross-account observability feature.
+* api-change:``organizations``: This release introduces delegated administrator for AWS Organizations, a new feature to help you delegate the management of your Organizations policies, enabling you to govern your AWS organization in a decentralized way. You can now allow member accounts to manage Organizations policies.
+* api-change:``rds``: This release enables new Aurora and RDS feature called Blue/Green Deployments that makes updates to databases safer, simpler and faster.
+* api-change:``textract``: This release adds support for classifying and splitting lending documents by type, and extracting information by using the Analyze Lending APIs. This release also includes support for summarized information of the processed lending document package, in addition to per document results.
+* api-change:``transcribe``: This release adds support for 'inputType' for post-call and real-time (streaming) Call Analytics within Amazon Transcribe.
+
+
 1.27.16
 =======
 

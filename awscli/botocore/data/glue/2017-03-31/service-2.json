@@ -4749,6 +4749,10 @@
         "PostgreSQLCatalogTarget":{
           "shape":"PostgreSQLCatalogTarget",
           "documentation":"<p>Specifies a target that uses Postgres SQL.</p>"
+        },
+        "DynamicTransform":{
+          "shape":"DynamicTransform",
+          "documentation":"<p>Specifies a custom visual transform created by a user.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -8133,6 +8137,47 @@
       },
       "documentation":"<p>Specifies a transform that removes columns from the dataset if all values in the column are 'null'. By default, Glue Studio will recognize null objects, but some values such as empty strings, strings that are \"null\", -1 integers or other placeholders such as zeros, are not automatically recognized as nulls.</p>"
     },
+    "DynamicTransform":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "TransformName",
+        "Inputs",
+        "FunctionName",
+        "Path"
+      ],
+      "members":{
+        "Name":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the name of the dynamic transform.</p>"
+        },
+        "TransformName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the name of the dynamic transform as it appears in the Glue Studio visual editor.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>Specifies the inputs for the dynamic transform that are required.</p>"
+        },
+        "Parameters":{
+          "shape":"TransformConfigParameterList",
+          "documentation":"<p>Specifies the parameters of the dynamic transform.</p>"
+        },
+        "FunctionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the name of the function of the dynamic transform.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the path of the dynamic transform source and config files.</p>"
+        },
+        "Version":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>This field is not used and will be deprecated in future release.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the set of parameters needed to perform the dynamic transform.</p>"
+    },
     "DynamoDBCatalogSource":{
       "type":"structure",
       "required":[
@@ -10701,7 +10746,7 @@
           "documentation":"<p>Specifies the column definitions that make up a Glue schema.</p>"
         }
       },
-      "documentation":"<p>Specifies a user-defined schema when a schema cannot be determined by AWS Glue.</p>"
+      "documentation":"<p>Specifies a user-defined schema when a schema cannot be determined by Glue.</p>"
     },
     "GlueSchemas":{
       "type":"list",
@@ -13331,6 +13376,18 @@
       "min":1
     },
     "PaginationToken":{"type":"string"},
+    "ParamType":{
+      "type":"string",
+      "enum":[
+        "str",
+        "int",
+        "float",
+        "complex",
+        "bool",
+        "list",
+        "null"
+      ]
+    },
     "ParametersMap":{
       "type":"map",
       "key":{"shape":"KeyString"},
@@ -16711,6 +16768,48 @@
       "max":255,
       "min":1,
       "pattern":"[\\p{L}\\p{N}\\p{P}]*"
+    },
+    "TransformConfigParameter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the name of the parameter in the config file of the dynamic transform.</p>"
+        },
+        "Type":{
+          "shape":"ParamType",
+          "documentation":"<p>Specifies the parameter type in the config file of the dynamic transform.</p>"
+        },
+        "ValidationRule":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the validation rule in the config file of the dynamic transform.</p>"
+        },
+        "ValidationMessage":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Specifies the validation message in the config file of the dynamic transform.</p>"
+        },
+        "Value":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>Specifies the value of the parameter in the config file of the dynamic transform.</p>"
+        },
+        "ListType":{
+          "shape":"ParamType",
+          "documentation":"<p>Specifies the list type of the parameter in the config file of the dynamic transform.</p>"
+        },
+        "IsOptional":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether the parameter is optional or not in the config file of the dynamic transform.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the parameters in the config file of the dynamic transform.</p>"
+    },
+    "TransformConfigParameterList":{
+      "type":"list",
+      "member":{"shape":"TransformConfigParameter"}
     },
     "TransformEncryption":{
       "type":"structure",

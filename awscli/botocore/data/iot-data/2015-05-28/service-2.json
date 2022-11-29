@@ -118,7 +118,8 @@
         {"shape":"InternalFailureException"},
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"MethodNotAllowedException"}
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Publishes an MQTT message.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">Publish</a> action.</p> <p>For more information about MQTT messages, see <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html\">MQTT Protocol</a> in the IoT Developer Guide.</p> <p>For more information about messaging costs, see <a href=\"http://aws.amazon.com/iot-core/pricing/#Messaging\">Amazon Web Services IoT Core pricing - Messaging</a>.</p>"
     },
@@ -157,6 +158,8 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ContentType":{"type":"string"},
+    "CorrelationData":{"type":"string"},
     "DeleteThingShadowRequest":{
       "type":"structure",
       "required":["thingName"],
@@ -355,6 +358,7 @@
       "max":200,
       "min":1
     },
+    "MessageExpiry":{"type":"long"},
     "MethodNotAllowedException":{
       "type":"structure",
       "members":{
@@ -378,6 +382,13 @@
       "min":1
     },
     "Payload":{"type":"blob"},
+    "PayloadFormatIndicator":{
+      "type":"string",
+      "enum":[
+        "UNSPECIFIED_BYTES",
+        "UTF8_DATA"
+      ]
+    },
     "PayloadSize":{"type":"long"},
     "PublishRequest":{
       "type":"structure",
@@ -391,7 +402,7 @@
         },
         "qos":{
           "shape":"Qos",
-          "documentation":"<p>The Quality of Service (QoS) level.</p>",
+          "documentation":"<p>The Quality of Service (QoS) level. The default QoS level is 0.</p>",
           "location":"querystring",
           "locationName":"qos"
         },
@@ -404,6 +415,43 @@
         "payload":{
           "shape":"Payload",
           "documentation":"<p>The message body. MQTT accepts text, binary, and empty (null) message payloads.</p> <p>Publishing an empty (null) payload with <b>retain</b> = <code>true</code> deletes the retained message identified by <b>topic</b> from Amazon Web Services IoT Core.</p>"
+        },
+        "userProperties":{
+          "shape":"UserProperties",
+          "documentation":"<p>A JSON string that contains an array of JSON objects. If you don’t use Amazon Web Services SDK or CLI, you must encode the JSON string to base64 format before adding it to the HTTP header. <code>userProperties</code> is an HTTP header value in the API.</p> <p>The following example <code>userProperties</code> parameter is a JSON string which represents two User Properties. Note that it needs to be base64-encoded:</p> <p> <code>[{\"deviceName\": \"alpha\"}, {\"deviceCnt\": \"45\"}]</code> </p>",
+          "jsonvalue":true,
+          "location":"header",
+          "locationName":"x-amz-mqtt5-user-properties"
+        },
+        "payloadFormatIndicator":{
+          "shape":"PayloadFormatIndicator",
+          "documentation":"<p>An <code>Enum</code> string value that indicates whether the payload is formatted as UTF-8. <code>payloadFormatIndicator</code> is an HTTP header value in the API.</p>",
+          "location":"header",
+          "locationName":"x-amz-mqtt5-payload-format-indicator"
+        },
+        "contentType":{
+          "shape":"ContentType",
+          "documentation":"<p>A UTF-8 encoded string that describes the content of the publishing message.</p>",
+          "location":"querystring",
+          "locationName":"contentType"
+        },
+        "responseTopic":{
+          "shape":"ResponseTopic",
+          "documentation":"<p>A UTF-8 encoded string that's used as the topic name for a response message. The response topic is used to describe the topic which the receiver should publish to as part of the request-response flow. The topic must not contain wildcard characters.</p>",
+          "location":"querystring",
+          "locationName":"responseTopic"
+        },
+        "correlationData":{
+          "shape":"CorrelationData",
+          "documentation":"<p>The base64-encoded binary data used by the sender of the request message to identify which request the response message is for when it's received. <code>correlationData</code> is an HTTP header value in the API.</p>",
+          "location":"header",
+          "locationName":"x-amz-mqtt5-correlation-data"
+        },
+        "messageExpiry":{
+          "shape":"MessageExpiry",
+          "documentation":"<p>A user-defined integer value that represents the message expiry interval in seconds. If absent, the message doesn't expire. For more information about the limits of <code>messageExpiry</code>, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot-core.html#message-broker-limits\">Amazon Web Services IoT Core message broker and protocol limits and quotas </a> from the Amazon Web Services Reference Guide.</p>",
+          "location":"querystring",
+          "locationName":"messageExpiry"
         }
       },
       "documentation":"<p>The input for the Publish operation.</p>",
@@ -438,6 +486,7 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResponseTopic":{"type":"string"},
     "Retain":{"type":"boolean"},
     "RetainedMessageList":{
       "type":"list",
@@ -566,6 +615,7 @@
       "documentation":"<p>The output from the UpdateThingShadow operation.</p>",
       "payload":"payload"
     },
+    "UserProperties":{"type":"string"},
     "errorMessage":{"type":"string"}
   },
   "documentation":"<fullname>IoT data</fullname> <p>IoT data enables secure, bi-directional communication between Internet-connected things (such as sensors, actuators, embedded devices, or smart appliances) and the Amazon Web Services cloud. It implements a broker for applications and things to publish messages over HTTP (Publish) and retrieve, update, and delete shadows. A shadow is a persistent representation of your things and their state in the Amazon Web Services cloud.</p> <p>Find the endpoint address for actions in IoT data by running this CLI command:</p> <p> <code>aws iot describe-endpoint --endpoint-type iot:Data-ATS</code> </p> <p>The service name used by <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Amazon Web ServicesSignature Version 4</a> to sign requests is: <i>iotdevicegateway</i>.</p>"

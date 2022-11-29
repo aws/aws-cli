@@ -30,7 +30,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Associates the user to an EC2 instance to utilize user-based subscriptions.</p>",
+      "documentation":"<p>Associates the user to an EC2 instance to utilize user-based subscriptions.</p> <note> <p>Your estimated bill for charges on the number of users and related costs will take 48 hours to appear for billing periods that haven't closed (marked as <b>Pending</b> billing status) in Amazon Web Services Billing. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/invoice.html\">Viewing your monthly charges</a> in the <i>Amazon Web Services Billing User Guide</i>.</p> </note>",
       "idempotent":true
     },
     "DeregisterIdentityProvider":{
@@ -194,7 +194,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Starts a product subscription for a user with the specified identity provider.</p>"
+      "documentation":"<p>Starts a product subscription for a user with the specified identity provider.</p> <note> <p>Your estimated bill for charges on the number of users and related costs will take 48 hours to appear for billing periods that haven't closed (marked as <b>Pending</b> billing status) in Amazon Web Services Billing. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/invoice.html\">Viewing your monthly charges</a> in the <i>Amazon Web Services Billing User Guide</i>.</p> </note>"
     },
     "StopProductSubscription":{
       "name":"StopProductSubscription",
@@ -215,6 +215,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Stops a product subscription for a user with the specified identity provider.</p>"
+    },
+    "UpdateIdentityProviderSettings":{
+      "name":"UpdateIdentityProviderSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identity-provider/UpdateIdentityProviderSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIdentityProviderSettingsRequest"},
+      "output":{"shape":"UpdateIdentityProviderSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates additional product configuration settings for the registered identity provider.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -386,6 +404,7 @@
       "required":[
         "IdentityProvider",
         "Product",
+        "Settings",
         "Status"
       ],
       "members":{
@@ -400,6 +419,10 @@
         "Product":{
           "shape":"String",
           "documentation":"<p>The name of the user-based subscription product.</p>"
+        },
+        "Settings":{
+          "shape":"Settings",
+          "documentation":"<p>An object that details the registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints.</p>"
         },
         "Status":{
           "shape":"String",
@@ -707,6 +730,10 @@
         "Product":{
           "shape":"String",
           "documentation":"<p>The name of the user-based subscription product.</p>"
+        },
+        "Settings":{
+          "shape":"Settings",
+          "documentation":"<p>The registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints.</p>"
         }
       }
     },
@@ -732,6 +759,12 @@
       },
       "exception":true
     },
+    "SecurityGroup":{
+      "type":"string",
+      "max":200,
+      "min":5,
+      "pattern":"^sg-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -739,6 +772,29 @@
       },
       "documentation":"<p>The request failed because a service quota is exceeded.</p>",
       "exception":true
+    },
+    "Settings":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupId",
+        "Subnets"
+      ],
+      "members":{
+        "SecurityGroupId":{
+          "shape":"SecurityGroup",
+          "documentation":"<p>A security group ID that allows inbound TCP port 1688 communication between resources in your VPC and the VPC endpoint for activation servers.</p>"
+        },
+        "Subnets":{
+          "shape":"SettingsSubnetsList",
+          "documentation":"<p>The subnets defined for the registered identity provider.</p>"
+        }
+      },
+      "documentation":"<p>The registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints, and the security group ID that is associated with the VPC endpoints. The security group should permit inbound TCP port 1688 communication from resources in the VPC.</p>"
+    },
+    "SettingsSubnetsList":{
+      "type":"list",
+      "member":{"shape":"Subnet"},
+      "min":1
     },
     "StartProductSubscriptionRequest":{
       "type":"structure",
@@ -817,6 +873,14 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "Subnet":{
+      "type":"string",
+      "pattern":"subnet-[a-z0-9]{8,17}"
+    },
+    "Subnets":{
+      "type":"list",
+      "member":{"shape":"Subnet"}
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -824,6 +888,54 @@
       },
       "documentation":"<p>The request was denied because of request throttling. Retry the request.</p>",
       "exception":true
+    },
+    "UpdateIdentityProviderSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "IdentityProvider",
+        "Product",
+        "UpdateSettings"
+      ],
+      "members":{
+        "IdentityProvider":{"shape":"IdentityProvider"},
+        "Product":{
+          "shape":"String",
+          "documentation":"<p>The name of the user-based subscription product.</p>"
+        },
+        "UpdateSettings":{
+          "shape":"UpdateSettings",
+          "documentation":"<p>Updates the registered identity provider’s product related configuration settings. You can update any combination of settings in a single operation such as the:</p> <ul> <li> <p>Subnets which you want to add to provision VPC endpoints.</p> </li> <li> <p>Subnets which you want to remove the VPC endpoints from.</p> </li> <li> <p>Security group ID which permits traffic to the VPC endpoints.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateIdentityProviderSettingsResponse":{
+      "type":"structure",
+      "required":["IdentityProviderSummary"],
+      "members":{
+        "IdentityProviderSummary":{"shape":"IdentityProviderSummary"}
+      }
+    },
+    "UpdateSettings":{
+      "type":"structure",
+      "required":[
+        "AddSubnets",
+        "RemoveSubnets"
+      ],
+      "members":{
+        "AddSubnets":{
+          "shape":"Subnets",
+          "documentation":"<p>The ID of one or more subnets in which License Manager will create a VPC endpoint for products that require connectivity to activation servers.</p>"
+        },
+        "RemoveSubnets":{
+          "shape":"Subnets",
+          "documentation":"<p>The ID of one or more subnets to remove.</p>"
+        },
+        "SecurityGroupId":{
+          "shape":"SecurityGroup",
+          "documentation":"<p>A security group ID that allows inbound TCP port 1688 communication between resources in your VPC and the VPC endpoints for activation servers.</p>"
+        }
+      },
+      "documentation":"<p>Updates the registered identity provider’s product related configuration settings such as the subnets to provision VPC endpoints.</p>"
     },
     "ValidationException":{
       "type":"structure",

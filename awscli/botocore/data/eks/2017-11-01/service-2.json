@@ -239,7 +239,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Describes the Kubernetes versions that the add-on can be used with.</p>"
+      "documentation":"<p>Describes the versions for an add-on. Information such as the Kubernetes versions that you can use the add-on with, the <code>owner</code>, <code>publisher</code>, and the <code>type</code> of the add-on are returned. </p>"
     },
     "DescribeCluster":{
       "name":"DescribeCluster",
@@ -658,6 +658,18 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The metadata that you apply to the add-on to assist with categorization and organization. Each tag consists of a key and an optional value. You define both. Add-on tags do not propagate to any other resources associated with the cluster. </p>"
+        },
+        "publisher":{
+          "shape":"String",
+          "documentation":"<p>The publisher of the add-on.</p>"
+        },
+        "owner":{
+          "shape":"String",
+          "documentation":"<p>The owner of the add-on.</p>"
+        },
+        "marketplaceInformation":{
+          "shape":"MarketplaceInformation",
+          "documentation":"<p>Information about an Amazon EKS add-on from the Amazon Web Services Marketplace.</p>"
         }
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -686,6 +698,18 @@
         "addonVersions":{
           "shape":"AddonVersionInfoList",
           "documentation":"<p>An object representing information about available add-on versions and compatible Kubernetes versions.</p>"
+        },
+        "publisher":{
+          "shape":"String",
+          "documentation":"<p>The publisher of the add-on.</p>"
+        },
+        "owner":{
+          "shape":"String",
+          "documentation":"<p>The owner of the add-on.</p>"
+        },
+        "marketplaceInformation":{
+          "shape":"MarketplaceInformation",
+          "documentation":"<p>Information about the add-on from the Amazon Web Services Marketplace.</p>"
         }
       },
       "documentation":"<p>Information about an add-on.</p>"
@@ -752,6 +776,10 @@
         "compatibilities":{
           "shape":"Compatibilities",
           "documentation":"<p>An object representing the compatibilities of a version.</p>"
+        },
+        "requiresConfiguration":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the add-on requires configuration.</p>"
         }
       },
       "documentation":"<p>Information about an add-on version.</p>"
@@ -1138,7 +1166,7 @@
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
         }
       },
-      "documentation":"<p>The placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i> </p>"
+      "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i> </p>"
     },
     "ControlPlanePlacementResponse":{
       "type":"structure",
@@ -1148,7 +1176,7 @@
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances.</p>"
         }
       },
-      "documentation":"<p>The placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+      "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "CreateAddonRequest":{
       "type":"structure",
@@ -1422,7 +1450,7 @@
         },
         "preserve":{
           "shape":"Boolean",
-          "documentation":"<p>Specifying this option preserves the add-on software on your cluster but Amazon EKS stops managing any settings for the add-on. If an IAM account is associated with the add-on, it is not removed.</p>",
+          "documentation":"<p>Specifying this option preserves the add-on software on your cluster but Amazon EKS stops managing any settings for the add-on. If an IAM account is associated with the add-on, it isn't removed.</p>",
           "location":"querystring",
           "locationName":"preserve"
         }
@@ -1565,7 +1593,7 @@
       "members":{
         "kubernetesVersion":{
           "shape":"String",
-          "documentation":"<p>The Kubernetes versions that the add-on can be used with.</p>",
+          "documentation":"<p>The Kubernetes versions that you can use the add-on with.</p>",
           "location":"querystring",
           "locationName":"kubernetesVersion"
         },
@@ -1586,6 +1614,24 @@
           "documentation":"<p>The name of the add-on. The name must match one of the names returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html\"> <code>ListAddons</code> </a>.</p>",
           "location":"querystring",
           "locationName":"addonName"
+        },
+        "types":{
+          "shape":"StringList",
+          "documentation":"<p>The type of the add-on. For valid <code>types</code>, don't specify a value for this property.</p>",
+          "location":"querystring",
+          "locationName":"types"
+        },
+        "publishers":{
+          "shape":"StringList",
+          "documentation":"<p>The publisher of the add-on. For valid <code>publishers</code>, don't specify a value for this property.</p>",
+          "location":"querystring",
+          "locationName":"publishers"
+        },
+        "owners":{
+          "shape":"StringList",
+          "documentation":"<p>The owner of the add-on. For valid <code>owners</code>, don't specify a value for this property.</p>",
+          "location":"querystring",
+          "locationName":"owners"
         }
       }
     },
@@ -1600,7 +1646,7 @@
       "members":{
         "addons":{
           "shape":"Addons",
-          "documentation":"<p>The list of available versions with Kubernetes version compatibility.</p>"
+          "documentation":"<p>The list of available versions with Kubernetes version compatibility and other properties.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -2053,11 +2099,11 @@
       "members":{
         "serviceIpv4Cidr":{
           "shape":"String",
-          "documentation":"<p>Don't specify a value if you select <code>ipv6</code> for <b>ipFamily</b>. The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. The block must meet the following requirements:</p> <ul> <li> <p>Within one of the following private IP address blocks: 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16.</p> </li> <li> <p>Doesn't overlap with any CIDR block assigned to the VPC that you selected for VPC.</p> </li> <li> <p>Between /24 and /12.</p> </li> </ul> <important> <p>You can only specify a custom CIDR block when you create a cluster and can't change this value once the cluster is created.</p> </important>"
+          "documentation":"<p>Don't specify a value if you select <code>ipv6</code> for <b>ipFamily</b>. The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the <code>10.100.0.0/16</code> or <code>172.20.0.0/16</code> CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. The block must meet the following requirements:</p> <ul> <li> <p>Within one of the following private IP address blocks: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, or <code>192.168.0.0/16</code>.</p> </li> <li> <p>Doesn't overlap with any CIDR block assigned to the VPC that you selected for VPC.</p> </li> <li> <p>Between /24 and /12.</p> </li> </ul> <important> <p>You can only specify a custom CIDR block when you create a cluster and can't change this value once the cluster is created.</p> </important>"
         },
         "ipFamily":{
           "shape":"IpFamily",
-          "documentation":"<p>Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, <code>ipv4</code> is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify <code>ipv6</code>, the VPC and subnets that you specify for cluster creation must have both IPv4 and IPv6 CIDR blocks assigned to them. You can't specify <code>ipv6</code> for clusters in China Regions.</p> <p>You can only specify <code>ipv6</code> for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on. If you specify <code>ipv6</code>, then ensure that your VPC meets the requirements listed in the considerations listed in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html\">Assigning IPv6 addresses to pods and services</a> in the Amazon EKS User Guide. Kubernetes assigns services IPv6 addresses from the unique local address range (fc00::/7). You can't specify a custom IPv6 CIDR block. Pod addresses are assigned from the subnet's IPv6 CIDR.</p>"
+          "documentation":"<p>Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, <code>ipv4</code> is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify <code>ipv6</code>, the VPC and subnets that you specify for cluster creation must have both <code>IPv4</code> and <code>IPv6</code> CIDR blocks assigned to them. You can't specify <code>ipv6</code> for clusters in China Regions.</p> <p>You can only specify <code>ipv6</code> for <code>1.21</code> and later clusters that use version <code>1.10.1</code> or later of the Amazon VPC CNI add-on. If you specify <code>ipv6</code>, then ensure that your VPC meets the requirements listed in the considerations listed in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html\">Assigning IPv6 addresses to pods and services</a> in the Amazon EKS User Guide. Kubernetes assigns services <code>IPv6</code> addresses from the unique local address range <code>(fc00::/7)</code>. You can't specify a custom <code>IPv6</code> CIDR block. Pod addresses are assigned from the subnet's <code>IPv6</code> CIDR.</p>"
         }
       },
       "documentation":"<p>The Kubernetes network configuration for the cluster.</p>"
@@ -2424,6 +2470,20 @@
       },
       "documentation":"<p>An object representing the logging configuration for resources in your cluster.</p>"
     },
+    "MarketplaceInformation":{
+      "type":"structure",
+      "members":{
+        "productId":{
+          "shape":"String",
+          "documentation":"<p>The product ID from the Amazon Web Services Marketplace.</p>"
+        },
+        "productUrl":{
+          "shape":"String",
+          "documentation":"<p>The product URL from the Amazon Web Services Marketplace.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Amazon EKS add-on from the Amazon Web Services Marketplace.</p>"
+    },
     "Nodegroup":{
       "type":"structure",
       "members":{
@@ -2752,7 +2812,7 @@
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementRequest",
-          "documentation":"<p>An object representing the placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+          "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html\">Creating a local cluster on an Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -2774,7 +2834,7 @@
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementResponse",
-          "documentation":"<p>An object representing the placement configuration for all the control plane instance of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+          "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -3383,7 +3443,7 @@
         },
         "removeTaints":{
           "shape":"taintsList",
-          "documentation":"<p>Kubernetes taints to be removed.</p>"
+          "documentation":"<p>Kubernetes taints to remove.</p>"
         }
       },
       "documentation":"<p>An object representing the details of an update to a taints payload. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/node-taints-managed-node-groups.html\">Node taints on managed node groups</a>.</p>"

@@ -29,7 +29,7 @@
         {"shape":"AccessPointLimitExceeded"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html\">Mounting a file system using EFS access points</a>.</p> <p>This operation requires permissions for the <code>elasticfilesystem:CreateAccessPoint</code> action.</p>"
+      "documentation":"<p>Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html\">Mounting a file system using EFS access points</a>.</p> <note> <p>If multiple requests to create access points on the same file system are sent in quick succession, and the file system is near the limit of 120 access points, you may experience a throttling response for these requests. This is to ensure that the file system does not exceed the stated access point limit.</p> </note> <p>This operation requires permissions for the <code>elasticfilesystem:CreateAccessPoint</code> action.</p>"
     },
     "CreateFileSystem":{
       "name":"CreateFileSystem",
@@ -750,7 +750,7 @@
         },
         "ThroughputMode":{
           "shape":"ThroughputMode",
-          "documentation":"<p>Specifies the throughput mode for the file system, either <code>bursting</code> or <code>provisioned</code>. If you set <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>. After you create the file system, you can decrease your file system's throughput in Provisioned Throughput mode or change between the throughput modes, as long as it’s been more than 24 hours since the last decrease or throughput mode change. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/performance.html#provisioned-throughput\">Specifying throughput with provisioned mode</a> in the <i>Amazon EFS User Guide</i>. </p> <p>Default is <code>bursting</code>.</p>"
+          "documentation":"<p>Specifies the throughput mode for the file system. The mode can be <code>bursting</code>, <code>provisioned</code>, or <code>elastic</code>. If you set <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>. After you create the file system, you can decrease your file system's throughput in Provisioned Throughput mode or change between the throughput modes, with certain time restrictions. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/performance.html#provisioned-throughput\">Specifying throughput with provisioned mode</a> in the <i>Amazon EFS User Guide</i>. </p> <p>Default is <code>bursting</code>.</p>"
         },
         "ProvisionedThroughputInMibps":{
           "shape":"ProvisionedThroughputInMibps",
@@ -2216,7 +2216,7 @@
         "ErrorCode":{"shape":"ErrorCode"},
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Returned when the <code>CreateAccessPoint</code> API action is called too quickly and the number of Access Points in the account is nearing the limit of 120.</p>",
+      "documentation":"<p>Returned when the <code>CreateAccessPoint</code> API action is called too quickly and the number of Access Points on the file system is nearing the <a href=\"https://docs.aws.amazon.com/efs/latest/ug/limits.html#limits-efs-resources-per-account-per-region\">limit of 120</a>.</p>",
       "error":{"httpStatusCode":429},
       "exception":true
     },
@@ -2235,7 +2235,8 @@
       "type":"string",
       "enum":[
         "bursting",
-        "provisioned"
+        "provisioned",
+        "elastic"
       ]
     },
     "Timestamp":{"type":"timestamp"},
@@ -2264,7 +2265,8 @@
         "AFTER_14_DAYS",
         "AFTER_30_DAYS",
         "AFTER_60_DAYS",
-        "AFTER_90_DAYS"
+        "AFTER_90_DAYS",
+        "AFTER_1_DAY"
       ]
     },
     "TransitionToPrimaryStorageClassRules":{

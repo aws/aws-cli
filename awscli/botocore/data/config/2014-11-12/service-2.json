@@ -355,7 +355,8 @@
       "output":{"shape":"DescribeConfigRulesResponse"},
       "errors":[
         {"shape":"NoSuchConfigRuleException"},
-        {"shape":"InvalidNextTokenException"}
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidParameterValueException"}
       ],
       "documentation":"<p>Returns details about your Config rules.</p>"
     },
@@ -730,7 +731,7 @@
       "errors":[
         {"shape":"InvalidParameterValueException"}
       ],
-      "documentation":"<p>Returns the evaluation results for the specified Amazon Web Services resource. The results indicate which Config rules were used to evaluate the resource, when each rule was last used, and whether the resource complies with each rule.</p>"
+      "documentation":"<p>Returns the evaluation results for the specified Amazon Web Services resource. The results indicate which Config rules were used to evaluate the resource, when each rule was last invoked, and whether the resource complies with each rule.</p>"
     },
     "GetComplianceSummaryByConfigRule":{
       "name":"GetComplianceSummaryByConfigRule",
@@ -878,6 +879,19 @@
       ],
       "documentation":"<p>Returns a list of <code>ConfigurationItems</code> for the specified resource. The list contains details about each state of the resource during the specified time interval. If you specified a retention period to retain your <code>ConfigurationItems</code> between a minimum of 30 days and a maximum of 7 years (2557 days), Config returns the <code>ConfigurationItems</code> for the specified retention period. </p> <p>The response is paginated. By default, Config returns a limit of 10 configuration items per page. You can customize this number with the <code>limit</code> parameter. The response includes a <code>nextToken</code> string. To get the next page of results, run the request again and specify the string for the <code>nextToken</code> parameter.</p> <note> <p>Each call to the API is limited to span a duration of seven days. It is likely that the number of records returned is smaller than the specified <code>limit</code>. In such cases, you can make another call, using the <code>nextToken</code>.</p> </note>"
     },
+    "GetResourceEvaluationSummary":{
+      "name":"GetResourceEvaluationSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourceEvaluationSummaryRequest"},
+      "output":{"shape":"GetResourceEvaluationSummaryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a summary of resource evaluation for the specified resource evaluation ID from the proactive rules that were run. The results indicate which evaluation context was used to evaluate the rules, which resource details were evaluated, the evaluation mode that was run, and whether the resource details comply with the configuration of the proactive rules. </p>"
+    },
     "GetStoredQuery":{
       "name":"GetStoredQuery",
       "http":{
@@ -938,6 +952,21 @@
         {"shape":"NoAvailableConfigurationRecorderException"}
       ],
       "documentation":"<p>Accepts a resource type and returns a list of resource identifiers for the resources of that type. A resource identifier includes the resource type, ID, and (if available) the custom resource name. The results consist of resources that Config has discovered, including those that Config is not currently recording. You can narrow the results to include only resources that have specific resource IDs or a resource name.</p> <note> <p>You can specify either resource IDs or a resource name, but not both, in the same request.</p> </note> <p>The response is paginated. By default, Config lists 100 resource identifiers on each page. You can customize this number with the <code>limit</code> parameter. The response includes a <code>nextToken</code> string. To get the next page of results, run the request again and specify the string for the <code>nextToken</code> parameter.</p>"
+    },
+    "ListResourceEvaluations":{
+      "name":"ListResourceEvaluations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceEvaluationsRequest"},
+      "output":{"shape":"ListResourceEvaluationsResponse"},
+      "errors":[
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidTimeRangeException"}
+      ],
+      "documentation":"<p>Returns a list of proactive resource evaluations.</p>"
     },
     "ListStoredQueries":{
       "name":"ListStoredQueries",
@@ -1162,7 +1191,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InsufficientPermissionsException"}
       ],
-      "documentation":"<p>A remediation exception is when a specific resource is no longer considered for auto-remediation. This API adds a new exception or updates an existing exception for a specific resource with a specific Config rule. </p> <note> <p>Config generates a remediation exception when a problem occurs executing a remediation action to a specific resource. Remediation exceptions blocks auto-remediation until the exception is cleared.</p> </note>"
+      "documentation":"<p>A remediation exception is when a specific resource is no longer considered for auto-remediation. This API adds a new exception or updates an existing exception for a specific resource with a specific Config rule. </p> <note> <p>Config generates a remediation exception when a problem occurs executing a remediation action to a specific resource. Remediation exceptions blocks auto-remediation until the exception is cleared.</p> </note> <note> <p>To place an exception on an Amazon Web Services resource, ensure remediation is set as manual remediation.</p> </note>"
     },
     "PutResourceConfig":{
       "name":"PutResourceConfig",
@@ -1282,6 +1311,20 @@
         {"shape":"NoSuchRemediationConfigurationException"}
       ],
       "documentation":"<p>Runs an on-demand remediation for the specified Config rules against the last known remediation configuration. It runs an execution against the current state of your resources. Remediation execution is asynchronous.</p> <p>You can specify up to 100 resource keys per request. An existing StartRemediationExecution call for the specified resource keys must complete before you can call the API again.</p>"
+    },
+    "StartResourceEvaluation":{
+      "name":"StartResourceEvaluation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartResourceEvaluationRequest"},
+      "output":{"shape":"StartResourceEvaluationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"IdempotentParameterMismatch"}
+      ],
+      "documentation":"<p>Runs an on-demand evaluation for the specified resource to determine whether the resource details will comply with configured Config rules. You can also use it for evaluation purposes. Config recommends using an evaluation context. It runs an execution against the resource details with all of the Config rules in your account that match with the specified proactive mode and resource type.</p> <note> <p>Ensure you have the <code>cloudformation:DescribeType</code> role setup to validate the resource type schema. </p> </note>"
     },
     "StopConfigurationRecorder":{
       "name":"StopConfigurationRecorder",
@@ -1851,6 +1894,11 @@
         "Forward"
       ]
     },
+    "ClientToken":{
+      "type":"string",
+      "max":256,
+      "min":64
+    },
     "Compliance":{
       "type":"structure",
       "members":{
@@ -2050,6 +2098,10 @@
         "CreatedBy":{
           "shape":"StringWithCharLimit256",
           "documentation":"<p>Service principal name of the service that created the rule.</p> <note> <p>The field is populated only if the service-linked rule is created by a service. The field is empty if you create your own rule.</p> </note>"
+        },
+        "EvaluationModes":{
+          "shape":"EvaluationModes",
+          "documentation":"<p>The modes the Config rule can be evaluated in. The valid values are distinct objects. By default, the value is Detective evaluation mode only.</p>"
         }
       },
       "documentation":"<p>Config rules evaluate the configuration settings of your Amazon Web Services resources. A rule can run when Config detects a configuration change to an Amazon Web Services resource or at a periodic frequency that you choose (for example, every 24 hours). There are two types of rules: Config Managed Rules and Config Custom Rules. Managed rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>.</p> <p>Custom rules are rules that you can create using either Guard or Lambda functions. Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>) is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. Lambda uses custom code that you upload to evaluate a custom rule. It is invoked by events that are published to it by an event source, which Config invokes when the custom rule is initiated.</p> <p>For more information about developing and using Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html\">Evaluating Amazon Web Services resource Configurations with Config</a> in the <i>Config Developer Guide</i>.</p> <note> <p>You can use the Amazon Web Services CLI and Amazon Web Services SDKs if you want to create a rule that triggers evaluations for your resources when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> </note>"
@@ -3353,6 +3405,16 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeConfigRulesFilters":{
+      "type":"structure",
+      "members":{
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>The mode of an evaluation. The valid values are Detective or Proactive.</p>"
+        }
+      },
+      "documentation":"<p>Returns a filtered list of Detective or Proactive Config rules. By default, if the filter is not defined, this API returns an unfiltered list.</p>"
+    },
     "DescribeConfigRulesRequest":{
       "type":"structure",
       "members":{
@@ -3363,6 +3425,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        },
+        "Filters":{
+          "shape":"DescribeConfigRulesFilters",
+          "documentation":"<p>Returns a list of Detecive or Proactive Config rules. By default, this API returns an unfiltered list.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3943,6 +4009,42 @@
       },
       "documentation":"<p>Identifies an Amazon Web Services resource and indicates whether it complies with the Config rule that it was evaluated against.</p>"
     },
+    "EvaluationContext":{
+      "type":"structure",
+      "members":{
+        "EvaluationContextIdentifier":{
+          "shape":"EvaluationContextIdentifier",
+          "documentation":"<p>A unique EvaluationContextIdentifier ID for an EvaluationContext.</p>"
+        }
+      },
+      "documentation":"<p>Use EvaluationContext to group independently initiated proactive resource evaluations. For example, CFN Stack. If you want to check just a resource definition, you do not need to provide evaluation context.</p>"
+    },
+    "EvaluationContextIdentifier":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "EvaluationMode":{
+      "type":"string",
+      "enum":[
+        "DETECTIVE",
+        "PROACTIVE"
+      ]
+    },
+    "EvaluationModeConfiguration":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>The mode of an evaluation. The valid values are Detective or Proactive.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object for Config rule evaluation mode. The Supported valid values are Detective or Proactive.</p>"
+    },
+    "EvaluationModes":{
+      "type":"list",
+      "member":{"shape":"EvaluationModeConfiguration"}
+    },
     "EvaluationResult":{
       "type":"structure",
       "members":{
@@ -3983,6 +4085,10 @@
         "OrderingTimestamp":{
           "shape":"Date",
           "documentation":"<p>The time of the event that triggered the evaluation of your Amazon Web Services resources. The time can indicate when Config delivered a configuration item change notification, or it can indicate when Config delivered the configuration snapshot, depending on which event triggered the evaluation.</p>"
+        },
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>A Unique ID for an evaluation result.</p>"
         }
       },
       "documentation":"<p>Uniquely identifies an evaluation result.</p>"
@@ -4001,6 +4107,10 @@
         "ResourceId":{
           "shape":"BaseResourceId",
           "documentation":"<p>The ID of the evaluated Amazon Web Services resource.</p>"
+        },
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>The mode of an evaluation. The valid values are Detective or Proactive.</p>"
         }
       },
       "documentation":"<p>Identifies an Config rule that evaluated an Amazon Web Services resource, and provides the type and ID of the resource that the rule evaluated.</p>"
@@ -4008,6 +4118,26 @@
     "EvaluationResults":{
       "type":"list",
       "member":{"shape":"EvaluationResult"}
+    },
+    "EvaluationStatus":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"ResourceEvaluationStatus",
+          "documentation":"<p>The status of an execution. The valid values are In_Progress, Succeeded or Failed. </p>"
+        },
+        "FailureReason":{
+          "shape":"StringWithCharLimit1024",
+          "documentation":"<p>An explanation for failed execution status.</p>"
+        }
+      },
+      "documentation":"<p>Returns status details of an evaluation.</p>"
+    },
+    "EvaluationTimeout":{
+      "type":"integer",
+      "max":3600,
+      "min":0
     },
     "Evaluations":{
       "type":"list",
@@ -4392,10 +4522,6 @@
     },
     "GetComplianceDetailsByResourceRequest":{
       "type":"structure",
-      "required":[
-        "ResourceType",
-        "ResourceId"
-      ],
       "members":{
         "ResourceType":{
           "shape":"StringWithCharLimit256",
@@ -4412,6 +4538,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        },
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>The unique ID of Amazon Web Services resource execution for which you want to retrieve evaluation results. </p> <note> <p>You need to only provide either a <code>ResourceEvaluationID</code> or a <code>ResourceID </code>and <code>ResourceType</code>.</p> </note>"
         }
       },
       "documentation":"<p/>"
@@ -4729,6 +4859,49 @@
       },
       "documentation":"<p>The output for the <a>GetResourceConfigHistory</a> action.</p>"
     },
+    "GetResourceEvaluationSummaryRequest":{
+      "type":"structure",
+      "required":["ResourceEvaluationId"],
+      "members":{
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.</p>"
+        }
+      }
+    },
+    "GetResourceEvaluationSummaryResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>The unique <code>ResourceEvaluationId</code> of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.</p>"
+        },
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>Lists results of the mode that you requested to retrieve the resource evaluation summary. The valid values are Detective or Proactive.</p>"
+        },
+        "EvaluationStatus":{
+          "shape":"EvaluationStatus",
+          "documentation":"<p>Returns an <code>EvaluationStatus</code> object.</p>"
+        },
+        "EvaluationStartTimestamp":{
+          "shape":"Date",
+          "documentation":"<p>The start timestamp when Config rule starts evaluating compliance for the provided resource details.</p>"
+        },
+        "Compliance":{
+          "shape":"ComplianceType",
+          "documentation":"<p>The compliance status of the resource evaluation summary.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"EvaluationContext",
+          "documentation":"<p>Returns an <code>EvaluationContext</code> object.</p>"
+        },
+        "ResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>Returns a <code>ResourceDetails</code> object.</p>"
+        }
+      }
+    },
     "GetStoredQueryRequest":{
       "type":"structure",
       "required":["QueryName"],
@@ -4774,6 +4947,14 @@
     "GroupedResourceCountList":{
       "type":"list",
       "member":{"shape":"GroupedResourceCount"}
+    },
+    "IdempotentParameterMismatch":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>Using the same client token with one or more different parameters. Specify a new client token with the parameter changes and try again.</p>",
+      "exception":true
     },
     "IncludeGlobalResourceTypes":{"type":"boolean"},
     "InsufficientDeliveryPolicyException":{
@@ -5028,6 +5209,41 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "ListResourceEvaluationsPageItemLimit":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "ListResourceEvaluationsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"ResourceEvaluationFilters",
+          "documentation":"<p>Returns a <code>ResourceEvaluationFilters</code> object.</p>"
+        },
+        "Limit":{
+          "shape":"ListResourceEvaluationsPageItemLimit",
+          "documentation":"<p>The maximum number of evaluations returned on each page. The default is 10. You cannot specify a number greater than 100. If you specify 0, Config uses the default.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        }
+      }
+    },
+    "ListResourceEvaluationsResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceEvaluations":{
+          "shape":"ResourceEvaluations",
+          "documentation":"<p>Returns a <code>ResourceEvaluations</code> object.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        }
+      }
     },
     "ListStoredQueriesRequest":{
       "type":"structure",
@@ -6385,7 +6601,7 @@
           "documentation":"<p>A comma-separated list that specifies the types of Amazon Web Services resources for which Config records configuration changes (for example, <code>AWS::EC2::Instance</code> or <code>AWS::CloudTrail::Trail</code>).</p> <p>To record all configuration changes, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set this option to <code>false</code>, when Config adds support for a new type of resource, it will not record resources of that type unless you manually add that type to your recording group.</p> <p>For a list of valid <code>resourceTypes</code> values, see the <b>resourceType Value</b> column in <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Amazon Web Services resource Types</a>.</p>"
         }
       },
-      "documentation":"<p>Specifies the types of Amazon Web Services resource for which Config records configuration changes.</p> <p>In the recording group, you specify whether all supported types or specific types of resources are recorded.</p> <p>By default, Config records configuration changes for all supported types of regional resources that Config discovers in the region in which it is running. Regional resources are tied to a region and can be used only in that region. Examples of regional resources are EC2 instances and EBS volumes.</p> <p>You can also have Config record configuration changes for supported types of global resources (for example, IAM resources). Global resources are not tied to an individual region and can be used in all regions.</p> <important> <p>The configuration details for any global resource are the same in all regions. If you customize Config in multiple regions to record global resources, it will create multiple configuration items each time a global resource changes: one configuration item for each region. These configuration items will contain identical data. To prevent duplicate configuration items, you should consider customizing Config in only one region to record global resources, unless you want the configuration items to be available in multiple regions.</p> </important> <p>If you don't want Config to record all resources, you can specify which types of resources it will record with the <code>resourceTypes</code> parameter.</p> <p>For a list of supported resource types, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Resource Types</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html\">Selecting Which Resources Config Records</a>.</p>"
+      "documentation":"<p>Specifies which Amazon Web Services resource types Config records for configuration changes. In the recording group, you specify whether you want to record all supported resource types or only specific types of resources.</p> <p>By default, Config records the configuration changes for all supported types of <i>regional resources</i> that Config discovers in the region in which it is running. Regional resources are tied to a region and can be used only in that region. Examples of regional resources are EC2 instances and EBS volumes.</p> <p>You can also have Config record supported types of <i>global resources</i>. Global resources are not tied to a specific region and can be used in all regions. The global resource types that Config supports include IAM users, groups, roles, and customer managed policies.</p> <important> <p>Global resource types onboarded to Config recording after February 2022 will only be recorded in the service's home region for the commercial partition and Amazon Web Services GovCloud (US) West for the GovCloud partition. You can view the Configuration Items for these new global resource types only in their home region and Amazon Web Services GovCloud (US) West.</p> <p>Supported global resource types onboarded before February 2022 such as <code>AWS::IAM::Group</code>, <code>AWS::IAM::Policy</code>, <code>AWS::IAM::Role</code>, <code>AWS::IAM::User</code> remain unchanged, and they will continue to deliver Configuration Items in all supported regions in Config. The change will only affect new global resource types onboarded after February 2022.</p> <p>To record global resource types onboarded after February 2022, enable All Supported Resource Types in the home region of the global resource type you want to record.</p> </important> <p>If you don't want Config to record all resources, you can specify which types of resources it will record with the <code>resourceTypes</code> parameter.</p> <p>For a list of supported resource types, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Resource Types</a>.</p> <p>For more information and a table of the Home Regions for Global Resource Types Onboarded after February 2022, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html\">Selecting Which Resources Config Records</a>.</p>"
     },
     "ReevaluateConfigRuleNames":{
       "type":"list",
@@ -6661,6 +6877,15 @@
       "documentation":"<p>Two users are trying to modify the same query at the same time. Wait for a moment and try again.</p>",
       "exception":true
     },
+    "ResourceConfiguration":{
+      "type":"string",
+      "max":51200,
+      "min":1
+    },
+    "ResourceConfigurationSchemaType":{
+      "type":"string",
+      "enum":["CFN_RESOURCE_SCHEMA"]
+    },
     "ResourceCount":{
       "type":"structure",
       "members":{
@@ -6707,6 +6932,86 @@
     },
     "ResourceCreationTime":{"type":"timestamp"},
     "ResourceDeletionTime":{"type":"timestamp"},
+    "ResourceDetails":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "ResourceType",
+        "ResourceConfiguration"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"BaseResourceId",
+          "documentation":"<p>A unique resource ID for an evaluation.</p>"
+        },
+        "ResourceType":{
+          "shape":"StringWithCharLimit256",
+          "documentation":"<p>The type of resource being evaluated.</p>"
+        },
+        "ResourceConfiguration":{
+          "shape":"ResourceConfiguration",
+          "documentation":"<p>The resource definition to be evaluated as per the resource configuration schema type.</p>"
+        },
+        "ResourceConfigurationSchemaType":{
+          "shape":"ResourceConfigurationSchemaType",
+          "documentation":"<p>The schema type of the resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the resource being evaluated. </p>"
+    },
+    "ResourceEvaluation":{
+      "type":"structure",
+      "members":{
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>The ResourceEvaluationId of a evaluation.</p>"
+        },
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>The mode of an evaluation. The valid values are Detective or Proactive.</p>"
+        },
+        "EvaluationStartTimestamp":{
+          "shape":"Date",
+          "documentation":"<p>The starting time of an execution.</p>"
+        }
+      },
+      "documentation":"<p>Returns details of a resource evaluation.</p>"
+    },
+    "ResourceEvaluationFilters":{
+      "type":"structure",
+      "members":{
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>Filters all resource evaluations results based on an evaluation mode. the valid value for this API is <code>Proactive</code>.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>Returns a <code>TimeWindow</code> object.</p>"
+        },
+        "EvaluationContextIdentifier":{
+          "shape":"EvaluationContextIdentifier",
+          "documentation":"<p>Filters evaluations for a given infrastructure deployment. For example: CFN Stack.</p>"
+        }
+      },
+      "documentation":"<p>Returns details of a resource evaluation based on the selected filter.</p>"
+    },
+    "ResourceEvaluationId":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ResourceEvaluationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
+    "ResourceEvaluations":{
+      "type":"list",
+      "member":{"shape":"ResourceEvaluation"}
+    },
     "ResourceFilters":{
       "type":"structure",
       "members":{
@@ -7317,6 +7622,44 @@
         }
       }
     },
+    "StartResourceEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceDetails",
+        "EvaluationMode"
+      ],
+      "members":{
+        "ResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>Returns a <code>ResourceDetails</code> object.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"EvaluationContext",
+          "documentation":"<p>Returns an <code>EvaluationContext</code> object.</p>"
+        },
+        "EvaluationMode":{
+          "shape":"EvaluationMode",
+          "documentation":"<p>The mode of an evaluation. The valid value for this API is <code>Proactive</code>.</p>"
+        },
+        "EvaluationTimeout":{
+          "shape":"EvaluationTimeout",
+          "documentation":"<p>The timeout for an evaluation. The default is 900 seconds. You cannot specify a number greater than 3600. If you specify 0, Config uses the default.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A client token is a unique, case-sensitive string of up to 64 ASCII characters. To make an idempotent API request using one of these actions, specify a client token in the request.</p> <note> <p>Avoid reusing the same client token for other API requests. If you retry a request that completed successfully using the same client token and the same parameters, the retry succeeds without performing any further actions. If you retry a successful request using the same client token, but one or more of the parameters are different, other than the Region or Availability Zone, the retry fails with an IdempotentParameterMismatch error.</p> </note>"
+        }
+      }
+    },
+    "StartResourceEvaluationResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceEvaluationId":{
+          "shape":"ResourceEvaluationId",
+          "documentation":"<p>A unique ResourceEvaluationId that is associated with a single execution.</p>"
+        }
+      }
+    },
     "StaticParameterValues":{
       "type":"list",
       "member":{"shape":"StringWithCharLimit256"},
@@ -7553,6 +7896,20 @@
         }
       },
       "documentation":"<p>This API allows you to create a conformance pack template with an Amazon Web Services Systems Manager document (SSM document). To deploy a conformance pack using an SSM document, first create an SSM document with conformance pack content, and then provide the <code>DocumentName</code> in the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html\">PutConformancePack API</a>. You can also provide the <code>DocumentVersion</code>.</p> <p>The <code>TemplateSSMDocumentDetails</code> object contains the name of the SSM document and the version of the SSM document.</p>"
+    },
+    "TimeWindow":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Date",
+          "documentation":"<p>The start time of an execution.</p>"
+        },
+        "EndTime":{
+          "shape":"Date",
+          "documentation":"<p>The end time of an execution. The end time must be after the start date.</p>"
+        }
+      },
+      "documentation":"<p>Filters evaluation results based on start and end times.</p>"
     },
     "TooManyTagsException":{
       "type":"structure",

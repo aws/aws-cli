@@ -575,7 +575,7 @@
       "name":"GetMultiRegionAccessPoint",
       "http":{
         "method":"GET",
-        "requestUri":"/v20180820/mrap/instances/{name}"
+        "requestUri":"/v20180820/mrap/instances/{name+}"
       },
       "input":{"shape":"GetMultiRegionAccessPointRequest"},
       "output":{"shape":"GetMultiRegionAccessPointResult"},
@@ -592,7 +592,7 @@
       "name":"GetMultiRegionAccessPointPolicy",
       "http":{
         "method":"GET",
-        "requestUri":"/v20180820/mrap/instances/{name}/policy"
+        "requestUri":"/v20180820/mrap/instances/{name+}/policy"
       },
       "input":{"shape":"GetMultiRegionAccessPointPolicyRequest"},
       "output":{"shape":"GetMultiRegionAccessPointPolicyResult"},
@@ -609,11 +609,28 @@
       "name":"GetMultiRegionAccessPointPolicyStatus",
       "http":{
         "method":"GET",
-        "requestUri":"/v20180820/mrap/instances/{name}/policystatus"
+        "requestUri":"/v20180820/mrap/instances/{name+}/policystatus"
       },
       "input":{"shape":"GetMultiRegionAccessPointPolicyStatusRequest"},
       "output":{"shape":"GetMultiRegionAccessPointPolicyStatusResult"},
       "documentation":"<p>Indicates whether the specified Multi-Region Access Point has an access control policy that allows public access.</p> <p>This action will always be routed to the US West (Oregon) Region. For more information about the restrictions around managing Multi-Region Access Points, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManagingMultiRegionAccessPoints.html\">Managing Multi-Region Access Points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>The following actions are related to <code>GetMultiRegionAccessPointPolicyStatus</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetMultiRegionAccessPointPolicy.html\">GetMultiRegionAccessPointPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutMultiRegionAccessPointPolicy.html\">PutMultiRegionAccessPointPolicy</a> </p> </li> </ul>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "httpChecksumRequired":true,
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "GetMultiRegionAccessPointRoutes":{
+      "name":"GetMultiRegionAccessPointRoutes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20180820/mrap/instances/{mrap+}/routes"
+      },
+      "input":{"shape":"GetMultiRegionAccessPointRoutesRequest"},
+      "output":{"shape":"GetMultiRegionAccessPointRoutesResult"},
+      "documentation":"<p>Returns the routing configuration for a Multi-Region Access Point, indicating which Regions are active or passive.</p> <p>To obtain routing control changes and failover requests, use the Amazon S3 failover control infrastructure endpoints in these five Amazon Web Services Regions:</p> <ul> <li> <p> <code>us-east-1</code> </p> </li> <li> <p> <code>us-west-2</code> </p> </li> <li> <p> <code>ap-southeast-2</code> </p> </li> <li> <p> <code>ap-northeast-1</code> </p> </li> <li> <p> <code>eu-west-1</code> </p> </li> </ul> <note> <p>Your Amazon S3 bucket does not need to be in these five Regions.</p> </note>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -994,6 +1011,27 @@
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "SubmitMultiRegionAccessPointRoutes":{
+      "name":"SubmitMultiRegionAccessPointRoutes",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v20180820/mrap/instances/{mrap+}/routes"
+      },
+      "input":{
+        "shape":"SubmitMultiRegionAccessPointRoutesRequest",
+        "locationName":"SubmitMultiRegionAccessPointRoutesRequest",
+        "xmlNamespace":{"uri":"http://awss3control.amazonaws.com/doc/2018-08-20/"}
+      },
+      "output":{"shape":"SubmitMultiRegionAccessPointRoutesResult"},
+      "documentation":"<p>Submits an updated route configuration for a Multi-Region Access Point. This API operation updates the routing status for the specified Regions from active to passive, or from passive to active. A value of <code>0</code> indicates a passive status, which means that traffic won't be routed to the specified Region. A value of <code>100</code> indicates an active status, which means that traffic will be routed to the specified Region. At least one Region must be active at all times.</p> <p>When the routing configuration is changed, any in-progress operations (uploads, copies, deletes, and so on) to formerly active Regions will continue to run to their final completion state (success or failure). The routing configurations of any Regions that aren’t specified remain unchanged.</p> <note> <p>Updated routing configurations might not be immediately applied. It can take up to 2 minutes for your changes to take effect.</p> </note> <p>To submit routing control changes and failover requests, use the Amazon S3 failover control infrastructure endpoints in these five Amazon Web Services Regions:</p> <ul> <li> <p> <code>us-east-1</code> </p> </li> <li> <p> <code>us-west-2</code> </p> </li> <li> <p> <code>ap-southeast-2</code> </p> </li> <li> <p> <code>ap-northeast-1</code> </p> </li> <li> <p> <code>eu-west-1</code> </p> </li> </ul> <note> <p>Your Amazon S3 bucket does not need to be in these five Regions.</p> </note>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "httpChecksumRequired":true,
       "staticContextParams":{
         "RequiresAccountId":{"value":true}
       }
@@ -2760,6 +2798,42 @@
         }
       }
     },
+    "GetMultiRegionAccessPointRoutesRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "Mrap"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the Multi-Region Access Point.</p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "Mrap":{
+          "shape":"MultiRegionAccessPointId",
+          "documentation":"<p>The Multi-Region Access Point ARN.</p>",
+          "location":"uri",
+          "locationName":"mrap"
+        }
+      }
+    },
+    "GetMultiRegionAccessPointRoutesResult":{
+      "type":"structure",
+      "members":{
+        "Mrap":{
+          "shape":"MultiRegionAccessPointId",
+          "documentation":"<p>The Multi-Region Access Point ARN.</p>"
+        },
+        "Routes":{
+          "shape":"RouteList",
+          "documentation":"<p>The different routes that make up the route configuration. Active routes return a value of <code>100</code>, and passive routes return a value of <code>0</code>.</p>"
+        }
+      }
+    },
     "GetPublicAccessBlockOutput":{
       "type":"structure",
       "members":{
@@ -3842,6 +3916,11 @@
       "max":64,
       "pattern":"\\S+"
     },
+    "MultiRegionAccessPointId":{
+      "type":"string",
+      "max":200,
+      "pattern":"^[a-zA-Z0-9\\:.-]{3,200}$"
+    },
     "MultiRegionAccessPointName":{
       "type":"string",
       "max":50,
@@ -3915,6 +3994,25 @@
         "shape":"MultiRegionAccessPointReport",
         "locationName":"AccessPoint"
       }
+    },
+    "MultiRegionAccessPointRoute":{
+      "type":"structure",
+      "required":["TrafficDialPercentage"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p>The name of the Amazon S3 bucket for which you'll submit a routing configuration change. Either the <code>Bucket</code> or the <code>Region</code> value must be provided. If both are provided, the bucket must be in the specified Region.</p>"
+        },
+        "Region":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region to which you'll be submitting a routing configuration change. Either the <code>Bucket</code> or the <code>Region</code> value must be provided. If both are provided, the bucket must be in the specified Region.</p>"
+        },
+        "TrafficDialPercentage":{
+          "shape":"TrafficDialPercentage",
+          "documentation":"<p>The traffic state for the specified bucket or Amazon Web Services Region. </p> <p>A value of <code>0</code> indicates a passive state, which means that no new traffic will be routed to the Region. </p> <p>A value of <code>100</code> indicates an active state, which means that traffic will be routed to the specified Region. </p> <p>When the routing configuration for a Region is changed from active to passive, any in-progress operations (uploads, copies, deletes, and so on) to the formerly active Region will continue to run to until a final success or failure status is reached.</p> <p>If all Regions in the routing configuration are designated as passive, you'll receive an <code>InvalidRequest</code> error. </p>"
+        }
+      },
+      "documentation":"<p>A structure for a Multi-Region Access Point that indicates where Amazon S3 traffic can be routed. Routes can be either active or passive. Active routes can process Amazon S3 requests through the Multi-Region Access Point, but passive routes are not eligible to process Amazon S3 requests. </p> <p>Each route contains the Amazon S3 bucket name and the Amazon Web Services Region that the bucket is located in. The route also includes the <code>TrafficDialPercentage</code> value, which shows whether the bucket and Region are active (indicated by a value of <code>100</code>) or passive (indicated by a value of <code>0</code>).</p>"
     },
     "MultiRegionAccessPointStatus":{
       "type":"string",
@@ -4757,6 +4855,13 @@
         "Ready"
       ]
     },
+    "RouteList":{
+      "type":"list",
+      "member":{
+        "shape":"MultiRegionAccessPointRoute",
+        "locationName":"Route"
+      }
+    },
     "S3AWSRegion":{
       "type":"string",
       "max":30,
@@ -5534,6 +5639,39 @@
       "min":1,
       "pattern":"^[A-Za-z0-9\\+\\:\\/\\=\\?\\#-_]+$"
     },
+    "SubmitMultiRegionAccessPointRoutesRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "Mrap",
+        "RouteUpdates"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the Multi-Region Access Point.</p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "Mrap":{
+          "shape":"MultiRegionAccessPointId",
+          "documentation":"<p>The Multi-Region Access Point ARN.</p>",
+          "location":"uri",
+          "locationName":"mrap"
+        },
+        "RouteUpdates":{
+          "shape":"RouteList",
+          "documentation":"<p>The different routes that make up the new route configuration. Active routes return a value of <code>100</code>, and passive routes return a value of <code>0</code>.</p>"
+        }
+      }
+    },
+    "SubmitMultiRegionAccessPointRoutesResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "SuspendedCause":{
       "type":"string",
       "max":1024,
@@ -5578,6 +5716,11 @@
       },
       "documentation":"<p>Amazon S3 throws this exception if you have too many tags in your tag set.</p>",
       "exception":true
+    },
+    "TrafficDialPercentage":{
+      "type":"integer",
+      "max":100,
+      "min":0
     },
     "Transition":{
       "type":"structure",

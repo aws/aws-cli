@@ -846,7 +846,9 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get the position information for a given resource.</p>"
+      "documentation":"<p>Get the position information for a given resource.</p> <important> <p>This action is no longer supported. Calls to retrieve the position information should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p> </important>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "GetPositionConfiguration":{
       "name":"GetPositionConfiguration",
@@ -864,7 +866,26 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get position configuration for a given resource.</p>"
+      "documentation":"<p>Get position configuration for a given resource.</p> <important> <p>This action is no longer supported. Calls to retrieve the position configuration should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p> </important>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
+    },
+    "GetPositionEstimate":{
+      "name":"GetPositionEstimate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/position-estimate"
+      },
+      "input":{"shape":"GetPositionEstimateRequest"},
+      "output":{"shape":"GetPositionEstimateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get estimated position information as a payload in GeoJSON format. The payload measurement data is resolved using solvers that are provided by third-party vendors.</p>"
     },
     "GetResourceEventConfiguration":{
       "name":"GetResourceEventConfiguration",
@@ -900,6 +921,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Fetches the log-level override, if any, for a given resource-ID and resource-type. It can be used for a wireless device or a wireless gateway.</p>"
+    },
+    "GetResourcePosition":{
+      "name":"GetResourcePosition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resource-positions/{ResourceIdentifier}"
+      },
+      "input":{"shape":"GetResourcePositionRequest"},
+      "output":{"shape":"GetResourcePositionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get the position information for a given wireless device or a wireless gateway resource. The postion information uses the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
     },
     "GetServiceEndpoint":{
       "name":"GetServiceEndpoint",
@@ -1216,7 +1254,9 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List position configurations for a given resource, such as positioning solvers.</p>"
+      "documentation":"<p>List position configurations for a given resource, such as positioning solvers.</p> <important> <p>This action is no longer supported. Calls to retrieve position information should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_GetResourcePosition.html\">GetResourcePosition</a> API operation instead.</p> </important>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "ListQueuedMessages":{
       "name":"ListQueuedMessages",
@@ -1332,7 +1372,9 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Put position configuration for a given resource.</p>"
+      "documentation":"<p>Put position configuration for a given resource.</p> <important> <p>This action is no longer supported. Calls to update the position configuration should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p> </important>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "PutResourceLogLevel":{
       "name":"PutResourceLogLevel",
@@ -1695,7 +1737,9 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update the position information of a resource.</p>"
+      "documentation":"<p>Update the position information of a resource.</p> <important> <p>This action is no longer supported. Calls to update the position information should use the <a href=\"https://docs.aws.amazon.com/iot-wireless/2020-11-22/apireference/API_UpdateResourcePosition.html\">UpdateResourcePosition</a> API operation instead.</p> </important>",
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "UpdateResourceEventConfiguration":{
       "name":"UpdateResourceEventConfiguration",
@@ -1715,6 +1759,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Update the event configuration for a particular resource identifier.</p>"
+    },
+    "UpdateResourcePosition":{
+      "name":"UpdateResourcePosition",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/resource-positions/{ResourceIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateResourcePositionRequest"},
+      "output":{"shape":"UpdateResourcePositionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the position information of a given wireless device or a wireless gateway resource. The postion coordinates are based on the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
     },
     "UpdateWirelessDevice":{
       "name":"UpdateWirelessDevice",
@@ -1805,11 +1867,11 @@
       "members":{
         "HorizontalAccuracy":{
           "shape":"HorizontalAccuracy",
-          "documentation":"<p>The horizontal accuracy of the estimated position in meters.</p>"
+          "documentation":"<p>The horizontal accuracy of the estimated position, which is the difference between the estimated location and the actual device location.</p>"
         },
         "VerticalAccuracy":{
           "shape":"VerticalAccuracy",
-          "documentation":"<p>The vertical accuracy of the estimated position in meters.</p>"
+          "documentation":"<p>The vertical accuracy of the estimated position, which is the difference between the estimated altitude and actual device latitude in meters.</p>"
         }
       },
       "documentation":"<p>The accuracy of the estimated position in meters. An empty value indicates that no position data is available. A value of ‘0.0’ value indicates that position data is available. This data corresponds to the position information that you specified instead of the position computed by solver.</p>"
@@ -1848,6 +1910,35 @@
       "min":1,
       "pattern":"[a-fA-F0-9]{64}",
       "sensitive":true
+    },
+    "ApplicationConfig":{
+      "type":"structure",
+      "members":{
+        "FPort":{"shape":"FPort"},
+        "Type":{
+          "shape":"ApplicationConfigType",
+          "documentation":"<p>Application type, which can be specified to obtain real-time position information of your LoRaWAN device.</p>"
+        },
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.</p>"
+        }
+      },
+      "documentation":"<p>LoRaWAN application configuration, which can be used to perform geolocation.</p>"
+    },
+    "ApplicationConfigType":{
+      "type":"string",
+      "enum":["SemtechGeolocation"]
+    },
+    "Applications":{
+      "type":"list",
+      "member":{"shape":"ApplicationConfig"}
+    },
+    "AssistPosition":{
+      "type":"list",
+      "member":{"shape":"Coordinate"},
+      "max":2,
+      "min":2
     },
     "AssociateAwsAccountWithPartnerAccountRequest":{
       "type":"structure",
@@ -2018,6 +2109,31 @@
       }
     },
     "AutoCreateTasks":{"type":"boolean"},
+    "BCCH":{
+      "type":"integer",
+      "max":1023,
+      "min":0
+    },
+    "BSIC":{
+      "type":"integer",
+      "max":63,
+      "min":0
+    },
+    "BaseLat":{
+      "type":"float",
+      "max":90,
+      "min":-90
+    },
+    "BaseLng":{
+      "type":"float",
+      "max":180,
+      "min":-180
+    },
+    "BaseStationId":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
     "BatteryLevel":{
       "type":"string",
       "documentation":"<p>Sidewalk device battery level.</p>",
@@ -2072,6 +2188,146 @@
       "type":"structure",
       "members":{
       }
+    },
+    "CaptureTimeAccuracy":{"type":"float"},
+    "CdmaChannel":{
+      "type":"integer",
+      "max":4095,
+      "min":0
+    },
+    "CdmaList":{
+      "type":"list",
+      "member":{"shape":"CdmaObj"},
+      "max":16,
+      "min":1
+    },
+    "CdmaLocalId":{
+      "type":"structure",
+      "required":[
+        "PnOffset",
+        "CdmaChannel"
+      ],
+      "members":{
+        "PnOffset":{
+          "shape":"PnOffset",
+          "documentation":"<p>Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.</p>"
+        },
+        "CdmaChannel":{
+          "shape":"CdmaChannel",
+          "documentation":"<p>CDMA channel information.</p>"
+        }
+      },
+      "documentation":"<p>CDMA local ID information, which corresponds to the local identification parameters of a CDMA cell.</p>"
+    },
+    "CdmaNmrList":{
+      "type":"list",
+      "member":{"shape":"CdmaNmrObj"},
+      "max":32,
+      "min":1
+    },
+    "CdmaNmrObj":{
+      "type":"structure",
+      "required":[
+        "PnOffset",
+        "CdmaChannel"
+      ],
+      "members":{
+        "PnOffset":{
+          "shape":"PnOffset",
+          "documentation":"<p>Pseudo-noise offset, which is a characteristic of the signal from a cell on a radio tower.</p>"
+        },
+        "CdmaChannel":{
+          "shape":"CdmaChannel",
+          "documentation":"<p>CDMA channel information.</p>"
+        },
+        "PilotPower":{
+          "shape":"PilotPower",
+          "documentation":"<p>Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "BaseStationId":{
+          "shape":"BaseStationId",
+          "documentation":"<p>CDMA base station ID (BSID).</p>"
+        }
+      },
+      "documentation":"<p>CDMA object for network measurement reports.</p>"
+    },
+    "CdmaObj":{
+      "type":"structure",
+      "required":[
+        "SystemId",
+        "NetworkId",
+        "BaseStationId"
+      ],
+      "members":{
+        "SystemId":{
+          "shape":"SystemId",
+          "documentation":"<p>CDMA system ID (SID).</p>"
+        },
+        "NetworkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>CDMA network ID (NID).</p>"
+        },
+        "BaseStationId":{
+          "shape":"BaseStationId",
+          "documentation":"<p>CDMA base station ID (BSID).</p>"
+        },
+        "RegistrationZone":{
+          "shape":"RegistrationZone",
+          "documentation":"<p>CDMA registration zone (RZ).</p>"
+        },
+        "CdmaLocalId":{
+          "shape":"CdmaLocalId",
+          "documentation":"<p>CDMA local identification (local ID) parameters.</p>"
+        },
+        "PilotPower":{
+          "shape":"PilotPower",
+          "documentation":"<p>Transmit power level of the pilot signal, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "BaseLat":{
+          "shape":"BaseLat",
+          "documentation":"<p>CDMA base station latitude in degrees.</p>"
+        },
+        "BaseLng":{
+          "shape":"BaseLng",
+          "documentation":"<p>CDMA base station longtitude in degrees.</p>"
+        },
+        "CdmaNmr":{
+          "shape":"CdmaNmrList",
+          "documentation":"<p>CDMA network measurement reports.</p>"
+        }
+      },
+      "documentation":"<p>CDMA (Code-division multiple access) object.</p>"
+    },
+    "CellParams":{
+      "type":"integer",
+      "max":127,
+      "min":0
+    },
+    "CellTowers":{
+      "type":"structure",
+      "members":{
+        "Gsm":{
+          "shape":"GsmList",
+          "documentation":"<p>GSM object information.</p>"
+        },
+        "Wcdma":{
+          "shape":"WcdmaList",
+          "documentation":"<p>WCDMA object information.</p>"
+        },
+        "Tdscdma":{
+          "shape":"TdscdmaList",
+          "documentation":"<p>TD-SCDMA object information.</p>"
+        },
+        "Lte":{
+          "shape":"LteList",
+          "documentation":"<p>LTE object information.</p>"
+        },
+        "Cdma":{
+          "shape":"CdmaList",
+          "documentation":"<p>CDMA object information.</p>"
+        }
+      },
+      "documentation":"<p>The cell towers that were used to perform the measurements.</p>"
     },
     "CertificateList":{
       "type":"structure",
@@ -2172,6 +2428,7 @@
       },
       "documentation":"<p>Connection status resource type event configuration object for enabling or disabling topic.</p>"
     },
+    "Coordinate":{"type":"float"},
     "Crc":{
       "type":"long",
       "max":4294967295,
@@ -2418,6 +2675,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to attach to the new wireless device. Tags are metadata that you can use to manage a resource.</p>"
+        },
+        "Positioning":{
+          "shape":"PositioningConfigStatus",
+          "documentation":"<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning information.</p>"
         }
       }
     },
@@ -2550,6 +2811,7 @@
       "type":"timestamp",
       "documentation":"<p>Created at timestamp for the resource.</p>"
     },
+    "CreationDate":{"type":"timestamp"},
     "DeleteDestinationRequest":{
       "type":"structure",
       "required":["Name"],
@@ -3118,10 +3380,20 @@
       "max":15,
       "min":0
     },
+    "EARFCN":{
+      "type":"integer",
+      "max":262143,
+      "min":0
+    },
     "EndPoint":{
       "type":"string",
       "max":256,
       "min":1
+    },
+    "EutranCid":{
+      "type":"integer",
+      "max":268435455,
+      "min":0
     },
     "Event":{
       "type":"string",
@@ -3238,6 +3510,10 @@
         "Positioning":{
           "shape":"Positioning",
           "documentation":"<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning information.</p>"
+        },
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>Optional LoRaWAN application information, which can be used for geolocation.</p>"
         }
       },
       "documentation":"<p>List of FPort assigned for different LoRaWAN application packages to use</p>"
@@ -3324,6 +3600,7 @@
         "Delete_Waiting"
       ]
     },
+    "GPST":{"type":"float"},
     "GatewayEui":{
       "type":"string",
       "pattern":"^(([0-9A-Fa-f]{2}-){7}|([0-9A-Fa-f]{2}:){7}|([0-9A-Fa-f]{2}\\s){7}|([0-9A-Fa-f]{2}){7})([0-9A-Fa-f]{2})$"
@@ -3353,6 +3630,12 @@
     "GenAppKey":{
       "type":"string",
       "pattern":"[a-fA-F0-9]{32}"
+    },
+    "GeoJsonPayload":{"type":"blob"},
+    "GeranCid":{
+      "type":"integer",
+      "max":65535,
+      "min":0
     },
     "GetDestinationRequest":{
       "type":"structure",
@@ -3620,7 +3903,9 @@
           "location":"querystring",
           "locationName":"resourceType"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "GetPositionConfigurationResponse":{
       "type":"structure",
@@ -3633,7 +3918,44 @@
           "shape":"DestinationName",
           "documentation":"<p>The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.</p>"
         }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
+    },
+    "GetPositionEstimateRequest":{
+      "type":"structure",
+      "members":{
+        "WiFiAccessPoints":{
+          "shape":"WiFiAccessPoints",
+          "documentation":"<p>Retrieves an estimated device position by resolving WLAN measurement data. The position is resolved using HERE's Wi-Fi based solver.</p>"
+        },
+        "CellTowers":{
+          "shape":"CellTowers",
+          "documentation":"<p>Retrieves an estimated device position by resolving measurement data from cellular radio towers. The position is resolved using HERE's cellular-based solver.</p>"
+        },
+        "Ip":{
+          "shape":"Ip",
+          "documentation":"<p>Retrieves an estimated device position by resolving the IP address information from the device. The position is resolved using MaxMind's IP-based solver.</p>"
+        },
+        "Gnss":{
+          "shape":"Gnss",
+          "documentation":"<p>Retrieves an estimated device position by resolving the global navigation satellite system (GNSS) scan data. The position is resolved using the GNSS solver powered by LoRa Cloud.</p>"
+        },
+        "Timestamp":{
+          "shape":"CreationDate",
+          "documentation":"<p>Optional information that specifies the time when the position information will be resolved. It uses the UNIX timestamp format. If not specified, the time at which the request was received will be used.</p>"
+        }
       }
+    },
+    "GetPositionEstimateResponse":{
+      "type":"structure",
+      "members":{
+        "GeoJsonPayload":{
+          "shape":"GeoJsonPayload",
+          "documentation":"<p>The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see <a href=\"https://geojson.org/\">GeoJSON</a>.</p>"
+        }
+      },
+      "payload":"GeoJsonPayload"
     },
     "GetPositionRequest":{
       "type":"structure",
@@ -3654,7 +3976,9 @@
           "location":"querystring",
           "locationName":"resourceType"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "GetPositionResponse":{
       "type":"structure",
@@ -3683,7 +4007,9 @@
           "shape":"ISODateTimeString",
           "documentation":"<p>The timestamp at which the device's position was determined.</p>"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "GetResourceEventConfigurationRequest":{
       "type":"structure",
@@ -3762,6 +4088,37 @@
       "members":{
         "LogLevel":{"shape":"LogLevel"}
       }
+    },
+    "GetResourcePositionRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceIdentifier",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceIdentifier":{
+          "shape":"PositionResourceIdentifier",
+          "documentation":"<p>The identifier of the resource for which position information is retrieved. It can be the wireless device ID or the wireless gateway ID depending on the resource type.</p>",
+          "location":"uri",
+          "locationName":"ResourceIdentifier"
+        },
+        "ResourceType":{
+          "shape":"PositionResourceType",
+          "documentation":"<p>The type of resource for which position information is retrieved, which can be a wireless device or a wireless gateway.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        }
+      }
+    },
+    "GetResourcePositionResponse":{
+      "type":"structure",
+      "members":{
+        "GeoJsonPayload":{
+          "shape":"GeoJsonPayload",
+          "documentation":"<p>The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see <a href=\"https://geojson.org/\">GeoJSON</a>.</p>"
+        }
+      },
+      "payload":"GeoJsonPayload"
     },
     "GetServiceEndpointRequest":{
       "type":"structure",
@@ -3887,6 +4244,10 @@
         "Sidewalk":{
           "shape":"SidewalkDevice",
           "documentation":"<p>Sidewalk device object.</p>"
+        },
+        "Positioning":{
+          "shape":"PositioningConfigStatus",
+          "documentation":"<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning information.</p>"
         }
       }
     },
@@ -4122,11 +4483,170 @@
         }
       }
     },
+    "GlobalIdentity":{
+      "type":"structure",
+      "required":[
+        "Lac",
+        "GeranCid"
+      ],
+      "members":{
+        "Lac":{
+          "shape":"LAC",
+          "documentation":"<p>Location area code of the global identity.</p>"
+        },
+        "GeranCid":{
+          "shape":"GeranCid",
+          "documentation":"<p>GERAN (GSM EDGE Radio Access Network) cell global identifier.</p>"
+        }
+      },
+      "documentation":"<p>Global identity information.</p>"
+    },
+    "Gnss":{
+      "type":"structure",
+      "required":["Payload"],
+      "members":{
+        "Payload":{
+          "shape":"GnssNav",
+          "documentation":"<p>Payload that contains the GNSS scan result, or NAV message, in hexadecimal notation.</p>"
+        },
+        "CaptureTime":{
+          "shape":"GPST",
+          "documentation":"<p>Optional parameter that gives an estimate of the time when the GNSS scan information is taken, in seconds GPS time (GPST). If capture time is not specified, the local server time is used.</p>"
+        },
+        "CaptureTimeAccuracy":{
+          "shape":"CaptureTimeAccuracy",
+          "documentation":"<p>Optional value that gives the capture time estimate accuracy, in seconds. If capture time accuracy is not specified, default value of 300 is used.</p>"
+        },
+        "AssistPosition":{
+          "shape":"AssistPosition",
+          "documentation":"<p>Optional assistance position information, specified using latitude and longitude values in degrees. The co-ordinates are inside the WGS84 reference frame.</p>"
+        },
+        "AssistAltitude":{
+          "shape":"Coordinate",
+          "documentation":"<p>Optional assistance altitude, which is the altitude of the device at capture time, specified in meters above the WGS84 reference ellipsoid.</p>"
+        },
+        "Use2DSolver":{
+          "shape":"Use2DSolver",
+          "documentation":"<p>Optional parameter that forces 2D solve, which modifies the positioning algorithm to a 2D solution problem. When this parameter is specified, the assistance altitude should have an accuracy of at least 10 meters.</p>"
+        }
+      },
+      "documentation":"<p>Global navigation satellite system (GNSS) object used for positioning.</p>"
+    },
+    "GnssNav":{
+      "type":"string",
+      "max":2048
+    },
+    "GsmList":{
+      "type":"list",
+      "member":{"shape":"GsmObj"},
+      "max":16,
+      "min":1
+    },
+    "GsmLocalId":{
+      "type":"structure",
+      "required":[
+        "Bsic",
+        "Bcch"
+      ],
+      "members":{
+        "Bsic":{
+          "shape":"BSIC",
+          "documentation":"<p>GSM base station identity code (BSIC).</p>"
+        },
+        "Bcch":{
+          "shape":"BCCH",
+          "documentation":"<p>GSM broadcast control channel.</p>"
+        }
+      },
+      "documentation":"<p>GSM local ID information, which corresponds to the local identification parameters of a GSM cell.</p>"
+    },
+    "GsmNmrList":{
+      "type":"list",
+      "member":{"shape":"GsmNmrObj"},
+      "max":32,
+      "min":1
+    },
+    "GsmNmrObj":{
+      "type":"structure",
+      "required":[
+        "Bsic",
+        "Bcch"
+      ],
+      "members":{
+        "Bsic":{
+          "shape":"BSIC",
+          "documentation":"<p>GSM base station identity code (BSIC).</p>"
+        },
+        "Bcch":{
+          "shape":"BCCH",
+          "documentation":"<p>GSM broadcast control channel.</p>"
+        },
+        "RxLevel":{
+          "shape":"RxLevel",
+          "documentation":"<p>Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "GlobalIdentity":{
+          "shape":"GlobalIdentity",
+          "documentation":"<p>Global identity information of the GSM object.</p>"
+        }
+      },
+      "documentation":"<p>GSM object for network measurement reports.</p>"
+    },
+    "GsmObj":{
+      "type":"structure",
+      "required":[
+        "Mcc",
+        "Mnc",
+        "Lac",
+        "GeranCid"
+      ],
+      "members":{
+        "Mcc":{
+          "shape":"MCC",
+          "documentation":"<p>Mobile Country Code.</p>"
+        },
+        "Mnc":{
+          "shape":"MNC",
+          "documentation":"<p>Mobile Network Code.</p>"
+        },
+        "Lac":{
+          "shape":"LAC",
+          "documentation":"<p>Location area code.</p>"
+        },
+        "GeranCid":{
+          "shape":"GeranCid",
+          "documentation":"<p>GERAN (GSM EDGE Radio Access Network) Cell Global Identifier.</p>"
+        },
+        "GsmLocalId":{
+          "shape":"GsmLocalId",
+          "documentation":"<p>GSM local identification (local ID) information.</p>"
+        },
+        "GsmTimingAdvance":{
+          "shape":"GsmTimingAdvance",
+          "documentation":"<p>Timing advance value, which corresponds to the length of time a signal takes to reach the base station from a mobile phone.</p>"
+        },
+        "RxLevel":{
+          "shape":"RxLevel",
+          "documentation":"<p>Rx level, which is the received signal power, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "GsmNmr":{
+          "shape":"GsmNmrList",
+          "documentation":"<p>GSM object for network measurement reports.</p>"
+        }
+      },
+      "documentation":"<p>GSM object.</p>"
+    },
+    "GsmTimingAdvance":{
+      "type":"integer",
+      "max":63,
+      "min":0
+    },
     "HorizontalAccuracy":{
       "type":"float",
       "min":0
     },
     "HrAllowed":{"type":"boolean"},
+    "IPAddress":{"type":"string"},
     "ISODateTimeString":{
       "type":"string",
       "pattern":"^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
@@ -4159,6 +4679,17 @@
       "type":"string",
       "max":4096,
       "min":1
+    },
+    "Ip":{
+      "type":"structure",
+      "required":["IpAddress"],
+      "members":{
+        "IpAddress":{
+          "shape":"IPAddress",
+          "documentation":"<p>IP address information.</p>"
+        }
+      },
+      "documentation":"<p>IP address used for resolving device location.</p>"
     },
     "JoinEui":{
       "type":"string",
@@ -4201,6 +4732,11 @@
         }
       },
       "documentation":"<p>Join resource type event configuration object for enabling or disabling topic.</p>"
+    },
+    "LAC":{
+      "type":"integer",
+      "max":65535,
+      "min":1
     },
     "ListDestinationsRequest":{
       "type":"structure",
@@ -4461,7 +4997,9 @@
           "location":"querystring",
           "locationName":"nextToken"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "ListPositionConfigurationsResponse":{
       "type":"structure",
@@ -4474,7 +5012,9 @@
           "shape":"NextToken",
           "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "ListQueuedMessagesRequest":{
       "type":"structure",
@@ -5207,6 +5747,139 @@
         "DISABLED"
       ]
     },
+    "LteList":{
+      "type":"list",
+      "member":{"shape":"LteObj"},
+      "max":16,
+      "min":1
+    },
+    "LteLocalId":{
+      "type":"structure",
+      "required":[
+        "Pci",
+        "Earfcn"
+      ],
+      "members":{
+        "Pci":{
+          "shape":"PCI",
+          "documentation":"<p>Physical cell ID.</p>"
+        },
+        "Earfcn":{
+          "shape":"EARFCN",
+          "documentation":"<p>Evolved universal terrestrial radio access (E-UTRA) absolute radio frequency channel number (FCN).</p>"
+        }
+      },
+      "documentation":"<p>LTE local identification (local ID) information.</p>"
+    },
+    "LteNmrList":{
+      "type":"list",
+      "member":{"shape":"LteNmrObj"},
+      "max":32,
+      "min":1
+    },
+    "LteNmrObj":{
+      "type":"structure",
+      "required":[
+        "Pci",
+        "Earfcn",
+        "EutranCid"
+      ],
+      "members":{
+        "Pci":{
+          "shape":"PCI",
+          "documentation":"<p>Physical cell ID.</p>"
+        },
+        "Earfcn":{
+          "shape":"EARFCN",
+          "documentation":"<p>E-UTRA (Evolved universal terrestrial Radio Access) absolute radio frequency channel Number (EARFCN).</p>"
+        },
+        "EutranCid":{
+          "shape":"EutranCid",
+          "documentation":"<p>E-UTRAN (Evolved Universal Terrestrial Radio Access Network) cell global identifier (EUTRANCID).</p>"
+        },
+        "Rsrp":{
+          "shape":"RSRP",
+          "documentation":"<p>Signal power of the reference signal received, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "Rsrq":{
+          "shape":"RSRQ",
+          "documentation":"<p>Signal quality of the reference Signal received, measured in decibels (dB).</p>"
+        }
+      },
+      "documentation":"<p>LTE object for network measurement reports.</p>"
+    },
+    "LteObj":{
+      "type":"structure",
+      "required":[
+        "Mcc",
+        "Mnc",
+        "EutranCid"
+      ],
+      "members":{
+        "Mcc":{
+          "shape":"MCC",
+          "documentation":"<p>Mobile Country Code.</p>"
+        },
+        "Mnc":{
+          "shape":"MNC",
+          "documentation":"<p>Mobile Network Code.</p>"
+        },
+        "EutranCid":{
+          "shape":"EutranCid",
+          "documentation":"<p>E-UTRAN (Evolved Universal Terrestrial Radio Access Network) Cell Global Identifier.</p>"
+        },
+        "Tac":{
+          "shape":"TAC",
+          "documentation":"<p>LTE tracking area code.</p>"
+        },
+        "LteLocalId":{
+          "shape":"LteLocalId",
+          "documentation":"<p>LTE local identification (local ID) information.</p>"
+        },
+        "LteTimingAdvance":{
+          "shape":"LteTimingAdvance",
+          "documentation":"<p>LTE timing advance.</p>"
+        },
+        "Rsrp":{
+          "shape":"RSRP",
+          "documentation":"<p>Signal power of the reference signal received, measured in dBm (decibel-milliwatts).</p>"
+        },
+        "Rsrq":{
+          "shape":"RSRQ",
+          "documentation":"<p>Signal quality of the reference Signal received, measured in decibels (dB).</p>"
+        },
+        "NrCapable":{
+          "shape":"NRCapable",
+          "documentation":"<p>Parameter that determines whether the LTE object is capable of supporting NR (new radio).</p>"
+        },
+        "LteNmr":{
+          "shape":"LteNmrList",
+          "documentation":"<p>LTE object for network measurement reports.</p>"
+        }
+      },
+      "documentation":"<p>LTE object.</p>"
+    },
+    "LteTimingAdvance":{
+      "type":"integer",
+      "max":1282,
+      "min":0
+    },
+    "MCC":{
+      "type":"integer",
+      "max":999,
+      "min":200
+    },
+    "MNC":{
+      "type":"integer",
+      "max":999,
+      "min":0
+    },
+    "MacAddress":{
+      "type":"string",
+      "max":17,
+      "min":12,
+      "pattern":"^([0-9A-Fa-f]{2}[:-]?){5}([0-9A-Fa-f]{2})$"
+    },
     "MacVersion":{
       "type":"string",
       "max":64
@@ -5243,7 +5916,7 @@
         "Sidewalk":{"shape":"SidewalkEventNotificationConfigurations"},
         "WirelessDeviceIdEventTopic":{
           "shape":"EventNotificationTopicStatus",
-          "documentation":"<p>Denotes whether the wireless device ID device registration state event topic is enabled or disabled.</p>"
+          "documentation":"<p>Denotes whether the wireless device ID message delivery status event topic is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>Message delivery status event configuration object for enabling and disabling relevant topics.</p>"
@@ -5338,6 +6011,7 @@
       },
       "documentation":"<p>Wireless metadata that is to be sent to multicast group.</p>"
     },
+    "NRCapable":{"type":"boolean"},
     "NetId":{
       "type":"string",
       "documentation":"<p>LoRaWAN network ID.</p>",
@@ -5375,6 +6049,11 @@
         "Name":{"shape":"NetworkAnalyzerConfigurationName"}
       },
       "documentation":"<p>Network analyzer configurations.</p>"
+    },
+    "NetworkId":{
+      "type":"integer",
+      "max":65535,
+      "min":0
     },
     "NextToken":{
       "type":"string",
@@ -5437,6 +6116,16 @@
       },
       "documentation":"<p>OTAA device object for v1.1</p>"
     },
+    "PCI":{
+      "type":"integer",
+      "max":503,
+      "min":0
+    },
+    "PSC":{
+      "type":"integer",
+      "max":511,
+      "min":0
+    },
     "PackageVersion":{
       "type":"string",
       "max":32,
@@ -5474,11 +6163,21 @@
       "type":"string",
       "enum":["Sidewalk"]
     },
+    "PathLoss":{
+      "type":"integer",
+      "max":158,
+      "min":46
+    },
     "PayloadData":{
       "type":"string",
       "documentation":"<p>The binary to be sent to the end device, encoded in base64.</p>",
       "max":2048,
       "pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+    },
+    "PilotPower":{
+      "type":"integer",
+      "max":-49,
+      "min":-142
     },
     "PingSlotDr":{
       "type":"integer",
@@ -5494,6 +6193,11 @@
       "type":"integer",
       "max":4096,
       "min":128
+    },
+    "PnOffset":{
+      "type":"integer",
+      "max":511,
+      "min":0
     },
     "PositionConfigurationFec":{
       "type":"string",
@@ -5593,6 +6297,13 @@
       },
       "documentation":"<p>The FPorts for the position information.</p>"
     },
+    "PositioningConfigStatus":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
     "PrAllowed":{"type":"boolean"},
     "PresetFreq":{
       "type":"integer",
@@ -5650,12 +6361,16 @@
           "shape":"DestinationName",
           "documentation":"<p>The position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN.</p>"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "PutPositionConfigurationResponse":{
       "type":"structure",
       "members":{
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "PutResourceLogLevelRequest":{
       "type":"structure",
@@ -5689,10 +6404,35 @@
       "documentation":"<p>Query string used to search for wireless devices as part of the bulk associate and disassociate process.</p>",
       "max":4096
     },
+    "RSCP":{
+      "type":"integer",
+      "max":-25,
+      "min":-120
+    },
+    "RSRP":{
+      "type":"integer",
+      "max":-44,
+      "min":-140
+    },
+    "RSRQ":{
+      "type":"float",
+      "max":-3,
+      "min":-19.5
+    },
+    "RSS":{
+      "type":"integer",
+      "max":0,
+      "min":-128
+    },
     "RaAllowed":{"type":"boolean"},
     "RegParamsRevision":{
       "type":"string",
       "max":64
+    },
+    "RegistrationZone":{
+      "type":"integer",
+      "max":4095,
+      "min":0
     },
     "ReportDevStatusBattery":{"type":"boolean"},
     "ReportDevStatusMargin":{"type":"boolean"},
@@ -5788,6 +6528,11 @@
       "type":"integer",
       "max":16700000,
       "min":1000000
+    },
+    "RxLevel":{
+      "type":"integer",
+      "max":-25,
+      "min":-110
     },
     "SNwkSIntKey":{
       "type":"string",
@@ -6111,7 +6856,7 @@
         "MessageType":{"shape":"MessageType"},
         "AckModeRetryDurationSecs":{
           "shape":"AckModeRetryDurationSecs",
-          "documentation":"<p>The duration of time in seconds for which you want to retry sending the ACK.</p>"
+          "documentation":"<p>The duration of time in seconds to retry sending the ACK.</p>"
         }
       },
       "documentation":"<p>Information about a Sidewalk router.</p>"
@@ -6244,6 +6989,16 @@
     "SupportsClassB":{"type":"boolean"},
     "SupportsClassC":{"type":"boolean"},
     "SupportsJoin":{"type":"boolean"},
+    "SystemId":{
+      "type":"integer",
+      "max":32767,
+      "min":1
+    },
+    "TAC":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -6314,6 +7069,118 @@
       "max":100,
       "min":0
     },
+    "TdscdmaList":{
+      "type":"list",
+      "member":{"shape":"TdscdmaObj"},
+      "max":16,
+      "min":1
+    },
+    "TdscdmaLocalId":{
+      "type":"structure",
+      "required":[
+        "Uarfcn",
+        "CellParams"
+      ],
+      "members":{
+        "Uarfcn":{
+          "shape":"UARFCN",
+          "documentation":"<p>TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number (UARFCN).</p>"
+        },
+        "CellParams":{
+          "shape":"CellParams",
+          "documentation":"<p>Cell parameters for TD-SCDMA.</p>"
+        }
+      },
+      "documentation":"<p>TD-SCDMA local identification (local Id) information.</p>"
+    },
+    "TdscdmaNmrList":{
+      "type":"list",
+      "member":{"shape":"TdscdmaNmrObj"},
+      "max":32,
+      "min":1
+    },
+    "TdscdmaNmrObj":{
+      "type":"structure",
+      "required":[
+        "Uarfcn",
+        "CellParams"
+      ],
+      "members":{
+        "Uarfcn":{
+          "shape":"UARFCN",
+          "documentation":"<p>TD-SCDMA UTRA (Universal Terrestrial Radio Access Network) absolute RF channel number.</p>"
+        },
+        "CellParams":{
+          "shape":"CellParams",
+          "documentation":"<p>Cell parameters for TD-SCDMA network measurement reports object.</p>"
+        },
+        "UtranCid":{
+          "shape":"UtranCid",
+          "documentation":"<p>UTRAN (UMTS Terrestrial Radio Access Network) cell global identifier.</p>"
+        },
+        "Rscp":{
+          "shape":"RSCP",
+          "documentation":"<p>Code power of the received signal, measured in decibel-milliwatts (dBm).</p>"
+        },
+        "PathLoss":{
+          "shape":"PathLoss",
+          "documentation":"<p>Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.</p>"
+        }
+      },
+      "documentation":"<p>TD-SCDMA object for network measurement reports.</p>"
+    },
+    "TdscdmaObj":{
+      "type":"structure",
+      "required":[
+        "Mcc",
+        "Mnc",
+        "UtranCid"
+      ],
+      "members":{
+        "Mcc":{
+          "shape":"MCC",
+          "documentation":"<p>Mobile Country Code.</p>"
+        },
+        "Mnc":{
+          "shape":"MNC",
+          "documentation":"<p>Mobile Network Code.</p>"
+        },
+        "Lac":{
+          "shape":"LAC",
+          "documentation":"<p>Location Area Code.</p>"
+        },
+        "UtranCid":{
+          "shape":"UtranCid",
+          "documentation":"<p>UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.</p>"
+        },
+        "TdscdmaLocalId":{
+          "shape":"TdscdmaLocalId",
+          "documentation":"<p>TD-SCDMA local identification (local ID) information.</p>"
+        },
+        "TdscdmaTimingAdvance":{
+          "shape":"TdscdmaTimingAdvance",
+          "documentation":"<p>TD-SCDMA Timing advance.</p>"
+        },
+        "Rscp":{
+          "shape":"RSCP",
+          "documentation":"<p>Signal power of the received signal (Received Signal Code Power), measured in decibel-milliwatts (dBm).</p>"
+        },
+        "PathLoss":{
+          "shape":"PathLoss",
+          "documentation":"<p>Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.</p>"
+        },
+        "TdscdmaNmr":{
+          "shape":"TdscdmaNmrList",
+          "documentation":"<p>TD-SCDMA object for network measurement reports.</p>"
+        }
+      },
+      "documentation":"<p>TD-SCDMA object.</p>"
+    },
+    "TdscdmaTimingAdvance":{
+      "type":"integer",
+      "max":1530,
+      "min":0
+    },
     "TestWirelessDeviceRequest":{
       "type":"structure",
       "required":["Id"],
@@ -6375,6 +7242,16 @@
     "TransmitMode":{
       "type":"integer",
       "max":1,
+      "min":0
+    },
+    "UARFCN":{
+      "type":"integer",
+      "max":16383,
+      "min":0
+    },
+    "UARFCNDL":{
+      "type":"integer",
+      "max":16383,
       "min":0
     },
     "UlBucketSize":{
@@ -6511,6 +7388,10 @@
         "Positioning":{
           "shape":"Positioning",
           "documentation":"<p>Positioning FPorts for the ClockSync, Stream, and GNSS functions.</p>"
+        },
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>LoRaWAN application, which can be used for geolocation by activating positioning.</p>"
         }
       },
       "documentation":"<p>Object for updating the FPorts information.</p>"
@@ -6657,12 +7538,16 @@
           "shape":"PositionCoordinate",
           "documentation":"<p>The position information of the resource.</p>"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "UpdatePositionResponse":{
       "type":"structure",
       "members":{
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"This operation is no longer supported."
     },
     "UpdateResourceEventConfigurationRequest":{
       "type":"structure",
@@ -6716,6 +7601,37 @@
       "members":{
       }
     },
+    "UpdateResourcePositionRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceIdentifier",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceIdentifier":{
+          "shape":"PositionResourceIdentifier",
+          "documentation":"<p>The identifier of the resource for which position information is updated. It can be the wireless device ID or the wireless gateway ID depending on the resource type.</p>",
+          "location":"uri",
+          "locationName":"ResourceIdentifier"
+        },
+        "ResourceType":{
+          "shape":"PositionResourceType",
+          "documentation":"<p>The type of resource for which position information is updated, which can be a wireless device or a wireless gateway.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "GeoJsonPayload":{
+          "shape":"GeoJsonPayload",
+          "documentation":"<p>The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see <a href=\"https://geojson.org/\">GeoJSON</a>.</p>"
+        }
+      },
+      "payload":"GeoJsonPayload"
+    },
+    "UpdateResourcePositionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateSignature":{
       "type":"string",
       "max":4096,
@@ -6746,6 +7662,10 @@
         "LoRaWAN":{
           "shape":"LoRaWANUpdateDevice",
           "documentation":"<p>The updated wireless device's configuration.</p>"
+        },
+        "Positioning":{
+          "shape":"PositioningConfigStatus",
+          "documentation":"<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning information.</p>"
         }
       }
     },
@@ -6817,6 +7737,12 @@
       },
       "documentation":"<p>UpdateWirelessGatewayTaskEntry object.</p>"
     },
+    "Use2DSolver":{"type":"boolean"},
+    "UtranCid":{
+      "type":"integer",
+      "max":268435455,
+      "min":0
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -6829,6 +7755,132 @@
     "VerticalAccuracy":{
       "type":"float",
       "min":0
+    },
+    "WcdmaList":{
+      "type":"list",
+      "member":{"shape":"WcdmaObj"},
+      "max":16,
+      "min":1
+    },
+    "WcdmaLocalId":{
+      "type":"structure",
+      "required":[
+        "Uarfcndl",
+        "Psc"
+      ],
+      "members":{
+        "Uarfcndl":{
+          "shape":"UARFCNDL",
+          "documentation":"<p>WCDMA UTRA Absolute RF Channel Number downlink.</p>"
+        },
+        "Psc":{
+          "shape":"PSC",
+          "documentation":"<p>Primary Scrambling Code.</p>"
+        }
+      },
+      "documentation":"<p>WCDMA local identification (local ID) information.</p>"
+    },
+    "WcdmaNmrList":{
+      "type":"list",
+      "member":{"shape":"WcdmaNmrObj"},
+      "max":32,
+      "min":1
+    },
+    "WcdmaNmrObj":{
+      "type":"structure",
+      "required":[
+        "Uarfcndl",
+        "Psc",
+        "UtranCid"
+      ],
+      "members":{
+        "Uarfcndl":{
+          "shape":"UARFCNDL",
+          "documentation":"<p>WCDMA UTRA Absolute RF Channel Number downlink.</p>"
+        },
+        "Psc":{
+          "shape":"PSC",
+          "documentation":"<p>Primary Scrambling Code.</p>"
+        },
+        "UtranCid":{
+          "shape":"UtranCid",
+          "documentation":"<p>UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.</p>"
+        },
+        "Rscp":{
+          "shape":"RSCP",
+          "documentation":"<p>Received Signal Code Power (signal power) (dBm)</p>"
+        },
+        "PathLoss":{
+          "shape":"PathLoss",
+          "documentation":"<p>Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.</p>"
+        }
+      },
+      "documentation":"<p>Network Measurement Reports.</p>"
+    },
+    "WcdmaObj":{
+      "type":"structure",
+      "required":[
+        "Mcc",
+        "Mnc",
+        "UtranCid"
+      ],
+      "members":{
+        "Mcc":{
+          "shape":"MCC",
+          "documentation":"<p>Mobile Country Code.</p>"
+        },
+        "Mnc":{
+          "shape":"MNC",
+          "documentation":"<p>Mobile Network Code.</p>"
+        },
+        "Lac":{
+          "shape":"LAC",
+          "documentation":"<p>Location Area Code.</p>"
+        },
+        "UtranCid":{
+          "shape":"UtranCid",
+          "documentation":"<p>UTRAN (UMTS Terrestrial Radio Access Network) Cell Global Identifier.</p>"
+        },
+        "WcdmaLocalId":{
+          "shape":"WcdmaLocalId",
+          "documentation":"<p>WCDMA local ID information.</p>"
+        },
+        "Rscp":{
+          "shape":"RSCP",
+          "documentation":"<p>Received Signal Code Power (signal power) (dBm).</p>"
+        },
+        "PathLoss":{
+          "shape":"PathLoss",
+          "documentation":"<p>Path loss, or path attenuation, is the reduction in power density of an electromagnetic wave as it propagates through space.</p>"
+        },
+        "WcdmaNmr":{
+          "shape":"WcdmaNmrList",
+          "documentation":"<p>WCDMA object for network measurement reports.</p>"
+        }
+      },
+      "documentation":"<p>WCDMA.</p>"
+    },
+    "WiFiAccessPoint":{
+      "type":"structure",
+      "required":[
+        "MacAddress",
+        "Rss"
+      ],
+      "members":{
+        "MacAddress":{
+          "shape":"MacAddress",
+          "documentation":"<p>Wi-Fi MAC Address.</p>"
+        },
+        "Rss":{
+          "shape":"RSS",
+          "documentation":"<p>Recived signal strength of the WLAN measurement data.</p>"
+        }
+      },
+      "documentation":"<p>Wi-Fi access point.</p>"
+    },
+    "WiFiAccessPoints":{
+      "type":"list",
+      "member":{"shape":"WiFiAccessPoint"}
     },
     "WirelessDeviceArn":{"type":"string"},
     "WirelessDeviceEvent":{

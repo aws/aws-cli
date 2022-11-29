@@ -149,7 +149,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Attaches the specified principal to the specified thing. A principal can be X.509 certificates, IAM users, groups, and roles, Amazon Cognito identities or federated identities.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AttachThingPrincipal</a> action.</p>"
+      "documentation":"<p>Attaches the specified principal to the specified thing. A principal can be X.509 certificates, Amazon Cognito identities or federated identities.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AttachThingPrincipal</a> action.</p>"
     },
     "CancelAuditMitigationActionsTask":{
       "name":"CancelAuditMitigationActionsTask",
@@ -6301,6 +6301,16 @@
       "max":10,
       "min":1
     },
+    "ContentType":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "CorrelationData":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "Count":{"type":"integer"},
     "CreateAuditSuppressionRequest":{
       "type":"structure",
@@ -6805,6 +6815,10 @@
         "documentParameters":{
           "shape":"ParameterMap",
           "documentation":"<p>Parameters of an Amazon Web Services managed template that you can specify to create the job document.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>"
+        },
+        "schedulingConfig":{
+          "shape":"SchedulingConfig",
+          "documentation":"<p>The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.</p>"
         }
       }
     },
@@ -11472,6 +11486,10 @@
         "isConcurrent":{
           "shape":"BooleanWrapperObject",
           "documentation":"<p>Indicates whether a job is concurrent. Will be true when a job is rolling out new job executions or canceling previously created executions, otherwise false.</p>"
+        },
+        "schedulingConfig":{
+          "shape":"SchedulingConfig",
+          "documentation":"<p>The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -11490,6 +11508,14 @@
       "type":"string",
       "max":1350,
       "min":1
+    },
+    "JobEndBehavior":{
+      "type":"string",
+      "enum":[
+        "STOP_ROLLOUT",
+        "CANCEL",
+        "FORCE_CANCEL"
+      ]
     },
     "JobExecution":{
       "type":"structure",
@@ -11718,7 +11744,8 @@
         "IN_PROGRESS",
         "CANCELED",
         "COMPLETED",
-        "DELETION_IN_PROGRESS"
+        "DELETION_IN_PROGRESS",
+        "SCHEDULED"
       ]
     },
     "JobSummary":{
@@ -14524,6 +14551,11 @@
       "max":128,
       "pattern":"[\\s\\S]*"
     },
+    "MessageExpiry":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "MessageFormat":{
       "type":"string",
       "enum":[
@@ -14773,6 +14805,36 @@
       },
       "documentation":"<p>Specifies the MQTT context to use for the test authorizer request</p>"
     },
+    "MqttHeaders":{
+      "type":"structure",
+      "members":{
+        "payloadFormatIndicator":{
+          "shape":"PayloadFormatIndicator",
+          "documentation":"<p>An <code>Enum</code> string value that indicates whether the payload is formatted as UTF-8.</p> <p>Valid values are <code>UNSPECIFIED_BYTES</code> and <code>UTF8_DATA</code>.</p> <p>For more information, see <a href=\"https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111\"> Payload Format Indicator</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+        },
+        "contentType":{
+          "shape":"ContentType",
+          "documentation":"<p>A UTF-8 encoded string that describes the content of the publishing message.</p> <p>For more information, see <a href=\"https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118\"> Content Type</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+        },
+        "responseTopic":{
+          "shape":"ResponseTopic",
+          "documentation":"<p>A UTF-8 encoded string that's used as the topic name for a response message. The response topic is used to describe the topic which the receiver should publish to as part of the request-response flow. The topic must not contain wildcard characters.</p> <p>For more information, see <a href=\"https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114\"> Response Topic</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+        },
+        "correlationData":{
+          "shape":"CorrelationData",
+          "documentation":"<p>The base64-encoded binary data used by the sender of the request message to identify which request the response message is for when it's received.</p> <p>For more information, see <a href=\"https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115\"> Correlation Data</a> from the MQTT Version 5.0 specification.</p> <note> <p> This binary data must be based64-encoded. </p> </note> <p>Supports <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+        },
+        "messageExpiry":{
+          "shape":"MessageExpiry",
+          "documentation":"<p>A user-defined integer value that will persist a message at the message broker for a specified amount of time to ensure that the message will expire if it's no longer relevant to the subscriber. The value of <code>messageExpiry</code> represents the number of seconds before it expires. For more information about the limits of <code>messageExpiry</code>, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html\">Amazon Web Services IoT Core message broker and protocol limits and quotas </a> from the Amazon Web Services Reference Guide.</p> <p>Supports <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+        },
+        "userProperties":{
+          "shape":"UserProperties",
+          "documentation":"<p>An array of key-value pairs that you define in the MQTT5 header.</p>"
+        }
+      },
+      "documentation":"<p>Specifies MQTT Version 5.0 headers information. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html\"> MQTT</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+    },
     "MqttPassword":{
       "type":"blob",
       "max":65535,
@@ -14797,8 +14859,6 @@
     },
     "NamespaceId":{
       "type":"string",
-      "max":64,
-      "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
     },
     "NextToken":{"type":"string"},
@@ -15105,6 +15165,11 @@
     },
     "PartitionKey":{"type":"string"},
     "PayloadField":{"type":"string"},
+    "PayloadFormatIndicator":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "PayloadVersion":{
       "type":"string",
       "max":32,
@@ -15862,6 +15927,10 @@
         "qos":{
           "shape":"Qos",
           "documentation":"<p>The Quality of Service (QoS) level to use when republishing messages. The default value is 0.</p>"
+        },
+        "headers":{
+          "shape":"MqttHeaders",
+          "documentation":"<p>MQTT Version 5.0 headers information. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html\"> MQTT</a> from the Amazon Web Services IoT Core Developer Guide.</p>"
         }
       },
       "documentation":"<p>Describes an action to republish to another topic.</p>"
@@ -15991,6 +16060,11 @@
     "Resources":{
       "type":"list",
       "member":{"shape":"Resource"}
+    },
+    "ResponseTopic":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "RetryAttempt":{"type":"integer"},
     "RetryCriteria":{
@@ -16231,6 +16305,24 @@
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "SchedulingConfig":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"StringDateTime",
+          "documentation":"<p>The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time.</p>"
+        },
+        "endTime":{
+          "shape":"StringDateTime",
+          "documentation":"<p>The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. </p>"
+        },
+        "endBehavior":{
+          "shape":"JobEndBehavior",
+          "documentation":"<p>Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the date and time that a job will begin the rollout of the job document to all devices in the target group. Additionally, you can specify the end behavior for each job execution when it reaches the scheduled end time.</p>"
     },
     "SearchIndexRequest":{
       "type":"structure",
@@ -17017,6 +17109,11 @@
       "member":{"shape":"StreamSummary"}
     },
     "String":{"type":"string"},
+    "StringDateTime":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "StringList":{
       "type":"list",
       "member":{"shape":"stringValue"}
@@ -17484,7 +17581,7 @@
         },
         "managedFields":{
           "shape":"Fields",
-          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service.</p>"
+          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field\">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
         },
         "customFields":{
           "shape":"Fields",
@@ -19070,6 +19167,40 @@
       "max":2000
     },
     "UseBase64":{"type":"boolean"},
+    "UserProperties":{
+      "type":"list",
+      "member":{"shape":"UserProperty"},
+      "max":100,
+      "min":1
+    },
+    "UserProperty":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"UserPropertyKey",
+          "documentation":"<p>A key to be specified in <code>UserProperty</code>.</p>"
+        },
+        "value":{
+          "shape":"UserPropertyValue",
+          "documentation":"<p>A value to be specified in <code>UserProperty</code>.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair that you define in the header. Both the key and the value are either literal strings or valid <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html\">substitution templates</a>.</p>"
+    },
+    "UserPropertyKey":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "UserPropertyValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "Valid":{"type":"boolean"},
     "ValidateSecurityProfileBehaviorsRequest":{
       "type":"structure",

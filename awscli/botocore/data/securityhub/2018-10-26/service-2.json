@@ -15208,9 +15208,13 @@
         "EnabledByDefault":{
           "shape":"Boolean",
           "documentation":"<p>Whether the standard is enabled by default. When Security Hub is enabled from the console, if a standard is enabled by default, the check box for that standard is selected by default.</p> <p>When Security Hub is enabled using the <code>EnableSecurityHub</code> API operation, the standard is enabled by default unless <code>EnableDefaultStandards</code> is set to <code>false</code>.</p>"
+        },
+        "StandardsManagedBy":{
+          "shape":"StandardsManagedBy",
+          "documentation":"<p>Provides details about the management of a standard. </p>"
         }
       },
-      "documentation":"<p>Provides information about a specific standard.</p>"
+      "documentation":"<p>Provides information about a specific security standard.</p>"
     },
     "Standards":{
       "type":"list",
@@ -15270,6 +15274,20 @@
       "type":"map",
       "key":{"shape":"NonEmptyString"},
       "value":{"shape":"NonEmptyString"}
+    },
+    "StandardsManagedBy":{
+      "type":"structure",
+      "members":{
+        "Company":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An identifier for the company that manages a specific security standard. For existing standards, the value is equal to <code>Amazon Web Services</code>.</p>"
+        },
+        "Product":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An identifier for the product that manages a specific security standard. For existing standards, the value is equal to the Amazon Web Services service that manages the standard.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about the management of a security standard.</p>"
     },
     "StandardsStatus":{
       "type":"string",

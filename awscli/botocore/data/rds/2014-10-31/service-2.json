@@ -242,6 +242,32 @@
       ],
       "documentation":"<p>Copies the specified option group.</p>"
     },
+    "CreateBlueGreenDeployment":{
+      "name":"CreateBlueGreenDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateBlueGreenDeploymentRequest"},
+      "output":{
+        "shape":"CreateBlueGreenDeploymentResponse",
+        "resultWrapper":"CreateBlueGreenDeploymentResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"SourceDatabaseNotSupportedFault"},
+        {"shape":"SourceClusterNotSupportedFault"},
+        {"shape":"BlueGreenDeploymentAlreadyExistsFault"},
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"InstanceQuotaExceededFault"},
+        {"shape":"DBClusterQuotaExceededFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"InvalidDBClusterStateFault"}
+      ],
+      "documentation":"<p>Creates a blue/green deployment.</p> <p>A blue/green deployment creates a staging environment that copies the production environment. In a blue/green deployment, the blue environment is the current production environment. The green environment is the staging environment. The staging environment stays in sync with the current production environment using logical replication.</p> <p>You can make changes to the databases in the green environment without affecting production workloads. For example, you can upgrade the major or minor DB engine version, change database parameters, or make schema changes in the staging environment. You can thoroughly test changes in the green environment. When ready, you can switch over the environments to promote the green environment to be the new production environment. The switchover typically takes under a minute.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
     "CreateCustomDBEngineVersion":{
       "name":"CreateCustomDBEngineVersion",
       "http":{
@@ -591,6 +617,23 @@
       ],
       "documentation":"<p>Creates a new option group. You can create up to 20 option groups.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
+    "DeleteBlueGreenDeployment":{
+      "name":"DeleteBlueGreenDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteBlueGreenDeploymentRequest"},
+      "output":{
+        "shape":"DeleteBlueGreenDeploymentResponse",
+        "resultWrapper":"DeleteBlueGreenDeploymentResult"
+      },
+      "errors":[
+        {"shape":"BlueGreenDeploymentNotFoundFault"},
+        {"shape":"InvalidBlueGreenDeploymentStateFault"}
+      ],
+      "documentation":"<p>Deletes a blue/green deployment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
     "DeleteCustomDBEngineVersion":{
       "name":"DeleteCustomDBEngineVersion",
       "http":{
@@ -883,6 +926,22 @@
         "resultWrapper":"DescribeAccountAttributesResult"
       },
       "documentation":"<p>Lists all of the attributes for a customer account. The attributes include Amazon RDS quotas for the account, such as the number of DB instances allowed. The description for a quota includes the quota name, current usage toward that quota, and the quota's maximum value.</p> <p>This command doesn't take any parameters.</p>"
+    },
+    "DescribeBlueGreenDeployments":{
+      "name":"DescribeBlueGreenDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeBlueGreenDeploymentsRequest"},
+      "output":{
+        "shape":"DescribeBlueGreenDeploymentsResponse",
+        "resultWrapper":"DescribeBlueGreenDeploymentsResult"
+      },
+      "errors":[
+        {"shape":"BlueGreenDeploymentNotFoundFault"}
+      ],
+      "documentation":"<p>Returns information about blue/green deployments.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "DescribeCertificates":{
       "name":"DescribeCertificates",
@@ -2534,6 +2593,23 @@
       ],
       "documentation":"<p>Stops automated backup replication for a DB instance.</p> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html\"> Replicating Automated Backups to Another Amazon Web Services Region</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
+    "SwitchoverBlueGreenDeployment":{
+      "name":"SwitchoverBlueGreenDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SwitchoverBlueGreenDeploymentRequest"},
+      "output":{
+        "shape":"SwitchoverBlueGreenDeploymentResponse",
+        "resultWrapper":"SwitchoverBlueGreenDeploymentResult"
+      },
+      "errors":[
+        {"shape":"BlueGreenDeploymentNotFoundFault"},
+        {"shape":"InvalidBlueGreenDeploymentStateFault"}
+      ],
+      "documentation":"<p>Switches over a blue/green deployment.</p> <p>Before you switch over, production traffic is routed to the databases in the blue environment. After you switch over, production traffic is routed to the databases in the green environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
     "SwitchoverReadReplica":{
       "name":"SwitchoverReadReplica",
       "http":{
@@ -2928,6 +3004,115 @@
       },
       "exception":true
     },
+    "BlueGreenDeployment":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeploymentIdentifier":{
+          "shape":"BlueGreenDeploymentIdentifier",
+          "documentation":"<p>The system-generated identifier of the blue/green deployment.</p>"
+        },
+        "BlueGreenDeploymentName":{
+          "shape":"BlueGreenDeploymentName",
+          "documentation":"<p>The user-supplied name of the blue/green deployment.</p>"
+        },
+        "Source":{
+          "shape":"DatabaseArn",
+          "documentation":"<p>The source database for the blue/green deployment.</p> <p>Before switchover, the source database is the production database in the blue environment.</p>"
+        },
+        "Target":{
+          "shape":"DatabaseArn",
+          "documentation":"<p>The target database for the blue/green deployment.</p> <p>Before switchover, the target database is the clone database in the green environment.</p>"
+        },
+        "SwitchoverDetails":{
+          "shape":"SwitchoverDetailList",
+          "documentation":"<p>The details about each source and target resource in the blue/green deployment.</p>"
+        },
+        "Tasks":{
+          "shape":"BlueGreenDeploymentTaskList",
+          "documentation":"<p>Either tasks to be performed or tasks that have been completed on the target database before switchover.</p>"
+        },
+        "Status":{
+          "shape":"BlueGreenDeploymentStatus",
+          "documentation":"<p>The status of the blue/green deployment.</p> <p>Values:</p> <ul> <li> <p> <code>PROVISIONING</code> - Resources are being created in the green environment.</p> </li> <li> <p> <code>AVAILABLE</code> - Resources are available in the green environment.</p> </li> <li> <p> <code>SWITCHOVER_IN_PROGRESS</code> - The deployment is being switched from the blue environment to the green environment.</p> </li> <li> <p> <code>SWITCHOVER_COMPLETED</code> - Switchover from the blue environment to the green environment is complete.</p> </li> <li> <p> <code>INVALID_CONFIGURATION</code> - Resources in the green environment are invalid, so switchover isn't possible.</p> </li> <li> <p> <code>SWITCHOVER_FAILED</code> - Switchover was attempted but failed.</p> </li> <li> <p> <code>DELETING</code> - The blue/green deployment is being deleted.</p> </li> </ul>"
+        },
+        "StatusDetails":{
+          "shape":"BlueGreenDeploymentStatusDetails",
+          "documentation":"<p>Additional information about the status of the blue/green deployment.</p>"
+        },
+        "CreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>Specifies the time when the blue/green deployment was created, in Universal Coordinated Time (UTC).</p>"
+        },
+        "DeleteTime":{
+          "shape":"TStamp",
+          "documentation":"<p>Specifies the time when the blue/green deployment was deleted, in Universal Coordinated Time (UTC).</p>"
+        },
+        "TagList":{"shape":"TagList"}
+      },
+      "documentation":"<p>Contains the details about a blue/green deployment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "BlueGreenDeploymentAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A blue/green deployment with the specified name already exists.</p>",
+      "error":{
+        "code":"BlueGreenDeploymentAlreadyExistsFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "BlueGreenDeploymentIdentifier":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z][0-9A-Za-z-:._]*"
+    },
+    "BlueGreenDeploymentList":{
+      "type":"list",
+      "member":{"shape":"BlueGreenDeployment"}
+    },
+    "BlueGreenDeploymentName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
+    "BlueGreenDeploymentNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> <code>BlueGreenDeploymentIdentifier</code> doesn't refer to an existing blue/green deployment.</p>",
+      "error":{
+        "code":"BlueGreenDeploymentNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "BlueGreenDeploymentStatus":{"type":"string"},
+    "BlueGreenDeploymentStatusDetails":{"type":"string"},
+    "BlueGreenDeploymentTask":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"BlueGreenDeploymentTaskName",
+          "documentation":"<p>The name of the blue/green deployment task.</p>"
+        },
+        "Status":{
+          "shape":"BlueGreenDeploymentTaskStatus",
+          "documentation":"<p>The status of the blue/green deployment task.</p> <p>Values:</p> <ul> <li> <p> <code>PENDING</code> - The resources are being prepared for deployment.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The resource is being deployed.</p> </li> <li> <p> <code>COMPLETED</code> - The resource has been deployed.</p> </li> <li> <p> <code>FAILED</code> - Deployment of the resource failed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the details about a task for a blue/green deployment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "BlueGreenDeploymentTaskList":{
+      "type":"list",
+      "member":{"shape":"BlueGreenDeploymentTask"}
+    },
+    "BlueGreenDeploymentTaskName":{"type":"string"},
+    "BlueGreenDeploymentTaskStatus":{"type":"string"},
     "Boolean":{"type":"boolean"},
     "BooleanOptional":{"type":"boolean"},
     "BucketName":{
@@ -3304,6 +3489,45 @@
         "OptionGroup":{"shape":"OptionGroup"}
       }
     },
+    "CreateBlueGreenDeploymentRequest":{
+      "type":"structure",
+      "required":[
+        "BlueGreenDeploymentName",
+        "Source"
+      ],
+      "members":{
+        "BlueGreenDeploymentName":{
+          "shape":"BlueGreenDeploymentName",
+          "documentation":"<p>The name of the blue/green deployment.</p> <p>Constraints:</p> <ul> <li> <p>Can't be the same as an existing blue/green deployment name in the same account and Amazon Web Services Region.</p> </li> </ul>"
+        },
+        "Source":{
+          "shape":"DatabaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source production database.</p> <p>Specify the database that you want to clone. The blue/green deployment creates this database in the green environment. You can make updates to the database in the green environment, such as an engine version upgrade. When you are ready, you can switch the database in the green environment to be the production database.</p>"
+        },
+        "TargetEngineVersion":{
+          "shape":"TargetEngineVersion",
+          "documentation":"<p>The engine version of the database in the green environment.</p> <p>Specify the engine version to upgrade to in the green environment.</p>"
+        },
+        "TargetDBParameterGroupName":{
+          "shape":"TargetDBParameterGroupName",
+          "documentation":"<p>The DB parameter group associated with the DB instance in the green environment.</p> <p>To test parameter changes, specify a DB parameter group that is different from the one associated with the source DB instance.</p>"
+        },
+        "TargetDBClusterParameterGroupName":{
+          "shape":"TargetDBClusterParameterGroupName",
+          "documentation":"<p>The DB cluster parameter group associated with the Aurora DB cluster in the green environment.</p> <p>To test parameter changes, specify a DB cluster parameter group that is different from the one associated with the source DB cluster.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to assign to the blue/green deployment.</p>"
+        }
+      }
+    },
+    "CreateBlueGreenDeploymentResponse":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeployment":{"shape":"BlueGreenDeployment"}
+      }
+    },
     "CreateCustomDBEngineVersionMessage":{
       "type":"structure",
       "required":[
@@ -3320,7 +3544,7 @@
         },
         "EngineVersion":{
           "shape":"CustomEngineVersion",
-          "documentation":"<p>The name of your CEV. The name format is <code>19.<i>customized_string</i> </code>. For example, a valid name is <code>19.my_cev1</code>. This setting is required for RDS Custom for Oracle, but optional for Amazon RDS. The combination of <code>Engine</code> and <code>EngineVersion</code> is unique per customer per Region.</p>"
+          "documentation":"<p>The name of your CEV. The name format is 19.<i>customized_string</i>. For example, a valid CEV name is <code>19.my_cev1</code>. This setting is required for RDS Custom for Oracle, but optional for Amazon RDS. The combination of <code>Engine</code> and <code>EngineVersion</code> is unique per customer per Region.</p>"
         },
         "DatabaseInstallationFilesS3BucketName":{
           "shape":"BucketName",
@@ -3719,7 +3943,7 @@
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the database engine to use.</p> <p>For a list of valid engine versions, use the <code>DescribeDBEngineVersions</code> operation.</p> <p>The following are the database engines and links to information about the major and minor versions that are available with Amazon RDS. Not every database engine is available for every Amazon Web Services Region.</p> <p> <b>Amazon Aurora</b> </p> <p>Not applicable. The version number of the database engine to be used by the DB instance is managed by the DB cluster.</p> <p> <b>Amazon RDS Custom for Oracle</b> </p> <p>A custom engine version (CEV) that you have previously created. This setting is required for RDS Custom for Oracle. The CEV name has the following format: <code>19.<i>customized_string</i> </code>. An example identifier is <code>19.my_cev1</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-creating.html#custom-creating.create\"> Creating an RDS Custom for Oracle DB instance</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Amazon RDS Custom for SQL Server</b> </p> <p>See <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html\">RDS Custom for SQL Server general requirements</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>MariaDB</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MariaDB.html#MariaDB.Concepts.VersionMgmt\">MariaDB on Amazon RDS Versions</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Microsoft SQL Server</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SQLServer.html#SQLServer.Concepts.General.VersionSupport\">Microsoft SQL Server Versions on Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>MySQL</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html#MySQL.Concepts.VersionMgmt\">MySQL on Amazon RDS Versions</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Oracle</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.Oracle.PatchComposition.html\">Oracle Database Engine Release Notes</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>PostgreSQL</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts\">Amazon RDS for PostgreSQL versions and extensions</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>The version number of the database engine to use.</p> <p>For a list of valid engine versions, use the <code>DescribeDBEngineVersions</code> operation.</p> <p>The following are the database engines and links to information about the major and minor versions that are available with Amazon RDS. Not every database engine is available for every Amazon Web Services Region.</p> <p> <b>Amazon Aurora</b> </p> <p>Not applicable. The version number of the database engine to be used by the DB instance is managed by the DB cluster.</p> <p> <b>Amazon RDS Custom for Oracle</b> </p> <p>A custom engine version (CEV) that you have previously created. This setting is required for RDS Custom for Oracle. The CEV name has the following format: 19.<i>customized_string</i>. A valid CEV name is <code>19.my_cev1</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-creating.html#custom-creating.create\"> Creating an RDS Custom for Oracle DB instance</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Amazon RDS Custom for SQL Server</b> </p> <p>See <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html\">RDS Custom for SQL Server general requirements</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>MariaDB</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MariaDB.html#MariaDB.Concepts.VersionMgmt\">MariaDB on Amazon RDS Versions</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Microsoft SQL Server</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SQLServer.html#SQLServer.Concepts.General.VersionSupport\">Microsoft SQL Server Versions on Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>MySQL</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_MySQL.html#MySQL.Concepts.VersionMgmt\">MySQL on Amazon RDS Versions</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>Oracle</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.Oracle.PatchComposition.html\">Oracle Database Engine Release Notes</a> in the <i>Amazon RDS User Guide</i>.</p> <p> <b>PostgreSQL</b> </p> <p>For information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts\">Amazon RDS for PostgreSQL versions and extensions</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
@@ -7073,6 +7297,32 @@
       },
       "exception":true
     },
+    "DatabaseArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:[A-Za-z][0-9A-Za-z-:._]*"
+    },
+    "DeleteBlueGreenDeploymentRequest":{
+      "type":"structure",
+      "required":["BlueGreenDeploymentIdentifier"],
+      "members":{
+        "BlueGreenDeploymentIdentifier":{
+          "shape":"BlueGreenDeploymentIdentifier",
+          "documentation":"<p>The blue/green deployment identifier of the deployment to be deleted. This parameter isn't case-sensitive.</p> <p>Constraints: </p> <ul> <li> <p>Must match an existing blue/green deployment identifier.</p> </li> </ul>"
+        },
+        "DeleteTarget":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether to delete the resources in the green environment.</p>"
+        }
+      }
+    },
+    "DeleteBlueGreenDeploymentResponse":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeployment":{"shape":"BlueGreenDeployment"}
+      }
+    },
     "DeleteCustomDBEngineVersionMessage":{
       "type":"structure",
       "required":[
@@ -7366,6 +7616,40 @@
       "members":{
       },
       "documentation":"<p/>"
+    },
+    "DescribeBlueGreenDeploymentsRequest":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeploymentIdentifier":{
+          "shape":"BlueGreenDeploymentIdentifier",
+          "documentation":"<p>The blue/green deployment identifier. If this parameter is specified, information from only the specific blue/green deployment is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing blue/green deployment identifier.</p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies one or more blue/green deployments to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>blue-green-deployment-identifier</code> - Accepts system-generated identifiers for blue/green deployments. The results list only includes information about the blue/green deployments with the specified identifiers.</p> </li> <li> <p> <code>blue-green-deployment-name</code> - Accepts user-supplied names for blue/green deployments. The results list only includes information about the blue/green deployments with the specified names.</p> </li> <li> <p> <code>source</code> - Accepts source databases for a blue/green deployment. The results list only includes information about the blue/green deployments with the specified source databases.</p> </li> <li> <p> <code>target</code> - Accepts target databases for a blue/green deployment. The results list only includes information about the blue/green deployments with the specified target databases.</p> </li> </ul>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeBlueGreenDeployments</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"MaxRecords",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+        }
+      }
+    },
+    "DescribeBlueGreenDeploymentsResponse":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeployments":{
+          "shape":"BlueGreenDeploymentList",
+          "documentation":"<p>Contains a list of blue/green deployments for the user.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a later DescribeBlueGreenDeployments request.</p>"
+        }
+      }
     },
     "DescribeCertificatesMessage":{
       "type":"structure",
@@ -9330,6 +9614,18 @@
     },
     "Integer":{"type":"integer"},
     "IntegerOptional":{"type":"integer"},
+    "InvalidBlueGreenDeploymentStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The blue/green deployment can't be switched over or deleted because there is an invalid configuration in the green environment.</p>",
+      "error":{
+        "code":"InvalidBlueGreenDeploymentStateFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "InvalidCustomDBEngineVersionStateFault":{
       "type":"structure",
       "members":{
@@ -13111,6 +13407,30 @@
       },
       "exception":true
     },
+    "SourceClusterNotSupportedFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The source DB cluster isn't supported for a blue/green deployment.</p>",
+      "error":{
+        "code":"SourceClusterNotSupportedFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SourceDatabaseNotSupportedFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The source DB instance isn't supported for a blue/green deployment.</p>",
+      "error":{
+        "code":"SourceDatabaseNotSupportedFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "SourceIdsList":{
       "type":"list",
       "member":{
@@ -13558,6 +13878,49 @@
         "locationName":"Timezone"
       }
     },
+    "SwitchoverBlueGreenDeploymentRequest":{
+      "type":"structure",
+      "required":["BlueGreenDeploymentIdentifier"],
+      "members":{
+        "BlueGreenDeploymentIdentifier":{
+          "shape":"BlueGreenDeploymentIdentifier",
+          "documentation":"<p>The blue/green deployment identifier.</p> <p>Constraints:</p> <ul> <li> <p>Must match an existing blue/green deployment identifier.</p> </li> </ul>"
+        },
+        "SwitchoverTimeout":{
+          "shape":"SwitchoverTimeout",
+          "documentation":"<p>The amount of time, in seconds, for the switchover to complete. The default is 300.</p> <p>If the switchover takes longer than the specified duration, then any changes are rolled back, and no changes are made to the environments.</p>"
+        }
+      }
+    },
+    "SwitchoverBlueGreenDeploymentResponse":{
+      "type":"structure",
+      "members":{
+        "BlueGreenDeployment":{"shape":"BlueGreenDeployment"}
+      }
+    },
+    "SwitchoverDetail":{
+      "type":"structure",
+      "members":{
+        "SourceMember":{
+          "shape":"DatabaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a resource in the blue environment.</p>"
+        },
+        "TargetMember":{
+          "shape":"DatabaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a resource in the green environment.</p>"
+        },
+        "Status":{
+          "shape":"SwitchoverDetailStatus",
+          "documentation":"<p>The switchover status of a resource in a blue/green deployment.</p> <p>Values:</p> <ul> <li> <p> <code>preparing-for-switchover</code> - The resource is being prepared to switch over.</p> </li> <li> <p> <code>ready-for-switchover</code> - The resource is ready to switch over.</p> </li> <li> <p> <code>switchover-in-progress</code> - The resource is being switched over.</p> </li> <li> <p> <code>switchover-completed</code> - The resource has been switched over.</p> </li> <li> <p> <code>switchover-failed</code> - The resource attempted to switch over but failed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the details about a blue/green deployment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "SwitchoverDetailList":{
+      "type":"list",
+      "member":{"shape":"SwitchoverDetail"}
+    },
+    "SwitchoverDetailStatus":{"type":"string"},
     "SwitchoverReadReplicaMessage":{
       "type":"structure",
       "required":["DBInstanceIdentifier"],
@@ -13574,6 +13937,10 @@
         "DBInstance":{"shape":"DBInstance"}
       }
     },
+    "SwitchoverTimeout":{
+      "type":"integer",
+      "min":30
+    },
     "TStamp":{"type":"timestamp"},
     "Tag":{
       "type":"structure",
@@ -13587,7 +13954,7 @@
           "documentation":"<p>A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\").</p>"
         }
       },
-      "documentation":"<p>Metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p>"
+      "documentation":"<p>Metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
     "TagList":{
       "type":"list",
@@ -13606,6 +13973,24 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "TargetDBClusterParameterGroupName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z](?!.*--)[0-9A-Za-z-]*[^-]|^default(?!.*--)(?!.*\\.\\.)[0-9A-Za-z-.]*[^-]"
+    },
+    "TargetDBParameterGroupName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z](?!.*--)[0-9A-Za-z-]*[^-]|^default(?!.*--)(?!.*\\.\\.)[0-9A-Za-z-.]*[^-]"
+    },
+    "TargetEngineVersion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9A-Za-z-_.]+"
     },
     "TargetGroupList":{
       "type":"list",

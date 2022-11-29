@@ -153,7 +153,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describe Amazon Inspector configuration settings for an Amazon Web Services organization</p>"
+      "documentation":"<p>Describe Amazon Inspector configuration settings for an Amazon Web Services organization.</p>"
     },
     "Disable":{
       "name":"Disable",
@@ -689,7 +689,7 @@
           "documentation":"<p>An object detailing the status of Amazon Inspector for the account.</p>"
         }
       },
-      "documentation":"<p>An object with details the status of an Amazon Web Services account within your Amazon Inspector environment</p>"
+      "documentation":"<p>An object with details the status of an Amazon Web Services account within your Amazon Inspector environment.</p>"
     },
     "AccountStateList":{
       "type":"list",
@@ -732,6 +732,14 @@
           "shape":"ImageLayerAggregation",
           "documentation":"<p>An object that contains details about an aggregation request based on container image layers.</p>"
         },
+        "lambdaFunctionAggregation":{
+          "shape":"LambdaFunctionAggregation",
+          "documentation":"<p>Returns an object with findings aggregated by AWS Lambda function.</p>"
+        },
+        "lambdaLayerAggregation":{
+          "shape":"LambdaLayerAggregation",
+          "documentation":"<p>Returns an object with findings aggregated by AWS Lambda layer.</p>"
+        },
         "packageAggregation":{
           "shape":"PackageAggregation",
           "documentation":"<p>An object that contains details about an aggregation request based on operating system package type.</p>"
@@ -752,7 +760,8 @@
       "type":"string",
       "enum":[
         "AWS_EC2_INSTANCE",
-        "AWS_ECR_CONTAINER_IMAGE"
+        "AWS_ECR_CONTAINER_IMAGE",
+        "AWS_LAMBDA_FUNCTION"
       ]
     },
     "AggregationResponse":{
@@ -781,6 +790,14 @@
         "imageLayerAggregation":{
           "shape":"ImageLayerAggregationResponse",
           "documentation":"<p>An object that contains details about an aggregation response based on container image layers.</p>"
+        },
+        "lambdaFunctionAggregation":{
+          "shape":"LambdaFunctionAggregationResponse",
+          "documentation":"<p>An aggregation of findings by AWS Lambda function.</p>"
+        },
+        "lambdaLayerAggregation":{
+          "shape":"LambdaLayerAggregationResponse",
+          "documentation":"<p>An aggregation of findings by AWS Lambda layer.</p>"
         },
         "packageAggregation":{
           "shape":"PackageAggregationResponse",
@@ -813,7 +830,9 @@
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER",
         "IMAGE_LAYER",
-        "ACCOUNT"
+        "ACCOUNT",
+        "AWS_LAMBDA_FUNCTION",
+        "LAMBDA_LAYER"
       ]
     },
     "AmiAggregation":{
@@ -840,12 +859,11 @@
       "members":{
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID that the AMI belongs.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the AMI.</p>"
         },
         "affectedInstances":{
           "shape":"Long",
-          "documentation":"<p>The IDs of Amazon EC2 instances using this AMI.</p>",
-          "box":true
+          "documentation":"<p>The IDs of Amazon EC2 instances using this AMI.</p>"
         },
         "ami":{
           "shape":"AmiId",
@@ -870,6 +888,19 @@
         "ALL",
         "AFFECTED_INSTANCES"
       ]
+    },
+    "Architecture":{
+      "type":"string",
+      "enum":[
+        "X86_64",
+        "ARM64"
+      ]
+    },
+    "ArchitectureList":{
+      "type":"list",
+      "member":{"shape":"Architecture"},
+      "max":1,
+      "min":1
     },
     "Arn":{
       "type":"string",
@@ -905,13 +936,15 @@
       "members":{
         "ec2":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether Amazon EC2 scans are automatically enabled for new members of your Amazon Inspector organization.</p>",
-          "box":true
+          "documentation":"<p>Represents whether Amazon EC2 scans are automatically enabled for new members of your Amazon Inspector organization.</p>"
         },
         "ecr":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether Amazon ECR scans are automatically enabled for new members of your Amazon Inspector organization.</p>",
-          "box":true
+          "documentation":"<p>Represents whether Amazon ECR scans are automatically enabled for new members of your Amazon Inspector organization.</p>"
+        },
+        "lambda":{
+          "shape":"Boolean",
+          "documentation":"<p>Represents whether AWS Lambda scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
         }
       },
       "documentation":"<p>Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.</p>"
@@ -1065,7 +1098,7 @@
         },
         "registry":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The registry the Amazon ECR container image belongs to.</p>"
+          "documentation":"<p>The registry for the Amazon ECR container image.</p>"
         },
         "repositoryName":{
           "shape":"NonEmptyString",
@@ -1081,6 +1114,59 @@
         "HIGH",
         "ALL"
       ]
+    },
+    "AwsLambdaFunctionDetails":{
+      "type":"structure",
+      "required":[
+        "codeSha256",
+        "executionRoleArn",
+        "functionName",
+        "runtime",
+        "version"
+      ],
+      "members":{
+        "architectures":{
+          "shape":"ArchitectureList",
+          "documentation":"<p>The instruction set architecture that the AWS Lambda function supports. Architecture is a string array with one of the valid values. The default architecture value is <code>x86_64</code>.</p>"
+        },
+        "codeSha256":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The SHA256 hash of the AWS Lambda function's deployment package.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArn",
+          "documentation":"<p>The AWS Lambda function's execution role.</p>"
+        },
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the AWS Lambda function.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a> </p>"
+        },
+        "layers":{
+          "shape":"LayerList",
+          "documentation":"<p>The AWS Lambda function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\"> layers</a>. A Lambda function can have up to five layers.</p>"
+        },
+        "packageType":{
+          "shape":"PackageType",
+          "documentation":"<p>The type of deployment package. Set to <code>Image</code> for container image and set <code>Zip</code> for .zip file archive.</p>"
+        },
+        "runtime":{
+          "shape":"Runtime",
+          "documentation":"<p>The runtime environment for the AWS Lambda function.</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The version of the AWS Lambda function.</p>"
+        },
+        "vpcConfig":{
+          "shape":"LambdaVpcConfig",
+          "documentation":"<p>The AWS Lambda function's networking configuration.</p>"
+        }
+      },
+      "documentation":"<p> A summary of information about the AWS Lambda function.</p>"
     },
     "BadRequestException":{
       "type":"structure",
@@ -1151,7 +1237,10 @@
         }
       }
     },
-    "Boolean":{"type":"boolean"},
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "CancelFindingsReportRequest":{
       "type":"structure",
       "required":["reportId"],
@@ -1209,8 +1298,7 @@
       "members":{
         "count":{
           "shape":"AggCounts",
-          "documentation":"<p>The number of resources.</p>",
-          "default":0
+          "documentation":"<p>The number of resources.</p>"
         },
         "groupKey":{
           "shape":"GroupKey",
@@ -1243,6 +1331,18 @@
         "ecrRepositoryName":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>The Amazon ECR repository name to filter on.</p>"
+        },
+        "lambdaFunctionName":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Returns coverage statistics for AWS Lambda functions filtered by function names.</p>"
+        },
+        "lambdaFunctionRuntime":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>Returns coverage statistics for AWS Lambda functions filtered by runtime.</p>"
+        },
+        "lambdaFunctionTags":{
+          "shape":"CoverageMapFilterList",
+          "documentation":"<p>Returns coverage statistics for AWS Lambda functions filtered by tag.</p>"
         },
         "resourceId":{
           "shape":"CoverageStringFilterList",
@@ -1304,7 +1404,8 @@
       "enum":[
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER_IMAGE",
-        "AWS_ECR_REPOSITORY"
+        "AWS_ECR_REPOSITORY",
+        "AWS_LAMBDA_FUNCTION"
       ]
     },
     "CoverageStringComparison":{
@@ -1472,8 +1573,7 @@
       "members":{
         "baseScore":{
           "shape":"Double",
-          "documentation":"<p>The base CVSS score used for the finding.</p>",
-          "box":true
+          "documentation":"<p>The base CVSS score used for the finding.</p>"
         },
         "scoringVector":{
           "shape":"NonEmptyString",
@@ -1531,8 +1631,7 @@
         },
         "score":{
           "shape":"Double",
-          "documentation":"<p>The CVSS score.</p>",
-          "box":true
+          "documentation":"<p>The CVSS score.</p>"
         },
         "scoreSource":{
           "shape":"NonEmptyString",
@@ -1649,8 +1748,7 @@
         },
         "maxAccountLimitReached":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether your organization has reached the maximum Amazon Web Services account limit for Amazon Inspector.</p>",
-          "box":true
+          "documentation":"<p>Represents whether your organization has reached the maximum Amazon Web Services account limit for Amazon Inspector.</p>"
         }
       }
     },
@@ -1712,7 +1810,7 @@
     "DisableResourceTypeList":{
       "type":"list",
       "member":{"shape":"ResourceScanType"},
-      "max":2,
+      "max":3,
       "min":0
     },
     "DisableResponse":{
@@ -1749,7 +1847,10 @@
         }
       }
     },
-    "Double":{"type":"double"},
+    "Double":{
+      "type":"double",
+      "box":true
+    },
     "Ec2InstanceAggregation":{
       "type":"structure",
       "members":{
@@ -1786,7 +1887,7 @@
       "members":{
         "accountId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services account the Amazon EC2 instance belongs to.</p>"
+          "documentation":"<p>The Amazon Web Services account for the Amazon EC2 instance.</p>"
         },
         "ami":{
           "shape":"AmiId",
@@ -1802,8 +1903,7 @@
         },
         "networkFindings":{
           "shape":"Long",
-          "documentation":"<p>The number of network findings for the Amazon EC2 instance.</p>",
-          "box":true
+          "documentation":"<p>The number of network findings for the Amazon EC2 instance.</p>"
         },
         "operatingSystem":{
           "shape":"String",
@@ -1860,7 +1960,7 @@
           "documentation":"<p>The ECR automated re-scan duration defines how long an ECR image will be actively scanned by Amazon Inspector. When the number of days since an image was last pushed exceeds the automated re-scan duration the monitoring state of that image becomes <code>inactive</code> and all associated findings are scheduled for closure.</p>"
         }
       },
-      "documentation":"<p>Details about the ECR automated re-scan duration setting for your environment</p>"
+      "documentation":"<p>Details about the ECR automated re-scan duration setting for your environment.</p>"
     },
     "EcrConfigurationState":{
       "type":"structure",
@@ -1985,7 +2085,7 @@
     "EnableResourceTypeList":{
       "type":"list",
       "member":{"shape":"ResourceScanType"},
-      "max":2,
+      "max":3,
       "min":1
     },
     "EnableResponse":{
@@ -2022,6 +2122,27 @@
       ]
     },
     "ErrorMessage":{"type":"string"},
+    "ExecutionRoleArn":{
+      "type":"string",
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "ExploitAvailable":{
+      "type":"string",
+      "enum":[
+        "YES",
+        "NO"
+      ]
+    },
+    "ExploitabilityDetails":{
+      "type":"structure",
+      "members":{
+        "lastKnownExploitAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time of the last exploit associated with a finding discovered in your environment.</p>"
+        }
+      },
+      "documentation":"<p>The details of an exploit available for a finding discovered in your environment.</p>"
+    },
     "ExternalReportStatus":{
       "type":"string",
       "enum":[
@@ -2195,6 +2316,10 @@
           "shape":"StringFilterList",
           "documentation":"<p>The tags attached to the Amazon ECR container image.</p>"
         },
+        "exploitAvailable":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda findings by the availability of exploits.</p>"
+        },
         "findingArn":{
           "shape":"StringFilterList",
           "documentation":"<p>Details on the finding ARNs used to filter findings.</p>"
@@ -2218,6 +2343,26 @@
         "inspectorScore":{
           "shape":"NumberFilterList",
           "documentation":"<p>The Amazon Inspector score to filter on.</p>"
+        },
+        "lambdaFunctionExecutionRoleArn":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda functions by execution role.</p>"
+        },
+        "lambdaFunctionLastModifiedAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda functions by the date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a> </p>"
+        },
+        "lambdaFunctionLayers":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda functions by the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\"> layers</a>. A Lambda function can have up to five layers.</p>"
+        },
+        "lambdaFunctionName":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda functions by the name of the function.</p>"
+        },
+        "lambdaFunctionRuntime":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filters the list of AWS Lambda functions by the runtime environment for the Lambda function.</p>"
         },
         "lastObservedAt":{
           "shape":"DateFilterList",
@@ -2320,6 +2465,14 @@
           "shape":"FindingDescription",
           "documentation":"<p>The description of the finding.</p>"
         },
+        "exploitAvailable":{
+          "shape":"ExploitAvailable",
+          "documentation":"<p>If a finding discovered in your environment has an exploit available.</p>"
+        },
+        "exploitabilityDetails":{
+          "shape":"ExploitabilityDetails",
+          "documentation":"<p>The details of an exploit available for a finding discovered in your environment.</p>"
+        },
         "findingArn":{
           "shape":"FindingArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the finding.</p>"
@@ -2334,8 +2487,7 @@
         },
         "inspectorScore":{
           "shape":"Double",
-          "documentation":"<p>The Amazon Inspector score given to the finding.</p>",
-          "box":true
+          "documentation":"<p>The Amazon Inspector score given to the finding.</p>"
         },
         "inspectorScoreDetails":{
           "shape":"InspectorScoreDetails",
@@ -2571,8 +2723,13 @@
       "type":"string",
       "enum":[
         "EC2",
-        "ECR"
+        "ECR",
+        "LAMBDA"
       ]
+    },
+    "FunctionName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
     },
     "GetConfigurationRequest":{
       "type":"structure",
@@ -2755,7 +2912,10 @@
       },
       "documentation":"<p>Information about the Amazon Inspector score given to a finding.</p>"
     },
-    "Integer":{"type":"integer"},
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -2764,7 +2924,6 @@
         "retryAfterSeconds":{
           "shape":"Integer",
           "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
-          "box":true,
           "location":"header",
           "locationName":"Retry-After"
         }
@@ -2794,8 +2953,198 @@
       "type":"list",
       "member":{"shape":"IpV6Address"}
     },
+    "LambdaFunctionAggregation":{
+      "type":"structure",
+      "members":{
+        "functionNames":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The AWS Lambda function names to include in the aggregation results.</p>"
+        },
+        "functionTags":{
+          "shape":"MapFilterList",
+          "documentation":"<p>The tags to include in the aggregation results.</p>"
+        },
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs to include in the aggregation results.</p>"
+        },
+        "runtimes":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Returns findings aggregated by AWS Lambda function runtime environments.</p>"
+        },
+        "sortBy":{
+          "shape":"LambdaFunctionSortBy",
+          "documentation":"<p>The finding severity to use for sorting the results.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to use for sorting the results.</p>"
+        }
+      },
+      "documentation":"<p>The details that define a findings aggregation based on AWS Lambda functions.</p>"
+    },
+    "LambdaFunctionAggregationResponse":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the AWS account that owns the AWS Lambda function. </p>"
+        },
+        "functionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Lambda function names included in the aggregation results.</p>"
+        },
+        "lambdaTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags included in the aggregation results.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date that the AWS Lambda function included in the aggregation results was last changed.</p>"
+        },
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The resource IDs included in the aggregation results.</p>"
+        },
+        "runtime":{
+          "shape":"String",
+          "documentation":"<p>The runtimes included in the aggregation results.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"}
+      },
+      "documentation":"<p>A response that contains the results of an AWS Lambda function finding aggregation.</p>"
+    },
+    "LambdaFunctionMetadata":{
+      "type":"structure",
+      "members":{
+        "functionName":{
+          "shape":"String",
+          "documentation":"<p>The name of a function.</p>"
+        },
+        "functionTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The resource tags on an AWS Lambda function.</p>"
+        },
+        "layers":{
+          "shape":"LambdaLayerList",
+          "documentation":"<p>The layers for an AWS Lambda function. A Lambda function can have up to five layers.</p>"
+        },
+        "runtime":{
+          "shape":"Runtime",
+          "documentation":"<p>An AWS Lambda function's runtime.</p>"
+        }
+      },
+      "documentation":"<p>The AWS Lambda function metadata.</p>"
+    },
+    "LambdaFunctionSortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL"
+      ]
+    },
+    "LambdaLayerAggregation":{
+      "type":"structure",
+      "members":{
+        "functionNames":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The names of the AWS Lambda functions associated with the layers.</p>"
+        },
+        "layerArns":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Lambda function layer. </p>"
+        },
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs for the AWS Lambda function layers.</p>"
+        },
+        "sortBy":{
+          "shape":"LambdaLayerSortBy",
+          "documentation":"<p>The finding severity to use for sorting the results.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to use for sorting the results.</p>"
+        }
+      },
+      "documentation":"<p>The details that define a findings aggregation based on an AWS Lambda function's layers.</p>"
+    },
+    "LambdaLayerAggregationResponse":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "functionName",
+        "layerArn",
+        "resourceId"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the AWS Lambda function layer.</p>"
+        },
+        "functionName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The names of the AWS Lambda functions associated with the layers.</p>"
+        },
+        "layerArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Lambda function layer.</p>"
+        },
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Resource ID of the AWS Lambda function layer.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"}
+      },
+      "documentation":"<p>A response that contains the results of an AWS Lambda function layer finding aggregation.</p>"
+    },
+    "LambdaLayerArn":{
+      "type":"string",
+      "pattern":"^arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+:[0-9]+$"
+    },
+    "LambdaLayerList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":0
+    },
+    "LambdaLayerSortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL"
+      ]
+    },
+    "LambdaVpcConfig":{
+      "type":"structure",
+      "members":{
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The VPC security groups and subnets that are attached to an AWS Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html\">VPC Settings</a>.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>A list of VPC subnet IDs.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC.</p>"
+        }
+      },
+      "documentation":"<p>The VPC security groups and subnets that are attached to an AWS Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html\">VPC Settings</a>.</p>"
+    },
+    "LayerList":{
+      "type":"list",
+      "member":{"shape":"LambdaLayerArn"},
+      "max":5,
+      "min":1
+    },
     "ListAccountPermissionsMaxResults":{
       "type":"integer",
+      "box":true,
       "max":1024,
       "min":1
     },
@@ -2804,8 +3153,7 @@
       "members":{
         "maxResults":{
           "shape":"ListAccountPermissionsMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2833,6 +3181,7 @@
     },
     "ListCoverageMaxResults":{
       "type":"integer",
+      "box":true,
       "max":200,
       "min":1
     },
@@ -2845,8 +3194,7 @@
         },
         "maxResults":{
           "shape":"ListCoverageMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2898,8 +3246,7 @@
         },
         "totalCounts":{
           "shape":"Long",
-          "documentation":"<p>The total number for all groups.</p>",
-          "box":true
+          "documentation":"<p>The total number for all groups.</p>"
         }
       }
     },
@@ -2908,8 +3255,7 @@
       "members":{
         "maxResults":{
           "shape":"ListDelegatedAdminMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2932,11 +3278,13 @@
     },
     "ListDelegatedAdminMaxResults":{
       "type":"integer",
+      "box":true,
       "max":5,
       "min":1
     },
     "ListFilterMaxResults":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -2953,8 +3301,7 @@
         },
         "maxResults":{
           "shape":"ListFilterMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2978,6 +3325,7 @@
     },
     "ListFindingAggregationsMaxResults":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -2999,8 +3347,7 @@
         },
         "maxResults":{
           "shape":"ListFindingAggregationsMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3028,6 +3375,7 @@
     },
     "ListFindingsMaxResults":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -3040,8 +3388,7 @@
         },
         "maxResults":{
           "shape":"ListFindingsMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3068,6 +3415,7 @@
     },
     "ListMembersMaxResults":{
       "type":"integer",
+      "box":true,
       "max":50,
       "min":1
     },
@@ -3076,8 +3424,7 @@
       "members":{
         "maxResults":{
           "shape":"ListMembersMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3085,8 +3432,7 @@
         },
         "onlyAssociated":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether to list only currently associated members if <code>True</code> or to list all members within the organization if <code>False</code>.</p>",
-          "box":true
+          "documentation":"<p>Specifies whether to list only currently associated members if <code>True</code> or to list all members within the organization if <code>False</code>.</p>"
         }
       }
     },
@@ -3126,6 +3472,7 @@
     },
     "ListUsageTotalsMaxResults":{
       "type":"integer",
+      "box":true,
       "max":500,
       "min":1
     },
@@ -3142,8 +3489,7 @@
         },
         "maxResults":{
           "shape":"ListUsageTotalsMaxResults",
-          "documentation":"<p>The maximum number of results to return in the response.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "nextToken":{
           "shape":"ListUsageTotalsNextToken",
@@ -3164,7 +3510,10 @@
         }
       }
     },
-    "Long":{"type":"long"},
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MapComparison":{
       "type":"string",
       "enum":["EQUALS"]
@@ -3301,13 +3650,11 @@
       "members":{
         "lowerInclusive":{
           "shape":"Double",
-          "documentation":"<p>The lowest number to be included in the filter.</p>",
-          "box":true
+          "documentation":"<p>The lowest number to be included in the filter.</p>"
         },
         "upperInclusive":{
           "shape":"Double",
-          "documentation":"<p>The highest number to be included in the filter.</p>",
-          "box":true
+          "documentation":"<p>The highest number to be included in the filter.</p>"
         }
       },
       "documentation":"<p>An object that describes the details of a number filter.</p>"
@@ -3395,6 +3742,7 @@
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the package release to filter on.</p>"
         },
+        "sourceLambdaLayerArn":{"shape":"StringFilter"},
         "sourceLayerHash":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the source layer hash to filter on.</p>"
@@ -3449,6 +3797,13 @@
         "CRITICAL",
         "HIGH",
         "ALL"
+      ]
+    },
+    "PackageType":{
+      "type":"string",
+      "enum":[
+        "IMAGE",
+        "ZIP"
       ]
     },
     "PackageVersion":{
@@ -3537,6 +3892,7 @@
     },
     "Port":{
       "type":"integer",
+      "box":true,
       "max":65535,
       "min":0
     },
@@ -3549,13 +3905,11 @@
       "members":{
         "begin":{
           "shape":"Port",
-          "documentation":"<p>The beginning port in a port range.</p>",
-          "box":true
+          "documentation":"<p>The beginning port in a port range.</p>"
         },
         "end":{
           "shape":"Port",
-          "documentation":"<p>The ending port in a port range.</p>",
-          "box":true
+          "documentation":"<p>The ending port in a port range.</p>"
         }
       },
       "documentation":"<p>Details about the port range associated with a finding.</p>"
@@ -3565,13 +3919,11 @@
       "members":{
         "beginInclusive":{
           "shape":"Port",
-          "documentation":"<p>The port number the port range begins at.</p>",
-          "box":true
+          "documentation":"<p>The port number the port range begins at.</p>"
         },
         "endInclusive":{
           "shape":"Port",
-          "documentation":"<p>The port number the port range ends at.</p>",
-          "box":true
+          "documentation":"<p>The port number the port range ends at.</p>"
         }
       },
       "documentation":"<p>An object that describes the details of a port range filter.</p>"
@@ -3673,8 +4025,7 @@
         },
         "affectedImages":{
           "shape":"Long",
-          "documentation":"<p>The number of container images impacted by the findings.</p>",
-          "box":true
+          "documentation":"<p>The number of container images impacted by the findings.</p>"
         },
         "repository":{
           "shape":"NonEmptyString",
@@ -3740,6 +4091,10 @@
         "awsEcrContainerImage":{
           "shape":"AwsEcrContainerImageDetails",
           "documentation":"<p>An object that contains details about the Amazon ECR container image involved in the finding.</p>"
+        },
+        "awsLambdaFunction":{
+          "shape":"AwsLambdaFunctionDetails",
+          "documentation":"<p>A summary of the information about an AWS Lambda function affected by a finding.</p>"
         }
       },
       "documentation":"<p>Contains details about the resource involved in the finding.</p>"
@@ -3748,7 +4103,7 @@
       "type":"string",
       "max":341,
       "min":10,
-      "pattern":"(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$)"
+      "pattern":"(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$))"
     },
     "ResourceList":{
       "type":"list",
@@ -3783,6 +4138,10 @@
         "ecrRepository":{
           "shape":"EcrRepositoryMetadata",
           "documentation":"<p>An object that contains details about the repository an Amazon ECR image resides in.</p>"
+        },
+        "lambdaFunction":{
+          "shape":"LambdaFunctionMetadata",
+          "documentation":"<p>An object that contains metadata details for an AWS Lambda function.</p>"
         }
       },
       "documentation":"<p>An object that contains details about the metadata for an Amazon ECR resource.</p>"
@@ -3791,7 +4150,8 @@
       "type":"string",
       "enum":[
         "EC2",
-        "ECR"
+        "ECR",
+        "LAMBDA"
       ]
     },
     "ResourceState":{
@@ -3808,7 +4168,8 @@
         "ecr":{
           "shape":"State",
           "documentation":"<p>An object detailing the state of Amazon Inspector scanning for Amazon ECR resources.</p>"
-        }
+        },
+        "lambda":{"shape":"State"}
       },
       "documentation":"<p>Details the state of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
     },
@@ -3826,6 +4187,10 @@
         "ecr":{
           "shape":"Status",
           "documentation":"<p>The status of Amazon Inspector scanning for Amazon ECR resources.</p>"
+        },
+        "lambda":{
+          "shape":"Status",
+          "documentation":"<p>The status of Amazon Inspector scanning for AWS Lambda function resources.</p>"
         }
       },
       "documentation":"<p>Details the status of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
@@ -3835,7 +4200,24 @@
       "enum":[
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER_IMAGE",
-        "AWS_ECR_REPOSITORY"
+        "AWS_ECR_REPOSITORY",
+        "AWS_LAMBDA_FUNCTION"
+      ]
+    },
+    "Runtime":{
+      "type":"string",
+      "enum":[
+        "NODEJS",
+        "NODEJS_12_X",
+        "NODEJS_14_X",
+        "NODEJS_16_X",
+        "JAVA_8",
+        "JAVA_8_AL2",
+        "JAVA_11",
+        "PYTHON_3_7",
+        "PYTHON_3_8",
+        "PYTHON_3_9",
+        "UNSUPPORTED"
       ]
     },
     "ScanStatus":{
@@ -3881,7 +4263,9 @@
         "EC2_INSTANCE_STOPPED",
         "PENDING_DISABLE",
         "NO_INVENTORY",
-        "STALE_INVENTORY"
+        "STALE_INVENTORY",
+        "EXCLUDED_BY_TAG",
+        "UNSUPPORTED_RUNTIME"
       ]
     },
     "ScanType":{
@@ -3891,11 +4275,22 @@
         "PACKAGE"
       ]
     },
+    "SecurityGroupId":{
+      "type":"string",
+      "pattern":"^sg-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
+    },
+    "SecurityGroupIdList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
     "Service":{
       "type":"string",
       "enum":[
         "EC2",
-        "ECR"
+        "ECR",
+        "LAMBDA"
       ]
     },
     "ServiceQuotaExceededException":{
@@ -3934,23 +4329,19 @@
       "members":{
         "all":{
           "shape":"Long",
-          "documentation":"<p>The total count of findings from all severities.</p>",
-          "box":true
+          "documentation":"<p>The total count of findings from all severities.</p>"
         },
         "critical":{
           "shape":"Long",
-          "documentation":"<p>The total count of critical severity findings.</p>",
-          "box":true
+          "documentation":"<p>The total count of critical severity findings.</p>"
         },
         "high":{
           "shape":"Long",
-          "documentation":"<p>The total count of high severity findings.</p>",
-          "box":true
+          "documentation":"<p>The total count of high severity findings.</p>"
         },
         "medium":{
           "shape":"Long",
-          "documentation":"<p>The total count of medium severity findings.</p>",
-          "box":true
+          "documentation":"<p>The total count of medium severity findings.</p>"
         }
       },
       "documentation":"<p>An object that contains the counts of aggregated finding per severity.</p>"
@@ -4083,7 +4474,7 @@
       "members":{
         "comparison":{
           "shape":"StringComparison",
-          "documentation":"<p>The operator to use when comparing values in the filter</p>"
+          "documentation":"<p>The operator to use when comparing values in the filter.</p>"
         },
         "value":{
           "shape":"StringInput",
@@ -4106,6 +4497,16 @@
     "StringList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
+    },
+    "SubnetId":{
+      "type":"string",
+      "pattern":"^subnet-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
+    },
+    "SubnetIdList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":0
     },
     "TagKey":{
       "type":"string",
@@ -4156,14 +4557,21 @@
       "type":"structure",
       "required":["message"],
       "members":{
-        "message":{"shape":"String"}
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
       },
       "documentation":"<p>The limit on the number of requests per second was exceeded.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
       },
-      "exception":true
+      "exception":true,
+      "retryable":{"throttling":true}
     },
     "Timestamp":{"type":"timestamp"},
     "TitleAggregation":{
@@ -4333,13 +4741,11 @@
         },
         "estimatedMonthlyCost":{
           "shape":"MonthlyCostEstimate",
-          "documentation":"<p>The estimated monthly cost of Amazon Inspector.</p>",
-          "default":0
+          "documentation":"<p>The estimated monthly cost of Amazon Inspector.</p>"
         },
         "total":{
           "shape":"UsageValue",
-          "documentation":"<p>The total of usage.</p>",
-          "default":0
+          "documentation":"<p>The total of usage.</p>"
         },
         "type":{
           "shape":"UsageType",
@@ -4355,7 +4761,7 @@
     "UsageAccountIdList":{
       "type":"list",
       "member":{"shape":"UsageAccountId"},
-      "max":5000,
+      "max":7000,
       "min":1
     },
     "UsageList":{
@@ -4385,7 +4791,8 @@
       "enum":[
         "EC2_INSTANCE_HOURS",
         "ECR_INITIAL_SCAN",
-        "ECR_RESCAN"
+        "ECR_RESCAN",
+        "LAMBDA_FUNCTION_HOURS"
       ]
     },
     "UsageValue":{
@@ -4446,6 +4853,14 @@
         "OTHER"
       ]
     },
+    "Version":{
+      "type":"string",
+      "pattern":"^\\$LATEST|[0-9]+$"
+    },
+    "VpcId":{
+      "type":"string",
+      "pattern":"^vpc-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
+    },
     "VulnerabilityId":{
       "type":"string",
       "max":128,
@@ -4468,8 +4883,7 @@
         },
         "epoch":{
           "shape":"PackageEpoch",
-          "documentation":"<p>The epoch of the vulnerable package.</p>",
-          "default":0
+          "documentation":"<p>The epoch of the vulnerable package.</p>"
         },
         "filePath":{
           "shape":"FilePath",
@@ -4494,6 +4908,10 @@
         "remediation":{
           "shape":"VulnerablePackageRemediation",
           "documentation":"<p>The code to run in your environment to update packages with a fix available.</p>"
+        },
+        "sourceLambdaLayerArn":{
+          "shape":"LambdaLayerArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the AWS Lambda function affected by a finding.</p>"
         },
         "sourceLayerHash":{
           "shape":"SourceLayerHash",

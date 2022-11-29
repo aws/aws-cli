@@ -596,7 +596,7 @@
         {"shape":"InternalServerError"},
         {"shape":"VolumeNotFound"}
       ],
-      "documentation":"<p>Returns an Amazon FSx for OpenZFS volume to the state saved by the specified snapshot. </p>",
+      "documentation":"<p>Returns an Amazon FSx for OpenZFS volume to the state saved by the specified snapshot.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -685,6 +685,7 @@
         {"shape":"BadRequest"},
         {"shape":"UnsupportedOperation"},
         {"shape":"IncompatibleParameterError"},
+        {"shape":"InvalidNetworkSettings"},
         {"shape":"InternalServerError"},
         {"shape":"FileSystemNotFound"},
         {"shape":"MissingFileSystemConfiguration"},
@@ -844,7 +845,7 @@
     },
     "AdministrativeActionType":{
       "type":"string",
-      "documentation":"<p>Describes the type of administrative action, as follows:</p> <ul> <li> <p> <code>FILE_SYSTEM_UPDATE</code> - A file system update administrative action initiated from the Amazon FSx console, API (<code>UpdateFileSystem</code>), or CLI (<code>update-file-system</code>).</p> </li> <li> <p> <code>STORAGE_OPTIMIZATION</code> - After the <code>FILE_SYSTEM_UPDATE</code> task to increase a file system's storage capacity has been completed successfully, a <code>STORAGE_OPTIMIZATION</code> task starts. </p> <ul> <li> <p>For Windows and ONTAP, storage optimization is the process of migrating the file system data to newer larger disks.</p> </li> <li> <p>For Lustre, storage optimization consists of rebalancing the data across the existing and newly added file servers.</p> </li> </ul> <p>You can track the storage-optimization progress using the <code>ProgressPercent</code> property. When <code>STORAGE_OPTIMIZATION</code> has been completed successfully, the parent <code>FILE_SYSTEM_UPDATE</code> action status changes to <code>COMPLETED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSx for Windows File Server User Guide</i>, <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>Amazon FSx for Lustre User Guide</i>, and <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-storage-capacity.html\">Managing storage capacity and provisioned IOPS</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p> </li> <li> <p> <code>FILE_SYSTEM_ALIAS_ASSOCIATION</code> - A file system update to associate a new Domain Name System (DNS) alias with the file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_AssociateFileSystemAliases.html\"> AssociateFileSystemAliases</a>.</p> </li> <li> <p> <code>FILE_SYSTEM_ALIAS_DISASSOCIATION</code> - A file system update to disassociate a DNS alias from the file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DisassociateFileSystemAliases.html\">DisassociateFileSystemAliases</a>.</p> </li> <li> <p> <code>VOLUME_UPDATE</code> - A volume update to an Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS volume initiated from the Amazon FSx console, API (<code>UpdateVolume</code>), or CLI (<code>update-volume</code>).</p> </li> <li> <p> <code>SNAPSHOT_UPDATE</code> - A snapshot update to an Amazon FSx for OpenZFS volume initiated from the Amazon FSx console, API (<code>UpdateSnapshot</code>), or CLI (<code>update-snapshot</code>).</p> </li> <li> <p> <code>RELEASE_NFS_V3_LOCKS</code> - Tracks the release of Network File System (NFS) V3 locks on an Amazon FSx for OpenZFS file system. </p> </li> </ul>",
+      "documentation":"<p>Describes the type of administrative action, as follows:</p> <ul> <li> <p> <code>FILE_SYSTEM_UPDATE</code> - A file system update administrative action initiated from the Amazon FSx console, API (<code>UpdateFileSystem</code>), or CLI (<code>update-file-system</code>).</p> </li> <li> <p> <code>STORAGE_OPTIMIZATION</code> - After the <code>FILE_SYSTEM_UPDATE</code> task to increase a file system's storage capacity has been completed successfully, a <code>STORAGE_OPTIMIZATION</code> task starts. </p> <ul> <li> <p>For Windows and ONTAP, storage optimization is the process of migrating the file system data to newer larger disks.</p> </li> <li> <p>For Lustre, storage optimization consists of rebalancing the data across the existing and newly added file servers.</p> </li> </ul> <p>You can track the storage-optimization progress using the <code>ProgressPercent</code> property. When <code>STORAGE_OPTIMIZATION</code> has been completed successfully, the parent <code>FILE_SYSTEM_UPDATE</code> action status changes to <code>COMPLETED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSx for Windows File Server User Guide</i>, <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>Amazon FSx for Lustre User Guide</i>, and <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-storage-capacity.html\">Managing storage capacity and provisioned IOPS</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p> </li> <li> <p> <code>FILE_SYSTEM_ALIAS_ASSOCIATION</code> - A file system update to associate a new Domain Name System (DNS) alias with the file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_AssociateFileSystemAliases.html\"> AssociateFileSystemAliases</a>.</p> </li> <li> <p> <code>FILE_SYSTEM_ALIAS_DISASSOCIATION</code> - A file system update to disassociate a DNS alias from the file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DisassociateFileSystemAliases.html\">DisassociateFileSystemAliases</a>.</p> </li> <li> <p> <code>VOLUME_UPDATE</code> - A volume update to an Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS volume initiated from the Amazon FSx console, API (<code>UpdateVolume</code>), or CLI (<code>update-volume</code>).</p> </li> <li> <p> <code>VOLUME_RESTORE</code> - An Amazon FSx for OpenZFS volume is returned to the state saved by the specified snapshot, initiated from an API (<code>RestoreVolumeFromSnapshot</code>) or CLI (<code>restore-volume-from-snapshot</code>).</p> </li> <li> <p> <code>SNAPSHOT_UPDATE</code> - A snapshot update to an Amazon FSx for OpenZFS volume initiated from the Amazon FSx console, API (<code>UpdateSnapshot</code>), or CLI (<code>update-snapshot</code>).</p> </li> <li> <p> <code>RELEASE_NFS_V3_LOCKS</code> - Tracks the release of Network File System (NFS) V3 locks on an Amazon FSx for OpenZFS file system.</p> </li> </ul>",
       "enum":[
         "FILE_SYSTEM_UPDATE",
         "STORAGE_OPTIMIZATION",
@@ -852,7 +853,8 @@
         "FILE_SYSTEM_ALIAS_DISASSOCIATION",
         "VOLUME_UPDATE",
         "SNAPSHOT_UPDATE",
-        "RELEASE_NFS_V3_LOCKS"
+        "RELEASE_NFS_V3_LOCKS",
+        "VOLUME_RESTORE"
       ]
     },
     "AdministrativeActions":{
@@ -1568,7 +1570,7 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default, Amazon FSx selects an unused IP address range for you from the 198.19.* range.</p> <important> <p>The Endpoint IP address range you select for your file system must exist outside the VPC's CIDR range and must be at least /30 or larger.</p> </important>"
+          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API, Amazon FSx selects an unused IP address range for you from the 198.19.* range. By default in the Amazon FSx console, Amazon FSx chooses the last 64 IP addresses from the VPC’s primary CIDR range to use as the endpoint IP address range for the file system. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
         },
         "FsxAdminPassword":{
           "shape":"AdminPassword",
@@ -1588,7 +1590,7 @@
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Sets the throughput capacity for the file system that you're creating. Valid values are 128, 256, 512, 1024, and 2048 MBps.</p>"
+          "documentation":"<p>Sets the throughput capacity for the file system that you're creating. Valid values are 128, 256, 512, 1024, 2048, and 4096 MBps.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"}
       },
@@ -1613,11 +1615,11 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "DeploymentType":{
           "shape":"OpenZFSDeploymentType",
-          "documentation":"<p>Specifies the file system deployment type. Amazon FSx for OpenZFS supports <code>SINGLE_AZ_1</code>. <code>SINGLE_AZ_1</code> deployment type is configured for redundancy within a single Availability Zone.</p>"
+          "documentation":"<p>Specifies the file system deployment type. Single AZ deployment types are configured for redundancy within a single Availability Zone in an Amazon Web Services Region . Valid values are the following:</p> <ul> <li> <p> <code>SINGLE_AZ_1</code>- (Default) Creates file systems with throughput capacities of 64 - 4,096 MB/s. <code>Single_AZ_1</code> is available in all Amazon Web Services Regions where Amazon FSx for OpenZFS is available, except US West (Oregon).</p> </li> <li> <p> <code>SINGLE_AZ_2</code>- Creates file systems with throughput capacities of 160 - 10,240 MB/s using an NVMe L2ARC cache. <code>Single_AZ_2</code> is available only in the US East (N. Virginia), US East (Ohio), US West (Oregon), and Europe (Ireland) Amazon Web Services Regions.</p> </li> </ul> <p>For more information, see: <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/available-aws-regions.html\">Deployment type availability</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/zfs-fs-performance.html\"> File system performance</a>in the<i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Specifies the throughput of an Amazon FSx for OpenZFS file system, measured in megabytes per second (MB/s). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s. You pay for additional throughput capacity that you provision.</p>"
+          "documentation":"<p>Specifies the throughput of an Amazon FSx for OpenZFS file system, measured in megabytes per second (MB/s). Valid values depend on the DeploymentType you choose, as follows:</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code>, valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 160, 320, 640, 1280, 2560, 3840, 5120, 7680, or 10240 MB/s.</p> </li> </ul> <p>You pay for additional throughput capacity that you provision.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"},
@@ -1744,9 +1746,7 @@
     "CreateOntapVolumeConfiguration":{
       "type":"structure",
       "required":[
-        "JunctionPath",
         "SizeInMegabytes",
-        "StorageEfficiencyEnabled",
         "StorageVirtualMachineId"
       ],
       "members":{
@@ -1770,7 +1770,19 @@
           "shape":"StorageVirtualMachineId",
           "documentation":"<p>Specifies the ONTAP SVM in which to create the volume.</p>"
         },
-        "TieringPolicy":{"shape":"TieringPolicy"}
+        "TieringPolicy":{"shape":"TieringPolicy"},
+        "OntapVolumeType":{
+          "shape":"InputOntapVolumeType",
+          "documentation":"<p>Specifies the type of volume you are creating. Valid values are the following:</p> <ul> <li> <p> <code>RW</code> specifies a read/write volume. <code>RW</code> is the default.</p> </li> <li> <p> <code>DP</code> specifies a data-protection volume. A <code>DP</code> volume is read-only and can be used as the destination of a NetApp SnapMirror relationship.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-types\">Volume types</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+        },
+        "SnapshotPolicy":{
+          "shape":"SnapshotPolicy",
+          "documentation":"<p>Specifies the snapshot policy for the volume. There are three built-in snapshot policies:</p> <ul> <li> <p> <code>default</code>: This is the default policy. A maximum of six hourly snapshots taken five minutes past the hour. A maximum of two daily snapshots taken Monday through Saturday at 10 minutes after midnight. A maximum of two weekly snapshots taken every Sunday at 15 minutes after midnight.</p> </li> <li> <p> <code>default-1weekly</code>: This policy is the same as the <code>default</code> policy except that it only retains one snapshot from the weekly schedule.</p> </li> <li> <p> <code>none</code>: This policy does not take any snapshots. This policy can be assigned to volumes to prevent automatic snapshots from being taken.</p> </li> </ul> <p>You can also provide the name of a custom policy that you created with the ONTAP CLI or REST API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/snapshots-ontap.html#snapshot-policies\">Snapshot policies</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+        },
+        "CopyTagsToBackups":{
+          "shape":"Flag",
+          "documentation":"<p>A boolean flag indicating whether tags for the volume should be copied to backups. This value defaults to false. If it's set to true, all tags for the volume are copied to all automatic and user-initiated backups where the user doesn't specify tags. If this value is true, and you specify one or more tags, only the specified tags are copied to backups. If you specify one or more tags when creating a user-initiated backup, no tags are copied from the volume, regardless of this value.</p>"
+        }
       },
       "documentation":"<p>Specifies the configuration of the ONTAP volume that you are creating.</p>"
     },
@@ -2126,7 +2138,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Provides detailed information about the data respository if its <code>Lifecycle</code> is set to <code>MISCONFIGURED</code> or <code>FAILED</code>.</p>"
+      "documentation":"<p>Provides detailed information about the data repository if its <code>Lifecycle</code> is set to <code>MISCONFIGURED</code> or <code>FAILED</code>.</p>"
     },
     "DataRepositoryLifecycle":{
       "type":"string",
@@ -3562,6 +3574,13 @@
       "documentation":"<p>Amazon FSx doesn't support Multi-AZ Windows File Server copy backup in the destination Region, so the copied backup can't be restored.</p>",
       "exception":true
     },
+    "InputOntapVolumeType":{
+      "type":"string",
+      "enum":[
+        "RW",
+        "DP"
+      ]
+    },
     "IntegerNoMax":{
       "type":"integer",
       "max":2147483647,
@@ -3667,7 +3686,7 @@
     },
     "Iops":{
       "type":"long",
-      "max":160000,
+      "max":1000000,
       "min":0
     },
     "IpAddress":{
@@ -3885,7 +3904,7 @@
     "MegabytesPerSecond":{
       "type":"integer",
       "documentation":"<p>The sustained throughput of an Amazon FSx file system in Megabytes per second (MBps).</p>",
-      "max":4096,
+      "max":100000,
       "min":8
     },
     "MetadataStorageCapacity":{
@@ -4071,6 +4090,14 @@
         "OntapVolumeType":{
           "shape":"OntapVolumeType",
           "documentation":"<p>Specifies the type of volume. Valid values are the following:</p> <ul> <li> <p> <code>RW</code> specifies a read/write volume. <code>RW</code> is the default.</p> </li> <li> <p> <code>DP</code> specifies a data-protection volume. You can protect data by replicating it to data-protection mirror copies. If a disaster occurs, you can use these data-protection mirror copies to recover data.</p> </li> <li> <p> <code>LS</code> specifies a load-sharing mirror volume. A load-sharing mirror reduces the network traffic to a FlexVol volume by providing additional read-only access to clients.</p> </li> </ul>"
+        },
+        "SnapshotPolicy":{
+          "shape":"SnapshotPolicy",
+          "documentation":"<p>Specifies the snapshot policy for the volume. There are three built-in snapshot policies:</p> <ul> <li> <p> <code>default</code>: This is the default policy. A maximum of six hourly snapshots taken five minutes past the hour. A maximum of two daily snapshots taken Monday through Saturday at 10 minutes after midnight. A maximum of two weekly snapshots taken every Sunday at 15 minutes after midnight.</p> </li> <li> <p> <code>default-1weekly</code>: This policy is the same as the <code>default</code> policy except that it only retains one snapshot from the weekly schedule.</p> </li> <li> <p> <code>none</code>: This policy does not take any snapshots. This policy can be assigned to volumes to prevent automatic snapshots from being taken.</p> </li> </ul> <p>You can also provide the name of a custom policy that you created with the ONTAP CLI or REST API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/snapshots-ontap.html#snapshot-policies\">Snapshot policies</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+        },
+        "CopyTagsToBackups":{
+          "shape":"Flag",
+          "documentation":"<p>A boolean flag indicating whether tags for the volume should be copied to backups. This value defaults to false. If it's set to true, all tags for the volume are copied to all automatic and user-initiated backups where the user doesn't specify tags. If this value is true, and you specify one or more tags, only the specified tags are copied to backups. If you specify one or more tags when creating a user-initiated backup, no tags are copied from the volume, regardless of this value.</p>"
         }
       },
       "documentation":"<p>The configuration of an Amazon FSx for NetApp ONTAP volume.</p>"
@@ -4159,7 +4186,10 @@
     },
     "OpenZFSDeploymentType":{
       "type":"string",
-      "enum":["SINGLE_AZ_1"]
+      "enum":[
+        "SINGLE_AZ_1",
+        "SINGLE_AZ_2"
+      ]
     },
     "OpenZFSFileSystemConfiguration":{
       "type":"structure",
@@ -4176,11 +4206,11 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "DeploymentType":{
           "shape":"OpenZFSDeploymentType",
-          "documentation":"<p>Specifies the file-system deployment type. Amazon FSx for OpenZFS supports <code>SINGLE_AZ_1</code>. <code>SINGLE_AZ_1</code> is a file system configured for a single Availability Zone (AZ) of redundancy. </p>"
+          "documentation":"<p>Specifies the file-system deployment type. Amazon FSx for OpenZFS supports&#x2028; <code>SINGLE_AZ_1</code> and <code>SINGLE_AZ_2</code>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p>"
+          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps).</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"},
@@ -4240,7 +4270,7 @@
     "OpenZFSUserAndGroupQuotas":{
       "type":"list",
       "member":{"shape":"OpenZFSUserOrGroupQuota"},
-      "max":100
+      "max":500
     },
     "OpenZFSUserOrGroupQuota":{
       "type":"structure",
@@ -4311,6 +4341,18 @@
         "UserAndGroupQuotas":{
           "shape":"OpenZFSUserAndGroupQuotas",
           "documentation":"<p>An object specifying how much storage users or groups can use on the volume.</p>"
+        },
+        "RestoreToSnapshot":{
+          "shape":"SnapshotId",
+          "documentation":"<p>Specifies the ID of the snapshot to which the volume was restored.</p>"
+        },
+        "DeleteIntermediateSnaphots":{
+          "shape":"Flag",
+          "documentation":"<p>A Boolean value indicating whether snapshots between the current state and the specified snapshot should be deleted when a volume is restored from snapshot.</p>"
+        },
+        "DeleteClonedVolumes":{
+          "shape":"Flag",
+          "documentation":"<p>A Boolean value indicating whether dependent clone volumes created from intermediate snapshots should be deleted when a volume is restored from snapshot.</p>"
         }
       },
       "documentation":"<p>The configuration of an Amazon FSx for OpenZFS volume.</p>"
@@ -4449,7 +4491,7 @@
         },
         "Options":{
           "shape":"RestoreOpenZFSVolumeOptions",
-          "documentation":"<p>The settings used when restoring the specified volume from snapshot. </p> <ul> <li> <p> <code>DELETE_INTERMEDIATE_SNAPSHOTS</code> - Deletes snapshots between the current state and the specified snapshot. If there are intermediate snapshots and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> <li> <p> <code>DELETE_CLONED_VOLUMES</code> - Deletes any dependent clone volumes created from intermediate snapshots. If there are any dependent clone volumes and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> </ul>"
+          "documentation":"<p>The settings used when restoring the specified volume from snapshot.</p> <ul> <li> <p> <code>DELETE_INTERMEDIATE_SNAPSHOTS</code> - Deletes snapshots between the current state and the specified snapshot. If there are intermediate snapshots and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> <li> <p> <code>DELETE_CLONED_VOLUMES</code> - Deletes any dependent clone volumes created from intermediate snapshots. If there are any dependent clone volumes and this option isn't used, <code>RestoreVolumeFromSnapshot</code> fails.</p> </li> </ul>"
         }
       }
     },
@@ -4463,6 +4505,10 @@
         "Lifecycle":{
           "shape":"VolumeLifecycle",
           "documentation":"<p>The lifecycle state of the volume being restored.</p>"
+        },
+        "AdministrativeActions":{
+          "shape":"AdministrativeActions",
+          "documentation":"<p>A list of administrative actions for the file system that are in process or waiting to be processed. Administrative actions describe changes to the Amazon FSx system.</p>"
         }
       }
     },
@@ -4722,6 +4768,11 @@
       "documentation":"<p>No Amazon FSx snapshots were found based on the supplied parameters.</p>",
       "exception":true
     },
+    "SnapshotPolicy":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "Snapshots":{
       "type":"list",
       "member":{"shape":"Snapshot"},
@@ -4792,10 +4843,6 @@
         "StorageVirtualMachineId":{
           "shape":"StorageVirtualMachineId",
           "documentation":"<p>The SVM's system generated unique ID.</p>"
-        },
-        "Subtype":{
-          "shape":"StorageVirtualMachineSubtype",
-          "documentation":"<p>Describes the SVM's subtype.</p>"
         },
         "UUID":{
           "shape":"UUID",
@@ -4889,15 +4936,6 @@
         "UNIX",
         "NTFS",
         "MIXED"
-      ]
-    },
-    "StorageVirtualMachineSubtype":{
-      "type":"string",
-      "enum":[
-        "DEFAULT",
-        "DP_DESTINATION",
-        "SYNC_DESTINATION",
-        "SYNC_SOURCE"
       ]
     },
     "StorageVirtualMachines":{
@@ -5219,7 +5257,15 @@
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Specifies the throughput of an FSx for NetApp ONTAP file system, measured in megabytes per second (MBps). Valid values are 128, 256, 512, 1024, or 2048 MB/s.</p>"
+          "documentation":"<p>Specifies the throughput of an FSx for NetApp ONTAP file system, measured in megabytes per second (MBps). Valid values are 128, 256, 512, 1024, 2048, and 4096 MBps.</p>"
+        },
+        "AddRouteTableIds":{
+          "shape":"RouteTableIds",
+          "documentation":"<p>(Multi-AZ only) A list of IDs of new virtual private cloud (VPC) route tables to associate (add) with your Amazon FSx for NetApp ONTAP file system.</p>"
+        },
+        "RemoveRouteTableIds":{
+          "shape":"RouteTableIds",
+          "documentation":"<p>(Multi-AZ only) A list of IDs of existing virtual private cloud (VPC) route tables to disassociate (remove) from your Amazon FSx for NetApp ONTAP file system. You can use the API operation to retrieve the list of VPC route table IDs for a file system.</p>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for NetApp ONTAP file system.</p>"
@@ -5239,7 +5285,7 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>The throughput of an Amazon FSx file system, measured in megabytes per second (MBps). Valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p>"
+          "documentation":"<p>The throughput of an Amazon FSx for OpenZFS file system, measured in megabytes per second&#x2028; (MB/s). Valid values depend on the DeploymentType you choose, as follows:</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code>, valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 160, 320, 640, 1280, 2560, 3840, 5120, 7680, or 10240 MB/s.</p> </li> </ul>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"}
@@ -5338,6 +5384,14 @@
         "TieringPolicy":{
           "shape":"TieringPolicy",
           "documentation":"<p>Update the volume's data tiering policy.</p>"
+        },
+        "SnapshotPolicy":{
+          "shape":"SnapshotPolicy",
+          "documentation":"<p>Specifies the snapshot policy for the volume. There are three built-in snapshot policies:</p> <ul> <li> <p> <code>default</code>: This is the default policy. A maximum of six hourly snapshots taken five minutes past the hour. A maximum of two daily snapshots taken Monday through Saturday at 10 minutes after midnight. A maximum of two weekly snapshots taken every Sunday at 15 minutes after midnight.</p> </li> <li> <p> <code>default-1weekly</code>: This policy is the same as the <code>default</code> policy except that it only retains one snapshot from the weekly schedule.</p> </li> <li> <p> <code>none</code>: This policy does not take any snapshots. This policy can be assigned to volumes to prevent automatic snapshots from being taken.</p> </li> </ul> <p>You can also provide the name of a custom policy that you created with the ONTAP CLI or REST API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/snapshots-ontap.html#snapshot-policies\">Snapshot policies</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+        },
+        "CopyTagsToBackups":{
+          "shape":"Flag",
+          "documentation":"<p>A boolean flag indicating whether tags for the volume should be copied to backups. This value defaults to false. If it's set to true, all tags for the volume are copied to all automatic and user-initiated backups where the user doesn't specify tags. If this value is true, and you specify one or more tags, only the specified tags are copied to backups. If you specify one or more tags when creating a user-initiated backup, no tags are copied from the volume, regardless of this value.</p>"
         }
       },
       "documentation":"<p>Used to specify changes to the ONTAP configuration for the volume you are updating.</p>"
@@ -5506,7 +5560,7 @@
         },
         "AdministrativeActions":{
           "shape":"AdministrativeActions",
-          "documentation":"<p>A list of administrative actions for the file system that are in process or waiting to be processed. Administrative actions describe changes to the Amazon FSx system that you initiated.</p>"
+          "documentation":"<p>A list of administrative actions for the volume that are in process or waiting to be processed. Administrative actions describe changes to the volume that you have initiated using the <code>UpdateVolume</code> action.</p>"
         },
         "OpenZFSConfiguration":{
           "shape":"OpenZFSVolumeConfiguration",

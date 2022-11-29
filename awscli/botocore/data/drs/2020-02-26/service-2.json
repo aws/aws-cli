@@ -407,6 +407,26 @@
       ],
       "documentation":"<p>Causes the data replication initiation sequence to begin immediately upon next Handshake for the specified Source Server ID, regardless of when the previous initiation started. This command will work only if the Source Server is stalled or is in a DISCONNECTED or STOPPED state.</p>"
     },
+    "ReverseReplication":{
+      "name":"ReverseReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ReverseReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"ReverseReplicationRequest"},
+      "output":{"shape":"ReverseReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Start replication to origin / target region - applies only to protected instances that originated in EC2. For recovery instances on target region - starts replication back to origin region. For failback instances on origin region - starts replication to target region to re-protect them. </p>"
+    },
     "StartFailbackLaunch":{
       "name":"StartFailbackLaunch",
       "http":{
@@ -444,6 +464,24 @@
       ],
       "documentation":"<p>Launches Recovery Instances for the specified Source Servers. For each Source Server you may choose a point in time snapshot to launch from, or use an on demand snapshot.</p>"
     },
+    "StartReplication":{
+      "name":"StartReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StartReplicationRequest"},
+      "output":{"shape":"StartReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Starts replication for a stopped Source Server. This action would make the Source Server protected again and restart billing for it.</p>"
+    },
     "StopFailback":{
       "name":"StopFailback",
       "http":{
@@ -459,6 +497,24 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Stops the failback process for a specified Recovery Instance. This changes the Failback State of the Recovery Instance back to FAILBACK_NOT_STARTED.</p>"
+    },
+    "StopReplication":{
+      "name":"StopReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StopReplicationRequest"},
+      "output":{"shape":"StopReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Stops replication for a Source Server. This action would make the Source Server unprotected, delete its existing snapshots and stop billing for it.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -639,6 +695,18 @@
       "member":{"shape":"Account"},
       "max":50,
       "min":0
+    },
+    "AwsAvailabilityZone":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9][a-z]$"
+    },
+    "AwsRegion":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9]$"
     },
     "Boolean":{
       "type":"boolean",
@@ -1397,6 +1465,13 @@
         "NOT_EXTENDED"
       ]
     },
+    "FailbackLaunchType":{
+      "type":"string",
+      "enum":[
+        "RECOVERY",
+        "DRILL"
+      ]
+    },
     "FailbackReplicationError":{
       "type":"string",
       "enum":[
@@ -1408,7 +1483,19 @@
         "FAILED_TO_DOWNLOAD_REPLICATION_SOFTWARE_TO_FAILBACK_CLIENT",
         "FAILED_TO_CONFIGURE_REPLICATION_SOFTWARE",
         "FAILED_TO_PAIR_AGENT_WITH_REPLICATION_SOFTWARE",
-        "FAILED_TO_ESTABLISH_AGENT_REPLICATOR_SOFTWARE_COMMUNICATION"
+        "FAILED_TO_ESTABLISH_AGENT_REPLICATOR_SOFTWARE_COMMUNICATION",
+        "FAILED_GETTING_REPLICATION_STATE",
+        "SNAPSHOTS_FAILURE",
+        "FAILED_TO_CREATE_SECURITY_GROUP",
+        "FAILED_TO_LAUNCH_REPLICATION_SERVER",
+        "FAILED_TO_BOOT_REPLICATION_SERVER",
+        "FAILED_TO_AUTHENTICATE_WITH_SERVICE",
+        "FAILED_TO_DOWNLOAD_REPLICATION_SOFTWARE",
+        "FAILED_TO_CREATE_STAGING_DISKS",
+        "FAILED_TO_ATTACH_STAGING_DISKS",
+        "FAILED_TO_PAIR_REPLICATION_SERVER_WITH_AGENT",
+        "FAILED_TO_CONNECT_AGENT_TO_REPLICATION_SERVER",
+        "FAILED_TO_START_DATA_TRANSFER"
       ]
     },
     "FailbackState":{
@@ -1418,7 +1505,9 @@
         "FAILBACK_IN_PROGRESS",
         "FAILBACK_READY_FOR_LAUNCH",
         "FAILBACK_COMPLETED",
-        "FAILBACK_ERROR"
+        "FAILBACK_ERROR",
+        "FAILBACK_NOT_READY_FOR_LAUNCH",
+        "FAILBACK_LAUNCH_STATE_NOT_AVAILABLE"
       ]
     },
     "GetFailbackReplicationConfigurationRequest":{
@@ -1953,6 +2042,13 @@
       },
       "documentation":"<p>Operating System.</p>"
     },
+    "OriginEnvironment":{
+      "type":"string",
+      "enum":[
+        "ON_PREMISES",
+        "AWS"
+      ]
+    },
     "PITPolicy":{
       "type":"list",
       "member":{"shape":"PITPolicyRule"},
@@ -2059,6 +2155,10 @@
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>The ID of the Job that created the Recovery Instance.</p>"
+        },
+        "originEnvironment":{
+          "shape":"OriginEnvironment",
+          "documentation":"<p>Environment (On Premises / AWS) of the instance that the recovery instance originated from. </p>"
         },
         "pointInTimeSnapshotDateTime":{
           "shape":"ISO8601DatetimeString",
@@ -2196,7 +2296,18 @@
         "DOWNLOAD_REPLICATION_SOFTWARE_TO_FAILBACK_CLIENT",
         "CONFIGURE_REPLICATION_SOFTWARE",
         "PAIR_AGENT_WITH_REPLICATION_SOFTWARE",
-        "ESTABLISH_AGENT_REPLICATOR_SOFTWARE_COMMUNICATION"
+        "ESTABLISH_AGENT_REPLICATOR_SOFTWARE_COMMUNICATION",
+        "WAIT",
+        "CREATE_SECURITY_GROUP",
+        "LAUNCH_REPLICATION_SERVER",
+        "BOOT_REPLICATION_SERVER",
+        "AUTHENTICATE_WITH_SERVICE",
+        "DOWNLOAD_REPLICATION_SOFTWARE",
+        "CREATE_STAGING_DISKS",
+        "ATTACH_STAGING_DISKS",
+        "PAIR_REPLICATION_SERVER_WITH_AGENT",
+        "CONNECT_AGENT_TO_REPLICATION_SERVER",
+        "START_DATA_TRANSFER"
       ]
     },
     "RecoveryInstanceDataReplicationInitiationStepStatus":{
@@ -2225,7 +2336,9 @@
         "PAUSED",
         "RESCAN",
         "STALLED",
-        "DISCONNECTED"
+        "DISCONNECTED",
+        "REPLICATION_STATE_NOT_AVAILABLE",
+        "NOT_STARTED"
       ]
     },
     "RecoveryInstanceDisk":{
@@ -2278,6 +2391,10 @@
         "failbackJobID":{
           "shape":"JobID",
           "documentation":"<p>The Job ID of the last failback log for this Recovery Instance.</p>"
+        },
+        "failbackLaunchType":{
+          "shape":"FailbackLaunchType",
+          "documentation":"<p>The launch type (Recovery / Drill) of the last launch for the failback replication of this recovery instance.</p>"
         },
         "failbackToOriginalServer":{
           "shape":"Boolean",
@@ -2503,7 +2620,7 @@
         },
         "optimizedStagingDiskType":{
           "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",
-          "documentation":"<p>The Staging Disk EBS volume type to be used during replication when <code>stagingDiskType</code> is set to Auto. This is a read-only field.</p>"
+          "documentation":"<p>When <code>stagingDiskType</code> is set to Auto, this field shows the current staging disk EBS volume type as it is constantly updated by the service. This is a read-only field.</p>"
         },
         "stagingDiskType":{
           "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",
@@ -2620,6 +2737,14 @@
       "type":"list",
       "member":{"shape":"ReplicationConfigurationTemplate"}
     },
+    "ReplicationDirection":{
+      "type":"string",
+      "documentation":"<p>Replication direction designates if this is a failover replication, or a failback replication. When a DRS agent is installed on an instance, the replication direction is failover. In cases where a recovery launch was made in the recovery location and a new recovery instance was created, and then a failback replication was initiated from that recovery instance back to the origin location, then the replication direction will be failback.</p>",
+      "enum":[
+        "FAILOVER",
+        "FAILBACK"
+      ]
+    },
     "ReplicationServersSecurityGroupsIDs":{
       "type":"list",
       "member":{"shape":"SecurityGroupID"},
@@ -2654,6 +2779,25 @@
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>The ID of the Source Server whose data replication should be retried.</p>"
+        }
+      }
+    },
+    "ReverseReplicationRequest":{
+      "type":"structure",
+      "required":["recoveryInstanceID"],
+      "members":{
+        "recoveryInstanceID":{
+          "shape":"RecoveryInstanceID",
+          "documentation":"<p>The ID of the Recovery Instance that we want to reverse the replication for.</p>"
+        }
+      }
+    },
+    "ReverseReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "reversedDirectionSourceServerArn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>ARN of created SourceServer.</p>"
         }
       }
     },
@@ -2696,6 +2840,24 @@
       "type":"string",
       "max":128,
       "min":0
+    },
+    "SourceCloudProperties":{
+      "type":"structure",
+      "members":{
+        "originAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>AWS Account ID for an EC2-originated Source Server.</p>"
+        },
+        "originAvailabilityZone":{
+          "shape":"AwsAvailabilityZone",
+          "documentation":"<p>AWS Availability Zone for an EC2-originated Source Server.</p>"
+        },
+        "originRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>AWS Region for an EC2-originated Source Server.</p>"
+        }
+      },
+      "documentation":"<p>Properties of the cloud environment where this Source Server originated from.</p>"
     },
     "SourceProperties":{
       "type":"structure",
@@ -2757,6 +2919,18 @@
         "recoveryInstanceId":{
           "shape":"RecoveryInstanceID",
           "documentation":"<p>The ID of the Recovery Instance associated with this Source Server.</p>"
+        },
+        "replicationDirection":{
+          "shape":"ReplicationDirection",
+          "documentation":"<p>Replication direction of the Source Server.</p>"
+        },
+        "reversedDirectionSourceServerArn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>For EC2-originated Source Servers which have been failed over and then failed back, this value will mean the ARN of the Source Server on the opposite replication direction.</p>"
+        },
+        "sourceCloudProperties":{
+          "shape":"SourceCloudProperties",
+          "documentation":"<p>Source cloud properties of the Source Server.</p>"
         },
         "sourceProperties":{
           "shape":"SourceProperties",
@@ -2917,6 +3091,25 @@
         }
       }
     },
+    "StartReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The ID of the Source Server to start replication for.</p>"
+        }
+      }
+    },
+    "StartReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceServer":{
+          "shape":"SourceServer",
+          "documentation":"<p>The Source Server that this action was targeted on.</p>"
+        }
+      }
+    },
     "StopFailbackRequest":{
       "type":"structure",
       "required":["recoveryInstanceID"],
@@ -2924,6 +3117,25 @@
         "recoveryInstanceID":{
           "shape":"RecoveryInstanceID",
           "documentation":"<p>The ID of the Recovery Instance we want to stop failback for.</p>"
+        }
+      }
+    },
+    "StopReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The ID of the Source Server to stop replication for.</p>"
+        }
+      }
+    },
+    "StopReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceServer":{
+          "shape":"SourceServer",
+          "documentation":"<p>The Source Server that this action was targeted on.</p>"
         }
       }
     },

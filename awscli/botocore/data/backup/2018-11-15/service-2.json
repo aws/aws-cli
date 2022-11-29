@@ -11,6 +11,25 @@
     "uid":"backup-2018-11-15"
   },
   "operations":{
+    "CancelLegalHold":{
+      "name":"CancelLegalHold",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/legal-holds/{legalHoldId}",
+        "responseCode":201
+      },
+      "input":{"shape":"CancelLegalHoldInput"},
+      "output":{"shape":"CancelLegalHoldOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidResourceStateException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>This action removes the specified legal hold on a recovery point. This action can only be performed by a user with sufficient permissions.</p>",
+      "idempotent":true
+    },
     "CreateBackupPlan":{
       "name":"CreateBackupPlan",
       "http":{
@@ -81,6 +100,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates a framework with one or more controls. A framework is a collection of controls that you can use to evaluate your backup practices. By using pre-built customizable controls to define your policies, you can evaluate whether your backup practices comply with your policies and which resources are not yet in compliance.</p>",
+      "idempotent":true
+    },
+    "CreateLegalHold":{
+      "name":"CreateLegalHold",
+      "http":{
+        "method":"POST",
+        "requestUri":"/legal-holds/"
+      },
+      "input":{"shape":"CreateLegalHoldInput"},
+      "output":{"shape":"CreateLegalHoldOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>This action creates a legal hold on a recovery point (backup). A legal hold is a restraint on altering or deleting a backup until an authorized user cancels the legal hold. Any actions to delete or disassociate a recovery point will fail with an error if one or more active legal holds are on the recovery point.</p>",
       "idempotent":true
     },
     "CreateReportPlan":{
@@ -229,7 +265,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Deletes the recovery point specified by a recovery point ID.</p> <p>If the recovery point ID belongs to a continuous backup, calling this endpoint deletes the existing continuous backup and stops future continuous backup.</p>",
+      "documentation":"<p>Deletes the recovery point specified by a recovery point ID.</p> <p>If the recovery point ID belongs to a continuous backup, calling this endpoint deletes the existing continuous backup and stops future continuous backup.</p> <p>When an IAM role's permissions are insufficient to call this API, the service sends back an HTTP 200 response with an empty HTTP body, but the recovery point is not deleted. Instead, it enters an <code>EXPIRED</code> state.</p> <p> <code>EXPIRED</code> recovery points can be deleted with this API once the IAM role has the <code>iam:CreateServiceLinkedRole</code> action. To learn more about adding this role, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/deleting-backups.html#deleting-backups-troubleshooting\"> Troubleshooting manual deletions</a>.</p> <p>If the user or role is deleted or the permission within the role is removed, the deletion will not be successful and will enter an <code>EXPIRED</code> state.</p>",
       "idempotent":true
     },
     "DeleteReportPlan":{
@@ -444,6 +480,23 @@
       ],
       "documentation":"<p>Deletes the specified continuous backup recovery point from Backup and releases control of that continuous backup to the source service, such as Amazon RDS. The source service will continue to create and retain continuous backups using the lifecycle that you specified in your original backup plan.</p> <p>Does not support snapshot backup recovery points.</p>"
     },
+    "DisassociateRecoveryPointFromParent":{
+      "name":"DisassociateRecoveryPointFromParent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/parentAssociation",
+        "responseCode":204
+      },
+      "input":{"shape":"DisassociateRecoveryPointFromParentInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>This action to a specific child (nested) recovery point removes the relationship between the specified recovery point and its parent (composite) recovery point.</p>"
+    },
     "ExportBackupPlanTemplate":{
       "name":"ExportBackupPlanTemplate",
       "http":{
@@ -559,6 +612,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns event notifications for the specified backup vault.</p>",
+      "idempotent":true
+    },
+    "GetLegalHold":{
+      "name":"GetLegalHold",
+      "http":{
+        "method":"GET",
+        "requestUri":"/legal-holds/{legalHoldId}/"
+      },
+      "input":{"shape":"GetLegalHoldInput"},
+      "output":{"shape":"GetLegalHoldOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>This action returns details for a specified legal hold. The details are the body of a legal hold in JSON format, in addition to metadata.</p>",
       "idempotent":true
     },
     "GetRecoveryPointRestoreMetadata":{
@@ -717,6 +787,21 @@
       ],
       "documentation":"<p>Returns a list of all frameworks for an Amazon Web Services account and Amazon Web Services Region.</p>"
     },
+    "ListLegalHolds":{
+      "name":"ListLegalHolds",
+      "http":{
+        "method":"GET",
+        "requestUri":"/legal-holds/"
+      },
+      "input":{"shape":"ListLegalHoldsInput"},
+      "output":{"shape":"ListLegalHoldsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This action returns metadata about active and previous legal holds.</p>",
+      "idempotent":true
+    },
     "ListProtectedResources":{
       "name":"ListProtectedResources",
       "http":{
@@ -749,6 +834,22 @@
       "documentation":"<p>Returns detailed information about the recovery points stored in a backup vault.</p>",
       "idempotent":true
     },
+    "ListRecoveryPointsByLegalHold":{
+      "name":"ListRecoveryPointsByLegalHold",
+      "http":{
+        "method":"GET",
+        "requestUri":"/legal-holds/{legalHoldId}/recovery-points"
+      },
+      "input":{"shape":"ListRecoveryPointsByLegalHoldInput"},
+      "output":{"shape":"ListRecoveryPointsByLegalHoldOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This action returns recovery point ARNs (Amazon Resource Names) of the specified legal hold.</p>",
+      "idempotent":true
+    },
     "ListRecoveryPointsByResource":{
       "name":"ListRecoveryPointsByResource",
       "http":{
@@ -776,7 +877,8 @@
       "output":{"shape":"ListReportJobsOutput"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns details about your report jobs.</p>"
     },
@@ -963,7 +1065,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p>"
+      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p> <p>This action is not supported for the following services: Amazon FSx for Windows File Server, Amazon FSx for Lustre, FSx for ONTAP , Amazon FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon Aurora, and Amazon Neptune.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1232,9 +1334,22 @@
         "BackupType":{
           "shape":"string",
           "documentation":"<p>Represents the type of backup for a backup job.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This uniquely identifies a request to Backup to back up a resource. The return will be the parent (composite) job ID.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating this is a parent (composite) backup job.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a backup job.</p>"
+    },
+    "BackupJobChildJobsInState":{
+      "type":"map",
+      "key":{"shape":"BackupJobState"},
+      "value":{"shape":"Long"}
     },
     "BackupJobState":{
       "type":"string",
@@ -1246,7 +1361,8 @@
         "ABORTED",
         "COMPLETED",
         "FAILED",
-        "EXPIRED"
+        "EXPIRED",
+        "PARTIAL"
       ]
     },
     "BackupJobsList":{
@@ -1400,7 +1516,7 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
         },
         "CompletionWindowMinutes":{
           "shape":"WindowMinutes",
@@ -1450,7 +1566,7 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
         },
         "CompletionWindowMinutes":{
           "shape":"WindowMinutes",
@@ -1653,6 +1769,38 @@
         }
       },
       "documentation":"<p>Contains <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps, which are used to specify a lifecycle for a recovery point.</p> <p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+    },
+    "CancelLegalHoldInput":{
+      "type":"structure",
+      "required":[
+        "LegalHoldId",
+        "CancelDescription"
+      ],
+      "members":{
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>Legal hold ID required to remove the specified legal hold on a recovery point.</p>",
+          "location":"uri",
+          "locationName":"legalHoldId"
+        },
+        "CancelDescription":{
+          "shape":"string",
+          "documentation":"<p>String describing the reason for removing the legal hold.</p>",
+          "location":"querystring",
+          "locationName":"cancelDescription"
+        },
+        "RetainRecordInDays":{
+          "shape":"Long",
+          "documentation":"<p>The integer amount in days specifying amount of days after this API operation to remove legal hold.</p>",
+          "location":"querystring",
+          "locationName":"retainRecordInDays"
+        }
+      }
+    },
+    "CancelLegalHoldOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ComplianceResourceIdList":{
       "type":"list",
@@ -1858,9 +2006,34 @@
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The type of Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This uniquely identifies a request to Backup to copy a resource. The return will be the parent (composite) job ID.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating this is a parent (composite) copy job.</p>"
+        },
+        "CompositeMemberIdentifier":{
+          "shape":"string",
+          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+        },
+        "NumberOfChildJobs":{
+          "shape":"Long",
+          "documentation":"<p>This is the number of child (nested) copy jobs.</p>"
+        },
+        "ChildJobsInState":{
+          "shape":"CopyJobChildJobsInState",
+          "documentation":"<p>This returns the statistics of the included child (nested) copy jobs.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a copy job.</p>"
+    },
+    "CopyJobChildJobsInState":{
+      "type":"map",
+      "key":{"shape":"CopyJobState"},
+      "value":{"shape":"Long"}
     },
     "CopyJobState":{
       "type":"string",
@@ -1868,7 +2041,8 @@
         "CREATED",
         "RUNNING",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "PARTIAL"
       ]
     },
     "CopyJobsList":{
@@ -2042,6 +2216,68 @@
         }
       }
     },
+    "CreateLegalHoldInput":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "Description"
+      ],
+      "members":{
+        "Title":{
+          "shape":"string",
+          "documentation":"<p>This is the string title of the legal hold.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>This is the string description of the legal hold.</p>"
+        },
+        "IdempotencyToken":{
+          "shape":"string",
+          "documentation":"<p>This is a user-chosen string used to distinguish between otherwise identical calls. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+        },
+        "RecoveryPointSelection":{
+          "shape":"RecoveryPointSelection",
+          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Optional tags to include. A tag is a key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters, numbers, spaces, and the following characters: + - = . _ : /. </p>"
+        }
+      }
+    },
+    "CreateLegalHoldOutput":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"string",
+          "documentation":"<p>This is the string title of the legal hold returned after creating the legal hold.</p>"
+        },
+        "Status":{
+          "shape":"LegalHoldStatus",
+          "documentation":"<p>This displays the status of the legal hold returned after creating the legal hold. Statuses can be <code>ACTIVE</code>, <code>PENDING</code>, <code>CANCELED</code>, <code>CANCELING</code>, or <code>FAILED</code>.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>This is the returned string description of the legal hold.</p>"
+        },
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>Legal hold ID returned for the specified legal hold on a recovery point.</p>"
+        },
+        "LegalHoldArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Number) of the created legal hold.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>Time in number format when legal hold was created.</p>"
+        },
+        "RecoveryPointSelection":{
+          "shape":"RecoveryPointSelection",
+          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+        }
+      }
+    },
     "CreateReportPlanInput":{
       "type":"structure",
       "required":[
@@ -2095,6 +2331,24 @@
       }
     },
     "CronExpression":{"type":"string"},
+    "DateRange":{
+      "type":"structure",
+      "required":[
+        "FromDate",
+        "ToDate"
+      ],
+      "members":{
+        "FromDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This value is the beginning date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>"
+        },
+        "ToDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This value is the end date, inclusive.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds (milliseconds are optional).</p>"
+        }
+      },
+      "documentation":"<p>This is a resource filter containing FromDate: DateTime and ToDate: DateTime. Both values are required. Future DateTime values are not permitted.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds ((milliseconds are optional). For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+    },
     "DeleteBackupPlanInput":{
       "type":"structure",
       "required":["BackupPlanId"],
@@ -2354,6 +2608,22 @@
         "BackupType":{
           "shape":"string",
           "documentation":"<p>Represents the actual backup type selected for a backup job. For example, if a successful Windows Volume Shadow Copy Service (VSS) backup was taken, <code>BackupType</code> returns <code>\"WindowsVSS\"</code>. If <code>BackupType</code> is empty, then the backup type was a regular backup.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This returns the parent (composite) resource backup job ID.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This returns the boolean value that a backup job is a parent (composite) job.</p>"
+        },
+        "NumberOfChildJobs":{
+          "shape":"Long",
+          "documentation":"<p>This returns the number of child (nested) backup jobs.</p>"
+        },
+        "ChildJobsInState":{
+          "shape":"BackupJobChildJobsInState",
+          "documentation":"<p>This returns the statistics of the included child (nested) backup jobs.</p>"
         }
       }
     },
@@ -2468,7 +2738,7 @@
         },
         "CreationTime":{
           "shape":"timestamp",
-          "documentation":"<p>The date and time that a framework is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.</p>"
         },
         "DeploymentStatus":{
           "shape":"string",
@@ -2589,7 +2859,7 @@
         },
         "Status":{
           "shape":"RecoveryPointStatus",
-          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p>"
+          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p>"
         },
         "StatusMessage":{
           "shape":"string",
@@ -2630,6 +2900,18 @@
         "LastRestoreTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ParentRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is an ARN that uniquely identifies a parent (composite) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "CompositeMemberIdentifier":{
+          "shape":"string",
+          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This returns the boolean value that a recovery point is a parent (composite) job.</p>"
         }
       }
     },
@@ -2762,6 +3044,27 @@
         }
       }
     },
+    "DisassociateRecoveryPointFromParentInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "RecoveryPointArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>This is the name of a logical container where the child (nested) recovery point is stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the Amazon Resource Name (ARN) that uniquely identifies the child (nested) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45.</code> </p>",
+          "location":"uri",
+          "locationName":"recoveryPointArn"
+        }
+      }
+    },
     "DisassociateRecoveryPointInput":{
       "type":"structure",
       "required":[
@@ -2829,7 +3132,7 @@
         },
         "CreationTime":{
           "shape":"timestamp",
-          "documentation":"<p>The date and time that a framework is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.</p>"
         },
         "DeploymentStatus":{
           "shape":"string",
@@ -3084,6 +3387,63 @@
         }
       }
     },
+    "GetLegalHoldInput":{
+      "type":"structure",
+      "required":["LegalHoldId"],
+      "members":{
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>This is the ID required to use <code>GetLegalHold</code>. This unique ID is associated with a specific legal hold.</p>",
+          "location":"uri",
+          "locationName":"legalHoldId"
+        }
+      }
+    },
+    "GetLegalHoldOutput":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"string",
+          "documentation":"<p>This is the string title of the legal hold.</p>"
+        },
+        "Status":{
+          "shape":"LegalHoldStatus",
+          "documentation":"<p>This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>This is the returned string description of the legal hold.</p>"
+        },
+        "CancelDescription":{
+          "shape":"string",
+          "documentation":"<p>String describing the reason for removing the legal hold.</p>"
+        },
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>This is the returned ID associated with a specified legal hold.</p>"
+        },
+        "LegalHoldArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the returned framework ARN for the specified legal hold. An Amazon Resource Name (ARN) uniquely identifies a resource. The format of the ARN depends on the resource type.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>Time in number format when legal hold was created.</p>"
+        },
+        "CancellationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>Time in number when legal hold was cancelled.</p>"
+        },
+        "RetainRecordUntil":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the date and time until which the legal hold record will be retained.</p>"
+        },
+        "RecoveryPointSelection":{
+          "shape":"RecoveryPointSelection",
+          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+        }
+      }
+    },
     "GetRecoveryPointRestoreMetadataInput":{
       "type":"structure",
       "required":[
@@ -3192,6 +3552,53 @@
       "exception":true
     },
     "IsEnabled":{"type":"boolean"},
+    "LegalHold":{
+      "type":"structure",
+      "members":{
+        "Title":{
+          "shape":"string",
+          "documentation":"<p>This is the title of a legal hold.</p>"
+        },
+        "Status":{
+          "shape":"LegalHoldStatus",
+          "documentation":"<p>This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.</p>"
+        },
+        "Description":{
+          "shape":"string",
+          "documentation":"<p>This is the description of a legal hold.</p>"
+        },
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>ID of specific legal hold on one or more recovery points.</p>"
+        },
+        "LegalHoldArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is an Amazon Resource Number (ARN) that uniquely identifies the legal hold; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the time in number format when legal hold was created.</p>"
+        },
+        "CancellationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the time in number format when legal hold was cancelled.</p>"
+        }
+      },
+      "documentation":"<p>A legal hold is an administrative tool that helps prevent backups from being deleted while under a hold. While the hold is in place, backups under a hold cannot be deleted and lifecycle policies that would alter the backup status (such as transition to cold storage) are delayed until the legal hold is removed. A backup can have more than one legal hold. Legal holds are applied to one or more backups (also known as recovery points). These backups can be filtered by resource types and by resource IDs.</p>"
+    },
+    "LegalHoldStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "CANCELING",
+        "CANCELED"
+      ]
+    },
+    "LegalHoldsList":{
+      "type":"list",
+      "member":{"shape":"LegalHold"}
+    },
     "Lifecycle":{
       "type":"structure",
       "members":{
@@ -3291,6 +3698,12 @@
           "documentation":"<p>Returns only backup jobs completed before a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
           "location":"querystring",
           "locationName":"completeBefore"
+        },
+        "ByParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is a filter to list child (nested) jobs based on parent job ID.</p>",
+          "location":"querystring",
+          "locationName":"parentJobId"
         }
       }
     },
@@ -3545,6 +3958,12 @@
           "documentation":"<p>Returns only copy jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
           "location":"querystring",
           "locationName":"completeAfter"
+        },
+        "ByParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is a filter to list child (nested) jobs based on parent job ID.</p>",
+          "location":"querystring",
+          "locationName":"parentJobId"
         }
       }
     },
@@ -3588,6 +4007,36 @@
         "NextToken":{
           "shape":"string",
           "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListLegalHoldsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of resource list items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListLegalHoldsOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        },
+        "LegalHolds":{
+          "shape":"LegalHoldsList",
+          "documentation":"<p>This is an array of returned legal holds, both active and previous.</p>"
         }
       }
     },
@@ -3676,6 +4125,12 @@
           "documentation":"<p>Returns only recovery points that were created after the specified timestamp.</p>",
           "location":"querystring",
           "locationName":"createdAfter"
+        },
+        "ByParentRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This returns only recovery points that match the specified parent (composite) recovery point Amazon Resource Name (ARN).</p>",
+          "location":"querystring",
+          "locationName":"parentRecoveryPointArn"
         }
       }
     },
@@ -3689,6 +4144,43 @@
         "RecoveryPoints":{
           "shape":"RecoveryPointByBackupVaultList",
           "documentation":"<p>An array of objects that contain detailed information about recovery points saved in a backup vault.</p>"
+        }
+      }
+    },
+    "ListRecoveryPointsByLegalHoldInput":{
+      "type":"structure",
+      "required":["LegalHoldId"],
+      "members":{
+        "LegalHoldId":{
+          "shape":"string",
+          "documentation":"<p>This is the ID of the legal hold.</p>",
+          "location":"uri",
+          "locationName":"legalHoldId"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>This is the next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>This is the maximum number of resource list items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRecoveryPointsByLegalHoldOutput":{
+      "type":"structure",
+      "members":{
+        "RecoveryPoints":{
+          "shape":"RecoveryPointsList",
+          "documentation":"<p>This is a list of the recovery points returned by <code>ListRecoveryPointsByLegalHold</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>This return is the next item following a partial list of returned resources.</p>"
         }
       }
     },
@@ -4036,7 +4528,7 @@
         },
         "BackupVaultEvents":{
           "shape":"BackupVaultEvents",
-          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>Ignore the list below because it includes deprecated events. Refer to the list above.</p> </note>"
+          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below shows items that are deprecated events (for reference) and are no longer in use. They are no longer supported and will not return statuses or notifications. Refer to the list above for current supported events.</p> </note>"
         }
       }
     },
@@ -4114,6 +4606,18 @@
         "LastRestoreTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a recovery point was last restored, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastRestoreTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ParentRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+        },
+        "CompositeMemberIdentifier":{
+          "shape":"string",
+          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating this is a parent (composite) recovery point.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -4152,6 +4656,14 @@
         "BackupVaultName":{
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating this is a parent (composite) recovery point.</p>"
+        },
+        "ParentRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -4182,6 +4694,31 @@
       },
       "documentation":"<p>Contains information about the backup plan and rule that Backup used to initiate the recovery point backup.</p>"
     },
+    "RecoveryPointMember":{
+      "type":"structure",
+      "members":{
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+        }
+      },
+      "documentation":"<p>This is a recovery point which is a child (nested) recovery point of a parent (composite) recovery point. These recovery points can be disassociated from their parent (composite) recovery point, in which case they will no longer be a member.</p>"
+    },
+    "RecoveryPointSelection":{
+      "type":"structure",
+      "members":{
+        "VaultNames":{
+          "shape":"VaultNames",
+          "documentation":"<p>These are the names of the vaults in which the selected recovery points are contained.</p>"
+        },
+        "ResourceIdentifiers":{
+          "shape":"ResourceIdentifiers",
+          "documentation":"<p>These are the resources included in the resource selection (including type of resources and vaults).</p>"
+        },
+        "DateRange":{"shape":"DateRange"}
+      },
+      "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+    },
     "RecoveryPointStatus":{
       "type":"string",
       "enum":[
@@ -4190,6 +4727,10 @@
         "DELETING",
         "EXPIRED"
       ]
+    },
+    "RecoveryPointsList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPointMember"}
     },
     "ReportDeliveryChannel":{
       "type":"structure",
@@ -4340,6 +4881,18 @@
         "NumberOfFrameworks":{
           "shape":"integer",
           "documentation":"<p>The number of frameworks a report covers.</p>"
+        },
+        "Accounts":{
+          "shape":"stringList",
+          "documentation":"<p>These are the accounts to be included in the report.</p>"
+        },
+        "OrganizationUnits":{
+          "shape":"stringList",
+          "documentation":"<p>These are the Organizational Units to be included in the report.</p>"
+        },
+        "Regions":{
+          "shape":"stringList",
+          "documentation":"<p>These are the Regions to be included in the report.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a report setting.</p>"
@@ -4347,6 +4900,10 @@
     "ResourceArns":{
       "type":"list",
       "member":{"shape":"ARN"}
+    },
+    "ResourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"string"}
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4504,7 +5061,7 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
         },
         "CompleteWindowMinutes":{
           "shape":"WindowMinutes",
@@ -4538,6 +5095,10 @@
         "CreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a returned boolean value indicating this is a parent (composite) backup job.</p>"
         }
       }
     },
@@ -4583,6 +5144,10 @@
         "CreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a copy job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a returned boolean value indicating this is a parent (composite) copy job.</p>"
         }
       }
     },
@@ -4629,7 +5194,7 @@
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -4803,7 +5368,7 @@
         },
         "CreationTime":{
           "shape":"timestamp",
-          "documentation":"<p>The date and time that a framework is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The date and time that a framework is created, in ISO 8601 representation. The value of <code>CreationTime</code> is accurate to milliseconds. For example, 2020-07-10T15:00:00.000-08:00 represents the 10th of July 2020 at 3:00 PM 8 hours behind UTC.</p>"
         }
       }
     },
@@ -4920,6 +5485,10 @@
           "documentation":"<p>The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         }
       }
+    },
+    "VaultNames":{
+      "type":"list",
+      "member":{"shape":"string"}
     },
     "WindowMinutes":{"type":"long"},
     "boolean":{"type":"boolean"},

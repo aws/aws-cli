@@ -121,6 +121,32 @@
           "expected": "InProgress"
         }
       ]
+    },
+    "PublishedVersionActive": {
+      "delay": 5,
+      "maxAttempts": 312,
+      "operation": "GetFunctionConfiguration",
+      "description": "Waits for the published version's State to be Active. This waiter uses GetFunctionConfiguration API. This should be used after new version is published.",
+      "acceptors": [
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "State",
+          "expected": "Active"
+        },
+        {
+          "state": "failure",
+          "matcher": "path",
+          "argument": "State",
+          "expected": "Failed"
+        },
+        {
+          "state": "retry",
+          "matcher": "path",
+          "argument": "State",
+          "expected": "Pending"
+        }
+      ]
     }
   }
 }

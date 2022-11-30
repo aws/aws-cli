@@ -1244,7 +1244,7 @@
           "documentation":"<p>An \"exists\" operator to match for the filter used to create the rule. </p>"
         }
       },
-      "documentation":"<p>The criteria to use in the filter that defines the archive rule.</p>"
+      "documentation":"<p>The criteria to use in the filter that defines the archive rule. For more information on available filter keys, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-reference-filter-keys.html\">IAM Access Analyzer filter keys</a>.</p>"
     },
     "DeleteAnalyzerRequest":{
       "type":"structure",
@@ -1457,6 +1457,10 @@
         "accessPointArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the access point that generated the finding. The ARN format depends on whether the ARN represents an access point or a multi-region access point.</p>"
+        },
+        "accessPointAccount":{
+          "shape":"String",
+          "documentation":"<p>The account of the cross-account access point that generated the finding.</p>"
         }
       },
       "documentation":"<p>Includes details about how the access that generated the finding is granted. This is populated for Amazon S3 bucket findings.</p>"
@@ -1470,7 +1474,8 @@
       "enum":[
         "POLICY",
         "BUCKET_ACL",
-        "S3_ACCESS_POINT"
+        "S3_ACCESS_POINT",
+        "S3_ACCESS_POINT_ACCOUNT"
       ]
     },
     "FindingStatus":{
@@ -2409,8 +2414,7 @@
       "members":{
         "index":{
           "shape":"Integer",
-          "documentation":"<p>Refers to an index in a JSON array.</p>",
-          "box":true
+          "documentation":"<p>Refers to an index in a JSON array.</p>"
         },
         "key":{
           "shape":"String",

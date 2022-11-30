@@ -321,6 +321,20 @@
       ],
       "documentation":"<p>Creates a flow definition.</p>"
     },
+    "CreateHub":{
+      "name":"CreateHub",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateHubRequest"},
+      "output":{"shape":"CreateHubResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Create a hub.</p>"
+    },
     "CreateHumanTaskUi":{
       "name":"CreateHumanTaskUi",
       "http":{
@@ -378,6 +392,20 @@
       ],
       "documentation":"<p>Creates a version of the SageMaker image specified by <code>ImageName</code>. The version represents the Amazon Elastic Container Registry (ECR) container image specified by <code>BaseImage</code>.</p>"
     },
+    "CreateInferenceExperiment":{
+      "name":"CreateInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInferenceExperimentRequest"},
+      "output":{"shape":"CreateInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p> Creates an inference experiment using the configurations specified in the request. </p> <p> Use this API to schedule an experiment to compare model variants on a Amazon SageMaker inference endpoint. For more information about inference experiments, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html\">Shadow tests</a>. </p> <p> Amazon SageMaker begins your experiment at the scheduled time and routes traffic to your endpoint's model variants based on your specified configuration. </p> <p> While the experiment is in progress or after it has concluded, you can view metrics that compare your model variants. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests-view-monitor-edit.html\">View, monitor, and edit shadow tests</a>. </p>"
+    },
     "CreateInferenceRecommendationsJob":{
       "name":"CreateInferenceRecommendationsJob",
       "http":{
@@ -432,6 +460,35 @@
         {"shape":"ResourceInUse"}
       ],
       "documentation":"<p>Creates the definition for a model bias job.</p>"
+    },
+    "CreateModelCard":{
+      "name":"CreateModelCard",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateModelCardRequest"},
+      "output":{"shape":"CreateModelCardResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an Amazon SageMaker Model Card.</p> <p>For information about how to use model cards, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards.html\">Amazon SageMaker Model Card</a>.</p>"
+    },
+    "CreateModelCardExportJob":{
+      "name":"CreateModelCardExportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateModelCardExportJobRequest"},
+      "output":{"shape":"CreateModelCardExportJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an Amazon SageMaker Model Card export job.</p>"
     },
     "CreateModelExplainabilityJobDefinition":{
       "name":"CreateModelExplainabilityJobDefinition",
@@ -592,6 +649,20 @@
         {"shape":"ResourceLimitExceeded"}
       ],
       "documentation":"<p>Creates a machine learning (ML) project that can contain one or more templates that set up an ML pipeline from training to deploying an approved model.</p>"
+    },
+    "CreateSpace":{
+      "name":"CreateSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSpaceRequest"},
+      "output":{"shape":"CreateSpaceResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Creates a space used for real time collaboration in a Domain.</p>"
     },
     "CreateStudioLifecycleConfig":{
       "name":"CreateStudioLifecycleConfig",
@@ -914,6 +985,32 @@
       ],
       "documentation":"<p>Deletes the specified flow definition.</p>"
     },
+    "DeleteHub":{
+      "name":"DeleteHub",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteHubRequest"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Delete a hub.</p>"
+    },
+    "DeleteHubContent":{
+      "name":"DeleteHubContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteHubContentRequest"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Delete the contents of a hub.</p>"
+    },
     "DeleteHumanTaskUi":{
       "name":"DeleteHumanTaskUi",
       "http":{
@@ -955,6 +1052,20 @@
       ],
       "documentation":"<p>Deletes a version of a SageMaker image. The container image the version represents isn't deleted.</p>"
     },
+    "DeleteInferenceExperiment":{
+      "name":"DeleteInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteInferenceExperimentRequest"},
+      "output":{"shape":"DeleteInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes an inference experiment.</p> <note> <p> This operation does not delete your endpoint, variants, or any underlying resources. This operation only deletes the metadata of your experiment. </p> </note>"
+    },
     "DeleteModel":{
       "name":"DeleteModel",
       "http":{
@@ -975,6 +1086,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Deletes an Amazon SageMaker model bias job definition.</p>"
+    },
+    "DeleteModelCard":{
+      "name":"DeleteModelCard",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteModelCardRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an Amazon SageMaker Model Card.</p>"
     },
     "DeleteModelExplainabilityJobDefinition":{
       "name":"DeleteModelExplainabilityJobDefinition",
@@ -1087,6 +1211,19 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Delete the specified project.</p>"
+    },
+    "DeleteSpace":{
+      "name":"DeleteSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSpaceRequest"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Used to delete a space.</p>"
     },
     "DeleteStudioLifecycleConfig":{
       "name":"DeleteStudioLifecycleConfig",
@@ -1443,6 +1580,32 @@
       ],
       "documentation":"<p>Returns information about the specified flow definition.</p>"
     },
+    "DescribeHub":{
+      "name":"DescribeHub",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeHubRequest"},
+      "output":{"shape":"DescribeHubResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describe a hub.</p>"
+    },
+    "DescribeHubContent":{
+      "name":"DescribeHubContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeHubContentRequest"},
+      "output":{"shape":"DescribeHubContentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describe the content of a hub.</p>"
+    },
     "DescribeHumanTaskUi":{
       "name":"DescribeHumanTaskUi",
       "http":{
@@ -1494,6 +1657,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Describes a version of a SageMaker image.</p>"
+    },
+    "DescribeInferenceExperiment":{
+      "name":"DescribeInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInferenceExperimentRequest"},
+      "output":{"shape":"DescribeInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details about an inference experiment.</p>"
     },
     "DescribeInferenceRecommendationsJob":{
       "name":"DescribeInferenceRecommendationsJob",
@@ -1556,6 +1732,32 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Returns a description of a model bias job definition.</p>"
+    },
+    "DescribeModelCard":{
+      "name":"DescribeModelCard",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeModelCardRequest"},
+      "output":{"shape":"DescribeModelCardResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describes the content, creation time, and security configuration of an Amazon SageMaker Model Card.</p>"
+    },
+    "DescribeModelCardExportJob":{
+      "name":"DescribeModelCardExportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeModelCardExportJobRequest"},
+      "output":{"shape":"DescribeModelCardExportJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describes an Amazon SageMaker Model Card export job.</p>"
     },
     "DescribeModelExplainabilityJobDefinition":{
       "name":"DescribeModelExplainabilityJobDefinition",
@@ -1697,6 +1899,19 @@
       "input":{"shape":"DescribeProjectInput"},
       "output":{"shape":"DescribeProjectOutput"},
       "documentation":"<p>Describes the details of a project.</p>"
+    },
+    "DescribeSpace":{
+      "name":"DescribeSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSpaceRequest"},
+      "output":{"shape":"DescribeSpaceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Describes the space.</p>"
     },
     "DescribeStudioLifecycleConfig":{
       "name":"DescribeStudioLifecycleConfig",
@@ -1891,6 +2106,21 @@
       "input":{"shape":"GetSearchSuggestionsRequest"},
       "output":{"shape":"GetSearchSuggestionsResponse"},
       "documentation":"<p>An auto-complete API for the search functionality in the Amazon SageMaker console. It returns suggestions of possible matches for the property name to use in <code>Search</code> queries. Provides suggestions for <code>HyperParameters</code>, <code>Tags</code>, and <code>Metrics</code>.</p>"
+    },
+    "ImportHubContent":{
+      "name":"ImportHubContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportHubContentRequest"},
+      "output":{"shape":"ImportHubContentResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Import hub content.</p>"
     },
     "ListActions":{
       "name":"ListActions",
@@ -2127,6 +2357,42 @@
       "output":{"shape":"ListFlowDefinitionsResponse"},
       "documentation":"<p>Returns information about the flow definitions in your account.</p>"
     },
+    "ListHubContentVersions":{
+      "name":"ListHubContentVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHubContentVersionsRequest"},
+      "output":{"shape":"ListHubContentVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>List hub content versions.</p>"
+    },
+    "ListHubContents":{
+      "name":"ListHubContents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHubContentsRequest"},
+      "output":{"shape":"ListHubContentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>List the contents of a hub.</p>"
+    },
+    "ListHubs":{
+      "name":"ListHubs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHubsRequest"},
+      "output":{"shape":"ListHubsResponse"},
+      "documentation":"<p>List all existing hubs.</p>"
+    },
     "ListHumanTaskUis":{
       "name":"ListHumanTaskUis",
       "http":{
@@ -2169,6 +2435,16 @@
       "input":{"shape":"ListImagesRequest"},
       "output":{"shape":"ListImagesResponse"},
       "documentation":"<p>Lists the images in your account and their properties. The list can be filtered by creation time or modified time, and whether the image name contains a specified string.</p>"
+    },
+    "ListInferenceExperiments":{
+      "name":"ListInferenceExperiments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceExperimentsRequest"},
+      "output":{"shape":"ListInferenceExperimentsResponse"},
+      "documentation":"<p>Returns the list of all inference experiments.</p>"
     },
     "ListInferenceRecommendationsJobSteps":{
       "name":"ListInferenceRecommendationsJobSteps",
@@ -2233,6 +2509,39 @@
       "output":{"shape":"ListModelBiasJobDefinitionsResponse"},
       "documentation":"<p>Lists model bias jobs definitions that satisfy various filters.</p>"
     },
+    "ListModelCardExportJobs":{
+      "name":"ListModelCardExportJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListModelCardExportJobsRequest"},
+      "output":{"shape":"ListModelCardExportJobsResponse"},
+      "documentation":"<p>List the export jobs for the Amazon SageMaker Model Card.</p>"
+    },
+    "ListModelCardVersions":{
+      "name":"ListModelCardVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListModelCardVersionsRequest"},
+      "output":{"shape":"ListModelCardVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>List existing versions of an Amazon SageMaker Model Card.</p>"
+    },
+    "ListModelCards":{
+      "name":"ListModelCards",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListModelCardsRequest"},
+      "output":{"shape":"ListModelCardsResponse"},
+      "documentation":"<p>List existing model cards.</p>"
+    },
     "ListModelExplainabilityJobDefinitions":{
       "name":"ListModelExplainabilityJobDefinitions",
       "http":{
@@ -2292,6 +2601,32 @@
       "input":{"shape":"ListModelsInput"},
       "output":{"shape":"ListModelsOutput"},
       "documentation":"<p>Lists models created with the <code>CreateModel</code> API.</p>"
+    },
+    "ListMonitoringAlertHistory":{
+      "name":"ListMonitoringAlertHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMonitoringAlertHistoryRequest"},
+      "output":{"shape":"ListMonitoringAlertHistoryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Gets a list of past alerts in a model monitoring schedule.</p>"
+    },
+    "ListMonitoringAlerts":{
+      "name":"ListMonitoringAlerts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMonitoringAlertsRequest"},
+      "output":{"shape":"ListMonitoringAlertsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Gets the alerts for a single monitoring schedule.</p>"
     },
     "ListMonitoringExecutions":{
       "name":"ListMonitoringExecutions",
@@ -2401,6 +2736,16 @@
       "input":{"shape":"ListProjectsInput"},
       "output":{"shape":"ListProjectsOutput"},
       "documentation":"<p>Gets a list of the projects in an Amazon Web Services account.</p>"
+    },
+    "ListSpaces":{
+      "name":"ListSpaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSpacesRequest"},
+      "output":{"shape":"ListSpacesResponse"},
+      "documentation":"<p>Lists spaces.</p>"
     },
     "ListStageDevices":{
       "name":"ListStageDevices",
@@ -2644,6 +2989,20 @@
       "input":{"shape":"StartEdgeDeploymentStageRequest"},
       "documentation":"<p>Starts a stage in an edge deployment plan.</p>"
     },
+    "StartInferenceExperiment":{
+      "name":"StartInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartInferenceExperimentRequest"},
+      "output":{"shape":"StartInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Starts an inference experiment.</p>"
+    },
     "StartMonitoringSchedule":{
       "name":"StartMonitoringSchedule",
       "http":{
@@ -2735,6 +3094,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a running hyperparameter tuning job and all running training jobs that the tuning job launched.</p> <p>All model artifacts output from the training jobs are stored in Amazon Simple Storage Service (Amazon S3). All data that the training jobs write to Amazon CloudWatch Logs are still available in CloudWatch. After the tuning job moves to the <code>Stopped</code> state, it releases all reserved resources for the tuning job.</p>"
+    },
+    "StopInferenceExperiment":{
+      "name":"StopInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopInferenceExperimentRequest"},
+      "output":{"shape":"StopInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops an inference experiment.</p>"
     },
     "StopInferenceRecommendationsJob":{
       "name":"StopInferenceRecommendationsJob",
@@ -2996,6 +3369,19 @@
       ],
       "documentation":"<p>Updates the description and parameters of the feature group.</p>"
     },
+    "UpdateHub":{
+      "name":"UpdateHub",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHubRequest"},
+      "output":{"shape":"UpdateHubResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Update a hub.</p>"
+    },
     "UpdateImage":{
       "name":"UpdateImage",
       "http":{
@@ -3010,6 +3396,35 @@
       ],
       "documentation":"<p>Updates the properties of a SageMaker image. To change the image's tags, use the <a>AddTags</a> and <a>DeleteTags</a> APIs.</p>"
     },
+    "UpdateInferenceExperiment":{
+      "name":"UpdateInferenceExperiment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInferenceExperimentRequest"},
+      "output":{"shape":"UpdateInferenceExperimentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p> Updates an inference experiment that you created. The status of the inference experiment has to be either <code>Created</code>, <code>Running</code>. For more information on the status of an inference experiment, see <a>DescribeInferenceExperimentResponse$Status</a>. </p>"
+    },
+    "UpdateModelCard":{
+      "name":"UpdateModelCard",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateModelCardRequest"},
+      "output":{"shape":"UpdateModelCardResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update an Amazon SageMaker Model Card.</p> <important> <p>You cannot update both model card content and model card status in a single call.</p> </important>"
+    },
     "UpdateModelPackage":{
       "name":"UpdateModelPackage",
       "http":{
@@ -3019,6 +3434,20 @@
       "input":{"shape":"UpdateModelPackageInput"},
       "output":{"shape":"UpdateModelPackageOutput"},
       "documentation":"<p>Updates a versioned model.</p>"
+    },
+    "UpdateMonitoringAlert":{
+      "name":"UpdateMonitoringAlert",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMonitoringAlertRequest"},
+      "output":{"shape":"UpdateMonitoringAlertResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Update the parameters of a model monitor alert.</p>"
     },
     "UpdateMonitoringSchedule":{
       "name":"UpdateMonitoringSchedule",
@@ -3095,6 +3524,21 @@
       "input":{"shape":"UpdateProjectInput"},
       "output":{"shape":"UpdateProjectOutput"},
       "documentation":"<p>Updates a machine learning (ML) project that is created from a template that sets up an ML pipeline from training to deploying an approved model.</p> <note> <p>You must not update a project that is in use. If you update the <code>ServiceCatalogProvisioningUpdateDetails</code> of a project that is active or being created, or updated, you may lose resources already created by the project.</p> </note>"
+    },
+    "UpdateSpace":{
+      "name":"UpdateSpace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSpaceRequest"},
+      "output":{"shape":"UpdateSpaceResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Updates the settings of a space.</p>"
     },
     "UpdateTrainingJob":{
       "name":"UpdateTrainingJob",
@@ -3639,6 +4083,10 @@
         "CreationTime":{
           "shape":"CreationTime",
           "documentation":"<p>The creation time.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       },
       "documentation":"<p>Details about an Amazon SageMaker app.</p>"
@@ -3949,7 +4397,7 @@
       "members":{
         "TrialComponentArn":{
           "shape":"TrialComponentArn",
-          "documentation":"<p>The ARN of the trial component.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trial component.</p>"
         },
         "TrialArn":{
           "shape":"TrialArn",
@@ -4473,6 +4921,16 @@
         "Stopping"
       ]
     },
+    "AutoMLJobStepMetadata":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"AutoMLJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AutoML job.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for an AutoML job step.</p>"
+    },
     "AutoMLJobSummaries":{
       "type":"list",
       "member":{"shape":"AutoMLJobSummary"}
@@ -4581,7 +5039,7 @@
       "members":{
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The Amazon Web Services KMS encryption key ID.</p>"
+          "documentation":"<p>The Key Management Service (KMS) encryption key ID.</p>"
         },
         "S3OutputPath":{
           "shape":"S3Uri",
@@ -5657,6 +6115,22 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9-]+$"
     },
+    "CodeRepositories":{
+      "type":"list",
+      "member":{"shape":"CodeRepository"},
+      "max":10
+    },
+    "CodeRepository":{
+      "type":"structure",
+      "required":["RepositoryUrl"],
+      "members":{
+        "RepositoryUrl":{
+          "shape":"RepositoryUrl",
+          "documentation":"<p>The URL of the Git repository.</p>"
+        }
+      },
+      "documentation":"<p>A Git repository that SageMaker automatically displays to users for cloning in the JupyterServer application.</p>"
+    },
     "CodeRepositoryArn":{
       "type":"string",
       "max":2048,
@@ -5795,7 +6269,7 @@
           "documentation":"<p>Parameter values for the tensor collection. The allowed parameters are <code>\"name\"</code>, <code>\"include_regex\"</code>, <code>\"reduction_config\"</code>, <code>\"save_config\"</code>, <code>\"tensor_names\"</code>, and <code>\"save_histogram\"</code>.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the Debugger output tensor collections.</p>"
+      "documentation":"<p>Configuration information for the Amazon SageMaker Debugger output tensor collections.</p>"
     },
     "CollectionConfigurations":{
       "type":"list",
@@ -6292,7 +6766,6 @@
       "type":"structure",
       "required":[
         "DomainId",
-        "UserProfileName",
         "AppType",
         "AppName"
       ],
@@ -6320,6 +6793,10 @@
         "ResourceSpec":{
           "shape":"ResourceSpec",
           "documentation":"<p>The instance type and the Amazon Resource Name (ARN) of the SageMaker image created on the instance.</p> <note> <p>The value of <code>InstanceType</code> passed as part of the <code>ResourceSpec</code> in the <code>CreateApp</code> call overrides the value passed as part of the <code>ResourceSpec</code> configured for the user profile or the domain. If <code>InstanceType</code> is not specified in any of those three <code>ResourceSpec</code> values for a <code>KernelGateway</code> app, the <code>CreateApp</code> call fails with a request validation error.</p> </note>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       }
     },
@@ -6701,6 +7178,10 @@
         "DomainSettings":{
           "shape":"DomainSettings",
           "documentation":"<p>A collection of <code>Domain</code> settings.</p>"
+        },
+        "DefaultSpaceSettings":{
+          "shape":"DefaultSpaceSettings",
+          "documentation":"<p>The default settings used to create a space.</p>"
         }
       }
     },
@@ -6850,6 +7331,10 @@
         "ExplainerConfig":{
           "shape":"ExplainerConfig",
           "documentation":"<p>A member of <code>CreateEndpointConfig</code> that enables explainers.</p>"
+        },
+        "ShadowProductionVariants":{
+          "shape":"ProductionVariantList",
+          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
         }
       }
     },
@@ -7032,6 +7517,49 @@
         }
       }
     },
+    "CreateHubRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubDescription"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to create.</p>"
+        },
+        "HubDescription":{
+          "shape":"HubDescription",
+          "documentation":"<p>A description of the hub.</p>"
+        },
+        "HubDisplayName":{
+          "shape":"HubDisplayName",
+          "documentation":"<p>The display name of the hub.</p>"
+        },
+        "HubSearchKeywords":{
+          "shape":"HubSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub.</p>"
+        },
+        "S3StorageConfig":{
+          "shape":"HubS3StorageConfig",
+          "documentation":"<p>The Amazon S3 storage configuration for the hub.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags to associate with the hub.</p>"
+        }
+      }
+    },
+    "CreateHubResponse":{
+      "type":"structure",
+      "required":["HubArn"],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub.</p>"
+        }
+      }
+    },
     "CreateHumanTaskUiRequest":{
       "type":"structure",
       "required":[
@@ -7170,6 +7698,73 @@
         "ImageVersionArn":{
           "shape":"ImageVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the image version.</p>"
+        }
+      }
+    },
+    "CreateInferenceExperimentRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type",
+        "RoleArn",
+        "EndpointName",
+        "ModelVariants",
+        "ShadowModeConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name for the inference experiment.</p>"
+        },
+        "Type":{
+          "shape":"InferenceExperimentType",
+          "documentation":"<p> The type of the inference experiment that you want to run. The following types of experiments are possible: </p> <ul> <li> <p> <code>ShadowMode</code>: You can use this type to validate a shadow variant. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html\">Shadow tests</a>. </p> </li> </ul>"
+        },
+        "Schedule":{
+          "shape":"InferenceExperimentSchedule",
+          "documentation":"<p> The duration for which you want the inference experiment to run. If you don't specify this field, the experiment automatically concludes after 7 days. </p>"
+        },
+        "Description":{
+          "shape":"InferenceExperimentDescription",
+          "documentation":"<p>A description for the inference experiment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p> The name of the Amazon SageMaker endpoint on which you want to run the inference experiment. </p>"
+        },
+        "ModelVariants":{
+          "shape":"ModelVariantConfigList",
+          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfigSummary</code> object in the array describes the infrastructure configuration for the corresponding variant. </p>"
+        },
+        "DataStorageConfig":{
+          "shape":"InferenceExperimentDataStorageConfig",
+          "documentation":"<p> The storage configuration for the inference experiment. This is an optional parameter that you can use for data capture. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-data-capture.html\">Capture data</a>. </p>"
+        },
+        "ShadowModeConfig":{
+          "shape":"ShadowModeConfig",
+          "documentation":"<p> Shows which variant is the production variant and which variant is the shadow variant. For the shadow variant, also shows the sampling percentage. </p>"
+        },
+        "KmsKey":{
+          "shape":"KmsKeyId",
+          "documentation":"<p> The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint. The <code>KmsKey</code> can be any of the following formats: </p> <ul> <li> <p>KMS key ID</p> <p> <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS key</p> <p> <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>KMS key Alias</p> <p> <code>\"alias/ExampleAlias\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS key Alias</p> <p> <code>\"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias\"</code> </p> </li> </ul> <p> If you use a KMS key ID or an alias of your KMS key, the Amazon SageMaker execution role must include permissions to call <code>kms:Encrypt</code>. If you don't provide a KMS key ID, Amazon SageMaker uses the default KMS key for Amazon S3 for your role's account. Amazon SageMaker uses server-side encryption with KMS managed keys for <code>OutputDataConfig</code>. If you use a bucket policy with an <code>s3:PutObject</code> permission that only allows objects with server-side encryption, set the condition key of <code>s3:x-amz-server-side-encryption</code> to <code>\"aws:kms\"</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html\">KMS managed Encryption Keys</a> in the <i>Amazon Simple Storage Service Developer Guide.</i> </p> <p> The KMS key policy must grant permission to the IAM role that you specify in your <code>CreateEndpoint</code> and <code>UpdateEndpoint</code> requests. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\">Using Key Policies in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> Array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/tagging.html\">Tagging your Amazon Web Services Resources</a>. </p>"
+        }
+      }
+    },
+    "CreateInferenceExperimentResponse":{
+      "type":"structure",
+      "required":["InferenceExperimentArn"],
+      "members":{
+        "InferenceExperimentArn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN for your inference experiment.</p>"
         }
       }
     },
@@ -7340,6 +7935,82 @@
         "JobDefinitionArn":{
           "shape":"MonitoringJobDefinitionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the model bias job.</p>"
+        }
+      }
+    },
+    "CreateModelCardExportJobRequest":{
+      "type":"structure",
+      "required":[
+        "ModelCardName",
+        "ModelCardExportJobName",
+        "OutputConfig"
+      ],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card to export.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card to export. If a version is not provided, then the latest version of the model card is exported.</p>"
+        },
+        "ModelCardExportJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card export job.</p>"
+        },
+        "OutputConfig":{
+          "shape":"ModelCardExportOutputConfig",
+          "documentation":"<p>The model card output configuration that specifies the Amazon S3 path for exporting.</p>"
+        }
+      }
+    },
+    "CreateModelCardExportJobResponse":{
+      "type":"structure",
+      "required":["ModelCardExportJobArn"],
+      "members":{
+        "ModelCardExportJobArn":{
+          "shape":"ModelCardExportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card export job.</p>"
+        }
+      }
+    },
+    "CreateModelCardRequest":{
+      "type":"structure",
+      "required":[
+        "ModelCardName",
+        "Content",
+        "ModelCardStatus"
+      ],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The unique name of the model card.</p>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelCardSecurityConfig",
+          "documentation":"<p>An optional Key Management Service key to encrypt, decrypt, and re-encrypt model card content for regulated workloads with highly sensitive data.</p>"
+        },
+        "Content":{
+          "shape":"ModelCardContent",
+          "documentation":"<p>The content of the model card. Content must be in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards-api-json-schema.html\">model card JSON schema</a> and provided as a string.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Key-value pairs used to manage metadata for model cards.</p>"
+        }
+      }
+    },
+    "CreateModelCardResponse":{
+      "type":"structure",
+      "required":["ModelCardArn"],
+      "members":{
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the successfully created model card.</p>"
         }
       }
     },
@@ -7834,6 +8505,10 @@
         "ExpiresInSeconds":{
           "shape":"ExpiresInSeconds",
           "documentation":"<p>The number of seconds until the pre-signed URL expires. This value defaults to 300.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       }
     },
@@ -7973,6 +8648,40 @@
         }
       }
     },
+    "CreateSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainId",
+        "SpaceName"
+      ],
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to associated with the space. Each tag consists of a key and an optional value. Tag keys must be unique for each resource. Tags are searchable using the <code>Search</code> API.</p>"
+        },
+        "SpaceSettings":{
+          "shape":"SpaceSettings",
+          "documentation":"<p>A collection of space settings.</p>"
+        }
+      }
+    },
+    "CreateSpaceResponse":{
+      "type":"structure",
+      "members":{
+        "SpaceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The space's Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
     "CreateStudioLifecycleConfigRequest":{
       "type":"structure",
       "required":[
@@ -8078,14 +8787,14 @@
         "DebugHookConfig":{"shape":"DebugHookConfig"},
         "DebugRuleConfigurations":{
           "shape":"DebugRuleConfigurations",
-          "documentation":"<p>Configuration information for Debugger rules for debugging output tensors.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger rules for debugging output tensors.</p>"
         },
         "TensorBoardOutputConfig":{"shape":"TensorBoardOutputConfig"},
         "ExperimentConfig":{"shape":"ExperimentConfig"},
         "ProfilerConfig":{"shape":"ProfilerConfig"},
         "ProfilerRuleConfigurations":{
           "shape":"ProfilerRuleConfigurations",
-          "documentation":"<p>Configuration information for Debugger rules for profiling system and framework metrics.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger rules for profiling system and framework metrics.</p>"
         },
         "Environment":{
           "shape":"TrainingEnvironmentMap",
@@ -8689,14 +9398,14 @@
         },
         "HookParameters":{
           "shape":"HookParameters",
-          "documentation":"<p>Configuration information for the Debugger hook parameters.</p>"
+          "documentation":"<p>Configuration information for the Amazon SageMaker Debugger hook parameters.</p>"
         },
         "CollectionConfigurations":{
           "shape":"CollectionConfigurations",
-          "documentation":"<p>Configuration information for Debugger tensor collections. To learn more about how to configure the <code>CollectionConfiguration</code> parameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html\">Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job</a>. </p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger tensor collections. To learn more about how to configure the <code>CollectionConfiguration</code> parameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html\">Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job</a>. </p>"
         }
       },
-      "documentation":"<p>Configuration information for the Debugger hook parameters, metric and tensor collections, and storage paths. To learn more about how to configure the <code>DebugHookConfig</code> parameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html\">Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job</a>.</p>"
+      "documentation":"<p>Configuration information for the Amazon SageMaker Debugger hook parameters, metric and tensor collections, and storage paths. To learn more about how to configure the <code>DebugHookConfig</code> parameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html\">Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job</a>.</p>"
     },
     "DebugRuleConfiguration":{
       "type":"structure",
@@ -8723,7 +9432,7 @@
         },
         "InstanceType":{
           "shape":"ProcessingInstanceType",
-          "documentation":"<p>The instance type to deploy a Debugger custom rule for debugging a training job.</p>"
+          "documentation":"<p>The instance type to deploy a custom rule for debugging a training job.</p>"
         },
         "VolumeSizeInGB":{
           "shape":"OptionalVolumeSizeInGB",
@@ -8779,6 +9488,22 @@
       "max":65535,
       "min":0
     },
+    "DefaultSpaceSettings":{
+      "type":"structure",
+      "members":{
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The execution role for the space.</p>"
+        },
+        "SecurityGroups":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The security groups for the Amazon Virtual Private Cloud that the space uses for communication.</p>"
+        },
+        "JupyterServerAppSettings":{"shape":"JupyterServerAppSettings"},
+        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"}
+      },
+      "documentation":"<p>A collection of settings that apply to spaces created in the Domain.</p>"
+    },
     "DefaultUid":{
       "type":"integer",
       "max":65535,
@@ -8827,7 +9552,6 @@
       "type":"structure",
       "required":[
         "DomainId",
-        "UserProfileName",
         "AppType",
         "AppName"
       ],
@@ -8847,6 +9571,10 @@
         "AppName":{
           "shape":"AppName",
           "documentation":"<p>The name of the app.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       }
     },
@@ -9056,6 +9784,43 @@
       "members":{
       }
     },
+    "DeleteHubContentRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentType",
+        "HubContentName",
+        "HubContentVersion"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub that you want to delete content in.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of content that you want to delete from a hub.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the content that you want to delete from a hub.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the content that you want to delete from a hub.</p>"
+        }
+      }
+    },
+    "DeleteHubRequest":{
+      "type":"structure",
+      "required":["HubName"],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to delete.</p>"
+        }
+      }
+    },
     "DeleteHumanTaskUiRequest":{
       "type":"structure",
       "required":["HumanTaskUiName"],
@@ -9108,6 +9873,26 @@
       "members":{
       }
     },
+    "DeleteInferenceExperimentRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteInferenceExperimentResponse":{
+      "type":"structure",
+      "required":["InferenceExperimentArn"],
+      "members":{
+        "InferenceExperimentArn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN of the deleted inference experiment.</p>"
+        }
+      }
+    },
     "DeleteModelBiasJobDefinitionRequest":{
       "type":"structure",
       "required":["JobDefinitionName"],
@@ -9115,6 +9900,16 @@
         "JobDefinitionName":{
           "shape":"MonitoringJobDefinitionName",
           "documentation":"<p>The name of the model bias job definition to delete.</p>"
+        }
+      }
+    },
+    "DeleteModelCardRequest":{
+      "type":"structure",
+      "required":["ModelCardName"],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card to delete.</p>"
         }
       }
     },
@@ -9245,6 +10040,23 @@
         }
       }
     },
+    "DeleteSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainId",
+        "SpaceName"
+      ],
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        }
+      }
+    },
     "DeleteStudioLifecycleConfigRequest":{
       "type":"structure",
       "required":["StudioLifecycleConfigName"],
@@ -9366,6 +10178,16 @@
           "documentation":"<p>Returns <code>true</code> if the work team was successfully deleted; otherwise, returns <code>false</code>.</p>"
         }
       }
+    },
+    "DependencyCopyPath":{
+      "type":"string",
+      "max":1023,
+      "pattern":".*"
+    },
+    "DependencyOriginPath":{
+      "type":"string",
+      "max":1023,
+      "pattern":".*"
     },
     "DeployedImage":{
       "type":"structure",
@@ -9647,7 +10469,6 @@
       "type":"structure",
       "required":[
         "DomainId",
-        "UserProfileName",
         "AppType",
         "AppName"
       ],
@@ -9667,6 +10488,10 @@
         "AppName":{
           "shape":"AppName",
           "documentation":"<p>The name of the app.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       }
     },
@@ -9716,6 +10541,10 @@
         "ResourceSpec":{
           "shape":"ResourceSpec",
           "documentation":"<p>The instance type and the Amazon Resource Name (ARN) of the SageMaker image created on the instance.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
         }
       }
     },
@@ -9811,7 +10640,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that has read permission to the input data location and write permission to the output data location in Amazon S3.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that has read permission to the input data location and write permission to the output data location in Amazon S3.</p>"
         },
         "AutoMLJobObjective":{
           "shape":"AutoMLJobObjective",
@@ -10352,6 +11181,10 @@
         "SecurityGroupIdForDomainBoundary":{
           "shape":"SecurityGroupId",
           "documentation":"<p>The ID of the security group that authorizes traffic between the <code>RSessionGateway</code> apps and the <code>RStudioServerPro</code> app.</p>"
+        },
+        "DefaultSpaceSettings":{
+          "shape":"DefaultSpaceSettings",
+          "documentation":"<p>The default settings used to create a space.</p>"
         }
       }
     },
@@ -10556,6 +11389,10 @@
         "ExplainerConfig":{
           "shape":"ExplainerConfig",
           "documentation":"<p>The configuration parameters for an explainer.</p>"
+        },
+        "ShadowProductionVariants":{
+          "shape":"ProductionVariantList",
+          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
         }
       }
     },
@@ -10628,6 +11465,10 @@
         "ExplainerConfig":{
           "shape":"ExplainerConfig",
           "documentation":"<p>The configuration parameters for an explainer.</p>"
+        },
+        "ShadowProductionVariants":{
+          "shape":"ProductionVariantSummaryList",
+          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
         }
       }
     },
@@ -10658,7 +11499,7 @@
         },
         "Source":{
           "shape":"ExperimentSource",
-          "documentation":"<p>The ARN of the source and, optionally, the type.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source and, optionally, the type.</p>"
         },
         "Description":{
           "shape":"ExperimentDescription",
@@ -10904,6 +11745,175 @@
         }
       }
     },
+    "DescribeHubContentRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentType",
+        "HubContentName"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub that contains the content to describe.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of content in the hub.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the content to describe.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the content to describe.</p>"
+        }
+      }
+    },
+    "DescribeHubContentResponse":{
+      "type":"structure",
+      "required":[
+        "HubContentName",
+        "HubContentArn",
+        "HubContentVersion",
+        "HubContentType",
+        "DocumentSchemaVersion",
+        "HubName",
+        "HubArn",
+        "HubContentDocument",
+        "HubContentStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub content.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the hub content.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content.</p>"
+        },
+        "DocumentSchemaVersion":{
+          "shape":"DocumentSchemaVersion",
+          "documentation":"<p>The document schema version for the hub content.</p>"
+        },
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub that contains the content.</p>"
+        },
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub that contains the content. </p>"
+        },
+        "HubContentDisplayName":{
+          "shape":"HubContentDisplayName",
+          "documentation":"<p>The display name of the hub content.</p>"
+        },
+        "HubContentDescription":{
+          "shape":"HubContentDescription",
+          "documentation":"<p>A description of the hub content.</p>"
+        },
+        "HubContentMarkdown":{
+          "shape":"HubContentMarkdown",
+          "documentation":"<p>Markdown files associated with the hub content to import.</p>"
+        },
+        "HubContentDocument":{
+          "shape":"HubContentDocument",
+          "documentation":"<p>The hub content document that describes information about the hub content such as type, associated containers, scripts, and more.</p>"
+        },
+        "HubContentSearchKeywords":{
+          "shape":"HubContentSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub content.</p>"
+        },
+        "HubContentDependencies":{
+          "shape":"HubContentDependencyList",
+          "documentation":"<p>The location of any dependencies that the hub content has, such as scripts, model artifacts, datasets, or notebooks.</p>"
+        },
+        "HubContentStatus":{
+          "shape":"HubContentStatus",
+          "documentation":"<p>The status of the hub content.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The failure reason if importing hub content failed.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that hub content was created.</p>"
+        }
+      }
+    },
+    "DescribeHubRequest":{
+      "type":"structure",
+      "required":["HubName"],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to describe.</p>"
+        }
+      }
+    },
+    "DescribeHubResponse":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubArn",
+        "HubStatus",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub.</p>"
+        },
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub.</p>"
+        },
+        "HubDisplayName":{
+          "shape":"HubDisplayName",
+          "documentation":"<p>The display name of the hub.</p>"
+        },
+        "HubDescription":{
+          "shape":"HubDescription",
+          "documentation":"<p>A description of the hub.</p>"
+        },
+        "HubSearchKeywords":{
+          "shape":"HubSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub.</p>"
+        },
+        "S3StorageConfig":{
+          "shape":"HubS3StorageConfig",
+          "documentation":"<p>The Amazon S3 storage configuration for the hub.</p>"
+        },
+        "HubStatus":{
+          "shape":"HubStatus",
+          "documentation":"<p>The status of the hub.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The failure reason if importing hub content failed.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the hub was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the hub was last modified.</p>"
+        }
+      }
+    },
     "DescribeHumanTaskUiRequest":{
       "type":"structure",
       "required":["HumanTaskUiName"],
@@ -11129,6 +12139,93 @@
         "Version":{
           "shape":"ImageVersionNumber",
           "documentation":"<p>The version number.</p>"
+        }
+      }
+    },
+    "DescribeInferenceExperimentRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment to describe.</p>"
+        }
+      }
+    },
+    "DescribeInferenceExperimentResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Type",
+        "Status",
+        "EndpointMetadata",
+        "ModelVariants"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN of the inference experiment being described.</p>"
+        },
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment.</p>"
+        },
+        "Type":{
+          "shape":"InferenceExperimentType",
+          "documentation":"<p>The type of the inference experiment.</p>"
+        },
+        "Schedule":{
+          "shape":"InferenceExperimentSchedule",
+          "documentation":"<p>The duration for which the inference experiment ran or will run.</p>"
+        },
+        "Status":{
+          "shape":"InferenceExperimentStatus",
+          "documentation":"<p> The status of the inference experiment. The following are the possible statuses for an inference experiment: </p> <ul> <li> <p> <code>Creating</code> - Amazon SageMaker is creating your experiment. </p> </li> <li> <p> <code>Created</code> - Amazon SageMaker has finished creating your experiment and it will begin at the scheduled time. </p> </li> <li> <p> <code>Updating</code> - When you make changes to your experiment, your experiment shows as updating. </p> </li> <li> <p> <code>Starting</code> - Amazon SageMaker is beginning your experiment. </p> </li> <li> <p> <code>Running</code> - Your experiment is in progress. </p> </li> <li> <p> <code>Stopping</code> - Amazon SageMaker is stopping your experiment. </p> </li> <li> <p> <code>Completed</code> - Your experiment has completed. </p> </li> <li> <p> <code>Cancelled</code> - When you conclude your experiment early, it shows as canceled. </p> </li> </ul>"
+        },
+        "StatusReason":{
+          "shape":"InferenceExperimentStatusReason",
+          "documentation":"<p>The error message for the inference experiment status result.</p>"
+        },
+        "Description":{
+          "shape":"InferenceExperimentDescription",
+          "documentation":"<p>The description of the inference experiment.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which you created the inference experiment.</p>"
+        },
+        "CompletionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp at which the inference experiment was completed or will complete. </p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which you last modified the inference experiment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+        },
+        "EndpointMetadata":{
+          "shape":"EndpointMetadata",
+          "documentation":"<p>The metadata of the endpoint on which the inference experiment ran.</p>"
+        },
+        "ModelVariants":{
+          "shape":"ModelVariantConfigSummaryList",
+          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfigSummary</code> object in the array describes the infrastructure configuration for deploying the corresponding variant. </p>"
+        },
+        "DataStorageConfig":{
+          "shape":"InferenceExperimentDataStorageConfig",
+          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+        },
+        "ShadowModeConfig":{
+          "shape":"ShadowModeConfig",
+          "documentation":"<p> Shows which variant is a production variant and which variant is a shadow variant. For shadow variants, also shows the sampling percentage. </p>"
+        },
+        "KmsKey":{
+          "shape":"KmsKeyId",
+          "documentation":"<p> The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint. For more information, see <a>CreateInferenceExperimentRequest$KmsKey</a>. </p>"
         }
       }
     },
@@ -11412,6 +12509,137 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that has read permission to the input data location and write permission to the output data location in Amazon S3.</p>"
         },
         "StoppingCondition":{"shape":"MonitoringStoppingCondition"}
+      }
+    },
+    "DescribeModelCardExportJobRequest":{
+      "type":"structure",
+      "required":["ModelCardExportJobArn"],
+      "members":{
+        "ModelCardExportJobArn":{
+          "shape":"ModelCardExportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card export job to describe.</p>"
+        }
+      }
+    },
+    "DescribeModelCardExportJobResponse":{
+      "type":"structure",
+      "required":[
+        "ModelCardExportJobName",
+        "ModelCardExportJobArn",
+        "Status",
+        "ModelCardName",
+        "ModelCardVersion",
+        "OutputConfig",
+        "CreatedAt",
+        "LastModifiedAt"
+      ],
+      "members":{
+        "ModelCardExportJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card export job to describe.</p>"
+        },
+        "ModelCardExportJobArn":{
+          "shape":"ModelCardExportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card export job.</p>"
+        },
+        "Status":{
+          "shape":"ModelCardExportJobStatus",
+          "documentation":"<p>The completion status of the model card export job.</p> <ul> <li> <p> <code>InProgress</code>: The model card export job is in progress.</p> </li> <li> <p> <code>Completed</code>: The model card export job is complete.</p> </li> <li> <p> <code>Failed</code>: The model card export job failed. To see the reason for the failure, see the <code>FailureReason</code> field in the response to a <code>DescribeModelCardExportJob</code> call.</p> </li> </ul>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card that the model export job exports.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card that the model export job exports.</p>"
+        },
+        "OutputConfig":{
+          "shape":"ModelCardExportOutputConfig",
+          "documentation":"<p>The export output details for the model card.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model export job was created.</p>"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model export job was last modified.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The failure reason if the model export job fails.</p>"
+        },
+        "ExportArtifacts":{
+          "shape":"ModelCardExportArtifacts",
+          "documentation":"<p>The exported model card artifacts.</p>"
+        }
+      }
+    },
+    "DescribeModelCardRequest":{
+      "type":"structure",
+      "required":["ModelCardName"],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card to describe.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card to describe. If a version is not provided, then the latest version of the model card is described.</p>"
+        }
+      }
+    },
+    "DescribeModelCardResponse":{
+      "type":"structure",
+      "required":[
+        "ModelCardArn",
+        "ModelCardName",
+        "ModelCardVersion",
+        "Content",
+        "ModelCardStatus",
+        "CreationTime",
+        "CreatedBy"
+      ],
+      "members":{
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card.</p>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card.</p>"
+        },
+        "Content":{
+          "shape":"ModelCardContent",
+          "documentation":"<p>The content of the model card.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelCardSecurityConfig",
+          "documentation":"<p>The security configuration used to protect model card content.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the model card was created.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the model card was last modified.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"},
+        "ModelCardProcessingStatus":{
+          "shape":"ModelCardProcessingStatus",
+          "documentation":"<p>The processing status of model card deletion. The <code>ModelCardProcessingStatus</code> updates throughout the different deletion steps.</p> <ul> <li> <p> <code>DeletePending</code>: Model card deletion request received.</p> </li> <li> <p> <code>DeleteInProgress</code>: Model card deletion is in progress.</p> </li> <li> <p> <code>ContentDeleted</code>: Deleted model card content.</p> </li> <li> <p> <code>ExportJobsDeleted</code>: Deleted all export jobs associated with the model card.</p> </li> <li> <p> <code>DeleteCompleted</code>: Successfully deleted the model card.</p> </li> <li> <p> <code>DeleteFailed</code>: The model card failed to delete.</p> </li> </ul>"
+        }
       }
     },
     "DescribeModelExplainabilityJobDefinitionRequest":{
@@ -12034,7 +13262,7 @@
       "required":["PipelineName"],
       "members":{
         "PipelineName":{
-          "shape":"PipelineName",
+          "shape":"PipelineNameOrArn",
           "documentation":"<p>The name of the pipeline to describe.</p>"
         }
       }
@@ -12258,6 +13486,64 @@
         "LastModifiedBy":{"shape":"UserContext"}
       }
     },
+    "DescribeSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainId",
+        "SpaceName"
+      ],
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        }
+      }
+    },
+    "DescribeSpaceResponse":{
+      "type":"structure",
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The space's Amazon Resource Name (ARN).</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "HomeEfsFileSystemUid":{
+          "shape":"EfsUid",
+          "documentation":"<p>The ID of the space's profile in the Amazon Elastic File System volume.</p>"
+        },
+        "Status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The last modified time.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The failure reason.</p>"
+        },
+        "SpaceSettings":{
+          "shape":"SpaceSettings",
+          "documentation":"<p>A collection of space settings.</p>"
+        }
+      }
+    },
     "DescribeStudioLifecycleConfigRequest":{
       "type":"structure",
       "required":["StudioLifecycleConfigName"],
@@ -12458,21 +13744,21 @@
         "ExperimentConfig":{"shape":"ExperimentConfig"},
         "DebugRuleConfigurations":{
           "shape":"DebugRuleConfigurations",
-          "documentation":"<p>Configuration information for Debugger rules for debugging output tensors.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger rules for debugging output tensors.</p>"
         },
         "TensorBoardOutputConfig":{"shape":"TensorBoardOutputConfig"},
         "DebugRuleEvaluationStatuses":{
           "shape":"DebugRuleEvaluationStatuses",
-          "documentation":"<p>Evaluation status of Debugger rules for debugging on a training job.</p>"
+          "documentation":"<p>Evaluation status of Amazon SageMaker Debugger rules for debugging on a training job.</p>"
         },
         "ProfilerConfig":{"shape":"ProfilerConfig"},
         "ProfilerRuleConfigurations":{
           "shape":"ProfilerRuleConfigurations",
-          "documentation":"<p>Configuration information for Debugger rules for profiling system and framework metrics.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger rules for profiling system and framework metrics.</p>"
         },
         "ProfilerRuleEvaluationStatuses":{
           "shape":"ProfilerRuleEvaluationStatuses",
-          "documentation":"<p>Evaluation status of Debugger rules for profiling on a training job.</p>"
+          "documentation":"<p>Evaluation status of Amazon SageMaker Debugger rules for profiling on a training job.</p>"
         },
         "ProfilingStatus":{
           "shape":"ProfilingStatus",
@@ -12671,6 +13957,10 @@
         "LineageGroupArn":{
           "shape":"LineageGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the lineage group.</p>"
+        },
+        "Sources":{
+          "shape":"TrialComponentSources",
+          "documentation":"<p>A list of the Amazon Resource Name (ARN) and, if applicable, job type for multiple sources of an experiment run.</p>"
         }
       }
     },
@@ -13196,13 +14486,19 @@
       "members":{
         "TrialComponentArn":{
           "shape":"TrialComponentArn",
-          "documentation":"<p>The ARN of the trial component.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trial component.</p>"
         },
         "TrialArn":{
           "shape":"TrialArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the trial.</p>"
         }
       }
+    },
+    "DocumentSchemaVersion":{
+      "type":"string",
+      "max":14,
+      "min":5,
+      "pattern":"^\\d{1,4}.\\d{1,4}.\\d{1,4}$"
     },
     "Dollars":{
       "type":"integer",
@@ -13856,6 +15152,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tags associated with the endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "ShadowProductionVariants":{
+          "shape":"ProductionVariantSummaryList",
+          "documentation":"<p> Array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
         }
       },
       "documentation":"<p>A hosted endpoint for real-time inference.</p>"
@@ -14001,6 +15301,29 @@
       "member":{"shape":"EndpointInputConfiguration"},
       "max":10,
       "min":1
+    },
+    "EndpointMetadata":{
+      "type":"structure",
+      "required":["EndpointName"],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "EndpointConfigName":{
+          "shape":"EndpointConfigName",
+          "documentation":"<p>The name of the endpoint configuration.</p>"
+        },
+        "EndpointStatus":{
+          "shape":"EndpointStatus",
+          "documentation":"<p> The status of the endpoint. For possible values of the status of an endpoint, see <a>EndpointSummary$EndpointStatus</a>. </p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p> If the status of the endpoint is <code>Failed</code>, this provides the reason why it failed. </p>"
+        }
+      },
+      "documentation":"<p>The metadata of the endpoint.</p>"
     },
     "EndpointName":{
       "type":"string",
@@ -14272,6 +15595,10 @@
         "TrialComponentDisplayName":{
           "shape":"ExperimentEntityName",
           "documentation":"<p>The display name for the trial component. If this key isn't specified, the display name is the trial component name.</p>"
+        },
+        "RunName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The name of the experiment run to associate the trial component with.</p>"
         }
       },
       "documentation":"<p>Associates a SageMaker job as a trial component with an experiment and trial. Specified when you call the following APIs:</p> <ul> <li> <p> <a>CreateProcessingJob</a> </p> </li> <li> <p> <a>CreateTrainingJob</a> </p> </li> <li> <p> <a>CreateTransformJob</a> </p> </li> </ul>"
@@ -15151,6 +16478,260 @@
       "value":{"shape":"ConfigValue"},
       "max":20,
       "min":0
+    },
+    "HubArn":{
+      "type":"string",
+      "max":255,
+      "pattern":".*"
+    },
+    "HubContentArn":{
+      "type":"string",
+      "max":255,
+      "pattern":".*"
+    },
+    "HubContentDependency":{
+      "type":"structure",
+      "members":{
+        "DependencyOriginPath":{
+          "shape":"DependencyOriginPath",
+          "documentation":"<p>The hub content dependency origin path.</p>"
+        },
+        "DependencyCopyPath":{
+          "shape":"DependencyCopyPath",
+          "documentation":"<p>The hub content dependency copy path.</p>"
+        }
+      },
+      "documentation":"<p>Any dependencies related to hub content, such as scripts, model artifacts, datasets, or notebooks.</p>"
+    },
+    "HubContentDependencyList":{
+      "type":"list",
+      "member":{"shape":"HubContentDependency"},
+      "max":50
+    },
+    "HubContentDescription":{
+      "type":"string",
+      "max":1023,
+      "pattern":".*"
+    },
+    "HubContentDisplayName":{
+      "type":"string",
+      "max":255,
+      "pattern":".*"
+    },
+    "HubContentDocument":{
+      "type":"string",
+      "max":65535,
+      "pattern":".*"
+    },
+    "HubContentInfo":{
+      "type":"structure",
+      "required":[
+        "HubContentName",
+        "HubContentArn",
+        "HubContentVersion",
+        "HubContentType",
+        "DocumentSchemaVersion",
+        "HubContentStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub content.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the hub content.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content.</p>"
+        },
+        "DocumentSchemaVersion":{
+          "shape":"DocumentSchemaVersion",
+          "documentation":"<p>The version of the hub content document schema.</p>"
+        },
+        "HubContentDisplayName":{
+          "shape":"HubContentDisplayName",
+          "documentation":"<p>The display name of the hub content.</p>"
+        },
+        "HubContentDescription":{
+          "shape":"HubContentDescription",
+          "documentation":"<p>A description of the hub content.</p>"
+        },
+        "HubContentSearchKeywords":{
+          "shape":"HubContentSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub content.</p>"
+        },
+        "HubContentStatus":{
+          "shape":"HubContentStatus",
+          "documentation":"<p>The status of the hub content.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the hub content was created.</p>"
+        }
+      },
+      "documentation":"<p>Information about hub content.</p>"
+    },
+    "HubContentInfoList":{
+      "type":"list",
+      "member":{"shape":"HubContentInfo"}
+    },
+    "HubContentMarkdown":{
+      "type":"string",
+      "max":65535,
+      "pattern":".*"
+    },
+    "HubContentName":{
+      "type":"string",
+      "max":63,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "HubContentSearchKeywordList":{
+      "type":"list",
+      "member":{"shape":"HubSearchKeyword"},
+      "max":50
+    },
+    "HubContentSortBy":{
+      "type":"string",
+      "enum":[
+        "HubContentName",
+        "CreationTime",
+        "HubContentStatus"
+      ]
+    },
+    "HubContentStatus":{
+      "type":"string",
+      "enum":[
+        "Available",
+        "Importing",
+        "Deleting",
+        "ImportFailed",
+        "DeleteFailed"
+      ]
+    },
+    "HubContentType":{
+      "type":"string",
+      "enum":[
+        "Model",
+        "Notebook"
+      ]
+    },
+    "HubContentVersion":{
+      "type":"string",
+      "max":14,
+      "min":5,
+      "pattern":"^\\d{1,4}.\\d{1,4}.\\d{1,4}$"
+    },
+    "HubDescription":{
+      "type":"string",
+      "max":1023,
+      "pattern":".*"
+    },
+    "HubDisplayName":{
+      "type":"string",
+      "max":255,
+      "pattern":".*"
+    },
+    "HubInfo":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubArn",
+        "HubStatus",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub.</p>"
+        },
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the hub.</p>"
+        },
+        "HubDisplayName":{
+          "shape":"HubDisplayName",
+          "documentation":"<p>The display name of the hub.</p>"
+        },
+        "HubDescription":{
+          "shape":"HubDescription",
+          "documentation":"<p>A description of the hub.</p>"
+        },
+        "HubSearchKeywords":{
+          "shape":"HubSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub.</p>"
+        },
+        "HubStatus":{
+          "shape":"HubStatus",
+          "documentation":"<p>The status of the hub.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the hub was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the hub was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Information about a hub.</p>"
+    },
+    "HubInfoList":{
+      "type":"list",
+      "member":{"shape":"HubInfo"}
+    },
+    "HubName":{
+      "type":"string",
+      "max":63,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "HubS3StorageConfig":{
+      "type":"structure",
+      "members":{
+        "S3OutputPath":{
+          "shape":"S3OutputPath",
+          "documentation":"<p>The Amazon S3 output path for the hub.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 storage configuration of a hub.</p>"
+    },
+    "HubSearchKeyword":{
+      "type":"string",
+      "max":255,
+      "pattern":"^[^A-Z]*$"
+    },
+    "HubSearchKeywordList":{
+      "type":"list",
+      "member":{"shape":"HubSearchKeyword"},
+      "max":50
+    },
+    "HubSortBy":{
+      "type":"string",
+      "enum":[
+        "HubName",
+        "CreationTime",
+        "HubStatus",
+        "AccountIdOwner"
+      ]
+    },
+    "HubStatus":{
+      "type":"string",
+      "enum":[
+        "InService",
+        "Creating",
+        "Updating",
+        "Deleting",
+        "CreateFailed",
+        "UpdateFailed",
+        "DeleteFailed"
+      ]
     },
     "HumanLoopActivationConditions":{
       "type":"string",
@@ -16153,6 +17734,79 @@
       "type":"list",
       "member":{"shape":"Image"}
     },
+    "ImportHubContentRequest":{
+      "type":"structure",
+      "required":[
+        "HubContentName",
+        "HubContentType",
+        "DocumentSchemaVersion",
+        "HubName",
+        "HubContentDocument"
+      ],
+      "members":{
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content to import.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The version of the hub content to import.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content to import.</p>"
+        },
+        "DocumentSchemaVersion":{
+          "shape":"DocumentSchemaVersion",
+          "documentation":"<p>The version of the hub content schema to import.</p>"
+        },
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to import content into.</p>"
+        },
+        "HubContentDisplayName":{
+          "shape":"HubContentDisplayName",
+          "documentation":"<p>The display name of the hub content to import.</p>"
+        },
+        "HubContentDescription":{
+          "shape":"HubContentDescription",
+          "documentation":"<p>A description of the hub content to import.</p>"
+        },
+        "HubContentMarkdown":{
+          "shape":"HubContentMarkdown",
+          "documentation":"<p>Markdown files associated with the hub content to import.</p>"
+        },
+        "HubContentDocument":{
+          "shape":"HubContentDocument",
+          "documentation":"<p>The hub content document that describes information about the hub content such as type, associated containers, scripts, and more.</p>"
+        },
+        "HubContentSearchKeywords":{
+          "shape":"HubContentSearchKeywordList",
+          "documentation":"<p>The searchable keywords of the hub content.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags associated with the hub content.</p>"
+        }
+      }
+    },
+    "ImportHubContentResponse":{
+      "type":"structure",
+      "required":[
+        "HubArn",
+        "HubContentArn"
+      ],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The ARN of the hub that the content was imported into.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of the hub content that was imported.</p>"
+        }
+      }
+    },
     "InferenceExecutionConfig":{
       "type":"structure",
       "required":["Mode"],
@@ -16170,6 +17824,138 @@
         "Serial",
         "Direct"
       ]
+    },
+    "InferenceExperimentArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:inference-experiment/.*"
+    },
+    "InferenceExperimentDataStorageConfig":{
+      "type":"structure",
+      "required":["Destination"],
+      "members":{
+        "Destination":{
+          "shape":"DestinationS3Uri",
+          "documentation":"<p>The Amazon S3 bucket where the inference experiment data is stored. </p>"
+        },
+        "KmsKey":{
+          "shape":"KmsKeyId",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that Amazon SageMaker uses to encrypt captured data when uploading to Amazon S3. </p>"
+        },
+        "ContentType":{"shape":"CaptureContentTypeHeader"}
+      },
+      "documentation":"<p>The Amazon S3 location and configuration for storing inference experiment data.</p>"
+    },
+    "InferenceExperimentDescription":{
+      "type":"string",
+      "max":1024,
+      "pattern":".*"
+    },
+    "InferenceExperimentList":{
+      "type":"list",
+      "member":{"shape":"InferenceExperimentSummary"}
+    },
+    "InferenceExperimentName":{
+      "type":"string",
+      "max":120,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,119}"
+    },
+    "InferenceExperimentSchedule":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the inference experiment started or will start.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the inference experiment ended or will end.</p>"
+        }
+      },
+      "documentation":"<p>The start and end times of an inference experiment.</p> <p>The maximum duration that you can set for an inference experiment is 30 days.</p>"
+    },
+    "InferenceExperimentStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Created",
+        "Updating",
+        "Running",
+        "Starting",
+        "Stopping",
+        "Completed",
+        "Cancelled"
+      ]
+    },
+    "InferenceExperimentStatusReason":{
+      "type":"string",
+      "max":1024,
+      "pattern":".*"
+    },
+    "InferenceExperimentStopDesiredState":{
+      "type":"string",
+      "enum":[
+        "Completed",
+        "Cancelled"
+      ]
+    },
+    "InferenceExperimentSummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type",
+        "Status",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment.</p>"
+        },
+        "Type":{
+          "shape":"InferenceExperimentType",
+          "documentation":"<p>The type of the inference experiment.</p>"
+        },
+        "Schedule":{
+          "shape":"InferenceExperimentSchedule",
+          "documentation":"<p>The duration for which the inference experiment ran or will run.</p> <p>The maximum duration that you can set for an inference experiment is 30 days.</p>"
+        },
+        "Status":{
+          "shape":"InferenceExperimentStatus",
+          "documentation":"<p>The status of the inference experiment.</p>"
+        },
+        "StatusReason":{
+          "shape":"InferenceExperimentStatusReason",
+          "documentation":"<p>The error message for the inference experiment status result.</p>"
+        },
+        "Description":{
+          "shape":"InferenceExperimentDescription",
+          "documentation":"<p>The description of the inference experiment.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the inference experiment was created.</p>"
+        },
+        "CompletionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the inference experiment was completed.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when you last modified the inference experiment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+        }
+      },
+      "documentation":"<p>Lists a summary of properties of an inference experiment.</p>"
+    },
+    "InferenceExperimentType":{
+      "type":"string",
+      "enum":["ShadowMode"]
     },
     "InferenceImage":{
       "type":"string",
@@ -16643,6 +18429,10 @@
         "LifecycleConfigArns":{
           "shape":"LifecycleConfigArns",
           "documentation":"<p> The Amazon Resource Name (ARN) of the Lifecycle Configurations attached to the JupyterServerApp. If you use this parameter, the <code>DefaultResourceSpec</code> parameter is also required.</p> <note> <p>To remove a Lifecycle Config, you must set <code>LifecycleConfigArns</code> to an empty list.</p> </note>"
+        },
+        "CodeRepositories":{
+          "shape":"CodeRepositories",
+          "documentation":"<p>A list of Git repositories that SageMaker automatically displays to users for cloning in the JupyterServer application.</p>"
         }
       },
       "documentation":"<p>The JupyterServer app settings.</p>"
@@ -17332,6 +19122,10 @@
         "UserProfileNameEquals":{
           "shape":"UserProfileName",
           "documentation":"<p>A parameter to search by user profile name.</p>"
+        },
+        "SpaceNameEquals":{
+          "shape":"SpaceName",
+          "documentation":"<p>A parameter to search by space name.</p>"
         }
       }
     },
@@ -18312,6 +20106,192 @@
         }
       }
     },
+    "ListHubContentVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentType",
+        "HubContentName"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to list the content versions of.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content to list versions of.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content.</p>"
+        },
+        "MinVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The lower bound of the hub content versions to list.</p>"
+        },
+        "MaxSchemaVersion":{
+          "shape":"DocumentSchemaVersion",
+          "documentation":"<p>The upper bound of the hub content schema version.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hub content versions that were created before the time specified.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hub content versions that were created after the time specified.</p>"
+        },
+        "SortBy":{
+          "shape":"HubContentSortBy",
+          "documentation":"<p>Sort hub content versions by either name or creation time.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sort hub content versions by ascending or descending order.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of hub content versions to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListHubContentVersions</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of hub content versions, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListHubContentVersionsResponse":{
+      "type":"structure",
+      "required":["HubContentSummaries"],
+      "members":{
+        "HubContentSummaries":{
+          "shape":"HubContentInfoList",
+          "documentation":"<p>The summaries of the listed hub content versions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of hub content versions, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListHubContentsRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentType"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to list the contents of.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The type of hub content to list.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Only list hub content if the name contains the specified string.</p>"
+        },
+        "MaxSchemaVersion":{
+          "shape":"DocumentSchemaVersion",
+          "documentation":"<p>The upper bound of the hub content schema verion.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hub content that was created before the time specified.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hub content that was created after the time specified.</p>"
+        },
+        "SortBy":{
+          "shape":"HubContentSortBy",
+          "documentation":"<p>Sort hub content versions by either name or creation time.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sort hubs by ascending or descending order.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum amount of hub content to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListHubContents</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of hub content, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListHubContentsResponse":{
+      "type":"structure",
+      "required":["HubContentSummaries"],
+      "members":{
+        "HubContentSummaries":{
+          "shape":"HubContentInfoList",
+          "documentation":"<p>The summaries of the listed hub content.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of hub content, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListHubsRequest":{
+      "type":"structure",
+      "members":{
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Only list hubs with names that contain the specified string.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hubs that were created before the time specified.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hubs that were created after the time specified.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hubs that were last modified before the time specified.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list hubs that were last modified after the time specified.</p>"
+        },
+        "SortBy":{
+          "shape":"HubSortBy",
+          "documentation":"<p>Sort hubs by either name or creation time.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sort hubs by ascending or descending order.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of hubs to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListHubs</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of hubs, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListHubsResponse":{
+      "type":"structure",
+      "required":["HubSummaries"],
+      "members":{
+        "HubSummaries":{
+          "shape":"HubInfoList",
+          "documentation":"<p>The summaries of the listed hubs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of hubs, use it in the subsequent request.</p>"
+        }
+      }
+    },
     "ListHumanTaskUisRequest":{
       "type":"structure",
       "members":{
@@ -18518,6 +20498,68 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token for getting the next set of images, if there are any.</p>"
+        }
+      }
+    },
+    "ListInferenceExperimentsRequest":{
+      "type":"structure",
+      "members":{
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Selects inference experiments whose names contain this name.</p>"
+        },
+        "Type":{
+          "shape":"InferenceExperimentType",
+          "documentation":"<p> Selects inference experiments of this type. For the possible types of inference experiments, see <a>CreateInferenceExperimentRequest$Type</a>. </p>"
+        },
+        "StatusEquals":{
+          "shape":"InferenceExperimentStatus",
+          "documentation":"<p> Selects inference experiments which are in this status. For the possible statuses, see <a>DescribeInferenceExperimentResponse$Status</a>. </p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects inference experiments which were created after this timestamp.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects inference experiments which were created before this timestamp.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects inference experiments which were last modified after this timestamp.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Selects inference experiments which were last modified before this timestamp.</p>"
+        },
+        "SortBy":{
+          "shape":"SortInferenceExperimentsBy",
+          "documentation":"<p>The column by which to sort the listed inference experiments.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The direction of sorting (ascending or descending).</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The response from the last list when returning a list large enough to need tokening. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to select.</p>"
+        }
+      }
+    },
+    "ListInferenceExperimentsResponse":{
+      "type":"structure",
+      "members":{
+        "InferenceExperiments":{
+          "shape":"InferenceExperimentList",
+          "documentation":"<p>List of inference experiments.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when calling the next page of results.</p>"
         }
       }
     },
@@ -18842,6 +20884,169 @@
         }
       }
     },
+    "ListModelCardExportJobsRequest":{
+      "type":"structure",
+      "required":["ModelCardName"],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>List export jobs for the model card with the specified name.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>List export jobs for the model card with the specified version.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model card export jobs that were created after the time specified.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model card export jobs that were created before the time specified.</p>"
+        },
+        "ModelCardExportJobNameContains":{
+          "shape":"EntityName",
+          "documentation":"<p>Only list model card export jobs with names that contain the specified string.</p>"
+        },
+        "StatusEquals":{
+          "shape":"ModelCardExportJobStatus",
+          "documentation":"<p>Only list model card export jobs with the specified status.</p>"
+        },
+        "SortBy":{
+          "shape":"ModelCardExportJobSortBy",
+          "documentation":"<p>Sort model card export jobs by either name or creation time. Sorts by creation time by default.</p>"
+        },
+        "SortOrder":{
+          "shape":"ModelCardExportJobSortOrder",
+          "documentation":"<p>Sort model card export jobs by ascending or descending order.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListModelCardExportJobs</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model card export jobs, use the token in the next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of model card export jobs to list.</p>"
+        }
+      }
+    },
+    "ListModelCardExportJobsResponse":{
+      "type":"structure",
+      "required":["ModelCardExportJobSummaries"],
+      "members":{
+        "ModelCardExportJobSummaries":{
+          "shape":"ModelCardExportJobSummaryList",
+          "documentation":"<p>The summaries of the listed model card export jobs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of model card export jobs, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListModelCardVersionsRequest":{
+      "type":"structure",
+      "required":["ModelCardName"],
+      "members":{
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model card versions that were created after the time specified.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model card versions that were created before the time specified.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of model card versions to list.</p>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>List model card versions for the model card with the specified name.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>Only list model card versions with the specified approval status.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListModelCardVersions</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model card versions, use the token in the next request.</p>"
+        },
+        "SortBy":{
+          "shape":"ModelCardVersionSortBy",
+          "documentation":"<p>Sort listed model card versions by version. Sorts by version by default.</p>"
+        },
+        "SortOrder":{
+          "shape":"ModelCardSortOrder",
+          "documentation":"<p>Sort model card versions by ascending or descending order.</p>"
+        }
+      }
+    },
+    "ListModelCardVersionsResponse":{
+      "type":"structure",
+      "required":["ModelCardVersionSummaryList"],
+      "members":{
+        "ModelCardVersionSummaryList":{
+          "shape":"ModelCardVersionSummaryList",
+          "documentation":"<p>The summaries of the listed versions of the model card.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of model card versions, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListModelCardsRequest":{
+      "type":"structure",
+      "members":{
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model cards that were created after the time specified.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Only list model cards that were created before the time specified.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of model cards to list.</p>"
+        },
+        "NameContains":{
+          "shape":"EntityName",
+          "documentation":"<p>Only list model cards with names that contain the specified string.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>Only list model cards with the specified approval status.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response to a previous <code>ListModelCards</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model cards, use the token in the next request.</p>"
+        },
+        "SortBy":{
+          "shape":"ModelCardSortBy",
+          "documentation":"<p>Sort model cards by either name or creation time. Sorts by creation time by default.</p>"
+        },
+        "SortOrder":{
+          "shape":"ModelCardSortOrder",
+          "documentation":"<p>Sort model cards by ascending or descending order.</p>"
+        }
+      }
+    },
+    "ListModelCardsResponse":{
+      "type":"structure",
+      "required":["ModelCardSummaries"],
+      "members":{
+        "ModelCardSummaries":{
+          "shape":"ModelCardSummaryList",
+          "documentation":"<p>The summaries of the listed model cards.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of model cards, use it in the subsequent request.</p>"
+        }
+      }
+    },
     "ListModelExplainabilityJobDefinitionsRequest":{
       "type":"structure",
       "members":{
@@ -19125,6 +21330,91 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p> If the response is truncated, SageMaker returns this token. To retrieve the next set of models, use it in the subsequent request. </p>"
+        }
+      }
+    },
+    "ListMonitoringAlertHistoryRequest":{
+      "type":"structure",
+      "members":{
+        "MonitoringScheduleName":{
+          "shape":"MonitoringScheduleName",
+          "documentation":"<p>The name of a monitoring schedule.</p>"
+        },
+        "MonitoringAlertName":{
+          "shape":"MonitoringAlertName",
+          "documentation":"<p>The name of a monitoring alert.</p>"
+        },
+        "SortBy":{
+          "shape":"MonitoringAlertHistorySortKey",
+          "documentation":"<p>The field used to sort results. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order, whether <code>Ascending</code> or <code>Descending</code>, of the alert history. The default is <code>Descending</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListMonitoringAlertHistory</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of alerts in the history, use the token in the next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to display. The default is 100.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only alerts created on or before the specified time.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only alerts created on or after the specified time.</p>"
+        },
+        "StatusEquals":{
+          "shape":"MonitoringAlertStatus",
+          "documentation":"<p>A filter that retrieves only alerts with a specific status.</p>"
+        }
+      }
+    },
+    "ListMonitoringAlertHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "MonitoringAlertHistory":{
+          "shape":"MonitoringAlertHistoryList",
+          "documentation":"<p>An alert history for a model monitoring schedule.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of alerts, use it in the subsequent request.</p>"
+        }
+      }
+    },
+    "ListMonitoringAlertsRequest":{
+      "type":"structure",
+      "required":["MonitoringScheduleName"],
+      "members":{
+        "MonitoringScheduleName":{
+          "shape":"MonitoringScheduleName",
+          "documentation":"<p>The name of a monitoring schedule.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListMonitoringAlerts</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of alerts in the history, use the token in the next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to display. The default is 100.</p>"
+        }
+      }
+    },
+    "ListMonitoringAlertsResponse":{
+      "type":"structure",
+      "members":{
+        "MonitoringAlertSummaries":{
+          "shape":"MonitoringAlertSummaryList",
+          "documentation":"<p>A JSON array where each element is a summary for a monitoring alert.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker returns this token. To retrieve the next set of alerts, use it in the subsequent request.</p>"
         }
       }
     },
@@ -19441,7 +21731,7 @@
       "required":["PipelineName"],
       "members":{
         "PipelineName":{
-          "shape":"PipelineName",
+          "shape":"PipelineNameOrArn",
           "documentation":"<p>The name of the pipeline.</p>"
         },
         "CreatedAfter":{
@@ -19664,6 +21954,48 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the result of the previous <code>ListCompilationJobs</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model compilation jobs, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListSpacesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Returns a list up to a specified limit.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for the results. The default is <code>Ascending</code>.</p>"
+        },
+        "SortBy":{
+          "shape":"SpaceSortKey",
+          "documentation":"<p>The parameter by which to sort the results. The default is <code>CreationTime</code>.</p>"
+        },
+        "DomainIdEquals":{
+          "shape":"DomainId",
+          "documentation":"<p>A parameter to search for the Domain ID.</p>"
+        },
+        "SpaceNameContains":{
+          "shape":"SpaceName",
+          "documentation":"<p>A parameter by which to filter the results.</p>"
+        }
+      }
+    },
+    "ListSpacesResponse":{
+      "type":"structure",
+      "members":{
+        "Spaces":{
+          "shape":"SpaceList",
+          "documentation":"<p>The list of spaces.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
         }
       }
     },
@@ -20501,6 +22833,43 @@
       "max":1,
       "pattern":"1|2"
     },
+    "Model":{
+      "type":"structure",
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the model.</p>"
+        },
+        "PrimaryContainer":{"shape":"ContainerDefinition"},
+        "Containers":{
+          "shape":"ContainerDefinitionList",
+          "documentation":"<p>The containers in the inference pipeline.</p>"
+        },
+        "InferenceExecutionConfig":{"shape":"InferenceExecutionConfig"},
+        "ExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that you specified for the model.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the model was created.</p>"
+        },
+        "ModelArn":{
+          "shape":"ModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model.</p>"
+        },
+        "EnableNetworkIsolation":{
+          "shape":"Boolean",
+          "documentation":"<p>Isolates the model container. No inbound or outbound network calls can be made to or from the model container.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs associated with the model. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a model as returned by the <a>Search</a> API.</p>"
+    },
     "ModelApprovalStatus":{
       "type":"string",
       "enum":[
@@ -20582,6 +22951,293 @@
         "Disabled"
       ]
     },
+    "ModelCard":{
+      "type":"structure",
+      "members":{
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card.</p>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The unique name of the model card.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card.</p>"
+        },
+        "Content":{
+          "shape":"ModelCardContent",
+          "documentation":"<p>The content of the model card. Content uses the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards-api-json-schema.html\">model card JSON schema</a> and provided as a string.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelCardSecurityConfig",
+          "documentation":"<p>The security configuration used to protect model card data.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card was created.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card was last modified.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Key-value pairs used to manage metadata for the model card.</p>"
+        },
+        "ModelId":{
+          "shape":"String",
+          "documentation":"<p>The unique name (ID) of the model.</p>"
+        },
+        "RiskRating":{
+          "shape":"String",
+          "documentation":"<p>The risk rating of the model. Different organizations might have different criteria for model card risk ratings. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards-risk-rating.html\">Risk ratings</a>.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon SageMaker Model Card.</p>"
+    },
+    "ModelCardArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-card/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
+    "ModelCardContent":{
+      "type":"string",
+      "max":100000,
+      "min":0,
+      "pattern":".*",
+      "sensitive":true
+    },
+    "ModelCardExportArtifacts":{
+      "type":"structure",
+      "required":["S3ExportArtifacts"],
+      "members":{
+        "S3ExportArtifacts":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the exported model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>The artifacts of the model card export job.</p>"
+    },
+    "ModelCardExportJobArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-card/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}/export-job/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
+    "ModelCardExportJobSortBy":{
+      "type":"string",
+      "documentation":"Attribute by which to sort returned export jobs.",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
+    "ModelCardExportJobSortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
+    "ModelCardExportJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "ModelCardExportJobSummary":{
+      "type":"structure",
+      "required":[
+        "ModelCardExportJobName",
+        "ModelCardExportJobArn",
+        "Status",
+        "ModelCardName",
+        "ModelCardVersion",
+        "CreatedAt",
+        "LastModifiedAt"
+      ],
+      "members":{
+        "ModelCardExportJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card export job.</p>"
+        },
+        "ModelCardExportJobArn":{
+          "shape":"ModelCardExportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card export job.</p>"
+        },
+        "Status":{
+          "shape":"ModelCardExportJobStatus",
+          "documentation":"<p>The completion status of the model card export job.</p>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card that the export job exports.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The version of the model card that the export job exports.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card export job was created.</p>"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card export job was last modified..</p>"
+        }
+      },
+      "documentation":"<p>The summary of the Amazon SageMaker Model Card export job.</p>"
+    },
+    "ModelCardExportJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ModelCardExportJobSummary"}
+    },
+    "ModelCardExportOutputConfig":{
+      "type":"structure",
+      "required":["S3OutputPath"],
+      "members":{
+        "S3OutputPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 output path to export your model card PDF.</p>"
+        }
+      },
+      "documentation":"<p>Configure the export output details for an Amazon SageMaker Model Card.</p>"
+    },
+    "ModelCardProcessingStatus":{
+      "type":"string",
+      "enum":[
+        "DeleteInProgress",
+        "DeletePending",
+        "ContentDeleted",
+        "ExportJobsDeleted",
+        "DeleteCompleted",
+        "DeleteFailed"
+      ]
+    },
+    "ModelCardSecurityConfig":{
+      "type":"structure",
+      "members":{
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>A Key Management Service <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-id\">key ID</a> to use for encrypting a model card.</p>"
+        }
+      },
+      "documentation":"<p>Configure the security settings to protect model card data.</p>"
+    },
+    "ModelCardSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime"
+      ]
+    },
+    "ModelCardSortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
+    "ModelCardStatus":{
+      "type":"string",
+      "enum":[
+        "Draft",
+        "PendingReview",
+        "Approved",
+        "Archived"
+      ]
+    },
+    "ModelCardSummary":{
+      "type":"structure",
+      "required":[
+        "ModelCardName",
+        "ModelCardArn",
+        "ModelCardStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card.</p>"
+        },
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the model card.</p>"
+    },
+    "ModelCardSummaryList":{
+      "type":"list",
+      "member":{"shape":"ModelCardSummary"}
+    },
+    "ModelCardVersionSortBy":{
+      "type":"string",
+      "enum":["Version"]
+    },
+    "ModelCardVersionSummary":{
+      "type":"structure",
+      "required":[
+        "ModelCardName",
+        "ModelCardArn",
+        "ModelCardStatus",
+        "ModelCardVersion",
+        "CreationTime"
+      ],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card.</p>"
+        },
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model card.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card version within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>A version of the model card.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the model card version was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time date and time that the model card version was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a specific version of the model card.</p>"
+    },
+    "ModelCardVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ModelCardVersionSummary"}
+    },
     "ModelClientConfig":{
       "type":"structure",
       "members":{
@@ -20609,6 +23265,172 @@
         }
       },
       "documentation":"<p>Defines the model configuration. Includes the specification name and environment parameters.</p>"
+    },
+    "ModelDashboardEndpoint":{
+      "type":"structure",
+      "required":[
+        "EndpointName",
+        "EndpointArn",
+        "CreationTime",
+        "LastModifiedTime",
+        "EndpointStatus"
+      ],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The endpoint name.</p>"
+        },
+        "EndpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the endpoint was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time the endpoint was modified.</p>"
+        },
+        "EndpointStatus":{
+          "shape":"EndpointStatus",
+          "documentation":"<p>The endpoint status.</p>"
+        }
+      },
+      "documentation":"<p>An endpoint that hosts a model displayed in the Amazon SageMaker Model Dashboard.</p>"
+    },
+    "ModelDashboardEndpoints":{
+      "type":"list",
+      "member":{"shape":"ModelDashboardEndpoint"}
+    },
+    "ModelDashboardIndicatorAction":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the alert action is turned on.</p>"
+        }
+      },
+      "documentation":"<p>An alert action taken to light up an icon on the Amazon SageMaker Model Dashboard when an alert goes into <code>InAlert</code> status.</p>"
+    },
+    "ModelDashboardModel":{
+      "type":"structure",
+      "members":{
+        "Model":{
+          "shape":"Model",
+          "documentation":"<p>A model displayed in the Model Dashboard.</p>"
+        },
+        "Endpoints":{
+          "shape":"ModelDashboardEndpoints",
+          "documentation":"<p>The endpoints that host a model.</p>"
+        },
+        "LastBatchTransformJob":{"shape":"TransformJob"},
+        "MonitoringSchedules":{
+          "shape":"ModelDashboardMonitoringSchedules",
+          "documentation":"<p>The monitoring schedules for a model.</p>"
+        },
+        "ModelCard":{
+          "shape":"ModelDashboardModelCard",
+          "documentation":"<p>The model card for a model.</p>"
+        }
+      },
+      "documentation":"<p>A model displayed in the Amazon SageMaker Model Dashboard.</p>"
+    },
+    "ModelDashboardModelCard":{
+      "type":"structure",
+      "members":{
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for a model card.</p>"
+        },
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of a model card.</p>"
+        },
+        "ModelCardVersion":{
+          "shape":"Integer",
+          "documentation":"<p>The model card version.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The model card status.</p>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelCardSecurityConfig",
+          "documentation":"<p>The KMS Key ID (<code>KMSKeyId</code>) for encryption of model card information.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the model card was created.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the model card was last updated.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with a model card.</p>"
+        },
+        "ModelId":{
+          "shape":"String",
+          "documentation":"<p>For models created in SageMaker, this is the model ARN. For models created outside of SageMaker, this is a user-customized string.</p>"
+        },
+        "RiskRating":{
+          "shape":"String",
+          "documentation":"<p>A model card's risk rating. Can be low, medium, or high.</p>"
+        }
+      },
+      "documentation":"<p>The model card for a model displayed in the Amazon SageMaker Model Dashboard.</p>"
+    },
+    "ModelDashboardMonitoringSchedule":{
+      "type":"structure",
+      "members":{
+        "MonitoringScheduleArn":{
+          "shape":"MonitoringScheduleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a monitoring schedule.</p>"
+        },
+        "MonitoringScheduleName":{
+          "shape":"MonitoringScheduleName",
+          "documentation":"<p>The name of a monitoring schedule.</p>"
+        },
+        "MonitoringScheduleStatus":{
+          "shape":"ScheduleStatus",
+          "documentation":"<p>The status of the monitoring schedule.</p>"
+        },
+        "MonitoringType":{
+          "shape":"MonitoringType",
+          "documentation":"<p>The monitor type of a model monitor.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If a monitoring job failed, provides the reason.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the monitoring schedule was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the monitoring schedule was last updated.</p>"
+        },
+        "MonitoringScheduleConfig":{"shape":"MonitoringScheduleConfig"},
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The endpoint which is monitored.</p>"
+        },
+        "MonitoringAlertSummaries":{
+          "shape":"MonitoringAlertSummaryList",
+          "documentation":"<p>A JSON array where each element is a summary for a monitoring alert.</p>"
+        },
+        "LastMonitoringExecutionSummary":{"shape":"MonitoringExecutionSummary"}
+      },
+      "documentation":"<p>A monitoring schedule for a model displayed in the Amazon SageMaker Model Dashboard.</p>"
+    },
+    "ModelDashboardMonitoringSchedules":{
+      "type":"list",
+      "member":{"shape":"ModelDashboardMonitoringSchedule"}
     },
     "ModelDataQuality":{
       "type":"structure",
@@ -20701,6 +23523,28 @@
         }
       },
       "documentation":"<p>Inputs for the model explainability job.</p>"
+    },
+    "ModelInfrastructureConfig":{
+      "type":"structure",
+      "required":[
+        "InfrastructureType",
+        "RealTimeInferenceConfig"
+      ],
+      "members":{
+        "InfrastructureType":{
+          "shape":"ModelInfrastructureType",
+          "documentation":"<p>The inference option to which to deploy your model. Possible values are the following:</p> <ul> <li> <p> <code>RealTime</code>: Deploy to real-time inference.</p> </li> </ul>"
+        },
+        "RealTimeInferenceConfig":{
+          "shape":"RealTimeInferenceConfig",
+          "documentation":"<p>The infrastructure configuration for deploying the model to real-time inference.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the infrastructure that the model will be deployed to.</p>"
+    },
+    "ModelInfrastructureType":{
+      "type":"string",
+      "enum":["RealTimeInference"]
     },
     "ModelInput":{
       "type":"structure",
@@ -21406,6 +24250,208 @@
       "type":"list",
       "member":{"shape":"ModelSummary"}
     },
+    "ModelVariantAction":{
+      "type":"string",
+      "enum":[
+        "Retain",
+        "Remove",
+        "Promote"
+      ]
+    },
+    "ModelVariantActionMap":{
+      "type":"map",
+      "key":{"shape":"ModelVariantName"},
+      "value":{"shape":"ModelVariantAction"},
+      "max":2,
+      "min":1
+    },
+    "ModelVariantConfig":{
+      "type":"structure",
+      "required":[
+        "ModelName",
+        "VariantName",
+        "InfrastructureConfig"
+      ],
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the model.</p>"
+        },
+        "VariantName":{
+          "shape":"ModelVariantName",
+          "documentation":"<p>The name of the variant.</p>"
+        },
+        "InfrastructureConfig":{
+          "shape":"ModelInfrastructureConfig",
+          "documentation":"<p>The configuration for the infrastructure that the model will be deployed to.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the deployment options of a model.</p>"
+    },
+    "ModelVariantConfigList":{
+      "type":"list",
+      "member":{"shape":"ModelVariantConfig"},
+      "max":2,
+      "min":1
+    },
+    "ModelVariantConfigSummary":{
+      "type":"structure",
+      "required":[
+        "ModelName",
+        "VariantName",
+        "InfrastructureConfig",
+        "Status"
+      ],
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the model.</p>"
+        },
+        "VariantName":{
+          "shape":"ModelVariantName",
+          "documentation":"<p>The name of the variant.</p>"
+        },
+        "InfrastructureConfig":{
+          "shape":"ModelInfrastructureConfig",
+          "documentation":"<p>The configuration of the infrastructure that the model has been deployed to.</p>"
+        },
+        "Status":{
+          "shape":"ModelVariantStatus",
+          "documentation":"<p>The status of the deployment.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the deployment configuration of a model.</p>"
+    },
+    "ModelVariantConfigSummaryList":{
+      "type":"list",
+      "member":{"shape":"ModelVariantConfigSummary"}
+    },
+    "ModelVariantName":{
+      "type":"string",
+      "max":63,
+      "pattern":"^[a-zA-Z0-9]([\\-a-zA-Z0-9]*[a-zA-Z0-9])?"
+    },
+    "ModelVariantStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Updating",
+        "InService",
+        "Deleting",
+        "Deleted"
+      ]
+    },
+    "MonitoringAlertActions":{
+      "type":"structure",
+      "members":{
+        "ModelDashboardIndicator":{
+          "shape":"ModelDashboardIndicatorAction",
+          "documentation":"<p>An alert action taken to light up an icon on the Model Dashboard when an alert goes into <code>InAlert</code> status.</p>"
+        }
+      },
+      "documentation":"<p>A list of alert actions taken in response to an alert going into <code>InAlert</code> status.</p>"
+    },
+    "MonitoringAlertHistoryList":{
+      "type":"list",
+      "member":{"shape":"MonitoringAlertHistorySummary"}
+    },
+    "MonitoringAlertHistorySortKey":{
+      "type":"string",
+      "enum":[
+        "CreationTime",
+        "Status"
+      ]
+    },
+    "MonitoringAlertHistorySummary":{
+      "type":"structure",
+      "required":[
+        "MonitoringScheduleName",
+        "MonitoringAlertName",
+        "CreationTime",
+        "AlertStatus"
+      ],
+      "members":{
+        "MonitoringScheduleName":{
+          "shape":"MonitoringScheduleName",
+          "documentation":"<p>The name of a monitoring schedule.</p>"
+        },
+        "MonitoringAlertName":{
+          "shape":"MonitoringAlertName",
+          "documentation":"<p>The name of a monitoring alert.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when the first alert transition occurred in an alert history. An alert transition can be from status <code>InAlert</code> to <code>OK</code>, or from <code>OK</code> to <code>InAlert</code>.</p>"
+        },
+        "AlertStatus":{
+          "shape":"MonitoringAlertStatus",
+          "documentation":"<p>The current alert status of an alert.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information of an alert's history.</p>"
+    },
+    "MonitoringAlertName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
+    "MonitoringAlertStatus":{
+      "type":"string",
+      "enum":[
+        "InAlert",
+        "OK"
+      ]
+    },
+    "MonitoringAlertSummary":{
+      "type":"structure",
+      "required":[
+        "MonitoringAlertName",
+        "CreationTime",
+        "LastModifiedTime",
+        "AlertStatus",
+        "DatapointsToAlert",
+        "EvaluationPeriod",
+        "Actions"
+      ],
+      "members":{
+        "MonitoringAlertName":{
+          "shape":"MonitoringAlertName",
+          "documentation":"<p>The name of a monitoring alert.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when a monitor alert was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp that indicates when a monitor alert was last updated.</p>"
+        },
+        "AlertStatus":{
+          "shape":"MonitoringAlertStatus",
+          "documentation":"<p>The current status of an alert.</p>"
+        },
+        "DatapointsToAlert":{
+          "shape":"MonitoringDatapointsToAlert",
+          "documentation":"<p>Within <code>EvaluationPeriod</code>, how many execution failures will raise an alert.</p>"
+        },
+        "EvaluationPeriod":{
+          "shape":"MonitoringEvaluationPeriod",
+          "documentation":"<p>The number of most recent monitoring executions to consider when evaluating alert status.</p>"
+        },
+        "Actions":{
+          "shape":"MonitoringAlertActions",
+          "documentation":"<p>A list of alert actions taken in response to an alert going into <code>InAlert</code> status.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a monitor alert.</p>"
+    },
+    "MonitoringAlertSummaryList":{
+      "type":"list",
+      "member":{"shape":"MonitoringAlertSummary"},
+      "max":100,
+      "min":1
+    },
     "MonitoringAppSpecification":{
       "type":"structure",
       "required":["ImageUri"],
@@ -21504,6 +24550,11 @@
       },
       "documentation":"<p>Represents the CSV dataset format used when running a monitoring job.</p>"
     },
+    "MonitoringDatapointsToAlert":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
     "MonitoringDatasetFormat":{
       "type":"structure",
       "members":{
@@ -21527,6 +24578,11 @@
       "key":{"shape":"ProcessingEnvironmentKey"},
       "value":{"shape":"ProcessingEnvironmentValue"},
       "max":50
+    },
+    "MonitoringEvaluationPeriod":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "MonitoringExecutionSortKey":{
       "type":"string",
@@ -22382,6 +25438,10 @@
         "DataCatalogConfig":{
           "shape":"DataCatalogConfig",
           "documentation":"<p>The meta data of the Glue table that is autogenerated when an <code>OfflineStore</code> is created. </p>"
+        },
+        "TableFormat":{
+          "shape":"TableFormat",
+          "documentation":"<p>Format for the offline store feature group. <code>Iceberg</code> is the optimal format for feature groups shared between offline and online stores.</p>"
         }
       },
       "documentation":"<p>The configuration of an <code>OfflineStore</code>.</p> <p>Provide an <code>OfflineStoreConfig</code> in a request to <code>CreateFeatureGroup</code> to create an <code>OfflineStore</code>.</p> <p>To encrypt an <code>OfflineStore</code> using at rest data encryption, specify Amazon Web Services Key Management Service (KMS) key ID, or <code>KMSKeyId</code>, in <code>S3StorageConfig</code>.</p>"
@@ -22781,6 +25841,10 @@
         "StartTime":{
           "shape":"Timestamp",
           "documentation":"<p>The start time of the deployment.</p>"
+        },
+        "ShadowProductionVariants":{
+          "shape":"PendingProductionVariantSummaryList",
+          "documentation":"<p> Array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
         }
       },
       "documentation":"<p>The summary of an in-progress deployment when an endpoint is creating or updating with a new endpoint configuration.</p>"
@@ -23081,7 +26145,7 @@
         },
         "Metadata":{
           "shape":"PipelineExecutionStepMetadata",
-          "documentation":"<p>Metadata for the step execution.</p>"
+          "documentation":"<p>Metadata to run the pipeline step.</p>"
         }
       },
       "documentation":"<p>An execution of a step in a pipeline.</p>"
@@ -23117,7 +26181,7 @@
         },
         "RegisterModel":{
           "shape":"RegisterModelStepMetadata",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model package the model was registered to by this step execution.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package that the model was registered to by this step execution.</p>"
         },
         "Condition":{
           "shape":"ConditionStepMetadata",
@@ -23133,7 +26197,7 @@
         },
         "QualityCheck":{
           "shape":"QualityCheckStepMetadata",
-          "documentation":"<p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted,</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
+          "documentation":"<p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted.</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The Boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
         },
         "ClarifyCheck":{
           "shape":"ClarifyCheckStepMetadata",
@@ -23141,11 +26205,15 @@
         },
         "EMR":{
           "shape":"EMRStepMetadata",
-          "documentation":"<p>The configurations and outcomes of an EMR step execution.</p>"
+          "documentation":"<p>The configurations and outcomes of an Amazon EMR step execution.</p>"
         },
         "Fail":{
           "shape":"FailStepMetadata",
           "documentation":"<p>The configurations and outcomes of a Fail step execution.</p>"
+        },
+        "AutoMLJob":{
+          "shape":"AutoMLJobStepMetadata",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AutoML job that was run by this step.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -23205,6 +26273,12 @@
       "max":256,
       "min":1,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,255}"
+    },
+    "PipelineNameOrArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:pipeline/.*)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,255})"
     },
     "PipelineParameterName":{
       "type":"string",
@@ -24109,10 +27183,10 @@
         },
         "DisableProfiler":{
           "shape":"DisableProfiler",
-          "documentation":"<p>To disable system monitoring and profiling, set to <code>True</code>.</p>"
+          "documentation":"<p>Configuration to turn off Amazon SageMaker Debugger's system monitoring and profiling functionality. To turn it off, set to <code>True</code>.</p>"
         }
       },
-      "documentation":"<p>Configuration information for Debugger system monitoring, framework profiling, and storage paths.</p>"
+      "documentation":"<p>Configuration information for Amazon SageMaker Debugger system monitoring, framework profiling, and storage paths.</p>"
     },
     "ProfilerConfigForUpdate":{
       "type":"structure",
@@ -24131,10 +27205,10 @@
         },
         "DisableProfiler":{
           "shape":"DisableProfiler",
-          "documentation":"<p>To disable Debugger monitoring and profiling, set to <code>True</code>.</p>"
+          "documentation":"<p>To turn off Amazon SageMaker Debugger monitoring and profiling while a training job is in progress, set to <code>True</code>.</p>"
         }
       },
-      "documentation":"<p>Configuration information for updating the Debugger profile parameters, system and framework metrics configurations, and storage paths.</p>"
+      "documentation":"<p>Configuration information for updating the Amazon SageMaker Debugger profile parameters, system and framework metrics configurations, and storage paths.</p>"
     },
     "ProfilerRuleConfiguration":{
       "type":"structure",
@@ -24157,11 +27231,11 @@
         },
         "RuleEvaluatorImage":{
           "shape":"AlgorithmImage",
-          "documentation":"<p>The Amazon Elastic Container (ECR) Image for the managed rule evaluation.</p>"
+          "documentation":"<p>The Amazon Elastic Container Registry Image for the managed rule evaluation.</p>"
         },
         "InstanceType":{
           "shape":"ProcessingInstanceType",
-          "documentation":"<p>The instance type to deploy a Debugger custom rule for profiling a training job.</p>"
+          "documentation":"<p>The instance type to deploy a custom rule for profiling a training job.</p>"
         },
         "VolumeSizeInGB":{
           "shape":"OptionalVolumeSizeInGB",
@@ -24692,6 +27766,24 @@
         "R_STUDIO_USER"
       ]
     },
+    "RealTimeInferenceConfig":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "InstanceCount"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>.</p>"
+        },
+        "InstanceCount":{
+          "shape":"TaskCount",
+          "documentation":"<p>The instance type the model is deployed to.</p>"
+        }
+      },
+      "documentation":"<p>The infrastructure configuration for deploying the model to real-time inference.</p>"
+    },
     "RealtimeInferenceInstanceTypes":{
       "type":"list",
       "member":{"shape":"ProductionVariantInstanceType"}
@@ -25140,6 +28232,11 @@
       "min":1,
       "pattern":".*"
     },
+    "RepositoryUrl":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^https://([.\\-_a-zA-Z0-9]+/?){3,1016}$"
+    },
     "ResolvedAttributes":{
       "type":"structure",
       "members":{
@@ -25294,7 +28391,9 @@
         "FeatureGroup",
         "Project",
         "FeatureMetadata",
-        "HyperParameterTuningJob"
+        "HyperParameterTuningJob",
+        "ModelCard",
+        "Model"
       ]
     },
     "ResponseMIMEType":{
@@ -25447,6 +28546,11 @@
         "AugmentedManifestFile"
       ]
     },
+    "S3OutputPath":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(https|s3)://([^/]+)/?(.*)$"
+    },
     "S3StorageConfig":{
       "type":"structure",
       "required":["S3Uri"],
@@ -25572,6 +28676,11 @@
         "HyperParameterTuningJob":{
           "shape":"HyperParameterTuningJobSearchEntity",
           "documentation":"<p>The properties of a hyperparameter tuning job.</p>"
+        },
+        "Model":{"shape":"ModelDashboardModel"},
+        "ModelCard":{
+          "shape":"ModelCard",
+          "documentation":"<p>An Amazon SageMaker Model Card that documents details about a machine learning model.</p>"
         }
       },
       "documentation":"<p>A single resource returned as part of the <a>Search</a> API response.</p>"
@@ -25827,6 +28936,48 @@
       "max":43200,
       "min":1800
     },
+    "ShadowModeConfig":{
+      "type":"structure",
+      "required":[
+        "SourceModelVariantName",
+        "ShadowModelVariants"
+      ],
+      "members":{
+        "SourceModelVariantName":{
+          "shape":"ModelVariantName",
+          "documentation":"<p> The name of the production variant. </p>"
+        },
+        "ShadowModelVariants":{
+          "shape":"ShadowModelVariantConfigList",
+          "documentation":"<p>List of shadow variant configurations.</p>"
+        }
+      },
+      "documentation":"<p> Shows which variant is a production variant and which variant is a shadow variant. For shadow variants, also shows the sampling percentages. </p>"
+    },
+    "ShadowModelVariantConfig":{
+      "type":"structure",
+      "required":[
+        "ShadowModelVariantName",
+        "SamplingPercentage"
+      ],
+      "members":{
+        "ShadowModelVariantName":{
+          "shape":"ModelVariantName",
+          "documentation":"<p>The name of the shadow variant.</p>"
+        },
+        "SamplingPercentage":{
+          "shape":"Percentage",
+          "documentation":"<p>The percentage of inference requests that are replicated to the shadow variant.</p>"
+        }
+      },
+      "documentation":"<p>The name and sampling percentage of a shadow variant.</p>"
+    },
+    "ShadowModelVariantConfigList":{
+      "type":"list",
+      "member":{"shape":"ShadowModelVariantConfig"},
+      "max":1,
+      "min":1
+    },
     "SharingSettings":{
       "type":"structure",
       "members":{
@@ -25906,6 +29057,14 @@
       "enum":[
         "Name",
         "CreationTime"
+      ]
+    },
+    "SortInferenceExperimentsBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
       ]
     },
     "SortLineageGroupsBy":{
@@ -26002,6 +29161,73 @@
       "max":2048,
       "pattern":".*"
     },
+    "SpaceArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:space/.*"
+    },
+    "SpaceDetails":{
+      "type":"structure",
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "Status":{
+          "shape":"SpaceStatus",
+          "documentation":"<p>The status.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The last modified time.</p>"
+        }
+      },
+      "documentation":"<p>The space's details.</p>"
+    },
+    "SpaceList":{
+      "type":"list",
+      "member":{"shape":"SpaceDetails"}
+    },
+    "SpaceName":{
+      "type":"string",
+      "max":63,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "SpaceSettings":{
+      "type":"structure",
+      "members":{
+        "JupyterServerAppSettings":{"shape":"JupyterServerAppSettings"},
+        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"}
+      },
+      "documentation":"<p>A collection of space settings.</p>"
+    },
+    "SpaceSortKey":{
+      "type":"string",
+      "enum":[
+        "CreationTime",
+        "LastModifiedTime"
+      ]
+    },
+    "SpaceStatus":{
+      "type":"string",
+      "enum":[
+        "Deleting",
+        "Failed",
+        "InService",
+        "Pending",
+        "Updating",
+        "Update_Failed",
+        "Delete_Failed"
+      ]
+    },
     "SpawnRate":{
       "type":"integer",
       "min":0
@@ -26045,6 +29271,26 @@
         }
       }
     },
+    "StartInferenceExperimentRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment to start.</p>"
+        }
+      }
+    },
+    "StartInferenceExperimentResponse":{
+      "type":"structure",
+      "required":["InferenceExperimentArn"],
+      "members":{
+        "InferenceExperimentArn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN of the started inference experiment to start.</p>"
+        }
+      }
+    },
     "StartMonitoringScheduleRequest":{
       "type":"structure",
       "required":["MonitoringScheduleName"],
@@ -26073,7 +29319,7 @@
       ],
       "members":{
         "PipelineName":{
-          "shape":"PipelineName",
+          "shape":"PipelineNameOrArn",
           "documentation":"<p>The name of the pipeline.</p>"
         },
         "PipelineExecutionDisplayName":{
@@ -26196,6 +29442,45 @@
         "HyperParameterTuningJobName":{
           "shape":"HyperParameterTuningJobName",
           "documentation":"<p>The name of the tuning job to stop.</p>"
+        }
+      }
+    },
+    "StopInferenceExperimentRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ModelVariantActions"
+      ],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment to stop.</p>"
+        },
+        "ModelVariantActions":{
+          "shape":"ModelVariantActionMap",
+          "documentation":"<p> Array of key-value pairs, with names of variants mapped to actions. The possible actions are the following: </p> <ul> <li> <p> <code>Promote</code> - Promote the shadow variant to a production variant</p> </li> <li> <p> <code>Remove</code> - Delete the variant</p> </li> <li> <p> <code>Retain</code> - Keep the variant as it is</p> </li> </ul>"
+        },
+        "DesiredModelVariants":{
+          "shape":"ModelVariantConfigList",
+          "documentation":"<p> Array of <code>ModelVariantConfig</code> objects. There is one for each variant that you want to deploy after the inference experiment stops. Each <code>ModelVariantConfig</code> describes the infrastructure configuration for deploying the corresponding variant. </p>"
+        },
+        "DesiredState":{
+          "shape":"InferenceExperimentStopDesiredState",
+          "documentation":"<p> The desired state of the experiment after stopping. The possible states are the following: </p> <ul> <li> <p> <code>Completed</code>: The experiment completed successfully</p> </li> <li> <p> <code>Cancelled</code>: The experiment was canceled</p> </li> </ul>"
+        },
+        "Reason":{
+          "shape":"InferenceExperimentStatusReason",
+          "documentation":"<p>The reason for stopping the experiment.</p>"
+        }
+      }
+    },
+    "StopInferenceExperimentResponse":{
+      "type":"structure",
+      "required":["InferenceExperimentArn"],
+      "members":{
+        "InferenceExperimentArn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN of the stopped inference experiment.</p>"
         }
       }
     },
@@ -26468,6 +29753,13 @@
       },
       "documentation":"<p>Specified in the <a>GetSearchSuggestions</a> request. Limits the property names that are included in the response.</p>"
     },
+    "TableFormat":{
+      "type":"string",
+      "enum":[
+        "Glue",
+        "Iceberg"
+      ]
+    },
     "TableName":{
       "type":"string",
       "max":255,
@@ -26687,7 +29979,7 @@
           "documentation":"<p>Path to Amazon S3 storage location for TensorBoard output.</p>"
         }
       },
-      "documentation":"<p>Configuration of storage locations for the Debugger TensorBoard output data.</p>"
+      "documentation":"<p>Configuration of storage locations for the Amazon SageMaker Debugger TensorBoard output data.</p>"
     },
     "TenthFractionsOfACent":{
       "type":"integer",
@@ -27696,6 +30988,10 @@
         "Parents":{
           "shape":"Parents",
           "documentation":"<p>An array of the parents of the component. A parent is a trial the component is associated with and the experiment the trial is part of. A component might not have any parents.</p>"
+        },
+        "RunName":{
+          "shape":"ExperimentEntityName",
+          "documentation":"<p>The name of the experiment run.</p>"
         }
       },
       "documentation":"<p>The properties of a trial component as returned by the <a>Search</a> API.</p>"
@@ -27847,7 +31143,7 @@
       "members":{
         "SourceArn":{
           "shape":"TrialComponentSourceArn",
-          "documentation":"<p>The source ARN.</p>"
+          "documentation":"<p>The source Amazon Resource Name (ARN).</p>"
         },
         "SourceType":{
           "shape":"SourceType",
@@ -27883,6 +31179,10 @@
       },
       "documentation":"<p>Detailed information about the source of a trial component. Either <code>ProcessingJob</code> or <code>TrainingJob</code> is returned.</p>"
     },
+    "TrialComponentSources":{
+      "type":"list",
+      "member":{"shape":"TrialComponentSource"}
+    },
     "TrialComponentStatus":{
       "type":"structure",
       "members":{
@@ -27915,7 +31215,7 @@
         },
         "TrialComponentArn":{
           "shape":"TrialComponentArn",
-          "documentation":"<p>The ARN of the trial component.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trial component.</p>"
         },
         "DisplayName":{
           "shape":"ExperimentEntityName",
@@ -28287,6 +31587,10 @@
         "DomainSettingsForUpdate":{
           "shape":"DomainSettingsForUpdate",
           "documentation":"<p>A collection of <code>DomainSettings</code> configuration values to update.</p>"
+        },
+        "DefaultSpaceSettings":{
+          "shape":"DefaultSpaceSettings",
+          "documentation":"<p>The default settings used to create a space within the Domain.</p>"
         }
       }
     },
@@ -28449,6 +31753,38 @@
         }
       }
     },
+    "UpdateHubRequest":{
+      "type":"structure",
+      "required":["HubName"],
+      "members":{
+        "HubName":{
+          "shape":"HubName",
+          "documentation":"<p>The name of the hub to update.</p>"
+        },
+        "HubDescription":{
+          "shape":"HubDescription",
+          "documentation":"<p>A description of the updated hub.</p>"
+        },
+        "HubDisplayName":{
+          "shape":"HubDisplayName",
+          "documentation":"<p>The display name of the hub.</p>"
+        },
+        "HubSearchKeywords":{
+          "shape":"HubSearchKeywordList",
+          "documentation":"<p>The searchable keywords for the hub.</p>"
+        }
+      }
+    },
+    "UpdateHubResponse":{
+      "type":"structure",
+      "required":["HubArn"],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated hub.</p>"
+        }
+      }
+    },
     "UpdateImageRequest":{
       "type":"structure",
       "required":["ImageName"],
@@ -28481,6 +31817,74 @@
         "ImageArn":{
           "shape":"ImageArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the image.</p>"
+        }
+      }
+    },
+    "UpdateInferenceExperimentRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"InferenceExperimentName",
+          "documentation":"<p>The name of the inference experiment to be updated.</p>"
+        },
+        "Schedule":{
+          "shape":"InferenceExperimentSchedule",
+          "documentation":"<p> The duration for which the inference experiment will run. If the status of the inference experiment is <code>Created</code>, then you can update both the start and end dates. If the status of the inference experiment is <code>Running</code>, then you can update only the end date. </p>"
+        },
+        "Description":{
+          "shape":"InferenceExperimentDescription",
+          "documentation":"<p>The description of the inference experiment.</p>"
+        },
+        "ModelVariants":{
+          "shape":"ModelVariantConfigList",
+          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant, whose infrastructure configuration you want to update. </p>"
+        },
+        "DataStorageConfig":{
+          "shape":"InferenceExperimentDataStorageConfig",
+          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+        },
+        "ShadowModeConfig":{
+          "shape":"ShadowModeConfig",
+          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+        }
+      }
+    },
+    "UpdateInferenceExperimentResponse":{
+      "type":"structure",
+      "required":["InferenceExperimentArn"],
+      "members":{
+        "InferenceExperimentArn":{
+          "shape":"InferenceExperimentArn",
+          "documentation":"<p>The ARN of the updated inference experiment.</p>"
+        }
+      }
+    },
+    "UpdateModelCardRequest":{
+      "type":"structure",
+      "required":["ModelCardName"],
+      "members":{
+        "ModelCardName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the model card to update.</p>"
+        },
+        "Content":{
+          "shape":"ModelCardContent",
+          "documentation":"<p>The updated model card content. Content must be in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards-api-json-schema.html\">model card JSON schema</a> and provided as a string.</p> <p>When updating model card content, be sure to include the full content and not just updated content.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates should be made to the model card, but it can still be exported.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateModelCardResponse":{
+      "type":"structure",
+      "required":["ModelCardArn"],
+      "members":{
+        "ModelCardArn":{
+          "shape":"ModelCardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated model card.</p>"
         }
       }
     },
@@ -28521,6 +31925,47 @@
         "ModelPackageArn":{
           "shape":"ModelPackageArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the model.</p>"
+        }
+      }
+    },
+    "UpdateMonitoringAlertRequest":{
+      "type":"structure",
+      "required":[
+        "MonitoringScheduleName",
+        "MonitoringAlertName",
+        "DatapointsToAlert",
+        "EvaluationPeriod"
+      ],
+      "members":{
+        "MonitoringScheduleName":{
+          "shape":"MonitoringScheduleName",
+          "documentation":"<p>The name of a monitoring schedule.</p>"
+        },
+        "MonitoringAlertName":{
+          "shape":"MonitoringAlertName",
+          "documentation":"<p>The name of a monitoring alert.</p>"
+        },
+        "DatapointsToAlert":{
+          "shape":"MonitoringDatapointsToAlert",
+          "documentation":"<p>Within <code>EvaluationPeriod</code>, how many execution failures will raise an alert.</p>"
+        },
+        "EvaluationPeriod":{
+          "shape":"MonitoringEvaluationPeriod",
+          "documentation":"<p>The number of most recent monitoring executions to consider when evaluating alert status.</p>"
+        }
+      }
+    },
+    "UpdateMonitoringAlertResponse":{
+      "type":"structure",
+      "required":["MonitoringScheduleArn"],
+      "members":{
+        "MonitoringScheduleArn":{
+          "shape":"MonitoringScheduleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the monitoring schedule.</p>"
+        },
+        "MonitoringAlertName":{
+          "shape":"MonitoringAlertName",
+          "documentation":"<p>The name of a monitoring alert.</p>"
         }
       }
     },
@@ -28747,6 +32192,36 @@
         }
       }
     },
+    "UpdateSpaceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainId",
+        "SpaceName"
+      ],
+      "members":{
+        "DomainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the associated Domain.</p>"
+        },
+        "SpaceName":{
+          "shape":"SpaceName",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "SpaceSettings":{
+          "shape":"SpaceSettings",
+          "documentation":"<p>A collection of space settings.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResponse":{
+      "type":"structure",
+      "members":{
+        "SpaceArn":{
+          "shape":"SpaceArn",
+          "documentation":"<p>The space's Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
     "UpdateTrainingJobRequest":{
       "type":"structure",
       "required":["TrainingJobName"],
@@ -28757,11 +32232,11 @@
         },
         "ProfilerConfig":{
           "shape":"ProfilerConfigForUpdate",
-          "documentation":"<p>Configuration information for Debugger system monitoring, framework profiling, and storage paths.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger system monitoring, framework profiling, and storage paths.</p>"
         },
         "ProfilerRuleConfigurations":{
           "shape":"ProfilerRuleConfigurations",
-          "documentation":"<p>Configuration information for Debugger rules for profiling system and framework metrics.</p>"
+          "documentation":"<p>Configuration information for Amazon SageMaker Debugger rules for profiling system and framework metrics.</p>"
         },
         "ResourceConfig":{
           "shape":"ResourceConfigForUpdate",
@@ -28976,7 +32451,7 @@
           "documentation":"<p>The domain associated with the user.</p>"
         }
       },
-      "documentation":"<p>Information about the user who created or modified an experiment, trial, trial component, lineage group, or project.</p>"
+      "documentation":"<p>Information about the user who created or modified an experiment, trial, trial component, lineage group, project, or model card.</p>"
     },
     "UserProfileArn":{
       "type":"string",

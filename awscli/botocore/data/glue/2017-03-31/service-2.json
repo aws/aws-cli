@@ -139,6 +139,21 @@
       ],
       "documentation":"<p>Retrieves the details for the custom patterns specified by a list of names.</p>"
     },
+    "BatchGetDataQualityResult":{
+      "name":"BatchGetDataQualityResult",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityResultRequest"},
+      "output":{"shape":"BatchGetDataQualityResultResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
+    },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
       "http":{
@@ -249,6 +264,38 @@
         {"shape":"GlueEncryptionException"}
       ],
       "documentation":"<p>Updates one or more partitions in a batch operation.</p>"
+    },
+    "CancelDataQualityRuleRecommendationRun":{
+      "name":"CancelDataQualityRuleRecommendationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelDataQualityRuleRecommendationRunRequest"},
+      "output":{"shape":"CancelDataQualityRuleRecommendationRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Cancels the specified recommendation run that was being used to generate rules.</p>"
+    },
+    "CancelDataQualityRulesetEvaluationRun":{
+      "name":"CancelDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"CancelDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Cancels a run where a ruleset is being evaluated against a data source.</p>"
     },
     "CancelMLTaskRun":{
       "name":"CancelMLTaskRun",
@@ -382,6 +429,24 @@
         {"shape":"ResourceNumberLimitExceededException"}
       ],
       "documentation":"<p>Creates a custom pattern that is used to detect sensitive data across the columns and rows of your structured data.</p> <p>Each custom pattern you create specifies a regular expression and an optional list of context words. If no context words are passed only a regular expression is checked.</p>"
+    },
+    "CreateDataQualityRuleset":{
+      "name":"CreateDataQualityRuleset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDataQualityRulesetRequest"},
+      "output":{"shape":"CreateDataQualityRulesetResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a data quality ruleset with DQDL rules applied to a specified Glue table.</p> <p>You create the ruleset using the Data Quality Definition Language (DQDL). For more information, see the Glue developer guide.</p>",
+      "idempotent":true
     },
     "CreateDatabase":{
       "name":"CreateDatabase",
@@ -774,6 +839,22 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Deletes a custom pattern by specifying its name.</p>"
+    },
+    "DeleteDataQualityRuleset":{
+      "name":"DeleteDataQualityRuleset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDataQualityRulesetRequest"},
+      "output":{"shape":"DeleteDataQualityRulesetResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes a data quality ruleset.</p>"
     },
     "DeleteDatabase":{
       "name":"DeleteDatabase",
@@ -1279,6 +1360,70 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Retrieves the security configuration for a specified catalog.</p>"
+    },
+    "GetDataQualityResult":{
+      "name":"GetDataQualityResult",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityResultRequest"},
+      "output":{"shape":"GetDataQualityResultResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the result of a data quality rule evaluation.</p>"
+    },
+    "GetDataQualityRuleRecommendationRun":{
+      "name":"GetDataQualityRuleRecommendationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityRuleRecommendationRunRequest"},
+      "output":{"shape":"GetDataQualityRuleRecommendationRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Gets the specified recommendation run that was used to generate rules.</p>"
+    },
+    "GetDataQualityRuleset":{
+      "name":"GetDataQualityRuleset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityRulesetRequest"},
+      "output":{"shape":"GetDataQualityRulesetResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns an existing ruleset by identifier or name.</p>"
+    },
+    "GetDataQualityRulesetEvaluationRun":{
+      "name":"GetDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"GetDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a specific run where a ruleset is evaluated against a data source.</p>"
     },
     "GetDatabase":{
       "name":"GetDatabase",
@@ -2106,6 +2251,67 @@
       ],
       "documentation":"<p>Lists all the custom patterns that have been created.</p>"
     },
+    "ListDataQualityResults":{
+      "name":"ListDataQualityResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityResultsRequest"},
+      "output":{"shape":"ListDataQualityResultsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns all data quality execution results for your account.</p>"
+    },
+    "ListDataQualityRuleRecommendationRuns":{
+      "name":"ListDataQualityRuleRecommendationRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityRuleRecommendationRunsRequest"},
+      "output":{"shape":"ListDataQualityRuleRecommendationRunsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists the recommendation runs meeting the filter criteria.</p>"
+    },
+    "ListDataQualityRulesetEvaluationRuns":{
+      "name":"ListDataQualityRulesetEvaluationRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityRulesetEvaluationRunsRequest"},
+      "output":{"shape":"ListDataQualityRulesetEvaluationRunsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists all the runs meeting the filter criteria, where a ruleset is evaluated against a data source.</p>"
+    },
+    "ListDataQualityRulesets":{
+      "name":"ListDataQualityRulesets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityRulesetsRequest"},
+      "output":{"shape":"ListDataQualityRulesetsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a paginated list of rulesets for the specified list of Glue tables.</p>"
+    },
     "ListDevEndpoints":{
       "name":"ListDevEndpoints",
       "http":{
@@ -2501,6 +2707,41 @@
       ],
       "documentation":"<p>Changes the schedule state of the specified crawler to <code>SCHEDULED</code>, unless the crawler is already running or the schedule state is already <code>SCHEDULED</code>.</p>"
     },
+    "StartDataQualityRuleRecommendationRun":{
+      "name":"StartDataQualityRuleRecommendationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDataQualityRuleRecommendationRunRequest"},
+      "output":{"shape":"StartDataQualityRuleRecommendationRunResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a recommendation run that is used to generate rules when you don't know what rules to write. Glue Data Quality analyzes the data and comes up with recommendations for a potential ruleset. You can then triage the ruleset and modify the generated ruleset to your liking.</p>",
+      "idempotent":true
+    },
+    "StartDataQualityRulesetEvaluationRun":{
+      "name":"StartDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"StartDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Once you have a ruleset definition (either recommended or your own), you call this operation to evaluate the ruleset against a data source (Glue table). The evaluation computes results which you can retrieve with the <code>GetDataQualityResult</code> API.</p>",
+      "idempotent":true
+    },
     "StartExportLabelsTaskRun":{
       "name":"StartExportLabelsTaskRun",
       "http":{
@@ -2857,6 +3098,25 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Updates the schedule of a crawler using a <code>cron</code> expression. </p>"
+    },
+    "UpdateDataQualityRuleset":{
+      "name":"UpdateDataQualityRuleset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDataQualityRulesetRequest"},
+      "output":{"shape":"UpdateDataQualityRulesetResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<p>Updates the specified data quality ruleset.</p>"
     },
     "UpdateDatabase":{
       "name":"UpdateDatabase",
@@ -3657,6 +3917,30 @@
         }
       }
     },
+    "BatchGetDataQualityResultRequest":{
+      "type":"structure",
+      "required":["ResultIds"],
+      "members":{
+        "ResultIds":{
+          "shape":"DataQualityResultIds",
+          "documentation":"<p>A list of unique result IDs for the data quality results.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityResultResponse":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultsList",
+          "documentation":"<p>A list of <code>DataQualityResult</code> objects representing the data quality results.</p>"
+        },
+        "ResultsNotFound":{
+          "shape":"DataQualityResultIds",
+          "documentation":"<p>A list of result IDs for which results were not found.</p>"
+        }
+      }
+    },
     "BatchGetDevEndpointsRequest":{
       "type":"structure",
       "required":["DevEndpointNames"],
@@ -4192,6 +4476,36 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "CancelDataQualityRuleRecommendationRunRequest":{
+      "type":"structure",
+      "required":["RunId"],
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
+      }
+    },
+    "CancelDataQualityRuleRecommendationRunResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "CancelDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":["RunId"],
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
+      }
+    },
+    "CancelDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "CancelMLTaskRunRequest":{
       "type":"structure",
@@ -4753,6 +5067,10 @@
         "DynamicTransform":{
           "shape":"DynamicTransform",
           "documentation":"<p>Specifies a custom visual transform created by a user.</p>"
+        },
+        "EvaluateDataQuality":{
+          "shape":"EvaluateDataQuality",
+          "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -5936,6 +6254,48 @@
         }
       }
     },
+    "CreateDataQualityRulesetRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Ruleset"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A unique name for the data quality ruleset.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the data quality ruleset.</p>"
+        },
+        "Ruleset":{
+          "shape":"DataQualityRulesetString",
+          "documentation":"<p>A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of tags applied to the data quality ruleset.</p>"
+        },
+        "TargetTable":{
+          "shape":"DataQualityTargetTable",
+          "documentation":"<p>A target table associated with the data quality ruleset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        }
+      }
+    },
+    "CreateDataQualityRulesetResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A unique name for the data quality ruleset.</p>"
+        }
+      }
+    },
     "CreateDatabaseRequest":{
       "type":"structure",
       "required":["DatabaseInput"],
@@ -7005,6 +7365,58 @@
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
     },
+    "DQDLString":{
+      "type":"string",
+      "max":65536,
+      "min":1,
+      "pattern":"([\\u0020-\\u007E\\r\\s\\n])*"
+    },
+    "DQResultsPublishingOptions":{
+      "type":"structure",
+      "members":{
+        "EvaluationContext":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>The context of the evaluation.</p>"
+        },
+        "ResultsS3Prefix":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon S3 prefix prepended to the results.</p>"
+        },
+        "CloudWatchMetricsEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Enable metrics for your data quality results.</p>"
+        },
+        "ResultsPublishingEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Enable publishing for your data quality results.</p>"
+        }
+      },
+      "documentation":"<p>Options to configure how your data quality evaluation results are published.</p>"
+    },
+    "DQStopJobOnFailureOptions":{
+      "type":"structure",
+      "members":{
+        "StopJobOnFailureTiming":{
+          "shape":"DQStopJobOnFailureTiming",
+          "documentation":"<p>When to stop job if your data quality evaluation fails. Options are Immediate or AfterDataLoad.</p>"
+        }
+      },
+      "documentation":"<p>Options to configure how your job will stop if your data quality evaluation fails.</p>"
+    },
+    "DQStopJobOnFailureTiming":{
+      "type":"string",
+      "enum":[
+        "Immediate",
+        "AfterDataLoad"
+      ]
+    },
+    "DQTransformOutput":{
+      "type":"string",
+      "enum":[
+        "PrimaryInput",
+        "EvaluationResults"
+      ]
+    },
     "DagEdges":{
       "type":"list",
       "member":{"shape":"CodeGenEdge"}
@@ -7049,6 +7461,374 @@
       "type":"string",
       "max":255,
       "min":1
+    },
+    "DataQualityEvaluationRunAdditionalRunOptions":{
+      "type":"structure",
+      "members":{
+        "CloudWatchMetricsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Whether or not to enable CloudWatch metrics.</p>"
+        },
+        "ResultsS3Prefix":{
+          "shape":"UriString",
+          "documentation":"<p>Prefix for Amazon S3 to store results.</p>"
+        }
+      },
+      "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+    },
+    "DataQualityResult":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"GenericString",
+          "documentation":"<p>In the context of a job in Glue Studio, each node in the canvas is typically assigned some sort of name and data quality nodes will have names. In the case of multiple nodes, the <code>evaluationContext</code> can differentiate the nodes.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The job name associated with the data quality result, if any.</p>"
+        },
+        "JobRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The job run ID associated with the data quality result, if any.</p>"
+        },
+        "RulesetEvaluationRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run ID for the ruleset evaluation for this data quality result.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result.</p>"
+    },
+    "DataQualityResultDescription":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique result ID for this data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table name associated with the data quality result.</p>"
+        },
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The job name associated with the data quality result.</p>"
+        },
+        "JobRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The job run ID associated with the data quality result.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the run started for this data quality result.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result.</p>"
+    },
+    "DataQualityResultDescriptionList":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultDescription"}
+    },
+    "DataQualityResultFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>Filter results by the specified data source. For example, retrieving all results for an Glue table.</p>"
+        },
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>Filter results by the specified job name.</p>"
+        },
+        "JobRunId":{
+          "shape":"HashString",
+          "documentation":"<p>Filter results by the specified job run ID.</p>"
+        },
+        "StartedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results by runs that started after this time.</p>"
+        },
+        "StartedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results by runs that started before this time.</p>"
+        }
+      },
+      "documentation":"<p>Criteria used to return data quality results.</p>"
+    },
+    "DataQualityResultIdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":10,
+      "min":1
+    },
+    "DataQualityResultIds":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
+    "DataQualityResultsList":{
+      "type":"list",
+      "member":{"shape":"DataQualityResult"}
+    },
+    "DataQualityRuleRecommendationRunDescription":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (Glue table) associated with the recommendation run.</p>"
+        }
+      },
+      "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
+    },
+    "DataQualityRuleRecommendationRunFilter":{
+      "type":"structure",
+      "required":["DataSource"],
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>Filter based on a specified data source (Glue table).</p>"
+        },
+        "StartedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter based on time for results started before provided time.</p>"
+        },
+        "StartedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter based on time for results started after provided time.</p>"
+        }
+      },
+      "documentation":"<p>A filter for listing data quality recommendation runs.</p>"
+    },
+    "DataQualityRuleRecommendationRunList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRuleRecommendationRunDescription"}
+    },
+    "DataQualityRuleResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality rule.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the data quality rule.</p>"
+        },
+        "EvaluationMessage":{
+          "shape":"DescriptionString",
+          "documentation":"<p>An evaluation message.</p>"
+        },
+        "Result":{
+          "shape":"DataQualityRuleResultStatus",
+          "documentation":"<p>A pass or fail status for the rule.</p>"
+        }
+      },
+      "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
+    },
+    "DataQualityRuleResultStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "ERROR"
+      ]
+    },
+    "DataQualityRuleResults":{
+      "type":"list",
+      "member":{"shape":"DataQualityRuleResult"},
+      "max":2000,
+      "min":1
+    },
+    "DataQualityRulesetEvaluationRunDescription":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the run started.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (an Glue table) associated with the run.</p>"
+        }
+      },
+      "documentation":"<p>Describes the result of a data quality ruleset evaluation run.</p>"
+    },
+    "DataQualityRulesetEvaluationRunFilter":{
+      "type":"structure",
+      "required":["DataSource"],
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>Filter based on a data source (an Glue table) associated with the run.</p>"
+        },
+        "StartedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results by runs that started before this time.</p>"
+        },
+        "StartedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter results by runs that started after this time.</p>"
+        }
+      },
+      "documentation":"<p>The filter criteria.</p>"
+    },
+    "DataQualityRulesetEvaluationRunList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRulesetEvaluationRunDescription"}
+    },
+    "DataQualityRulesetFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset filter criteria.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the ruleset filter criteria.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter on rulesets created before this date.</p>"
+        },
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter on rulesets created after this date.</p>"
+        },
+        "LastModifiedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter on rulesets last modified before this date.</p>"
+        },
+        "LastModifiedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter on rulesets last modified after this date.</p>"
+        },
+        "TargetTable":{
+          "shape":"DataQualityTargetTable",
+          "documentation":"<p>The name and database name of the target table.</p>"
+        }
+      },
+      "documentation":"<p>The criteria used to filter data quality rulesets.</p>"
+    },
+    "DataQualityRulesetList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRulesetListDetails"}
+    },
+    "DataQualityRulesetListDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality ruleset.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the data quality ruleset.</p>"
+        },
+        "CreatedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the data quality ruleset was created.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the data quality ruleset was last modified.</p>"
+        },
+        "TargetTable":{
+          "shape":"DataQualityTargetTable",
+          "documentation":"<p>An object representing an Glue table.</p>"
+        },
+        "RecommendationRunId":{
+          "shape":"HashString",
+          "documentation":"<p>When a ruleset was created from a recommendation run, this run ID is generated to link the two together.</p>"
+        },
+        "RuleCount":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of rules in the ruleset.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality ruleset returned by <code>GetDataQualityRuleset</code>.</p>"
+    },
+    "DataQualityRulesetString":{
+      "type":"string",
+      "max":65536,
+      "min":1
+    },
+    "DataQualityTargetTable":{
+      "type":"structure",
+      "required":[
+        "TableName",
+        "DatabaseName"
+      ],
+      "members":{
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the Glue table.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the Glue table exists.</p>"
+        }
+      },
+      "documentation":"<p>An object representing an Glue table.</p>"
+    },
+    "DataSource":{
+      "type":"structure",
+      "required":["GlueTable"],
+      "members":{
+        "GlueTable":{
+          "shape":"GlueTable",
+          "documentation":"<p>An Glue table.</p>"
+        }
+      },
+      "documentation":"<p>A data source (an Glue table) for which you want data quality results.</p>"
     },
     "Database":{
       "type":"structure",
@@ -7393,6 +8173,21 @@
           "shape":"NameString",
           "documentation":"<p>The name of the custom pattern you deleted.</p>"
         }
+      }
+    },
+    "DeleteDataQualityRulesetRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A name for the data quality ruleset.</p>"
+        }
+      }
+    },
+    "DeleteDataQualityRulesetResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteDatabaseRequest":{
@@ -8348,6 +9143,41 @@
     },
     "ErrorMessageString":{"type":"string"},
     "ErrorString":{"type":"string"},
+    "EvaluateDataQuality":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Ruleset"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data quality evaluation.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The inputs of your data quality evaluation.</p>"
+        },
+        "Ruleset":{
+          "shape":"DQDLString",
+          "documentation":"<p>The ruleset for your data quality evaluation.</p>"
+        },
+        "Output":{
+          "shape":"DQTransformOutput",
+          "documentation":"<p>The output of your data quality evaluation.</p>"
+        },
+        "PublishingOptions":{
+          "shape":"DQResultsPublishingOptions",
+          "documentation":"<p>Options to configure how your results are published.</p>"
+        },
+        "StopJobOnFailureOptions":{
+          "shape":"DQStopJobOnFailureOptions",
+          "documentation":"<p>Options to configure how your job will stop if your data quality evaluation fails.</p>"
+        }
+      },
+      "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
+    },
     "EvaluationMetrics":{
       "type":"structure",
       "required":["TransformType"],
@@ -9105,6 +9935,246 @@
         "DataCatalogEncryptionSettings":{
           "shape":"DataCatalogEncryptionSettings",
           "documentation":"<p>The requested security configuration.</p>"
+        }
+      }
+    },
+    "GetDataQualityResultRequest":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        }
+      }
+    },
+    "GetDataQualityResultResponse":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"GenericString",
+          "documentation":"<p>In the context of a job in Glue Studio, each node in the canvas is typically assigned some sort of name and data quality nodes will have names. In the case of multiple nodes, the <code>evaluationContext</code> can differentiate the nodes.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the run for this data quality result started.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the run for this data quality result was completed.</p>"
+        },
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The job name associated with the data quality result, if any.</p>"
+        },
+        "JobRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The job run ID associated with the data quality result, if any.</p>"
+        },
+        "RulesetEvaluationRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run ID associated with the ruleset evaluation.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+        }
+      }
+    },
+    "GetDataQualityRuleRecommendationRunRequest":{
+      "type":"structure",
+      "required":["RunId"],
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
+      }
+    },
+    "GetDataQualityRuleRecommendationRunResponse":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (an Glue table) associated with this run.</p>"
+        },
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "ErrorString":{
+          "shape":"GenericString",
+          "documentation":"<p>The error strings that are associated with the run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this data quality rule recommendation run was modified.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run was completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"ExecutionTime",
+          "documentation":"<p>The amount of time (in seconds) that the run consumed resources.</p>"
+        },
+        "RecommendedRuleset":{
+          "shape":"DataQualityRulesetString",
+          "documentation":"<p>When a start rule recommendation run completes, it creates a recommended ruleset (a set of rules). This member has those rules in Data Quality Definition Language (DQDL) format.</p>"
+        },
+        "CreatedRulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset that was created by the run.</p>"
+        }
+      }
+    },
+    "GetDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":["RunId"],
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
+      }
+    },
+    "GetDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (an Glue table) associated with this evaluation run.</p>"
+        },
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityEvaluationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+        },
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "ErrorString":{
+          "shape":"GenericString",
+          "documentation":"<p>The error strings that are associated with the run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this data quality rule recommendation run was modified.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run was completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"ExecutionTime",
+          "documentation":"<p>The amount of time (in seconds) that the run consumed resources.</p>"
+        },
+        "RulesetNames":{
+          "shape":"RulesetNames",
+          "documentation":"<p>A list of ruleset names for the run.</p>"
+        },
+        "ResultIds":{
+          "shape":"DataQualityResultIdList",
+          "documentation":"<p>A list of result IDs for the data quality results for the run.</p>"
+        }
+      }
+    },
+    "GetDataQualityRulesetRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset.</p>"
+        }
+      }
+    },
+    "GetDataQualityRulesetResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the ruleset.</p>"
+        },
+        "Ruleset":{
+          "shape":"DataQualityRulesetString",
+          "documentation":"<p>A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.</p>"
+        },
+        "TargetTable":{
+          "shape":"DataQualityTargetTable",
+          "documentation":"<p>The name and database name of the target table.</p>"
+        },
+        "CreatedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The time and date that this data quality ruleset was created.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this data quality ruleset was modified.</p>"
+        },
+        "RecommendationRunId":{
+          "shape":"HashString",
+          "documentation":"<p>When a ruleset was created from a recommendation run, this run ID is generated to link the two together.</p>"
         }
       }
     },
@@ -10803,9 +11873,20 @@
         "ConnectionName":{
           "shape":"NameString",
           "documentation":"<p>The name of the connection to the Glue Data Catalog.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"GlueTableAdditionalOptions",
+          "documentation":"<p>Additional options for the table. Currently there are two keys supported:</p> <ul> <li> <p> <code>pushDownPredicate</code>: to filter on partitions without having to list and read all the files in your dataset.</p> </li> <li> <p> <code>catalogPartitionPredicate</code>: to use server-side partition pruning using partition indexes in the Glue Data Catalog.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The database and table in the Glue Data Catalog that is used for input or output data.</p>"
+    },
+    "GlueTableAdditionalOptions":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DescriptionString"},
+      "max":10,
+      "min":1
     },
     "GlueTables":{
       "type":"list",
@@ -12175,6 +13256,131 @@
         "CustomEntityTypes":{
           "shape":"CustomEntityTypes",
           "documentation":"<p>A list of <code>CustomEntityType</code> objects representing custom patterns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
+    "ListDataQualityResultsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityResultFilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A paginated token to offset the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListDataQualityResultsResponse":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultDescriptionList",
+          "documentation":"<p>A list of <code>DataQualityResultDescription</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
+    "ListDataQualityRuleRecommendationRunsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityRuleRecommendationRunFilter",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A paginated token to offset the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListDataQualityRuleRecommendationRunsResponse":{
+      "type":"structure",
+      "members":{
+        "Runs":{
+          "shape":"DataQualityRuleRecommendationRunList",
+          "documentation":"<p>A list of <code>DataQualityRuleRecommendationRunDescription</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
+    "ListDataQualityRulesetEvaluationRunsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityRulesetEvaluationRunFilter",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A paginated token to offset the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListDataQualityRulesetEvaluationRunsResponse":{
+      "type":"structure",
+      "members":{
+        "Runs":{
+          "shape":"DataQualityRulesetEvaluationRunList",
+          "documentation":"<p>A list of <code>DataQualityRulesetEvaluationRunDescription</code> objects representing data quality ruleset runs.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
+    "ListDataQualityRulesetsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A paginated token to offset the results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "Filter":{
+          "shape":"DataQualityRulesetFilterCriteria",
+          "documentation":"<p>The filter criteria. </p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of key-value pair tags.</p>"
+        }
+      }
+    },
+    "ListDataQualityRulesetsResponse":{
+      "type":"structure",
+      "members":{
+        "Rulesets":{
+          "shape":"DataQualityRulesetList",
+          "documentation":"<p>A paginated list of rulesets for the specified list of Glue tables.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
@@ -14425,6 +15631,12 @@
     },
     "RoleString":{"type":"string"},
     "RowTag":{"type":"string"},
+    "RulesetNames":{
+      "type":"list",
+      "member":{"shape":"NameString"},
+      "max":10,
+      "min":1
+    },
     "RunId":{"type":"string"},
     "RunStatementRequest":{
       "type":"structure",
@@ -15792,6 +17004,95 @@
     "StartCrawlerScheduleResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "StartDataQualityRuleRecommendationRunRequest":{
+      "type":"structure",
+      "required":[
+        "DataSource",
+        "Role"
+      ],
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (Glue table) associated with this run.</p>"
+        },
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "CreatedRulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>A name for the ruleset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        }
+      }
+    },
+    "StartDataQualityRuleRecommendationRunResponse":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
+      }
+    },
+    "StartDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":[
+        "DataSource",
+        "Role",
+        "RulesetNames"
+      ],
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source (Glue table) associated with this run.</p>"
+        },
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityEvaluationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+        },
+        "RulesetNames":{
+          "shape":"RulesetNames",
+          "documentation":"<p>A list of ruleset names.</p>"
+        }
+      }
+    },
+    "StartDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        }
       }
     },
     "StartExportLabelsTaskRunRequest":{
@@ -17438,6 +18739,45 @@
         }
       },
       "documentation":"<p>Specifies a custom CSV classifier to be updated.</p>"
+    },
+    "UpdateDataQualityRulesetRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality ruleset.</p>"
+        },
+        "UpdatedName":{
+          "shape":"NameString",
+          "documentation":"<p>The new name of the ruleset, if you are renaming it.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the ruleset.</p>"
+        },
+        "Ruleset":{
+          "shape":"DataQualityRulesetString",
+          "documentation":"<p>A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.</p>"
+        }
+      }
+    },
+    "UpdateDataQualityRulesetResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality ruleset.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the ruleset.</p>"
+        },
+        "Ruleset":{
+          "shape":"DataQualityRulesetString",
+          "documentation":"<p>A Data Quality Definition Language (DQDL) ruleset. For more information, see the Glue developer guide.</p>"
+        }
+      }
     },
     "UpdateDatabaseRequest":{
       "type":"structure",

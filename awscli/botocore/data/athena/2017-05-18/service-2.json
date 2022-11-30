@@ -83,6 +83,21 @@
       "documentation":"<p>Creates a named query in the specified workgroup. Requires that you have access to the workgroup.</p> <p>For code samples using the Amazon Web Services SDK for Java, see <a href=\"http://docs.aws.amazon.com/athena/latest/ug/code-samples.html\">Examples and Code Samples</a> in the <i>Amazon Athena User Guide</i>.</p>",
       "idempotent":true
     },
+    "CreateNotebook":{
+      "name":"CreateNotebook",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateNotebookInput"},
+      "output":{"shape":"CreateNotebookOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates an empty <code>ipynb</code> file in the specified Apache Spark enabled workgroup. Throws an error if a file in the workgroup with the same name already exists.</p>"
+    },
     "CreatePreparedStatement":{
       "name":"CreatePreparedStatement",
       "http":{
@@ -97,6 +112,21 @@
       ],
       "documentation":"<p>Creates a prepared statement for use with SQL queries in Athena.</p>"
     },
+    "CreatePresignedNotebookUrl":{
+      "name":"CreatePresignedNotebookUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePresignedNotebookUrlRequest"},
+      "output":{"shape":"CreatePresignedNotebookUrlResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets an authentication token and the URL at which the notebook can be accessed. During programmatic access, <code>CreatePresignedNotebookUrl</code> must be called every 10 minutes to refresh the authentication token.</p>"
+    },
     "CreateWorkGroup":{
       "name":"CreateWorkGroup",
       "http":{
@@ -109,7 +139,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Creates a workgroup with the specified name.</p>"
+      "documentation":"<p>Creates a workgroup with the specified name. Only one of <code>Configurations</code> or <code>Configuration</code> can be specified; <code>Configurations</code> for a workgroup with multi engine support (for example, an Apache Spark enabled workgroup) or <code>Configuration</code> for an Athena SQL workgroup.</p>"
     },
     "DeleteDataCatalog":{
       "name":"DeleteDataCatalog",
@@ -140,6 +170,21 @@
       "documentation":"<p>Deletes the named query if you have access to the workgroup in which the query was saved.</p> <p>For code samples using the Amazon Web Services SDK for Java, see <a href=\"http://docs.aws.amazon.com/athena/latest/ug/code-samples.html\">Examples and Code Samples</a> in the <i>Amazon Athena User Guide</i>.</p>",
       "idempotent":true
     },
+    "DeleteNotebook":{
+      "name":"DeleteNotebook",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteNotebookInput"},
+      "output":{"shape":"DeleteNotebookOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Deletes the specified notebook.</p>"
+    },
     "DeletePreparedStatement":{
       "name":"DeletePreparedStatement",
       "http":{
@@ -169,6 +214,65 @@
       ],
       "documentation":"<p>Deletes the workgroup with the specified name. The primary workgroup cannot be deleted.</p>",
       "idempotent":true
+    },
+    "ExportNotebook":{
+      "name":"ExportNotebook",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportNotebookInput"},
+      "output":{"shape":"ExportNotebookOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Exports the specified notebook and its metadata.</p>"
+    },
+    "GetCalculationExecution":{
+      "name":"GetCalculationExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCalculationExecutionRequest"},
+      "output":{"shape":"GetCalculationExecutionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes a previously submitted calculation execution.</p>"
+    },
+    "GetCalculationExecutionCode":{
+      "name":"GetCalculationExecutionCode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCalculationExecutionCodeRequest"},
+      "output":{"shape":"GetCalculationExecutionCodeResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a pre-signed URL to a copy of the code that was executed for the calculation.</p>"
+    },
+    "GetCalculationExecutionStatus":{
+      "name":"GetCalculationExecutionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCalculationExecutionStatusRequest"},
+      "output":{"shape":"GetCalculationExecutionStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the status of a current calculation.</p>"
     },
     "GetDataCatalog":{
       "name":"GetDataCatalog",
@@ -212,6 +316,21 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Returns information about a single query. Requires that you have access to the workgroup in which the query was saved.</p>"
+    },
+    "GetNotebookMetadata":{
+      "name":"GetNotebookMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetNotebookMetadataInput"},
+      "output":{"shape":"GetNotebookMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves notebook metadata for the specified notebook ID.</p>"
     },
     "GetPreparedStatement":{
       "name":"GetPreparedStatement",
@@ -271,6 +390,36 @@
       ],
       "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. The query execution runtime statistics is returned only when <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state.</p>"
     },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionRequest"},
+      "output":{"shape":"GetSessionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the full details of a previously created session, including the session status and configuration.</p>"
+    },
+    "GetSessionStatus":{
+      "name":"GetSessionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionStatusRequest"},
+      "output":{"shape":"GetSessionStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the current status of a session.</p>"
+    },
     "GetTableMetadata":{
       "name":"GetTableMetadata",
       "http":{
@@ -299,6 +448,51 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Returns information about the workgroup with the specified name.</p>"
+    },
+    "ImportNotebook":{
+      "name":"ImportNotebook",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ImportNotebookInput"},
+      "output":{"shape":"ImportNotebookOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Imports a single <code>ipynb</code> file to a Spark enabled workgroup. The maximum file size that can be imported is 10 megabytes. If an <code>ipynb</code> file with the same name already exists in the workgroup, throws an error.</p>"
+    },
+    "ListApplicationDPUSizes":{
+      "name":"ListApplicationDPUSizes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListApplicationDPUSizesInput"},
+      "output":{"shape":"ListApplicationDPUSizesOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns the supported DPU sizes for the supported application runtimes (for example, <code>Jupyter 1.0</code>). </p>"
+    },
+    "ListCalculationExecutions":{
+      "name":"ListCalculationExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCalculationExecutionsRequest"},
+      "output":{"shape":"ListCalculationExecutionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the calculations that have been submitted to a session in descending order. Newer calculations are listed first; older calculations are listed later.</p>"
     },
     "ListDataCatalogs":{
       "name":"ListDataCatalogs",
@@ -343,6 +537,21 @@
       ],
       "documentation":"<p>Returns a list of engine versions that are available to choose from, including the Auto option.</p>"
     },
+    "ListExecutors":{
+      "name":"ListExecutors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListExecutorsRequest"},
+      "output":{"shape":"ListExecutorsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists, in descending order, the executors that have been submitted to a session. Newer executors are listed first; older executors are listed later. The result can be optionally filtered by state.</p>"
+    },
     "ListNamedQueries":{
       "name":"ListNamedQueries",
       "http":{
@@ -356,6 +565,36 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Provides a list of available query IDs only for queries saved in the specified workgroup. Requires that you have access to the specified workgroup. If a workgroup is not specified, lists the saved queries for the primary workgroup.</p> <p>For code samples using the Amazon Web Services SDK for Java, see <a href=\"http://docs.aws.amazon.com/athena/latest/ug/code-samples.html\">Examples and Code Samples</a> in the <i>Amazon Athena User Guide</i>.</p>"
+    },
+    "ListNotebookMetadata":{
+      "name":"ListNotebookMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNotebookMetadataInput"},
+      "output":{"shape":"ListNotebookMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Displays the notebook files for the specified workgroup in paginated format.</p>"
+    },
+    "ListNotebookSessions":{
+      "name":"ListNotebookSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNotebookSessionsRequest"},
+      "output":{"shape":"ListNotebookSessionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists, in descending order, the sessions that have been created in a notebook that are in an active state like <code>CREATING</code>, <code>CREATED</code>, <code>IDLE</code> or <code>BUSY</code>. Newer sessions are listed first; older sessions are listed later.</p>"
     },
     "ListPreparedStatements":{
       "name":"ListPreparedStatements",
@@ -384,6 +623,21 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Provides a list of available query execution IDs for the queries in the specified workgroup. If a workgroup is not specified, returns a list of query execution IDs for the primary workgroup. Requires you to have access to the workgroup in which the queries ran.</p> <p>For code samples using the Amazon Web Services SDK for Java, see <a href=\"http://docs.aws.amazon.com/athena/latest/ug/code-samples.html\">Examples and Code Samples</a> in the <i>Amazon Athena User Guide</i>.</p>"
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the sessions in a workgroup that are in an active state like <code>CREATING</code>, <code>CREATED</code>, <code>IDLE</code>, or <code>BUSY</code>. Newer sessions are listed first; older sessions are listed later.</p>"
     },
     "ListTableMetadata":{
       "name":"ListTableMetadata",
@@ -429,6 +683,21 @@
       ],
       "documentation":"<p>Lists available workgroups for the account.</p>"
     },
+    "StartCalculationExecution":{
+      "name":"StartCalculationExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartCalculationExecutionRequest"},
+      "output":{"shape":"StartCalculationExecutionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits calculations for execution within a session. You can supply the code to run as an inline code block within the request or as an Amazon S3 URL.</p>"
+    },
     "StartQueryExecution":{
       "name":"StartQueryExecution",
       "http":{
@@ -444,6 +713,37 @@
       ],
       "documentation":"<p>Runs the SQL query statements contained in the <code>Query</code>. Requires you to have access to the workgroup in which the query ran. Running queries against an external catalog requires <a>GetDataCatalog</a> permission to the catalog. For code samples using the Amazon Web Services SDK for Java, see <a href=\"http://docs.aws.amazon.com/athena/latest/ug/code-samples.html\">Examples and Code Samples</a> in the <i>Amazon Athena User Guide</i>.</p>",
       "idempotent":true
+    },
+    "StartSession":{
+      "name":"StartSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSessionRequest"},
+      "output":{"shape":"StartSessionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"SessionAlreadyExistsException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates a session for running calculations within a workgroup. The session is ready when it reaches an <code>IDLE</code> state.</p>"
+    },
+    "StopCalculationExecution":{
+      "name":"StopCalculationExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopCalculationExecutionRequest"},
+      "output":{"shape":"StopCalculationExecutionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Requests the cancellation of a calculation. A <code>StopCalculationExecution</code> call on a calculation that is already in a terminal state (for example, <code>STOPPED</code>, <code>FAILED</code>, or <code>COMPLETED</code>) succeeds but has no effect.</p> <note> <p>Cancelling a calculation is done on a best effort basis. If a calculation cannot be cancelled, you can be charged for its completion. If you are concerned about being charged for a calculation that cannot be cancelled, consider terminating the session in which the calculation is running.</p> </note>"
     },
     "StopQueryExecution":{
       "name":"StopQueryExecution",
@@ -474,6 +774,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Adds one or more tags to an Athena resource. A tag is a label that you assign to a resource. In Athena, a resource can be a workgroup or data catalog. Each tag consists of a key and an optional value, both of which you define. For example, you can use tags to categorize Athena workgroups or data catalogs by purpose, owner, or environment. Use a consistent set of tag keys to make it easier to search and filter workgroups or data catalogs in your account. For best practices, see <a href=\"https://aws.amazon.com/answers/account-management/aws-tagging-strategies/\">Tagging Best Practices</a>. Tag keys can be from 1 to 128 UTF-8 Unicode characters, and tag values can be from 0 to 256 UTF-8 Unicode characters. Tags can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys and values are case-sensitive. Tag keys must be unique per resource. If you specify more than one tag, separate them by commas.</p>"
+    },
+    "TerminateSession":{
+      "name":"TerminateSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TerminateSessionRequest"},
+      "output":{"shape":"TerminateSessionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Terminates an active session. A <code>TerminateSession</code> call on a session that is already inactive (for example, in a <code>FAILED</code>, <code>TERMINATED</code> or <code>TERMINATING</code> state) succeeds but has no effect. Calculations running in the session when <code>TerminateSession</code> is called are forcefully stopped, but may display as <code>FAILED</code> instead of <code>STOPPED</code>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -519,6 +834,36 @@
       "documentation":"<p>Updates a <a>NamedQuery</a> object. The database or workgroup cannot be updated.</p>",
       "idempotent":true
     },
+    "UpdateNotebook":{
+      "name":"UpdateNotebook",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateNotebookInput"},
+      "output":{"shape":"UpdateNotebookOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates the contents of a Spark notebook.</p>"
+    },
+    "UpdateNotebookMetadata":{
+      "name":"UpdateNotebookMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateNotebookMetadataInput"},
+      "output":{"shape":"UpdateNotebookMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates the metadata for a notebook.</p>"
+    },
     "UpdatePreparedStatement":{
       "name":"UpdatePreparedStatement",
       "http":{
@@ -546,7 +891,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates the workgroup with the specified name. The workgroup's name cannot be changed.</p>"
+      "documentation":"<p>Updates the workgroup with the specified name. The workgroup's name cannot be changed. Only one of <code>ConfigurationsUpdates</code> or <code>ConfigurationUpdates</code> can be specified; <code>ConfigurationsUpdates</code> for a workgroup with multi engine support (for example, an Apache Spark enabled workgroup) or <code>ConfigurationUpdates</code> for an Athena SQL workgroup.</p>"
     }
   },
   "shapes":{
@@ -571,6 +916,24 @@
       "max":1011,
       "min":1
     },
+    "ApplicationDPUSizes":{
+      "type":"structure",
+      "members":{
+        "ApplicationRuntimeId":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the supported application runtime (for example, <code>Jupyter 1.0</code>).</p>"
+        },
+        "SupportedDPUSizes":{
+          "shape":"SupportedDPUSizeList",
+          "documentation":"<p>A list of the supported DPU sizes that the application runtime supports.</p>"
+        }
+      },
+      "documentation":"<p>Contains the application runtime IDs and their supported DPU sizes.</p>"
+    },
+    "ApplicationDPUSizesList":{
+      "type":"list",
+      "member":{"shape":"ApplicationDPUSizes"}
+    },
     "AthenaError":{
       "type":"structure",
       "members":{
@@ -592,6 +955,10 @@
         }
       },
       "documentation":"<p>Provides information about an Athena query error. The <code>AthenaError</code> feature provides standardized error information to help you understand failed queries and take steps after a query failure occurs. <code>AthenaError</code> includes an <code>ErrorCategory</code> field that specifies whether the cause of the failed query is due to system error, user error, or other error.</p>"
+    },
+    "AuthToken":{
+      "type":"string",
+      "max":2048
     },
     "AwsAccountId":{
       "type":"string",
@@ -683,11 +1050,137 @@
       "type":"long",
       "min":10000000
     },
+    "CalculationConfiguration":{
+      "type":"structure",
+      "members":{
+        "CodeBlock":{
+          "shape":"CodeBlock",
+          "documentation":"<p>A string that contains the code for the calculation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information for the calculation.</p>"
+    },
+    "CalculationExecutionId":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
+    "CalculationExecutionState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATED",
+        "QUEUED",
+        "RUNNING",
+        "CANCELING",
+        "CANCELED",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "CalculationResult":{
+      "type":"structure",
+      "members":{
+        "StdOutS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of the <code>stdout</code> file for the calculation.</p>"
+        },
+        "StdErrorS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of the <code>stderr</code> error messages file for the calculation.</p>"
+        },
+        "ResultS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of the folder for the calculation results.</p>"
+        },
+        "ResultType":{
+          "shape":"CalculationResultType",
+          "documentation":"<p>The data format of the calculation result.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an application-specific calculation result.</p>"
+    },
+    "CalculationResultType":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\w+\\/[-+.\\w]+"
+    },
+    "CalculationStatistics":{
+      "type":"structure",
+      "members":{
+        "DpuExecutionInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The data processing unit execution time in milliseconds for the calculation.</p>"
+        },
+        "Progress":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The progress of the calculation.</p>"
+        }
+      },
+      "documentation":"<p>Contains statistics for a notebook calculation.</p>"
+    },
+    "CalculationStatus":{
+      "type":"structure",
+      "members":{
+        "SubmissionDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the calculation was submitted for processing.</p>"
+        },
+        "CompletionDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time the calculation completed processing.</p>"
+        },
+        "State":{
+          "shape":"CalculationExecutionState",
+          "documentation":"<p>The state of the calculation execution. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>"
+        },
+        "StateChangeReason":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The reason for the calculation state change (for example, the calculation was canceled because the session was terminated).</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the status of a notebook calculation.</p>"
+    },
+    "CalculationSummary":{
+      "type":"structure",
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the calculation.</p>"
+        },
+        "Status":{
+          "shape":"CalculationStatus",
+          "documentation":"<p>Contains information about the status of the calculation.</p>"
+        }
+      },
+      "documentation":"<p>Summary information for a notebook calculation.</p>"
+    },
+    "CalculationsList":{
+      "type":"list",
+      "member":{"shape":"CalculationSummary"},
+      "max":100,
+      "min":0
+    },
     "CatalogNameString":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "ClientRequestToken":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "CodeBlock":{
+      "type":"string",
+      "max":68000
     },
     "Column":{
       "type":"structure",
@@ -780,6 +1273,11 @@
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "CoordinatorDpuSize":{
+      "type":"integer",
+      "max":5000,
+      "min":1
+    },
     "CreateDataCatalogInput":{
       "type":"structure",
       "required":[
@@ -858,6 +1356,36 @@
         }
       }
     },
+    "CreateNotebookInput":{
+      "type":"structure",
+      "required":[
+        "WorkGroup",
+        "Name"
+      ],
+      "members":{
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the Spark enabled workgroup in which the notebook will be created.</p>"
+        },
+        "Name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the <code>ipynb</code> file to be created in the Spark workgroup, without the <code>.ipynb</code> extension.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        }
+      }
+    },
+    "CreateNotebookOutput":{
+      "type":"structure",
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>A unique identifier for the notebook.</p>"
+        }
+      }
+    },
     "CreatePreparedStatementInput":{
       "type":"structure",
       "required":[
@@ -889,6 +1417,38 @@
       "members":{
       }
     },
+    "CreatePresignedNotebookUrlRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        }
+      }
+    },
+    "CreatePresignedNotebookUrlResponse":{
+      "type":"structure",
+      "required":[
+        "NotebookUrl",
+        "AuthToken",
+        "AuthTokenExpirationTime"
+      ],
+      "members":{
+        "NotebookUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the notebook. The URL includes the authentication token and notebook file name and points directly to the opened notebook.</p>"
+        },
+        "AuthToken":{
+          "shape":"AuthToken",
+          "documentation":"<p>The authentication token for the notebook.</p>"
+        },
+        "AuthTokenExpirationTime":{
+          "shape":"Long",
+          "documentation":"<p>The UTC epoch time when the authentication token expires.</p>"
+        }
+      }
+    },
     "CreateWorkGroupInput":{
       "type":"structure",
       "required":["Name"],
@@ -899,7 +1459,7 @@
         },
         "Configuration":{
           "shape":"WorkGroupConfiguration",
-          "documentation":"<p>The configuration for the workgroup, which includes the location in Amazon S3 where query results are stored, the encryption configuration, if any, used for encrypting query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, the limit for the amount of bytes scanned (cutoff) per query, if it is specified, and whether workgroup's settings (specified with <code>EnforceWorkGroupConfiguration</code>) in the <code>WorkGroupConfiguration</code> override client-side settings. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
+          "documentation":"<p>Contains configuration information for creating an Athena SQL workgroup, which includes the location in Amazon S3 where query results are stored, the encryption configuration, if any, used for encrypting query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, the limit for the amount of bytes scanned (cutoff) per query, if it is specified, and whether workgroup's settings (specified with <code>EnforceWorkGroupConfiguration</code>) in the <code>WorkGroupConfiguration</code> override client-side settings. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
         },
         "Description":{
           "shape":"WorkGroupDescriptionString",
@@ -915,6 +1475,17 @@
       "type":"structure",
       "members":{
       }
+    },
+    "CustomerContentEncryptionConfiguration":{
+      "type":"structure",
+      "required":["KmsKey"],
+      "members":{
+        "KmsKey":{
+          "shape":"KmsKey",
+          "documentation":"<p>The KMS key that is used to encrypt the user's data stores in Athena.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena.</p>"
     },
     "DataCatalog":{
       "type":"structure",
@@ -1007,6 +1578,11 @@
       },
       "documentation":"<p>A piece of data (a field in the table).</p>"
     },
+    "DefaultExecutorDpuSize":{
+      "type":"integer",
+      "max":5000,
+      "min":1
+    },
     "DeleteDataCatalogInput":{
       "type":"structure",
       "required":["Name"],
@@ -1034,6 +1610,21 @@
       }
     },
     "DeleteNamedQueryOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteNotebookInput":{
+      "type":"structure",
+      "required":["NotebookId"],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to delete.</p>"
+        }
+      }
+    },
+    "DeleteNotebookOutput":{
       "type":"structure",
       "members":{
       }
@@ -1107,6 +1698,29 @@
         "CSE_KMS"
       ]
     },
+    "EngineConfiguration":{
+      "type":"structure",
+      "required":["MaxConcurrentDpus"],
+      "members":{
+        "CoordinatorDpuSize":{
+          "shape":"CoordinatorDpuSize",
+          "documentation":"<p>The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session.</p>"
+        },
+        "MaxConcurrentDpus":{
+          "shape":"MaxConcurrentDpus",
+          "documentation":"<p>The maximum number of DPUs that can run concurrently.</p>"
+        },
+        "DefaultExecutorDpuSize":{
+          "shape":"DefaultExecutorDpuSize",
+          "documentation":"<p>The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena.</p>"
+        },
+        "AdditionalConfigs":{
+          "shape":"ParametersMap",
+          "documentation":"<p>Contains additional notebook engine <code>MAP&lt;string, string&gt;</code> parameter mappings in the form of key-value pairs. To specify an Amazon S3 URI that the Jupyter server will download and serve, specify a value for the <a>StartSessionRequest$NotebookVersion</a> field, and then add a key named <code>NotebookFileURI</code> to <code>AdditionalConfigs</code> that has value of the Amazon S3 URI.</p>"
+        }
+      },
+      "documentation":"<p>Contains data processing unit (DPU) configuration settings and parameter mappings for a notebook engine.</p>"
+    },
     "EngineVersion":{
       "type":"structure",
       "members":{
@@ -1119,7 +1733,7 @@
           "documentation":"<p>Read only. The engine version on which the query runs. If the user requests a valid engine version other than Auto, the effective engine version is the same as the engine version that the user requested. If the user requests Auto, the effective engine version is chosen by Athena. When a request to update the engine version is made by a <code>CreateWorkGroup</code> or <code>UpdateWorkGroup</code> operation, the <code>EffectiveEngineVersion</code> field is ignored.</p>"
         }
       },
-      "documentation":"<p>The Athena engine version for running queries.</p>"
+      "documentation":"<p>The Athena engine version for running queries, or the PySpark engine version for running sessions.</p>"
     },
     "EngineVersionsList":{
       "type":"list",
@@ -1156,10 +1770,187 @@
       "member":{"shape":"ExecutionParameter"},
       "min":1
     },
+    "ExecutorId":{
+      "type":"string",
+      "max":100000,
+      "pattern":".*"
+    },
+    "ExecutorState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATED",
+        "REGISTERED",
+        "TERMINATING",
+        "TERMINATED",
+        "FAILED"
+      ]
+    },
+    "ExecutorType":{
+      "type":"string",
+      "enum":[
+        "COORDINATOR",
+        "GATEWAY",
+        "WORKER"
+      ]
+    },
+    "ExecutorsSummary":{
+      "type":"structure",
+      "required":["ExecutorId"],
+      "members":{
+        "ExecutorId":{
+          "shape":"ExecutorId",
+          "documentation":"<p>The UUID of the executor.</p>"
+        },
+        "ExecutorType":{
+          "shape":"ExecutorType",
+          "documentation":"<p>The type of executor used for the application (<code>COORDINATOR</code>, <code>GATEWAY</code>, or <code>WORKER</code>).</p>"
+        },
+        "StartDateTime":{
+          "shape":"Long",
+          "documentation":"<p>The date and time that the executor started.</p>"
+        },
+        "TerminationDateTime":{
+          "shape":"Long",
+          "documentation":"<p>The date and time that the executor was terminated.</p>"
+        },
+        "ExecutorState":{
+          "shape":"ExecutorState",
+          "documentation":"<p>The processing state of the executor. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>"
+        },
+        "ExecutorSize":{
+          "shape":"Long",
+          "documentation":"<p>The smallest unit of compute that a session can request from Athena. Size is measured in data processing unit (DPU) values, a relative measure of processing power.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an executor.</p>"
+    },
+    "ExecutorsSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExecutorsSummary"}
+    },
+    "ExportNotebookInput":{
+      "type":"structure",
+      "required":["NotebookId"],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to export.</p>"
+        }
+      }
+    },
+    "ExportNotebookOutput":{
+      "type":"structure",
+      "members":{
+        "NotebookMetadata":{
+          "shape":"NotebookMetadata",
+          "documentation":"<p>The notebook metadata, including notebook ID, notebook name, and workgroup name.</p>"
+        },
+        "Payload":{
+          "shape":"Payload",
+          "documentation":"<p>The content of the exported notebook.</p>"
+        }
+      }
+    },
     "ExpressionString":{
       "type":"string",
       "max":256,
       "min":0
+    },
+    "FilterDefinition":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the notebook to search for.</p>"
+        }
+      },
+      "documentation":"<p>A string for searching notebook names.</p>"
+    },
+    "GetCalculationExecutionCodeRequest":{
+      "type":"structure",
+      "required":["CalculationExecutionId"],
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        }
+      }
+    },
+    "GetCalculationExecutionCodeResponse":{
+      "type":"structure",
+      "members":{
+        "CodeBlock":{
+          "shape":"CodeBlock",
+          "documentation":"<p>A pre-signed URL to the code that executed the calculation.</p>"
+        }
+      }
+    },
+    "GetCalculationExecutionRequest":{
+      "type":"structure",
+      "required":["CalculationExecutionId"],
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        }
+      }
+    },
+    "GetCalculationExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID that the calculation ran in.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the calculation execution.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location in which calculation results are stored.</p>"
+        },
+        "Status":{
+          "shape":"CalculationStatus",
+          "documentation":"<p>Contains information about the status of the calculation.</p>"
+        },
+        "Statistics":{
+          "shape":"CalculationStatistics",
+          "documentation":"<p>Contains information about the data processing unit (DPU) execution time and progress. This field is populated only when statistics are available.</p>"
+        },
+        "Result":{
+          "shape":"CalculationResult",
+          "documentation":"<p>Contains result information. This field is populated only if the calculation is completed.</p>"
+        }
+      }
+    },
+    "GetCalculationExecutionStatusRequest":{
+      "type":"structure",
+      "required":["CalculationExecutionId"],
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        }
+      }
+    },
+    "GetCalculationExecutionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"CalculationStatus",
+          "documentation":"<p>Contains information about the calculation execution status.</p>"
+        },
+        "Statistics":{
+          "shape":"CalculationStatistics",
+          "documentation":"<p>Contains information about the DPU execution time and progress.</p>"
+        }
+      }
     },
     "GetDataCatalogInput":{
       "type":"structure",
@@ -1222,6 +2013,25 @@
         "NamedQuery":{
           "shape":"NamedQuery",
           "documentation":"<p>Information about the query.</p>"
+        }
+      }
+    },
+    "GetNotebookMetadataInput":{
+      "type":"structure",
+      "required":["NotebookId"],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook whose metadata is to be retrieved.</p>"
+        }
+      }
+    },
+    "GetNotebookMetadataOutput":{
+      "type":"structure",
+      "members":{
+        "NotebookMetadata":{
+          "shape":"NotebookMetadata",
+          "documentation":"<p>The metadata that is returned for the specified notebook ID.</p>"
         }
       }
     },
@@ -1324,6 +2134,80 @@
         }
       }
     },
+    "GetSessionRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        }
+      }
+    },
+    "GetSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The session description.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The workgroup to which the session belongs.</p>"
+        },
+        "EngineVersion":{
+          "shape":"NameString",
+          "documentation":"<p>The engine version used by the session (for example, <code>PySpark engine version 3</code>). You can get a list of engine versions by calling <a>ListEngineVersions</a>.</p>"
+        },
+        "EngineConfiguration":{
+          "shape":"EngineConfiguration",
+          "documentation":"<p>Contains engine configuration information like DPU usage.</p>"
+        },
+        "NotebookVersion":{
+          "shape":"NameString",
+          "documentation":"<p>The notebook version.</p>"
+        },
+        "SessionConfiguration":{
+          "shape":"SessionConfiguration",
+          "documentation":"<p>Contains the workgroup configuration information used by the session.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>Contains information about the status of the session.</p>"
+        },
+        "Statistics":{
+          "shape":"SessionStatistics",
+          "documentation":"<p>Contains the DPU execution time.</p>"
+        }
+      }
+    },
+    "GetSessionStatusRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        }
+      }
+    },
+    "GetSessionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>Contains information about the status of the session.</p>"
+        }
+      }
+    },
     "GetTableMetadataInput":{
       "type":"structure",
       "required":[
@@ -1379,6 +2263,46 @@
       "max":128,
       "min":32
     },
+    "ImportNotebookInput":{
+      "type":"structure",
+      "required":[
+        "WorkGroup",
+        "Name",
+        "Payload",
+        "Type"
+      ],
+      "members":{
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the Spark enabled workgroup to import the notebook to.</p>"
+        },
+        "Name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the notebook to import.</p>"
+        },
+        "Payload":{
+          "shape":"Payload",
+          "documentation":"<p>The notebook content to be imported.</p>"
+        },
+        "Type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The notebook content type. Currently, the only valid type is <code>IPYNB</code>.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to import the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        }
+      }
+    },
+    "ImportNotebookOutput":{
+      "type":"structure",
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to import.</p>"
+        }
+      }
+    },
     "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
@@ -1403,6 +2327,73 @@
       "max":255,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "KmsKey":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:key/?[a-zA-Z_0-9+=,.@\\-_/]+$|^arn:aws[a-z\\-]*:kms:([a-z0-9\\-]+):\\d{12}:alias/?[a-zA-Z_0-9+=,.@\\-_/]+$|^alias/[a-zA-Z0-9/_-]+$|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ListApplicationDPUSizesInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxApplicationDPUSizesCount",
+          "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.</p>"
+        }
+      }
+    },
+    "ListApplicationDPUSizesOutput":{
+      "type":"structure",
+      "members":{
+        "ApplicationDPUSizes":{
+          "shape":"ApplicationDPUSizesList",
+          "documentation":"<p>A list of the supported DPU sizes that the application runtime supports.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListCalculationExecutionsRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "StateFilter":{
+          "shape":"CalculationExecutionState",
+          "documentation":"<p>A filter for a specific calculation execution state. A description of each state follows.</p> <p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxCalculationsCount",
+          "documentation":"<p>The maximum number of calculation executions to return.</p>"
+        },
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListCalculationExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        },
+        "Calculations":{
+          "shape":"CalculationsList",
+          "documentation":"<p>A list of <a>CalculationSummary</a> objects.</p>"
+        }
+      }
     },
     "ListDataCatalogsInput":{
       "type":"structure",
@@ -1487,6 +2478,46 @@
         }
       }
     },
+    "ListExecutorsRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "ExecutorStateFilter":{
+          "shape":"ExecutorState",
+          "documentation":"<p>A filter for a specific executor state. A description of each state follows.</p> <p> <code>CREATING</code> - The executor is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The executor has been started.</p> <p> <code>REGISTERED</code> - The executor has been registered.</p> <p> <code>TERMINATING</code> - The executor is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The executor is no longer running.</p> <p> <code>FAILED</code> - Due to a failure, the executor is no longer running.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxListExecutorsCount",
+          "documentation":"<p>The maximum number of executors to return.</p>"
+        },
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListExecutorsResponse":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        },
+        "ExecutorsSummary":{
+          "shape":"ExecutorsSummaryList",
+          "documentation":"<p>Contains summary information about the executor.</p>"
+        }
+      }
+    },
     "ListNamedQueriesInput":{
       "type":"structure",
       "members":{
@@ -1510,6 +2541,73 @@
         "NamedQueryIds":{
           "shape":"NamedQueryIdList",
           "documentation":"<p>The list of unique query IDs.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListNotebookMetadataInput":{
+      "type":"structure",
+      "required":["WorkGroup"],
+      "members":{
+        "Filters":{
+          "shape":"FilterDefinition",
+          "documentation":"<p>Search filter string.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxNotebooksCount",
+          "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the Spark enabled workgroup to retrieve notebook metadata for.</p>"
+        }
+      }
+    },
+    "ListNotebookMetadataOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        },
+        "NotebookMetadataList":{
+          "shape":"NotebookMetadataArray",
+          "documentation":"<p>The list of notebook metadata for the specified workgroup.</p>"
+        }
+      }
+    },
+    "ListNotebookSessionsRequest":{
+      "type":"structure",
+      "required":["NotebookId"],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to list sessions for.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSessionsCount",
+          "documentation":"<p>The maximum number of notebook sessions to return.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListNotebookSessionsResponse":{
+      "type":"structure",
+      "required":["NotebookSessionsList"],
+      "members":{
+        "NotebookSessionsList":{
+          "shape":"NotebookSessionsList",
+          "documentation":"<p>A list of the sessions belonging to the notebook.</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -1575,6 +2673,41 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A token to be used by the next request if this request is truncated.</p>"
+        }
+      }
+    },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "required":["WorkGroup"],
+      "members":{
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The workgroup to which the session belongs.</p>"
+        },
+        "StateFilter":{
+          "shape":"SessionState",
+          "documentation":"<p>A filter for a specific session state. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSessionsCount",
+          "documentation":"<p>The maximum number of sessions to return.</p>"
+        },
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"SessionManagerToken",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the <code>NextToken</code> from the response object of the previous page call.</p>"
+        },
+        "Sessions":{
+          "shape":"SessionsList",
+          "documentation":"<p>A list of sessions.</p>"
         }
       }
     },
@@ -1678,6 +2811,22 @@
       }
     },
     "Long":{"type":"long"},
+    "MaxApplicationDPUSizesCount":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "MaxCalculationsCount":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxConcurrentDpus":{
+      "type":"integer",
+      "max":5000,
+      "min":2
+    },
     "MaxDataCatalogsCount":{
       "type":"integer",
       "box":true,
@@ -1696,11 +2845,23 @@
       "max":10,
       "min":1
     },
+    "MaxListExecutorsCount":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "MaxNamedQueriesCount":{
       "type":"integer",
       "box":true,
       "max":50,
       "min":0
+    },
+    "MaxNotebooksCount":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
     },
     "MaxPreparedStatementsCount":{
       "type":"integer",
@@ -1718,6 +2879,12 @@
       "type":"integer",
       "box":true,
       "max":1000,
+      "min":1
+    },
+    "MaxSessionsCount":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "MaxTableMetadataCount":{
@@ -1806,6 +2973,77 @@
       "type":"list",
       "member":{"shape":"NamedQuery"}
     },
+    "NotebookId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "NotebookMetadata":{
+      "type":"structure",
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The notebook ID.</p>"
+        },
+        "Name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the notebook.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the Spark enabled workgroup to which the notebook belongs.</p>"
+        },
+        "CreationTime":{
+          "shape":"Date",
+          "documentation":"<p>The time when the notebook was created.</p>"
+        },
+        "Type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of notebook. Currently, the only valid type is <code>IPYNB</code>.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Date",
+          "documentation":"<p>The time when the notebook was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for notebook, including the notebook name, ID, workgroup, and time created.</p>"
+    },
+    "NotebookMetadataArray":{
+      "type":"list",
+      "member":{"shape":"NotebookMetadata"}
+    },
+    "NotebookName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]+"
+    },
+    "NotebookSessionSummary":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The notebook session ID.</p>"
+        },
+        "CreationTime":{
+          "shape":"Date",
+          "documentation":"<p>The time when the notebook session was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains the notebook session ID and notebook session creation time.</p>"
+    },
+    "NotebookSessionsList":{
+      "type":"list",
+      "member":{"shape":"NotebookSessionSummary"},
+      "documentation":"<p>A list of notebook sessions.</p>",
+      "max":10,
+      "min":0
+    },
+    "NotebookType":{
+      "type":"string",
+      "enum":["IPYNB"]
+    },
     "ParametersMap":{
       "type":"map",
       "key":{"shape":"KeyString"},
@@ -1814,6 +3052,11 @@
     "ParametersMapValue":{
       "type":"string",
       "max":51200
+    },
+    "Payload":{
+      "type":"string",
+      "max":15728640,
+      "min":1
     },
     "PreparedStatement":{
       "type":"structure",
@@ -2293,6 +3536,12 @@
       },
       "documentation":"<p>The metadata that describes the column structure and data types of a table of query results. To return a <code>ResultSetMetadata</code> object, use <a>GetQueryResults</a>.</p>"
     },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
     "Row":{
       "type":"structure",
       "members":{
@@ -2310,6 +3559,179 @@
     "S3AclOption":{
       "type":"string",
       "enum":["BUCKET_OWNER_FULL_CONTROL"]
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(https|s3|S3)://([^/]+)/?(.*)$"
+    },
+    "SessionAlreadyExistsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The specified session already exists.</p>",
+      "exception":true
+    },
+    "SessionConfiguration":{
+      "type":"structure",
+      "members":{
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the execution role used for the session.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"ResultOutputLocation",
+          "documentation":"<p>The Amazon S3 location that stores information for the notebook.</p>"
+        },
+        "IdleTimeoutSeconds":{
+          "shape":"Long",
+          "documentation":"<p>The idle timeout in seconds for the session.</p>"
+        },
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"}
+      },
+      "documentation":"<p>Contains session configuration information.</p>"
+    },
+    "SessionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SessionIdleTimeoutInMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":480,
+      "min":1
+    },
+    "SessionManagerToken":{
+      "type":"string",
+      "max":2048
+    },
+    "SessionState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATED",
+        "IDLE",
+        "BUSY",
+        "TERMINATING",
+        "TERMINATED",
+        "DEGRADED",
+        "FAILED"
+      ]
+    },
+    "SessionStatistics":{
+      "type":"structure",
+      "members":{
+        "DpuExecutionInMillis":{
+          "shape":"Long",
+          "documentation":"<p>The data processing unit execution time for a session in milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Contains statistics for a notebook session.</p>"
+    },
+    "SessionStatus":{
+      "type":"structure",
+      "members":{
+        "StartDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session started.</p>"
+        },
+        "LastModifiedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The most recent date and time that the session was modified.</p>"
+        },
+        "EndDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the session ended.</p>"
+        },
+        "IdleSinceDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time starting at which the session became idle. Can be empty if the session is not currently idle.</p>"
+        },
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>"
+        },
+        "StateChangeReason":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The reason for the session state change (for example, canceled because the session was terminated).</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the status of a notebook session.</p>"
+    },
+    "SessionSummary":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The session description.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The engine version used by the session (for example, <code>PySpark engine version 3</code>).</p>"
+        },
+        "NotebookVersion":{
+          "shape":"NameString",
+          "documentation":"<p>The notebook version.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>Contains information about the session status.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a notebook session.</p>"
+    },
+    "SessionsList":{
+      "type":"list",
+      "member":{"shape":"SessionSummary"},
+      "max":100,
+      "min":0
+    },
+    "StartCalculationExecutionRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description of the calculation.</p>"
+        },
+        "CalculationConfiguration":{
+          "shape":"CalculationConfiguration",
+          "documentation":"<p>Contains configuration information for the calculation.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Kepler Post GA Tasks : https://sim.amazon.com/issues/ATHENA-39828"
+        },
+        "CodeBlock":{
+          "shape":"CodeBlock",
+          "documentation":"<p>A string that contains the code of the calculation.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the calculation is idempotent (executes only once). If another <code>StartCalculationExecutionRequest</code> is received, the same response is returned and another calculation is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        }
+      }
+    },
+    "StartCalculationExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        },
+        "State":{
+          "shape":"CalculationExecutionState",
+          "documentation":"<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>"
+        }
+      }
     },
     "StartQueryExecutionInput":{
       "type":"structure",
@@ -2355,6 +3777,52 @@
         }
       }
     },
+    "StartSessionRequest":{
+      "type":"structure",
+      "required":[
+        "WorkGroup",
+        "EngineConfiguration"
+      ],
+      "members":{
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The session description.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The workgroup to which the session belongs.</p>"
+        },
+        "EngineConfiguration":{
+          "shape":"EngineConfiguration",
+          "documentation":"<p>Contains engine data processing unit (DPU) configuration settings and parameter mappings.</p>"
+        },
+        "NotebookVersion":{
+          "shape":"NameString",
+          "documentation":"<p>The notebook version. This value is required only when requesting that a notebook server be started for the session. The only valid notebook version is <code>Jupyter1.0</code>.</p>"
+        },
+        "SessionIdleTimeoutInMinutes":{
+          "shape":"SessionIdleTimeoutInMinutes",
+          "documentation":"<p>The idle timeout in minutes for the session.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the session is idempotent (executes only once). If another <code>StartSessionRequest</code> is received, the same response is returned and another session is not created. If a parameter has changed, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        }
+      }
+    },
+    "StartSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        },
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>"
+        }
+      }
+    },
     "StatementName":{
       "type":"string",
       "max":256,
@@ -2368,6 +3836,25 @@
         "DML",
         "UTILITY"
       ]
+    },
+    "StopCalculationExecutionRequest":{
+      "type":"structure",
+      "required":["CalculationExecutionId"],
+      "members":{
+        "CalculationExecutionId":{
+          "shape":"CalculationExecutionId",
+          "documentation":"<p>The calculation execution UUID.</p>"
+        }
+      }
+    },
+    "StopCalculationExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"CalculationExecutionState",
+          "documentation":"<p> <code>CREATING</code> - The calculation is in the process of being created.</p> <p> <code>CREATED</code> - The calculation has been created and is ready to run.</p> <p> <code>QUEUED</code> - The calculation has been queued for processing.</p> <p> <code>RUNNING</code> - The calculation is running.</p> <p> <code>CANCELING</code> - A request to cancel the calculation has been received and the system is working to stop it.</p> <p> <code>CANCELED</code> - The calculation is no longer running as the result of a cancel request.</p> <p> <code>COMPLETED</code> - The calculation has completed without error.</p> <p> <code>FAILED</code> - The calculation failed and is no longer running.</p>"
+        }
+      }
     },
     "StopQueryExecutionInput":{
       "type":"structure",
@@ -2389,6 +3876,10 @@
     "StringList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "SupportedDPUSizeList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
     },
     "TableMetadata":{
       "type":"structure",
@@ -2486,6 +3977,25 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TerminateSessionRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The session ID.</p>"
+        }
+      }
+    },
+    "TerminateSessionResponse":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"SessionState",
+          "documentation":"<p>The state of the session. A description of each state follows.</p> <p> <code>CREATING</code> - The session is being started, including acquiring resources.</p> <p> <code>CREATED</code> - The session has been started.</p> <p> <code>IDLE</code> - The session is able to accept a calculation.</p> <p> <code>BUSY</code> - The session is processing another task and is unable to accept a calculation.</p> <p> <code>TERMINATING</code> - The session is in the process of shutting down.</p> <p> <code>TERMINATED</code> - The session and its resources are no longer running.</p> <p> <code>DEGRADED</code> - The session has no healthy coordinators.</p> <p> <code>FAILED</code> - Due to a failure, the session and its resources are no longer running.</p>"
+        }
+      }
     },
     "ThrottleReason":{
       "type":"string",
@@ -2662,6 +4172,63 @@
       "members":{
       }
     },
+    "UpdateNotebookInput":{
+      "type":"structure",
+      "required":["NotebookId"],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to update.</p>"
+        },
+        "Payload":{
+          "shape":"Payload",
+          "documentation":"<p>The updated content for the notebook.</p>"
+        },
+        "Type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The notebook content type. Currently, the only valid type is <code>IPYNB</code>.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session in which the notebook will be updated.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        }
+      }
+    },
+    "UpdateNotebookMetadataInput":{
+      "type":"structure",
+      "required":[
+        "NotebookId",
+        "Name"
+      ],
+      "members":{
+        "NotebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The ID of the notebook to update the metadata for.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the notebook is idempotent (executes only once).</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for you. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>"
+        },
+        "Name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name to update the notebook to.</p>"
+        }
+      }
+    },
+    "UpdateNotebookMetadataOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateNotebookOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdatePreparedStatementInput":{
       "type":"structure",
       "required":[
@@ -2707,7 +4274,7 @@
         },
         "ConfigurationUpdates":{
           "shape":"WorkGroupConfigurationUpdates",
-          "documentation":"<p>The workgroup configuration that will be updated for the given workgroup.</p>"
+          "documentation":"<p>Contains configuration updates for an Athena SQL workgroup.</p>"
         },
         "State":{
           "shape":"WorkGroupState",
@@ -2773,6 +4340,18 @@
         "EngineVersion":{
           "shape":"EngineVersion",
           "documentation":"<p>The engine version that all queries running on the workgroup use. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.</p>"
+        },
+        "AdditionalConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>Specifies a user defined JSON string that is passed to the notebook engine.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Role used in a notebook session for accessing the user's resources.</p>"
+        },
+        "CustomerContentEncryptionConfiguration":{
+          "shape":"CustomerContentEncryptionConfiguration",
+          "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena.</p>"
         }
       },
       "documentation":"<p>The configuration of the workgroup, which includes the location in Amazon S3 where query results are stored, the encryption option, if any, used for query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup and whether workgroup settings override query settings, and the data usage limits for the amount of data scanned per query or per workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>. </p>"
@@ -2807,7 +4386,20 @@
         "EngineVersion":{
           "shape":"EngineVersion",
           "documentation":"<p>The engine version requested when a workgroup is updated. After the update, all queries on the workgroup run on the requested engine version. If no value was previously set, the default is Auto. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.</p>"
-        }
+        },
+        "RemoveCustomerContentEncryptionConfiguration":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Removes content encryption configuration for a workgroup.</p>"
+        },
+        "AdditionalConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>Contains a user defined string in JSON format for a Spark-enabled workgroup.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Contains the ARN of the execution role for the workgroup</p>"
+        },
+        "CustomerContentEncryptionConfiguration":{"shape":"CustomerContentEncryptionConfiguration"}
       },
       "documentation":"<p>The configuration information that will be updated for this workgroup, which includes the location in Amazon S3 where query results are stored, the encryption option, if any, used for query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, whether the workgroup settings override the client-side settings, and the data usage limit for the amount of bytes scanned per query, if it is specified.</p>"
     },

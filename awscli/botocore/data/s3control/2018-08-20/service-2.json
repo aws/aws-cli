@@ -698,7 +698,7 @@
       },
       "input":{"shape":"ListAccessPointsRequest"},
       "output":{"shape":"ListAccessPointsResult"},
-      "documentation":"<p>Returns a list of the access points currently associated with the specified bucket. You can retrieve up to 1000 access points per call. If the specified bucket has more than 1,000 access points (or the number specified in <code>maxResults</code>, whichever is less), the response will include a continuation token that you can use to list the additional access points.</p> <p/> <p>All Amazon S3 on Outposts REST API requests for this action require an additional parameter of <code>x-amz-outpost-id</code> to be passed with the request. In addition, you must use an S3 on Outposts endpoint hostname prefix instead of <code>s3-control</code>. For an example of the request syntax for Amazon S3 on Outposts that uses the S3 on Outposts endpoint hostname prefix and the <code>x-amz-outpost-id</code> derived by using the access point ARN, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetAccessPoint.html#API_control_GetAccessPoint_Examples\">Examples</a> section.</p> <p>The following actions are related to <code>ListAccessPoints</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateAccessPoint.html\">CreateAccessPoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteAccessPoint.html\">DeleteAccessPoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetAccessPoint.html\">GetAccessPoint</a> </p> </li> </ul>",
+      "documentation":"<p>Returns a list of the access points owned by the current account associated with the specified bucket. You can retrieve up to 1000 access points per call. If the specified bucket has more than 1,000 access points (or the number specified in <code>maxResults</code>, whichever is less), the response will include a continuation token that you can use to list the additional access points.</p> <p/> <p>All Amazon S3 on Outposts REST API requests for this action require an additional parameter of <code>x-amz-outpost-id</code> to be passed with the request. In addition, you must use an S3 on Outposts endpoint hostname prefix instead of <code>s3-control</code>. For an example of the request syntax for Amazon S3 on Outposts that uses the S3 on Outposts endpoint hostname prefix and the <code>x-amz-outpost-id</code> derived by using the access point ARN, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetAccessPoint.html#API_control_GetAccessPoint_Examples\">Examples</a> section.</p> <p>The following actions are related to <code>ListAccessPoints</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateAccessPoint.html\">CreateAccessPoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteAccessPoint.html\">DeleteAccessPoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetAccessPoint.html\">GetAccessPoint</a> </p> </li> </ul>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -1124,6 +1124,10 @@
         "Alias":{
           "shape":"Alias",
           "documentation":"<p>The name or alias of the access point.</p>"
+        },
+        "BucketAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the S3 bucket associated with this access point.</p>"
         }
       },
       "documentation":"<p>An access point used to access a bucket.</p>"
@@ -1489,7 +1493,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID for the owner of the bucket for which you want to create an access point.</p>",
+          "documentation":"<p>The Amazon Web Services account ID for the account that owns the specified access point.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -1513,6 +1517,10 @@
         "PublicAccessBlockConfiguration":{
           "shape":"PublicAccessBlockConfiguration",
           "documentation":"<p> The <code>PublicAccessBlock</code> configuration that you want to apply to the access point. </p>"
+        },
+        "BucketAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the S3 bucket associated with this access point.</p>"
         }
       }
     },
@@ -1835,7 +1843,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID for the account that owns the specified access point.</p>",
+          "documentation":"<p>The Amazon Web Services account ID for the account that owns the specified access point.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2443,7 +2451,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID for the account that owns the specified access point.</p>",
+          "documentation":"<p>The Amazon Web Services account ID for the account that owns the specified access point.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2493,6 +2501,10 @@
         "Endpoints":{
           "shape":"Endpoints",
           "documentation":"<p>The VPC endpoint for the access point.</p>"
+        },
+        "BucketAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the S3 bucket associated with this access point.</p>"
         }
       }
     },
@@ -3640,7 +3652,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The Amazon Web Services account ID for owner of the bucket whose access points you want to list.</p>",
+          "documentation":"<p>The Amazon Web Services account ID for the account that owns the specified access points.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",

@@ -128,7 +128,7 @@
         {"shape":"TextSizeLimitExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new document classification request to analyze a single document in real-time, using a previously created and trained custom model and an endpoint.</p>"
+      "documentation":"<p>Creates a new document classification request to analyze a single document in real-time, using a previously created and trained custom model and an endpoint.</p> <p>You can input plain text or you can upload a single-page input document (text, PDF, Word, or image). </p> <p>If the system detects errors while processing a page in the input document, the API response includes an entry in <code>Errors</code> that describes the errors.</p> <p>If the system detects a document-level error in your input document, the API returns an <code>InvalidRequestException</code> error response. For details about this exception, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html\"> Errors in semi-structured documents</a> in the Comprehend Developer Guide. </p>"
     },
     "ContainsPiiEntities":{
       "name":"ContainsPiiEntities",
@@ -511,7 +511,7 @@
         {"shape":"UnsupportedLanguageException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Inspects text for named entities, and returns information about them. For more information, about named entities, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html\">Entities</a> in the Comprehend Developer Guide.</p>"
+      "documentation":"<p>Detects named entities in input text when you use the pre-trained model. Detects custom entities if you have a custom entity recognition model. </p> <p> When detecting named entities using the pre-trained model, use plain text as the input. For more information about named entities, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html\">Entities</a> in the Comprehend Developer Guide.</p> <p>When you use a custom entity recognition model, you can input plain text or you can upload a single-page input document (text, PDF, Word, or image). </p> <p>If the system detects errors while processing a page in the input document, the API response includes an entry in <code>Errors</code> for each error. </p> <p>If the system detects a document-level error in your input document, the API returns an <code>InvalidRequestException</code> error response. For details about this exception, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html\"> Errors in semi-structured documents</a> in the Comprehend Developer Guide. </p>"
     },
     "DetectKeyPhrases":{
       "name":"DetectKeyPhrases",
@@ -1587,6 +1587,105 @@
       "documentation":"<p>The number of documents in the request exceeds the limit of 25. Try your request again with fewer documents.</p>",
       "exception":true
     },
+    "Block":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier for the block.</p>"
+        },
+        "BlockType":{
+          "shape":"BlockType",
+          "documentation":"<p>The block represents a line of text or one word of text.</p> <ul> <li> <p>WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p>LINE - A string of tab-delimited, contiguous words that are detected on a document page</p> </li> </ul>"
+        },
+        "Text":{
+          "shape":"String",
+          "documentation":"<p>The word or line of text extracted from the block.</p>"
+        },
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number where the block appears.</p>"
+        },
+        "Geometry":{
+          "shape":"Geometry",
+          "documentation":"<p>Co-ordinates of the rectangle or polygon that contains the text.</p>"
+        },
+        "Relationships":{
+          "shape":"ListOfRelationships",
+          "documentation":"<p>A list of child blocks of the current block. For example, a LINE object has child blocks for each WORD block that's part of the line of text. </p>"
+        }
+      },
+      "documentation":"<p>Information about each word or line of text in the input document.</p> <p>For additional information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/API_Block.html\">Block</a> in the Amazon Textract API reference.</p>"
+    },
+    "BlockReference":{
+      "type":"structure",
+      "members":{
+        "BlockId":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier for the block.</p>"
+        },
+        "BeginOffset":{
+          "shape":"Integer",
+          "documentation":"<p>Offset of the start of the block within its parent block.</p>"
+        },
+        "EndOffset":{
+          "shape":"Integer",
+          "documentation":"<p>Offset of the end of the block within its parent block.</p>"
+        },
+        "ChildBlocks":{
+          "shape":"ListOfChildBlocks",
+          "documentation":"<p>List of child blocks within this block.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a block. </p>"
+    },
+    "BlockType":{
+      "type":"string",
+      "enum":[
+        "LINE",
+        "WORD"
+      ]
+    },
+    "BoundingBox":{
+      "type":"structure",
+      "members":{
+        "Height":{
+          "shape":"Float",
+          "documentation":"<p>The height of the bounding box as a ratio of the overall document page height.</p>"
+        },
+        "Left":{
+          "shape":"Float",
+          "documentation":"<p>The left coordinate of the bounding box as a ratio of overall document page width.</p>"
+        },
+        "Top":{
+          "shape":"Float",
+          "documentation":"<p>The top coordinate of the bounding box as a ratio of overall document page height.</p>"
+        },
+        "Width":{
+          "shape":"Float",
+          "documentation":"<p>The width of the bounding box as a ratio of the overall document page width.</p>"
+        }
+      },
+      "documentation":"<p>The bounding box around the detected page or around an element on a document page. The left (x-coordinate) and top (y-coordinate) are coordinates that represent the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>For additional information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/API_BoundingBox.html\">BoundingBox</a> in the Amazon Textract API reference.</p>"
+    },
+    "ChildBlock":{
+      "type":"structure",
+      "members":{
+        "ChildBlockId":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier for the child block.</p>"
+        },
+        "BeginOffset":{
+          "shape":"Integer",
+          "documentation":"<p>Offset of the start of the child block within its parent block.</p>"
+        },
+        "EndOffset":{
+          "shape":"Integer",
+          "documentation":"<p>Offset of the end of the child block within its parent block.</p>"
+        }
+      },
+      "documentation":"<p>Nested block contained within a block.</p>"
+    },
     "ClassifierEvaluationMetrics":{
       "type":"structure",
       "members":{
@@ -1650,18 +1749,23 @@
     },
     "ClassifyDocumentRequest":{
       "type":"structure",
-      "required":[
-        "Text",
-        "EndpointArn"
-      ],
+      "required":["EndpointArn"],
       "members":{
         "Text":{
           "shape":"CustomerInputString",
-          "documentation":"<p>The document text to be analyzed.</p>"
+          "documentation":"<p>The document text to be analyzed. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.</p>"
         },
         "EndpointArn":{
           "shape":"DocumentClassifierEndpointArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the endpoint. For information about endpoints, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html\">Managing endpoints</a>.</p>"
+        },
+        "Bytes":{
+          "shape":"SemiStructuredDocumentBlob",
+          "documentation":"<p>Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html\"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>"
+        },
+        "DocumentReaderConfig":{
+          "shape":"DocumentReaderConfig",
+          "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.</p>"
         }
       }
     },
@@ -1675,6 +1779,18 @@
         "Labels":{
           "shape":"ListOfLabels",
           "documentation":"<p>The labels used the document being analyzed. These are used for multi-label trained models. Individual labels represent different categories that are related in some manner and are not mutually exclusive. For example, a movie can be just an action movie, or it can be an action movie, a science fiction movie, and a comedy, all at the same time. </p>"
+        },
+        "DocumentMetadata":{
+          "shape":"DocumentMetadata",
+          "documentation":"<p>Extraction information about the document. This field is present in the response only if your request includes the <code>Byte</code> parameter. </p>"
+        },
+        "DocumentType":{
+          "shape":"ListOfDocumentType",
+          "documentation":"<p>The document type for each page in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. </p>"
+        },
+        "Errors":{
+          "shape":"ListOfErrors",
+          "documentation":"<p>Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.</p>"
         }
       },
       "sensitive":true
@@ -1897,7 +2013,7 @@
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p> You can specify any of the following languages supported by Amazon Comprehend: English (\"en\"), Spanish (\"es\"), French (\"fr\"), Italian (\"it\"), German (\"de\"), or Portuguese (\"pt\"). All documents must be in the same language.</p>"
+          "documentation":"<p> You can specify any of the following languages: English (\"en\"), Spanish (\"es\"), French (\"fr\"), Italian (\"it\"), German (\"de\"), or Portuguese (\"pt\"). If you plan to use this entity recognizer with PDF, Word, or image input files, you must specify English as the language. All training documents must be in the same language.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -2175,7 +2291,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ComprehendModelArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the policy to describe.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model version that has the resource policy.</p>"
         }
       }
     },
@@ -2279,19 +2395,26 @@
     },
     "DetectEntitiesRequest":{
       "type":"structure",
-      "required":["Text"],
       "members":{
         "Text":{
           "shape":"CustomerInputString",
-          "documentation":"<p>A UTF-8 text string. The maximum string size is 100 KB.</p>"
+          "documentation":"<p>A UTF-8 text string. The maximum string size is 100 KB. If you enter text using this parameter, do not use the <code>Bytes</code> parameter.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. All documents must be in the same language.</p> <p>If your request includes the endpoint for a custom entity recognition model, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you specify here.</p>"
+          "documentation":"<p>The language of the input documents. You can specify any of the primary languages supported by Amazon Comprehend. If your request includes the endpoint for a custom entity recognition model, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you specify here.</p> <p>All input documents must be in the same language.</p>"
         },
         "EndpointArn":{
           "shape":"EntityRecognizerEndpointArn",
           "documentation":"<p>The Amazon Resource Name of an endpoint that is associated with a custom entity recognition model. Provide an endpoint if you want to detect entities by using your own custom model instead of the default model that is used by Amazon Comprehend.</p> <p>If you specify an endpoint, Amazon Comprehend uses the language of your custom model, and it ignores any language code that you provide in your request.</p> <p>For information about endpoints, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html\">Managing endpoints</a>.</p>"
+        },
+        "Bytes":{
+          "shape":"SemiStructuredDocumentBlob",
+          "documentation":"<p>This field applies only when you use a custom entity recognition model that was trained with PDF annotations. For other cases, enter your text input in the <code>Text</code> field.</p> <p> Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file. Using a plain-text file in the <code>Bytes</code> parameter is equivelent to using the <code>Text</code> parameter (the <code>Entities</code> field in the response is identical).</p> <p>You can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to detect entities, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html\"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>"
+        },
+        "DocumentReaderConfig":{
+          "shape":"DocumentReaderConfig",
+          "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.</p>"
         }
       }
     },
@@ -2301,6 +2424,22 @@
         "Entities":{
           "shape":"ListOfEntities",
           "documentation":"<p>A collection of entities identified in the input text. For each entity, the response provides the entity text, entity type, where the entity text begins and ends, and the level of confidence that Amazon Comprehend has in the detection. </p> <p>If your request uses a custom entity recognition model, Amazon Comprehend detects the entities that the model is trained to recognize. Otherwise, it detects the default entity types. For a list of default entity types, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html\">Entities</a> in the Comprehend Developer Guide. </p>"
+        },
+        "DocumentMetadata":{
+          "shape":"DocumentMetadata",
+          "documentation":"<p>Information about the document, discovered during text extraction. This field is present in the response only if your request used the <code>Byte</code> parameter. </p>"
+        },
+        "DocumentType":{
+          "shape":"ListOfDocumentType",
+          "documentation":"<p>The document type for each page in the input document. This field is present in the response only if your request used the <code>Byte</code> parameter. </p>"
+        },
+        "Blocks":{
+          "shape":"ListOfBlocks",
+          "documentation":"<p>Information about each block of text in the input document. Blocks are nested. A page block contains a block for each line of text, which contains a block for each word. </p> <p>The <code>Block</code> content for a Word input document does not include a <code>Geometry</code> field.</p> <p>The <code>Block</code> field is not present in the response for plain-text inputs.</p>"
+        },
+        "Errors":{
+          "shape":"ListOfErrors",
+          "documentation":"<p>Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.</p>"
         }
       },
       "sensitive":true
@@ -2453,6 +2592,10 @@
         "Score":{
           "shape":"Float",
           "documentation":"<p>The confidence score that Amazon Comprehend has this class correctly attributed.</p>"
+        },
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number in the input document. This field is present in the response only if your request includes the <code>Byte</code> parameter. </p>"
         }
       },
       "documentation":"<p>Specifies the class that categorizes the document being analyzed</p>"
@@ -2753,9 +2896,27 @@
         "Score":{
           "shape":"Float",
           "documentation":"<p>The confidence score that Amazon Comprehend has this label correctly attributed.</p>"
+        },
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number where the label occurs. This field is present in the response only if your request includes the <code>Byte</code> parameter. </p>"
         }
       },
       "documentation":"<p>Specifies one of the label or labels that categorize the document being analyzed.</p>"
+    },
+    "DocumentMetadata":{
+      "type":"structure",
+      "members":{
+        "Pages":{
+          "shape":"Integer",
+          "documentation":"<p>Number of pages in the document.</p>"
+        },
+        "ExtractedCharacters":{
+          "shape":"ListOfExtractedCharacters",
+          "documentation":"<p>List of pages in the document, with the number of characters extracted from each page.</p>"
+        }
+      },
+      "documentation":"<p>Information about the document, discovered during text extraction.</p>"
     },
     "DocumentReadAction":{
       "type":"string",
@@ -2766,7 +2927,7 @@
     },
     "DocumentReadFeatureTypes":{
       "type":"string",
-      "documentation":"<p>A list of the types of analyses to perform. This field specifies what feature types need to be extracted from the document where entity recognition is expected.</p> <ul> <li> <p> <code>TABLES</code> - Add TABLES to the list to return information about the tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Add FORMS to return detected form data. </p> </li> </ul>",
+      "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns additional information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns additional information about any forms that are detected in the input document. </p> </li> </ul>",
       "enum":[
         "TABLES",
         "FORMS"
@@ -2785,18 +2946,44 @@
       "members":{
         "DocumentReadAction":{
           "shape":"DocumentReadAction",
-          "documentation":"<p>This enum field will start with two values which will apply to PDFs:</p> <ul> <li> <p> <code>TEXTRACT_DETECT_DOCUMENT_TEXT</code> - The service calls DetectDocumentText for PDF documents per page.</p> </li> <li> <p> <code>TEXTRACT_ANALYZE_DOCUMENT</code> - The service calls AnalyzeDocument for PDF documents per page.</p> </li> </ul>"
+          "documentation":"<p>This field defines the Amazon Textract API operation that Amazon Comprehend uses to extract text from PDF files and image files. Enter one of the following values:</p> <ul> <li> <p> <code>TEXTRACT_DETECT_DOCUMENT_TEXT</code> - The Amazon Comprehend service uses the <code>DetectDocumentText</code> API operation. </p> </li> <li> <p> <code>TEXTRACT_ANALYZE_DOCUMENT</code> - The Amazon Comprehend service uses the <code>AnalyzeDocument</code> API operation. </p> </li> </ul>"
         },
         "DocumentReadMode":{
           "shape":"DocumentReadMode",
-          "documentation":"<p>This enum field provides two values:</p> <ul> <li> <p> <code>SERVICE_DEFAULT</code> - use service defaults for Document reading. For Digital PDF it would mean using an internal parser instead of Textract APIs</p> </li> <li> <p> <code>FORCE_DOCUMENT_READ_ACTION</code> - Always use specified action for DocumentReadAction, including Digital PDF. </p> </li> </ul>"
+          "documentation":"<p>Determines the text extraction actions for PDF files. Enter one of the following values:</p> <ul> <li> <p> <code>SERVICE_DEFAULT</code> - use the Amazon Comprehend service defaults for PDF files.</p> </li> <li> <p> <code>FORCE_DOCUMENT_READ_ACTION</code> - Amazon Comprehend uses the Textract API specified by DocumentReadAction for all PDF files, including digital PDF files. </p> </li> </ul>"
         },
         "FeatureTypes":{
           "shape":"ListOfDocumentReadFeatureTypes",
-          "documentation":"<p>Specifies how the text in an input file should be processed:</p>"
+          "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns information and the data from any forms that are detected in the input document. </p> </li> </ul>"
         }
       },
-      "documentation":"<p>The input properties for a topic detection job.</p>"
+      "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files. </p> <p> By default, Amazon Comprehend performs the following actions to extract text from files, based on the input file type: </p> <ul> <li> <p> <b>Word files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Digital PDF files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Image files and scanned PDF files</b> - Amazon Comprehend uses the Amazon Textract <code>DetectDocumentText</code> API to extract the text. </p> </li> </ul> <p> <code>DocumentReaderConfig</code> does not apply to plain text files or Word files.</p> <p> For image files and PDF documents, you can override these default actions using the fields listed below. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/detecting-cer.html#detecting-cer-pdf\"> Setting text extraction options</a>. </p>"
+    },
+    "DocumentType":{
+      "type":"string",
+      "enum":[
+        "NATIVE_PDF",
+        "SCANNED_PDF",
+        "MS_WORD",
+        "IMAGE",
+        "PLAIN_TEXT",
+        "TEXTRACT_DETECT_DOCUMENT_TEXT_JSON",
+        "TEXTRACT_ANALYZE_DOCUMENT_JSON"
+      ]
+    },
+    "DocumentTypeListItem":{
+      "type":"structure",
+      "members":{
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number.</p>"
+        },
+        "Type":{
+          "shape":"DocumentType",
+          "documentation":"<p>Document type.</p>"
+        }
+      },
+      "documentation":"<p>Document type for each page in the document.</p>"
     },
     "DominantLanguage":{
       "type":"structure",
@@ -3076,7 +3263,7 @@
         },
         "Type":{
           "shape":"EntityType",
-          "documentation":"<p>The entity's type.</p>"
+          "documentation":"<p>The entity type. For entity detection using the built-in model, this field contains one of the standard entity types listed below.</p> <p>For custom entity detection, this field contains one of the entity types that you specified when you trained your custom model.</p>"
         },
         "Text":{
           "shape":"String",
@@ -3084,11 +3271,15 @@
         },
         "BeginOffset":{
           "shape":"Integer",
-          "documentation":"<p>The zero-based offset from the beginning of the source text to the first character in the entity.</p>"
+          "documentation":"<p>The zero-based offset from the beginning of the source text to the first character in the entity.</p> <p>This field is empty for non-text input.</p>"
         },
         "EndOffset":{
           "shape":"Integer",
-          "documentation":"<p>The zero-based offset from the beginning of the source text to the last character in the entity.</p>"
+          "documentation":"<p>The zero-based offset from the beginning of the source text to the last character in the entity.</p> <p>This field is empty for non-text input.</p>"
+        },
+        "BlockReferences":{
+          "shape":"ListOfBlockReferences",
+          "documentation":"<p>A reference to each block for this entity. This field is empty for plain-text input.</p>"
         }
       },
       "documentation":"<p>Provides information about an entity. </p> <p> </p>"
@@ -3445,6 +3636,24 @@
       },
       "documentation":"<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p>"
     },
+    "ErrorsListItem":{
+      "type":"structure",
+      "members":{
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number where the error occurred.</p>"
+        },
+        "ErrorCode":{
+          "shape":"PageBasedErrorCode",
+          "documentation":"<p>Error code for the cause of the error.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>Text message explaining the reason for the error.</p>"
+        }
+      },
+      "documentation":"<p>Text extraction encountered one or more page-level errors in the input document.</p> <p>The <code>ErrorCode</code> contains one of the following values:</p> <ul> <li> <p>TEXTRACT_BAD_PAGE - Amazon Textract cannot read the page. For more information about page limits in Amazon Textract, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/limits-document.html\"> Page Quotas in Amazon Textract</a>.</p> </li> <li> <p>TEXTRACT_PROVISIONED_THROUGHPUT_EXCEEDED - The number of requests exceeded your throughput limit. For more information about throughput quotas in Amazon Textract, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/limits-quotas-explained.html\"> Default quotas in Amazon Textract</a>.</p> </li> <li> <p>PAGE_CHARACTERS_EXCEEDED - Too many text characters on the page (10,000 characters maximum).</p> </li> <li> <p>PAGE_SIZE_EXCEEDED - The maximum page size is 10 MB.</p> </li> <li> <p>INTERNAL_SERVER_ERROR - The request encountered a service issue. Try the API request again.</p> </li> </ul>"
+    },
     "EventTypeString":{
       "type":"string",
       "max":40,
@@ -3531,7 +3740,35 @@
       "type":"list",
       "member":{"shape":"EventsDetectionJobProperties"}
     },
+    "ExtractedCharactersListItem":{
+      "type":"structure",
+      "members":{
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number.</p>"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>Number of characters extracted from each page.</p>"
+        }
+      },
+      "documentation":"<p>Array of the number of characters extracted from each page.</p>"
+    },
     "Float":{"type":"float"},
+    "Geometry":{
+      "type":"structure",
+      "members":{
+        "BoundingBox":{
+          "shape":"BoundingBox",
+          "documentation":"<p>An axis-aligned coarse representation of the location of the recognized item on the document page.</p>"
+        },
+        "Polygon":{
+          "shape":"Polygon",
+          "documentation":"<p>Within the bounding box, a fine-grained polygon around the recognized item.</p>"
+        }
+      },
+      "documentation":"<p>Information about the location of items on a document page.</p> <p>For additional information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/API_Geometry.html\">Geometry</a> in the Amazon Textract API reference.</p>"
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -3595,10 +3832,10 @@
         },
         "DocumentReaderConfig":{
           "shape":"DocumentReaderConfig",
-          "documentation":"<p>The document reader config field applies only for InputDataConfig of StartEntitiesDetectionJob. </p> <p>Use DocumentReaderConfig to provide specifications about how you want your inference documents read. Currently it applies for PDF documents in StartEntitiesDetectionJob custom inference.</p>"
+          "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files.</p>"
         }
       },
-      "documentation":"<p>The input properties for an inference job.</p>"
+      "documentation":"<p>The input properties for an inference job. The document reader config field applies only to non-text inputs for custom analysis.</p>"
     },
     "InputFormat":{
       "type":"string",
@@ -3625,13 +3862,38 @@
       "documentation":"<p>The filter specified for the operation is invalid. Specify a different filter.</p>",
       "exception":true
     },
+    "InvalidRequestDetail":{
+      "type":"structure",
+      "members":{
+        "Reason":{
+          "shape":"InvalidRequestDetailReason",
+          "documentation":"<p>Reason code is <code>INVALID_DOCUMENT</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides additional detail about why the request failed:</p> <ul> <li> <p>Document size is too large - Check the size of your file and resubmit the request.</p> </li> <li> <p>Document type is not supported - Check the file type and resubmit the request.</p> </li> <li> <p>Too many pages in the document - Check the number of pages in your file and resubmit the request.</p> </li> <li> <p>Access denied to Amazon Textract - Verify that your account has permission to use Amazon Textract API operations and resubmit the request.</p> </li> </ul>"
+    },
+    "InvalidRequestDetailReason":{
+      "type":"string",
+      "enum":[
+        "DOCUMENT_SIZE_EXCEEDED",
+        "UNSUPPORTED_DOC_TYPE",
+        "PAGE_LIMIT_EXCEEDED",
+        "TEXTRACT_ACCESS_DENIED"
+      ]
+    },
     "InvalidRequestException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"String"}
+        "Message":{"shape":"String"},
+        "Reason":{"shape":"InvalidRequestReason"},
+        "Detail":{"shape":"InvalidRequestDetail"}
       },
       "documentation":"<p>The request is invalid.</p>",
       "exception":true
+    },
+    "InvalidRequestReason":{
+      "type":"string",
+      "enum":["INVALID_DOCUMENT"]
     },
     "JobId":{
       "type":"string",
@@ -4098,6 +4360,18 @@
         }
       }
     },
+    "ListOfBlockReferences":{
+      "type":"list",
+      "member":{"shape":"BlockReference"}
+    },
+    "ListOfBlocks":{
+      "type":"list",
+      "member":{"shape":"Block"}
+    },
+    "ListOfChildBlocks":{
+      "type":"list",
+      "member":{"shape":"ChildBlock"}
+    },
     "ListOfClasses":{
       "type":"list",
       "member":{"shape":"DocumentClass"}
@@ -4136,6 +4410,10 @@
       "max":2,
       "min":1
     },
+    "ListOfDocumentType":{
+      "type":"list",
+      "member":{"shape":"DocumentTypeListItem"}
+    },
     "ListOfDominantLanguages":{
       "type":"list",
       "member":{"shape":"DominantLanguage"}
@@ -4147,6 +4425,14 @@
     "ListOfEntityLabels":{
       "type":"list",
       "member":{"shape":"EntityLabel"}
+    },
+    "ListOfErrors":{
+      "type":"list",
+      "member":{"shape":"ErrorsListItem"}
+    },
+    "ListOfExtractedCharacters":{
+      "type":"list",
+      "member":{"shape":"ExtractedCharactersListItem"}
     },
     "ListOfKeyPhrases":{
       "type":"list",
@@ -4167,6 +4453,10 @@
     "ListOfPiiEntityTypes":{
       "type":"list",
       "member":{"shape":"PiiEntityType"}
+    },
+    "ListOfRelationships":{
+      "type":"list",
+      "member":{"shape":"RelationshipsListItem"}
     },
     "ListOfSyntaxTokens":{
       "type":"list",
@@ -4372,6 +4662,16 @@
         }
       },
       "documentation":"<p>Provides configuration parameters for the output of inference jobs.</p> <p/>"
+    },
+    "PageBasedErrorCode":{
+      "type":"string",
+      "enum":[
+        "TEXTRACT_BAD_PAGE",
+        "TEXTRACT_PROVISIONED_THROUGHPUT_EXCEEDED",
+        "PAGE_CHARACTERS_EXCEEDED",
+        "PAGE_SIZE_EXCEEDED",
+        "INTERNAL_SERVER_ERROR"
+      ]
     },
     "PartOfSpeechTag":{
       "type":"structure",
@@ -4587,6 +4887,20 @@
       },
       "documentation":"<p>Provides configuration parameters for the output of PII entity detection jobs.</p>"
     },
+    "Point":{
+      "type":"structure",
+      "members":{
+        "X":{
+          "shape":"Float",
+          "documentation":"<p>The value of the X coordinate for a point on a polygon</p>"
+        },
+        "Y":{
+          "shape":"Float",
+          "documentation":"<p>The value of the Y coordinate for a point on a polygon</p>"
+        }
+      },
+      "documentation":"<p>The X and Y coordinates of a point on a document page.</p> <p>For additional information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/API_Point.html\">Point</a> in the Amazon Textract API reference.</p>"
+    },
     "Policy":{
       "type":"string",
       "max":20000,
@@ -4597,6 +4911,10 @@
       "type":"string",
       "max":64,
       "pattern":"[0-9A-Fa-f]+"
+    },
+    "Polygon":{
+      "type":"list",
+      "member":{"shape":"Point"}
     },
     "PutResourcePolicyRequest":{
       "type":"structure",
@@ -4646,6 +4964,24 @@
       },
       "documentation":"<p>Provides configuration parameters for PII entity redaction.</p>"
     },
+    "RelationshipType":{
+      "type":"string",
+      "enum":["CHILD"]
+    },
+    "RelationshipsListItem":{
+      "type":"structure",
+      "members":{
+        "Ids":{
+          "shape":"StringList",
+          "documentation":"<p>Identifers of the child blocks.</p>"
+        },
+        "Type":{
+          "shape":"RelationshipType",
+          "documentation":"<p>Only supported relationship is a child relationship.</p>"
+        }
+      },
+      "documentation":"<p>List of child blocks for the current block.</p>"
+    },
     "ResourceInUseException":{
       "type":"structure",
       "members":{
@@ -4693,6 +5029,10 @@
       "type":"list",
       "member":{"shape":"SecurityGroupId"},
       "max":5,
+      "min":1
+    },
+    "SemiStructuredDocumentBlob":{
+      "type":"blob",
       "min":1
     },
     "SentimentDetectionJobFilter":{
@@ -5586,6 +5926,10 @@
     "String":{
       "type":"string",
       "min":1
+    },
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "SubnetId":{
       "type":"string",

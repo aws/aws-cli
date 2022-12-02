@@ -74,9 +74,10 @@
       "input":{"shape":"DeleteStateMachineInput"},
       "output":{"shape":"DeleteStateMachineOutput"},
       "errors":[
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <note> <p>For <code>EXPRESS</code> state machines, the deletion will happen eventually (usually less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
+      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <p>If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>For <code>EXPRESS</code> state machines, the deletion will happen eventually (usually less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
     },
     "DescribeActivity":{
       "name":"DescribeActivity",
@@ -104,7 +105,21 @@
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Describes an execution.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Provides all information about a state machine execution, such as the state machine associated with the execution, the execution input and output, and relevant execution metadata. Use this API action to return the Map Run ARN if the execution was dispatched by a Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machine executions unless they were dispatched by a Map Run.</p>"
+    },
+    "DescribeMapRun":{
+      "name":"DescribeMapRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMapRunInput"},
+      "output":{"shape":"DescribeMapRunOutput"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"InvalidArn"}
+      ],
+      "documentation":"<p>Provides information about a Map Run's configuration, progress, and results. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html\">Examining Map Run</a> in the <i>Step Functions Developer Guide</i>.</p>"
     },
     "DescribeStateMachine":{
       "name":"DescribeStateMachine",
@@ -118,7 +133,7 @@
         {"shape":"InvalidArn"},
         {"shape":"StateMachineDoesNotExist"}
       ],
-      "documentation":"<p>Describes a state machine.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
+      "documentation":"<p>Provides information about a state machine's definition, its IAM role Amazon Resource Name (ARN), and configuration. If the state machine ARN is a qualified state machine ARN, the response returned includes the <code>Map</code> state's label.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
     },
     "DescribeStateMachineForExecution":{
       "name":"DescribeStateMachineForExecution",
@@ -132,7 +147,7 @@
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Describes the state machine associated with a specific execution.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Provides information about a state machine's definition, its execution role ARN, and configuration. If an execution was dispatched by a Map Run, the Map Run is returned in the response. Additionally, the state machine returned will be the state machine associated with the Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
     "GetActivityTask":{
       "name":"GetActivityTask",
@@ -189,9 +204,26 @@
         {"shape":"InvalidArn"},
         {"shape":"InvalidToken"},
         {"shape":"StateMachineDoesNotExist"},
-        {"shape":"StateMachineTypeNotSupported"}
+        {"shape":"StateMachineTypeNotSupported"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Lists the executions of a state machine that meet the filtering criteria. Results are sorted by time, with the most recent execution first.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Lists all executions of a state machine or a Map Run. You can list all executions related to a state machine by specifying a state machine Amazon Resource Name (ARN), or those related to a Map Run by specifying a Map Run ARN.</p> <p>Results are sorted by time, with the most recent execution first.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+    },
+    "ListMapRuns":{
+      "name":"ListMapRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMapRunsInput"},
+      "output":{"shape":"ListMapRunsOutput"},
+      "errors":[
+        {"shape":"ExecutionDoesNotExist"},
+        {"shape":"InvalidArn"},
+        {"shape":"InvalidToken"}
+      ],
+      "documentation":"<p>Lists all Map Runs that were started by a given state machine execution. Use this API action to obtain Map Run ARNs, and then call <code>DescribeMapRun</code> to obtain more information, if needed.</p>"
     },
     "ListStateMachines":{
       "name":"ListStateMachines",
@@ -281,9 +313,10 @@
         {"shape":"InvalidExecutionInput"},
         {"shape":"InvalidName"},
         {"shape":"StateMachineDoesNotExist"},
-        {"shape":"StateMachineDeleting"}
+        {"shape":"StateMachineDeleting"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Starts a state machine execution.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if <code>StartExecution</code> is called with the same name and input as a running execution, the call will succeed and return the same response as the original request. If the execution is closed or if the input is different, it will return a <code>400 ExecutionAlreadyExists</code> error. Names can be reused after 90 days. </p> <p> <code>StartExecution</code> is not idempotent for <code>EXPRESS</code> workflows. </p> </note>",
+      "documentation":"<p>Starts a state machine execution. If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if <code>StartExecution</code> is called with the same name and input as a running execution, the call will succeed and return the same response as the original request. If the execution is closed or if the input is different, it will return a <code>400 ExecutionAlreadyExists</code> error. Names can be reused after 90 days. </p> <p> <code>StartExecution</code> is not idempotent for <code>EXPRESS</code> workflows. </p> </note>",
       "idempotent":true
     },
     "StartSyncExecution":{
@@ -315,7 +348,8 @@
       "output":{"shape":"StopExecutionOutput"},
       "errors":[
         {"shape":"ExecutionDoesNotExist"},
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Stops an execution.</p> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
@@ -348,6 +382,21 @@
       ],
       "documentation":"<p>Remove a tag from a Step Functions resource</p>"
     },
+    "UpdateMapRun":{
+      "name":"UpdateMapRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMapRunInput"},
+      "output":{"shape":"UpdateMapRunOutput"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"InvalidArn"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an in-progress Map Run's configuration to include changes to the settings that control maximum concurrency and Map Run failure.</p>"
+    },
     "UpdateStateMachine":{
       "name":"UpdateStateMachine",
       "http":{
@@ -363,9 +412,10 @@
         {"shape":"InvalidTracingConfiguration"},
         {"shape":"MissingRequiredParameter"},
         {"shape":"StateMachineDeleting"},
-        {"shape":"StateMachineDoesNotExist"}
+        {"shape":"StateMachineDoesNotExist"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, or <code>loggingConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <note> <p>All <code>StartExecution</code> calls within a few seconds will use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after calling <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
+      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, or <code>loggingConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <p>If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>All <code>StartExecution</code> calls within a few seconds will use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after calling <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
       "idempotent":true
     }
   },
@@ -779,6 +829,84 @@
         "traceHeader":{
           "shape":"TraceHeader",
           "documentation":"<p>The X-Ray trace header that was passed to the execution.</p>"
+        },
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a Map Run, which dispatched this execution.</p>"
+        },
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>The error string if the state machine execution failed.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>The cause string if the state machine execution failed.</p>"
+        }
+      }
+    },
+    "DescribeMapRunInput":{
+      "type":"structure",
+      "required":["mapRunArn"],
+      "members":{
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a Map Run.</p>"
+        }
+      }
+    },
+    "DescribeMapRunOutput":{
+      "type":"structure",
+      "required":[
+        "mapRunArn",
+        "executionArn",
+        "status",
+        "startDate",
+        "maxConcurrency",
+        "toleratedFailurePercentage",
+        "toleratedFailureCount",
+        "itemCounts",
+        "executionCounts"
+      ],
+      "members":{
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a Map Run.</p>"
+        },
+        "executionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the execution in which the Map Run was started.</p>"
+        },
+        "status":{
+          "shape":"MapRunStatus",
+          "documentation":"<p>The current status of the Map Run.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the Map Run was started.</p>"
+        },
+        "stopDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the Map Run was stopped.</p>"
+        },
+        "maxConcurrency":{
+          "shape":"MaxConcurrency",
+          "documentation":"<p>The maximum number of child workflow executions configured to run in parallel for the Map Run at the same time.</p>"
+        },
+        "toleratedFailurePercentage":{
+          "shape":"ToleratedFailurePercentage",
+          "documentation":"<p>The maximum percentage of failed child workflow executions before the Map Run fails.</p>"
+        },
+        "toleratedFailureCount":{
+          "shape":"ToleratedFailureCount",
+          "documentation":"<p>The maximum number of failed child workflow executions before the Map Run fails.</p>"
+        },
+        "itemCounts":{
+          "shape":"MapRunItemCounts",
+          "documentation":"<p>A JSON object that contains information about the total number of items, and the item count for each processing status, such as <code>pending</code> and <code>failed</code>.</p>"
+        },
+        "executionCounts":{
+          "shape":"MapRunExecutionCounts",
+          "documentation":"<p>A JSON object that contains information about the total number of child workflow executions for the Map Run, and the count of child workflow executions for each status, such as <code>failed</code> and <code>succeeded</code>.</p>"
         }
       }
     },
@@ -826,6 +954,14 @@
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
           "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
+        },
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Map Run that started the child workflow execution. This field is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.</p>"
+        },
+        "label":{
+          "shape":"MapRunLabel",
+          "documentation":"<p>A user-defined or an auto-generated string that identifies a <code>Map</code> state. This ﬁeld is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.</p>"
         }
       }
     },
@@ -882,6 +1018,10 @@
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
           "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
+        },
+        "label":{
+          "shape":"MapRunLabel",
+          "documentation":"<p>A user-defined or an auto-generated string that identifies a <code>Map</code> state. This parameter is present only if the <code>stateMachineArn</code> specified in input is a qualified state machine ARN.</p>"
         }
       }
     },
@@ -977,6 +1117,15 @@
         "stopDate":{
           "shape":"Timestamp",
           "documentation":"<p>If the execution already ended, the date the execution stopped.</p>"
+        },
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Map Run. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>mapRunArn</code> isn't returned.</p>"
+        },
+        "itemCount":{
+          "shape":"UnsignedInteger",
+          "documentation":"<p>The total number of items processed in a child workflow execution. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>itemCount</code> field isn't returned.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Contains details about an execution.</p>"
@@ -1207,7 +1356,15 @@
         },
         "lambdaFunctionTimedOutEventDetails":{"shape":"LambdaFunctionTimedOutEventDetails"},
         "stateEnteredEventDetails":{"shape":"StateEnteredEventDetails"},
-        "stateExitedEventDetails":{"shape":"StateExitedEventDetails"}
+        "stateExitedEventDetails":{"shape":"StateExitedEventDetails"},
+        "mapRunStartedEventDetails":{
+          "shape":"MapRunStartedEventDetails",
+          "documentation":"<p>Contains details, such as <code>mapRunArn</code>, and the start date and time of a Map Run. <code>mapRunArn</code> is the Amazon Resource Name (ARN) of the Map Run that was started.</p>"
+        },
+        "mapRunFailedEventDetails":{
+          "shape":"MapRunFailedEventDetails",
+          "documentation":"<p>Contains error and cause details about a Map Run that failed.</p>"
+        }
       },
       "documentation":"<p>Contains details about the events of an execution.</p>"
     },
@@ -1283,7 +1440,11 @@
         "TaskTimedOut",
         "WaitStateAborted",
         "WaitStateEntered",
-        "WaitStateExited"
+        "WaitStateExited",
+        "MapRunAborted",
+        "MapRunFailed",
+        "MapRunStarted",
+        "MapRunSucceeded"
       ]
     },
     "Identity":{
@@ -1300,7 +1461,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided Amazon Resource Name (ARN) is invalid.</p>",
+      "documentation":"<p>The provided Amazon Resource Name (ARN) is not valid.</p>",
       "exception":true
     },
     "InvalidDefinition":{
@@ -1308,7 +1469,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided Amazon States Language definition is invalid.</p>",
+      "documentation":"<p>The provided Amazon States Language definition is not valid.</p>",
       "exception":true
     },
     "InvalidExecutionInput":{
@@ -1316,7 +1477,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided JSON input data is invalid.</p>",
+      "documentation":"<p>The provided JSON input data is not valid.</p>",
       "exception":true
     },
     "InvalidLoggingConfiguration":{
@@ -1332,7 +1493,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided name is invalid.</p>",
+      "documentation":"<p>The provided name is not valid.</p>",
       "exception":true
     },
     "InvalidOutput":{
@@ -1340,7 +1501,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided JSON output data is invalid.</p>",
+      "documentation":"<p>The provided JSON output data is not valid.</p>",
       "exception":true
     },
     "InvalidToken":{
@@ -1348,7 +1509,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The provided token is invalid.</p>",
+      "documentation":"<p>The provided token is not valid.</p>",
       "exception":true
     },
     "InvalidTracingConfiguration":{
@@ -1486,11 +1647,10 @@
     },
     "ListExecutionsInput":{
       "type":"structure",
-      "required":["stateMachineArn"],
       "members":{
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p>"
         },
         "statusFilter":{
           "shape":"ExecutionStatus",
@@ -1503,6 +1663,10 @@
         "nextToken":{
           "shape":"ListExecutionsPageToken",
           "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        },
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Map Run that started the child workflow executions. If the <code>mapRunArn</code> field is specified, a list of all of the child workflow executions started by a Map Run is returned. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html\">Examining Map Run</a> in the <i>Step Functions Developer Guide</i>.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p>"
         }
       }
     },
@@ -1524,6 +1688,38 @@
       "type":"string",
       "max":3096,
       "min":1
+    },
+    "ListMapRunsInput":{
+      "type":"structure",
+      "required":["executionArn"],
+      "members":{
+        "executionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution for which the Map Runs must be listed.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        }
+      }
+    },
+    "ListMapRunsOutput":{
+      "type":"structure",
+      "required":["mapRuns"],
+      "members":{
+        "mapRuns":{
+          "shape":"MapRunList",
+          "documentation":"<p>An array that lists information related to a Map Run, such as the Amazon Resource Name (ARN) of the Map Run and the ARN of the state machine that started the Map Run.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        }
+      }
     },
     "ListStateMachinesInput":{
       "type":"structure",
@@ -1611,7 +1807,7 @@
     },
     "LongArn":{
       "type":"string",
-      "max":1600,
+      "max":2000,
       "min":1
     },
     "MapIterationEventDetails":{
@@ -1628,6 +1824,172 @@
       },
       "documentation":"<p>Contains details about an iteration of a Map state.</p>"
     },
+    "MapRunExecutionCounts":{
+      "type":"structure",
+      "required":[
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "timedOut",
+        "aborted",
+        "total",
+        "resultsWritten"
+      ],
+      "members":{
+        "pending":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run, but haven't started executing yet. </p>"
+        },
+        "running":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run and are currently in-progress.</p>"
+        },
+        "succeeded":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run and have completed successfully.</p>"
+        },
+        "failed":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run, but have failed.</p>"
+        },
+        "timedOut":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run and have timed out.</p>"
+        },
+        "aborted":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run and were running, but were either stopped by the user or by Step Functions because the Map Run failed. </p>"
+        },
+        "total":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of child workflow executions that were started by a Map Run.</p>"
+        },
+        "resultsWritten":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>Returns the count of child workflow executions whose results were written by <code>ResultWriter</code>. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html\">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about all of the child workflow executions started by a Map Run.</p>"
+    },
+    "MapRunFailedEventDetails":{
+      "type":"structure",
+      "members":{
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>The error code of the Map Run failure.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>A more detailed explanation of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a Map Run failure event that occurred during a state machine execution.</p>"
+    },
+    "MapRunItemCounts":{
+      "type":"structure",
+      "required":[
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "timedOut",
+        "aborted",
+        "total",
+        "resultsWritten"
+      ],
+      "members":{
+        "pending":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items to process in child workflow executions that haven't started running yet.</p>"
+        },
+        "running":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items being processed in child workflow executions that are currently in-progress.</p>"
+        },
+        "succeeded":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items processed in child workflow executions that have completed successfully.</p>"
+        },
+        "failed":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items processed in child workflow executions that have failed.</p>"
+        },
+        "timedOut":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items processed in child workflow executions that have timed out.</p>"
+        },
+        "aborted":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items processed in child workflow executions that were either stopped by the user or by Step Functions, because the Map Run failed.</p>"
+        },
+        "total":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>The total number of items processed in all the child workflow executions started by a Map Run.</p>"
+        },
+        "resultsWritten":{
+          "shape":"UnsignedLong",
+          "documentation":"<p>Returns the count of items whose results were written by <code>ResultWriter</code>. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html\">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about items that were processed in all of the child workflow executions that were started by a Map Run.</p>"
+    },
+    "MapRunLabel":{"type":"string"},
+    "MapRunList":{
+      "type":"list",
+      "member":{"shape":"MapRunListItem"}
+    },
+    "MapRunListItem":{
+      "type":"structure",
+      "required":[
+        "executionArn",
+        "mapRunArn",
+        "stateMachineArn",
+        "startDate"
+      ],
+      "members":{
+        "executionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The <code>executionArn</code> of the execution from which the Map Run was started.</p>"
+        },
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Map Run.</p>"
+        },
+        "stateMachineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the executed state machine.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the Map Run started.</p>"
+        },
+        "stopDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date on which the Map Run stopped.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific Map Run.</p>"
+    },
+    "MapRunStartedEventDetails":{
+      "type":"structure",
+      "members":{
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Map Run that was started.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a Map Run that was started during a state machine execution.</p>"
+    },
+    "MapRunStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "ABORTED"
+      ]
+    },
     "MapStateStartedEventDetails":{
       "type":"structure",
       "members":{
@@ -1637,6 +1999,10 @@
         }
       },
       "documentation":"<p>Details about a Map state that was started.</p>"
+    },
+    "MaxConcurrency":{
+      "type":"integer",
+      "min":0
     },
     "MissingRequiredParameter":{
       "type":"structure",
@@ -2336,6 +2702,15 @@
     },
     "TimeoutInSeconds":{"type":"long"},
     "Timestamp":{"type":"timestamp"},
+    "ToleratedFailureCount":{
+      "type":"long",
+      "min":0
+    },
+    "ToleratedFailurePercentage":{
+      "type":"float",
+      "max":100,
+      "min":0
+    },
     "TooManyTags":{
       "type":"structure",
       "members":{
@@ -2365,6 +2740,10 @@
       "type":"integer",
       "min":0
     },
+    "UnsignedLong":{
+      "type":"long",
+      "min":0
+    },
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -2383,6 +2762,36 @@
       }
     },
     "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateMapRunInput":{
+      "type":"structure",
+      "required":["mapRunArn"],
+      "members":{
+        "mapRunArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Map Run.</p>"
+        },
+        "maxConcurrency":{
+          "shape":"MaxConcurrency",
+          "documentation":"<p>The maximum number of child workflow executions that can be specified to run in parallel for the Map Run at the same time.</p>",
+          "box":true
+        },
+        "toleratedFailurePercentage":{
+          "shape":"ToleratedFailurePercentage",
+          "documentation":"<p>The maximum percentage of failed items before the Map Run fails.</p>",
+          "box":true
+        },
+        "toleratedFailureCount":{
+          "shape":"ToleratedFailureCount",
+          "documentation":"<p>The maximum number of failed items before the Map Run fails.</p>",
+          "box":true
+        }
+      }
+    },
+    "UpdateMapRunOutput":{
       "type":"structure",
       "members":{
       }
@@ -2422,6 +2831,26 @@
           "documentation":"<p>The date and time the state machine was updated.</p>"
         }
       }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The input does not satisfy the constraints specified by an Amazon Web Services service.</p>"
+        }
+      },
+      "documentation":"<p>The input does not satisfy the constraints specified by an Amazon Web Services service.</p>",
+      "exception":true
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "API_DOES_NOT_SUPPORT_LABELED_ARNS",
+        "MISSING_REQUIRED_PARAMETER",
+        "CANNOT_UPDATE_COMPLETED_MAP_RUN"
+      ]
     },
     "includedDetails":{"type":"boolean"},
     "truncated":{"type":"boolean"}

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.23
+=======
+
+* bugfix:``codeartifact login``: Ignore always-auth errors for CodeArtifact login command; fixes `#7434 <https://github.com/aws/aws-cli/issues/7434>`__
+* api-change:``ce``: This release introduces two new APIs that offer a 1-click experience to refresh Savings Plans recommendations. The two APIs are StartSavingsPlansPurchaseRecommendationGeneration and ListSavingsPlansPurchaseRecommendationGeneration.
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``ivschat``: Adds PendingVerification error type to messaging APIs to block the resource usage for accounts identified as being fraudulent.
+* api-change:``rds``: This release adds the InvalidDBInstanceStateFault to the RestoreDBClusterFromSnapshot operation.
+* api-change:``transcribe``: Amazon Transcribe now supports creating custom language models in the following languages: Japanese (ja-JP) and German (de-DE).
+
+
 1.27.22
 =======
 

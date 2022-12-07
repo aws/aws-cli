@@ -590,6 +590,30 @@ password: {auth_token}'''
         self._assert_operations_called(package_format='npm', result=result)
         self._assert_dry_run_execution(self._get_npm_commands(), result.stdout)
 
+    def test_npm_login_always_auth_error_ignored(self):
+        """Test login ignores error for always-auth.
+
+        This test is for NPM version >= 9 where the support of 'always-auth'
+        has been dropped. Running the command to set config gives a non-zero
+        exit code. This is to make sure that login ignores that error and all
+        other commands executes successfully.
+        """
+        def side_effect(command, capture_output, check):
+            if any('always-auth' in arg for arg in command):
+                raise subprocess.CalledProcessError(
+                    returncode=1,
+                    cmd=command
+                )
+
+            return mock.DEFAULT
+
+        self.subprocess_mock.side_effect = side_effect
+        cmdline = self._setup_cmd(tool='npm')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(self._get_npm_commands())
+
     def test_npm_login_with_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm', include_domain_owner=True)
         result = self.cli_runner.run(cmdline)

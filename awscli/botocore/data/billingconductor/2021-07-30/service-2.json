@@ -1118,6 +1118,17 @@
         }
       }
     },
+    "CreateFreeTierConfig":{
+      "type":"structure",
+      "required":["Activated"],
+      "members":{
+        "Activated":{
+          "shape":"TieringActivated",
+          "documentation":"<p> Activate or deactivate Amazon Web Services Free Tier. </p>"
+        }
+      },
+      "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+    },
     "CreatePricingPlanInput":{
       "type":"structure",
       "required":["Name"],
@@ -1161,8 +1172,7 @@
       "required":[
         "Name",
         "Scope",
-        "Type",
-        "ModifierPercentage"
+        "Type"
       ],
       "members":{
         "ClientToken":{
@@ -1203,6 +1213,10 @@
         "BillingEntity":{
           "shape":"BillingEntity",
           "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
+        },
+        "Tiering":{
+          "shape":"CreateTieringInput",
+          "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
         }
       }
     },
@@ -1214,6 +1228,17 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the created pricing rule. </p>"
         }
       }
+    },
+    "CreateTieringInput":{
+      "type":"structure",
+      "required":["FreeTier"],
+      "members":{
+        "FreeTier":{
+          "shape":"CreateFreeTierConfig",
+          "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        }
+      },
+      "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
     },
     "Currency":{"type":"string"},
     "CurrencyCode":{
@@ -1612,6 +1637,17 @@
     "DisassociateResourcesResponseList":{
       "type":"list",
       "member":{"shape":"DisassociateResourceResponseElement"}
+    },
+    "FreeTierConfig":{
+      "type":"structure",
+      "required":["Activated"],
+      "members":{
+        "Activated":{
+          "shape":"TieringActivated",
+          "documentation":"<p> Activate or deactivate Amazon Web Services Free Tier application. </p>"
+        }
+      },
+      "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
     },
     "Instant":{"type":"long"},
     "InternalServerException":{
@@ -2383,6 +2419,10 @@
         "BillingEntity":{
           "shape":"BillingEntity",
           "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
+        },
+        "Tiering":{
+          "shape":"Tiering",
+          "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
         }
       },
       "documentation":"<p> A representation of a pricing rule. </p>"
@@ -2406,7 +2446,8 @@
       "type":"string",
       "enum":[
         "MARKUP",
-        "DISCOUNT"
+        "DISCOUNT",
+        "TIERING"
       ]
     },
     "ProformaCost":{"type":"string"},
@@ -2541,6 +2582,21 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Tiering":{
+      "type":"structure",
+      "required":["FreeTier"],
+      "members":{
+        "FreeTier":{
+          "shape":"FreeTierConfig",
+          "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        }
+      },
+      "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
+    },
+    "TieringActivated":{
+      "type":"boolean",
+      "box":true
     },
     "Token":{"type":"string"},
     "UntagResourceRequest":{
@@ -2728,6 +2784,17 @@
       },
       "documentation":"<p> A representation of the new charge details that are associated with a percentage custom line item. </p>"
     },
+    "UpdateFreeTierConfig":{
+      "type":"structure",
+      "required":["Activated"],
+      "members":{
+        "Activated":{
+          "shape":"TieringActivated",
+          "documentation":"<p> Activate or deactivate application of Amazon Web Services Free Tier. </p>"
+        }
+      },
+      "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+    },
     "UpdatePricingPlanInput":{
       "type":"structure",
       "required":["Arn"],
@@ -2794,6 +2861,10 @@
         "ModifierPercentage":{
           "shape":"ModifierPercentage",
           "documentation":"<p> The new modifier to show pricing plan rates as a percentage. </p>"
+        },
+        "Tiering":{
+          "shape":"UpdateTieringInput",
+          "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
         }
       }
     },
@@ -2839,8 +2910,23 @@
         "BillingEntity":{
           "shape":"BillingEntity",
           "documentation":"<p> The seller of services provided by Amazon Web Services, their affiliates, or third-party providers selling services via Amazon Web Services Marketplace. </p>"
+        },
+        "Tiering":{
+          "shape":"UpdateTieringInput",
+          "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
         }
       }
+    },
+    "UpdateTieringInput":{
+      "type":"structure",
+      "required":["FreeTier"],
+      "members":{
+        "FreeTier":{
+          "shape":"UpdateFreeTierConfig",
+          "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        }
+      },
+      "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
     },
     "ValidationException":{
       "type":"structure",
@@ -2937,7 +3023,10 @@
         "INVALID_BILLING_GROUP",
         "INVALID_BILLING_PERIOD_FOR_OPERATION",
         "ILLEGAL_BILLING_ENTITY",
-        "ILLEGAL_MODIFIER_PERCENTAGE"
+        "ILLEGAL_MODIFIER_PERCENTAGE",
+        "ILLEGAL_TYPE",
+        "ILLEGAL_ENDED_BILLINGGROUP",
+        "ILLEGAL_TIERING_INPUT"
       ]
     }
   },

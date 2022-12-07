@@ -41,7 +41,7 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"AccessForbidden"}
       ],
-      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code>. A new record will show up in the <code>OfflineStore</code> when the <code>DeleteRecord</code> API is called. This record will have a value of <code>True</code> in the <code>is_deleted</code> column.</p>"
+      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code>. When the <code>DeleteRecord</code> API is called a new record will be added to the <code>OfflineStore</code> and the <code>Record</code> will be removed from the <code>OnlineStore</code>. This record will have a value of <code>True</code> in the <code>is_deleted</code> column.</p>"
     },
     "GetRecord":{
       "name":"GetRecord",
@@ -106,7 +106,7 @@
         },
         "ErrorCode":{
           "shape":"ValueAsString",
-          "documentation":"<p>The error code of an error that has occured when attempting to retrieve a batch of Records. For more information on errors, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors\"> Errors</a>.</p>"
+          "documentation":"<p>The error code of an error that has occured when attempting to retrieve a batch of Records. For more information on errors, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors\">Errors</a>.</p>"
         },
         "ErrorMessage":{
           "shape":"Message",
@@ -172,7 +172,7 @@
         },
         "Errors":{
           "shape":"BatchGetRecordErrors",
-          "documentation":"<p>A list of errors that have occured when retrieving a batch of Records.</p>"
+          "documentation":"<p>A list of errors that have occurred when retrieving a batch of Records.</p>"
         },
         "UnprocessedIdentifiers":{
           "shape":"UnprocessedIdentifiers",
@@ -233,6 +233,12 @@
           "documentation":"<p>Timestamp indicating when the deletion event occurred. <code>EventTime</code> can be used to query data at a certain point in time.</p>",
           "location":"querystring",
           "locationName":"EventTime"
+        },
+        "TargetStores":{
+          "shape":"TargetStores",
+          "documentation":"<p>A list of stores from which you're deleting the record. By default, Feature Store deletes the record from all of the stores that you're using for the <code>FeatureGroup</code>.</p>",
+          "location":"querystring",
+          "locationName":"TargetStores"
         }
       }
     },
@@ -240,13 +246,13 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
     },
     "FeatureName":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9]([-_]*[a-zA-Z0-9])*"
+      "pattern":"^[a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63}"
     },
     "FeatureNames":{
       "type":"list",
@@ -280,7 +286,7 @@
       "members":{
         "FeatureGroupName":{
           "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group in which you want to put the records.</p>",
+          "documentation":"<p>The name of the feature group from which you want to retrieve a record.</p>",
           "location":"uri",
           "locationName":"FeatureGroupName"
         },
@@ -312,7 +318,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>An internal failure occurred. Try your request again. If the problem persists, contact AWS customer support.</p>",
+      "documentation":"<p>An internal failure occurred. Try your request again. If the problem persists, contact Amazon Web Services customer support.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true,
@@ -338,6 +344,10 @@
         "Record":{
           "shape":"Record",
           "documentation":"<p>List of FeatureValues to be inserted. This will be a full over-write. If you only want to update few of the feature values, do the following:</p> <ul> <li> <p>Use <code>GetRecord</code> to retrieve the latest record.</p> </li> <li> <p>Update the record returned from <code>GetRecord</code>. </p> </li> <li> <p>Use <code>PutRecord</code> to update feature values.</p> </li> </ul>"
+        },
+        "TargetStores":{
+          "shape":"TargetStores",
+          "documentation":"<p>A list of stores to which you're adding the record. By default, Feature Store adds the record to all of the stores that you're using for the <code>FeatureGroup</code>.</p>"
         }
       }
     },
@@ -371,6 +381,19 @@
       "exception":true,
       "fault":true,
       "synthetic":true
+    },
+    "TargetStore":{
+      "type":"string",
+      "enum":[
+        "OnlineStore",
+        "OfflineStore"
+      ]
+    },
+    "TargetStores":{
+      "type":"list",
+      "member":{"shape":"TargetStore"},
+      "max":2,
+      "min":1
     },
     "UnprocessedIdentifiers":{
       "type":"list",

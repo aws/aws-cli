@@ -26,6 +26,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"TooManyTagsException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Converts a recovery point to a snapshot. For more information about recovery points and snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery.html\">Working with snapshots and recovery points</a>.</p>"
@@ -79,6 +80,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"TooManyTagsException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a snapshot of all databases in a namespace. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery.html\"> Working with snapshots and recovery points</a>.</p>",
@@ -234,7 +236,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to Amazon Redshift Serverless.</p> <p>By default, the temporary credentials expire in 900 seconds. You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes).</p> <pre><code> &lt;p&gt; The Identity and Access Management (IAM) user or role that runs GetCredentials must have an IAM policy attached that allows access to all necessary actions and resources. &lt;/p&gt; &lt;p&gt; If the &lt;code&gt;DbName&lt;/code&gt; parameter is specified, the IAM policy must allow access to the resource dbname for the specified database name.&lt;/p&gt; </code></pre>"
+      "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to Amazon Redshift Serverless.</p> <p>By default, the temporary credentials expire in 900 seconds. You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes).</p> <pre><code> &lt;p&gt;The Identity and Access Management (IAM) user or role that runs GetCredentials must have an IAM policy attached that allows access to all necessary actions and resources.&lt;/p&gt; &lt;p&gt;If the &lt;code&gt;DbName&lt;/code&gt; parameter is specified, the IAM policy must allow access to the resource dbname for the specified database name.&lt;/p&gt; </code></pre>"
     },
     "GetEndpointAccess":{
       "name":"GetEndpointAccess",
@@ -312,6 +314,20 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns information about a specific snapshot.</p>"
+    },
+    "GetTableRestoreStatus":{
+      "name":"GetTableRestoreStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTableRestoreStatusRequest"},
+      "output":{"shape":"GetTableRestoreStatusResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns information about a <code>TableRestoreStatus</code> object.</p>"
     },
     "GetUsageLimit":{
       "name":"GetUsageLimit",
@@ -402,6 +418,21 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns a list of snapshots.</p>"
+    },
+    "ListTableRestoreStatus":{
+      "name":"ListTableRestoreStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTableRestoreStatusRequest"},
+      "output":{"shape":"ListTableRestoreStatusResponse"},
+      "errors":[
+        {"shape":"InvalidPaginationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns information about an array of <code>TableRestoreStatus</code> objects.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -500,6 +531,22 @@
       ],
       "documentation":"<p>Restores a namespace from a snapshot.</p>",
       "idempotent":true
+    },
+    "RestoreTableFromSnapshot":{
+      "name":"RestoreTableFromSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreTableFromSnapshotRequest"},
+      "output":{"shape":"RestoreTableFromSnapshotResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Restores a table from a snapshot to your Amazon Redshift Serverless instance.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -685,6 +732,10 @@
         "snapshotName":{
           "shape":"String",
           "documentation":"<p>The name of the snapshot.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of <a href=\"https://docs.aws.amazon.com/redshift-serverless/latest/APIReference/API_Tag.html\">Tag objects</a> to associate with the created snapshot.</p>"
         }
       }
     },
@@ -801,6 +852,10 @@
         "snapshotName":{
           "shape":"String",
           "documentation":"<p>The name of the snapshot.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of <a href=\"https://docs.aws.amazon.com/redshift-serverless/latest/APIReference/API_Tag.html\">Tag objects</a> to associate with the snapshot.</p>"
         }
       }
     },
@@ -874,6 +929,10 @@
         "namespaceName":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace to associate with the workgroup.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The custom port to use when connecting to a workgroup. Valid port ranges are 5431-5455 and 8191-8215. The default is 5439.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
@@ -1113,7 +1172,7 @@
       "members":{
         "dbName":{
           "shape":"DbName",
-          "documentation":"<p>The name of the database to get temporary authorization to log on to.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words </a> in the Amazon Redshift Database Developer Guide</p> </li> </ul>"
+          "documentation":"<p>The name of the database to get temporary authorization to log on to.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens.</p> </li> <li> <p>Must contain only uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words </a> in the Amazon Redshift Database Developer Guide</p> </li> </ul>"
         },
         "durationSeconds":{
           "shape":"Integer",
@@ -1249,6 +1308,25 @@
         }
       }
     },
+    "GetTableRestoreStatusRequest":{
+      "type":"structure",
+      "required":["tableRestoreRequestId"],
+      "members":{
+        "tableRestoreRequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the <code>RestoreTableFromSnapshot</code> request to return status for.</p>"
+        }
+      }
+    },
+    "GetTableRestoreStatusResponse":{
+      "type":"structure",
+      "members":{
+        "tableRestoreStatus":{
+          "shape":"TableRestoreStatus",
+          "documentation":"<p>The returned <code>TableRestoreStatus</code> object that contains information about the status of your <code>RestoreTableFromSnapshot</code> request.</p>"
+        }
+      }
+    },
     "GetUsageLimitRequest":{
       "type":"structure",
       "required":["usageLimitId"],
@@ -1333,12 +1411,12 @@
       "members":{
         "maxResults":{
           "shape":"ListEndpointAccessRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
           "box":true
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListEndpointAccess</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListEndpointAccess</code> operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial <code>ListEndpointAccess</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListEndpointAccess</code> operations, which returns results in the next page.</p>"
         },
         "vpcId":{
           "shape":"String",
@@ -1375,12 +1453,12 @@
       "members":{
         "maxResults":{
           "shape":"ListNamespacesRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
           "box":true
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListNamespaces</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListNamespaces</code> operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial <code>ListNamespaces</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListNamespaces</code> operations, which returns results in the next page.</p>"
         }
       }
     },
@@ -1413,8 +1491,12 @@
         },
         "maxResults":{
           "shape":"ListRecoveryPointsRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
           "box":true
+        },
+        "namespaceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the namespace from which to list recovery points.</p>"
         },
         "namespaceName":{
           "shape":"NamespaceName",
@@ -1422,7 +1504,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial <code>ListRecoveryPoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListRecoveryPoints</code> operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial <code>ListRecoveryPoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListRecoveryPoints</code> operations, which returns results in the next page.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -1458,7 +1540,7 @@
         },
         "maxResults":{
           "shape":"ListSnapshotsRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
           "box":true
         },
         "namespaceArn":{
@@ -1502,6 +1584,47 @@
         }
       }
     },
+    "ListTableRestoreStatusRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListTableRestoreStatusRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use nextToken to display the next page of results.</p>",
+          "box":true
+        },
+        "namespaceName":{
+          "shape":"String",
+          "documentation":"<p>The namespace from which to list all of the statuses of <code>RestoreTableFromSnapshot</code> operations .</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If your initial <code>ListTableRestoreStatus</code> operation returns a nextToken, you can include the returned <code>nextToken</code> in following <code>ListTableRestoreStatus</code> operations. This will return results on the next page.</p>"
+        },
+        "workgroupName":{
+          "shape":"String",
+          "documentation":"<p>The workgroup from which to list all of the statuses of <code>RestoreTableFromSnapshot</code> operations.</p>"
+        }
+      }
+    },
+    "ListTableRestoreStatusRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTableRestoreStatusResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If your initial <code>ListTableRestoreStatus</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListTableRestoreStatus</code> operations. This will returns results on the next page.</p>"
+        },
+        "tableRestoreStatuses":{
+          "shape":"TableRestoreStatusList",
+          "documentation":"<p>The array of returned <code>TableRestoreStatus</code> objects.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1531,7 +1654,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>If your initial <code>ListUsageLimits</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListUsageLimits</code> operations, which returns results in the next page. </p>"
+          "documentation":"<p>If your initial <code>ListUsageLimits</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListUsageLimits</code> operations, which returns results in the next page. </p>"
         },
         "resourceArn":{
           "shape":"String",
@@ -1567,12 +1690,12 @@
       "members":{
         "maxResults":{
           "shape":"ListWorkgroupsRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
           "box":true
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>If your initial ListWorkgroups operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent ListNamespaces operations, which returns results in the next page.</p>"
+          "documentation":"<p>If your initial ListWorkgroups operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following ListNamespaces operations, which returns results in the next page.</p>"
         }
       }
     },
@@ -1744,6 +1867,10 @@
     "RecoveryPoint":{
       "type":"structure",
       "members":{
+        "namespaceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the namespace the recovery point is associated with.</p>"
+        },
         "namespaceName":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace the recovery point is associated with.</p>"
@@ -1850,11 +1977,11 @@
         },
         "snapshotArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot to restore from.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot to restore from. Required if restoring from Amazon Redshift Serverless to a provisioned cluster. Must not be specified at the same time as <code>snapshotName</code>.</p> <p>The format of the ARN is arn:aws:redshift:&lt;region&gt;:&lt;account_id&gt;:snapshot:&lt;cluster_identifier&gt;/&lt;snapshot_identifier&gt;.</p>"
         },
         "snapshotName":{
           "shape":"String",
-          "documentation":"<p>The name of the snapshot to restore from.</p>"
+          "documentation":"<p>The name of the snapshot to restore from. Must not be specified at the same time as <code>snapshotArn</code>.</p>"
         },
         "workgroupName":{
           "shape":"WorkgroupName",
@@ -1873,6 +2000,68 @@
         "snapshotName":{
           "shape":"String",
           "documentation":"<p>The name of the snapshot used to restore the namespace.</p>"
+        }
+      }
+    },
+    "RestoreTableFromSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "namespaceName",
+        "newTableName",
+        "snapshotName",
+        "sourceDatabaseName",
+        "sourceTableName",
+        "workgroupName"
+      ],
+      "members":{
+        "activateCaseSensitiveIdentifier":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether name identifiers for database, schema, and table are case sensitive. If true, the names are case sensitive. If false, the names are not case sensitive. The default is false.</p>"
+        },
+        "namespaceName":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the snapshot to restore from.</p>"
+        },
+        "newTableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the table to create from the restore operation.</p>"
+        },
+        "snapshotName":{
+          "shape":"String",
+          "documentation":"<p>The name of the snapshot to restore the table from.</p>"
+        },
+        "sourceDatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source database that contains the table being restored.</p>"
+        },
+        "sourceSchemaName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source schema that contains the table being restored.</p>"
+        },
+        "sourceTableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source table being restored.</p>"
+        },
+        "targetDatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The name of the database to restore the table to.</p>"
+        },
+        "targetSchemaName":{
+          "shape":"String",
+          "documentation":"<p>The name of the schema to restore the table to.</p>"
+        },
+        "workgroupName":{
+          "shape":"String",
+          "documentation":"<p>The workgroup to restore the table to.</p>"
+        }
+      }
+    },
+    "RestoreTableFromSnapshotResponse":{
+      "type":"structure",
+      "members":{
+        "tableRestoreStatus":{
+          "shape":"TableRestoreStatus",
+          "documentation":"<p>The TableRestoreStatus object that contains the status of the restore operation.</p>"
         }
       }
     },
@@ -2000,6 +2189,76 @@
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TableRestoreStatus":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of the status of the table restore request. Status values include <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code>.</p>"
+        },
+        "namespaceName":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the table being restored from.</p>"
+        },
+        "newTableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the table to create from the restore operation.</p>"
+        },
+        "progressInMegaBytes":{
+          "shape":"Long",
+          "documentation":"<p>The amount of data restored to the new table so far, in megabytes (MB).</p>"
+        },
+        "requestTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the table restore request was made, in Universal Coordinated Time (UTC).</p>"
+        },
+        "snapshotName":{
+          "shape":"String",
+          "documentation":"<p>The name of the snapshot being restored from.</p>"
+        },
+        "sourceDatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source database being restored from.</p>"
+        },
+        "sourceSchemaName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source schema being restored from.</p>"
+        },
+        "sourceTableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source table being restored from.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>A value that describes the current state of the table restore request. Possible values include <code>SUCCEEDED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>PENDING</code>, <code>IN_PROGRESS</code>.</p>"
+        },
+        "tableRestoreRequestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the RestoreTableFromSnapshot request.</p>"
+        },
+        "targetDatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The name of the database to restore to.</p>"
+        },
+        "targetSchemaName":{
+          "shape":"String",
+          "documentation":"<p>The name of the schema to restore to.</p>"
+        },
+        "totalDataInMegaBytes":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of data to restore to the new table, in megabytes (MB).</p>"
+        },
+        "workgroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the workgroup being restored from.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a table restore request.</p>"
+    },
+    "TableRestoreStatusList":{
+      "type":"list",
+      "member":{"shape":"TableRestoreStatus"}
     },
     "Tag":{
       "type":"structure",
@@ -2204,7 +2463,7 @@
       "members":{
         "amount":{
           "shape":"Long",
-          "documentation":"<p>The new limit amount. For more information about this parameter.</p>"
+          "documentation":"<p>The new limit amount. If time-based, this amount is in Redshift Processing Units (RPU) consumed per hour. If data-based, this amount is in terabytes (TB) of data transferred between Regions in cross-account sharing. The value must be a positive number.</p>"
         },
         "breachAction":{
           "shape":"UsageLimitBreachAction",
@@ -2240,6 +2499,10 @@
         "enhancedVpcRouting":{
           "shape":"Boolean",
           "documentation":"<p>The value that specifies whether to turn on enhanced virtual private cloud (VPC) routing, which forces Amazon Redshift Serverless to route traffic through your VPC.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The custom port to use when connecting to a workgroup. Valid port ranges are 5431-5455 and 8191-8215. The default is 5439.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
@@ -2412,6 +2675,10 @@
         "namespaceName":{
           "shape":"String",
           "documentation":"<p>The namespace the workgroup is associated with.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The custom port to use when connecting to a workgroup. Valid port ranges are 5431-5455 and 8191-8215. The default is 5439.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",

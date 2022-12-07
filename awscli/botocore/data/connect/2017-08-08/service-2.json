@@ -204,7 +204,7 @@
         {"shape":"IdempotencyException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important>"
+      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <p>For more information about how to use this operation, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html\">Claim a phone number in your country</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-numbers-traffic-distribution-groups.html\">Claim phone numbers to traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchAvailablePhoneNumbers.html\">SearchAvailablePhoneNumbers</a> API for available phone numbers that you can claim. Call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important>"
     },
     "CreateAgentStatus":{
       "name":"CreateAgentStatus",
@@ -376,6 +376,25 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Creates a new routing profile.</p>"
+    },
+    "CreateRule":{
+      "name":"CreateRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/rules/{InstanceId}"
+      },
+      "input":{"shape":"CreateRuleRequest"},
+      "output":{"shape":"CreateRuleResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a rule for the specified Amazon Connect instance.</p>"
     },
     "CreateSecurityProfile":{
       "name":"CreateSecurityProfile",
@@ -603,6 +622,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes a quick connect.</p>"
+    },
+    "DeleteRule":{
+      "name":"DeleteRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/rules/{InstanceId}/{RuleId}"
+      },
+      "input":{"shape":"DeleteRuleRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a rule for the specified Amazon Connect instance.</p>"
     },
     "DeleteSecurityProfile":{
       "name":"DeleteSecurityProfile",
@@ -925,6 +960,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the specified routing profile.</p>"
+    },
+    "DescribeRule":{
+      "name":"DescribeRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/rules/{InstanceId}/{RuleId}"
+      },
+      "input":{"shape":"DescribeRuleRequest"},
+      "output":{"shape":"DescribeRuleResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes a rule for the specified Amazon Connect instance.</p>"
     },
     "DescribeSecurityProfile":{
       "name":"DescribeSecurityProfile",
@@ -1675,6 +1727,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Provides summary information about the routing profiles for the specified Amazon Connect instance.</p> <p>For more information about routing profiles, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing.html\">Routing Profiles</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/routing-profiles.html\">Create a Routing Profile</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+    },
+    "ListRules":{
+      "name":"ListRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/rules/{InstanceId}"
+      },
+      "input":{"shape":"ListRulesRequest"},
+      "output":{"shape":"ListRulesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>List all rules for the specified Amazon Connect instance.</p>"
     },
     "ListSecurityKeys":{
       "name":"ListSecurityKeys",
@@ -2621,6 +2690,23 @@
       ],
       "documentation":"<p>Updates the properties associated with a set of queues for a routing profile.</p>"
     },
+    "UpdateRule":{
+      "name":"UpdateRule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/rules/{InstanceId}/{RuleId}"
+      },
+      "input":{"shape":"UpdateRuleRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Updates a rule for the specified Amazon Connect instance.</p>"
+    },
     "UpdateSecurityProfile":{
       "name":"UpdateSecurityProfile",
       "http":{
@@ -2798,6 +2884,30 @@
       "documentation":"<p>You do not have sufficient permissions to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "ActionSummaries":{
+      "type":"list",
+      "member":{"shape":"ActionSummary"}
+    },
+    "ActionSummary":{
+      "type":"structure",
+      "required":["ActionType"],
+      "members":{
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The action type.</p>"
+        }
+      },
+      "documentation":"<p>Information about an action.</p>"
+    },
+    "ActionType":{
+      "type":"string",
+      "enum":[
+        "CREATE_TASK",
+        "ASSIGN_CONTACT_CATEGORY",
+        "GENERATE_EVENTBRIDGE_EVENT",
+        "SEND_NOTIFICATION"
+      ]
     },
     "AfterContactWorkTimeLimit":{
       "type":"integer",
@@ -3017,6 +3127,12 @@
       "documentation":"<p>Configuration of the answering machine detection.</p>"
     },
     "ApproximateTotalCount":{"type":"long"},
+    "AssignContactCategoryActionDefinition":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>This action must be set if <code>TriggerEventSource</code> is one of the following values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code>. Contact is categorized using the rule name.</p> <p> <code>RuleName</code> is used as <code>ContactCategory</code>.</p>"
+    },
     "AssociateApprovedOriginRequest":{
       "type":"structure",
       "required":[
@@ -3865,6 +3981,11 @@
       "member":{"shape":"ContactState"},
       "max":9
     },
+    "Content":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ControlPlaneTagFilter":{
       "type":"structure",
       "members":{
@@ -4338,6 +4459,67 @@
         "RoutingProfileId":{
           "shape":"RoutingProfileId",
           "documentation":"<p>The identifier of the routing profile.</p>"
+        }
+      }
+    },
+    "CreateRuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "TriggerEventSource",
+        "Function",
+        "Actions",
+        "PublishStatus"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>A unique name for the rule.</p>"
+        },
+        "TriggerEventSource":{
+          "shape":"RuleTriggerEventSource",
+          "documentation":"<p>The event source to trigger the rule.</p>"
+        },
+        "Function":{
+          "shape":"RuleFunction",
+          "documentation":"<p>The conditions of the rule.</p>"
+        },
+        "Actions":{
+          "shape":"RuleActions",
+          "documentation":"<p>A list of actions to be run when the rule is triggered.</p>"
+        },
+        "PublishStatus":{
+          "shape":"RulePublishStatus",
+          "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRuleResponse":{
+      "type":"structure",
+      "required":[
+        "RuleArn",
+        "RuleId"
+      ],
+      "members":{
+        "RuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule.</p>"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>"
         }
       }
     },
@@ -4987,6 +5169,27 @@
         }
       }
     },
+    "DeleteRuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "RuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        }
+      }
+    },
     "DeleteSecurityProfileRequest":{
       "type":"structure",
       "required":[
@@ -5510,6 +5713,37 @@
         "RoutingProfile":{
           "shape":"RoutingProfile",
           "documentation":"<p>The routing profile.</p>"
+        }
+      }
+    },
+    "DescribeRuleRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "RuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        }
+      }
+    },
+    "DescribeRuleResponse":{
+      "type":"structure",
+      "required":["Rule"],
+      "members":{
+        "Rule":{
+          "shape":"Rule",
+          "documentation":"<p>Information about the rule.</p>"
         }
       }
     },
@@ -6047,6 +6281,33 @@
     "EncryptionType":{
       "type":"string",
       "enum":["KMS"]
+    },
+    "EventBridgeActionDefinition":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"EventBridgeActionName",
+          "documentation":"<p>The name.</p>"
+        }
+      },
+      "documentation":"<p>The EventBridge action definition.</p>"
+    },
+    "EventBridgeActionName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "EventSourceName":{
+      "type":"string",
+      "enum":[
+        "OnPostCallAnalysisAvailable",
+        "OnRealTimeCallAnalysisAvailable",
+        "OnPostChatAnalysisAvailable",
+        "OnZendeskTicketCreate",
+        "OnZendeskTicketStatusUpdate",
+        "OnSalesforceCaseCreate"
+      ]
     },
     "Filters":{
       "type":"structure",
@@ -8285,6 +8546,57 @@
         }
       }
     },
+    "ListRulesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "PublishStatus":{
+          "shape":"RulePublishStatus",
+          "documentation":"<p>The publish status of the rule.</p>",
+          "location":"querystring",
+          "locationName":"publishStatus"
+        },
+        "EventSourceName":{
+          "shape":"EventSourceName",
+          "documentation":"<p>The name of the event source.</p>",
+          "location":"querystring",
+          "locationName":"eventSourceName"
+        },
+        "MaxResults":{
+          "shape":"MaxResult200",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRulesResponse":{
+      "type":"structure",
+      "required":["RuleSummaryList"],
+      "members":{
+        "RuleSummaryList":{
+          "shape":"RuleSummaryList",
+          "documentation":"<p>Summary information about a rule.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListSecurityKeysRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -8660,6 +8972,11 @@
       "max":2,
       "min":1
     },
+    "MaxResult200":{
+      "type":"integer",
+      "max":200,
+      "min":1
+    },
     "MaxResult25":{
       "type":"integer",
       "max":25,
@@ -8765,6 +9082,28 @@
       "type":"string",
       "max":2500,
       "min":1
+    },
+    "NotificationContentType":{
+      "type":"string",
+      "enum":["PLAIN_TEXT"]
+    },
+    "NotificationDeliveryType":{
+      "type":"string",
+      "enum":["EMAIL"]
+    },
+    "NotificationRecipientType":{
+      "type":"structure",
+      "members":{
+        "UserTags":{
+          "shape":"UserTagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }. Amazon Connect users with the specified tags will be notified.</p>"
+        },
+        "UserIds":{
+          "shape":"UserIdList",
+          "documentation":"<p>A list of user IDs.</p>"
+        }
+      },
+      "documentation":"<p>The type of notification recipient.</p>"
     },
     "NumberReference":{
       "type":"structure",
@@ -10134,6 +10473,185 @@
       "type":"list",
       "member":{"shape":"RoutingProfileSummary"}
     },
+    "Rule":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "RuleId",
+        "RuleArn",
+        "TriggerEventSource",
+        "Function",
+        "Actions",
+        "PublishStatus",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "LastUpdatedBy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>"
+        },
+        "RuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule.</p>"
+        },
+        "TriggerEventSource":{
+          "shape":"RuleTriggerEventSource",
+          "documentation":"<p>The event source to trigger the rule.</p>"
+        },
+        "Function":{
+          "shape":"RuleFunction",
+          "documentation":"<p>The conditions of the rule.</p>"
+        },
+        "Actions":{
+          "shape":"RuleActions",
+          "documentation":"<p>A list of actions to be run when the rule is triggered.</p>"
+        },
+        "PublishStatus":{
+          "shape":"RulePublishStatus",
+          "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the rule was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for the when the rule was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the rule.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Information about a rule.</p>"
+    },
+    "RuleAction":{
+      "type":"structure",
+      "required":["ActionType"],
+      "members":{
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The type of action that creates a rule.</p>"
+        },
+        "TaskAction":{
+          "shape":"TaskActionDefinition",
+          "documentation":"<p>Information about the task action. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> </p>"
+        },
+        "EventBridgeAction":{
+          "shape":"EventBridgeActionDefinition",
+          "documentation":"<p>Information about the EventBridge action.</p>"
+        },
+        "AssignContactCategoryAction":{
+          "shape":"AssignContactCategoryActionDefinition",
+          "documentation":"<p>Information about the contact category action.</p>"
+        },
+        "SendNotificationAction":{
+          "shape":"SendNotificationActionDefinition",
+          "documentation":"<p>Information about the send notification action.</p>"
+        }
+      },
+      "documentation":"<p>Information about the action to be performed when a rule is triggered.</p>"
+    },
+    "RuleActions":{
+      "type":"list",
+      "member":{"shape":"RuleAction"}
+    },
+    "RuleFunction":{"type":"string"},
+    "RuleId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "RuleName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "RulePublishStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PUBLISHED"
+      ]
+    },
+    "RuleSummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "RuleId",
+        "RuleArn",
+        "EventSourceName",
+        "PublishStatus",
+        "ActionSummaries",
+        "CreatedTime",
+        "LastUpdatedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>"
+        },
+        "RuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule.</p>"
+        },
+        "EventSourceName":{
+          "shape":"EventSourceName",
+          "documentation":"<p>The name of the event source.</p>"
+        },
+        "PublishStatus":{
+          "shape":"RulePublishStatus",
+          "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "ActionSummaries":{
+          "shape":"ActionSummaries",
+          "documentation":"<p>A list of ActionTypes associated with a rule. </p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the rule was created. </p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A list of <code>ActionTypes</code> associated with a rule. </p>"
+    },
+    "RuleSummaryList":{
+      "type":"list",
+      "member":{"shape":"RuleSummary"}
+    },
+    "RuleTriggerEventSource":{
+      "type":"structure",
+      "required":["EventSourceName"],
+      "members":{
+        "EventSourceName":{
+          "shape":"EventSourceName",
+          "documentation":"<p>The name of the event source.</p>"
+        },
+        "IntegrationAssociationId":{
+          "shape":"IntegrationAssociationId",
+          "documentation":"<p>The identifier for the integration association.</p>"
+        }
+      },
+      "documentation":"<p>The name of the event source. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> </p>"
+    },
     "S3Config":{
       "type":"structure",
       "required":[
@@ -10597,6 +11115,38 @@
       "type":"string",
       "sensitive":true
     },
+    "SendNotificationActionDefinition":{
+      "type":"structure",
+      "required":[
+        "DeliveryMethod",
+        "Content",
+        "ContentType",
+        "Recipient"
+      ],
+      "members":{
+        "DeliveryMethod":{
+          "shape":"NotificationDeliveryType",
+          "documentation":"<p>Notification delivery method.</p>"
+        },
+        "Subject":{
+          "shape":"Subject",
+          "documentation":"<p>The subject of the email if the delivery method is <code>EMAIL</code>. Supports variable injection. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html\">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.</p>"
+        },
+        "Content":{
+          "shape":"Content",
+          "documentation":"<p>Notification content. Supports variable injection. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html\">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.</p>"
+        },
+        "ContentType":{
+          "shape":"NotificationContentType",
+          "documentation":"<p>Content type format.</p>"
+        },
+        "Recipient":{
+          "shape":"NotificationRecipientType",
+          "documentation":"<p>Notification recipient.</p>"
+        }
+      },
+      "documentation":"<p>Information about the send notification action.</p>"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -11016,6 +11566,11 @@
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.</p>"
     },
+    "Subject":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "SupportedMessagingContentType":{
       "type":"string",
       "max":100,
@@ -11125,6 +11680,42 @@
     "TagValue":{
       "type":"string",
       "max":256
+    },
+    "TaskActionDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ContactFlowId"
+      ],
+      "members":{
+        "Name":{
+          "shape":"TaskNameExpression",
+          "documentation":"<p>The name. Supports variable injection. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html\">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.</p>"
+        },
+        "Description":{
+          "shape":"TaskDescriptionExpression",
+          "documentation":"<p>The description. Supports variable injection. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html\">JSONPath reference</a> in the <i>Amazon Connect Administrators Guide</i>.</p>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The identifier of the flow.</p>"
+        },
+        "References":{
+          "shape":"ContactReferences",
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>URL</code>. Otherwise, null. (Supports variable injection in the <code>Value</code> field.)</p>"
+        }
+      },
+      "documentation":"<p>Information about the task action.</p>"
+    },
+    "TaskDescriptionExpression":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "TaskNameExpression":{
+      "type":"string",
+      "max":512,
+      "min":1
     },
     "TaskTemplateArn":{
       "type":"string",
@@ -12258,6 +12849,47 @@
         }
       }
     },
+    "UpdateRuleRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "InstanceId",
+        "Name",
+        "Function",
+        "Actions",
+        "PublishStatus"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>A unique identifier for the rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule. You can change the name only if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> </p>"
+        },
+        "Function":{
+          "shape":"RuleFunction",
+          "documentation":"<p>The conditions of the rule.</p>"
+        },
+        "Actions":{
+          "shape":"RuleActions",
+          "documentation":"<p>A list of actions to be run when the rule is triggered.</p>"
+        },
+        "PublishStatus":{
+          "shape":"RulePublishStatus",
+          "documentation":"<p>The publish status of the rule.</p>"
+        }
+      }
+    },
     "UpdateSecurityProfileRequest":{
       "type":"structure",
       "required":[
@@ -12744,6 +13376,10 @@
       "member":{"shape":"UserData"}
     },
     "UserId":{"type":"string"},
+    "UserIdList":{
+      "type":"list",
+      "member":{"shape":"UserId"}
+    },
     "UserIdentityInfo":{
       "type":"structure",
       "members":{
@@ -12949,6 +13585,11 @@
     "UserSummaryList":{
       "type":"list",
       "member":{"shape":"UserSummary"}
+    },
+    "UserTagMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
     },
     "Value":{"type":"double"},
     "Vocabulary":{

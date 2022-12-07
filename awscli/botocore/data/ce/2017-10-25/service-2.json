@@ -323,7 +323,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Retrieves your request parameters, Savings Plan Recommendations Summary and Details. </p>"
+      "documentation":"<p>Retrieves the Savings Plans recommendations for your account. First use <code>StartSavingsPlansPurchaseRecommendationGeneration</code> to generate a new set of recommendations, and then use <code>GetSavingsPlansPurchaseRecommendation</code> to retrieve them.</p>"
     },
     "GetSavingsPlansUtilization":{
       "name":"GetSavingsPlansUtilization",
@@ -413,6 +413,20 @@
       ],
       "documentation":"<p>Returns the name, Amazon Resource Name (ARN), <code>NumberOfRules</code> and effective dates of all Cost Categories defined in the account. You have the option to use <code>EffectiveOn</code> to return a list of Cost Categories that were active on a specific date. If there is no <code>EffectiveOn</code> specified, you’ll see Cost Categories that are effective on the current date. If Cost Category is still effective, <code>EffectiveEnd</code> is omitted in the response. <code>ListCostCategoryDefinitions</code> supports pagination. The request can have a <code>MaxResults</code> range up to 100.</p>"
     },
+    "ListSavingsPlansPurchaseRecommendationGeneration":{
+      "name":"ListSavingsPlansPurchaseRecommendationGeneration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSavingsPlansPurchaseRecommendationGenerationRequest"},
+      "output":{"shape":"ListSavingsPlansPurchaseRecommendationGenerationResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Retrieves a list of your historical recommendation generations within the past 30 days.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -439,6 +453,21 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Modifies the feedback property of a given cost anomaly. </p>"
+    },
+    "StartSavingsPlansPurchaseRecommendationGeneration":{
+      "name":"StartSavingsPlansPurchaseRecommendationGeneration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSavingsPlansPurchaseRecommendationGenerationRequest"},
+      "output":{"shape":"StartSavingsPlansPurchaseRecommendationGenerationResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"GenerationExistsException"}
+      ],
+      "documentation":"<p>Requests a Savings Plans recommendation generation. This enables you to calculate a fresh set of Savings Plans recommendations that takes your latest usage data and current Savings Plans inventory into account. You can refresh Savings Plans recommendations up to three times daily for a consolidated billing family.</p> <note> <p> <code>StartSavingsPlansPurchaseRecommendationGeneration</code> has no request syntax because no input parameters are needed to support this operation.</p> </note>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1839,6 +1868,52 @@
       "type":"list",
       "member":{"shape":"ForecastResult"}
     },
+    "GenerationExistsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>A request to generate a recommendation is already in progress.</p>",
+      "exception":true
+    },
+    "GenerationStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "PROCESSING",
+        "FAILED"
+      ]
+    },
+    "GenerationSummary":{
+      "type":"structure",
+      "members":{
+        "RecommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>Indicates the ID for this specific recommendation.</p>"
+        },
+        "GenerationStatus":{
+          "shape":"GenerationStatus",
+          "documentation":"<p>Indicates whether the recommendation generation succeeded, is processing, or failed.</p>"
+        },
+        "GenerationStartedTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>Indicates the start time of the recommendation generation.</p>"
+        },
+        "GenerationCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>Indicates the completion time of the recommendation generation.</p>"
+        },
+        "EstimatedCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>Indicates the estimated time for when the recommendation generation will complete.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the Savings Plans recommendation generation.</p>"
+    },
+    "GenerationSummaryList":{
+      "type":"list",
+      "member":{"shape":"GenerationSummary"}
+    },
     "GenericBoolean":{"type":"boolean"},
     "GenericDouble":{"type":"double"},
     "GenericString":{
@@ -2939,6 +3014,40 @@
         }
       }
     },
+    "ListSavingsPlansPurchaseRecommendationGenerationRequest":{
+      "type":"structure",
+      "members":{
+        "GenerationStatus":{
+          "shape":"GenerationStatus",
+          "documentation":"<p>The status of the recommendation generation.</p>"
+        },
+        "RecommendationIds":{
+          "shape":"RecommendationIdList",
+          "documentation":"<p>The IDs for each specific recommendation.</p>"
+        },
+        "PageSize":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of recommendations that you want returned in a single response object.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListSavingsPlansPurchaseRecommendationGenerationResponse":{
+      "type":"structure",
+      "members":{
+        "GenerationSummaryList":{
+          "shape":"GenerationSummaryList",
+          "documentation":"<p>The list of historical recommendation generations.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -3217,6 +3326,16 @@
     },
     "RICostForUnusedHours":{"type":"string"},
     "RealizedSavings":{"type":"string"},
+    "RecommendationId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[\\S\\s]{8}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{12}$"
+    },
+    "RecommendationIdList":{
+      "type":"list",
+      "member":{"shape":"RecommendationId"}
+    },
     "RecommendationTarget":{
       "type":"string",
       "enum":[
@@ -4196,6 +4315,28 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "StartSavingsPlansPurchaseRecommendationGenerationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "StartSavingsPlansPurchaseRecommendationGenerationResponse":{
+      "type":"structure",
+      "members":{
+        "RecommendationId":{
+          "shape":"RecommendationId",
+          "documentation":"<p>The ID for this specific recommendation.</p>"
+        },
+        "GenerationStartedTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The start time of the recommendation generation.</p>"
+        },
+        "EstimatedCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The estimated time for when the recommendation generation will complete.</p>"
+        }
+      }
     },
     "Subscriber":{
       "type":"structure",

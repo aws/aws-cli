@@ -98,6 +98,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"PendingVerification"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Sends an event to a specific room which directs clients to delete a specific message; that is, unrender it from view and delete it from the client’s chat history. This event’s <code>EventName</code> is <code>aws:DELETE_MESSAGE</code>. This replicates the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-deletemessage-publish.html\"> DeleteMessage</a> WebSocket operation in the Amazon IVS Chat Messaging API.</p>"
@@ -131,6 +132,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"PendingVerification"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Disconnects all connections using a specified user ID from a room. This replicates the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-disconnectuser-publish.html\"> DisconnectUser</a> WebSocket operation in the Amazon IVS Chat Messaging API.</p>"
@@ -227,6 +229,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"PendingVerification"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Sends an event to a room. Use this within your application’s business logic to send events to clients of a room; e.g., to notify clients to change the way the chat UI is rendered.</p>"
@@ -613,15 +616,15 @@
       "members":{
         "cloudWatchLogs":{
           "shape":"CloudWatchLogsDestinationConfiguration",
-          "documentation":"<p>Name of the Amazon CloudWatch Logs destination where chat activity will be logged.</p>"
+          "documentation":"<p>An Amazon CloudWatch Logs destination configuration where chat activity will be logged.</p>"
         },
         "firehose":{
           "shape":"FirehoseDestinationConfiguration",
-          "documentation":"<p>Name of the Amazon Kinesis Data Firehose destination where chat activity will be logged</p>"
+          "documentation":"<p>An Amazon Kinesis Data Firehose destination configuration where chat activity will be logged.</p>"
         },
         "s3":{
           "shape":"S3DestinationConfiguration",
-          "documentation":"<p>Name of the Amazon S3 bucket where chat activity will be logged.</p>"
+          "documentation":"<p>An Amazon S3 destination configuration where chat activity will be logged.</p>"
         }
       },
       "documentation":"<p>A complex type that describes a location where chat logs will be stored. Each member represents the configuration of one log destination. For logging, you define only one type of destination (for CloudWatch Logs, Kinesis Firehose, or S3).</p>",

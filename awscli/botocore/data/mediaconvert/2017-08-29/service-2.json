@@ -1164,7 +1164,7 @@
   "shapes": {
     "AacAudioDescriptionBroadcasterMix": {
       "type": "string",
-      "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and  FollowInputAudioType. Choose NORMAL when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType.",
+      "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and FollowInputAudioType. Choose NORMAL when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType.",
       "enum": [
         "BROADCASTER_MIXED_AD",
         "NORMAL"
@@ -1181,7 +1181,7 @@
     },
     "AacCodingMode": {
       "type": "string",
-      "documentation": "Mono (Audio Description), Mono, Stereo, or 5.1 channel layout. Valid values depend on rate control mode and profile. \"1.0 - Audio Description (Receiver Mix)\" setting receives a stereo description plus control track and emits a mono AAC encode of the description track, with control data emitted in the PES header as per ETSI TS 101 154 Annex E.",
+      "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Five channels, C, L, R, Ls, Rs, LFE.",
       "enum": [
         "AD_RECEIVER_MIX",
         "CODING_MODE_1_0",
@@ -1212,7 +1212,7 @@
         "AudioDescriptionBroadcasterMix": {
           "shape": "AacAudioDescriptionBroadcasterMix",
           "locationName": "audioDescriptionBroadcasterMix",
-          "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and  FollowInputAudioType. Choose NORMAL when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType."
+          "documentation": "Choose BROADCASTER_MIXED_AD when the input contains pre-mixed main audio + audio description (AD) as a stereo pair. The value for AudioType will be set to 3, which signals to downstream systems that this stream contains \"broadcaster mixed AD\". Note that the input received by the encoder must contain pre-mixed audio; the encoder does not perform the mixing. When you choose BROADCASTER_MIXED_AD, the encoder ignores any values you provide in AudioType and FollowInputAudioType. Choose NORMAL when the input does not contain pre-mixed audio + audio description (AD). In this case, the encoder will use any values you provide for AudioType and FollowInputAudioType."
         },
         "Bitrate": {
           "shape": "__integerMin6000Max1024000",
@@ -1227,7 +1227,7 @@
         "CodingMode": {
           "shape": "AacCodingMode",
           "locationName": "codingMode",
-          "documentation": "Mono (Audio Description), Mono, Stereo, or 5.1 channel layout. Valid values depend on rate control mode and profile. \"1.0 - Audio Description (Receiver Mix)\" setting receives a stereo description plus control track and emits a mono AAC encode of the description track, with control data emitted in the PES header as per ETSI TS 101 154 Annex E."
+          "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Five channels, C, L, R, Ls, Rs, LFE."
         },
         "RateControlMode": {
           "shape": "AacRateControlMode",
@@ -1242,7 +1242,7 @@
         "SampleRate": {
           "shape": "__integerMin8000Max96000",
           "locationName": "sampleRate",
-          "documentation": "Sample rate in Hz. Valid values depend on rate control mode and profile."
+          "documentation": "Specify the Sample rate in Hz. Valid sample rates depend on the Profile and Coding mode that you select. The following list shows valid sample rates for each Profile and Coding mode. * LC Profile, Coding mode 1.0, 2.0, and Receiver Mix: 8000, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 88200, 96000. * LC Profile, Coding mode 5.1: 32000, 44100, 48000, 96000. * HEV1 Profile, Coding mode 1.0 and Receiver Mix: 22050, 24000, 32000, 44100, 48000. * HEV1 Profile, Coding mode 2.0 and 5.1: 32000, 44100, 48000, 96000. * HEV2 Profile, Coding mode 2.0: 22050, 24000, 32000, 44100, 48000."
         },
         "Specification": {
           "shape": "AacSpecification",
@@ -2915,6 +2915,11 @@
           "locationName": "minFinalSegmentLength",
           "documentation": "Keep this setting at the default value of 0, unless you are troubleshooting a problem with how devices play back the end of your video asset. If you know that player devices are hanging on the final segment of your video because the length of your final segment is too short, use this setting to specify a minimum final segment length, in seconds. Choose a value that is greater than or equal to 1 and less than your segment length. When you specify a value for this setting, the encoder will combine any final segment that is shorter than the length that you specify with the previous segment. For example, your segment length is 3 seconds and your final segment is .5 seconds without a minimum final segment length; when you set the minimum final segment length to 1, your final segment is 3.5 seconds."
         },
+        "MpdManifestBandwidthType": {
+          "shape": "CmafMpdManifestBandwidthType",
+          "locationName": "mpdManifestBandwidthType",
+          "documentation": "Specify how the value for bandwidth is determined for each video Representation in your output MPD manifest. We recommend that you choose a MPD manifest bandwidth type that is compatible with your downstream player configuration. Max: Use the same value that you specify for Max bitrate in the video output, in bits per second. Average: Use the calculated average bitrate of the encoded video output, in bits per second."
+        },
         "MpdProfile": {
           "shape": "CmafMpdProfile",
           "locationName": "mpdProfile",
@@ -2949,6 +2954,11 @@
           "shape": "CmafTargetDurationCompatibilityMode",
           "locationName": "targetDurationCompatibilityMode",
           "documentation": "When set to LEGACY, the segment target duration is always rounded up to the nearest integer value above its current value in seconds. When set to SPEC\\\\_COMPLIANT, the segment target duration is rounded up to the nearest integer value if fraction seconds are greater than or equal to 0.5 (>= 0.5) and rounded down if less than 0.5 (< 0.5). You may need to use LEGACY if your client needs to ensure that the target duration is always longer than the actual duration of the segment. Some older players may experience interrupted playback when the actual duration of a track in a segment is longer than the target duration."
+        },
+        "VideoCompositionOffsets": {
+          "shape": "CmafVideoCompositionOffsets",
+          "locationName": "videoCompositionOffsets",
+          "documentation": "Specify the video sample composition time offset mode in the output fMP4 TRUN box. For wider player compatibility, set Video composition offsets to Unsigned or leave blank. The earliest presentation time may be greater than zero, and sample composition time offsets will increment using unsigned integers. For strict fMP4 video and audio timing, set Video composition offsets to Signed. The earliest presentation time will be equal to zero, and sample composition time offsets will increment using signed integers."
         },
         "WriteDashManifest": {
           "shape": "CmafWriteDASHManifest",
@@ -3054,6 +3064,14 @@
         "INTEGER"
       ]
     },
+    "CmafMpdManifestBandwidthType": {
+      "type": "string",
+      "documentation": "Specify how the value for bandwidth is determined for each video Representation in your output MPD manifest. We recommend that you choose a MPD manifest bandwidth type that is compatible with your downstream player configuration. Max: Use the same value that you specify for Max bitrate in the video output, in bits per second. Average: Use the calculated average bitrate of the encoded video output, in bits per second.",
+      "enum": [
+        "AVERAGE",
+        "MAX"
+      ]
+    },
     "CmafMpdProfile": {
       "type": "string",
       "documentation": "Specify whether your DASH profile is on-demand or main. When you choose Main profile (MAIN_PROFILE), the service signals  urn:mpeg:dash:profile:isoff-main:2011 in your .mpd DASH manifest. When you choose On-demand (ON_DEMAND_PROFILE), the service signals urn:mpeg:dash:profile:isoff-on-demand:2011 in your .mpd. When you choose On-demand, you must also set the output group setting Segment control (SegmentControl) to Single file (SINGLE_FILE).",
@@ -3100,6 +3118,14 @@
       "enum": [
         "LEGACY",
         "SPEC_COMPLIANT"
+      ]
+    },
+    "CmafVideoCompositionOffsets": {
+      "type": "string",
+      "documentation": "Specify the video sample composition time offset mode in the output fMP4 TRUN box. For wider player compatibility, set Video composition offsets to Unsigned or leave blank. The earliest presentation time may be greater than zero, and sample composition time offsets will increment using unsigned integers. For strict fMP4 video and audio timing, set Video composition offsets to Signed. The earliest presentation time will be equal to zero, and sample composition time offsets will increment using signed integers.",
+      "enum": [
+        "SIGNED",
+        "UNSIGNED"
       ]
     },
     "CmafWriteDASHManifest": {
@@ -3167,6 +3193,14 @@
         "NONE"
       ]
     },
+    "CmfcManifestMetadataSignaling": {
+      "type": "string",
+      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled.",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "CmfcScte35Esam": {
       "type": "string",
       "documentation": "Use this setting only when you specify SCTE-35 markers from ESAM. Choose INSERT to put SCTE-35 markers in this output at the insertion points that you specify in an ESAM XML document. Provide the document in the setting SCC XML (sccXml).",
@@ -3221,6 +3255,11 @@
           "locationName": "klvMetadata",
           "documentation": "To include key-length-value metadata in this output: Set KLV metadata insertion to Passthrough. MediaConvert reads KLV metadata present in your input and writes each instance to a separate event message box in the output, according to MISB ST1910.1. To exclude this KLV metadata: Set KLV metadata insertion to None or leave blank."
         },
+        "ManifestMetadataSignaling": {
+          "shape": "CmfcManifestMetadataSignaling",
+          "locationName": "manifestMetadataSignaling",
+          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled."
+        },
         "Scte35Esam": {
           "shape": "CmfcScte35Esam",
           "locationName": "scte35Esam",
@@ -3235,6 +3274,21 @@
           "shape": "CmfcTimedMetadata",
           "locationName": "timedMetadata",
           "documentation": "To include ID3 metadata in this output: Set ID3 metadata (timedMetadata) to Passthrough (PASSTHROUGH). Specify this ID3 metadata in Custom ID3 metadata inserter (timedMetadataInsertion). MediaConvert writes each instance of ID3 metadata in a separate Event Message (eMSG) box. To exclude this ID3 metadata: Set ID3 metadata to None (NONE) or leave blank."
+        },
+        "TimedMetadataBoxVersion": {
+          "shape": "CmfcTimedMetadataBoxVersion",
+          "locationName": "timedMetadataBoxVersion",
+          "documentation": "Specify the event message box (eMSG) version for ID3 timed metadata in your output.\nFor more information, see ISO/IEC 23009-1:2022 section 5.10.3.3.3 Syntax.\nLeave blank to use the default value Version 0.\nWhen you specify Version 1, you must also set ID3 metadata (timedMetadata) to Passthrough."
+        },
+        "TimedMetadataSchemeIdUri": {
+          "shape": "__stringMax1000",
+          "locationName": "timedMetadataSchemeIdUri",
+          "documentation": "Specify the event message box (eMSG) scheme ID URI (scheme_id_uri) for ID3 timed metadata in your output. For more informaiton, see ISO/IEC 23009-1:2022 section 5.10.3.3.4 Semantics. Leave blank to use the default value: https://aomedia.org/emsg/ID3 When you specify a value for ID3 metadata scheme ID URI, you must also set ID3 metadata (timedMetadata) to Passthrough."
+        },
+        "TimedMetadataValue": {
+          "shape": "__stringMax1000",
+          "locationName": "timedMetadataValue",
+          "documentation": "Specify the event message box (eMSG) value for ID3 timed metadata in your output. For more informaiton, see ISO/IEC 23009-1:2022 section 5.10.3.3.4 Semantics. When you specify a value for ID3 Metadata Value, you must also set ID3 metadata (timedMetadata) to Passthrough."
         }
       },
       "documentation": "These settings relate to the fragmented MP4 container for the segments in your CMAF outputs."
@@ -3245,6 +3299,14 @@
       "enum": [
         "PASSTHROUGH",
         "NONE"
+      ]
+    },
+    "CmfcTimedMetadataBoxVersion": {
+      "type": "string",
+      "documentation": "Specify the event message box (eMSG) version for ID3 timed metadata in your output.\nFor more information, see ISO/IEC 23009-1:2022 section 5.10.3.3.3 Syntax.\nLeave blank to use the default value Version 0.\nWhen you specify Version 1, you must also set ID3 metadata (timedMetadata) to Passthrough.",
+      "enum": [
+        "VERSION_0",
+        "VERSION_1"
       ]
     },
     "ColorCorrector": {
@@ -3781,6 +3843,11 @@
           "locationName": "minFinalSegmentLength",
           "documentation": "Keep this setting at the default value of 0, unless you are troubleshooting a problem with how devices play back the end of your video asset. If you know that player devices are hanging on the final segment of your video because the length of your final segment is too short, use this setting to specify a minimum final segment length, in seconds. Choose a value that is greater than or equal to 1 and less than your segment length. When you specify a value for this setting, the encoder will combine any final segment that is shorter than the length that you specify with the previous segment. For example, your segment length is 3 seconds and your final segment is .5 seconds without a minimum final segment length; when you set the minimum final segment length to 1, your final segment is 3.5 seconds."
         },
+        "MpdManifestBandwidthType": {
+          "shape": "DashIsoMpdManifestBandwidthType",
+          "locationName": "mpdManifestBandwidthType",
+          "documentation": "Specify how the value for bandwidth is determined for each video Representation in your output MPD manifest. We recommend that you choose a MPD manifest bandwidth type that is compatible with your downstream player configuration. Max: Use the same value that you specify for Max bitrate in the video output, in bits per second. Average: Use the calculated average bitrate of the encoded video output, in bits per second."
+        },
         "MpdProfile": {
           "shape": "DashIsoMpdProfile",
           "locationName": "mpdProfile",
@@ -3805,6 +3872,11 @@
           "shape": "DashIsoSegmentLengthControl",
           "locationName": "segmentLengthControl",
           "documentation": "Specify how you want MediaConvert to determine the segment length. Choose Exact (EXACT) to have the encoder use the exact length that you specify with the setting Segment length (SegmentLength). This might result in extra I-frames. Choose Multiple of GOP (GOP_MULTIPLE) to have the encoder round up the segment lengths to match the next GOP boundary."
+        },
+        "VideoCompositionOffsets": {
+          "shape": "DashIsoVideoCompositionOffsets",
+          "locationName": "videoCompositionOffsets",
+          "documentation": "Specify the video sample composition time offset mode in the output fMP4 TRUN box. For wider player compatibility, set Video composition offsets to Unsigned or leave blank. The earliest presentation time may be greater than zero, and sample composition time offsets will increment using unsigned integers. For strict fMP4 video and audio timing, set Video composition offsets to Signed. The earliest presentation time will be equal to zero, and sample composition time offsets will increment using signed integers."
         },
         "WriteSegmentTimelineInRepresentation": {
           "shape": "DashIsoWriteSegmentTimelineInRepresentation",
@@ -3876,6 +3948,14 @@
         "FOLLOW_CUSTOM"
       ]
     },
+    "DashIsoMpdManifestBandwidthType": {
+      "type": "string",
+      "documentation": "Specify how the value for bandwidth is determined for each video Representation in your output MPD manifest. We recommend that you choose a MPD manifest bandwidth type that is compatible with your downstream player configuration. Max: Use the same value that you specify for Max bitrate in the video output, in bits per second. Average: Use the calculated average bitrate of the encoded video output, in bits per second.",
+      "enum": [
+        "AVERAGE",
+        "MAX"
+      ]
+    },
     "DashIsoMpdProfile": {
       "type": "string",
       "documentation": "Specify whether your DASH profile is on-demand or main. When you choose Main profile (MAIN_PROFILE), the service signals  urn:mpeg:dash:profile:isoff-main:2011 in your .mpd DASH manifest. When you choose On-demand (ON_DEMAND_PROFILE), the service signals urn:mpeg:dash:profile:isoff-on-demand:2011 in your .mpd. When you choose On-demand, you must also set the output group setting Segment control (SegmentControl) to Single file (SINGLE_FILE).",
@@ -3914,6 +3994,14 @@
       "enum": [
         "EXACT",
         "GOP_MULTIPLE"
+      ]
+    },
+    "DashIsoVideoCompositionOffsets": {
+      "type": "string",
+      "documentation": "Specify the video sample composition time offset mode in the output fMP4 TRUN box. For wider player compatibility, set Video composition offsets to Unsigned or leave blank. The earliest presentation time may be greater than zero, and sample composition time offsets will increment using unsigned integers. For strict fMP4 video and audio timing, set Video composition offsets to Signed. The earliest presentation time will be equal to zero, and sample composition time offsets will increment using signed integers.",
+      "enum": [
+        "SIGNED",
+        "UNSIGNED"
       ]
     },
     "DashIsoWriteSegmentTimelineInRepresentation": {
@@ -9098,6 +9186,14 @@
         "PASSTHROUGH"
       ]
     },
+    "MpdManifestMetadataSignaling": {
+      "type": "string",
+      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled.",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "MpdScte35Esam": {
       "type": "string",
       "documentation": "Use this setting only when you specify SCTE-35 markers from ESAM. Choose INSERT to put SCTE-35 markers in this output at the insertion points that you specify in an ESAM XML document. Provide the document in the setting SCC XML (sccXml).",
@@ -9137,6 +9233,11 @@
           "locationName": "klvMetadata",
           "documentation": "To include key-length-value metadata in this output: Set KLV metadata insertion to Passthrough. MediaConvert reads KLV metadata present in your input and writes each instance to a separate event message box in the output, according to MISB ST1910.1. To exclude this KLV metadata: Set KLV metadata insertion to None or leave blank."
         },
+        "ManifestMetadataSignaling": {
+          "shape": "MpdManifestMetadataSignaling",
+          "locationName": "manifestMetadataSignaling",
+          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled."
+        },
         "Scte35Esam": {
           "shape": "MpdScte35Esam",
           "locationName": "scte35Esam",
@@ -9151,6 +9252,21 @@
           "shape": "MpdTimedMetadata",
           "locationName": "timedMetadata",
           "documentation": "To include ID3 metadata in this output: Set ID3 metadata (timedMetadata) to Passthrough (PASSTHROUGH). Specify this ID3 metadata in Custom ID3 metadata inserter (timedMetadataInsertion). MediaConvert writes each instance of ID3 metadata in a separate Event Message (eMSG) box. To exclude this ID3 metadata: Set ID3 metadata to None (NONE) or leave blank."
+        },
+        "TimedMetadataBoxVersion": {
+          "shape": "MpdTimedMetadataBoxVersion",
+          "locationName": "timedMetadataBoxVersion",
+          "documentation": "Specify the event message box (eMSG) version for ID3 timed metadata in your output.\nFor more information, see ISO/IEC 23009-1:2022 section 5.10.3.3.3 Syntax.\nLeave blank to use the default value Version 0.\nWhen you specify Version 1, you must also set ID3 metadata (timedMetadata) to Passthrough."
+        },
+        "TimedMetadataSchemeIdUri": {
+          "shape": "__stringMax1000",
+          "locationName": "timedMetadataSchemeIdUri",
+          "documentation": "Specify the event message box (eMSG) scheme ID URI (scheme_id_uri) for ID3 timed metadata in your output. For more informaiton, see ISO/IEC 23009-1:2022 section 5.10.3.3.4 Semantics. Leave blank to use the default value: https://aomedia.org/emsg/ID3 When you specify a value for ID3 metadata scheme ID URI, you must also set ID3 metadata (timedMetadata) to Passthrough."
+        },
+        "TimedMetadataValue": {
+          "shape": "__stringMax1000",
+          "locationName": "timedMetadataValue",
+          "documentation": "Specify the event message box (eMSG) value for ID3 timed metadata in your output. For more informaiton, see ISO/IEC 23009-1:2022 section 5.10.3.3.4 Semantics. When you specify a value for ID3 Metadata Value, you must also set ID3 metadata (timedMetadata) to Passthrough."
         }
       },
       "documentation": "These settings relate to the fragmented MP4 container for the segments in your DASH outputs."
@@ -9161,6 +9277,14 @@
       "enum": [
         "PASSTHROUGH",
         "NONE"
+      ]
+    },
+    "MpdTimedMetadataBoxVersion": {
+      "type": "string",
+      "documentation": "Specify the event message box (eMSG) version for ID3 timed metadata in your output.\nFor more information, see ISO/IEC 23009-1:2022 section 5.10.3.3.3 Syntax.\nLeave blank to use the default value Version 0.\nWhen you specify Version 1, you must also set ID3 metadata (timedMetadata) to Passthrough.",
+      "enum": [
+        "VERSION_0",
+        "VERSION_1"
       ]
     },
     "Mpeg2AdaptiveQuantization": {
@@ -9443,7 +9567,7 @@
         "Syntax": {
           "shape": "Mpeg2Syntax",
           "locationName": "syntax",
-          "documentation": "Specify whether this output's video uses the D10 syntax. Keep the default value to  not use the syntax. Related settings: When you choose D10 (D_10) for your MXF  profile (profile), you must also set this value to to D10 (D_10)."
+          "documentation": "Specify whether this output's video uses the D10 syntax. Keep the default value to  not use the syntax. Related settings: When you choose D10 (D_10) for your MXF  profile (profile), you must also set this value to D10 (D_10)."
         },
         "Telecine": {
           "shape": "Mpeg2Telecine",
@@ -9476,7 +9600,7 @@
     },
     "Mpeg2Syntax": {
       "type": "string",
-      "documentation": "Specify whether this output's video uses the D10 syntax. Keep the default value to  not use the syntax. Related settings: When you choose D10 (D_10) for your MXF  profile (profile), you must also set this value to to D10 (D_10).",
+      "documentation": "Specify whether this output's video uses the D10 syntax. Keep the default value to  not use the syntax. Related settings: When you choose D10 (D_10) for your MXF  profile (profile), you must also set this value to D10 (D_10).",
       "enum": [
         "DEFAULT",
         "D_10"
@@ -13265,6 +13389,10 @@
     },
     "__string": {
       "type": "string"
+    },
+    "__stringMax1000": {
+      "type": "string",
+      "max": 1000
     },
     "__stringMin0": {
       "type": "string",

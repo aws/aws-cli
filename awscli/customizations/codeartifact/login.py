@@ -83,21 +83,27 @@ class BaseLogin:
             return
 
         for command in commands:
-            try:
-                with original_ld_library_path():
-                    self.subprocess_utils.run(
-                        command,
-                        capture_output=True,
-                        check=True
-                    )
-            except OSError as ex:
-                if ex.errno == errno.ENOENT:
-                    raise ValueError(
-                        self._TOOL_NOT_FOUND_MESSAGE % tool
-                    )
-                raise ex
+            self._run_command(tool, command)
 
         self._write_success_message(tool)
+
+    def _run_command(self, tool, command, *, ignore_errors=False):
+        try:
+            with original_ld_library_path():
+                self.subprocess_utils.run(
+                    command,
+                    capture_output=True,
+                    check=True,
+                )
+        except subprocess.CalledProcessError as ex:
+            if not ignore_errors:
+                raise ex
+        except OSError as ex:
+            if ex.errno == errno.ENOENT:
+                raise ValueError(
+                    self._TOOL_NOT_FOUND_MESSAGE % tool
+                )
+            raise ex
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -310,6 +316,10 @@ class NpmLogin(BaseLogin):
             self.repository_endpoint, self.auth_token, scope=scope
         )
         self._run_commands('npm', commands, dry_run)
+
+    def _run_command(self, tool, command):
+        ignore_errors = any('always-auth' in arg for arg in command)
+        super()._run_command(tool, command, ignore_errors=ignore_errors)
 
     @classmethod
     def get_scope(cls, namespace):

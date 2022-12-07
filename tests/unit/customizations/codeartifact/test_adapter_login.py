@@ -1,5 +1,6 @@
 import errno
 import os
+import subprocess
 
 from datetime import datetime
 from dateutil.tz import tzlocal, tzutc
@@ -447,6 +448,39 @@ class TestNpmLogin(unittest.TestCase):
                 check=True
             ) for command in self.commands
         ]
+        self.subprocess_utils.run.assert_has_calls(
+            expected_calls, any_order=True
+        )
+
+    def test_login_always_auth_error_ignored(self):
+        """Test login ignores error for always-auth.
+
+        This test is for NPM version >= 9 where the support of 'always-auth'
+        has been dropped. Running the command to set config gives a non-zero
+        exit code. This is to make sure that login ignores that error and all
+        other commands executes successfully.
+        """
+        def side_effect(command, capture_output, check):
+            """Set side_effect for always-auth config setting command"""
+            if any('always-auth' in arg for arg in command):
+                raise subprocess.CalledProcessError(
+                    returncode=1,
+                    cmd=command
+                )
+
+            return mock.DEFAULT
+
+        self.subprocess_utils.run.side_effect = side_effect
+        expected_calls = []
+
+        for command in self.commands:
+            expected_calls.append(mock.call(
+                command,
+                capture_output=True,
+                check=True
+            ))
+        self.test_subject.login()
+
         self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
         )

@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.9.5
+=====
+
+* api-change:``polly``: Add language code for Finnish (fi-FI)
+* api-change:``proton``: CreateEnvironmentAccountConnection RoleArn input is now optional
+* api-change:``rds``: This release adds the BlueGreenDeploymentNotFoundFault to the AddTagsToResource, ListTagsForResource, and RemoveTagsFromResource operations.
+* api-change:``connect``: This release provides APIs that enable you to programmatically manage rules for Contact Lens conversational analytics and third party applications. For more information, see   https://docs.aws.amazon.com/connect/latest/APIReference/rules-api.html
+* api-change:``sagemaker-featurestore-runtime``: For online + offline Feature Groups, added ability to target PutRecord and DeleteRecord actions to only online store, or only offline store. If target store parameter is not specified, actions will apply to both stores.
+* api-change:``medialive``: Updates to Event Signaling and Management (ESAM) API and documentation.
+* bugfix:``codeartifact login``: Ignore always-auth errors for CodeArtifact login command; fixes `#7434 <https://github.com/aws/aws-cli/issues/7434>`__
+* api-change:``sns``: This release adds the message payload-filtering feature to the SNS Subscribe, SetSubscriptionAttributes, and GetSubscriptionAttributes API actions
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has added support for configurable ID3 eMSG box attributes and the ability to signal them with InbandEventStream tags in DASH and CMAF outputs.
+* api-change:``appsync``: Fixes the URI for the evaluatecode endpoint to include the /v1 prefix (ie. "/v1/dataplane-evaluatecode").
+* api-change:``ecs``: Documentation updates for Amazon ECS
+* api-change:``rds``: This release adds the InvalidDBInstanceStateFault to the RestoreDBClusterFromSnapshot operation.
+* api-change:``transcribe``: Amazon Transcribe now supports creating custom language models in the following languages: Japanese (ja-JP) and German (de-DE).
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``ce``: This release introduces two new APIs that offer a 1-click experience to refresh Savings Plans recommendations. The two APIs are StartSavingsPlansPurchaseRecommendationGeneration and ListSavingsPlansPurchaseRecommendationGeneration.
+* api-change:``billingconductor``: This release adds the Tiering Pricing Rule feature.
+* api-change:``dynamodb``: Endpoint Ruleset update: Use http instead of https for the "local" region.
+* enhancement:dependencies: Remove dependency pin for wcwidth and update the pin for docutils.
+* api-change:``fms``: AWS Firewall Manager now supports Fortigate Cloud Native Firewall as a Service as a third-party policy type.
+* api-change:``redshift-serverless``: Add Table Level Restore operations for Amazon Redshift Serverless. Add multi-port support for Amazon Redshift Serverless endpoints. Add Tagging support to Snapshots and Recovery Points in Amazon Redshift Serverless.
+* api-change:``ivschat``: Adds PendingVerification error type to messaging APIs to block the resource usage for accounts identified as being fraudulent.
+* api-change:``ec2``: Documentation updates for EC2.
+
+
 2.9.4
 =====
 

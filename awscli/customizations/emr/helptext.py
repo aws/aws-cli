@@ -283,7 +283,8 @@ DEBUGGING = (
     ' which allows you to browse log files using the Amazon EMR console.'
     ' Turning debugging on requires that you specify <code>--log-uri</code>'
     ' because log files must be stored in Amazon S3 so that'
-    ' Amazon EMR can index them for viewing in the console.</p>')
+    ' Amazon EMR can index them for viewing in the console.'
+    ' Effective January 23, 2023, Amazon EMR will discontinue the debugging tool for all versions.</p>')
 
 TAGS = (
     '<p>A list of tags to associate with a cluster, which apply to'

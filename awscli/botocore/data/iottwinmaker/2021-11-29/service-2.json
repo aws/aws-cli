@@ -90,6 +90,26 @@
       "documentation":"<p>Creates a scene.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "CreateSyncJob":{
+      "name":"CreateSyncJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/sync-jobs/{syncSource}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSyncJobRequest"},
+      "output":{"shape":"CreateSyncJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>This action creates a SyncJob.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "CreateWorkspace":{
       "name":"CreateWorkspace",
       "http":{
@@ -165,6 +185,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes a scene.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "DeleteSyncJob":{
+      "name":"DeleteSyncJob",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/sync-jobs/{syncSource}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSyncJobRequest"},
+      "output":{"shape":"DeleteSyncJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Delete the SyncJob.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DeleteWorkspace":{
@@ -323,6 +363,26 @@
       "documentation":"<p>Retrieves information about a scene.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "GetSyncJob":{
+      "name":"GetSyncJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sync-jobs/{syncSource}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSyncJobRequest"},
+      "output":{"shape":"GetSyncJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Gets the SyncJob.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "GetWorkspace":{
       "name":"GetWorkspace",
       "http":{
@@ -394,6 +454,44 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all scenes in a workspace.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "ListSyncJobs":{
+      "name":"ListSyncJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/sync-jobs-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSyncJobsRequest"},
+      "output":{"shape":"ListSyncJobsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>List all SyncJobs.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "ListSyncResources":{
+      "name":"ListSyncResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/sync-jobs/{syncSource}/resources-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSyncResourcesRequest"},
+      "output":{"shape":"ListSyncResourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Lists the sync resources.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "ListTagsForResource":{
@@ -796,6 +894,10 @@
         "propertyGroups":{
           "shape":"ComponentPropertyGroupResponses",
           "documentation":"<p>The property groups.</p>"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The syncSource of the sync job, if this entity was created by a sync job.</p>"
         }
       },
       "documentation":"<p>An object that returns information about a component type create or update request.</p>"
@@ -805,6 +907,12 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z_\\.\\-0-9:]+"
+    },
+    "ComponentTypeName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":".*[^\\u0000-\\u001F\\u007F]*.*"
     },
     "ComponentTypeSummaries":{
       "type":"list",
@@ -842,6 +950,10 @@
         "status":{
           "shape":"Status",
           "documentation":"<p>The current status of the component type.</p>"
+        },
+        "componentTypeName":{
+          "shape":"ComponentTypeName",
+          "documentation":"<p>The component type name.</p>"
         }
       },
       "documentation":"<p>An object that contains information about a component type.</p>"
@@ -982,6 +1094,10 @@
         "propertyGroups":{
           "shape":"PropertyGroupsRequest",
           "documentation":"<p/>"
+        },
+        "componentTypeName":{
+          "shape":"ComponentTypeName",
+          "documentation":"<p>A friendly name for the component type.</p>"
         }
       }
     },
@@ -1123,6 +1239,58 @@
         "creationDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the scene was created.</p>"
+        }
+      }
+    },
+    "CreateSyncJobRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "syncSource",
+        "syncRole"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The workspace Id.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "location":"uri",
+          "locationName":"syncSource"
+        },
+        "syncRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The SyncJob IAM role. This IAM role is used by the sync job to read from the syncSource, and create, update or delete the corresponding resources.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The SyncJob tags.</p>"
+        }
+      }
+    },
+    "CreateSyncJobResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "creationDateTime",
+        "state"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TwinMakerArn",
+          "documentation":"<p>The SyncJob ARN.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time for the SyncJob creation.</p>"
+        },
+        "state":{
+          "shape":"SyncJobState",
+          "documentation":"<p>The SyncJob response state.</p>"
         }
       }
     },
@@ -1365,6 +1533,37 @@
       "members":{
       }
     },
+    "DeleteSyncJobRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "syncSource"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The workspace Id.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "location":"uri",
+          "locationName":"syncSource"
+        }
+      }
+    },
+    "DeleteSyncJobResponse":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{
+          "shape":"SyncJobState",
+          "documentation":"<p>The SyncJob response state.</p>"
+        }
+      }
+    },
     "DeleteWorkspaceRequest":{
       "type":"structure",
       "required":["workspaceId"],
@@ -1384,7 +1583,7 @@
     },
     "Description":{
       "type":"string",
-      "max":512,
+      "max":2048,
       "min":0,
       "pattern":".*"
     },
@@ -1402,7 +1601,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z_0-9-.][a-zA-Z_0-9-. ]*[a-zA-Z0-9]+"
+      "pattern":"[^\\u0000-\\u001F\\u007F]+"
     },
     "EntityPropertyReference":{
       "type":"structure",
@@ -1491,7 +1690,10 @@
       "type":"string",
       "enum":[
         "VALIDATION_ERROR",
-        "INTERNAL_FAILURE"
+        "INTERNAL_FAILURE",
+        "SYNC_INITIALIZING_ERROR",
+        "SYNC_CREATING_ERROR",
+        "SYNC_PROCESSING_ERROR"
       ]
     },
     "ErrorDetails":{
@@ -1719,6 +1921,14 @@
         "propertyGroups":{
           "shape":"PropertyGroupsResponse",
           "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p> <p>Valid Range: Minimum value of 1. Maximum value of 250.</p>"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The syncSource of the sync job, if this entity was created by a sync job.</p>"
+        },
+        "componentTypeName":{
+          "shape":"ComponentTypeName",
+          "documentation":"<p>The component type name.</p>"
         }
       }
     },
@@ -1800,6 +2010,10 @@
         "updateDateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the entity was last updated.</p>"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The syncSource of the sync job, if this entity was created by a sync job.</p>"
         }
       }
     },
@@ -2034,6 +2248,66 @@
         "capabilities":{
           "shape":"SceneCapabilities",
           "documentation":"<p>A list of capabilities that the scene uses to render.</p>"
+        }
+      }
+    },
+    "GetSyncJobRequest":{
+      "type":"structure",
+      "required":["syncSource"],
+      "members":{
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "location":"uri",
+          "locationName":"syncSource"
+        },
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The workspace Id.</p>",
+          "location":"querystring",
+          "locationName":"workspace"
+        }
+      }
+    },
+    "GetSyncJobResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "workspaceId",
+        "syncSource",
+        "syncRole",
+        "status",
+        "creationDateTime",
+        "updateDateTime"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TwinMakerArn",
+          "documentation":"<p>The sync job ARN.</p>"
+        },
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the workspace that contains the sync job.</p>"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>"
+        },
+        "syncRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The sync IAM role.</p>"
+        },
+        "status":{
+          "shape":"SyncJobStatus",
+          "documentation":"<p>The SyncJob response status.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date and time.</p>"
+        },
+        "updateDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The update date and time.</p>"
         }
       }
     },
@@ -2324,6 +2598,85 @@
         }
       }
     },
+    "ListSyncJobsRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the workspace that contains the sync job.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 50.</p> <p>Valid Range: Minimum value of 0. Maximum value of 200.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        }
+      }
+    },
+    "ListSyncJobsResponse":{
+      "type":"structure",
+      "members":{
+        "syncJobSummaries":{
+          "shape":"SyncJobSummaries",
+          "documentation":"<p>The listed SyncJob summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        }
+      }
+    },
+    "ListSyncResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "syncSource"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the workspace that contains the sync job.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "location":"uri",
+          "locationName":"syncSource"
+        },
+        "filters":{
+          "shape":"SyncResourceFilters",
+          "documentation":"<p>A list of objects that filter the request.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 50.</p> <p>Valid Range: Minimum value of 0. Maximum value of 200.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        }
+      }
+    },
+    "ListSyncResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "syncResources":{
+          "shape":"SyncResourceSummaries",
+          "documentation":"<p>The sync resources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceARN"],
@@ -2555,6 +2908,10 @@
         "configuration":{
           "shape":"Configuration",
           "documentation":"<p>A mapping that specifies configuration information about the property. Use this field to specify information that you read from and write to an external source.</p>"
+        },
+        "displayName":{
+          "shape":"PropertyDisplayName",
+          "documentation":"<p>A friendly name for the property.</p>"
         }
       },
       "documentation":"<p>An object that sets information about a property.</p>"
@@ -2611,6 +2968,10 @@
         "configuration":{
           "shape":"Configuration",
           "documentation":"<p>A mapping that specifies configuration information about the property.</p>"
+        },
+        "displayName":{
+          "shape":"PropertyDisplayName",
+          "documentation":"<p>A friendly name for the property.</p>"
         }
       },
       "documentation":"<p>An object that contains response data from a property definition request.</p>"
@@ -2624,6 +2985,12 @@
       "type":"map",
       "key":{"shape":"Name"},
       "value":{"shape":"PropertyDefinitionResponse"}
+    },
+    "PropertyDisplayName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":".*[^\\u0000-\\u001F\\u007F]*.*"
     },
     "PropertyFilter":{
       "type":"structure",
@@ -3063,6 +3430,156 @@
       "min":1,
       "pattern":".*"
     },
+    "SyncJobState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "INITIALIZING",
+        "ACTIVE",
+        "DELETING",
+        "ERROR"
+      ]
+    },
+    "SyncJobStatus":{
+      "type":"structure",
+      "members":{
+        "state":{
+          "shape":"SyncJobState",
+          "documentation":"<p>The SyncJob status state.</p>"
+        },
+        "error":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The SyncJob error.</p>"
+        }
+      },
+      "documentation":"<p>The SyncJob status.</p>"
+    },
+    "SyncJobSummaries":{
+      "type":"list",
+      "member":{"shape":"SyncJobSummary"}
+    },
+    "SyncJobSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"TwinMakerArn",
+          "documentation":"<p>The SyncJob summary ARN.</p>"
+        },
+        "workspaceId":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the workspace that contains the sync job.</p>"
+        },
+        "syncSource":{
+          "shape":"SyncSource",
+          "documentation":"<p>The sync source.</p>"
+        },
+        "status":{
+          "shape":"SyncJobStatus",
+          "documentation":"<p>The SyncJob summaries status.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date and time.</p>"
+        },
+        "updateDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The update date and time.</p>"
+        }
+      },
+      "documentation":"<p>The SyncJob summary.</p>"
+    },
+    "SyncResourceFilter":{
+      "type":"structure",
+      "members":{
+        "state":{
+          "shape":"SyncResourceState",
+          "documentation":"<p>The sync resource filter's state.</p>"
+        },
+        "resourceType":{
+          "shape":"SyncResourceType",
+          "documentation":"<p>The sync resource filter resoucre type</p>"
+        },
+        "resourceId":{
+          "shape":"Id",
+          "documentation":"<p>The sync resource filter resource Id.</p>"
+        },
+        "externalId":{
+          "shape":"Id",
+          "documentation":"<p>The external Id.</p>"
+        }
+      },
+      "documentation":"<p>The sync resource filter.</p>",
+      "union":true
+    },
+    "SyncResourceFilters":{
+      "type":"list",
+      "member":{"shape":"SyncResourceFilter"}
+    },
+    "SyncResourceState":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "PROCESSING",
+        "DELETED",
+        "IN_SYNC",
+        "ERROR"
+      ]
+    },
+    "SyncResourceStatus":{
+      "type":"structure",
+      "members":{
+        "state":{
+          "shape":"SyncResourceState",
+          "documentation":"<p>The sync resource status state.</p>"
+        },
+        "error":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The status error.</p>"
+        }
+      },
+      "documentation":"<p>The sync resource status.</p>"
+    },
+    "SyncResourceSummaries":{
+      "type":"list",
+      "member":{"shape":"SyncResourceSummary"}
+    },
+    "SyncResourceSummary":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"SyncResourceType",
+          "documentation":"<p>The resource type.</p>"
+        },
+        "externalId":{
+          "shape":"Id",
+          "documentation":"<p>The external Id.</p>"
+        },
+        "resourceId":{
+          "shape":"Id",
+          "documentation":"<p>The resource Id.</p>"
+        },
+        "status":{
+          "shape":"SyncResourceStatus",
+          "documentation":"<p>The sync resource summary status.</p>"
+        },
+        "updateDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The update date and time.</p>"
+        }
+      },
+      "documentation":"<p>The sync resource summary.</p>"
+    },
+    "SyncResourceType":{
+      "type":"string",
+      "enum":[
+        "ENTITY",
+        "COMPONENT_TYPE"
+      ]
+    },
+    "SyncSource":{
+      "type":"string",
+      "pattern":"[a-zA-Z_0-9]+"
+    },
     "TabularConditions":{
       "type":"structure",
       "members":{
@@ -3220,7 +3737,7 @@
       "members":{
         "workspaceId":{
           "shape":"Id",
-          "documentation":"<p>The ID of the workspace that contains the component type.</p>",
+          "documentation":"<p>The ID of the workspace.</p>",
           "location":"uri",
           "locationName":"workspaceId"
         },
@@ -3253,6 +3770,10 @@
         "propertyGroups":{
           "shape":"PropertyGroupsRequest",
           "documentation":"<p>The property groups</p>"
+        },
+        "componentTypeName":{
+          "shape":"ComponentTypeName",
+          "documentation":"<p>The component type name.</p>"
         }
       }
     },

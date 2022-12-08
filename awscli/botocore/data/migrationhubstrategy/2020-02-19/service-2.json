@@ -79,6 +79,23 @@
       ],
       "documentation":"<p> Retrieves the details about a specific import task. </p>"
     },
+    "GetLatestAssessmentId":{
+      "name":"GetLatestAssessmentId",
+      "http":{
+        "method":"GET",
+        "requestUri":"/get-latest-assessment-id",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLatestAssessmentIdRequest"},
+      "output":{"shape":"GetLatestAssessmentIdResponse"},
+      "errors":[
+        {"shape":"DependencyException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve the latest ID of a specific assessment task.</p>"
+    },
     "GetPortfolioPreferences":{
       "name":"GetPortfolioPreferences",
       "http":{
@@ -401,7 +418,43 @@
         "SQLServer",
         "IIS",
         "Oracle",
-        "Other"
+        "Other",
+        "Tomcat",
+        "JBoss",
+        "Spring",
+        "Mongo DB",
+        "DB2",
+        "Maria DB",
+        "MySQL",
+        "Sybase",
+        "PostgreSQLServer",
+        "Cassandra",
+        "IBM WebSphere",
+        "Oracle WebLogic",
+        "Visual Basic",
+        "Unknown",
+        "DotnetCore",
+        "Dotnet"
+      ]
+    },
+    "AppUnitError":{
+      "type":"structure",
+      "members":{
+        "appUnitErrorCategory":{
+          "shape":"AppUnitErrorCategory",
+          "documentation":"<p>The category of the error.</p>"
+        }
+      },
+      "documentation":"<p>Error in the analysis of the application unit.</p>"
+    },
+    "AppUnitErrorCategory":{
+      "type":"string",
+      "enum":[
+        "CREDENTIAL_ERROR",
+        "CONNECTIVITY_ERROR",
+        "PERMISSION_ERROR",
+        "UNSUPPORTED_ERROR",
+        "OTHER_ERROR"
       ]
     },
     "ApplicationComponentCriteria":{
@@ -412,7 +465,9 @@
         "SERVER_ID",
         "APP_TYPE",
         "STRATEGY",
-        "DESTINATION"
+        "DESTINATION",
+        "ANALYSIS_STATUS",
+        "ERROR_CATEGORY"
       ]
     },
     "ApplicationComponentDetail":{
@@ -437,6 +492,10 @@
         "appType":{
           "shape":"AppType",
           "documentation":"<p> The type of application component. </p>"
+        },
+        "appUnitError":{
+          "shape":"AppUnitError",
+          "documentation":"<p>The error in the analysis of the source code or database.</p>"
         },
         "associatedServerId":{
           "shape":"ServerId",
@@ -486,6 +545,14 @@
           "shape":"ResourceSubType",
           "documentation":"<p> The application component subtype.</p>"
         },
+        "runtimeStatus":{
+          "shape":"RuntimeAnalysisStatus",
+          "documentation":"<p>The status of the application unit.</p>"
+        },
+        "runtimeStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The status message for the application unit.</p>"
+        },
         "sourceCodeRepositories":{
           "shape":"SourceCodeRepositories",
           "documentation":"<p> Details about the source code repository associated with the application component. </p>"
@@ -506,6 +573,20 @@
       "max":44,
       "min":0,
       "pattern":"[0-9a-zA-Z-]+"
+    },
+    "ApplicationComponentStatusSummary":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of application components successfully analyzed, partially successful or failed analysis.</p>"
+        },
+        "srcCodeOrDbAnalysisStatus":{
+          "shape":"SrcCodeOrDbAnalysisStatus",
+          "documentation":"<p>The status of database analysis.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the analysis status of the application component.</p>"
     },
     "ApplicationComponentStrategies":{
       "type":"list",
@@ -543,6 +624,14 @@
       },
       "documentation":"<p> Contains the summary of application components. </p>"
     },
+    "ApplicationMode":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "KNOWN",
+        "UNKNOWN"
+      ]
+    },
     "ApplicationPreferences":{
       "type":"structure",
       "members":{
@@ -561,6 +650,12 @@
         "FAILED",
         "STOPPED"
       ]
+    },
+    "AssessmentStatusMessage":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":".*\\S.*"
     },
     "AssessmentSummary":{
       "type":"structure",
@@ -585,6 +680,10 @@
           "shape":"ListAntipatternSeveritySummary",
           "documentation":"<p> List of AntipatternSeveritySummary. </p>"
         },
+        "listApplicationComponentStatusSummary":{
+          "shape":"ListApplicationComponentStatusSummary",
+          "documentation":"<p>List of status summaries of the analyzed application components.</p>"
+        },
         "listApplicationComponentStrategySummary":{
           "shape":"ListStrategySummary",
           "documentation":"<p> List of ApplicationComponentStrategySummary. </p>"
@@ -592,6 +691,10 @@
         "listApplicationComponentSummary":{
           "shape":"ListApplicationComponentSummary",
           "documentation":"<p> List of ApplicationComponentSummary. </p>"
+        },
+        "listServerStatusSummary":{
+          "shape":"ListServerStatusSummary",
+          "documentation":"<p>List of status summaries of the analyzed servers.</p>"
         },
         "listServerStrategySummary":{
           "shape":"ListStrategySummary",
@@ -603,6 +706,39 @@
         }
       },
       "documentation":"<p> Contains the summary of the assessment results. </p>"
+    },
+    "AssessmentTarget":{
+      "type":"structure",
+      "required":[
+        "condition",
+        "name",
+        "values"
+      ],
+      "members":{
+        "condition":{
+          "shape":"Condition",
+          "documentation":"<p>Condition of an assessment.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>Name of an assessment.</p>"
+        },
+        "values":{
+          "shape":"AssessmentTargetValues",
+          "documentation":"<p>Values of an assessment.</p>"
+        }
+      },
+      "documentation":"<p>Defines the criteria of assessment.</p>"
+    },
+    "AssessmentTargetValues":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "AssessmentTargets":{
+      "type":"list",
+      "member":{"shape":"AssessmentTarget"},
+      "max":10,
+      "min":0
     },
     "AssociatedApplication":{
       "type":"structure",
@@ -631,6 +767,14 @@
       "max":52,
       "min":0,
       "pattern":"[0-9a-z-:]+"
+    },
+    "AuthType":{
+      "type":"string",
+      "enum":[
+        "NTLM",
+        "SSH",
+        "CERT"
+      ]
     },
     "AwsManagedResources":{
       "type":"structure",
@@ -704,6 +848,10 @@
           "shape":"String",
           "documentation":"<p> Current version of the collector that is running in the environment that you specify. </p>"
         },
+        "configurationSummary":{
+          "shape":"ConfigurationSummary",
+          "documentation":"<p>Summary of the collector configuration.</p>"
+        },
         "hostName":{
           "shape":"String",
           "documentation":"<p> Hostname of the server that is hosting the collector. </p>"
@@ -733,6 +881,41 @@
     "Collectors":{
       "type":"list",
       "member":{"shape":"Collector"}
+    },
+    "Condition":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS",
+        "CONTAINS",
+        "NOT_CONTAINS"
+      ]
+    },
+    "ConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "ipAddressBasedRemoteInfoList":{
+          "shape":"IPAddressBasedRemoteInfoList",
+          "documentation":"<p>IP address based configurations.</p>"
+        },
+        "pipelineInfoList":{
+          "shape":"PipelineInfoList",
+          "documentation":"<p>The list of pipeline info configurations.</p>"
+        },
+        "remoteSourceCodeAnalysisServerInfo":{
+          "shape":"RemoteSourceCodeAnalysisServerInfo",
+          "documentation":"<p>Info about the remote server source code configuration.</p>"
+        },
+        "vcenterBasedRemoteInfoList":{
+          "shape":"VcenterBasedRemoteInfoList",
+          "documentation":"<p>The list of vCenter configurations.</p>"
+        },
+        "versionControlInfoList":{
+          "shape":"VersionControlInfoList",
+          "documentation":"<p>The list of the version control configurations.</p>"
+        }
+      },
+      "documentation":"<p>Summary of the collector configuration.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -773,6 +956,10 @@
         "status":{
           "shape":"AssessmentStatus",
           "documentation":"<p> The status of the assessment. </p>"
+        },
+        "statusMessage":{
+          "shape":"AssessmentStatusMessage",
+          "documentation":"<p>The status message of the assessment.</p>"
         },
         "success":{
           "shape":"Integer",
@@ -838,6 +1025,16 @@
         }
       },
       "documentation":"<p> Preferences on managing your databases on AWS. </p>"
+    },
+    "DependencyException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>Dependency encountered an error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
     },
     "GetApplicationComponentDetailsRequest":{
       "type":"structure",
@@ -908,6 +1105,10 @@
     "GetAssessmentResponse":{
       "type":"structure",
       "members":{
+        "assessmentTargets":{
+          "shape":"AssessmentTargets",
+          "documentation":"<p>List of criteria for assessment.</p>"
+        },
         "dataCollectionDetails":{
           "shape":"DataCollectionDetails",
           "documentation":"<p> Detailed information about the assessment. </p>"
@@ -979,6 +1180,20 @@
         }
       }
     },
+    "GetLatestAssessmentIdRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetLatestAssessmentIdResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"AsyncTaskId",
+          "documentation":"<p>The latest ID for the specific assessment task.</p>"
+        }
+      }
+    },
     "GetPortfolioPreferencesRequest":{
       "type":"structure",
       "members":{
@@ -987,6 +1202,10 @@
     "GetPortfolioPreferencesResponse":{
       "type":"structure",
       "members":{
+        "applicationMode":{
+          "shape":"ApplicationMode",
+          "documentation":"<p>The classification for application component types.</p>"
+        },
         "applicationPreferences":{
           "shape":"ApplicationPreferences",
           "documentation":"<p> The transformation preferences for non-database applications. </p>"
@@ -1182,6 +1401,28 @@
       "min":0,
       "pattern":"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
     },
+    "IPAddressBasedRemoteInfo":{
+      "type":"structure",
+      "members":{
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The type of authorization.</p>"
+        },
+        "ipAddressConfigurationTimeStamp":{
+          "shape":"String",
+          "documentation":"<p>The time stamp of the configuration.</p>"
+        },
+        "osType":{
+          "shape":"OSType",
+          "documentation":"<p>The type of the operating system.</p>"
+        }
+      },
+      "documentation":"<p>IP address based configurations.</p>"
+    },
+    "IPAddressBasedRemoteInfoList":{
+      "type":"list",
+      "member":{"shape":"IPAddressBasedRemoteInfo"}
+    },
     "ImportFileTaskInformation":{
       "type":"structure",
       "members":{
@@ -1275,6 +1516,10 @@
     "ListAntipatternSeveritySummary":{
       "type":"list",
       "member":{"shape":"AntipatternSeveritySummary"}
+    },
+    "ListApplicationComponentStatusSummary":{
+      "type":"list",
+      "member":{"shape":"ApplicationComponentStatusSummary"}
     },
     "ListApplicationComponentSummary":{
       "type":"list",
@@ -1391,6 +1636,10 @@
           "documentation":"<p> Lists information about the files you import.</p>"
         }
       }
+    },
+    "ListServerStatusSummary":{
+      "type":"list",
+      "member":{"shape":"ServerStatusSummary"}
     },
     "ListServerSummary":{
       "type":"list",
@@ -1594,6 +1843,28 @@
         "Json"
       ]
     },
+    "PipelineInfo":{
+      "type":"structure",
+      "members":{
+        "pipelineConfigurationTimeStamp":{
+          "shape":"String",
+          "documentation":"<p>The time when the pipeline info was configured.</p>"
+        },
+        "pipelineType":{
+          "shape":"PipelineType",
+          "documentation":"<p>The type of pipeline.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information of the pipeline.</p>"
+    },
+    "PipelineInfoList":{
+      "type":"list",
+      "member":{"shape":"PipelineInfo"}
+    },
+    "PipelineType":{
+      "type":"string",
+      "enum":["AZURE_DEVOPS"]
+    },
     "PrioritizeBusinessGoals":{
       "type":"structure",
       "members":{
@@ -1604,9 +1875,19 @@
       },
       "documentation":"<p> Rank of business goals based on priority. </p>"
     },
+    "ProjectName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "PutPortfolioPreferencesRequest":{
       "type":"structure",
       "members":{
+        "applicationMode":{
+          "shape":"ApplicationMode",
+          "documentation":"<p>The classification for application component types.</p>"
+        },
         "applicationPreferences":{
           "shape":"ApplicationPreferences",
           "documentation":"<p> The transformation preferences for non-database applications. </p>"
@@ -1695,6 +1976,16 @@
       "min":0,
       "pattern":"[0-9a-z-:]+"
     },
+    "RemoteSourceCodeAnalysisServerInfo":{
+      "type":"structure",
+      "members":{
+        "remoteSourceCodeAnalysisServerConfigurationTimestamp":{
+          "shape":"String",
+          "documentation":"<p>The time when the remote source code server was configured.</p>"
+        }
+      },
+      "documentation":"<p>Information about the server configured for source code analysis.</p>"
+    },
     "ResourceId":{
       "type":"string",
       "max":44,
@@ -1732,6 +2023,15 @@
         "dataCollectionTaskSuccess",
         "dataCollectionTaskFailed",
         "dataCollectionTaskPartialSuccess"
+      ]
+    },
+    "RuntimeAnalysisStatus":{
+      "type":"string",
+      "enum":[
+        "ANALYSIS_TO_BE_SCHEDULED",
+        "ANALYSIS_STARTED",
+        "ANALYSIS_SUCCESS",
+        "ANALYSIS_FAILED"
       ]
     },
     "S3Bucket":{
@@ -1804,7 +2104,9 @@
         "OS_NAME",
         "STRATEGY",
         "DESTINATION",
-        "SERVER_ID"
+        "SERVER_ID",
+        "ANALYSIS_STATUS",
+        "ERROR_CATEGORY"
       ]
     },
     "ServerDetail":{
@@ -1850,6 +2152,10 @@
           "shape":"RecommendationSet",
           "documentation":"<p> A set of recommendations. </p>"
         },
+        "serverError":{
+          "shape":"ServerError",
+          "documentation":"<p>The error in server analysis.</p>"
+        },
         "serverType":{
           "shape":"String",
           "documentation":"<p> The type of server. </p>"
@@ -1869,6 +2175,26 @@
       "type":"list",
       "member":{"shape":"ServerDetail"}
     },
+    "ServerError":{
+      "type":"structure",
+      "members":{
+        "serverErrorCategory":{
+          "shape":"ServerErrorCategory",
+          "documentation":"<p>The error category of server analysis.</p>"
+        }
+      },
+      "documentation":"<p>The error in server analysis.</p>"
+    },
+    "ServerErrorCategory":{
+      "type":"string",
+      "enum":[
+        "CONNECTIVITY_ERROR",
+        "CREDENTIAL_ERROR",
+        "PERMISSION_ERROR",
+        "ARCHITECTURE_ERROR",
+        "OTHER_ERROR"
+      ]
+    },
     "ServerId":{
       "type":"string",
       "max":27,
@@ -1884,6 +2210,20 @@
         "Redhat",
         "Other"
       ]
+    },
+    "ServerStatusSummary":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of servers successfully analyzed, partially successful or failed analysis.</p>"
+        },
+        "runTimeAssessmentStatus":{
+          "shape":"RunTimeAssessmentStatus",
+          "documentation":"<p>The status of the run time.</p>"
+        }
+      },
+      "documentation":"<p>The status summary of the server analysis.</p>"
     },
     "ServerStrategies":{
       "type":"list",
@@ -1972,6 +2312,10 @@
           "shape":"Location",
           "documentation":"<p> The repository name for the source code. </p>"
         },
+        "projectName":{
+          "shape":"ProjectName",
+          "documentation":"<p>The name of the project.</p>"
+        },
         "sourceVersion":{
           "shape":"SourceVersion",
           "documentation":"<p> The branch of the source code. </p>"
@@ -1998,6 +2342,10 @@
           "shape":"String",
           "documentation":"<p> The branch of the source code. </p>"
         },
+        "projectName":{
+          "shape":"String",
+          "documentation":"<p>The name of the project.</p>"
+        },
         "repository":{
           "shape":"String",
           "documentation":"<p> The repository name for the source code. </p>"
@@ -2021,12 +2369,19 @@
         "ANALYSIS_TO_BE_SCHEDULED",
         "ANALYSIS_STARTED",
         "ANALYSIS_SUCCESS",
-        "ANALYSIS_FAILED"
+        "ANALYSIS_FAILED",
+        "ANALYSIS_PARTIAL_SUCCESS",
+        "UNCONFIGURED",
+        "CONFIGURED"
       ]
     },
     "StartAssessmentRequest":{
       "type":"structure",
       "members":{
+        "assessmentTargets":{
+          "shape":"AssessmentTargets",
+          "documentation":"<p>List of criteria for assessment.</p>"
+        },
         "s3bucketForAnalysisData":{
           "shape":"StartAssessmentRequestS3bucketForAnalysisDataString",
           "documentation":"<p> The S3 bucket used by the collectors to send analysis data to the service. The bucket name must begin with <code>migrationhub-strategy-</code>. </p>"
@@ -2195,7 +2550,8 @@
       "enum":[
         "recommended",
         "viableOption",
-        "notRecommended"
+        "notRecommended",
+        "potential"
       ]
     },
     "StrategySummary":{
@@ -2276,7 +2632,8 @@
         "Amazon Relational Database Service on PostgreSQL",
         "Amazon DocumentDB",
         "Amazon DynamoDB",
-        "Amazon Relational Database Service"
+        "Amazon Relational Database Service",
+        "Babelfish for Aurora PostgreSQL"
       ]
     },
     "ThrottlingException":{
@@ -2341,9 +2698,17 @@
       "type":"structure",
       "required":["applicationComponentId"],
       "members":{
+        "appType":{
+          "shape":"AppType",
+          "documentation":"<p>The type of known component.</p>"
+        },
         "applicationComponentId":{
           "shape":"ApplicationComponentId",
           "documentation":"<p> The ID of the application component. The ID is unique within an AWS account. </p>"
+        },
+        "configureOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Update the configuration request of an application component. If it is set to true, the source code and/or database credentials are updated. If it is set to false, the source code and/or database credentials are updated and an analysis is initiated.</p>"
         },
         "inclusionStatus":{
           "shape":"InclusionStatus",
@@ -2399,11 +2764,56 @@
       },
       "exception":true
     },
+    "VcenterBasedRemoteInfo":{
+      "type":"structure",
+      "members":{
+        "osType":{
+          "shape":"OSType",
+          "documentation":"<p>The type of the operating system.</p>"
+        },
+        "vcenterConfigurationTimeStamp":{
+          "shape":"String",
+          "documentation":"<p>The time when the remote server based on vCenter was last configured.</p>"
+        }
+      },
+      "documentation":"<p>Details about the server in vCenter.</p>"
+    },
+    "VcenterBasedRemoteInfoList":{
+      "type":"list",
+      "member":{"shape":"VcenterBasedRemoteInfo"}
+    },
     "VersionControl":{
       "type":"string",
       "enum":[
         "GITHUB",
-        "GITHUB_ENTERPRISE"
+        "GITHUB_ENTERPRISE",
+        "AZURE_DEVOPS_GIT"
+      ]
+    },
+    "VersionControlInfo":{
+      "type":"structure",
+      "members":{
+        "versionControlConfigurationTimeStamp":{
+          "shape":"String",
+          "documentation":"<p>The time when the version control system was last configured.</p>"
+        },
+        "versionControlType":{
+          "shape":"VersionControlType",
+          "documentation":"<p>The type of version control.</p>"
+        }
+      },
+      "documentation":"<p>Details about the version control configuration.</p>"
+    },
+    "VersionControlInfoList":{
+      "type":"list",
+      "member":{"shape":"VersionControlInfo"}
+    },
+    "VersionControlType":{
+      "type":"string",
+      "enum":[
+        "GITHUB",
+        "GITHUB_ENTERPRISE",
+        "AZURE_DEVOPS_GIT"
       ]
     },
     "errorMessage":{"type":"string"},

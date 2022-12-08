@@ -672,6 +672,7 @@ class BaseJSONParser(ResponseParser):
     def _do_error_parse(self, response, shape):
         body = self._parse_body_as_json(response['body'])
         error = {"Error": {"Message": '', "Code": ''}, "ResponseMetadata": {}}
+        headers = response['headers']
         # Error responses can have slightly different structures for json.
         # The basic structure is:
         #
@@ -685,7 +686,16 @@ class BaseJSONParser(ResponseParser):
         # if the message did not contain an error code
         # include the response status code
         response_code = response.get('status_code')
-        code = body.get('__type', response_code and str(response_code))
+        # Error response may contain an x-amzn-query-error header for json
+        # we need to fetch the error code from this header in that case
+        query_error = headers.get('x-amzn-query-error', '')
+        query_error_components = query_error.split(';')
+        code = None
+        if len(query_error_components) == 2 and query_error_components[0]:
+            code = query_error_components[0]
+            error['Error']['Type'] = query_error_components[1]
+        if code is None:
+            code = body.get('__type', response_code and str(response_code))
         if code is not None:
             # code has a couple forms as well:
             # * "com.aws.dynamodb.vAPI#ProvisionedThroughputExceededException"

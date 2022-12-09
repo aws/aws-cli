@@ -161,6 +161,8 @@
         {"shape":"AccessDenied"},
         {"shape":"InvalidArgument"},
         {"shape":"InconsistentQuantities"},
+        {"shape":"ContinuousDeploymentPolicyAlreadyExists"},
+        {"shape":"TooManyContinuousDeploymentPolicies"},
         {"shape":"StagingDistributionInUse"}
       ],
       "documentation":"<p>Creates a continuous deployment policy that distributes traffic for a custom domain name to two different CloudFront distributions.</p> <p>To use a continuous deployment policy, first use <code>CopyDistribution</code> to create a staging distribution, then use <code>UpdateDistribution</code> to modify the staging distribution’s configuration.</p> <p>After you create and update a staging distribution, you can use a continuous deployment policy to incrementally move traffic to the staging distribution. This workflow enables you to test changes to a distribution’s configuration before moving all of your domain’s production traffic to the new configuration.</p>"
@@ -237,6 +239,8 @@
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
         {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"ContinuousDeploymentPolicyInUse"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"},
         {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Creates a CloudFront distribution.</p>"
@@ -312,6 +316,8 @@
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
         {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"ContinuousDeploymentPolicyInUse"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"},
         {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Create a new distribution with tags.</p>"
@@ -627,7 +633,9 @@
         {"shape":"InvalidIfMatchVersion"},
         {"shape":"InvalidArgument"},
         {"shape":"AccessDenied"},
-        {"shape":"PreconditionFailed"}
+        {"shape":"PreconditionFailed"},
+        {"shape":"ContinuousDeploymentPolicyInUse"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Deletes a continuous deployment policy.</p> <p>You cannot delete a continuous deployment policy that’s attached to a primary distribution. First update your distribution to remove the continuous deployment policy, then you can delete the policy.</p>"
     },
@@ -917,7 +925,8 @@
       "input":{"shape":"GetContinuousDeploymentPolicyRequest"},
       "output":{"shape":"GetContinuousDeploymentPolicyResult"},
       "errors":[
-        {"shape":"AccessDenied"}
+        {"shape":"AccessDenied"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Gets a continuous deployment policy, including metadata (the policy’s identifier and the date and time when the policy was last modified).</p>"
     },
@@ -930,7 +939,8 @@
       "input":{"shape":"GetContinuousDeploymentPolicyConfigRequest"},
       "output":{"shape":"GetContinuousDeploymentPolicyConfigResult"},
       "errors":[
-        {"shape":"AccessDenied"}
+        {"shape":"AccessDenied"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Gets configuration information about a continuous deployment policy.</p>"
     },
@@ -1301,7 +1311,8 @@
       "output":{"shape":"ListContinuousDeploymentPoliciesResult"},
       "errors":[
         {"shape":"InvalidArgument"},
-        {"shape":"AccessDenied"}
+        {"shape":"AccessDenied"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Gets a list of the continuous deployment policies in your Amazon Web Services account.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
@@ -1703,7 +1714,8 @@
         {"shape":"AccessDenied"},
         {"shape":"InconsistentQuantities"},
         {"shape":"PreconditionFailed"},
-        {"shape":"StagingDistributionInUse"}
+        {"shape":"StagingDistributionInUse"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"}
       ],
       "documentation":"<p>Updates a continuous deployment policy. You can update a continuous deployment policy to enable or disable it, to change the percentage of traffic that it sends to the staging distribution, or to change the staging distribution that it sends traffic to.</p> <p>When you update a continuous deployment policy configuration, all the fields are updated with the values that are provided in the request. You cannot update some fields independent of others. To update a continuous deployment policy configuration:</p> <ol> <li> <p>Use <code>GetContinuousDeploymentPolicyConfig</code> to get the current configuration.</p> </li> <li> <p>Locally modify the fields in the continuous deployment policy configuration that you want to update.</p> </li> <li> <p>Use <code>UpdateContinuousDeploymentPolicy</code>, providing the entire continuous deployment policy configuration, including the fields that you modified and those that you didn’t.</p> </li> </ol>"
     },
@@ -1776,11 +1788,85 @@
         {"shape":"TrustedKeyGroupDoesNotExist"},
         {"shape":"NoSuchRealtimeLogConfig"},
         {"shape":"RealtimeLogConfigOwnerMismatch"},
+        {"shape":"ContinuousDeploymentPolicyInUse"},
+        {"shape":"NoSuchContinuousDeploymentPolicy"},
         {"shape":"StagingDistributionInUse"},
         {"shape":"IllegalOriginAccessConfiguration"},
         {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
       "documentation":"<p>Updates the configuration for a CloudFront distribution.</p> <p>The update process includes getting the current distribution configuration, updating it to make your changes, and then submitting an <code>UpdateDistribution</code> request to make the updates.</p> <p> <b>To update a web distribution using the CloudFront API</b> </p> <ol> <li> <p>Use <code>GetDistributionConfig</code> to get the current configuration, including the version identifier (<code>ETag</code>).</p> </li> <li> <p>Update the distribution configuration that was returned in the response. Note the following important requirements and restrictions:</p> <ul> <li> <p>You must rename the <code>ETag</code> field to <code>IfMatch</code>, leaving the value unchanged. (Set the value of <code>IfMatch</code> to the value of <code>ETag</code>, then remove the <code>ETag</code> field.)</p> </li> <li> <p>You can’t change the value of <code>CallerReference</code>.</p> </li> </ul> </li> <li> <p>Submit an <code>UpdateDistribution</code> request, providing the distribution configuration. The new configuration replaces the existing configuration. The values that you specify in an <code>UpdateDistribution</code> request are not merged into your existing configuration. Make sure to include all fields: the ones that you modified and also the ones that you didn’t.</p> </li> </ol>"
+    },
+    "UpdateDistributionWithStagingConfig":{
+      "name":"UpdateDistributionWithStagingConfig2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/distribution/{Id}/promote-staging-config"
+      },
+      "input":{"shape":"UpdateDistributionWithStagingConfigRequest"},
+      "output":{"shape":"UpdateDistributionWithStagingConfigResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"CNAMEAlreadyExists"},
+        {"shape":"IllegalUpdate"},
+        {"shape":"InvalidIfMatchVersion"},
+        {"shape":"MissingBody"},
+        {"shape":"NoSuchDistribution"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"TooManyDistributionCNAMEs"},
+        {"shape":"InvalidDefaultRootObject"},
+        {"shape":"InvalidRelativePath"},
+        {"shape":"InvalidErrorCode"},
+        {"shape":"InvalidResponseCode"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidOriginAccessIdentity"},
+        {"shape":"InvalidOriginAccessControl"},
+        {"shape":"TooManyTrustedSigners"},
+        {"shape":"TrustedSignerDoesNotExist"},
+        {"shape":"InvalidViewerCertificate"},
+        {"shape":"InvalidMinimumProtocolVersion"},
+        {"shape":"InvalidRequiredProtocol"},
+        {"shape":"NoSuchOrigin"},
+        {"shape":"TooManyOrigins"},
+        {"shape":"TooManyOriginGroupsPerDistribution"},
+        {"shape":"TooManyCacheBehaviors"},
+        {"shape":"TooManyCookieNamesInWhiteList"},
+        {"shape":"InvalidForwardCookies"},
+        {"shape":"TooManyHeadersInForwardedValues"},
+        {"shape":"InvalidHeadersForS3Origin"},
+        {"shape":"InconsistentQuantities"},
+        {"shape":"TooManyCertificates"},
+        {"shape":"InvalidLocationCode"},
+        {"shape":"InvalidGeoRestrictionParameter"},
+        {"shape":"InvalidTTLOrder"},
+        {"shape":"InvalidWebACLId"},
+        {"shape":"TooManyOriginCustomHeaders"},
+        {"shape":"TooManyQueryStringParameters"},
+        {"shape":"InvalidQueryStringParameters"},
+        {"shape":"TooManyDistributionsWithLambdaAssociations"},
+        {"shape":"TooManyDistributionsWithSingleFunctionARN"},
+        {"shape":"TooManyLambdaFunctionAssociations"},
+        {"shape":"InvalidLambdaFunctionAssociation"},
+        {"shape":"TooManyDistributionsWithFunctionAssociations"},
+        {"shape":"TooManyFunctionAssociations"},
+        {"shape":"InvalidFunctionAssociation"},
+        {"shape":"InvalidOriginReadTimeout"},
+        {"shape":"InvalidOriginKeepaliveTimeout"},
+        {"shape":"NoSuchFieldLevelEncryptionConfig"},
+        {"shape":"IllegalFieldLevelEncryptionConfigAssociationWithCacheBehavior"},
+        {"shape":"TooManyDistributionsAssociatedToFieldLevelEncryptionConfig"},
+        {"shape":"NoSuchCachePolicy"},
+        {"shape":"TooManyDistributionsAssociatedToCachePolicy"},
+        {"shape":"NoSuchResponseHeadersPolicy"},
+        {"shape":"TooManyDistributionsAssociatedToResponseHeadersPolicy"},
+        {"shape":"NoSuchOriginRequestPolicy"},
+        {"shape":"TooManyDistributionsAssociatedToOriginRequestPolicy"},
+        {"shape":"TooManyDistributionsAssociatedToKeyGroup"},
+        {"shape":"TooManyKeyGroupsAssociatedToDistribution"},
+        {"shape":"TrustedKeyGroupDoesNotExist"},
+        {"shape":"NoSuchRealtimeLogConfig"},
+        {"shape":"RealtimeLogConfigOwnerMismatch"}
+      ],
+      "documentation":"<p>Copies the staging distribution's configuration to its corresponding primary distribution. The primary distribution retains its <code>Aliases</code> (also known as alternate domain names or CNAMEs) and <code>ContinuousDeploymentPolicyId</code> value, but otherwise its configuration is overwritten to match the staging distribution.</p> <p>You can use this operation in a continuous deployment workflow after you have tested configuration changes on the staging distribution. After using a continuous deployment policy to move a portion of your domain name’s traffic to the staging distribution and verifying that it works as intended, you can use this operation to copy the staging distribution’s configuration to the primary distribution. This action will disable the continuous deployment policy and move your domain’s traffic back to the primary distribution.</p>"
     },
     "UpdateFieldLevelEncryptionConfig":{
       "name":"UpdateFieldLevelEncryptionConfig2020_05_31",
@@ -2784,6 +2870,15 @@
       },
       "documentation":"<p>A continuous deployment policy.</p>"
     },
+    "ContinuousDeploymentPolicyAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>A continuous deployment policy with this configuration already exists.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "ContinuousDeploymentPolicyConfig":{
       "type":"structure",
       "required":[
@@ -2805,6 +2900,15 @@
         }
       },
       "documentation":"<p>Contains the configuration for a continuous deployment policy.</p>"
+    },
+    "ContinuousDeploymentPolicyInUse":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>You cannot delete a continuous deployment policy that is associated with a primary distribution.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "ContinuousDeploymentPolicyList":{
       "type":"structure",
@@ -2881,11 +2985,11 @@
       "members":{
         "Weight":{
           "shape":"float",
-          "documentation":"<p>The percentage of traffic to send to the staging distribution, expressed as a decimal number between 0 and 1.</p>"
+          "documentation":"<p>The percentage of traffic to send to a staging distribution, expressed as a decimal number between 0 and .15.</p>"
         },
         "SessionStickinessConfig":{"shape":"SessionStickinessConfig"}
       },
-      "documentation":"<p>Contains the percentage of traffic to send to a staging distribution, expressed as a decimal number between 0 and 1.</p>"
+      "documentation":"<p>Contains the percentage of traffic to send to a staging distribution.</p>"
     },
     "CookieNameList":{
       "type":"list",
@@ -4249,6 +4353,14 @@
         "IsIPV6Enabled":{
           "shape":"boolean",
           "documentation":"<p>If you want CloudFront to respond to IPv6 DNS requests with an IPv6 address for your distribution, specify <code>true</code>. If you specify <code>false</code>, CloudFront responds to IPv6 DNS requests with the DNS response code <code>NOERROR</code> and with no IP addresses. This allows viewers to submit a second request, for an IPv4 address for your distribution. </p> <p>In general, you should enable IPv6 if you have users on IPv6 networks who want to access your content. However, if you're using signed URLs or signed cookies to restrict access to your content, and if you're using a custom policy that includes the <code>IpAddress</code> parameter to restrict the IP addresses that can access your content, don't enable IPv6. If you want to restrict access to some content by IP address and not restrict access to other content (or restrict access but not by IP address), you can create two distributions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-creating-signed-url-custom-policy.html\">Creating a Signed URL Using a Custom Policy</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>If you're using an Route 53 Amazon Web Services Integration alias resource record set to route traffic to your CloudFront distribution, you need to create a second alias resource record set when both of the following are true:</p> <ul> <li> <p>You enable IPv6 for the distribution</p> </li> <li> <p>You're using alternate domain names in the URLs for your objects</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-cloudfront-distribution.html\">Routing Traffic to an Amazon CloudFront Web Distribution by Using Your Domain Name</a> in the <i>Route 53 Amazon Web Services Integration Developer Guide</i>.</p> <p>If you created a CNAME resource record set, either with Route 53 Amazon Web Services Integration or with another DNS service, you don't need to make any changes. A CNAME record will route traffic to your distribution regardless of the IP address format of the viewer request.</p>"
+        },
+        "ContinuousDeploymentPolicyId":{
+          "shape":"string",
+          "documentation":"<p>The identifier of a continuous deployment policy. For more information, see <code>CreateContinuousDeploymentPolicy</code>.</p>"
+        },
+        "Staging":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean that indicates whether this is a staging distribution. When this value is <code>true</code>, this is a staging distribution. When this value is <code>false</code>, this is not a staging distribution.</p>"
         }
       },
       "documentation":"<p>A distribution configuration.</p>"
@@ -4379,7 +4491,8 @@
         "Restrictions",
         "WebACLId",
         "HttpVersion",
-        "IsIPV6Enabled"
+        "IsIPV6Enabled",
+        "Staging"
       ],
       "members":{
         "Id":{
@@ -4461,6 +4574,10 @@
         "AliasICPRecordals":{
           "shape":"AliasICPRecordals",
           "documentation":"<p>Amazon Web Services services in China customers must file for an Internet Content Provider (ICP) recordal if they want to serve content publicly on an alternate domain name, also known as a CNAME, that they've added to CloudFront. AliasICPRecordal provides the ICP recordal status for CNAMEs associated with distributions.</p> <p>For more information about ICP recordals, see <a href=\"https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html\"> Signup, Accounts, and Credentials</a> in <i>Getting Started with Amazon Web Services services in China</i>.</p>"
+        },
+        "Staging":{
+          "shape":"boolean",
+          "documentation":"<p>Whether the primary distribution has a staging distribution enabled.</p>"
         }
       },
       "documentation":"<p>A summary of the information about a CloudFront distribution.</p>"
@@ -7374,6 +7491,15 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "NoSuchContinuousDeploymentPolicy":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The continuous deployment policy doesn’t exist.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
     "NoSuchDistribution":{
       "type":"structure",
       "members":{
@@ -9673,6 +9799,15 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "TooManyContinuousDeploymentPolicies":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>You have reached the maximum number of continuous deployment policies for this Amazon Web Services account.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "TooManyCookieNamesInWhiteList":{
       "type":"structure",
       "members":{
@@ -10376,6 +10511,43 @@
         }
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
+      "payload":"Distribution"
+    },
+    "UpdateDistributionWithStagingConfigRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The identifier of the primary distribution to which you are copying a staging distribution's configuration.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "StagingDistributionId":{
+          "shape":"string",
+          "documentation":"<p>The identifier of the staging distribution whose configuration you are copying to the primary distribution.</p>",
+          "location":"querystring",
+          "locationName":"StagingDistributionId"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current versions (<code>ETag</code> values) of both primary and staging distributions. Provide these in the following format:</p> <p> <code>&lt;primary ETag&gt;, &lt;staging ETag&gt;</code> </p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "UpdateDistributionWithStagingConfigResult":{
+      "type":"structure",
+      "members":{
+        "Distribution":{"shape":"Distribution"},
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the primary distribution (after it’s updated).</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
       "payload":"Distribution"
     },
     "UpdateFieldLevelEncryptionConfigRequest":{

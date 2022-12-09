@@ -226,6 +226,21 @@
       ],
       "documentation":"<p>Describes an Amazon EKS add-on.</p>"
     },
+    "DescribeAddonConfiguration":{
+      "name":"DescribeAddonConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/addons/configuration-schemas"
+      },
+      "input":{"shape":"DescribeAddonConfigurationRequest"},
+      "output":{"shape":"DescribeAddonConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Returns configuration options.</p>"
+    },
     "DescribeAddonVersions":{
       "name":"DescribeAddonVersions",
       "http":{
@@ -670,6 +685,10 @@
         "marketplaceInformation":{
           "shape":"MarketplaceInformation",
           "documentation":"<p>Information about an Amazon EKS add-on from the Amazon Web Services Marketplace.</p>"
+        },
+        "configurationValues":{
+          "shape":"String",
+          "documentation":"<p>The provided configuration values.</p>"
         }
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -1215,6 +1234,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The metadata to apply to the cluster to assist with categorization and organization. Each tag consists of a key and an optional value. You define both.</p>"
+        },
+        "configurationValues":{
+          "shape":"String",
+          "documentation":"<p> The set of configuration values for the add-on being created. Whatever values provided here are validated against the schema from <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonConfiguration.html\"> <code>DescribeAddonConfiguration</code> </a>.</p>"
         }
       }
     },
@@ -1559,6 +1582,44 @@
       "type":"structure",
       "members":{
         "cluster":{"shape":"Cluster"}
+      }
+    },
+    "DescribeAddonConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "addonName",
+        "addonVersion"
+      ],
+      "members":{
+        "addonName":{
+          "shape":"String",
+          "documentation":"<p>The name of the add-on. The name must match one of the names returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html\"> <code>DescribeAddonVersions</code> </a>.</p>",
+          "location":"querystring",
+          "locationName":"addonName"
+        },
+        "addonVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the add-on. The version must match one of the versions returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html\"> <code>DescribeAddonVersions</code> </a>.</p>",
+          "location":"querystring",
+          "locationName":"addonVersion"
+        }
+      }
+    },
+    "DescribeAddonConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "addonName":{
+          "shape":"String",
+          "documentation":"<p>The name of the add-on.</p>"
+        },
+        "addonVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the add-on. The version must match one of the versions returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html\"> <code>DescribeAddonVersions</code> </a>.</p>"
+        },
+        "configurationSchema":{
+          "shape":"String",
+          "documentation":"<p>A JSON schema used to validate provided configuration values when creating or updating an addon.</p>"
+        }
       }
     },
     "DescribeAddonRequest":{
@@ -2892,11 +2953,11 @@
       "members":{
         "ec2SshKey":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 SSH key that provides access for SSH communication with the nodes in the managed node group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs and Linux instances</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>.</p>"
+          "documentation":"<p>The Amazon EC2 SSH key name that provides access for SSH communication with the nodes in the managed node group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs and Linux instances</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>.</p>"
         },
         "sourceSecurityGroups":{
           "shape":"StringList",
-          "documentation":"<p>The security groups that are allowed SSH access (port 22) to the nodes. If you specify an Amazon EC2 SSH key but do not specify a source security group when you create a managed node group, then port 22 on the nodes is opened to the internet (0.0.0.0/0). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html\">Security Groups for Your VPC</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+          "documentation":"<p>The security group ids that are allowed SSH access (port 22) to the nodes. If you specify an Amazon EC2 SSH key but do not specify a source security group when you create a managed node group, then port 22 on the nodes is opened to the internet (0.0.0.0/0). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html\">Security Groups for Your VPC</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the remote access configuration for the managed node group.</p>"
@@ -3199,6 +3260,10 @@
           "shape":"String",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
           "idempotencyToken":true
+        },
+        "configurationValues":{
+          "shape":"String",
+          "documentation":"<p>The set of configuration values for the add-on being created. Whatever values provided here are validated against the schema from <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonConfiguration.html\">DescribeAddonConfiguration</a> </p>"
         }
       }
     },

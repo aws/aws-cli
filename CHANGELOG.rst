@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.9.6
+=====
+
+* api-change:``cloudfront``: Introducing UpdateDistributionWithStagingConfig that can be used to promote the staging configuration to the production.
+* api-change:``ce``: This release adds the LinkedAccountName field to the GetAnomalies API response under RootCause
+* api-change:``autoscaling``: Adds support for metric math for target tracking scaling policies, saving you the cost and effort of publishing a custom metric to CloudWatch. Also adds support for VPC Lattice by adding the Attach/Detach/DescribeTrafficSources APIs and a new health check type to the CreateAutoScalingGroup API.
+* api-change:``kms``: Updated examples and exceptions for External Key Store (XKS).
+* api-change:``iottwinmaker``: This release adds the following new features: 1) New APIs for managing a continuous sync of assets and asset models from AWS IoT SiteWise. 2) Support user friendly names for component types (ComponentTypeName) and properties (DisplayName).
+* api-change:``eks``: Adds support for EKS add-ons configurationValues fields and DescribeAddonConfiguration function
+* api-change:``migrationhubstrategy``: This release adds known application filtering, server selection for assessments, support for potential recommendations, and indications for configuration and assessment status. For more information, see the AWS Migration Hub documentation at https://docs.aws.amazon.com/migrationhub/index.html
+
+
 2.9.5
 =====
 

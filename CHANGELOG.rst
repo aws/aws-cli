@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.27
+=======
+
+* api-change:``iotfleetwise``: Deprecated assignedValue property for actuators and attributes.  Added a message to invalid nodes and invalid decoder manifest exceptions.
+* api-change:``logs``: Doc-only update for CloudWatch Logs, for Tagging Permissions clarifications
+* api-change:``medialive``: Link devices now support buffer size (latency) configuration. A higher latency value means a longer delay in transmitting from the device to MediaLive, but improved resiliency. A lower latency value means a shorter delay, but less resiliency.
+* api-change:``mediapackage-vod``: This release provides the approximate number of assets in a packaging group.
+
+
 1.27.26
 =======
 

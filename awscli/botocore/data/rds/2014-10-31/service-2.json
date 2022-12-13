@@ -3221,6 +3221,15 @@
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
     },
+    "ClientPasswordAuthType":{
+      "type":"string",
+      "enum":[
+        "MYSQL_NATIVE_PASSWORD",
+        "POSTGRES_SCRAM_SHA_256",
+        "POSTGRES_MD5",
+        "SQL_SERVER_AUTHENTICATION"
+      ]
+    },
     "CloudwatchLogsExportConfiguration":{
       "type":"structure",
       "members":{
@@ -3440,7 +3449,7 @@
         "Tags":{"shape":"TagList"},
         "CopyTags":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the source DB snapshot to the target DB snapshot. By default, tags are not copied.</p>"
+          "documentation":"<p>A value that indicates whether to copy all tags from the source DB snapshot to the target DB snapshot. By default, tags aren't copied.</p>"
         },
         "PreSignedUrl":{
           "shape":"String",
@@ -3453,6 +3462,10 @@
         "TargetCustomAvailabilityZone":{
           "shape":"String",
           "documentation":"<p>The external custom Availability Zone (CAZ) identifier for the target CAZ.</p> <p>Example: <code>rds-caz-aiqhTgQv</code>.</p>"
+        },
+        "CopyOptionGroup":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether to copy the DB option group associated with the source DB snapshot to the target Amazon Web Services account and associate with the target DB snapshot. The associated option group can be copied only with cross-account snapshot copy calls.</p>"
         }
       },
       "documentation":"<p/>"
@@ -10970,7 +10983,19 @@
         },
         "OptionGroupArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the option group.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) for the option group.</p>"
+        },
+        "SourceOptionGroup":{
+          "shape":"String",
+          "documentation":"<p>Specifies the name of the option group from which this option group is copied.</p>"
+        },
+        "SourceAccountId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the Amazon Web Services account ID for the option group from which this option group is copied.</p>"
+        },
+        "CopyTimestamp":{
+          "shape":"TStamp",
+          "documentation":"<p>Indicates when the option group was copied.</p>"
         }
       },
       "documentation":"<p/>",
@@ -11087,6 +11112,10 @@
         "OptionGroupOptionVersions":{
           "shape":"OptionGroupOptionVersionsList",
           "documentation":"<p>The versions that are available for the option.</p>"
+        },
+        "CopyableCrossAccount":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the option can be copied across Amazon Web Services accounts.</p>"
         }
       },
       "documentation":"<p>Available option.</p>"
@@ -14131,6 +14160,10 @@
         "IAMAuth":{
           "shape":"IAMAuthMode",
           "documentation":"<p>Whether to require or disallow Amazon Web Services Identity and Access Management (IAM) authentication for connections to the proxy. The <code>ENABLED</code> value is valid only for proxies with RDS for Microsoft SQL Server.</p>"
+        },
+        "ClientPasswordAuthType":{
+          "shape":"ClientPasswordAuthType",
+          "documentation":"<p>The type of authentication the proxy uses for connections from clients.</p>"
         }
       },
       "documentation":"<p>Specifies the details of authentication used by a proxy to log in as a specific database user.</p>"
@@ -14157,6 +14190,10 @@
         "IAMAuth":{
           "shape":"IAMAuthMode",
           "documentation":"<p>Whether to require or disallow Amazon Web Services Identity and Access Management (IAM) authentication for connections to the proxy. The <code>ENABLED</code> value is valid only for proxies with RDS for Microsoft SQL Server.</p>"
+        },
+        "ClientPasswordAuthType":{
+          "shape":"ClientPasswordAuthType",
+          "documentation":"<p>The type of authentication the proxy uses for connections from clients.</p>"
         }
       },
       "documentation":"<p>Returns the details of authentication used by a proxy to log in as a specific database user.</p>"

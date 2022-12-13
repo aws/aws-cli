@@ -6,8 +6,8 @@
                 "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
             },
             "params": {
-                "UseDualStack": true,
                 "UseFIPS": true,
+                "UseDualStack": true,
                 "Region": "us-iso-east-1"
             }
         },
@@ -19,8 +19,8 @@
                 }
             },
             "params": {
-                "UseDualStack": false,
                 "UseFIPS": true,
+                "UseDualStack": false,
                 "Region": "us-iso-east-1"
             }
         },
@@ -30,8 +30,8 @@
                 "error": "DualStack is enabled but this partition does not support DualStack"
             },
             "params": {
-                "UseDualStack": true,
                 "UseFIPS": false,
+                "UseDualStack": true,
                 "Region": "us-iso-east-1"
             }
         },
@@ -43,9 +43,57 @@
                 }
             },
             "params": {
-                "UseDualStack": false,
                 "UseFIPS": false,
+                "UseDualStack": false,
                 "Region": "us-iso-east-1"
+            }
+        },
+        {
+            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Region": "us-isob-east-1"
+            }
+        },
+        {
+            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://medialive-fips.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Region": "us-isob-east-1"
+            }
+        },
+        {
+            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "error": "DualStack is enabled but this partition does not support DualStack"
+            },
+            "params": {
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Region": "us-isob-east-1"
+            }
+        },
+        {
+            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://medialive.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Region": "us-isob-east-1"
             }
         },
         {
@@ -56,8 +104,8 @@
                 }
             },
             "params": {
-                "UseDualStack": false,
                 "UseFIPS": false,
+                "UseDualStack": false,
                 "Region": "us-east-1",
                 "Endpoint": "https://example.com"
             }
@@ -68,8 +116,8 @@
                 "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
             },
             "params": {
-                "UseDualStack": false,
                 "UseFIPS": true,
+                "UseDualStack": false,
                 "Region": "us-east-1",
                 "Endpoint": "https://example.com"
             }
@@ -80,8 +128,8 @@
                 "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
             },
             "params": {
-                "UseDualStack": true,
                 "UseFIPS": false,
+                "UseDualStack": true,
                 "Region": "us-east-1",
                 "Endpoint": "https://example.com"
             }

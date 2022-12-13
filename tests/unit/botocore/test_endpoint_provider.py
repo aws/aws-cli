@@ -217,6 +217,47 @@ def test_invalid_arn_returns_none(rule_lib):
     assert rule_lib.aws_parse_arn("arn:aws:this-is-not-an-arn:foo") is None
 
 
+@pytest.mark.parametrize(
+    "arn, expected_resource_id",
+    [
+        (
+            "arn:aws:s3:::myBucket/key",
+            {
+                "partition": "aws",
+                "service": "s3",
+                "region": "",
+                "accountId": "",
+                "resourceId": ["myBucket", "key"],
+            },
+        ),
+        (
+            "arn:aws:kinesis:us-east-1:1234567890:stream/mystream:foo",
+            {
+                "partition": "aws",
+                "service": "kinesis",
+                "region": "us-east-1",
+                "accountId": "1234567890",
+                "resourceId": ["stream", "mystream", "foo"],
+            },
+        ),
+        (
+            "arn:aws:s3:::myBucket",
+            {
+                "partition": "aws",
+                "service": "s3",
+                "region": "",
+                "accountId": "",
+                "region": "",
+                "resourceId": ["myBucket"],
+            },
+        ),
+    ],
+)
+def test_parse_arn_delimiters(rule_lib, arn, expected_resource_id):
+    parsed_arn = rule_lib.aws_parse_arn(arn)
+    assert parsed_arn == expected_resource_id
+
+
 def test_uri_encode_none_returns_none(rule_lib):
     assert rule_lib.uri_encode(None) is None
 

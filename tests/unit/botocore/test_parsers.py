@@ -1061,6 +1061,97 @@ class TestParseErrorResponses(unittest.TestCase):
         self.assertEqual(parsed['Error']['Message'], 'this is a message')
         self.assertEqual(parsed['Error']['Code'], 'ValidationException')
 
+    def test_response_with_query_error_for_json_protocol(self):
+        parser = parsers.JSONParser()
+        response = {
+            "body": b"""
+                {"__type":"amazon.foo.validate#ValidationException",
+                 "message":"this is a message"}
+                """,
+            "status_code": 400,
+            "headers": {
+                "x-amzn-requestid": "request-id",
+                "x-amzn-query-error": "AWS.SimpleQueueService.NonExistentQueue;Sender",
+            },
+        }
+        parsed = parser.parse(response, None)
+        # ResponseMetadata should always be populated.
+        self.assertIn('ResponseMetadata', parsed)
+        self.assertEqual(parsed['ResponseMetadata']['RequestId'], 'request-id')
+
+        self.assertIn('Error', parsed)
+        self.assertEqual(parsed['Error']['Message'], 'this is a message')
+        self.assertEqual(
+            parsed['Error']['Code'], 'AWS.SimpleQueueService.NonExistentQueue'
+        )
+        self.assertEqual(parsed['Error']['Type'], 'Sender')
+
+    def test_response_with_invalid_query_error_for_json_protocol(self):
+        parser = parsers.JSONParser()
+        response = {
+            "body": b"""
+                {"__type":"amazon.foo.validate#ValidationException",
+                 "message":"this is a message"}
+                """,
+            "status_code": 400,
+            "headers": {
+                "x-amzn-requestid": "request-id",
+                "x-amzn-query-error": "AWS.SimpleQueueService.NonExistentQueue;sender;400",
+            },
+        }
+        parsed = parser.parse(response, None)
+        self.assertIn('ResponseMetadata', parsed)
+        self.assertEqual(parsed['ResponseMetadata']['RequestId'], 'request-id')
+
+        self.assertIn('Error', parsed)
+        self.assertEqual(parsed['Error']['Message'], 'this is a message')
+        self.assertEqual(parsed['Error']['Code'], 'ValidationException')
+        self.assertNotIn('Type', parsed['Error'])
+
+    def test_response_with_incomplete_query_error_for_json_protocol(self):
+        parser = parsers.JSONParser()
+        response = {
+            "body": b"""
+                {"__type":"amazon.foo.validate#ValidationException",
+                 "message":"this is a message"}
+                """,
+            "status_code": 400,
+            "headers": {
+                "x-amzn-requestid": "request-id",
+                "x-amzn-query-error": ";sender",
+            },
+        }
+        parsed = parser.parse(response, None)
+        self.assertIn('ResponseMetadata', parsed)
+        self.assertEqual(parsed['ResponseMetadata']['RequestId'], 'request-id')
+
+        self.assertIn('Error', parsed)
+        self.assertEqual(parsed['Error']['Message'], 'this is a message')
+        self.assertEqual(parsed['Error']['Code'], 'ValidationException')
+        self.assertNotIn('Type', parsed['Error'])
+
+    def test_response_with_empty_query_errors_for_json_protocol(self):
+        parser = parsers.JSONParser()
+        response = {
+            "body": b"""
+                {"__type":"amazon.foo.validate#ValidationException",
+                 "message":"this is a message"}
+                """,
+            "status_code": 400,
+            "headers": {
+                "x-amzn-requestid": "request-id",
+                "x-amzn-query-error": "",
+            },
+        }
+        parsed = parser.parse(response, None)
+        self.assertIn('ResponseMetadata', parsed)
+        self.assertEqual(parsed['ResponseMetadata']['RequestId'], 'request-id')
+
+        self.assertIn('Error', parsed)
+        self.assertEqual(parsed['Error']['Message'], 'this is a message')
+        self.assertEqual(parsed['Error']['Code'], 'ValidationException')
+        self.assertNotIn('Type', parsed['Error'])
+
     def test_parse_error_response_for_query_protocol(self):
         body = (
             '<ErrorResponse xmlns="https://iam.amazonaws.com/doc/2010-05-08/">'

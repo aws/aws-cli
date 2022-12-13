@@ -236,8 +236,7 @@ class RuleSetStandardLibary:
         arn_dict["accountId"] = arn_dict.pop("account")
 
         resource = arn_dict.pop("resource")
-        delimiter = ":" if ":" in resource else "/"
-        arn_dict["resourceId"] = resource.split(delimiter)
+        arn_dict["resourceId"] = resource.replace(":", "/").split("/")
 
         return arn_dict
 

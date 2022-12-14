@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.9.7
+=====
+
+* api-change:``logs``: Doc-only update for CloudWatch Logs, for Tagging Permissions clarifications
+* api-change:``migration-hub-refactor-spaces``: This release adds support for Lambda alias service endpoints. Lambda alias ARNs can now be passed into CreateService.
+* api-change:``sagemaker-metrics``: This release introduces support SageMaker Metrics APIs.
+* api-change:``rekognition``: Adds support for "aliases" and "categories", inclusion and exclusion filters for labels and label categories, and aggregating labels by video segment timestamps for Stored Video Label Detection APIs.
+* enhancement:Parsers: Support parsing query error codes for JSON protocol
+* bugfix:Endpoint provider: Updates ARN parsing ``resourceId`` delimiters
+* api-change:``kinesisvideo``: This release adds support for public preview of Kinesis Video Stream at Edge enabling customers to provide configuration for the Kinesis Video Stream EdgeAgent running on an on-premise IoT device. Customers can now locally record from cameras and stream videos to the cloud on configured schedule.
+* api-change:``rds``: This deployment adds ClientPasswordAuthType field to the Auth structure of the DBProxy.
+* api-change:``lookoutvision``: This documentation update adds kms:GenerateDataKey as a required permission to StartModelPackagingJob.
+* api-change:``rds``: Update the RDS API model to support copying option groups during the CopyDBSnapshot operation
+* api-change:``ec2``: This release updates DescribeFpgaImages to show supported instance types of AFIs in its response.
+* api-change:``mediapackage-vod``: This release provides the approximate number of assets in a packaging group.
+* api-change:``cloudtrail``: Merging mainline branch for service model into mainline release branch. There are no new APIs.
+* api-change:``iotfleetwise``: Deprecated assignedValue property for actuators and attributes.  Added a message to invalid nodes and invalid decoder manifest exceptions.
+* api-change:``customer-profiles``: This release allows custom strings in PartyType and Gender through 2 new attributes in the CreateProfile and UpdateProfile APIs: PartyTypeString and GenderString.
+* api-change:``medialive``: Link devices now support buffer size (latency) configuration. A higher latency value means a longer delay in transmitting from the device to MediaLive, but improved resiliency. A lower latency value means a shorter delay, but less resiliency.
+* api-change:``wafv2``: Documents the naming requirement for logging destinations that you use with web ACLs.
+
+
 2.9.6
 =====
 

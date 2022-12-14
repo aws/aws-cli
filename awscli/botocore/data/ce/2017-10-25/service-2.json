@@ -39,7 +39,7 @@
         {"shape":"UnknownMonitorException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Adds a subscription to a cost anomaly detection monitor. You can use each subscription to define subscribers with email or SNS notifications. Email subscribers can set a dollar threshold and a time frequency for receiving notifications. </p>"
+      "documentation":"<p>Adds an alert subscription to a cost anomaly detection monitor. You can use each subscription to define subscribers with email or SNS notifications. Email subscribers can set an absolute or percentage threshold and a time frequency for receiving notifications. </p>"
     },
     "CreateCostCategoryDefinition":{
       "name":"CreateCostCategoryDefinition",
@@ -123,7 +123,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Retrieves all of the cost anomalies detected on your account during the time period that's specified by the <code>DateInterval</code> object. </p>"
+      "documentation":"<p>Retrieves all of the cost anomalies detected on your account during the time period that's specified by the <code>DateInterval</code> object. Anomalies are available for up to 90 days.</p>"
     },
     "GetAnomalyMonitors":{
       "name":"GetAnomalyMonitors",
@@ -711,7 +711,6 @@
       "required":[
         "MonitorArnList",
         "Subscribers",
-        "Threshold",
         "Frequency",
         "SubscriptionName"
       ],
@@ -734,7 +733,9 @@
         },
         "Threshold":{
           "shape":"NullableNonNegativeDouble",
-          "documentation":"<p>The dollar value that triggers a notification if the threshold is exceeded. </p>"
+          "documentation":"<p>(deprecated)</p> <p>The dollar value that triggers a notification if the threshold is exceeded. </p> <p>This field has been deprecated. To specify a threshold, use ThresholdExpression. Continued use of Threshold will be treated as shorthand syntax for a ThresholdExpression.</p> <p>One of Threshold or ThresholdExpression is required for this resource.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Threshold has been deprecated in favor of ThresholdExpression"
         },
         "Frequency":{
           "shape":"AnomalySubscriptionFrequency",
@@ -743,6 +744,10 @@
         "SubscriptionName":{
           "shape":"GenericString",
           "documentation":"<p>The name for the subscription. </p>"
+        },
+        "ThresholdExpression":{
+          "shape":"Expression",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to specify the anomalies that you want to generate alerts for. This supports dimensions and nested expressions. The supported dimensions are <code>ANOMALY_TOTAL_IMPACT_ABSOLUTE</code> and <code>ANOMALY_TOTAL_IMPACT_PERCENTAGE</code>. The supported nested expression types are <code>AND</code> and <code>OR</code>. The match option <code>GREATER_THAN_OR_EQUAL</code> is required. Values must be numbers between 0 and 10,000,000,000.</p> <p>One of Threshold or ThresholdExpression is required for this resource.</p> <p>The following are examples of valid ThresholdExpressions:</p> <ul> <li> <p>Absolute threshold: <code>{ \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }</code> </p> </li> <li> <p>Percentage threshold: <code>{ \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }</code> </p> </li> <li> <p> <code>AND</code> two thresholds together: <code>{ \"And\": [ { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }, { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } } ] }</code> </p> </li> <li> <p> <code>OR</code> two thresholds together: <code>{ \"Or\": [ { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }, { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } } ] }</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The association between a monitor, threshold, and list of subscribers used to deliver notifications about anomalies detected by a monitor that exceeds a threshold. The content consists of the detailed metadata and the current status of the <code>AnomalySubscription</code> object. </p>"
@@ -1521,7 +1526,9 @@
         "PAYMENT_OPTION",
         "AGREEMENT_END_DATE_TIME_AFTER",
         "AGREEMENT_END_DATE_TIME_BEFORE",
-        "INVOICING_ENTITY"
+        "INVOICING_ENTITY",
+        "ANOMALY_TOTAL_IMPACT_ABSOLUTE",
+        "ANOMALY_TOTAL_IMPACT_PERCENTAGE"
       ]
     },
     "DimensionValues":{
@@ -1529,7 +1536,7 @@
       "members":{
         "Key":{
           "shape":"Dimension",
-          "documentation":"<p>The names of the metadata types that you can use to filter and group your results. For example, <code>AZ</code> returns a list of Availability Zones. <code>LINK_ACCOUNT_NAME</code> and <code>SERVICE_CODE</code> can only be used in <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/AAPI_CostCategoryRule.html\">CostCategoryRule</a>.</p>"
+          "documentation":"<p>The names of the metadata types that you can use to filter and group your results. For example, <code>AZ</code> returns a list of Availability Zones.</p> <p>Not all dimensions are supported in each API. Refer to the documentation for each specific API to see what is supported.</p> <p> <code>LINK_ACCOUNT_NAME</code> and <code>SERVICE_CODE</code> can only be used in <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CostCategoryRule.html\">CostCategoryRule</a>.</p> <p> <code>ANOMALY_TOTAL_IMPACT_ABSOLUTE</code> and <code>ANOMALY_TOTAL_IMPACT_PERCENTAGE</code> can only be used in <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AnomalySubscription.html\">AnomalySubscriptions</a>.</p>"
         },
         "Values":{
           "shape":"Values",
@@ -1537,7 +1544,7 @@
         },
         "MatchOptions":{
           "shape":"MatchOptions",
-          "documentation":"<p>The match options that you can use to filter your results. <code>MatchOptions</code> is only applicable for actions related to Cost Category. The default values for <code>MatchOptions</code> are <code>EQUALS</code> and <code>CASE_SENSITIVE</code>.</p>"
+          "documentation":"<p>The match options that you can use to filter your results.</p> <p> <code>MatchOptions</code> is only applicable for actions related to Cost Category and Anomaly Subscriptions. Refer to the documentation for each specific API to see what is supported.</p> <p>The default values for <code>MatchOptions</code> are <code>EQUALS</code> and <code>CASE_SENSITIVE</code>.</p>"
         }
       },
       "documentation":"<p>The metadata that you can use to filter and group your results. You can use <code>GetDimensionValues</code> to find specific values.</p>"
@@ -1811,7 +1818,7 @@
           "documentation":"<p>The filter that's based on <code>CostCategory</code> values.</p>"
         }
       },
-      "documentation":"<p>Use <code>Expression</code> to filter by cost or by usage. There are two patterns: </p> <ul> <li> <p>Simple dimension values - You can set the dimension name and values for the filters that you plan to use. For example, you can filter for <code>REGION==us-east-1 OR REGION==us-west-1</code>. For <code>GetRightsizingRecommendation</code>, the Region is a full name (for example, <code>REGION==US East (N. Virginia)</code>. The <code>Expression</code> example is as follows:</p> <p> <code>{ \"Dimensions\": { \"Key\": \"REGION\", \"Values\": [ \"us-east-1\", “us-west-1” ] } }</code> </p> <p>The list of dimension values are OR'd together to retrieve cost or usage data. You can create <code>Expression</code> and <code>DimensionValues</code> objects using either <code>with*</code> methods or <code>set*</code> methods in multiple lines. </p> </li> <li> <p>Compound dimension values with logical operations - You can use multiple <code>Expression</code> types and the logical operators <code>AND/OR/NOT</code> to create a list of one or more <code>Expression</code> objects. By doing this, you can filter on more advanced options. For example, you can filter on <code>((REGION == us-east-1 OR REGION == us-west-1) OR (TAG.Type == Type1)) AND (USAGE_TYPE != DataTransfer)</code>. The <code>Expression</code> for that is as follows:</p> <p> <code>{ \"And\": [ {\"Or\": [ {\"Dimensions\": { \"Key\": \"REGION\", \"Values\": [ \"us-east-1\", \"us-west-1\" ] }}, {\"Tags\": { \"Key\": \"TagName\", \"Values\": [\"Value1\"] } } ]}, {\"Not\": {\"Dimensions\": { \"Key\": \"USAGE_TYPE\", \"Values\": [\"DataTransfer\"] }}} ] } </code> </p> <note> <p>Because each <code>Expression</code> can have only one operator, the service returns an error if more than one is specified. The following example shows an <code>Expression</code> object that creates an error.</p> </note> <p> <code> { \"And\": [ ... ], \"DimensionValues\": { \"Dimension\": \"USAGE_TYPE\", \"Values\": [ \"DataTransfer\" ] } } </code> </p> </li> </ul> <note> <p>For the <code>GetRightsizingRecommendation</code> action, a combination of OR and NOT isn't supported. OR isn't supported between different dimensions, or dimensions and tags. NOT operators aren't supported. Dimensions are also limited to <code>LINKED_ACCOUNT</code>, <code>REGION</code>, or <code>RIGHTSIZING_TYPE</code>.</p> <p>For the <code>GetReservationPurchaseRecommendation</code> action, only NOT is supported. AND and OR aren't supported. Dimensions are limited to <code>LINKED_ACCOUNT</code>.</p> </note>"
+      "documentation":"<p>Use <code>Expression</code> to filter in various Cost Explorer APIs.</p> <p>Not all <code>Expression</code> types are supported in each API. Refer to the documentation for each specific API to see what is supported.</p> <p>There are two patterns:</p> <ul> <li> <p>Simple dimension values.</p> <ul> <li> <p>There are three types of simple dimension values: <code>CostCategories</code>, <code>Tags</code>, and <code>Dimensions</code>.</p> <ul> <li> <p>Specify the <code>CostCategories</code> field to define a filter that acts on Cost Categories.</p> </li> <li> <p>Specify the <code>Tags</code> field to define a filter that acts on Cost Allocation Tags.</p> </li> <li> <p>Specify the <code>Dimensions</code> field to define a filter that acts on the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_DimensionValues.html\"> <code>DimensionValues</code> </a>.</p> </li> </ul> </li> <li> <p>For each filter type, you can set the dimension name and values for the filters that you plan to use.</p> <ul> <li> <p>For example, you can filter for <code>REGION==us-east-1 OR REGION==us-west-1</code>. For <code>GetRightsizingRecommendation</code>, the Region is a full name (for example, <code>REGION==US East (N. Virginia)</code>.</p> </li> <li> <p>The corresponding <code>Expression</code> for this example is as follows: <code>{ \"Dimensions\": { \"Key\": \"REGION\", \"Values\": [ \"us-east-1\", “us-west-1” ] } }</code> </p> </li> <li> <p>As shown in the previous example, lists of dimension values are combined with <code>OR</code> when applying the filter.</p> </li> </ul> </li> <li> <p>You can also set different match options to further control how the filter behaves. Not all APIs support match options. Refer to the documentation for each specific API to see what is supported.</p> <ul> <li> <p>For example, you can filter for linked account names that start with “a”.</p> </li> <li> <p>The corresponding <code>Expression</code> for this example is as follows: <code>{ \"Dimensions\": { \"Key\": \"LINKED_ACCOUNT_NAME\", \"MatchOptions\": [ \"STARTS_WITH\" ], \"Values\": [ \"a\" ] } }</code> </p> </li> </ul> </li> </ul> </li> <li> <p>Compound <code>Expression</code> types with logical operations.</p> <ul> <li> <p>You can use multiple <code>Expression</code> types and the logical operators <code>AND/OR/NOT</code> to create a list of one or more <code>Expression</code> objects. By doing this, you can filter by more advanced options.</p> </li> <li> <p>For example, you can filter by <code>((REGION == us-east-1 OR REGION == us-west-1) OR (TAG.Type == Type1)) AND (USAGE_TYPE != DataTransfer)</code>.</p> </li> <li> <p>The corresponding <code>Expression</code> for this example is as follows: <code>{ \"And\": [ {\"Or\": [ {\"Dimensions\": { \"Key\": \"REGION\", \"Values\": [ \"us-east-1\", \"us-west-1\" ] }}, {\"Tags\": { \"Key\": \"TagName\", \"Values\": [\"Value1\"] } } ]}, {\"Not\": {\"Dimensions\": { \"Key\": \"USAGE_TYPE\", \"Values\": [\"DataTransfer\"] }}} ] } </code> </p> </li> </ul> <note> <p>Because each <code>Expression</code> can have only one operator, the service returns an error if more than one is specified. The following example shows an <code>Expression</code> object that creates an error: <code> { \"And\": [ ... ], \"Dimensions\": { \"Key\": \"USAGE_TYPE\", \"Values\": [ \"DataTransfer\" ] } } </code> </p> <p>The following is an example of the corresponding error message: <code>\"Expression has more than one roots. Only one root operator is allowed for each expression: And, Or, Not, Dimensions, Tags, CostCategories\"</code> </p> </note> </li> </ul> <note> <p>For the <code>GetRightsizingRecommendation</code> action, a combination of OR and NOT isn't supported. OR isn't supported between different dimensions, or dimensions and tags. NOT operators aren't supported. Dimensions are also limited to <code>LINKED_ACCOUNT</code>, <code>REGION</code>, or <code>RIGHTSIZING_TYPE</code>.</p> <p>For the <code>GetReservationPurchaseRecommendation</code> action, only NOT is supported. AND and OR aren't supported. Dimensions are limited to <code>LINKED_ACCOUNT</code>.</p> </note>"
     },
     "Expressions":{
       "type":"list",
@@ -2888,11 +2895,23 @@
       "members":{
         "MaxImpact":{
           "shape":"GenericDouble",
-          "documentation":"<p>The maximum dollar value that's observed for an anomaly. </p>"
+          "documentation":"<p>The maximum dollar value that's observed for an anomaly.</p>"
         },
         "TotalImpact":{
           "shape":"GenericDouble",
-          "documentation":"<p>The cumulative dollar value that's observed for an anomaly. </p>"
+          "documentation":"<p>The cumulative dollar difference between the total actual spend and total expected spend. It is calculated as <code>TotalActualSpend - TotalExpectedSpend</code>.</p>"
+        },
+        "TotalActualSpend":{
+          "shape":"NullableNonNegativeDouble",
+          "documentation":"<p>The cumulative dollar amount that was actually spent during the anomaly.</p>"
+        },
+        "TotalExpectedSpend":{
+          "shape":"NullableNonNegativeDouble",
+          "documentation":"<p>The cumulative dollar amount that was expected to be spent during the anomaly. It is calculated using advanced machine learning models to determine the typical spending pattern based on historical data for a customer.</p>"
+        },
+        "TotalImpactPercentage":{
+          "shape":"NullableNonNegativeDouble",
+          "documentation":"<p>The cumulative percentage difference between the total actual spend and total expected spend. It is calculated as <code>(TotalImpact / TotalExpectedSpend) * 100</code>. When <code>TotalExpectedSpend</code> is zero, this field is omitted. Expected spend can be zero in situations such as when you start to use a service for the first time.</p>"
         }
       },
       "documentation":"<p>The dollar value of the anomaly. </p>"
@@ -3084,7 +3103,8 @@
         "ENDS_WITH",
         "CONTAINS",
         "CASE_SENSITIVE",
-        "CASE_INSENSITIVE"
+        "CASE_INSENSITIVE",
+        "GREATER_THAN_OR_EQUAL"
       ]
     },
     "MatchOptions":{
@@ -4625,7 +4645,9 @@
         },
         "Threshold":{
           "shape":"NullableNonNegativeDouble",
-          "documentation":"<p>The update to the threshold value for receiving notifications. </p>"
+          "documentation":"<p>(deprecated)</p> <p>The update to the threshold value for receiving notifications. </p> <p>This field has been deprecated. To update a threshold, use ThresholdExpression. Continued use of Threshold will be treated as shorthand syntax for a ThresholdExpression.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Threshold has been deprecated in favor of ThresholdExpression"
         },
         "Frequency":{
           "shape":"AnomalySubscriptionFrequency",
@@ -4642,6 +4664,10 @@
         "SubscriptionName":{
           "shape":"GenericString",
           "documentation":"<p>The new name of the subscription. </p>"
+        },
+        "ThresholdExpression":{
+          "shape":"Expression",
+          "documentation":"<p>The update to the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to specify the anomalies that you want to generate alerts for. This supports dimensions and nested expressions. The supported dimensions are <code>ANOMALY_TOTAL_IMPACT_ABSOLUTE</code> and <code>ANOMALY_TOTAL_IMPACT_PERCENTAGE</code>. The supported nested expression types are <code>AND</code> and <code>OR</code>. The match option <code>GREATER_THAN_OR_EQUAL</code> is required. Values must be numbers between 0 and 10,000,000,000.</p> <p>The following are examples of valid ThresholdExpressions:</p> <ul> <li> <p>Absolute threshold: <code>{ \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }</code> </p> </li> <li> <p>Percentage threshold: <code>{ \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }</code> </p> </li> <li> <p> <code>AND</code> two thresholds together: <code>{ \"And\": [ { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }, { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } } ] }</code> </p> </li> <li> <p> <code>OR</code> two thresholds together: <code>{ \"Or\": [ { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_ABSOLUTE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } }, { \"Dimensions\": { \"Key\": \"ANOMALY_TOTAL_IMPACT_PERCENTAGE\", \"MatchOptions\": [ \"GREATER_THAN_OR_EQUAL\" ], \"Values\": [ \"100\" ] } } ] }</code> </p> </li> </ul>"
         }
       }
     },

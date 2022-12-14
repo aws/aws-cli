@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.30
+=======
+
+* api-change:``ce``: This release supports percentage-based thresholds on Cost Anomaly Detection alert subscriptions.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``networkmanager``: Appliance Mode support for AWS Cloud WAN.
+* api-change:``redshift-data``: This release adds a new --client-token field to ExecuteStatement and BatchExecuteStatement operations. Customers can now run queries with the additional client token parameter to ensures idempotency.
+* api-change:``sagemaker-metrics``: Update SageMaker Metrics documentation.
+
+
 1.27.29
 =======
 

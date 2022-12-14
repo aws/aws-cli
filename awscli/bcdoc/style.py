@@ -14,7 +14,8 @@
 import logging
 
 logger = logging.getLogger('bcdocs')
-
+# Terminal punctuation where a space is not needed before.
+PUNCTUATION_CHARACTERS = ('.', ',', '?', '!', ':', ';')
 
 class BaseStyle(object):
 
@@ -229,7 +230,7 @@ class ReSTStyle(BaseStyle):
         else:
             self.doc.write(text)
 
-    def end_a(self):
+    def end_a(self, next_child=None):
         self.doc.do_translation = False
         if self.a_href:
             last_write = self.doc.pop_write()
@@ -251,7 +252,15 @@ class ReSTStyle(BaseStyle):
                 self.doc.hrefs[self.a_href] = self.a_href
                 self.doc.write('`__')
             self.a_href = None
-        self.doc.write(' ')
+
+        if (
+            next_child is None
+            or next_child.data[0] not in PUNCTUATION_CHARACTERS
+        ):
+            # We only want to add a trailing space if the link is
+            # not followed by a period, comma, or other gramatically
+            # correct special character.
+            self.doc.write(' ')
 
     def start_i(self, attrs=None):
         self.doc.do_translation = True

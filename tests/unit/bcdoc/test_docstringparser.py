@@ -71,6 +71,42 @@ class TestDocStringParser(unittest.TestCase):
             result, [b'This is a test `Link <https://testing.com>`__.']
         )
 
+    def test_code_with_empty_link(self):
+        html = "<code> <a>Link</a> </code>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(result, [b'``Link`` '])
+
+    def test_code_with_link_spaces(self):
+        html = "<code> <a href=\"https://testing.com\">Link</a> </code>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(result, [b'``Link`` '])
+
+    def test_code_with_link_no_spaces(self):
+        html = "<code><a href=\"https://testing.com\">Link</a></code>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(result, [b'``Link`` '])
+
+    def test_href_with_spaces(self):
+        html = "<p><a href=\" https://testing.com\">Link</a></p>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(
+            result, [b' `Link <https://testing.com>`__ ']
+        )
+
+    def test_bold_with_nested_formatting(self):
+        html = "<b><code>Test</code>test<a href=\" https://testing.com\">Link</a></b>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(
+            result, [b'``Test`` test `Link <https://testing.com>`__ ']
+        )
+
+    def test_link_with_nested_formatting(self):
+        html = "<a href=\"https://testing.com\"><code>Test</code></a>"
+        result = self.parse(html)
+        self.assert_contains_exact_lines_in_order(
+            result, [b'`Test <https://testing.com>`__ ']
+        )
+
 
 class TestHTMLTree(unittest.TestCase):
     def setUp(self):

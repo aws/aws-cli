@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.27.32
+=======
+
+* api-change:``appflow``: This release updates the ListConnectorEntities API action so that it returns paginated responses that customers can retrieve with next tokens.
+* api-change:``cloudfront``: Updated documentation for CloudFront
+* api-change:``datasync``: AWS DataSync now supports the use of tags with task executions. With this new feature, you can apply tags each time you execute a task, giving you greater control and management over your task executions.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``guardduty``: This release provides the valid characters for the Description and Name field.
+* api-change:``iotfleetwise``: Updated error handling for empty resource names in "UpdateSignalCatalog" and "GetModelManifest" operations.
+* api-change:``sagemaker``: AWS sagemaker - Features: This release adds support for random seed, it's an integer value used to initialize a pseudo-random number generator. Setting a random seed will allow the hyperparameter tuning search strategies to produce more consistent configurations for the same tuning job.
+
+
 1.27.31
 =======
 

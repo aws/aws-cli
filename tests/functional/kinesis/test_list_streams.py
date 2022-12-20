@@ -41,8 +41,8 @@ class TestListStreams(BaseAWSCommandParamsTest):
     def test_exclusive_start_stream_name_incompatible_with_page_args(self):
         cmdline = self.prefix + ['--exclusive-start-stream-name', 'stream-1']
         cmdline += ['--page-size', '1']
-        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('Error during pagination: Cannot specify', stderr)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
+        self.assertIn('Cannot specify --no-paginate', stderr)
         self.assertIn('--page-size', stderr)
 
 

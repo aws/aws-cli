@@ -97,6 +97,8 @@ from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.binaryformat import add_binary_formatter
 from awscli.customizations.lightsail import initialize as lightsail_initialize
 from awscli.alias import register_alias_commands
+from awscli.customizations.kinesis import \
+    register_kinesis_list_streams_pagination_backcompat
 
 
 def awscli_initialize(event_handlers):
@@ -194,3 +196,4 @@ def awscli_initialize(event_handlers):
     register_sso_commands(event_handlers)
     register_dynamodb_paginator_fix(event_handlers)
     register_alias_commands(event_handlers)
+    register_kinesis_list_streams_pagination_backcompat(event_handlers)

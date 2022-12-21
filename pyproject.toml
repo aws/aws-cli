@@ -69,7 +69,14 @@ filterwarnings = [
     # version of setuptools (57.5.0) in a Python 3.10 environment. When we add
     # support for the latest version of setuptools, we should be able to remove
     # these filters.
-    'default:The distutils\.sysconfig module is deprecated:DeprecationWarning'
+    'default:The distutils\.sysconfig module is deprecated:DeprecationWarning',
+
+    # Python 3.10.9 introduced a new DeprecationWarning for the implicit
+    # creation of event loops. Python plans to remove this warning in the
+    # next patch. This filter exception should also be removed once it's
+    # confirmed that tests are passing again in the latest Python 3.10.
+    # https://github.com/python/cpython/issues/100160
+    'default:There is no current event loop:DeprecationWarning'
 ]
 
 [tool.black]

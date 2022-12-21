@@ -2386,7 +2386,7 @@
     "EntitiesPath":{
       "type":"string",
       "max":256,
-      "pattern":"[\\s\\w/!@#+=.-]*"
+      "pattern":"[\\s\\w/!@#+=,.-]*"
     },
     "EntityName":{
       "type":"string",
@@ -3012,6 +3012,14 @@
         "apiVersion":{
           "shape":"ApiVersion",
           "documentation":"<p>The version of the API that's used by the connector.</p>"
+        },
+        "maxResults":{
+          "shape":"ListEntitiesMaxResults",
+          "documentation":"<p>The maximum number of items that the operation returns in the response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that was provided by your prior <code>ListConnectorEntities</code> operation if the response was too big for the page size. You specify this token to get the next page of results in paginated response.</p>"
         }
       }
     },
@@ -3022,6 +3030,10 @@
         "connectorEntityMap":{
           "shape":"ConnectorEntityMap",
           "documentation":"<p> The response of <code>ListConnectorEntities</code> lists entities grouped by category. This map's key represents the group name, and its value contains the list of entities belonging to that group. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that you specify in your next <code>ListConnectorEntities</code> operation to get the next page of results in paginated response. The <code>ListConnectorEntities</code> operation provides this token if the response is too big for the page size.</p>"
         }
       }
     },
@@ -3050,6 +3062,11 @@
           "documentation":"<p>The pagination token for the next page of data. If nextToken=null, this means that all records have been fetched.</p>"
         }
       }
+    },
+    "ListEntitiesMaxResults":{
+      "type":"integer",
+      "max":10000,
+      "min":1
     },
     "ListFlowsRequest":{
       "type":"structure",

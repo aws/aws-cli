@@ -90,7 +90,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a streaming session in a studio.</p> <p>After invoking this operation, you must poll GetStreamingSession until the streaming session is in state READY.</p>"
+      "documentation":"<p>Creates a streaming session in a studio.</p> <p>After invoking this operation, you must poll GetStreamingSession until the streaming session is in the <code>READY</code> state.</p>"
     },
     "CreateStreamingSessionStream":{
       "name":"CreateStreamingSessionStream",
@@ -110,7 +110,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a streaming session stream for a streaming session.</p> <p>After invoking this API, invoke GetStreamingSessionStream with the returned streamId to poll the resource until it is in state READY.</p>",
+      "documentation":"<p>Creates a streaming session stream for a streaming session.</p> <p>After invoking this API, invoke GetStreamingSessionStream with the returned streamId to poll the resource until it is in the <code>READY</code> state.</p>",
       "idempotent":true
     },
     "CreateStudio":{
@@ -131,7 +131,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Create a new Studio.</p> <p>When creating a Studio, two IAM roles must be provided: the admin role and the user Role. These roles are assumed by your users when they log in to the Nimble Studio portal.</p> <p>The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly.</p> <p>The Admin Role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly.</p> <p>You may optionally specify a KMS key in the StudioEncryptionConfiguration.</p> <p>In Nimble Studio, resource names, descriptions, initialization scripts, and other data you provide are always encrypted at rest using an KMS key. By default, this key is owned by Amazon Web Services and managed on your behalf. You may provide your own KMS key when calling CreateStudio to encrypt this data using a key you own and manage.</p> <p>When providing an KMS key during studio creation, Nimble Studio creates KMS grants in your account to provide your studio user and admin roles access to these KMS keys.</p> <p>If you delete this grant, the studio will no longer be accessible to your portal users.</p> <p>If you delete the studio KMS key, your studio will no longer be accessible.</p>"
+      "documentation":"<p>Create a new studio.</p> <p>When creating a studio, two IAM roles must be provided: the admin role and the user role. These roles are assumed by your users when they log in to the Nimble Studio portal.</p> <p>The user role must have the <code>AmazonNimbleStudio-StudioUser</code> managed policy attached for the portal to function properly.</p> <p>The admin role must have the <code>AmazonNimbleStudio-StudioAdmin</code> managed policy attached for the portal to function properly.</p> <p>You may optionally specify a KMS key in the <code>StudioEncryptionConfiguration</code>.</p> <p>In Nimble Studio, resource names, descriptions, initialization scripts, and other data you provide are always encrypted at rest using an KMS key. By default, this key is owned by Amazon Web Services and managed on your behalf. You may provide your own KMS key when calling <code>CreateStudio</code> to encrypt this data using a key you own and manage.</p> <p>When providing an KMS key during studio creation, Nimble Studio creates KMS grants in your account to provide your studio user and admin roles access to these KMS keys.</p> <p>If you delete this grant, the studio will no longer be accessible to your portal users.</p> <p>If you delete the studio KMS key, your studio will no longer be accessible.</p>"
     },
     "CreateStudioComponent":{
       "name":"CreateStudioComponent",
@@ -234,7 +234,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Deletes streaming session resource.</p> <p>After invoking this operation, use GetStreamingSession to poll the resource until it transitions to a DELETED state.</p> <p>A streaming session will count against your streaming session quota until it is marked DELETED.</p>",
+      "documentation":"<p>Deletes streaming session resource.</p> <p>After invoking this operation, use GetStreamingSession to poll the resource until it transitions to a <code>DELETED</code> state.</p> <p>A streaming session will count against your streaming session quota until it is marked <code>DELETED</code>.</p>",
       "idempotent":true
     },
     "DeleteStudio":{
@@ -318,7 +318,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get Eula.</p>"
+      "documentation":"<p>Get EULA.</p>"
     },
     "GetLaunchProfile":{
       "name":"GetLaunchProfile",
@@ -440,6 +440,25 @@
       ],
       "documentation":"<p>Gets StreamingSession resource.</p> <p>Invoke this operation to poll for a streaming session state while creating or deleting a session.</p>"
     },
+    "GetStreamingSessionBackup":{
+      "name":"GetStreamingSessionBackup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-08-01/studios/{studioId}/streaming-session-backups/{backupId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetStreamingSessionBackupRequest"},
+      "output":{"shape":"GetStreamingSessionBackupResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Gets <code>StreamingSessionBackup</code> resource.</p> <p>Invoke this operation to poll for a streaming session backup while stopping a streaming session.</p>"
+    },
     "GetStreamingSessionStream":{
       "name":"GetStreamingSessionStream",
       "http":{
@@ -458,7 +477,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Gets a StreamingSessionStream for a streaming session.</p> <p>Invoke this operation to poll the resource after invoking CreateStreamingSessionStream.</p> <p>After the StreamingSessionStream changes to the state READY, the url property will contain a stream to be used with the DCV streaming client.</p>"
+      "documentation":"<p>Gets a StreamingSessionStream for a streaming session.</p> <p>Invoke this operation to poll the resource after invoking <code>CreateStreamingSessionStream</code>.</p> <p>After the <code>StreamingSessionStream</code> changes to the <code>READY</code> state, the url property will contain a stream to be used with the DCV streaming client.</p>"
     },
     "GetStudio":{
       "name":"GetStudio",
@@ -478,7 +497,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get a Studio resource.</p>"
+      "documentation":"<p>Get a studio resource.</p>"
     },
     "GetStudioComponent":{
       "name":"GetStudioComponent",
@@ -538,7 +557,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>List Eula Acceptances.</p>"
+      "documentation":"<p>List EULA acceptances.</p>"
     },
     "ListEulas":{
       "name":"ListEulas",
@@ -558,7 +577,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>List Eulas.</p>"
+      "documentation":"<p>List EULAs.</p>"
     },
     "ListLaunchProfileMembers":{
       "name":"ListLaunchProfileMembers",
@@ -620,6 +639,25 @@
       ],
       "documentation":"<p>List the streaming image resources available to this studio.</p> <p>This list will contain both images provided by Amazon Web Services, as well as streaming images that you have created in your studio.</p>"
     },
+    "ListStreamingSessionBackups":{
+      "name":"ListStreamingSessionBackups",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-08-01/studios/{studioId}/streaming-session-backups",
+        "responseCode":200
+      },
+      "input":{"shape":"ListStreamingSessionBackupsRequest"},
+      "output":{"shape":"ListStreamingSessionBackupsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists the backups of a streaming session in a studio.</p>"
+    },
     "ListStreamingSessions":{
       "name":"ListStreamingSessions",
       "http":{
@@ -658,7 +696,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Lists the StudioComponents in a studio.</p>"
+      "documentation":"<p>Lists the <code>StudioComponents</code> in a studio.</p>"
     },
     "ListStudioMembers":{
       "name":"ListStudioMembers",
@@ -698,7 +736,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>List studios in your Amazon Web Services account in the requested Amazon Web Services Region.</p>"
+      "documentation":"<p>List studios in your Amazon Web Services accounts in the requested Amazon Web Services Region.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -778,7 +816,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p> Transitions sessions from the STOPPED state into the READY state. The START_IN_PROGRESS state is the intermediate state between the STOPPED and READY states.</p>",
+      "documentation":"<p>Transitions sessions from the <code>STOPPED</code> state into the <code>READY</code> state. The <code>START_IN_PROGRESS</code> state is the intermediate state between the <code>STOPPED</code> and <code>READY</code> states.</p>",
       "idempotent":true
     },
     "StartStudioSSOConfigurationRepair":{
@@ -799,7 +837,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Repairs the IAM Identity Center configuration for a given studio.</p> <p>If the studio has a valid IAM Identity Center configuration currently associated with it, this operation will fail with a validation error.</p> <p>If the studio does not have a valid IAM Identity Center configuration currently associated with it, then a new IAM Identity Center application is created for the studio and the studio is changed to the READY state.</p> <p>After the IAM Identity Center application is repaired, you must use the Amazon Nimble Studio console to add administrators and users to your studio.</p>",
+      "documentation":"<p>Repairs the IAM Identity Center configuration for a given studio.</p> <p>If the studio has a valid IAM Identity Center configuration currently associated with it, this operation will fail with a validation error.</p> <p>If the studio does not have a valid IAM Identity Center configuration currently associated with it, then a new IAM Identity Center application is created for the studio and the studio is changed to the <code>READY</code> state.</p> <p>After the IAM Identity Center application is repaired, you must use the Amazon Nimble Studio console to add administrators and users to your studio.</p>",
       "idempotent":true
     },
     "StopStreamingSession":{
@@ -820,7 +858,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Transitions sessions from the READY state into the STOPPED state. The STOP_IN_PROGRESS state is the intermediate state between the READY and STOPPED states.</p>",
+      "documentation":"<p>Transitions sessions from the <code>READY</code> state into the <code>STOPPED</code> state. The <code>STOP_IN_PROGRESS</code> state is the intermediate state between the <code>READY</code> and <code>STOPPED</code> states.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -972,7 +1010,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1071,7 +1109,7 @@
           "documentation":"<p>The distinguished name (DN) and organizational unit (OU) of an Active Directory computer.</p>"
         }
       },
-      "documentation":"<p>The configuration for a Microsoft Active Directory (Microsoft AD) studio resource.</p>"
+      "documentation":"<p>The configuration for a Directory Service for Microsoft Active Directory studio resource.</p>"
     },
     "ActiveDirectoryDnsIpAddress":{"type":"string"},
     "ActiveDirectoryDnsIpAddressList":{
@@ -1085,6 +1123,13 @@
       "documentation":"<p>The fully-qualified distinguished name of the organizational unit to place the computer account in.</p>",
       "max":2000,
       "min":1
+    },
+    "AutomaticTerminationMode":{
+      "type":"string",
+      "enum":[
+        "DEACTIVATED",
+        "ACTIVATED"
+      ]
     },
     "ClientToken":{
       "type":"string",
@@ -1141,7 +1186,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1178,7 +1223,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       }
     },
@@ -1201,7 +1246,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1226,7 +1271,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       }
     },
@@ -1241,11 +1286,14 @@
     },
     "CreateStreamingSessionRequest":{
       "type":"structure",
-      "required":["studioId"],
+      "required":[
+        "launchProfileId",
+        "studioId"
+      ],
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1256,7 +1304,7 @@
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The launch profile ID.</p>"
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>"
         },
         "ownedBy":{
           "shape":"String",
@@ -1274,7 +1322,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       }
     },
@@ -1296,7 +1344,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1338,7 +1386,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1365,7 +1413,7 @@
         },
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to AWS resources at anytime while the instance is running. </p>"
+          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. </p>"
         },
         "scriptParameters":{
           "shape":"StudioComponentScriptParameterKeyValueList",
@@ -1373,7 +1421,7 @@
         },
         "secureInitializationRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to AWS resources when the system initialization script runs.</p>"
+          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.</p>"
         },
         "studioId":{
           "shape":"String",
@@ -1387,7 +1435,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "type":{
           "shape":"StudioComponentType",
@@ -1415,11 +1463,11 @@
       "members":{
         "adminRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The IAM role that Studio Admins will assume when logging in to the Nimble Studio portal.</p>"
+          "documentation":"<p>The IAM role that studio admins will assume when logging in to the Nimble Studio portal.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1438,11 +1486,11 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "userRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The IAM role that Studio Users will assume when logging in to the Nimble Studio portal.</p>"
+          "documentation":"<p>The IAM role that studio users will assume when logging in to the Nimble Studio portal.</p>"
         }
       }
     },
@@ -1465,14 +1513,14 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -1504,14 +1552,14 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -1541,7 +1589,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1578,7 +1626,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1615,7 +1663,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1652,7 +1700,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1682,7 +1730,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -1726,7 +1774,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "eulaId":{
           "shape":"EulaId",
@@ -1738,7 +1786,7 @@
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         }
       },
       "documentation":"<p>Represents a EULA resource.</p>"
@@ -1748,7 +1796,7 @@
       "members":{
         "acceptedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the EULA was accepted.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the EULA was accepted.</p>"
         },
         "acceptedBy":{
           "shape":"String",
@@ -1804,7 +1852,7 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"},
-      "documentation":"<p>ExceptionContext is a set of key-value pairs that provide you with more information about the error that occurred. For example, when the service returns a 404 ResourceNotFound error, ExceptionContext will contain the key `resourceId` with the value of resource that was not found.</p> <p>ExceptionContext enables scripts and other programmatic clients to provide for better error handling.</p>"
+      "documentation":"<p>ExceptionContext is a set of key-value pairs that provide you with more information about the error that occurred. For example, when the service returns a 404 ResourceNotFound error, ExceptionContext will contain the key `resourceId` with the value of resource that was not found.</p> <p> <code>ExceptionContext</code> allows scripts and other programmatic clients to provide better error handling.</p>"
     },
     "GetEulaRequest":{
       "type":"structure",
@@ -1836,7 +1884,7 @@
       "members":{
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -1877,7 +1925,7 @@
       "members":{
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -1895,7 +1943,7 @@
         },
         "platform":{
           "shape":"String",
-          "documentation":"<p>The platform where this Launch Profile will be used, either WINDOWS or LINUX.</p>",
+          "documentation":"<p>The platform where this Launch Profile will be used, either Windows or Linux.</p>",
           "location":"querystring",
           "locationName":"platform"
         },
@@ -1926,7 +1974,7 @@
       "members":{
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -1962,7 +2010,7 @@
       "members":{
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -2010,6 +2058,36 @@
         "streamingImage":{
           "shape":"StreamingImage",
           "documentation":"<p>The streaming image.</p>"
+        }
+      }
+    },
+    "GetStreamingSessionBackupRequest":{
+      "type":"structure",
+      "required":[
+        "backupId",
+        "studioId"
+      ],
+      "members":{
+        "backupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the backup.</p>",
+          "location":"uri",
+          "locationName":"backupId"
+        },
+        "studioId":{
+          "shape":"String",
+          "documentation":"<p>The studio ID. </p>",
+          "location":"uri",
+          "locationName":"studioId"
+        }
+      }
+    },
+    "GetStreamingSessionBackupResponse":{
+      "type":"structure",
+      "members":{
+        "streamingSessionBackup":{
+          "shape":"StreamingSessionBackup",
+          "documentation":"<p>Information about the streaming session backup.</p>"
         }
       }
     },
@@ -2189,11 +2267,11 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "createdBy":{
           "shape":"String",
@@ -2209,7 +2287,7 @@
         },
         "launchProfileId":{
           "shape":"LaunchProfileId",
-          "documentation":"<p>The launch profile ID.</p>"
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>"
         },
         "launchProfileProtocolVersions":{
           "shape":"LaunchProfileProtocolVersionList",
@@ -2241,11 +2319,11 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         },
         "updatedBy":{
           "shape":"String",
@@ -2256,7 +2334,7 @@
           "documentation":"<p>The list of the latest validation results.</p>"
         }
       },
-      "documentation":"<p>A launch profile controls your artist workforce’s access to studio components, like compute farms, shared file systems, managed file systems, and license server configurations, as well as instance types and Amazon Machine Images (AMIs). </p> <pre><code> &lt;p&gt;Studio administrators create launch profiles in the Nimble Studio console. Artists can use their launch profiles to launch an instance from the Nimble Studio portal. Each user’s launch profile defines how they can launch a streaming session. By default, studio admins can use all launch profiles.&lt;/p&gt; </code></pre>"
+      "documentation":"<p>A launch profile controls your artist workforce’s access to studio components, like compute farms, shared file systems, managed file systems, and license server configurations, as well as instance types and Amazon Machine Images (AMIs). </p> <p>Studio administrators create launch profiles in the Nimble Studio console. Artists can use their launch profiles to launch an instance from the Nimble Studio portal. Each user’s launch profile defines how they can launch a streaming session. By default, studio admins can use all launch profiles.</p>"
     },
     "LaunchProfileDescription":{
       "type":"string",
@@ -2276,7 +2354,7 @@
       "members":{
         "activeDirectory":{
           "shape":"LaunchProfileInitializationActiveDirectory",
-          "documentation":"<p>A LaunchProfileInitializationActiveDirectory resource.</p>"
+          "documentation":"<p>A <code>LaunchProfileInitializationActiveDirectory</code> resource.</p>"
         },
         "ec2SecurityGroupIds":{
           "shape":"LaunchProfileSecurityGroupIdList",
@@ -2284,7 +2362,7 @@
         },
         "launchProfileId":{
           "shape":"LaunchProfileId",
-          "documentation":"<p>The launch profile ID.</p>"
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>"
         },
         "launchProfileProtocolVersion":{
           "shape":"LaunchProfileProtocolVersion",
@@ -2300,7 +2378,7 @@
         },
         "platform":{
           "shape":"LaunchProfilePlatform",
-          "documentation":"<p>The platform of the launch platform, either WINDOWS or LINUX.</p>"
+          "documentation":"<p>The platform of the launch platform, either Windows or Linux.</p>"
         },
         "systemInitializationScripts":{
           "shape":"LaunchProfileInitializationScriptList",
@@ -2311,7 +2389,7 @@
           "documentation":"<p>The user initializtion scripts.</p>"
         }
       },
-      "documentation":"<p>A Launch Profile Initialization contains information required for a workstation or server to connect to a launch profile.</p> <p>This includes scripts, endpoints, security groups, subnets, and other configuration.</p>"
+      "documentation":"<p>A launch profile initialization contains information required for a workstation or server to connect to a launch profile.</p> <p>This includes scripts, endpoints, security groups, subnets, and other configuration.</p>"
     },
     "LaunchProfileInitializationActiveDirectory":{
       "type":"structure",
@@ -2345,14 +2423,14 @@
           "documentation":"<p>The name for the studio component.</p>"
         }
       },
-      "documentation":"<p>The Launch Profile Initialization Active Directory contains information required for the launch profile to connect to the Active Directory.</p>"
+      "documentation":"<p>The launch profile initialization Active Directory contains information required for the launch profile to connect to the Active Directory.</p>"
     },
     "LaunchProfileInitializationScript":{
       "type":"structure",
       "members":{
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to AWS resources at anytime while the instance is running. </p>"
+          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. </p>"
         },
         "script":{
           "shape":"StudioComponentInitializationScriptContent",
@@ -2360,7 +2438,7 @@
         },
         "secureInitializationRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to AWS resources when the system initialization script runs.</p>"
+          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.</p>"
         },
         "studioComponentId":{
           "shape":"StudioComponentId",
@@ -2371,7 +2449,7 @@
           "documentation":"<p>The name for the studio component.</p>"
         }
       },
-      "documentation":"<p>The Launch Profile Initialization Script is used when start streaming session runs.</p>"
+      "documentation":"<p>The launch profile initialization script is used when start streaming session runs.</p>"
     },
     "LaunchProfileInitializationScriptList":{
       "type":"list",
@@ -2401,7 +2479,7 @@
           "documentation":"<p>The Active Directory Security Identifier for this user, if available.</p>"
         }
       },
-      "documentation":"<p>Launch profile membership enables your studio admins to delegate launch profile access to other studio users in the Nimble Studio portal without needing to write or maintain complex IAM policies. A launch profile member is a user association from your studio identity source who is granted permissions to a launch profile.</p> <p>A launch profile member (type USER) provides the following permissions to that launch profile:</p> <ul> <li> <p>GetLaunchProfile</p> </li> <li> <p>GetLaunchProfileInitialization</p> </li> <li> <p>GetLaunchProfileMembers</p> </li> <li> <p>GetLaunchProfileMember</p> </li> <li> <p>CreateStreamingSession</p> </li> <li> <p>GetLaunchProfileDetails</p> </li> </ul>"
+      "documentation":"<p>Studio admins can use launch profile membership to delegate launch profile access to studio users in the Nimble Studio portal without writing or maintaining complex IAM policies. A launch profile member is a user association from your studio identity source who is granted permissions to a launch profile.</p> <p>A launch profile member (type USER) provides the following permissions to that launch profile:</p> <ul> <li> <p>GetLaunchProfile</p> </li> <li> <p>GetLaunchProfileInitialization</p> </li> <li> <p>GetLaunchProfileMembers</p> </li> <li> <p>GetLaunchProfileMember</p> </li> <li> <p>CreateStreamingSession</p> </li> <li> <p>GetLaunchProfileDetails</p> </li> </ul>"
     },
     "LaunchProfileMembershipList":{
       "type":"list",
@@ -2555,7 +2633,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2591,7 +2669,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -2619,7 +2697,7 @@
       "members":{
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -2631,7 +2709,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2668,7 +2746,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2711,7 +2789,7 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2742,6 +2820,43 @@
         }
       }
     },
+    "ListStreamingSessionBackupsRequest":{
+      "type":"structure",
+      "required":["studioId"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "ownedBy":{
+          "shape":"String",
+          "documentation":"<p>The user ID of the user that owns the streaming session.</p>",
+          "location":"querystring",
+          "locationName":"ownedBy"
+        },
+        "studioId":{
+          "shape":"String",
+          "documentation":"<p>The studio ID. </p>",
+          "location":"uri",
+          "locationName":"studioId"
+        }
+      }
+    },
+    "ListStreamingSessionBackupsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "streamingSessionBackups":{
+          "shape":"StreamingSessionBackupList",
+          "documentation":"<p>Information about the streaming session backups.</p>"
+        }
+      }
+    },
     "ListStreamingSessionsRequest":{
       "type":"structure",
       "required":["studioId"],
@@ -2754,7 +2869,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2803,7 +2918,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2852,7 +2967,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2882,7 +2997,7 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to request the next page of results. </p>",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -2919,12 +3034,13 @@
       "members":{
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       }
     },
     "MaxResults":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -2987,7 +3103,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -2998,7 +3114,7 @@
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -3029,7 +3145,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -3108,7 +3224,7 @@
           "documentation":"<p>A script parameter value.</p>"
         }
       },
-      "documentation":"<p>A parameter for a studio component script, in the form of a key:value pair.</p>"
+      "documentation":"<p>A parameter for a studio component script, in the form of a key-value pair.</p>"
     },
     "ScriptParameterValue":{
       "type":"string",
@@ -3137,12 +3253,26 @@
           "documentation":"<p>A human-readable description of the error.</p>"
         }
       },
-      "documentation":"<p>Your current quota does not allow you to perform the request action. You can request increases for some quotas, and other quotas cannot be increased.</p> <p>Please use AWS Service Quotas to request an increase. </p>",
+      "documentation":"<p>Your current quota does not allow you to perform the request action. You can request increases for some quotas, and other quotas cannot be increased.</p> <p>Please use Amazon Web Services Service Quotas to request an increase. </p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
       },
       "exception":true
+    },
+    "SessionBackupMode":{
+      "type":"string",
+      "enum":[
+        "AUTOMATIC",
+        "DEACTIVATED"
+      ]
+    },
+    "SessionPersistenceMode":{
+      "type":"string",
+      "enum":[
+        "DEACTIVATED",
+        "ACTIVATED"
+      ]
     },
     "SharedFileSystemConfiguration":{
       "type":"structure",
@@ -3177,16 +3307,20 @@
         "studioId"
       ],
       "members":{
+        "backupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the backup.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
         "sessionId":{
           "shape":"String",
-          "documentation":"<p>The streaming session ID for the StartStreamingSessionRequest.</p>",
+          "documentation":"<p>The streaming session ID for the <code>StartStreamingSessionRequest</code>.</p>",
           "location":"uri",
           "locationName":"sessionId"
         },
@@ -3210,7 +3344,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -3242,14 +3376,14 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
         "sessionId":{
           "shape":"String",
-          "documentation":"<p>The streaming session ID for the StopStreamingSessionRequest.</p>",
+          "documentation":"<p>The streaming session ID for the <code>StopStreamingSessionRequest</code>.</p>",
           "location":"uri",
           "locationName":"sessionId"
         },
@@ -3258,6 +3392,10 @@
           "documentation":"<p>The studioId for the StopStreamingSessionRequest.</p>",
           "location":"uri",
           "locationName":"studioId"
+        },
+        "volumeRetentionMode":{
+          "shape":"VolumeRetentionMode",
+          "documentation":"<p>Adds additional instructions to a streaming session stop action to either retain the EBS volumes or delete the EBS volumes.</p>"
         }
       }
     },
@@ -3275,9 +3413,13 @@
         "streamingImageIds"
       ],
       "members":{
+        "automaticTerminationMode":{
+          "shape":"AutomaticTerminationMode",
+          "documentation":"<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>"
+        },
         "clipboardMode":{
           "shape":"StreamingClipboardMode",
-          "documentation":"<p>Enable or disable the use of the system clipboard to copy and paste between the streaming session and streaming client.</p>"
+          "documentation":"<p>Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.</p>"
         },
         "ec2InstanceTypes":{
           "shape":"StreamingInstanceTypeList",
@@ -3289,15 +3431,27 @@
         },
         "maxStoppedSessionLengthInMinutes":{
           "shape":"StreamConfigurationMaxStoppedSessionLengthInMinutes",
-          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>"
+          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>"
+        },
+        "sessionBackup":{
+          "shape":"StreamConfigurationSessionBackup",
+          "documentation":"<p>Information about the streaming session backup.</p>"
+        },
+        "sessionPersistenceMode":{
+          "shape":"SessionPersistenceMode",
+          "documentation":"<p>Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.</p>"
         },
         "sessionStorage":{
           "shape":"StreamConfigurationSessionStorage",
-          "documentation":"<p>(Optional) The upload storage for a streaming session.</p>"
+          "documentation":"<p>The upload storage for a streaming session.</p>"
         },
         "streamingImageIds":{
           "shape":"StreamingImageIdList",
           "documentation":"<p>The streaming images that users can select from when launching a streaming session with this launch profile.</p>"
+        },
+        "volumeConfiguration":{
+          "shape":"VolumeConfiguration",
+          "documentation":"<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>"
         }
       },
       "documentation":"<p>A configuration for a streaming session.</p>"
@@ -3310,9 +3464,13 @@
         "streamingImageIds"
       ],
       "members":{
+        "automaticTerminationMode":{
+          "shape":"AutomaticTerminationMode",
+          "documentation":"<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>"
+        },
         "clipboardMode":{
           "shape":"StreamingClipboardMode",
-          "documentation":"<p>Enable or disable the use of the system clipboard to copy and paste between the streaming session and streaming client.</p>"
+          "documentation":"<p>Allows or deactivates the use of the system clipboard to copy and paste between the streaming session and streaming client.</p>"
         },
         "ec2InstanceTypes":{
           "shape":"StreamingInstanceTypeList",
@@ -3324,21 +3482,39 @@
         },
         "maxStoppedSessionLengthInMinutes":{
           "shape":"StreamConfigurationMaxStoppedSessionLengthInMinutes",
-          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p> <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of stopped).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the READY state. If the time that a session stays in the READY state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>"
+          "documentation":"<p>Integer that determines if you can start and stop your sessions and how long a session can stay in the <code>STOPPED</code> state. The default value is 0. The maximum value is 5760.</p> <p>This field is allowed only when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code> and <code>automaticTerminationMode</code> is <code>ACTIVATED</code>.</p> <p>If the value is set to 0, your sessions can’t be <code>STOPPED</code>. If you then call <code>StopStreamingSession</code>, the session fails. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be terminated (instead of <code>STOPPED</code>).</p> <p>If the value is set to a positive number, the session can be stopped. You can call <code>StopStreamingSession</code> to stop sessions in the <code>READY</code> state. If the time that a session stays in the <code>READY</code> state exceeds the <code>maxSessionLengthInMinutes</code> value, the session will automatically be stopped (instead of terminated).</p>"
+        },
+        "sessionBackup":{
+          "shape":"StreamConfigurationSessionBackup",
+          "documentation":"<p>Configures how streaming sessions are backed up when launched from this launch profile.</p>"
+        },
+        "sessionPersistenceMode":{
+          "shape":"SessionPersistenceMode",
+          "documentation":"<p>Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.</p>"
         },
         "sessionStorage":{
           "shape":"StreamConfigurationSessionStorage",
-          "documentation":"<p>(Optional) The upload storage for a streaming workstation that is created using this launch profile.</p>"
+          "documentation":"<p>The upload storage for a streaming workstation that is created using this launch profile.</p>"
         },
         "streamingImageIds":{
           "shape":"StreamingImageIdList",
           "documentation":"<p>The streaming images that users can select from when launching a streaming session with this launch profile.</p>"
+        },
+        "volumeConfiguration":{
+          "shape":"VolumeConfiguration",
+          "documentation":"<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>"
         }
       },
       "documentation":"<p>Configuration for streaming workstations created using this launch profile.</p>"
     },
+    "StreamConfigurationMaxBackupsToRetain":{
+      "type":"integer",
+      "max":10,
+      "min":0
+    },
     "StreamConfigurationMaxSessionLengthInMinutes":{
       "type":"integer",
+      "box":true,
       "max":43200,
       "min":1
     },
@@ -3346,6 +3522,20 @@
       "type":"integer",
       "max":5760,
       "min":0
+    },
+    "StreamConfigurationSessionBackup":{
+      "type":"structure",
+      "members":{
+        "maxBackupsToRetain":{
+          "shape":"StreamConfigurationMaxBackupsToRetain",
+          "documentation":"<p>The maximum number of backups that each streaming session created from this launch profile can have.</p>"
+        },
+        "mode":{
+          "shape":"SessionBackupMode",
+          "documentation":"<p>Specifies how artists sessions are backed up.</p> <p>Configures backups for streaming sessions launched with this launch profile. The default value is <code>DEACTIVATED</code>, which means that backups are deactivated. To allow backups, set this value to <code>AUTOMATIC</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configures how streaming sessions are backed up when launched from this launch profile.</p>"
     },
     "StreamConfigurationSessionStorage":{
       "type":"structure",
@@ -3374,7 +3564,7 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.</p>"
         },
         "description":{
           "shape":"StreamingImageDescription",
@@ -3398,11 +3588,11 @@
         },
         "owner":{
           "shape":"StreamingImageOwner",
-          "documentation":"<p>The owner of the streaming image, either the studioId that contains the streaming image, or 'amazon' for images that are provided by Amazon Nimble Studio.</p>"
+          "documentation":"<p>The owner of the streaming image, either the <code>studioId</code> that contains the streaming image, or <code>amazon</code> for images that are provided by Amazon Nimble Studio.</p>"
         },
         "platform":{
           "shape":"StreamingImagePlatform",
-          "documentation":"<p>The platform of the streaming image, either WINDOWS or LINUX.</p>"
+          "documentation":"<p>The platform of the streaming image, either Windows or Linux.</p>"
         },
         "state":{
           "shape":"StreamingImageState",
@@ -3422,10 +3612,10 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       },
-      "documentation":"<p>Represents a streaming image resource.</p> <p>Streaming images are used by studio users to select which operating system and software they want to use in a Nimble Studio streaming session.</p> <p>Amazon provides a number of streaming images that include popular 3rd-party software.</p> <p>You can create your own streaming images using an Amazon Elastic Compute Cloud (Amazon EC2) machine image that you create for this purpose. You can also include software that your users require.</p>"
+      "documentation":"<p>Represents a streaming image resource.</p> <p>Streaming images are used by studio users to select which operating system and software they want to use in a Nimble Studio streaming session.</p> <p>Amazon provides a number of streaming images that include popular 3rd-party software.</p> <p>You can create your own streaming images using an Amazon EC2 machine image that you create for this purpose. You can also include software that your users require.</p>"
     },
     "StreamingImageDescription":{
       "type":"string",
@@ -3484,11 +3674,11 @@
     },
     "StreamingImageOwner":{
       "type":"string",
-      "documentation":"<p>StreamingImageOwner is the owner of a particular streaming image.</p> <p>This string is either the studioId that contains the streaming image, or the word 'AMAZON' for images provided by Nimble Studio.</p>"
+      "documentation":"<p>StreamingImageOwner is the owner of a particular streaming image.</p> <p>This string is either the studioId that contains the streaming image, or the word <code>AMAZON</code> for images provided by Nimble Studio.</p>"
     },
     "StreamingImagePlatform":{
       "type":"string",
-      "documentation":"<p>The platform of this Streaming Image, either WINDOWS or LINUX.</p>",
+      "documentation":"<p>The platform of this streaming image, either Windows or Linux.</p>",
       "pattern":"^[a-zA-Z]*$"
     },
     "StreamingImageState":{
@@ -3547,11 +3737,19 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.</p>"
+        },
+        "automaticTerminationMode":{
+          "shape":"AutomaticTerminationMode",
+          "documentation":"<p>Indicates if a streaming session created from this launch profile should be terminated automatically or retained without termination after being in a <code>STOPPED</code> state.</p> <ul> <li> <p>When <code>ACTIVATED</code>, the streaming session is scheduled for termination after being in the <code>STOPPED</code> state for the time specified in <code>maxStoppedSessionLengthInMinutes</code>.</p> </li> <li> <p>When <code>DEACTIVATED</code>, the streaming session can remain in the <code>STOPPED</code> state indefinitely.</p> </li> </ul> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>. When allowed, the default value for this parameter is <code>DEACTIVATED</code>.</p>"
+        },
+        "backupMode":{
+          "shape":"SessionBackupMode",
+          "documentation":"<p>Shows the current backup setting of the session.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "createdBy":{
           "shape":"String",
@@ -3565,6 +3763,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>"
         },
+        "maxBackupsToRetain":{
+          "shape":"StreamConfigurationMaxBackupsToRetain",
+          "documentation":"<p>The maximum number of backups of a streaming session that you can have. When the maximum number of backups is reached, the oldest backup is deleted.</p>"
+        },
         "ownedBy":{
           "shape":"String",
           "documentation":"<p>The user ID of the user that owns the streaming session. The user that owns the session will be logging into the session and interacting with the virtual workstation.</p>"
@@ -3573,13 +3775,21 @@
           "shape":"StreamingSessionId",
           "documentation":"<p>The session ID.</p>"
         },
+        "sessionPersistenceMode":{
+          "shape":"SessionPersistenceMode",
+          "documentation":"<p>Determine if a streaming session created from this launch profile can configure persistent storage. This means that <code>volumeConfiguration</code> and <code>automaticTerminationMode</code> are configured.</p>"
+        },
         "startedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the session entered START_IN_PROGRESS state.</p>"
+          "documentation":"<p>The time the session entered <code>START_IN_PROGRESS</code> state.</p>"
         },
         "startedBy":{
           "shape":"String",
           "documentation":"<p>The user ID of the user that started the streaming session.</p>"
+        },
+        "startedFromBackupId":{
+          "shape":"String",
+          "documentation":"<p>The backup ID used to restore a streaming session.</p>"
         },
         "state":{
           "shape":"StreamingSessionState",
@@ -3599,7 +3809,7 @@
         },
         "stoppedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the session entered STOP_IN_PROGRESS state.</p>"
+          "documentation":"<p>The time the session entered <code>STOP_IN_PROGRESS</code> state.</p>"
         },
         "stoppedBy":{
           "shape":"String",
@@ -3611,7 +3821,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "terminateAt":{
           "shape":"Timestamp",
@@ -3619,14 +3829,69 @@
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         },
         "updatedBy":{
           "shape":"String",
           "documentation":"<p>The user ID of the user that most recently updated the resource.</p>"
+        },
+        "volumeConfiguration":{
+          "shape":"VolumeConfiguration",
+          "documentation":"<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>"
+        },
+        "volumeRetentionMode":{
+          "shape":"VolumeRetentionMode",
+          "documentation":"<p>Determine if an EBS volume created from this streaming session will be backed up.</p>"
         }
       },
       "documentation":"<p>A streaming session is a virtual workstation created using a particular launch profile.</p>"
+    },
+    "StreamingSessionBackup":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.</p>"
+        },
+        "backupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the backup.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ISO timestamp in for when the resource was created.</p>"
+        },
+        "launchProfileId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the launch profile which allowed the backups for the streaming session.</p>"
+        },
+        "ownedBy":{
+          "shape":"String",
+          "documentation":"<p>The user ID of the user that owns the streaming session.</p>"
+        },
+        "sessionId":{
+          "shape":"StreamingSessionId",
+          "documentation":"<p>The streaming session ID for the <code>StreamingSessionBackup</code>.</p>"
+        },
+        "state":{"shape":"StreamingSessionState"},
+        "statusCode":{
+          "shape":"StreamingSessionStatusCode",
+          "documentation":"<p>The status code.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message for the streaming session backup.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about the streaming session backup.</p>"
+    },
+    "StreamingSessionBackupList":{
+      "type":"list",
+      "member":{"shape":"StreamingSessionBackup"}
     },
     "StreamingSessionId":{"type":"string"},
     "StreamingSessionList":{
@@ -3713,7 +3978,7 @@
       "members":{
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "createdBy":{
           "shape":"String",
@@ -3721,7 +3986,7 @@
         },
         "expiresAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource expires.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource expires.</p>"
         },
         "ownedBy":{
           "shape":"String",
@@ -3748,6 +4013,7 @@
     },
     "StreamingSessionStreamExpirationInSeconds":{
       "type":"integer",
+      "box":true,
       "max":3600,
       "min":60
     },
@@ -3791,7 +4057,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "displayName":{
           "shape":"StudioDisplayName",
@@ -3803,7 +4069,7 @@
         },
         "ssoClientId":{
           "shape":"String",
-          "documentation":"<p>The IAM Identity Center application client ID used to integrate with IAM Identity Center to enable IAM Identity Center users to log in to Nimble Studio portal.</p>"
+          "documentation":"<p>The IAM Identity Center application client ID used to integrate with IAM Identity Center. This ID allows IAM Identity Center users to log in to Nimble Studio portal.</p>"
         },
         "state":{
           "shape":"StudioState",
@@ -3835,25 +4101,25 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         },
         "userRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The IAM role that studio users assume when logging in to the Nimble Studio portal.</p>"
         }
       },
-      "documentation":"<p>Represents a studio resource.</p> <p>A studio is the core resource used with Nimble Studio. You must create a studio first, before any other resource type can be created. All other resources you create and manage in Nimble Studio are contained within a studio.</p> <p>When creating a studio, you must provides two IAM roles for use with the Nimble Studio portal. These roles are assumed by your users when they log in to the Nimble Studio portal via IAM Identity Center and your identity source.</p> <p>The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly.</p> <p>The admin role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly.</p> <p>Your studio roles must trust the identity.nimble.amazonaws.com service principal to function properly.</p>"
+      "documentation":"<p>Represents a studio resource.</p> <p>A studio is the core resource used with Nimble Studio. You must create a studio first, before any other resource type can be created. All other resources you create and manage in Nimble Studio are contained within a studio.</p> <p>When creating a studio, you must provides two IAM roles for use with the Nimble Studio portal. These roles are assumed by your users when they log in to the Nimble Studio portal via IAM Identity Center and your identity source.</p> <p>The user role must have the <code>AmazonNimbleStudio-StudioUser</code> managed policy attached for the portal to function properly.</p> <p>The admin role must have the <code>AmazonNimbleStudio-StudioAdmin</code> managed policy attached for the portal to function properly.</p> <p>Your studio roles must trust the <code>identity.nimble.amazonaws.com</code> service principal to function properly.</p>"
     },
     "StudioComponent":{
       "type":"structure",
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that is assigned to a studio resource and uniquely identifies it. ARNs are unique across all Regions.</p>"
         },
         "configuration":{
           "shape":"StudioComponentConfiguration",
@@ -3861,7 +4127,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "createdBy":{
           "shape":"String",
@@ -3885,7 +4151,7 @@
         },
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to AWS resources at anytime while the instance is running. </p>"
+          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. </p>"
         },
         "scriptParameters":{
           "shape":"StudioComponentScriptParameterKeyValueList",
@@ -3893,7 +4159,7 @@
         },
         "secureInitializationRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to AWS resources when the system initialization script runs.</p>"
+          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.</p>"
         },
         "state":{
           "shape":"StudioComponentState",
@@ -3917,7 +4183,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         },
         "type":{
           "shape":"StudioComponentType",
@@ -3925,7 +4191,7 @@
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         },
         "updatedBy":{
           "shape":"String",
@@ -3939,7 +4205,7 @@
       "members":{
         "activeDirectoryConfiguration":{
           "shape":"ActiveDirectoryConfiguration",
-          "documentation":"<p>The configuration for a Microsoft Active Directory (Microsoft AD) studio resource.</p>"
+          "documentation":"<p>The configuration for a Directory Service for Microsoft Active Directory studio resource.</p>"
         },
         "computeFarmConfiguration":{
           "shape":"ComputeFarmConfiguration",
@@ -3978,7 +4244,7 @@
         },
         "platform":{
           "shape":"LaunchProfilePlatform",
-          "documentation":"<p>The platform of the initialization script, either WINDOWS or LINUX.</p>"
+          "documentation":"<p>The platform of the initialization script, either Windows or Linux.</p>"
         },
         "runContext":{
           "shape":"StudioComponentInitializationScriptRunContext",
@@ -4035,7 +4301,7 @@
     },
     "StudioComponentState":{
       "type":"string",
-      "documentation":"<p>The current state of the studio component resource.</p> <p>While a studio component is being created, modified, or deleted, its state will equal \"CREATE_IN_PROGRESS\", \"UPDATE_IN_PROGRESS\", or \"DELETE_IN_PROGRESS\"</p> <p>These are called 'transition states'.</p> <p>No modifications may be made to the studio component while it is in a transition state.</p> <p>If creation of the resource fails, the state will change to `CREATE_FAILED`. The resource StatusCode and StatusMessage will provide more information of why creation failed. The resource in this state will automatically be deleted from your account after a period of time.</p> <p>If updating the resource fails, the state will change to `UPDATE_FAILED`. The resource StatusCode and StatusMessage will provide more information of why the update failed. The resource will be returned to the state it was in when the update request was invoked.</p> <p>If deleting the resource fails, the state will change to `DELETE_FAILED`. The resource StatusCode and StatusMessage will provide more information of why the update failed. The resource will be returned to the state it was in when the update request was invoked. After the resource is deleted successfully, it will change to the \"DELETED\" state. The resource will no longer count against service quotas and cannot be used or acted upon any futher. It will be removed from your account after a period of time.</p>",
+      "documentation":"<p>The current state of the studio component resource.</p> <p>While a studio component is being created, modified, or deleted, its state will be <code>CREATE_IN_PROGRESS</code>, <code>UPDATE_IN_PROGRESS</code>, or <code>DELETE_IN_PROGRESS</code>.</p> <p>These are called <i>transition states</i>.</p> <p>No modifications may be made to the studio component while it is in a transition state.</p> <p>If creation of the resource fails, the state will change to <code>CREATE_FAILED</code>. The resource <code>StatusCode</code> and <code>StatusMessage</code> will provide more information of why creation failed. The resource in this state will automatically be deleted from your account after a period of time.</p> <p>If updating the resource fails, the state will change to <code>UPDATE_FAILED</code>. The resource <code>StatusCode</code> and <code>StatusMessage</code> will provide more information of why the update failed. The resource will be returned to the state it was in when the update request was invoked.</p> <p>If deleting the resource fails, the state will change to <code>DELETE_FAILED</code>. The resource <code>StatusCode</code> and <code>StatusMessage</code> will provide more information of why the update failed. The resource will be returned to the state it was in when the update request was invoked. After the resource is deleted successfully, it will change to the <code>DELETED</code> state. The resource will no longer count against service quotas and cannot be used or acted upon any futher. It will be removed from your account after a period of time.</p>",
       "enum":[
         "CREATE_IN_PROGRESS",
         "READY",
@@ -4053,7 +4319,7 @@
     },
     "StudioComponentStatusCode":{
       "type":"string",
-      "documentation":"<p>The current status of the studio component resource.</p> <p>When the resource is in the 'READY' state, the status code signals what the last mutation made to the resource was.</p> <p>When the resource is in a CREATE_FAILED/UPDATE_FAILED/DELETE_FAILED state, the status code signals what went wrong and why the mutation failed.</p>",
+      "documentation":"<p>The current status of the studio component resource.</p> <p>When the resource is in the <code>READY</code> state, the status code signals what the last mutation made to the resource was.</p> <p>When the resource is in a <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, or <code>DELETE_FAILED</code> state, the status code signals what went wrong and why the mutation failed.</p>",
       "enum":[
         "ACTIVE_DIRECTORY_ALREADY_EXISTS",
         "STUDIO_COMPONENT_CREATED",
@@ -4081,7 +4347,7 @@
       "members":{
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was created.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was created.</p>"
         },
         "createdBy":{
           "shape":"String",
@@ -4109,7 +4375,7 @@
         },
         "updatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix epoch timestamp in seconds for when the resource was updated.</p>"
+          "documentation":"<p>The ISO timestamp in seconds for when the resource was updated.</p>"
         },
         "updatedBy":{
           "shape":"String",
@@ -4195,7 +4461,7 @@
           "documentation":"<p>The Active Directory Security Identifier for this user, if available.</p>"
         }
       },
-      "documentation":"<p>A studio member is an association of a user from your studio identity source to elevated permissions that they are granted in the studio.</p> <p>When you add a user to your studio using the Nimble Studio console, they are given access to the studio's IAM Identity Center application and are given access to log in to the Nimble Studio portal. These users have the permissions provided by the studio's user IAM role and do not appear in the studio membership collection. Only studio admins appear in studio membership.</p> <p>When you add a user to studio membership with the persona ADMIN, upon logging in to the Nimble Studio portal, they are granted permissions specified by the Studio's Admin IAM role.</p>"
+      "documentation":"<p>A studio member is an association of a user from your studio identity source to elevated permissions that they are granted in the studio.</p> <p>When you add a user to your studio using the Nimble Studio console, they are given access to the studio's IAM Identity Center application and are given access to log in to the Nimble Studio portal. These users have the permissions provided by the studio's user IAM role and do not appear in the studio membership collection. Only studio admins appear in studio membership.</p> <p>When you add a user to studio membership with the ADMIN persona, upon logging in to the Nimble Studio portal, they are granted permissions specified by the Studio's Admin IAM role.</p>"
     },
     "StudioMembershipList":{
       "type":"list",
@@ -4247,7 +4513,8 @@
         "ENCRYPTION_KEY_NOT_FOUND",
         "ENCRYPTION_KEY_ACCESS_DENIED",
         "AWS_SSO_CONFIGURATION_REPAIRED",
-        "AWS_SSO_CONFIGURATION_REPAIR_IN_PROGRESS"
+        "AWS_SSO_CONFIGURATION_REPAIR_IN_PROGRESS",
+        "AWS_STS_REGION_DISABLED"
       ]
     },
     "TagResourceRequest":{
@@ -4256,13 +4523,13 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the resource you want to add tags to. </p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource you want to add tags to. </p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>A collection of labels, in the form of key:value pairs, that apply to this resource.</p>"
+          "documentation":"<p>A collection of labels, in the form of key-value pairs, that apply to this resource.</p>"
         }
       }
     },
@@ -4341,14 +4608,14 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -4388,7 +4655,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -4399,7 +4666,7 @@
         },
         "launchProfileId":{
           "shape":"String",
-          "documentation":"<p>The Launch Profile ID.</p>",
+          "documentation":"<p>The ID of the launch profile used to control access from the streaming session.</p>",
           "location":"uri",
           "locationName":"launchProfileId"
         },
@@ -4445,7 +4712,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -4487,7 +4754,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -4514,7 +4781,7 @@
         },
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to AWS resources at anytime while the instance is running. </p>"
+          "documentation":"<p>An IAM role attached to a Studio Component that gives the studio component access to Amazon Web Services resources at anytime while the instance is running. </p>"
         },
         "scriptParameters":{
           "shape":"StudioComponentScriptParameterKeyValueList",
@@ -4522,7 +4789,7 @@
         },
         "secureInitializationRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to AWS resources when the system initialization script runs.</p>"
+          "documentation":"<p>An IAM role attached to Studio Component when the system initialization script runs which give the studio component access to Amazon Web Services resources when the system initialization script runs.</p>"
         },
         "studioComponentId":{
           "shape":"String",
@@ -4565,7 +4832,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the AWS SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency.</p>",
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
@@ -4650,6 +4917,49 @@
     "ValidationResults":{
       "type":"list",
       "member":{"shape":"ValidationResult"}
+    },
+    "VolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "iops":{
+          "shape":"VolumeIops",
+          "documentation":"<p>The number of I/O operations per second for the root volume that is attached to streaming session.</p>"
+        },
+        "size":{
+          "shape":"VolumeSizeInGiB",
+          "documentation":"<p>The size of the root volume that is attached to the streaming session. The root volume size is measured in GiBs.</p>"
+        },
+        "throughput":{
+          "shape":"VolumeThroughputInMiBs",
+          "documentation":"<p>The throughput to provision for the root volume that is attached to the streaming session. The throughput is measured in MiB/s.</p>"
+        }
+      },
+      "documentation":"<p>Custom volume configuration for the root volumes that are attached to streaming sessions.</p> <p>This parameter is only allowed when <code>sessionPersistenceMode</code> is <code>ACTIVATED</code>.</p>"
+    },
+    "VolumeIops":{
+      "type":"integer",
+      "box":true,
+      "max":16000,
+      "min":3000
+    },
+    "VolumeRetentionMode":{
+      "type":"string",
+      "enum":[
+        "RETAIN",
+        "DELETE"
+      ]
+    },
+    "VolumeSizeInGiB":{
+      "type":"integer",
+      "box":true,
+      "max":16000,
+      "min":100
+    },
+    "VolumeThroughputInMiBs":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":125
     },
     "WindowsMountDrive":{
       "type":"string",

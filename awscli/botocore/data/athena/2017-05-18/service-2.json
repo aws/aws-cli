@@ -255,6 +255,7 @@
       "output":{"shape":"GetCalculationExecutionCodeResponse"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a pre-signed URL to a copy of the code that was executed for the calculation.</p>"
@@ -388,7 +389,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. The query execution runtime statistics is returned only when <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state.</p>"
+      "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. Query execution runtime statistics are returned only when <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state. Stage-level input and output row count and data size statistics are not shown when a query has row-level filters defined in Lake Formation.</p>"
     },
     "GetSession":{
       "name":"GetSession",
@@ -741,6 +742,7 @@
       "output":{"shape":"StopCalculationExecutionResponse"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Requests the cancellation of a calculation. A <code>StopCalculationExecution</code> call on a calculation that is already in a terminal state (for example, <code>STOPPED</code>, <code>FAILED</code>, or <code>COMPLETED</code>) succeeds but has no effect.</p> <note> <p>Cancelling a calculation is done on a best effort basis. If a calculation cannot be cancelled, you can be charged for its completion. If you are concerned about being charged for a calculation that cannot be cancelled, consider terminating the session in which the calculation is running.</p> </note>"
@@ -3055,7 +3057,7 @@
     },
     "Payload":{
       "type":"string",
-      "max":15728640,
+      "max":10485760,
       "min":1
     },
     "PreparedStatement":{
@@ -4174,7 +4176,11 @@
     },
     "UpdateNotebookInput":{
       "type":"structure",
-      "required":["NotebookId"],
+      "required":[
+        "NotebookId",
+        "Payload",
+        "Type"
+      ],
       "members":{
         "NotebookId":{
           "shape":"NotebookId",

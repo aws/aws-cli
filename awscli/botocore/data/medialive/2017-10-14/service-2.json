@@ -3279,6 +3279,20 @@
         "USE_CONFIGURED"
       ]
     },
+    "AudioDolbyEDecode": {
+      "type": "structure",
+      "members": {
+        "ProgramSelection": {
+          "shape": "DolbyEProgramSelection",
+          "locationName": "programSelection",
+          "documentation": "Applies only to Dolby E. Enter the program ID (according to the metadata in the audio) of the Dolby E program to extract from the specified track. One program extracted per audio selector. To select multiple programs, create multiple selectors with the same Track and different Program numbers. \u201cAll channels\u201d means to ignore the program IDs and include all the channels in this selector; useful if metadata is known to be incorrect."
+        }
+      },
+      "documentation": "Audio Dolby EDecode",
+      "required": [
+        "ProgramSelection"
+      ]
+    },
     "AudioHlsRenditionSelection": {
       "type": "structure",
       "members": {
@@ -3501,6 +3515,11 @@
           "shape": "__listOfAudioTrack",
           "locationName": "tracks",
           "documentation": "Selects one or more unique audio tracks from within a source."
+        },
+        "DolbyEDecode": {
+          "shape": "AudioDolbyEDecode",
+          "locationName": "dolbyEDecode",
+          "documentation": "Configure decoding options for Dolby E streams - these should be Dolby E frames carried in PCM streams tagged with SMPTE-337"
         }
       },
       "documentation": "Audio Track Selection",
@@ -6554,11 +6573,26 @@
         "UPDATING"
       ]
     },
+    "DolbyEProgramSelection": {
+      "type": "string",
+      "documentation": "Dolby EProgram Selection",
+      "enum": [
+        "ALL_CHANNELS",
+        "PROGRAM_1",
+        "PROGRAM_2",
+        "PROGRAM_3",
+        "PROGRAM_4",
+        "PROGRAM_5",
+        "PROGRAM_6",
+        "PROGRAM_7",
+        "PROGRAM_8"
+      ]
+    },
     "DolbyVision81Settings": {
       "type": "structure",
       "members": {
       },
-      "documentation": "Dolby Vision Profile 8.1 Settings"
+      "documentation": "Dolby Vision81 Settings"
     },
     "DvbNitSettings": {
       "type": "structure",
@@ -7305,7 +7339,7 @@
         "PasswordParam": {
           "shape": "__string",
           "locationName": "passwordParam",
-          "documentation": "Password if credentials are required to access the POIS endpoint.  This is a reference to an AWS parameter store name from which the password can be retrieved.  AWS Parameter store format: \"ssm://<parameter name>\""
+          "documentation": "Documentation update needed"
         },
         "PoisEndpoint": {
           "shape": "__stringMax2048",
@@ -7315,7 +7349,7 @@
         "Username": {
           "shape": "__string",
           "locationName": "username",
-          "documentation": "Username if credentials are required to access the POIS endpoint.  This can be either a plaintext username, or a reference to an AWS parameter store name from which the username can be retrieved.  AWS Parameter store format: \"ssm://<parameter name>\""
+          "documentation": "Documentation update needed"
         },
         "ZoneIdentity": {
           "shape": "__stringMax256",
@@ -7323,7 +7357,7 @@
           "documentation": "Optional data sent as zoneIdentity to identify the MediaLive channel to the POIS."
         }
       },
-      "documentation": "Settings for the Esam",
+      "documentation": "Esam",
       "required": [
         "AcquisitionPointId",
         "PoisEndpoint"
@@ -7604,6 +7638,11 @@
           "shape": "FrameCaptureIntervalUnit",
           "locationName": "captureIntervalUnits",
           "documentation": "Unit for the frame capture interval."
+        },
+        "TimecodeBurninSettings": {
+          "shape": "TimecodeBurninSettings",
+          "locationName": "timecodeBurninSettings",
+          "documentation": "Timecode burn-in settings"
         }
       },
       "documentation": "Frame Capture Settings"
@@ -8080,6 +8119,11 @@
           "shape": "H264TimecodeInsertionBehavior",
           "locationName": "timecodeInsertion",
           "documentation": "Determines how timecodes should be inserted into the video elementary stream.\n- 'disabled': Do not include timecodes\n- 'picTimingSei': Pass through picture timing SEI messages from the source specified in Timecode Config"
+        },
+        "TimecodeBurninSettings": {
+          "shape": "TimecodeBurninSettings",
+          "locationName": "timecodeBurninSettings",
+          "documentation": "Timecode burn-in settings"
         }
       },
       "documentation": "H264 Settings"
@@ -8414,6 +8458,11 @@
           "shape": "H265TimecodeInsertionBehavior",
           "locationName": "timecodeInsertion",
           "documentation": "Determines how timecodes should be inserted into the video elementary stream.\n- 'disabled': Do not include timecodes\n- 'picTimingSei': Pass through picture timing SEI messages from the source specified in Timecode Config"
+        },
+        "TimecodeBurninSettings": {
+          "shape": "TimecodeBurninSettings",
+          "locationName": "timecodeBurninSettings",
+          "documentation": "Timecode burn-in settings"
         }
       },
       "documentation": "H265 Settings",
@@ -8759,7 +8808,7 @@
         "MinSegmentLength": {
           "shape": "__integerMin0",
           "locationName": "minSegmentLength",
-          "documentation": "When set, minimumSegmentLength is enforced by looking ahead and back within the specified range for a nearby avail and extending the segment size if needed."
+          "documentation": "Minimum length of MPEG-2 Transport Stream segments in seconds. When set, minimum segment length is enforced by looking ahead and back within the specified range for a nearby avail and extending the segment size if needed."
         },
         "Mode": {
           "shape": "HlsMode",
@@ -8794,7 +8843,7 @@
         "SegmentLength": {
           "shape": "__integerMin1",
           "locationName": "segmentLength",
-          "documentation": "Length of MPEG-2 Transport Stream segments to create (in seconds). Note that segments will end on the next keyframe after this number of seconds, so actual segment length may be longer."
+          "documentation": "Length of MPEG-2 Transport Stream segments to create in seconds. Note that segments will end on the next keyframe after this duration, so actual segment length may be longer."
         },
         "SegmentationMode": {
           "shape": "HlsSegmentationMode",
@@ -11837,6 +11886,11 @@
           "shape": "Mpeg2TimecodeInsertionBehavior",
           "locationName": "timecodeInsertion",
           "documentation": "Determines how MediaLive inserts timecodes in the output video. For detailed information about setting up the input and the output for a timecode, see the section on \\\"MediaLive Features - Timecode configuration\\\" in the MediaLive User Guide.\nDISABLED: do not include timecodes.\nGOP_TIMECODE: Include timecode metadata in the GOP header."
+        },
+        "TimecodeBurninSettings": {
+          "shape": "TimecodeBurninSettings",
+          "locationName": "timecodeBurninSettings",
+          "documentation": "Timecode burn-in settings"
         }
       },
       "documentation": "Mpeg2 Settings",
@@ -13832,7 +13886,7 @@
     },
     "Scte35InputMode": {
       "type": "string",
-      "documentation": "Settings to let you create a clip of the file input, in order to set up the input to ingest only a portion of the file.",
+      "documentation": "Whether the SCTE-35 input should be the active input or a fixed input.",
       "enum": [
         "FIXED",
         "FOLLOW_ACTIVE"
@@ -13852,7 +13906,7 @@
           "documentation": "Whether the SCTE-35 input should be the active input or a fixed input."
         }
       },
-      "documentation": "Settings for the \"scte35 input\" action",
+      "documentation": "Scte35Input Schedule Action Settings",
       "required": [
         "Mode"
       ]
@@ -14751,6 +14805,56 @@
         }
       },
       "documentation": "The binary data for the thumbnail that the Link device has most recently sent to MediaLive."
+    },
+    "TimecodeBurninFontSize": {
+      "type": "string",
+      "documentation": "Timecode Burnin Font Size",
+      "enum": [
+        "EXTRA_SMALL_10",
+        "LARGE_48",
+        "MEDIUM_32",
+        "SMALL_16"
+      ]
+    },
+    "TimecodeBurninPosition": {
+      "type": "string",
+      "documentation": "Timecode Burnin Position",
+      "enum": [
+        "BOTTOM_CENTER",
+        "BOTTOM_LEFT",
+        "BOTTOM_RIGHT",
+        "MIDDLE_CENTER",
+        "MIDDLE_LEFT",
+        "MIDDLE_RIGHT",
+        "TOP_CENTER",
+        "TOP_LEFT",
+        "TOP_RIGHT"
+      ]
+    },
+    "TimecodeBurninSettings": {
+      "type": "structure",
+      "members": {
+        "FontSize": {
+          "shape": "TimecodeBurninFontSize",
+          "locationName": "fontSize",
+          "documentation": "Choose a timecode burn-in font size"
+        },
+        "Position": {
+          "shape": "TimecodeBurninPosition",
+          "locationName": "position",
+          "documentation": "Choose a timecode burn-in output position"
+        },
+        "Prefix": {
+          "shape": "__stringMax255",
+          "locationName": "prefix",
+          "documentation": "Create a timecode burn-in prefix (optional)"
+        }
+      },
+      "documentation": "Timecode Burnin Settings",
+      "required": [
+        "Position",
+        "FontSize"
+      ]
     },
     "TimecodeConfig": {
       "type": "structure",

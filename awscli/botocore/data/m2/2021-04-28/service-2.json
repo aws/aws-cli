@@ -48,7 +48,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a new application with given parameters. Requires an existing environment and application definition file.</p>",
+      "documentation":"<p>Creates a new application with given parameters. Requires an existing runtime environment and application definition file.</p>",
       "idempotent":true
     },
     "CreateDataSetImportTask":{
@@ -90,7 +90,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates and starts a deployment to deploy an application into an environment.</p>",
+      "documentation":"<p>Creates and starts a deployment to deploy an application into a runtime environment.</p>",
       "idempotent":true
     },
     "CreateEnvironment":{
@@ -149,7 +149,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a specific application from a specified environment where it has been previously deployed. You cannot delete an environment using DeleteEnvironment, if any application has ever been deployed to it. This API removes the association of the application with the environment so you can delete the environment smoothly.</p>"
+      "documentation":"<p>Deletes a specific application from the specific runtime environment where it was previously deployed. You cannot delete a runtime environment using DeleteEnvironment if any application has ever been deployed to it. This API removes the association of the application with the runtime environment so you can delete the environment smoothly.</p>"
     },
     "DeleteEnvironment":{
       "name":"DeleteEnvironment",
@@ -167,7 +167,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a specific environment. The environment cannot contain deployed applications. If it does, you must delete those applications before you delete the environment.</p>",
+      "documentation":"<p>Deletes a specific runtime environment. The environment cannot contain deployed applications. If it does, you must delete those applications before you delete the environment.</p>",
       "idempotent":true
     },
     "GetApplication":{
@@ -329,7 +329,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists the applications associated with a specific Amazon Web Services account. You can provide the unique identifier of a specific environment in a query parameter to see all applications associated with that environment.</p>"
+      "documentation":"<p>Lists the applications associated with a specific Amazon Web Services account. You can provide the unique identifier of a specific runtime environment in a query parameter to see all applications associated with that environment.</p>"
     },
     "ListBatchJobDefinitions":{
       "name":"ListBatchJobDefinitions",
@@ -347,7 +347,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all the available batch job definitions based on the batch job resources uploaded during the application creation. The listed batch job definitions can then be used to start a batch job.</p>"
+      "documentation":"<p>Lists all the available batch job definitions based on the batch job resources uploaded during the application creation. You can use the batch job definitions in the list to start a batch job.</p>"
     },
     "ListBatchJobExecutions":{
       "name":"ListBatchJobExecutions",
@@ -401,7 +401,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the data sets imported for a specific application. In Amazon Web Services Mainframe Modernization, data sets are associated with applications deployed on environments. This is known as importing data sets. Currently, Amazon Web Services Mainframe Modernization can import data sets into catalogs using <a href=\"https://docs.aws.amazon.com/m2/latest/APIReference/API_CreateDataSetImportTask.html\">CreateDataSetImportTask</a>.</p>"
+      "documentation":"<p>Lists the data sets imported for a specific application. In Amazon Web Services Mainframe Modernization, data sets are associated with applications deployed on runtime environments. This is known as importing data sets. Currently, Amazon Web Services Mainframe Modernization can import data sets into catalogs using <a href=\"https://docs.aws.amazon.com/m2/latest/APIReference/API_CreateDataSetImportTask.html\">CreateDataSetImportTask</a>.</p>"
     },
     "ListDeployments":{
       "name":"ListDeployments",
@@ -604,7 +604,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates the configuration details for a specific environment.</p>"
+      "documentation":"<p>Updates the configuration details for a specific runtime environment.</p>"
     }
   },
   "shapes":{
@@ -670,7 +670,8 @@
         "Stopping",
         "Stopped",
         "Failed",
-        "Deleting"
+        "Deleting",
+        "Deleting From Environment"
       ]
     },
     "ApplicationSummary":{
@@ -703,7 +704,7 @@
         },
         "deploymentStatus":{
           "shape":"ApplicationDeploymentLifecycle",
-          "documentation":"<p>Indicates whether there is an ongoing deployment or if the application has ever deployed successfully.</p>"
+          "documentation":"<p>Indicates either an ongoing deployment or if the application has ever deployed successfully.</p>"
         },
         "description":{
           "shape":"EntityDescription",
@@ -719,7 +720,7 @@
         },
         "lastStartTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the application was last started. Null until the application has started running for the first time.</p>"
+          "documentation":"<p>The timestamp when you last started the application. Null until the application runs for the first time.</p>"
         },
         "name":{
           "shape":"EntityName",
@@ -992,6 +993,10 @@
           "shape":"EngineType",
           "documentation":"<p>The type of the target platform for this application.</p>"
         },
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed key.</p>"
+        },
         "name":{
           "shape":"EntityName",
           "documentation":"<p>The unique identifier of the application.</p>"
@@ -1083,7 +1088,7 @@
         },
         "environmentId":{
           "shape":"Identifier",
-          "documentation":"<p>The identifier of the environment where this application will be deployed.</p>"
+          "documentation":"<p>The identifier of the runtime environment where you want to deploy this application.</p>"
         }
       }
     },
@@ -1112,15 +1117,15 @@
         },
         "description":{
           "shape":"EntityDescription",
-          "documentation":"<p>The description of the environment.</p>"
+          "documentation":"<p>The description of the runtime environment.</p>"
         },
         "engineType":{
           "shape":"EngineType",
-          "documentation":"<p>The engine type for the environment.</p>"
+          "documentation":"<p>The engine type for the runtime environment.</p>"
         },
         "engineVersion":{
           "shape":"EngineVersion",
-          "documentation":"<p>The version of the engine type for the environment.</p>"
+          "documentation":"<p>The version of the engine type for the runtime environment.</p>"
         },
         "highAvailabilityConfig":{
           "shape":"HighAvailabilityConfig",
@@ -1128,35 +1133,39 @@
         },
         "instanceType":{
           "shape":"String20",
-          "documentation":"<p>The type of instance for the environment.</p>"
+          "documentation":"<p>The type of instance for the runtime environment.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed key.</p>"
         },
         "name":{
           "shape":"EntityName",
-          "documentation":"<p>The unique identifier of the environment.</p>"
+          "documentation":"<p>The name of the runtime environment. Must be unique within the account.</p>"
         },
         "preferredMaintenanceWindow":{
           "shape":"String50",
-          "documentation":"<p>Configures a desired maintenance window for the environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the environment is publicly accessible.</p>"
+          "documentation":"<p>Specifies whether the runtime environment is publicly accessible.</p>"
         },
         "securityGroupIds":{
           "shape":"String50List",
-          "documentation":"<p>The list of security groups for the VPC associated with this environment.</p>"
+          "documentation":"<p>The list of security groups for the VPC associated with this runtime environment.</p>"
         },
         "storageConfigurations":{
           "shape":"StorageConfigurationList",
-          "documentation":"<p>Optional. The storage configurations for this environment.</p>"
+          "documentation":"<p>Optional. The storage configurations for this runtime environment.</p>"
         },
         "subnetIds":{
           "shape":"String50List",
-          "documentation":"<p>The list of subnets associated with the VPC for this environment.</p>"
+          "documentation":"<p>The list of subnets associated with the VPC for this runtime environment.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags for the environment.</p>"
+          "documentation":"<p>The tags for the runtime environment.</p>"
         }
       }
     },
@@ -1166,7 +1175,7 @@
       "members":{
         "environmentId":{
           "shape":"Identifier",
-          "documentation":"<p>The identifier of this environment.</p>"
+          "documentation":"<p>The unique identifier of the runtime environment.</p>"
         }
       }
     },
@@ -1184,7 +1193,7 @@
         },
         "datasetOrg":{
           "shape":"DatasetOrgAttributes",
-          "documentation":"<p>The type of dataset. Possible values include VSAM, IS, PS, GDG, PO, PS, UNKNOWN etc.</p>"
+          "documentation":"<p>The type of dataset. The only supported value is VSAM.</p>"
         },
         "recordLength":{
           "shape":"RecordLength",
@@ -1314,7 +1323,7 @@
         },
         "dataSetOrg":{
           "shape":"String20",
-          "documentation":"<p>The type of data set. Possible values include VSAM, IS, PS, GDG, PO, PS, or unknown.</p>"
+          "documentation":"<p>The type of data set. The only supported value is VSAM.</p>"
         },
         "format":{
           "shape":"String20",
@@ -1511,7 +1520,7 @@
         },
         "environmentId":{
           "shape":"Identifier",
-          "documentation":"<p>The unique identifier of the environment.</p>"
+          "documentation":"<p>The unique identifier of the runtime environment.</p>"
         },
         "status":{
           "shape":"DeploymentLifecycle",
@@ -1598,7 +1607,8 @@
         "Creating",
         "Available",
         "Deleting",
-        "Failed"
+        "Failed",
+        "Updating"
       ]
     },
     "EnvironmentSummary":{
@@ -1616,11 +1626,11 @@
       "members":{
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the environment was created.</p>"
+          "documentation":"<p>The timestamp when the runtime environment was created.</p>"
         },
         "engineType":{
           "shape":"EngineType",
-          "documentation":"<p>The target platform for the environment.</p>"
+          "documentation":"<p>The target platform for the runtime environment.</p>"
         },
         "engineVersion":{
           "shape":"EngineVersion",
@@ -1636,18 +1646,18 @@
         },
         "instanceType":{
           "shape":"String20",
-          "documentation":"<p>The instance type of the environment.</p>"
+          "documentation":"<p>The instance type of the runtime environment.</p>"
         },
         "name":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the environment.</p>"
+          "documentation":"<p>The name of the runtime environment.</p>"
         },
         "status":{
           "shape":"EnvironmentLifecycle",
-          "documentation":"<p>The status of the environment</p>"
+          "documentation":"<p>The status of the runtime environment</p>"
         }
       },
-      "documentation":"<p>Contains a subset of the possible environment attributes. Used in the environment list.</p>"
+      "documentation":"<p>Contains a subset of the possible runtime environment attributes. Used in the environment list.</p>"
     },
     "EnvironmentSummaryList":{
       "type":"list",
@@ -1792,11 +1802,15 @@
         },
         "environmentId":{
           "shape":"Identifier",
-          "documentation":"<p>The identifier of the environment where the application will be deployed.</p>"
+          "documentation":"<p>The identifier of the runtime environment where you want to deploy the application.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed key.</p>"
         },
         "lastStartTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the application was last started. Null until the application has started running for the first time.</p>"
+          "documentation":"<p>The timestamp when you last started the application. Null until the application runs for the first time.</p>"
         },
         "latestVersion":{
           "shape":"ApplicationVersionSummary",
@@ -1804,7 +1818,7 @@
         },
         "listenerArns":{
           "shape":"ArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the network load balancer listener created in your Amazon Web Services account. Amazon Web Services Mainframe Modernization creates this listener on your behalf the first time you deploy an application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the network load balancer listener created in your Amazon Web Services account. Amazon Web Services Mainframe Modernization creates this listener for you the first time you deploy an application.</p>"
         },
         "listenerPorts":{
           "shape":"PortList",
@@ -1816,7 +1830,7 @@
         },
         "logGroups":{
           "shape":"LogGroupSummaries",
-          "documentation":"<p>The list of log summaries. Each log summary includes the log type as well as the log group identifier. These are CloudWatch logs. The Amazon Web Services Mainframe Modernization application log is pushed to CloudWatch under the customer's account.</p>"
+          "documentation":"<p>The list of log summaries. Each log summary includes the log type as well as the log group identifier. These are CloudWatch logs. Amazon Web Services Mainframe Modernization pushes the application log to CloudWatch under the customer's account.</p>"
         },
         "name":{
           "shape":"EntityName",
@@ -1881,7 +1895,7 @@
         },
         "definitionContent":{
           "shape":"StringFree65000",
-          "documentation":"<p>The content of the application definition. This is a JSON object that contains the resource configuration/definitions that identify an application.</p>"
+          "documentation":"<p>The content of the application definition. This is a JSON object that contains the resource configuration and definitions that identify an application.</p>"
         },
         "description":{
           "shape":"EntityDescription",
@@ -2013,7 +2027,7 @@
         },
         "dataSetOrg":{
           "shape":"DatasetDetailOrgAttributes",
-          "documentation":"<p>The type of data set. Possible values include VSAM, IS, PS, GDG, PO, PS, or unknown.</p>"
+          "documentation":"<p>The type of data set. The only supported value is VSAM.</p>"
         },
         "lastReferencedTime":{
           "shape":"Timestamp",
@@ -2025,7 +2039,7 @@
         },
         "location":{
           "shape":"String2000",
-          "documentation":"<p>The locaion where the data set is stored.</p>"
+          "documentation":"<p>The location where the data set is stored.</p>"
         },
         "recordLength":{
           "shape":"Integer",
@@ -2202,21 +2216,25 @@
           "shape":"String20",
           "documentation":"<p>The type of instance underlying the runtime environment.</p>"
         },
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed key.</p>"
+        },
         "loadBalancerArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) for the load balancer used with the runtime environment.</p>"
         },
         "name":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the runtime environment. </p>"
+          "documentation":"<p>The name of the runtime environment. Must be unique within the account.</p>"
         },
         "pendingMaintenance":{
           "shape":"PendingMaintenance",
           "documentation":"<p>Indicates the pending maintenance scheduled on this environment.</p>"
         },
         "preferredMaintenanceWindow":{
-          "shape":"String",
-          "documentation":"<p>Configures a desired maintenance window for the environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "shape":"String50",
+          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
@@ -2305,7 +2323,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of application versions to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2343,7 +2360,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of applications to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2367,7 +2383,7 @@
       "members":{
         "applications":{
           "shape":"ApplicationSummaryList",
-          "documentation":"<p>Returns a list of summary details for all the applications in an environment.</p>"
+          "documentation":"<p>Returns a list of summary details for all the applications in a runtime environment.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2388,7 +2404,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of batch job definitions to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2445,7 +2460,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of batch job executions to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2502,7 +2516,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of objects to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2541,7 +2554,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of objects to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2565,7 +2577,7 @@
       "members":{
         "dataSets":{
           "shape":"DataSetsSummaryList",
-          "documentation":"<p>The list of data sets, containing ionformation including the creating time, the data set name, the data set organization, the data set format, and the last time the data set was referenced or updated.</p>"
+          "documentation":"<p>The list of data sets, containing information including the creation time, the data set name, the data set organization, the data set format, and the last time the data set was referenced or updated.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2586,7 +2598,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of objects to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2624,7 +2635,6 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of objects to return.</p>",
-          "box":true,
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -2655,26 +2665,25 @@
       "members":{
         "engineType":{
           "shape":"EngineType",
-          "documentation":"<p>The engine type for the environment.</p>",
+          "documentation":"<p>The engine type for the runtime environment.</p>",
           "location":"querystring",
           "locationName":"engineType"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of environments to return.</p>",
-          "box":true,
+          "documentation":"<p>The maximum number of runtime environments to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "names":{
           "shape":"EntityNameList",
-          "documentation":"<p>The name of the environment.</p>",
+          "documentation":"<p>The names of the runtime environments. Must be unique within the account.</p>",
           "location":"querystring",
           "locationName":"names"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token to control the number of environments displayed in the list.</p>",
+          "documentation":"<p>A pagination token to control the number of runtime environments displayed in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -2686,11 +2695,11 @@
       "members":{
         "environments":{
           "shape":"EnvironmentSummaryList",
-          "documentation":"<p>Returns a list of summary details for all the environments in your account. </p>"
+          "documentation":"<p>Returns a list of summary details for all the runtime environments in your account. </p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token that's returned when the response doesn't contain all the environments.</p>"
+          "documentation":"<p>A pagination token that's returned when the response doesn't contain all the runtime environments.</p>"
         }
       }
     },
@@ -2741,7 +2750,7 @@
           "documentation":"<p>The type of log.</p>"
         }
       },
-      "documentation":"<p>A subset of the attributes about a log group. In CloudWatch a log group is a group of log streams that share the same retention, monitoring, and access control settings.</p>"
+      "documentation":"<p>A subset of the attributes that describe a log group. In CloudWatch a log group is a group of log streams that share the same retention, monitoring, and access control settings.</p>"
     },
     "MaintenanceSchedule":{
       "type":"structure",
@@ -2776,7 +2785,7 @@
         },
         "schedule":{
           "shape":"MaintenanceSchedule",
-          "documentation":"<p>The maintenance schedule for the engine version.</p>"
+          "documentation":"<p>The maintenance schedule for the runtime engine version.</p>"
         }
       },
       "documentation":"<p>The scheduled maintenance for a runtime engine.</p>"
@@ -2981,7 +2990,7 @@
           "documentation":"<p>Defines the storage configuration for an Amazon FSx file system.</p>"
         }
       },
-      "documentation":"<p>Defines the storage configuration for an environment.</p>",
+      "documentation":"<p>Defines the storage configuration for a runtime environment.</p>",
       "union":true
     },
     "StorageConfigurationList":{
@@ -3162,16 +3171,15 @@
       "members":{
         "applyDuringMaintenanceWindow":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to update the environment during the maintenance window. The default is false. Currently, Amazon Web Services Mainframe Modernization accepts the <code>engineVersion</code> parameter only if <code>applyDuringMaintenanceWindow</code> is true. If any parameter other than <code>engineVersion</code> is provided in <code>UpdateEnvironmentRequest</code>, it will fail if <code>applyDuringMaintenanceWindow</code> is set to true.</p>"
+          "documentation":"<p>Indicates whether to update the runtime environment during the maintenance window. The default is false. Currently, Amazon Web Services Mainframe Modernization accepts the <code>engineVersion</code> parameter only if <code>applyDuringMaintenanceWindow</code> is true. If any parameter other than <code>engineVersion</code> is provided in <code>UpdateEnvironmentRequest</code>, it will fail if <code>applyDuringMaintenanceWindow</code> is set to true.</p>"
         },
         "desiredCapacity":{
           "shape":"CapacityValue",
-          "documentation":"<p>The desired capacity for the environment to update.</p>",
-          "box":true
+          "documentation":"<p>The desired capacity for the runtime environment to update.</p>"
         },
         "engineVersion":{
           "shape":"EngineVersion",
-          "documentation":"<p>The version of the runtime engine for the environment.</p>"
+          "documentation":"<p>The version of the runtime engine for the runtime environment.</p>"
         },
         "environmentId":{
           "shape":"Identifier",
@@ -3181,11 +3189,11 @@
         },
         "instanceType":{
           "shape":"String20",
-          "documentation":"<p>The instance type for the environment to update.</p>"
+          "documentation":"<p>The instance type for the runtime environment to update.</p>"
         },
         "preferredMaintenanceWindow":{
           "shape":"String",
-          "documentation":"<p>Configures a desired maintenance window for the environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
         }
       }
     },

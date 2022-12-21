@@ -28,6 +28,24 @@
       ],
       "documentation":"<p>Accepts the transfer of a domain from another Amazon Web Services account to the currentAmazon Web Services account. You initiate a transfer between Amazon Web Services accounts using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a>.</p> <p>If you use the CLI command at <a href=\"https://docs.aws.amazon.com/cli/latest/reference/route53domains/accept-domain-transfer-from-another-aws-account.html\">accept-domain-transfer-from-another-aws-account</a>, use JSON format as input instead of text because otherwise CLI will throw an error from domain transfer input that includes single quotes.</p> <p>Use either <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListOperations.html\">ListOperations</a> or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> to determine whether the operation succeeded. <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a> provides additional information, for example, <code>Domain Transfer from Aws Account 111122223333 has been cancelled</code>. </p>"
     },
+    "AssociateDelegationSignerToDomain":{
+      "name":"AssociateDelegationSignerToDomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateDelegationSignerToDomainRequest"},
+      "output":{"shape":"AssociateDelegationSignerToDomainResponse"},
+      "errors":[
+        {"shape":"DuplicateRequest"},
+        {"shape":"InvalidInput"},
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"TLDRulesViolation"},
+        {"shape":"UnsupportedTLD"},
+        {"shape":"DnssecLimitExceeded"}
+      ],
+      "documentation":"<p> Creates a delegation signer (DS) record in the registry zone for this domain name.</p> <p>Note that creating DS record at the registry impacts DNSSEC validation of your DNS records. This action may render your domain name unavailable on the internet if the steps are completed in the wrong order, or with incorrect timing. For more information about DNSSEC signing, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec.html\">Configuring DNSSEC signing</a> in the <i>Route 53 developer guide</i>.</p>"
+    },
     "CancelDomainTransferToAnotherAwsAccount":{
       "name":"CancelDomainTransferToAnotherAwsAccount",
       "http":{
@@ -132,6 +150,23 @@
         {"shape":"UnsupportedTLD"}
       ],
       "documentation":"<p>This operation removes the transfer lock on the domain (specifically the <code>clientTransferProhibited</code> status) to allow domain transfers. We recommend you refrain from performing this action unless you intend to transfer the domain to a different registrar. Successful submission returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant will be notified by email.</p>"
+    },
+    "DisassociateDelegationSignerFromDomain":{
+      "name":"DisassociateDelegationSignerFromDomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateDelegationSignerFromDomainRequest"},
+      "output":{"shape":"DisassociateDelegationSignerFromDomainResponse"},
+      "errors":[
+        {"shape":"DuplicateRequest"},
+        {"shape":"InvalidInput"},
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"TLDRulesViolation"},
+        {"shape":"UnsupportedTLD"}
+      ],
+      "documentation":"<p>Deletes a delegation signer (DS) record in the registry zone for this domain name.</p>"
     },
     "EnableDomainAutoRenew":{
       "name":"EnableDomainAutoRenew",
@@ -276,6 +311,20 @@
       ],
       "documentation":"<p>This operation returns all of the tags that are associated with the specified domain.</p> <p>All tag operations are eventually consistent; subsequent operations might not immediately represent all issued operations.</p>"
     },
+    "PushDomain":{
+      "name":"PushDomain",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PushDomainRequest"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"OperationLimitExceeded"},
+        {"shape":"UnsupportedTLD"}
+      ],
+      "documentation":"<p> Moves a domain from Amazon Web Services to another registrar. </p> <p>Supported actions:</p> <ul> <li> <p>Changes the IPS tags of a .uk domain, and pushes it to transit. Transit means that the domain is ready to be transferred to another registrar.</p> </li> </ul>"
+    },
     "RegisterDomain":{
       "name":"RegisterDomain",
       "http":{
@@ -292,7 +341,7 @@
         {"shape":"DomainLimitExceeded"},
         {"shape":"OperationLimitExceeded"}
       ],
-      "documentation":"<p>This operation registers a domain. Domains are registered either by Amazon Registrar (for .com, .net, and .org domains) or by our registrar associate, Gandi (for all other domains). For some top-level domains (TLDs), this operation requires extra parameters.</p> <p>When you register a domain, Amazon Route 53 does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone that has the same name as the domain. Route 53 assigns four name servers to your hosted zone and automatically updates your domain registration with the names of these name servers.</p> </li> <li> <p>Enables autorenew, so your domain registration will renew automatically each year. We'll notify you in advance of the renewal date so you can choose whether to renew the registration.</p> </li> <li> <p>Optionally enables privacy protection, so WHOIS queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you don't enable privacy protection, WHOIS queries return the information that you entered for the administrative, registrant, and technical contacts.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> </li> <li> <p>If registration is successful, returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant is notified by email.</p> </li> <li> <p>Charges your Amazon Web Services account an amount based on the top-level domain. For more information, see <a href=\"http://aws.amazon.com/route53/pricing/\">Amazon Route 53 Pricing</a>.</p> </li> </ul>"
+      "documentation":"<p>This operation registers a domain. Domains are registered either by Amazon Registrar (for .com, .net, and .org domains) or by our registrar associate, Gandi (for all other domains). For some top-level domains (TLDs), this operation requires extra parameters.</p> <p>When you register a domain, Amazon Route 53 does the following:</p> <ul> <li> <p>Creates a Route 53 hosted zone that has the same name as the domain. Route 53 assigns four name servers to your hosted zone and automatically updates your domain registration with the names of these name servers.</p> </li> <li> <p>Enables auto renew, so your domain registration will renew automatically each year. We'll notify you in advance of the renewal date so you can choose whether to renew the registration.</p> </li> <li> <p>Optionally enables privacy protection, so WHOIS queries return contact information either for Amazon Registrar (for .com, .net, and .org domains) or for our registrar associate, Gandi (for all other TLDs). If you don't enable privacy protection, WHOIS queries return the information that you entered for the administrative, registrant, and technical contacts.</p> <note> <p>You must specify the same privacy setting for the administrative, registrant, and technical contacts.</p> </note> </li> <li> <p>If registration is successful, returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant is notified by email.</p> </li> <li> <p>Charges your Amazon Web Services account an amount based on the top-level domain. For more information, see <a href=\"http://aws.amazon.com/route53/pricing/\">Amazon Route 53 Pricing</a>.</p> </li> </ul>"
     },
     "RejectDomainTransferFromAnotherAwsAccount":{
       "name":"RejectDomainTransferFromAnotherAwsAccount",
@@ -341,6 +390,18 @@
       ],
       "documentation":"<p>For operations that require confirmation that the email address for the registrant contact is valid, such as registering a new domain, this operation resends the confirmation email to the current email address for the registrant contact.</p>"
     },
+    "ResendOperationAuthorization":{
+      "name":"ResendOperationAuthorization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ResendOperationAuthorizationRequest"},
+      "errors":[
+        {"shape":"InvalidInput"}
+      ],
+      "documentation":"<p> Resend the form of authorization email for this operation. </p>"
+    },
     "RetrieveDomainAuthCode":{
       "name":"RetrieveDomainAuthCode",
       "http":{
@@ -353,7 +414,7 @@
         {"shape":"InvalidInput"},
         {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>This operation returns the AuthCode for the domain. To transfer a domain to another registrar, you provide this value to the new registrar.</p>"
+      "documentation":"<p>This operation returns the authorization code for the domain. To transfer a domain to another registrar, you provide this value to the new registrar.</p>"
     },
     "TransferDomain":{
       "name":"TransferDomain",
@@ -404,7 +465,7 @@
         {"shape":"OperationLimitExceeded"},
         {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>This operation updates the contact information for a particular domain. You must specify information for at least one contact: registrant, administrator, or technical.</p> <p>If the update is successful, this method returns an operation ID that you can use to track the progress and completion of the action. If the request is not completed successfully, the domain registrant will be notified by email.</p>"
+      "documentation":"<p>This operation updates the contact information for a particular domain. You must specify information for at least one contact: registrant, administrator, or technical.</p> <p>If the update is successful, this method returns an operation ID that you can use to track the progress and completion of the operation. If the request is not completed successfully, the domain registrant will be notified by email.</p>"
     },
     "UpdateDomainContactPrivacy":{
       "name":"UpdateDomainContactPrivacy",
@@ -508,6 +569,32 @@
       "type":"string",
       "max":255
     },
+    "AssociateDelegationSignerToDomainRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SigningAttributes"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>"
+        },
+        "SigningAttributes":{
+          "shape":"DnssecSigningAttributes",
+          "documentation":"<p>The information about a key, including the algorithm, public key-value, and flags.</p>"
+        }
+      }
+    },
+    "AssociateDelegationSignerToDomainResponse":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The identifier for tracking the progress of the request. To query the operation status, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a>.</p>"
+        }
+      }
+    },
     "BillingRecord":{
       "type":"structure",
       "members":{
@@ -577,7 +664,6 @@
     },
     "CheckDomainAvailabilityResponse":{
       "type":"structure",
-      "required":["Availability"],
       "members":{
         "Availability":{
           "shape":"DomainAvailability",
@@ -603,7 +689,6 @@
     },
     "CheckDomainTransferabilityResponse":{
       "type":"structure",
-      "required":["Transferability"],
       "members":{
         "Transferability":{
           "shape":"DomainTransferability",
@@ -615,6 +700,24 @@
     "City":{
       "type":"string",
       "max":255
+    },
+    "Consent":{
+      "type":"structure",
+      "required":[
+        "MaxPrice",
+        "Currency"
+      ],
+      "members":{
+        "MaxPrice":{
+          "shape":"Price",
+          "documentation":"<p> Maximum amount the customer agreed to accept. </p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p> Currency for the <code>MaxPrice</code>. </p>"
+        }
+      },
+      "documentation":"<p> Customer's consent for the owner change request. </p>"
     },
     "ContactDetail":{
       "type":"structure",
@@ -1030,7 +1133,6 @@
     },
     "DisableDomainTransferLockResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -1038,6 +1140,100 @@
         }
       },
       "documentation":"<p>The DisableDomainTransferLock response includes the following element.</p>"
+    },
+    "DisassociateDelegationSignerFromDomainRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Id"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>Name of the domain.</p>"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>An internal identification number assigned to each DS record after it’s created. You can retrieve it as part of DNSSEC information returned by <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetDomainDetail.html\">GetDomainDetail</a>.</p>"
+        }
+      }
+    },
+    "DisassociateDelegationSignerFromDomainResponse":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>Identifier for tracking the progress of the request. To query the operation status, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a>.</p>"
+        }
+      }
+    },
+    "DnssecKey":{
+      "type":"structure",
+      "members":{
+        "Algorithm":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of the public key’s cryptographic algorithm according to an <a href=\"https://www.iana.org/assignments/dns-sec-alg-numbers/dns-sec-alg-numbers.xml\">IANA</a> assignment. </p> <p>If Route 53 is your DNS service, set this to 13.</p> <p>For more information about enabling DNSSEC signing, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-configuring-dnssec-enable-signing.html\">Enabling DNSSEC signing and establishing a chain of trust</a>.</p>"
+        },
+        "Flags":{
+          "shape":"NullableInteger",
+          "documentation":"<p>Defines the type of key. It can be either a KSK (key-signing-key, value 257) or ZSK (zone-signing-key, value 256). Using KSK is always encouraged. Only use ZSK if your DNS provider isn't Route 53 and you don’t have KSK available.</p> <p>If you have KSK and ZSK keys, always use KSK to create a delegations signer (DS) record. If you have ZSK keys only – use ZSK to create a DS record.</p>"
+        },
+        "PublicKey":{
+          "shape":"DnssecPublicKey",
+          "documentation":"<p>The base64-encoded public key part of the key pair that is passed to the registry .</p>"
+        },
+        "DigestType":{
+          "shape":"NullableInteger",
+          "documentation":"<p> The number of the DS digest algorithm according to an IANA assignment.</p> <p>For more information, see <a href=\"https://www.iana.org/assignments/ds-rr-types/ds-rr-types.xhtml\">IANA</a> for DNSSEC Delegation Signer (DS) Resource Record (RR) Type Digest Algorithms. </p>"
+        },
+        "Digest":{
+          "shape":"String",
+          "documentation":"<p> The delegation signer digest.</p> <p>Digest is calculated from the public key provided using specified digest algorithm and this digest is the actual value returned from the registry nameservers as the value of DS records. </p>"
+        },
+        "KeyTag":{
+          "shape":"NullableInteger",
+          "documentation":"<p> A numeric identification of the DNSKEY record referred to by this DS record. </p>"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p> An ID assigned to each DS record created by <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AssociateDelegationSignerToDomain.html\">AssociateDelegationSignerToDomain</a>. </p>"
+        }
+      },
+      "documentation":"<p>Information about the DNSSEC key.</p> <p>You get this from your DNS provider and then give it to Route 53 (by using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AssociateDelegationSignerToDomain.html\">AssociateDelegationSignerToDomain</a>) to pass it to the registry to establish the chain of trust.</p>"
+    },
+    "DnssecKeyList":{
+      "type":"list",
+      "member":{"shape":"DnssecKey"}
+    },
+    "DnssecLimitExceeded":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> This error is returned if you call <code>AssociateDelegationSignerToDomain</code> when the specified domain has reached the maximum number of DS records. You can't add any additional DS records unless you delete an existing one first. </p>",
+      "exception":true
+    },
+    "DnssecPublicKey":{
+      "type":"string",
+      "max":32768
+    },
+    "DnssecSigningAttributes":{
+      "type":"structure",
+      "members":{
+        "Algorithm":{
+          "shape":"NullableInteger",
+          "documentation":"<p> Algorithm which was used to generate the digest from the public key. </p>"
+        },
+        "Flags":{
+          "shape":"NullableInteger",
+          "documentation":"<p>Defines the type of key. It can be either a KSK (key-signing-key, value 257) or ZSK (zone-signing-key, value 256). Using KSK is always encouraged. Only use ZSK if your DNS provider isn't Route 53 and you don’t have KSK available.</p> <p>If you have KSK and ZSK keys, always use KSK to create a delegations signer (DS) record. If you have ZSK keys only – use ZSK to create a DS record.</p>"
+        },
+        "PublicKey":{
+          "shape":"DnssecPublicKey",
+          "documentation":"<p> The base64-encoded public key part of the key pair that is passed to the registry. </p>"
+        }
+      },
+      "documentation":"<p>Information about a delegation signer (DS) record that was created in the registry by <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AssociateDelegationSignerToDomain.html\">AssociateDelegationSignerToDomain</a>. </p>"
     },
     "DomainAuthCode":{
       "type":"string",
@@ -1136,7 +1332,6 @@
     },
     "DomainSummary":{
       "type":"structure",
-      "required":["DomainName"],
       "members":{
         "DomainName":{
           "shape":"DomainName",
@@ -1216,7 +1411,6 @@
     },
     "EnableDomainTransferLockResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -1235,7 +1429,7 @@
       "members":{
         "Name":{
           "shape":"ExtraParamName",
-          "documentation":"<p>The name of an additional parameter that is required by a top-level domain. Here are the top-level domains that require additional parameters and the names of the parameters that they require:</p> <dl> <dt>.com.au and .net.au</dt> <dd> <ul> <li> <p> <code>AU_ID_NUMBER</code> </p> </li> <li> <p> <code>AU_ID_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ABN</code> (Australian business number)</p> </li> <li> <p> <code>ACN</code> (Australian company number)</p> </li> <li> <p> <code>TM</code> (Trademark number)</p> </li> </ul> </li> </ul> </dd> <dt>.ca</dt> <dd> <ul> <li> <p> <code>BRAND_NUMBER</code> </p> </li> <li> <p> <code>CA_BUSINESS_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>BANK</code> (Bank)</p> </li> <li> <p> <code>COMMERCIAL_COMPANY</code> (Commercial company)</p> </li> <li> <p> <code>COMPANY</code> (Company)</p> </li> <li> <p> <code>COOPERATION</code> (Cooperation)</p> </li> <li> <p> <code>COOPERATIVE</code> (Cooperative)</p> </li> <li> <p> <code>COOPRIX</code> (Cooprix)</p> </li> <li> <p> <code>CORP</code> (Corporation)</p> </li> <li> <p> <code>CREDIT_UNION</code> (Credit union)</p> </li> <li> <p> <code>FOMIA</code> (Federation of mutual insurance associations)</p> </li> <li> <p> <code>INC</code> (Incorporated)</p> </li> <li> <p> <code>LTD</code> (Limited)</p> </li> <li> <p> <code>LTEE</code> (Limitée)</p> </li> <li> <p> <code>LLC</code> (Limited liability corporation)</p> </li> <li> <p> <code>LLP</code> (Limited liability partnership)</p> </li> <li> <p> <code>LTE</code> (Lte.)</p> </li> <li> <p> <code>MBA</code> (Mutual benefit association)</p> </li> <li> <p> <code>MIC</code> (Mutual insurance company)</p> </li> <li> <p> <code>NFP</code> (Not-for-profit corporation)</p> </li> <li> <p> <code>SA</code> (S.A.)</p> </li> <li> <p> <code>SAVINGS_COMPANY</code> (Savings company)</p> </li> <li> <p> <code>SAVINGS_UNION</code> (Savings union)</p> </li> <li> <p> <code>SARL</code> (Société à responsabilité limitée)</p> </li> <li> <p> <code>TRUST</code> (Trust)</p> </li> <li> <p> <code>ULC</code> (Unlimited liability corporation)</p> </li> </ul> </li> <li> <p> <code>CA_LEGAL_TYPE</code> </p> <p>When <code>ContactType</code> is <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ABO</code> (Aboriginal Peoples indigenous to Canada)</p> </li> <li> <p> <code>CCT</code> (Canadian citizen)</p> </li> <li> <p> <code>LGR</code> (Legal Representative of a Canadian Citizen or Permanent Resident)</p> </li> <li> <p> <code>RES</code> (Permanent resident of Canada)</p> </li> </ul> <p>When <code>ContactType</code> is a value other than <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ASS</code> (Canadian unincorporated association)</p> </li> <li> <p> <code>CCO</code> (Canadian corporation)</p> </li> <li> <p> <code>EDU</code> (Canadian educational institution)</p> </li> <li> <p> <code>GOV</code> (Government or government entity in Canada)</p> </li> <li> <p> <code>HOP</code> (Canadian Hospital)</p> </li> <li> <p> <code>INB</code> (Indian Band recognized by the Indian Act of Canada)</p> </li> <li> <p> <code>LAM</code> (Canadian Library, Archive, or Museum)</p> </li> <li> <p> <code>MAJ</code> (Her/His Majesty the Queen/King)</p> </li> <li> <p> <code>OMK</code> (Official mark registered in Canada)</p> </li> <li> <p> <code>PLT</code> (Canadian Political Party)</p> </li> <li> <p> <code>PRT</code> (Partnership Registered in Canada)</p> </li> <li> <p> <code>TDM</code> (Trademark registered in Canada)</p> </li> <li> <p> <code>TRD</code> (Canadian Trade Union)</p> </li> <li> <p> <code>TRS</code> (Trust established in Canada)</p> </li> </ul> </li> </ul> </dd> <dt>.es</dt> <dd> <ul> <li> <p> <code>ES_IDENTIFICATION</code> </p> <p>The value of <code>ES_IDENTIFICATION</code> depends on the following values:</p> <ul> <li> <p>The value of <code>ES_LEGAL_FORM</code> </p> </li> <li> <p>The value of <code>ES_IDENTIFICATION_TYPE</code> </p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is any value other than <code>INDIVIDUAL</code>:</b> </p> <ul> <li> <p>Specify 1 letter + 8 numbers (CIF [Certificado de Identificación Fiscal])</p> </li> <li> <p>Example: B12345678</p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is <code>INDIVIDUAL</code>, the value that you specify for <code>ES_IDENTIFICATION</code> depends on the value of <code>ES_IDENTIFICATION_TYPE</code>:</b> </p> <ul> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>DNI_AND_NIF</code> (for Spanish contacts):</p> <ul> <li> <p>Specify 8 numbers + 1 letter (DNI [Documento Nacional de Identidad], NIF [Número de Identificación Fiscal])</p> </li> <li> <p>Example: 12345678M</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>NIE</code> (for foreigners with legal residence):</p> <ul> <li> <p>Specify 1 letter + 7 numbers + 1 letter ( NIE [Número de Identidad de Extranjero])</p> </li> <li> <p>Example: Y1234567X</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>OTHER</code> (for contacts outside of Spain):</p> <ul> <li> <p>Specify a passport number, drivers license number, or national identity card number</p> </li> </ul> </li> </ul> </li> <li> <p> <code>ES_IDENTIFICATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>DNI_AND_NIF</code> (For Spanish contacts)</p> </li> <li> <p> <code>NIE</code> (For foreigners with legal residence)</p> </li> <li> <p> <code>OTHER</code> (For contacts outside of Spain)</p> </li> </ul> </li> <li> <p> <code>ES_LEGAL_FORM</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ASSOCIATION</code> </p> </li> <li> <p> <code>CENTRAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>CIVIL_SOCIETY</code> </p> </li> <li> <p> <code>COMMUNITY_OF_OWNERS</code> </p> </li> <li> <p> <code>COMMUNITY_PROPERTY</code> </p> </li> <li> <p> <code>CONSULATE</code> </p> </li> <li> <p> <code>COOPERATIVE</code> </p> </li> <li> <p> <code>DESIGNATION_OF_ORIGIN_SUPERVISORY_COUNCIL</code> </p> </li> <li> <p> <code>ECONOMIC_INTEREST_GROUP</code> </p> </li> <li> <p> <code>EMBASSY</code> </p> </li> <li> <p> <code>ENTITY_MANAGING_NATURAL_AREAS</code> </p> </li> <li> <p> <code>FARM_PARTNERSHIP</code> </p> </li> <li> <p> <code>FOUNDATION</code> </p> </li> <li> <p> <code>GENERAL_AND_LIMITED_PARTNERSHIP</code> </p> </li> <li> <p> <code>GENERAL_PARTNERSHIP</code> </p> </li> <li> <p> <code>INDIVIDUAL</code> </p> </li> <li> <p> <code>LIMITED_COMPANY</code> </p> </li> <li> <p> <code>LOCAL_AUTHORITY</code> </p> </li> <li> <p> <code>LOCAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>MUTUAL_INSURANCE_COMPANY</code> </p> </li> <li> <p> <code>NATIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>ORDER_OR_RELIGIOUS_INSTITUTION</code> </p> </li> <li> <p> <code>OTHERS (Only for contacts outside of Spain)</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PROFESSIONAL_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LAW_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>REGIONAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>REGIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>SAVINGS_BANK</code> </p> </li> <li> <p> <code>SPANISH_OFFICE</code> </p> </li> <li> <p> <code>SPORTS_ASSOCIATION</code> </p> </li> <li> <p> <code>SPORTS_FEDERATION</code> </p> </li> <li> <p> <code>SPORTS_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>TEMPORARY_ALLIANCE_OF_ENTERPRISES</code> </p> </li> <li> <p> <code>TRADE_UNION</code> </p> </li> <li> <p> <code>WORKER_OWNED_COMPANY</code> </p> </li> <li> <p> <code>WORKER_OWNED_LIMITED_COMPANY</code> </p> </li> </ul> </li> </ul> </dd> <dt>.eu</dt> <dd> <ul> <li> <p> <code> EU_COUNTRY_OF_CITIZENSHIP</code> </p> </li> </ul> </dd> <dt>.fi</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>FI_BUSINESS_NUMBER</code> </p> </li> <li> <p> <code>FI_ID_NUMBER</code> </p> </li> <li> <p> <code>FI_NATIONALITY</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FINNISH</code> </p> </li> <li> <p> <code>NOT_FINNISH</code> </p> </li> </ul> </li> <li> <p> <code>FI_ORGANIZATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>COMPANY</code> </p> </li> <li> <p> <code>CORPORATION</code> </p> </li> <li> <p> <code>GOVERNMENT</code> </p> </li> <li> <p> <code>INSTITUTION</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PUBLIC_COMMUNITY</code> </p> </li> <li> <p> <code>TOWNSHIP</code> </p> </li> </ul> </li> </ul> </dd> <dt>.fr</dt> <dd> <ul> <li> <p> <code>BIRTH_CITY</code> </p> </li> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>BIRTH_DEPARTMENT</code>: Specify the INSEE code that corresponds with the department where the contact was born. If the contact was born somewhere other than France or its overseas departments, specify <code>99</code>. For more information, including a list of departments and the corresponding INSEE numbers, see the Wikipedia entry <a href=\"https://en.wikipedia.org/wiki/Departments_of_France\">Departments of France</a>.</p> </li> <li> <p> <code>BRAND_NUMBER</code> </p> </li> </ul> </dd> <dt>.it</dt> <dd> <ul> <li> <p> <code>IT_NATIONALITY</code> </p> </li> <li> <p> <code>IT_PIN</code> </p> </li> <li> <p> <code>IT_REGISTRANT_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FOREIGNERS</code> </p> </li> <li> <p> <code>FREELANCE_WORKERS</code> (Freelance workers and professionals)</p> </li> <li> <p> <code>ITALIAN_COMPANIES</code> (Italian companies and one-person companies)</p> </li> <li> <p> <code>NON_PROFIT_ORGANIZATIONS</code> </p> </li> <li> <p> <code>OTHER_SUBJECTS</code> </p> </li> <li> <p> <code>PUBLIC_ORGANIZATIONS</code> </p> </li> </ul> </li> </ul> </dd> <dt>.ru</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>RU_PASSPORT_DATA</code> </p> </li> </ul> </dd> <dt>.se</dt> <dd> <ul> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>SE_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.sg</dt> <dd> <ul> <li> <p> <code>SG_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.co.uk, .me.uk, and .org.uk</dt> <dd> <ul> <li> <p> <code>UK_CONTACT_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>CRC</code> (UK Corporation by Royal Charter)</p> </li> <li> <p> <code>FCORP</code> (Non-UK Corporation)</p> </li> <li> <p> <code>FIND</code> (Non-UK Individual, representing self)</p> </li> <li> <p> <code>FOTHER</code> (Non-UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>GOV</code> (UK Government Body)</p> </li> <li> <p> <code>IND</code> (UK Individual (representing self))</p> </li> <li> <p> <code>IP</code> (UK Industrial/Provident Registered Company)</p> </li> <li> <p> <code>LLP</code> (UK Limited Liability Partnership)</p> </li> <li> <p> <code>LTD</code> (UK Limited Company)</p> </li> <li> <p> <code>OTHER</code> (UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>PLC</code> (UK Public Limited Company)</p> </li> <li> <p> <code>PTNR</code> (UK Partnership)</p> </li> <li> <p> <code>RCHAR</code> (UK Registered Charity)</p> </li> <li> <p> <code>SCH</code> (UK School)</p> </li> <li> <p> <code>STAT</code> (UK Statutory Body)</p> </li> <li> <p> <code>STRA</code> (UK Sole Trader)</p> </li> </ul> </li> <li> <p> <code>UK_COMPANY_NUMBER</code> </p> </li> </ul> </dd> </dl> <p>In addition, many TLDs require a <code>VAT_NUMBER</code>.</p>"
+          "documentation":"<p>The name of an additional parameter that is required by a top-level domain. Here are the top-level domains that require additional parameters and the names of the parameters that they require:</p> <dl> <dt>.com.au and .net.au</dt> <dd> <ul> <li> <p> <code>AU_ID_NUMBER</code> </p> </li> <li> <p> <code>AU_ID_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ABN</code> (Australian business number)</p> </li> <li> <p> <code>ACN</code> (Australian company number)</p> </li> <li> <p> <code>TM</code> (Trademark number)</p> </li> </ul> </li> </ul> </dd> <dt>.ca</dt> <dd> <ul> <li> <p> <code>BRAND_NUMBER</code> </p> </li> <li> <p> <code>CA_BUSINESS_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>BANK</code> (Bank)</p> </li> <li> <p> <code>COMMERCIAL_COMPANY</code> (Commercial company)</p> </li> <li> <p> <code>COMPANY</code> (Company)</p> </li> <li> <p> <code>COOPERATION</code> (Cooperation)</p> </li> <li> <p> <code>COOPERATIVE</code> (Cooperative)</p> </li> <li> <p> <code>COOPRIX</code> (Cooprix)</p> </li> <li> <p> <code>CORP</code> (Corporation)</p> </li> <li> <p> <code>CREDIT_UNION</code> (Credit union)</p> </li> <li> <p> <code>FOMIA</code> (Federation of mutual insurance associations)</p> </li> <li> <p> <code>INC</code> (Incorporated)</p> </li> <li> <p> <code>LTD</code> (Limited)</p> </li> <li> <p> <code>LTEE</code> (Limitée)</p> </li> <li> <p> <code>LLC</code> (Limited liability corporation)</p> </li> <li> <p> <code>LLP</code> (Limited liability partnership)</p> </li> <li> <p> <code>LTE</code> (Lte.)</p> </li> <li> <p> <code>MBA</code> (Mutual benefit association)</p> </li> <li> <p> <code>MIC</code> (Mutual insurance company)</p> </li> <li> <p> <code>NFP</code> (Not-for-profit corporation)</p> </li> <li> <p> <code>SA</code> (S.A.)</p> </li> <li> <p> <code>SAVINGS_COMPANY</code> (Savings company)</p> </li> <li> <p> <code>SAVINGS_UNION</code> (Savings union)</p> </li> <li> <p> <code>SARL</code> (Société à responsabilité limitée)</p> </li> <li> <p> <code>TRUST</code> (Trust)</p> </li> <li> <p> <code>ULC</code> (Unlimited liability corporation)</p> </li> </ul> </li> <li> <p> <code>CA_LEGAL_TYPE</code> </p> <p>When <code>ContactType</code> is <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ABO</code> (Aboriginal Peoples indigenous to Canada)</p> </li> <li> <p> <code>CCT</code> (Canadian citizen)</p> </li> <li> <p> <code>LGR</code> (Legal Representative of a Canadian Citizen or Permanent Resident)</p> </li> <li> <p> <code>RES</code> (Permanent resident of Canada)</p> </li> </ul> <p>When <code>ContactType</code> is a value other than <code>PERSON</code>, valid values include the following:</p> <ul> <li> <p> <code>ASS</code> (Canadian unincorporated association)</p> </li> <li> <p> <code>CCO</code> (Canadian corporation)</p> </li> <li> <p> <code>EDU</code> (Canadian educational institution)</p> </li> <li> <p> <code>GOV</code> (Government or government entity in Canada)</p> </li> <li> <p> <code>HOP</code> (Canadian Hospital)</p> </li> <li> <p> <code>INB</code> (Indian Band recognized by the Indian Act of Canada)</p> </li> <li> <p> <code>LAM</code> (Canadian Library, Archive, or Museum)</p> </li> <li> <p> <code>MAJ</code> (Her/His Majesty the Queen/King)</p> </li> <li> <p> <code>OMK</code> (Official mark registered in Canada)</p> </li> <li> <p> <code>PLT</code> (Canadian Political Party)</p> </li> <li> <p> <code>PRT</code> (Partnership Registered in Canada)</p> </li> <li> <p> <code>TDM</code> (Trademark registered in Canada)</p> </li> <li> <p> <code>TRD</code> (Canadian Trade Union)</p> </li> <li> <p> <code>TRS</code> (Trust established in Canada)</p> </li> </ul> </li> </ul> </dd> <dt>.es</dt> <dd> <ul> <li> <p> <code>ES_IDENTIFICATION</code> </p> <p>The value of <code>ES_IDENTIFICATION</code> depends on the following values:</p> <ul> <li> <p>The value of <code>ES_LEGAL_FORM</code> </p> </li> <li> <p>The value of <code>ES_IDENTIFICATION_TYPE</code> </p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is any value other than <code>INDIVIDUAL</code>:</b> </p> <ul> <li> <p>Specify 1 letter + 8 numbers (CIF [Certificado de Identificación Fiscal])</p> </li> <li> <p>Example: B12345678</p> </li> </ul> <p> <b>If <code>ES_LEGAL_FORM</code> is <code>INDIVIDUAL</code>, the value that you specify for <code>ES_IDENTIFICATION</code> depends on the value of <code>ES_IDENTIFICATION_TYPE</code>:</b> </p> <ul> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>DNI_AND_NIF</code> (for Spanish contacts):</p> <ul> <li> <p>Specify 8 numbers + 1 letter (DNI [Documento Nacional de Identidad], NIF [Número de Identificación Fiscal])</p> </li> <li> <p>Example: 12345678M</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>NIE</code> (for foreigners with legal residence):</p> <ul> <li> <p>Specify 1 letter + 7 numbers + 1 letter ( NIE [Número de Identidad de Extranjero])</p> </li> <li> <p>Example: Y1234567X</p> </li> </ul> </li> <li> <p>If <code>ES_IDENTIFICATION_TYPE</code> is <code>OTHER</code> (for contacts outside of Spain):</p> <ul> <li> <p>Specify a passport number, drivers license number, or national identity card number</p> </li> </ul> </li> </ul> </li> <li> <p> <code>ES_IDENTIFICATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>DNI_AND_NIF</code> (For Spanish contacts)</p> </li> <li> <p> <code>NIE</code> (For foreigners with legal residence)</p> </li> <li> <p> <code>OTHER</code> (For contacts outside of Spain)</p> </li> </ul> </li> <li> <p> <code>ES_LEGAL_FORM</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>ASSOCIATION</code> </p> </li> <li> <p> <code>CENTRAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>CIVIL_SOCIETY</code> </p> </li> <li> <p> <code>COMMUNITY_OF_OWNERS</code> </p> </li> <li> <p> <code>COMMUNITY_PROPERTY</code> </p> </li> <li> <p> <code>CONSULATE</code> </p> </li> <li> <p> <code>COOPERATIVE</code> </p> </li> <li> <p> <code>DESIGNATION_OF_ORIGIN_SUPERVISORY_COUNCIL</code> </p> </li> <li> <p> <code>ECONOMIC_INTEREST_GROUP</code> </p> </li> <li> <p> <code>EMBASSY</code> </p> </li> <li> <p> <code>ENTITY_MANAGING_NATURAL_AREAS</code> </p> </li> <li> <p> <code>FARM_PARTNERSHIP</code> </p> </li> <li> <p> <code>FOUNDATION</code> </p> </li> <li> <p> <code>GENERAL_AND_LIMITED_PARTNERSHIP</code> </p> </li> <li> <p> <code>GENERAL_PARTNERSHIP</code> </p> </li> <li> <p> <code>INDIVIDUAL</code> </p> </li> <li> <p> <code>LIMITED_COMPANY</code> </p> </li> <li> <p> <code>LOCAL_AUTHORITY</code> </p> </li> <li> <p> <code>LOCAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>MUTUAL_INSURANCE_COMPANY</code> </p> </li> <li> <p> <code>NATIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>ORDER_OR_RELIGIOUS_INSTITUTION</code> </p> </li> <li> <p> <code>OTHERS (Only for contacts outside of Spain)</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PROFESSIONAL_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LAW_ASSOCIATION</code> </p> </li> <li> <p> <code>PUBLIC_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>REGIONAL_GOVERNMENT_BODY</code> </p> </li> <li> <p> <code>REGIONAL_PUBLIC_ENTITY</code> </p> </li> <li> <p> <code>SAVINGS_BANK</code> </p> </li> <li> <p> <code>SPANISH_OFFICE</code> </p> </li> <li> <p> <code>SPORTS_ASSOCIATION</code> </p> </li> <li> <p> <code>SPORTS_FEDERATION</code> </p> </li> <li> <p> <code>SPORTS_LIMITED_COMPANY</code> </p> </li> <li> <p> <code>TEMPORARY_ALLIANCE_OF_ENTERPRISES</code> </p> </li> <li> <p> <code>TRADE_UNION</code> </p> </li> <li> <p> <code>WORKER_OWNED_COMPANY</code> </p> </li> <li> <p> <code>WORKER_OWNED_LIMITED_COMPANY</code> </p> </li> </ul> </li> </ul> </dd> <dt>.eu</dt> <dd> <ul> <li> <p> <code> EU_COUNTRY_OF_CITIZENSHIP</code> </p> </li> </ul> </dd> <dt>.fi</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>FI_BUSINESS_NUMBER</code> </p> </li> <li> <p> <code>FI_ID_NUMBER</code> </p> </li> <li> <p> <code>FI_NATIONALITY</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FINNISH</code> </p> </li> <li> <p> <code>NOT_FINNISH</code> </p> </li> </ul> </li> <li> <p> <code>FI_ORGANIZATION_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>COMPANY</code> </p> </li> <li> <p> <code>CORPORATION</code> </p> </li> <li> <p> <code>GOVERNMENT</code> </p> </li> <li> <p> <code>INSTITUTION</code> </p> </li> <li> <p> <code>POLITICAL_PARTY</code> </p> </li> <li> <p> <code>PUBLIC_COMMUNITY</code> </p> </li> <li> <p> <code>TOWNSHIP</code> </p> </li> </ul> </li> </ul> </dd> <dt>.fr</dt> <dd> <ul> <li> <p> <code>BIRTH_CITY</code> </p> </li> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>BIRTH_DEPARTMENT</code>: Specify the INSEE code that corresponds with the department where the contact was born. If the contact was born somewhere other than France or its overseas departments, specify <code>99</code>. For more information, including a list of departments and the corresponding INSEE numbers, see the Wikipedia entry <a href=\"https://en.wikipedia.org/wiki/Departments_of_France\">Departments of France</a>.</p> </li> <li> <p> <code>BRAND_NUMBER</code> </p> </li> </ul> </dd> <dt>.it</dt> <dd> <ul> <li> <p> <code>IT_NATIONALITY</code> </p> </li> <li> <p> <code>IT_PIN</code> </p> </li> <li> <p> <code>IT_REGISTRANT_ENTITY_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>FOREIGNERS</code> </p> </li> <li> <p> <code>FREELANCE_WORKERS</code> (Freelance workers and professionals)</p> </li> <li> <p> <code>ITALIAN_COMPANIES</code> (Italian companies and one-person companies)</p> </li> <li> <p> <code>NON_PROFIT_ORGANIZATIONS</code> </p> </li> <li> <p> <code>OTHER_SUBJECTS</code> </p> </li> <li> <p> <code>PUBLIC_ORGANIZATIONS</code> </p> </li> </ul> </li> </ul> </dd> <dt>.ru</dt> <dd> <ul> <li> <p> <code>BIRTH_DATE_IN_YYYY_MM_DD</code> </p> </li> <li> <p> <code>RU_PASSPORT_DATA</code> </p> </li> </ul> </dd> <dt>.se</dt> <dd> <ul> <li> <p> <code>BIRTH_COUNTRY</code> </p> </li> <li> <p> <code>SE_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.sg</dt> <dd> <ul> <li> <p> <code>SG_ID_NUMBER</code> </p> </li> </ul> </dd> <dt>.uk, .co.uk, .me.uk, and .org.uk</dt> <dd> <ul> <li> <p> <code>UK_CONTACT_TYPE</code> </p> <p>Valid values include the following:</p> <ul> <li> <p> <code>CRC</code> (UK Corporation by Royal Charter)</p> </li> <li> <p> <code>FCORP</code> (Non-UK Corporation)</p> </li> <li> <p> <code>FIND</code> (Non-UK Individual, representing self)</p> </li> <li> <p> <code>FOTHER</code> (Non-UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>GOV</code> (UK Government Body)</p> </li> <li> <p> <code>IND</code> (UK Individual (representing self))</p> </li> <li> <p> <code>IP</code> (UK Industrial/Provident Registered Company)</p> </li> <li> <p> <code>LLP</code> (UK Limited Liability Partnership)</p> </li> <li> <p> <code>LTD</code> (UK Limited Company)</p> </li> <li> <p> <code>OTHER</code> (UK Entity that does not fit into any other category)</p> </li> <li> <p> <code>PLC</code> (UK Public Limited Company)</p> </li> <li> <p> <code>PTNR</code> (UK Partnership)</p> </li> <li> <p> <code>RCHAR</code> (UK Registered Charity)</p> </li> <li> <p> <code>SCH</code> (UK School)</p> </li> <li> <p> <code>STAT</code> (UK Statutory Body)</p> </li> <li> <p> <code>STRA</code> (UK Sole Trader)</p> </li> </ul> </li> <li> <p> <code>UK_COMPANY_NUMBER</code> </p> </li> </ul> </dd> </dl> <p>In addition, many TLDs require a <code>VAT_NUMBER</code>.</p>"
         },
         "Value":{
           "shape":"ExtraParamValue",
@@ -1280,7 +1474,8 @@
         "VAT_NUMBER",
         "UK_CONTACT_TYPE",
         "UK_COMPANY_NUMBER",
-        "EU_COUNTRY_OF_CITIZENSHIP"
+        "EU_COUNTRY_OF_CITIZENSHIP",
+        "AU_PRIORITY_TOKEN"
       ]
     },
     "ExtraParamValue":{
@@ -1356,13 +1551,6 @@
     },
     "GetDomainDetailResponse":{
       "type":"structure",
-      "required":[
-        "DomainName",
-        "Nameservers",
-        "AdminContact",
-        "RegistrantContact",
-        "TechContact"
-      ],
       "members":{
         "DomainName":{
           "shape":"DomainName",
@@ -1370,7 +1558,7 @@
         },
         "Nameservers":{
           "shape":"NameserverList",
-          "documentation":"<p>The name of the domain.</p>"
+          "documentation":"<p>The name servers of the domain.</p>"
         },
         "AutoRenew":{
           "shape":"Boolean",
@@ -1447,6 +1635,10 @@
         "StatusList":{
           "shape":"DomainStatusList",
           "documentation":"<p>An array of domain name status codes, also known as Extensible Provisioning Protocol (EPP) status codes.</p> <p>ICANN, the organization that maintains a central database of domain names, has developed a set of domain name status codes that tell you the status of a variety of operations on a domain name, for example, registering a domain name, transferring a domain name to another registrar, renewing the registration for a domain name, and so on. All registrars use this same set of status codes.</p> <p>For a current list of domain name status codes and an explanation of what each code means, go to the <a href=\"https://www.icann.org/\">ICANN website</a> and search for <code>epp status codes</code>. (Search on the ICANN website; web searches sometimes return an old version of the document.)</p>"
+        },
+        "DnssecKeys":{
+          "shape":"DnssecKeyList",
+          "documentation":"<p>A complex type that contains information about the DNSSEC configuration.</p>"
         }
       },
       "documentation":"<p>The GetDomainDetail response includes the following elements.</p>"
@@ -1519,6 +1711,14 @@
         "SubmittedDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date when the request was submitted.</p>"
+        },
+        "LastUpdatedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the operation was last updated. </p>"
+        },
+        "StatusFlag":{
+          "shape":"StatusFlag",
+          "documentation":"<p> Lists any outstanding operations that require customer action. Valid values are:</p> <ul> <li> <p> <code>PENDING_ACCEPTANCE</code>: The operation is waiting for acceptance from the account that is receiving the domain.</p> </li> <li> <p> <code>PENDING_CUSTOMER_ACTION</code>: The operation is waiting for customer action, for example, returning an email.</p> </li> <li> <p> <code>PENDING_AUTHORIZATION</code>: The operation is waiting for the form of authorization. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ResendOperationAuthorization.html\">ResendOperationAuthorization</a>.</p> </li> <li> <p> <code>PENDING_PAYMENT_VERIFICATION</code>: The operation is waiting for the payment method to validate.</p> </li> <li> <p> <code>PENDING_SUPPORT_CASE</code>: The operation includes a support case and is waiting for its resolution.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The GetOperationDetail response includes the following elements.</p>"
@@ -1549,6 +1749,11 @@
       "exception":true
     },
     "InvoiceId":{"type":"string"},
+    "Label":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "LangCode":{
       "type":"string",
       "max":3
@@ -1584,7 +1789,6 @@
     },
     "ListDomainsResponse":{
       "type":"structure",
-      "required":["Domains"],
       "members":{
         "Domains":{
           "shape":"DomainSummaryList",
@@ -1611,13 +1815,28 @@
         "MaxItems":{
           "shape":"PageMaxItems",
           "documentation":"<p>Number of domains to be returned.</p> <p>Default: 20</p>"
+        },
+        "Status":{
+          "shape":"OperationStatusList",
+          "documentation":"<p> The status of the operations. </p>"
+        },
+        "Type":{
+          "shape":"OperationTypeList",
+          "documentation":"<p> An arrays of the domains operation types. </p>"
+        },
+        "SortBy":{
+          "shape":"ListOperationsSortAttributeName",
+          "documentation":"<p> The sort type for returned values. </p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p> The sort order ofr returned values, either ascending or descending. </p>"
         }
       },
       "documentation":"<p>The ListOperations request includes the following elements.</p>"
     },
     "ListOperationsResponse":{
       "type":"structure",
-      "required":["Operations"],
       "members":{
         "Operations":{
           "shape":"OperationSummaryList",
@@ -1629,6 +1848,10 @@
         }
       },
       "documentation":"<p>The ListOperations response includes the following elements.</p>"
+    },
+    "ListOperationsSortAttributeName":{
+      "type":"string",
+      "enum":["SubmittedDate"]
     },
     "ListPricesRequest":{
       "type":"structure",
@@ -1649,7 +1872,6 @@
     },
     "ListPricesResponse":{
       "type":"structure",
-      "required":["Prices"],
       "members":{
         "Prices":{
           "shape":"DomainPriceList",
@@ -1674,7 +1896,6 @@
     },
     "ListTagsForDomainResponse":{
       "type":"structure",
-      "required":["TagList"],
       "members":{
         "TagList":{
           "shape":"TagList",
@@ -1696,12 +1917,13 @@
           "documentation":"<p>Glue IP address of a name server entry. Glue IP addresses are required only when the name of the name server is a subdomain of the domain. For example, if your domain is example.com and the name server for the domain is ns.example.com, you need to specify the IP address for ns.example.com.</p> <p>Constraints: The list can contain only one IPv4 and one IPv6 address.</p>"
         }
       },
-      "documentation":"<p>Nameserver includes the following elements.</p>"
+      "documentation":"<p>Name server includes the following elements.</p>"
     },
     "NameserverList":{
       "type":"list",
       "member":{"shape":"Nameserver"}
     },
+    "NullableInteger":{"type":"integer"},
     "OperationId":{
       "type":"string",
       "max":255
@@ -1727,14 +1949,13 @@
         "FAILED"
       ]
     },
+    "OperationStatusList":{
+      "type":"list",
+      "member":{"shape":"OperationStatus"},
+      "max":5
+    },
     "OperationSummary":{
       "type":"structure",
-      "required":[
-        "OperationId",
-        "Status",
-        "Type",
-        "SubmittedDate"
-      ],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -1751,6 +1972,22 @@
         "SubmittedDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date when the request was submitted.</p>"
+        },
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p> Name of the domain. </p>"
+        },
+        "Message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> Message about the operation. </p>"
+        },
+        "StatusFlag":{
+          "shape":"StatusFlag",
+          "documentation":"<p> Automatically checks whether there are no outstanding operations on domains that need customer attention. </p> <p> Valid values are:</p> <ul> <li> <p> <code>PENDING_ACCEPTANCE</code>: The operation is waiting for acceptance from the account that is receiving the domain.</p> </li> <li> <p> <code>PENDING_CUSTOMER_ACTION</code>: The operation is waiting for customer action, for example, returning an email.</p> </li> <li> <p> <code>PENDING_AUTHORIZATION</code>: The operation is waiting for the form of authorization. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ResendOperationAuthorization.html\">ResendOperationAuthorization</a>.</p> </li> <li> <p> <code>PENDING_PAYMENT_VERIFICATION</code>: The operation is waiting for the payment method to validate.</p> </li> <li> <p> <code>PENDING_SUPPORT_CASE</code>: The operation includes a support case and is waiting for its resolution.</p> </li> </ul>"
+        },
+        "LastUpdatedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the last change was made in Unix time format and Coordinated Universal Time (UTC). </p>"
         }
       },
       "documentation":"<p>OperationSummary includes the following elements.</p>"
@@ -1781,6 +2018,11 @@
         "INTERNAL_TRANSFER_OUT_DOMAIN",
         "INTERNAL_TRANSFER_IN_DOMAIN"
       ]
+    },
+    "OperationTypeList":{
+      "type":"list",
+      "member":{"shape":"OperationType"},
+      "max":18
     },
     "Operator":{
       "type":"string",
@@ -1817,6 +2059,23 @@
       },
       "documentation":"<p>Currency-specific price information.</p>"
     },
+    "PushDomainRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Target"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p> Name of the domain. </p>"
+        },
+        "Target":{
+          "shape":"Label",
+          "documentation":"<p> New IPS tag for the domain. </p>"
+        }
+      }
+    },
     "ReachabilityStatus":{
       "type":"string",
       "enum":[
@@ -1849,7 +2108,7 @@
         },
         "AutoRenew":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the domain will be automatically renewed (<code>true</code>) or not (<code>false</code>). Autorenewal only takes effect after the account is charged.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>Indicates whether the domain will be automatically renewed (<code>true</code>) or not (<code>false</code>). Auto renewal only takes effect after the account is charged.</p> <p>Default: <code>true</code> </p>"
         },
         "AdminContact":{
           "shape":"ContactDetail",
@@ -1880,7 +2139,6 @@
     },
     "RegisterDomainResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -1938,7 +2196,6 @@
     },
     "RenewDomainResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -1973,6 +2230,16 @@
         }
       }
     },
+    "ResendOperationAuthorizationRequest":{
+      "type":"structure",
+      "required":["OperationId"],
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p> Operation ID. </p>"
+        }
+      }
+    },
     "RetrieveDomainAuthCodeRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -1986,7 +2253,6 @@
     },
     "RetrieveDomainAuthCodeResponse":{
       "type":"structure",
-      "required":["AuthCode"],
       "members":{
         "AuthCode":{
           "shape":"DomainAuthCode",
@@ -2023,6 +2289,16 @@
     "State":{
       "type":"string",
       "max":255
+    },
+    "StatusFlag":{
+      "type":"string",
+      "enum":[
+        "PENDING_ACCEPTANCE",
+        "PENDING_CUSTOMER_ACTION",
+        "PENDING_AUTHORIZATION",
+        "PENDING_PAYMENT_VERIFICATION",
+        "PENDING_SUPPORT_CASE"
+      ]
     },
     "String":{"type":"string"},
     "TLDRulesViolation":{
@@ -2072,7 +2348,7 @@
     "TldName":{
       "type":"string",
       "max":255,
-      "min":1
+      "min":2
     },
     "TransferDomainRequest":{
       "type":"structure",
@@ -2106,7 +2382,7 @@
         },
         "AutoRenew":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the domain will be automatically renewed (true) or not (false). Autorenewal only takes effect after the account is charged.</p> <p>Default: true</p>"
+          "documentation":"<p>Indicates whether the domain will be automatically renewed (true) or not (false). Auto renewal only takes effect after the account is charged.</p> <p>Default: true</p>"
         },
         "AdminContact":{
           "shape":"ContactDetail",
@@ -2137,7 +2413,6 @@
     },
     "TransferDomainResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -2180,11 +2455,14 @@
     },
     "Transferable":{
       "type":"string",
-      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> for <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>Reserved for future use.</p> </dd> </dl>",
+      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> or <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>Reserved for future use.</p> </dd> <dt>DOMAIN_IN_OWN_ACCOUNT</dt> <dd> <p>The domain already exists in the current Amazon Web Services account.</p> </dd> <dt>DOMAIN_IN_ANOTHER_ACCOUNT</dt> <dd> <p> the domain exists in another Amazon Web Services account.</p> </dd> <dt>PREMIUM_DOMAIN</dt> <dd> <p>Premium domain transfer is not supported.</p> </dd> </dl>",
       "enum":[
         "TRANSFERABLE",
         "UNTRANSFERABLE",
-        "DONT_KNOW"
+        "DONT_KNOW",
+        "DOMAIN_IN_OWN_ACCOUNT",
+        "DOMAIN_IN_ANOTHER_ACCOUNT",
+        "PREMIUM_DOMAIN"
       ]
     },
     "UnsupportedTLD":{
@@ -2223,7 +2501,6 @@
     },
     "UpdateDomainContactPrivacyResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -2251,13 +2528,16 @@
         "TechContact":{
           "shape":"ContactDetail",
           "documentation":"<p>Provides detailed contact information.</p>"
+        },
+        "Consent":{
+          "shape":"Consent",
+          "documentation":"<p> Customer's consent for the owner change request. </p>"
         }
       },
       "documentation":"<p>The UpdateDomainContact request includes the following elements.</p>"
     },
     "UpdateDomainContactResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",
@@ -2291,7 +2571,6 @@
     },
     "UpdateDomainNameserversResponse":{
       "type":"structure",
-      "required":["OperationId"],
       "members":{
         "OperationId":{
           "shape":"OperationId",

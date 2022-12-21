@@ -117,6 +117,38 @@
       ],
       "documentation":"<p>Gets the <code>ImageGenerationConfiguration</code> for a given Kinesis video stream.</p>"
     },
+    "DescribeMappedResourceConfiguration":{
+      "name":"DescribeMappedResourceConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describeMappedResourceConfiguration"
+      },
+      "input":{"shape":"DescribeMappedResourceConfigurationInput"},
+      "output":{"shape":"DescribeMappedResourceConfigurationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientLimitExceededException"}
+      ],
+      "documentation":"<p>Returns the most current information about the stream. Either streamName or streamARN should be provided in the input.</p> <p>Returns the most current information about the stream. The <code>streamName</code> or <code>streamARN</code> should be provided in the input.</p>"
+    },
+    "DescribeMediaStorageConfiguration":{
+      "name":"DescribeMediaStorageConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describeMediaStorageConfiguration"
+      },
+      "input":{"shape":"DescribeMediaStorageConfigurationInput"},
+      "output":{"shape":"DescribeMediaStorageConfigurationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientLimitExceededException"}
+      ],
+      "documentation":"<p>Returns the most current information about the channel. Specify the <code>ChannelName</code> or <code>ChannelARN</code> in the input.</p>"
+    },
     "DescribeNotificationConfiguration":{
       "name":"DescribeNotificationConfiguration",
       "http":{
@@ -276,7 +308,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>An asynchronous API that updates a stream’s existing edge configuration. If this API is invoked for the first time, a new edge configuration will be created for the stream, and the sync status will be set to <code>SYNCING</code>. </p> <p>The Kinesis Video Stream will sync the stream’s edge configuration with the Edge Agent IoT Greengrass component that runs on an IoT Hub Device setup at your premise. The time to sync can vary and depends on the connectivity of the Hub Device. The <code>SyncStatus</code> will be updated as the edge configuration is acknowledged, and synced with the Edge Agent. You will have to wait for the sync status to reach a terminal state such as: <code>IN_SYNC</code> and <code>SYNC_FAILED</code>, before using this API again.</p> <p>If you invoke this API during the syncing process, a <code>ResourceInUseException</code> will be thrown. The connectivity of the stream's edge configuration and the Edge Agent will be retried for 15 minutes. After 15 minutes, the status will transition into the <code>SYNC_FAILED</code> state. </p>"
+      "documentation":"<p>An asynchronous API that updates a stream’s existing edge configuration. The Kinesis Video Stream will sync the stream’s edge configuration with the Edge Agent IoT Greengrass component that runs on an IoT Hub Device, setup at your premise. The time to sync can vary and depends on the connectivity of the Hub Device. The <code>SyncStatus</code> will be updated as the edge configuration is acknowledged, and synced with the Edge Agent. </p> <p>If this API is invoked for the first time, a new edge configuration will be created for the stream, and the sync status will be set to <code>SYNCING</code>. You will have to wait for the sync status to reach a terminal state such as: <code>IN_SYNC</code>, or <code>SYNC_FAILED</code>, before using this API again. If you invoke this API during the syncing process, a <code>ResourceInUseException</code> will be thrown. The connectivity of the stream’s edge configuration and the Edge Agent will be retried for 15 minutes. After 15 minutes, the status will transition into the <code>SYNC_FAILED</code> state.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -381,6 +413,24 @@
         {"shape":"NoDataRetentionException"}
       ],
       "documentation":"<p>Updates the <code>StreamInfo</code> and <code>ImageProcessingConfiguration</code> fields.</p>"
+    },
+    "UpdateMediaStorageConfiguration":{
+      "name":"UpdateMediaStorageConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/updateMediaStorageConfiguration"
+      },
+      "input":{"shape":"UpdateMediaStorageConfigurationInput"},
+      "output":{"shape":"UpdateMediaStorageConfigurationOutput"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoDataRetentionException"}
+      ],
+      "documentation":"<p>Associates a <code>SignalingChannel</code> to a stream to store the media. There are two signaling modes that can specified :</p> <ul> <li> <p>If the <code>StorageStatus</code> is disabled, no data will be stored, and the <code>StreamARN</code> parameter will not be needed. </p> </li> <li> <p>If the <code>StorageStatus</code> is enabled, the data will be stored in the <code>StreamARN</code> provided. </p> </li> </ul>"
     },
     "UpdateNotificationConfiguration":{
       "name":"UpdateNotificationConfiguration",
@@ -540,7 +590,8 @@
       "type":"string",
       "enum":[
         "WSS",
-        "HTTPS"
+        "HTTPS",
+        "WEBRTC"
       ]
     },
     "ChannelRole":{
@@ -781,6 +832,62 @@
         }
       }
     },
+    "DescribeMappedResourceConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream.</p>"
+        },
+        "MaxResults":{
+          "shape":"MappedResourceConfigurationListLimit",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to provide in your next request, to get another batch of results.</p>"
+        }
+      }
+    },
+    "DescribeMappedResourceConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "MappedResourceConfigurationList":{
+          "shape":"MappedResourceConfigurationList",
+          "documentation":"<p>A structure that encapsulates, or contains, the media storage configuration properties.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that was used in the <code>NextToken</code>request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "DescribeMediaStorageConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "ChannelName":{
+          "shape":"ChannelName",
+          "documentation":"<p>The name of the channel.</p>"
+        },
+        "ChannelARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel.</p>"
+        }
+      }
+    },
+    "DescribeMediaStorageConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "MediaStorageConfiguration":{
+          "shape":"MediaStorageConfiguration",
+          "documentation":"<p>A structure that encapsulates, or contains, the media storage configuration properties.</p>"
+        }
+      }
+    },
     "DescribeNotificationConfigurationInput":{
       "type":"structure",
       "members":{
@@ -896,7 +1003,7 @@
         },
         "UploaderConfig":{
           "shape":"UploaderConfig",
-          "documentation":"<p>The uploader configuration contains the <code>ScheduleExpression</code> details that are used, to schedule upload jobs for the recorded media files from the Edge Agent, to a Kinesis Video Stream.</p>"
+          "documentation":"<p>The uploader configuration contains the <code>ScheduleExpression</code> details that are used to schedule upload jobs for the recorded media files from the Edge Agent to a Kinesis Video Stream.</p>"
         },
         "DeletionConfig":{
           "shape":"DeletionConfig",
@@ -1242,6 +1349,31 @@
       },
       "documentation":"<p>The configuration details that include the maximum size of the media (<code>MaxLocalMediaSizeInMB</code>) that you want to store for a stream on the Edge Agent, as well as the strategy that should be used (<code>StrategyOnFullSize</code>) when a stream's maximum size has been reached.</p>"
     },
+    "MappedResourceConfigurationList":{
+      "type":"list",
+      "member":{"shape":"MappedResourceConfigurationListItem"},
+      "max":1,
+      "min":0
+    },
+    "MappedResourceConfigurationListItem":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"Type",
+          "documentation":"<p>The type of the associated resource for the kinesis video stream.</p>"
+        },
+        "ARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis Video Stream resource, associated with the stream.</p>"
+        }
+      },
+      "documentation":"<p>A structure that encapsulates, or contains, the media storage configuration properties.</p>"
+    },
+    "MappedResourceConfigurationListLimit":{
+      "type":"integer",
+      "max":1,
+      "min":1
+    },
     "MaxLocalMediaSizeInMB":{
       "type":"integer",
       "max":2000000,
@@ -1260,10 +1392,32 @@
         },
         "MediaUriType":{
           "shape":"MediaUriType",
-          "documentation":"<p>The Uniform Resource Identifier (Uri) type. The <code>FILE_URI</code> value can be used to stream local media files.</p>"
+          "documentation":"<p>The Uniform Resource Identifier (URI) type. The <code>FILE_URI</code> value can be used to stream local media files.</p> <note> <p>Preview only supports the <code>RTSP_URI</code> media source URI format .</p> </note>"
         }
       },
       "documentation":"<p>The configuration details that consist of the credentials required (<code>MediaUriSecretArn</code> and <code>MediaUriType</code>) to access the media files that are streamed to the camera.</p>"
+    },
+    "MediaStorageConfiguration":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream </p>"
+        },
+        "Status":{
+          "shape":"MediaStorageConfigurationStatus",
+          "documentation":"<p>The status of the media storage configuration.</p>"
+        }
+      },
+      "documentation":"<p>A structure that encapsulates, or contains, the media storage configuration properties.</p>"
+    },
+    "MediaStorageConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "MediaType":{
       "type":"string",
@@ -1388,7 +1542,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The resource is currently not available for this operation. New resources cannot be created with the same name as existing resources. Also, resources cannot be updated or deleted unless they are in an <code>ACTIVE</code> state.</p> <p>If this exception is returned, do not use it to determine whether the requested resource already exists. Instead, it is recommended you use the resource-specific describe API, for example, <code>DescribeStream</code> for video streams.</p>",
+      "documentation":"<p>When the input <code>StreamARN</code> or <code>ChannelARN</code> in <code>CLOUD_STORAGE_MODE</code> is already mapped to a different Kinesis Video Stream resource, or if the provided input <code>StreamARN</code> or <code>ChannelARN</code> is not in Active status, try one of the following : </p> <ol> <li> <p>The <code>DescribeMediaStorageConfiguration</code> API to determine what the stream given channel is mapped to. </p> </li> <li> <p>The <code>DescribeMappedResourceConfiguration</code> API to determine the channel that the given stream is mapped to. </p> </li> <li> <p>The <code>DescribeStream</code> or <code>DescribeSignalingChannel</code> API to determine the status of the resource. </p> </li> </ol>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1717,6 +1871,7 @@
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
+    "Type":{"type":"string"},
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -1826,6 +1981,28 @@
       "members":{
       }
     },
+    "UpdateMediaStorageConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "ChannelARN",
+        "MediaStorageConfiguration"
+      ],
+      "members":{
+        "ChannelARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel.</p>"
+        },
+        "MediaStorageConfiguration":{
+          "shape":"MediaStorageConfiguration",
+          "documentation":"<p>A structure that encapsulates, or contains, the media storage configuration properties.</p>"
+        }
+      }
+    },
+    "UpdateMediaStorageConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateNotificationConfigurationInput":{
       "type":"structure",
       "members":{
@@ -1914,7 +2091,7 @@
           "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code>details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in recording mode.</p>"
         }
       },
-      "documentation":"<p>The configuration that consists of the <code>ScheduleConfig</code> attribute that's required, to schedule the jobs to upload the recorded media files onto the Edge Agent in a Kinesis Video Stream. </p>"
+      "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutesdetails</code>, that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in upload mode. </p>"
     },
     "Version":{
       "type":"string",

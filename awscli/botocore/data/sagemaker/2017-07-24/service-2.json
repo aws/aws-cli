@@ -291,7 +291,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates an SageMaker <i>experiment</i>. An experiment is a collection of <i>trials</i> that are observed, compared and evaluated as a group. A trial is a set of steps, called <i>trial components</i>, that produce a machine learning model.</p> <p>The goal of an experiment is to determine the components that produce the best model. Multiple trials are performed, each one isolating and measuring the impact of a change to one or more inputs, while keeping the remaining inputs constant.</p> <p>When you use SageMaker Studio or the SageMaker Python SDK, all experiments, trials, and trial components are automatically tracked, logged, and indexed. When you use the Amazon Web Services SDK for Python (Boto), you must use the logging APIs provided by the SDK.</p> <p>You can add tags to experiments, trials, trial components and then use the <a>Search</a> API to search for the tags.</p> <p>To add a description to an experiment, specify the optional <code>Description</code> parameter. To add a description later, or to change the description, call the <a>UpdateExperiment</a> API.</p> <p>To get a list of all your experiments, call the <a>ListExperiments</a> API. To view an experiment's properties, call the <a>DescribeExperiment</a> API. To get a list of all the trials associated with an experiment, call the <a>ListTrials</a> API. To create a trial call the <a>CreateTrial</a> API.</p>"
+      "documentation":"<p>Creates a SageMaker <i>experiment</i>. An experiment is a collection of <i>trials</i> that are observed, compared and evaluated as a group. A trial is a set of steps, called <i>trial components</i>, that produce a machine learning model.</p> <note> <p>In the Studio UI, trials are referred to as <i>run groups</i> and trial components are referred to as <i>runs</i>.</p> </note> <p>The goal of an experiment is to determine the components that produce the best model. Multiple trials are performed, each one isolating and measuring the impact of a change to one or more inputs, while keeping the remaining inputs constant.</p> <p>When you use SageMaker Studio or the SageMaker Python SDK, all experiments, trials, and trial components are automatically tracked, logged, and indexed. When you use the Amazon Web Services SDK for Python (Boto), you must use the logging APIs provided by the SDK.</p> <p>You can add tags to experiments, trials, trial components and then use the <a>Search</a> API to search for the tags.</p> <p>To add a description to an experiment, specify the optional <code>Description</code> parameter. To add a description later, or to change the description, call the <a>UpdateExperiment</a> API.</p> <p>To get a list of all your experiments, call the <a>ListExperiments</a> API. To view an experiment's properties, call the <a>DescribeExperiment</a> API. To get a list of all the trials associated with an experiment, call the <a>ListTrials</a> API. To create a trial call the <a>CreateTrial</a> API.</p>"
     },
     "CreateFeatureGroup":{
       "name":"CreateFeatureGroup",
@@ -404,7 +404,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p> Creates an inference experiment using the configurations specified in the request. </p> <p> Use this API to schedule an experiment to compare model variants on a Amazon SageMaker inference endpoint. For more information about inference experiments, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html\">Shadow tests</a>. </p> <p> Amazon SageMaker begins your experiment at the scheduled time and routes traffic to your endpoint's model variants based on your specified configuration. </p> <p> While the experiment is in progress or after it has concluded, you can view metrics that compare your model variants. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests-view-monitor-edit.html\">View, monitor, and edit shadow tests</a>. </p>"
+      "documentation":"<p> Creates an inference experiment using the configurations specified in the request. </p> <p> Use this API to setup and schedule an experiment to compare model variants on a Amazon SageMaker inference endpoint. For more information about inference experiments, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html\">Shadow tests</a>. </p> <p> Amazon SageMaker begins your experiment at the scheduled time and routes traffic to your endpoint's model variants based on your specified configuration. </p> <p> While the experiment is in progress or after it has concluded, you can view metrics that compare your model variants. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests-view-monitor-edit.html\">View, monitor, and edit shadow tests</a>. </p>"
     },
     "CreateInferenceRecommendationsJob":{
       "name":"CreateInferenceRecommendationsJob",
@@ -2145,6 +2145,19 @@
       "output":{"shape":"ListAlgorithmsOutput"},
       "documentation":"<p>Lists the machine learning algorithms that have been created.</p>"
     },
+    "ListAliases":{
+      "name":"ListAliases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAliasesRequest"},
+      "output":{"shape":"ListAliasesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Lists the aliases of a specified image or image version.</p>"
+    },
     "ListAppImageConfigs":{
       "name":"ListAppImageConfigs",
       "http":{
@@ -3395,6 +3408,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Updates the properties of a SageMaker image. To change the image's tags, use the <a>AddTags</a> and <a>DeleteTags</a> APIs.</p>"
+    },
+    "UpdateImageVersion":{
+      "name":"UpdateImageVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateImageVersionRequest"},
+      "output":{"shape":"UpdateImageVersionResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Updates the properties of a SageMaker image version.</p>"
     },
     "UpdateInferenceExperiment":{
       "name":"UpdateInferenceExperiment",
@@ -4877,7 +4904,7 @@
       "members":{
         "MetricName":{
           "shape":"AutoMLMetricEnum",
-          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. This metric is optimized during training to provide the best estimate for model parameter values from data.</p> <p>Here are the options:</p> <ul> <li> <p> <code>MSE</code>: The mean squared error (MSE) is the average of the squared differences between the predicted and actual values. It is used for regression. MSE values are always positive: the better a model is at predicting the actual values, the smaller the MSE value is. When the data contains outliers, they tend to dominate the MSE, which might cause subpar prediction performance.</p> </li> <li> <p> <code>Accuracy</code>: The ratio of the number of correctly classified items to the total number of (correctly and incorrectly) classified items. It is used for binary and multiclass classification. It measures how close the predicted class values are to the actual values. Accuracy values vary between zero and one: one indicates perfect accuracy and zero indicates perfect inaccuracy.</p> </li> <li> <p> <code>F1</code>: The F1 score is the harmonic mean of the precision and recall. It is used for binary classification into classes traditionally referred to as positive and negative. Predictions are said to be true when they match their actual (correct) class and false when they do not. Precision is the ratio of the true positive predictions to all positive predictions (including the false positives) in a data set and measures the quality of the prediction when it predicts the positive class. Recall (or sensitivity) is the ratio of the true positive predictions to all actual positive instances and measures how completely a model predicts the actual class members in a data set. The standard F1 score weighs precision and recall equally. But which metric is paramount typically depends on specific aspects of a problem. F1 scores vary between zero and one: one indicates the best possible performance and zero the worst.</p> </li> <li> <p> <code>AUC</code>: The area under the curve (AUC) metric is used to compare and evaluate binary classification by algorithms such as logistic regression that return probabilities. A threshold is needed to map the probabilities into classifications. The relevant curve is the receiver operating characteristic curve that plots the true positive rate (TPR) of predictions (or recall) against the false positive rate (FPR) as a function of the threshold value, above which a prediction is considered positive. Increasing the threshold results in fewer false positives but more false negatives. AUC is the area under this receiver operating characteristic curve and so provides an aggregated measure of the model performance across all possible classification thresholds. The AUC score can also be interpreted as the probability that a randomly selected positive data point is more likely to be predicted positive than a randomly selected negative example. AUC scores vary between zero and one: a score of one indicates perfect accuracy and a score of one half indicates that the prediction is not better than a random classifier. Values under one half predict less accurately than a random predictor. But such consistently bad predictors can simply be inverted to obtain better than random predictors.</p> </li> <li> <p> <code>F1macro</code>: The F1macro score applies F1 scoring to multiclass classification. In this context, you have multiple classes to predict. You just calculate the precision and recall for each class as you did for the positive class in binary classification. Then, use these values to calculate the F1 score for each class and average them to obtain the F1macro score. F1macro scores vary between zero and one: one indicates the best possible performance and zero the worst.</p> </li> </ul> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p> <code>MSE</code>: for regression.</p> </li> <li> <p> <code>F1</code>: for binary classification</p> </li> <li> <p> <code>Accuracy</code>: for multiclass classification.</p> </li> </ul>"
+          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. This metric is optimized during training to provide the best estimate for model parameter values from data.</p> <p>Here are the options:</p> <dl> <dt>Accuracy</dt> <dd> <p> The ratio of the number of correctly classified items to the total number of (correctly and incorrectly) classified items. It is used for both binary and multiclass classification. Accuracy measures how close the predicted class values are to the actual values. Values for accuracy metrics vary between zero (0) and one (1). A value of 1 indicates perfect accuracy, and 0 indicates perfect inaccuracy.</p> </dd> <dt>AUC</dt> <dd> <p>The area under the curve (AUC) metric is used to compare and evaluate binary classification by algorithms that return probabilities, such as logistic regression. To map the probabilities into classifications, these are compared against a threshold value. </p> <p>The relevant curve is the receiver operating characteristic curve (ROC curve). The ROC curve plots the true positive rate (TPR) of predictions (or recall) against the false positive rate (FPR) as a function of the threshold value, above which a prediction is considered positive. Increasing the threshold results in fewer false positives, but more false negatives. </p> <p>AUC is the area under this ROC curve. Therefore, AUC provides an aggregated measure of the model performance across all possible classification thresholds. AUC scores vary between 0 and 1. A score of 1 indicates perfect accuracy, and a score of one half (0.5) indicates that the prediction is not better than a random classifier. </p> </dd> <dt>BalancedAccuracy</dt> <dd> <p> <code>BalancedAccuracy</code> is a metric that measures the ratio of accurate predictions to all predictions. This ratio is calculated after normalizing true positives (TP) and true negatives (TN) by the total number of positive (P) and negative (N) values. It is used in both binary and multiclass classification and is defined as follows: 0.5*((TP/P)+(TN/N)), with values ranging from 0 to 1. <code>BalancedAccuracy</code> gives a better measure of accuracy when the number of positives or negatives differ greatly from each other in an imbalanced dataset. For example, when only 1% of email is spam. </p> </dd> <dt>F1</dt> <dd> <p>The <code>F1</code> score is the harmonic mean of the precision and recall, defined as follows: F1 = 2 * (precision * recall) / (precision + recall). It is used for binary classification into classes traditionally referred to as positive and negative. Predictions are said to be true when they match their actual (correct) class, and false when they do not. </p> <p>Precision is the ratio of the true positive predictions to all positive predictions, and it includes the false positives in a dataset. Precision measures the quality of the prediction when it predicts the positive class. </p> <p>Recall (or sensitivity) is the ratio of the true positive predictions to all actual positive instances. Recall measures how completely a model predicts the actual class members in a dataset. </p> <p>F1 scores vary between 0 and 1. A score of 1 indicates the best possible performance, and 0 indicates the worst.</p> </dd> <dt>F1macro</dt> <dd> <p>The <code>F1macro</code> score applies F1 scoring to multiclass classification problems. It does this by calculating the precision and recall, and then taking their harmonic mean to calculate the F1 score for each class. Lastly, the F1macro averages the individual scores to obtain the <code>F1macro</code> score. <code>F1macro</code> scores vary between 0 and 1. A score of 1 indicates the best possible performance, and 0 indicates the worst.</p> </dd> <dt>MAE</dt> <dd> <p>The mean absolute error (MAE) is a measure of how different the predicted and actual values are, when they're averaged over all values. MAE is commonly used in regression analysis to understand model prediction error. If there is linear regression, MAE represents the average distance from a predicted line to the actual value. MAE is defined as the sum of absolute errors divided by the number of observations. Values range from 0 to infinity, with smaller numbers indicating a better model fit to the data.</p> </dd> <dt>MSE</dt> <dd> <p>The mean squared error (MSE) is the average of the squared differences between the predicted and actual values. It is used for regression. MSE values are always positive. The better a model is at predicting the actual values, the smaller the MSE value is</p> </dd> <dt>Precision</dt> <dd> <p>Precision measures how well an algorithm predicts the true positives (TP) out of all of the positives that it identifies. It is defined as follows: Precision = TP/(TP+FP), with values ranging from zero (0) to one (1), and is used in binary classification. Precision is an important metric when the cost of a false positive is high. For example, the cost of a false positive is very high if an airplane safety system is falsely deemed safe to fly. A false positive (FP) reflects a positive prediction that is actually negative in the data.</p> </dd> <dt>PrecisionMacro</dt> <dd> <p>The precision macro computes precision for multiclass classification problems. It does this by calculating precision for each class and averaging scores to obtain precision for several classes. <code>PrecisionMacro</code> scores range from zero (0) to one (1). Higher scores reflect the model's ability to predict true positives (TP) out of all of the positives that it identifies, averaged across multiple classes.</p> </dd> <dt>R2</dt> <dd> <p>R2, also known as the coefficient of determination, is used in regression to quantify how much a model can explain the variance of a dependent variable. Values range from one (1) to negative one (-1). Higher numbers indicate a higher fraction of explained variability. <code>R2</code> values close to zero (0) indicate that very little of the dependent variable can be explained by the model. Negative values indicate a poor fit and that the model is outperformed by a constant function. For linear regression, this is a horizontal line.</p> </dd> <dt>Recall</dt> <dd> <p>Recall measures how well an algorithm correctly predicts all of the true positives (TP) in a dataset. A true positive is a positive prediction that is also an actual positive value in the data. Recall is defined as follows: Recall = TP/(TP+FN), with values ranging from 0 to 1. Higher scores reflect a better ability of the model to predict true positives (TP) in the data, and is used in binary classification. </p> <p>Recall is important when testing for cancer because it's used to find all of the true positives. A false positive (FP) reflects a positive prediction that is actually negative in the data. It is often insufficient to measure only recall, because predicting every output as a true positive will yield a perfect recall score.</p> </dd> <dt>RecallMacro</dt> <dd> <p>The RecallMacro computes recall for multiclass classification problems by calculating recall for each class and averaging scores to obtain recall for several classes. RecallMacro scores range from 0 to 1. Higher scores reflect the model's ability to predict true positives (TP) in a dataset. Whereas, a true positive reflects a positive prediction that is also an actual positive value in the data. It is often insufficient to measure only recall, because predicting every output as a true positive will yield a perfect recall score.</p> </dd> <dt>RMSE</dt> <dd> <p>Root mean squared error (RMSE) measures the square root of the squared difference between predicted and actual values, and it's averaged over all values. It is used in regression analysis to understand model prediction error. It's an important metric to indicate the presence of large model errors and outliers. Values range from zero (0) to infinity, with smaller numbers indicating a better model fit to the data. RMSE is dependent on scale, and should not be used to compare datasets of different sizes.</p> </dd> </dl> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p> <code>MSE</code>: for regression.</p> </li> <li> <p> <code>F1</code>: for binary classification</p> </li> <li> <p> <code>Accuracy</code>: for multiclass classification.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job.</p>"
@@ -4997,7 +5024,15 @@
         "MSE",
         "F1",
         "F1macro",
-        "AUC"
+        "AUC",
+        "RMSE",
+        "MAE",
+        "R2",
+        "BalancedAccuracy",
+        "Precision",
+        "PrecisionMacro",
+        "Recall",
+        "RecallMacro"
       ]
     },
     "AutoMLMetricExtendedEnum":{
@@ -6776,7 +6811,7 @@
         },
         "UserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile name.</p>"
+          "documentation":"<p>The user profile name. If this value is not set, then <code>SpaceName</code> must be set.</p>"
         },
         "AppType":{
           "shape":"AppType",
@@ -6796,7 +6831,7 @@
         },
         "SpaceName":{
           "shape":"SpaceName",
-          "documentation":"<p>The name of the space.</p>"
+          "documentation":"<p>The name of the space. If this value is not set, then <code>UserProfileName</code> must be set.</p>"
         }
       }
     },
@@ -7313,7 +7348,7 @@
         },
         "ProductionVariants":{
           "shape":"ProductionVariantList",
-          "documentation":"<p>An list of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint.</p>"
+          "documentation":"<p>An array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint.</p>"
         },
         "DataCaptureConfig":{"shape":"DataCaptureConfig"},
         "Tags":{
@@ -7334,7 +7369,7 @@
         },
         "ShadowProductionVariants":{
           "shape":"ProductionVariantList",
-          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
+          "documentation":"<p>An array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>. If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>.</p>"
         }
       }
     },
@@ -7442,7 +7477,7 @@
         },
         "OfflineStoreConfig":{
           "shape":"OfflineStoreConfig",
-          "documentation":"<p>Use this to configure an <code>OfflineFeatureStore</code>. This parameter allows you to specify:</p> <ul> <li> <p>The Amazon Simple Storage Service (Amazon S3) location of an <code>OfflineStore</code>.</p> </li> <li> <p>A configuration for an Amazon Web Services Glue or Amazon Web Services Hive data catalog. </p> </li> <li> <p>An KMS encryption key to encrypt the Amazon S3 location used for <code>OfflineStore</code>. If KMS encryption key is not specified, by default we encrypt all data at rest using Amazon Web Services KMS key. By defining your <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html\">bucket-level key</a> for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99 percent.</p> </li> </ul> <p>To learn more about this parameter, see <a>OfflineStoreConfig</a>.</p>"
+          "documentation":"<p>Use this to configure an <code>OfflineFeatureStore</code>. This parameter allows you to specify:</p> <ul> <li> <p>The Amazon Simple Storage Service (Amazon S3) location of an <code>OfflineStore</code>.</p> </li> <li> <p>A configuration for an Amazon Web Services Glue or Amazon Web Services Hive data catalog. </p> </li> <li> <p>An KMS encryption key to encrypt the Amazon S3 location used for <code>OfflineStore</code>. If KMS encryption key is not specified, by default we encrypt all data at rest using Amazon Web Services KMS key. By defining your <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html\">bucket-level key</a> for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99 percent.</p> </li> <li> <p>Format for the offline store table. Supported formats are Glue (Default) and <a href=\"https://iceberg.apache.org/\">Apache Iceberg</a>.</p> </li> </ul> <p>To learn more about this parameter, see <a>OfflineStoreConfig</a>.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -7652,7 +7687,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
+          "documentation":"<p>The ARN of an IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -7665,7 +7700,7 @@
       "members":{
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image.</p>"
+          "documentation":"<p>The ARN of the image.</p>"
         }
       }
     },
@@ -7689,6 +7724,38 @@
         "ImageName":{
           "shape":"ImageName",
           "documentation":"<p>The <code>ImageName</code> of the <code>Image</code> to create a version of.</p>"
+        },
+        "Aliases":{
+          "shape":"SageMakerImageVersionAliases",
+          "documentation":"<p>A list of aliases created with the image version.</p>"
+        },
+        "VendorGuidance":{
+          "shape":"VendorGuidance",
+          "documentation":"<p>The stability of the image version, specified by the maintainer.</p> <ul> <li> <p> <code>NOT_PROVIDED</code>: The maintainers did not provide a status for image version stability.</p> </li> <li> <p> <code>STABLE</code>: The image version is stable.</p> </li> <li> <p> <code>TO_BE_ARCHIVED</code>: The image version is set to be archived. Custom image versions that are set to be archived are automatically archived after three months.</p> </li> <li> <p> <code>ARCHIVED</code>: The image version is archived. Archived image versions are not searchable and are no longer actively supported. </p> </li> </ul>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>Indicates SageMaker job type compatibility.</p> <ul> <li> <p> <code>TRAINING</code>: The image version is compatible with SageMaker training jobs.</p> </li> <li> <p> <code>INFERENCE</code>: The image version is compatible with SageMaker inference jobs.</p> </li> <li> <p> <code>NOTEBOOK_KERNEL</code>: The image version is compatible with SageMaker notebook kernels.</p> </li> </ul>"
+        },
+        "MLFramework":{
+          "shape":"MLFramework",
+          "documentation":"<p>The machine learning framework vended in the image version.</p>"
+        },
+        "ProgrammingLang":{
+          "shape":"ProgrammingLang",
+          "documentation":"<p>The supported programming language and its version.</p>"
+        },
+        "Processor":{
+          "shape":"Processor",
+          "documentation":"<p>Indicates CPU or GPU compatibility.</p> <ul> <li> <p> <code>CPU</code>: The image version is compatible with CPU.</p> </li> <li> <p> <code>GPU</code>: The image version is compatible with GPU.</p> </li> </ul>"
+        },
+        "Horovod":{
+          "shape":"Horovod",
+          "documentation":"<p>Indicates Horovod compatibility.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotes",
+          "documentation":"<p>The maintainer description of the image version.</p>"
         }
       }
     },
@@ -7697,7 +7764,7 @@
       "members":{
         "ImageVersionArn":{
           "shape":"ImageVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image version.</p>"
+          "documentation":"<p>The ARN of the image version.</p>"
         }
       }
     },
@@ -7722,7 +7789,7 @@
         },
         "Schedule":{
           "shape":"InferenceExperimentSchedule",
-          "documentation":"<p> The duration for which you want the inference experiment to run. If you don't specify this field, the experiment automatically concludes after 7 days. </p>"
+          "documentation":"<p> The duration for which you want the inference experiment to run. If you don't specify this field, the experiment automatically starts immediately upon creation and concludes after 7 days. </p>"
         },
         "Description":{
           "shape":"InferenceExperimentDescription",
@@ -7730,7 +7797,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images, and manage Amazon SageMaker Inference endpoints for model deployment. </p>"
         },
         "EndpointName":{
           "shape":"EndpointName",
@@ -7738,15 +7805,15 @@
         },
         "ModelVariants":{
           "shape":"ModelVariantConfigList",
-          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfigSummary</code> object in the array describes the infrastructure configuration for the corresponding variant. </p>"
+          "documentation":"<p> An array of <code>ModelVariantConfig</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfig</code> object in the array describes the infrastructure configuration for the corresponding variant. </p>"
         },
         "DataStorageConfig":{
           "shape":"InferenceExperimentDataStorageConfig",
-          "documentation":"<p> The storage configuration for the inference experiment. This is an optional parameter that you can use for data capture. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-data-capture.html\">Capture data</a>. </p>"
+          "documentation":"<p> The Amazon S3 location and configuration for storing inference request and response data. </p> <p> This is an optional parameter that you can use for data capture. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-data-capture.html\">Capture data</a>. </p>"
         },
         "ShadowModeConfig":{
           "shape":"ShadowModeConfig",
-          "documentation":"<p> Shows which variant is the production variant and which variant is the shadow variant. For the shadow variant, also shows the sampling percentage. </p>"
+          "documentation":"<p> The configuration of <code>ShadowMode</code> inference experiment type. Use this field to specify a production variant which takes all the inference requests, and a shadow variant to which Amazon SageMaker replicates a percentage of the inference requests. For the shadow variant also specify the percentage of requests that Amazon SageMaker replicates. </p>"
         },
         "KmsKey":{
           "shape":"KmsKeyId",
@@ -9186,7 +9253,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt data on the storage volume attached to the ML compute instance that hosts the endpoint.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that SageMaker uses to encrypt the captured data at rest using Amazon S3 server-side encryption.</p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>"
         },
         "CaptureOptions":{
           "shape":"CaptureOptionList",
@@ -9562,7 +9629,7 @@
         },
         "UserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile name.</p>"
+          "documentation":"<p>The user profile name. If this value is not set, then <code>SpaceName</code> must be set.</p>"
         },
         "AppType":{
           "shape":"AppType",
@@ -9574,7 +9641,7 @@
         },
         "SpaceName":{
           "shape":"SpaceName",
-          "documentation":"<p>The name of the space.</p>"
+          "documentation":"<p>The name of the space. If this value is not set, then <code>UserProfileName</code> must be set.</p>"
         }
       }
     },
@@ -9853,18 +9920,19 @@
     },
     "DeleteImageVersionRequest":{
       "type":"structure",
-      "required":[
-        "ImageName",
-        "Version"
-      ],
+      "required":["ImageName"],
       "members":{
         "ImageName":{
           "shape":"ImageName",
-          "documentation":"<p>The name of the image.</p>"
+          "documentation":"<p>The name of the image to delete.</p>"
         },
         "Version":{
           "shape":"ImageVersionNumber",
           "documentation":"<p>The version to delete.</p>"
+        },
+        "Alias":{
+          "shape":"SageMakerImageVersionAlias",
+          "documentation":"<p>The alias of the image to delete.</p>"
         }
       }
     },
@@ -10479,7 +10547,7 @@
         },
         "UserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile name.</p>"
+          "documentation":"<p>The user profile name. If this value is not set, then <code>SpaceName</code> must be set.</p>"
         },
         "AppType":{
           "shape":"AppType",
@@ -10544,7 +10612,7 @@
         },
         "SpaceName":{
           "shape":"SpaceName",
-          "documentation":"<p>The name of the space.</p>"
+          "documentation":"<p>The name of the space. If this value is not set, then <code>UserProfileName</code> must be set.</p>"
         }
       }
     },
@@ -10676,7 +10744,7 @@
         },
         "BestCandidate":{
           "shape":"AutoMLCandidate",
-          "documentation":"<p>Returns the job's best <code>AutoMLCandidate</code>.</p>"
+          "documentation":"<p>The best model candidate selected by SageMaker Autopilot using both the best objective metric and lowest <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html\">InferenceLatency</a> for an experiment.</p>"
         },
         "AutoMLJobStatus":{
           "shape":"AutoMLJobStatus",
@@ -11392,7 +11460,7 @@
         },
         "ShadowProductionVariants":{
           "shape":"ProductionVariantList",
-          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
+          "documentation":"<p>An array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.</p>"
         }
       }
     },
@@ -11431,7 +11499,7 @@
         },
         "ProductionVariants":{
           "shape":"ProductionVariantSummaryList",
-          "documentation":"<p> An array of <a>ProductionVariantSummary</a> objects, one for each model hosted behind this endpoint. </p>"
+          "documentation":"<p>An array of <a>ProductionVariantSummary</a> objects, one for each model hosted behind this endpoint.</p>"
         },
         "DataCaptureConfig":{"shape":"DataCaptureConfigSummary"},
         "EndpointStatus":{
@@ -11468,7 +11536,7 @@
         },
         "ShadowProductionVariants":{
           "shape":"ProductionVariantSummaryList",
-          "documentation":"<p> Array of <code>ProductionVariant</code> objects. There is one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
+          "documentation":"<p>An array of <a>ProductionVariantSummary</a> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.</p>"
         }
       }
     },
@@ -11583,11 +11651,11 @@
         },
         "OfflineStoreConfig":{
           "shape":"OfflineStoreConfig",
-          "documentation":"<p>The configuration of the <code>OfflineStore</code>, inducing the S3 location of the <code>OfflineStore</code>, Amazon Web Services Glue or Amazon Web Services Hive data catalogue configurations, and the security configuration.</p>"
+          "documentation":"<p>The configuration of the offline store. It includes the following configurations:</p> <ul> <li> <p>Amazon S3 location of the offline store.</p> </li> <li> <p>Configuration of the Glue data catalog.</p> </li> <li> <p>Table format of the offline store.</p> </li> <li> <p>Option to disable the automatic creation of a Glue table for the offline store.</p> </li> <li> <p>Encryption configuration.</p> </li> </ul>"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM execution role used to persist data into the <code>OfflineStore</code> if an <code>OfflineStoreConfig</code> is provided.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM execution role used to persist data into the OfflineStore if an OfflineStoreConfig is provided.</p>"
         },
         "FeatureGroupStatus":{
           "shape":"FeatureGroupStatus",
@@ -12067,7 +12135,7 @@
         },
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image.</p>"
+          "documentation":"<p>The ARN of the image.</p>"
         },
         "ImageName":{
           "shape":"ImageName",
@@ -12083,7 +12151,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
+          "documentation":"<p>The ARN of the IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
         }
       }
     },
@@ -12098,6 +12166,10 @@
         "Version":{
           "shape":"ImageVersionNumber",
           "documentation":"<p>The version of the image. If not specified, the latest version is described.</p>"
+        },
+        "Alias":{
+          "shape":"SageMakerImageVersionAlias",
+          "documentation":"<p>The alias of the image version.</p>"
         }
       }
     },
@@ -12122,7 +12194,7 @@
         },
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image the version is based on.</p>"
+          "documentation":"<p>The ARN of the image the version is based on.</p>"
         },
         "ImageVersionArn":{
           "shape":"ImageVersionArn",
@@ -12139,6 +12211,34 @@
         "Version":{
           "shape":"ImageVersionNumber",
           "documentation":"<p>The version number.</p>"
+        },
+        "VendorGuidance":{
+          "shape":"VendorGuidance",
+          "documentation":"<p>The stability of the image version specified by the maintainer.</p> <ul> <li> <p> <code>NOT_PROVIDED</code>: The maintainers did not provide a status for image version stability.</p> </li> <li> <p> <code>STABLE</code>: The image version is stable.</p> </li> <li> <p> <code>TO_BE_ARCHIVED</code>: The image version is set to be archived. Custom image versions that are set to be archived are automatically archived after three months.</p> </li> <li> <p> <code>ARCHIVED</code>: The image version is archived. Archived image versions are not searchable and are no longer actively supported. </p> </li> </ul>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>Indicates SageMaker job type compatibility.</p> <ul> <li> <p> <code>TRAINING</code>: The image version is compatible with SageMaker training jobs.</p> </li> <li> <p> <code>INFERENCE</code>: The image version is compatible with SageMaker inference jobs.</p> </li> <li> <p> <code>NOTEBOOK_KERNEL</code>: The image version is compatible with SageMaker notebook kernels.</p> </li> </ul>"
+        },
+        "MLFramework":{
+          "shape":"MLFramework",
+          "documentation":"<p>The machine learning framework vended in the image version.</p>"
+        },
+        "ProgrammingLang":{
+          "shape":"ProgrammingLang",
+          "documentation":"<p>The supported programming language and its version.</p>"
+        },
+        "Processor":{
+          "shape":"Processor",
+          "documentation":"<p>Indicates CPU or GPU compatibility.</p> <ul> <li> <p> <code>CPU</code>: The image version is compatible with CPU.</p> </li> <li> <p> <code>GPU</code>: The image version is compatible with GPU.</p> </li> </ul>"
+        },
+        "Horovod":{
+          "shape":"Horovod",
+          "documentation":"<p>Indicates Horovod compatibility.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotes",
+          "documentation":"<p>The maintainer description of the image version.</p>"
         }
       }
     },
@@ -12181,11 +12281,11 @@
         },
         "Status":{
           "shape":"InferenceExperimentStatus",
-          "documentation":"<p> The status of the inference experiment. The following are the possible statuses for an inference experiment: </p> <ul> <li> <p> <code>Creating</code> - Amazon SageMaker is creating your experiment. </p> </li> <li> <p> <code>Created</code> - Amazon SageMaker has finished creating your experiment and it will begin at the scheduled time. </p> </li> <li> <p> <code>Updating</code> - When you make changes to your experiment, your experiment shows as updating. </p> </li> <li> <p> <code>Starting</code> - Amazon SageMaker is beginning your experiment. </p> </li> <li> <p> <code>Running</code> - Your experiment is in progress. </p> </li> <li> <p> <code>Stopping</code> - Amazon SageMaker is stopping your experiment. </p> </li> <li> <p> <code>Completed</code> - Your experiment has completed. </p> </li> <li> <p> <code>Cancelled</code> - When you conclude your experiment early, it shows as canceled. </p> </li> </ul>"
+          "documentation":"<p> The status of the inference experiment. The following are the possible statuses for an inference experiment: </p> <ul> <li> <p> <code>Creating</code> - Amazon SageMaker is creating your experiment. </p> </li> <li> <p> <code>Created</code> - Amazon SageMaker has finished the creation of your experiment and will begin the experiment at the scheduled time. </p> </li> <li> <p> <code>Updating</code> - When you make changes to your experiment, your experiment shows as updating. </p> </li> <li> <p> <code>Starting</code> - Amazon SageMaker is beginning your experiment. </p> </li> <li> <p> <code>Running</code> - Your experiment is in progress. </p> </li> <li> <p> <code>Stopping</code> - Amazon SageMaker is stopping your experiment. </p> </li> <li> <p> <code>Completed</code> - Your experiment has completed. </p> </li> <li> <p> <code>Cancelled</code> - When you conclude your experiment early using the <a>StopInferenceExperiment</a> API, or if any operation fails with an unexpected error, it shows as cancelled. </p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"InferenceExperimentStatusReason",
-          "documentation":"<p>The error message for the inference experiment status result.</p>"
+          "documentation":"<p> The error message or client-specified <code>Reason</code> from the <a>StopInferenceExperiment</a> API, that explains the status of the inference experiment. </p>"
         },
         "Description":{
           "shape":"InferenceExperimentDescription",
@@ -12197,7 +12297,7 @@
         },
         "CompletionTime":{
           "shape":"Timestamp",
-          "documentation":"<p> The timestamp at which the inference experiment was completed or will complete. </p>"
+          "documentation":"<p> The timestamp at which the inference experiment was completed. </p>"
         },
         "LastModifiedTime":{
           "shape":"Timestamp",
@@ -12205,7 +12305,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images, and manage Amazon SageMaker Inference endpoints for model deployment. </p>"
         },
         "EndpointMetadata":{
           "shape":"EndpointMetadata",
@@ -12213,15 +12313,15 @@
         },
         "ModelVariants":{
           "shape":"ModelVariantConfigSummaryList",
-          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfigSummary</code> object in the array describes the infrastructure configuration for deploying the corresponding variant. </p>"
+          "documentation":"<p> An array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant in the inference experiment. Each <code>ModelVariantConfigSummary</code> object in the array describes the infrastructure configuration for deploying the corresponding variant. </p>"
         },
         "DataStorageConfig":{
           "shape":"InferenceExperimentDataStorageConfig",
-          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+          "documentation":"<p>The Amazon S3 location and configuration for storing inference request and response data.</p>"
         },
         "ShadowModeConfig":{
           "shape":"ShadowModeConfig",
-          "documentation":"<p> Shows which variant is a production variant and which variant is a shadow variant. For shadow variants, also shows the sampling percentage. </p>"
+          "documentation":"<p> The configuration of <code>ShadowMode</code> inference experiment type, which shows the production variant that takes all the inference requests, and the shadow variant to which Amazon SageMaker replicates a percentage of the inference requests. For the shadow variant it also shows the percentage of requests that Amazon SageMaker replicates. </p>"
         },
         "KmsKey":{
           "shape":"KmsKeyId",
@@ -13960,7 +14060,7 @@
         },
         "Sources":{
           "shape":"TrialComponentSources",
-          "documentation":"<p>A list of the Amazon Resource Name (ARN) and, if applicable, job type for multiple sources of an experiment run.</p>"
+          "documentation":"<p>A list of ARNs and, if applicable, job types for multiple sources of an experiment run.</p>"
         }
       }
     },
@@ -15155,7 +15255,7 @@
         },
         "ShadowProductionVariants":{
           "shape":"ProductionVariantSummaryList",
-          "documentation":"<p> Array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
+          "documentation":"<p>A list of the shadow variants hosted on the endpoint. Each shadow variant is a model in shadow mode with production traffic replicated from the proudction variant.</p>"
         }
       },
       "documentation":"<p>A hosted endpoint for real-time inference.</p>"
@@ -15320,7 +15420,7 @@
         },
         "FailureReason":{
           "shape":"FailureReason",
-          "documentation":"<p> If the status of the endpoint is <code>Failed</code>, this provides the reason why it failed. </p>"
+          "documentation":"<p> If the status of the endpoint is <code>Failed</code>, or the status is <code>InService</code> but update operation fails, this provides the reason why it failed. </p>"
         }
       },
       "documentation":"<p>The metadata of the endpoint.</p>"
@@ -15586,7 +15686,7 @@
       "members":{
         "ExperimentName":{
           "shape":"ExperimentEntityName",
-          "documentation":"<p>The name of an existing experiment to associate the trial component with.</p>"
+          "documentation":"<p>The name of an existing experiment to associate with the trial component.</p>"
         },
         "TrialName":{
           "shape":"ExperimentEntityName",
@@ -15598,7 +15698,7 @@
         },
         "RunName":{
           "shape":"ExperimentEntityName",
-          "documentation":"<p>The name of the experiment run to associate the trial component with.</p>"
+          "documentation":"<p>The name of the experiment run to associate with the trial component.</p>"
         }
       },
       "documentation":"<p>Associates a SageMaker job as a trial component with an experiment and trial. Specified when you call the following APIs:</p> <ul> <li> <p> <a>CreateProcessingJob</a> </p> </li> <li> <p> <a>CreateTrainingJob</a> </p> </li> <li> <p> <a>CreateTransformJob</a> </p> </li> </ul>"
@@ -16479,6 +16579,7 @@
       "max":20,
       "min":0
     },
+    "Horovod":{"type":"boolean"},
     "HubArn":{
       "type":"string",
       "max":255,
@@ -17207,15 +17308,15 @@
         },
         "HyperParameterTuningJobObjective":{
           "shape":"HyperParameterTuningJobObjective",
-          "documentation":"<p>The <a>HyperParameterTuningJobObjective</a> object that specifies the objective metric for this tuning job.</p>"
+          "documentation":"<p>The <a>HyperParameterTuningJobObjective</a> specifies the objective metric used to evaluate the performance of training jobs launched by this tuning job.</p>"
         },
         "ResourceLimits":{
           "shape":"ResourceLimits",
-          "documentation":"<p>The <a>ResourceLimits</a> object that specifies the maximum number of training jobs and parallel training jobs for this tuning job.</p>"
+          "documentation":"<p>The <a>ResourceLimits</a> object that specifies the maximum number of training and parallel training jobs that can be used for this hyperparameter tuning job.</p>"
         },
         "ParameterRanges":{
           "shape":"ParameterRanges",
-          "documentation":"<p>The <a>ParameterRanges</a> object that specifies the ranges of hyperparameters that this tuning job searches.</p>"
+          "documentation":"<p>The <a>ParameterRanges</a> object that specifies the ranges of hyperparameters that this tuning job searches over to find the optimal configuration for the highest model performance against your chosen objective metric. </p>"
         },
         "TrainingJobEarlyStoppingType":{
           "shape":"TrainingJobEarlyStoppingType",
@@ -17224,6 +17325,10 @@
         "TuningJobCompletionCriteria":{
           "shape":"TuningJobCompletionCriteria",
           "documentation":"<p>The tuning job's completion criteria.</p>"
+        },
+        "RandomSeed":{
+          "shape":"RandomSeed",
+          "documentation":"<p>A value used to initialize a pseudo-random number generator. Setting a random seed and using the same seed later for the same tuning job will allow hyperparameter optimization to find more a consistent hyperparameter configuration between the two runs.</p>"
         }
       },
       "documentation":"<p>Configures a hyperparameter tuning job.</p>"
@@ -17462,7 +17567,7 @@
           "documentation":"<p>A list containing the configuration(s) for one or more resources for processing hyperparameter jobs. These resources include compute instances and storage volumes to use in model training jobs launched by hyperparameter tuning jobs. The <code>AllocationStrategy</code> controls the order in which multiple configurations provided in <code>InstanceConfigs</code> are used.</p> <note> <p>If you only want to use a single instance configuration inside the <code>HyperParameterTuningResourceConfig</code> API, do not provide a value for <code>InstanceConfigs</code>. Instead, use <code>InstanceType</code>, <code>VolumeSizeInGB</code> and <code>InstanceCount</code>. If you use <code>InstanceConfigs</code>, do not provide values for <code>InstanceType</code>, <code>VolumeSizeInGB</code> or <code>InstanceCount</code>.</p> </note>"
         }
       },
-      "documentation":"<p>The configuration of resources, including compute instances and storage volumes for use in training jobs launched by hyperparameter tuning jobs. Specify one or more instance type and count and the allocation strategy for instance selection.</p> <note> <p> <code>HyperParameterTuningResourceConfig</code> supports all of the capabilities of ResourceConfig with added functionality for flexible instance management.</p> </note>"
+      "documentation":"<p>The configuration of resources, including compute instances and storage volumes for use in training jobs launched by hyperparameter tuning jobs. <code>HyperParameterTuningResourceConfig</code> is similar to <code>ResourceConfig</code>, but has the additional <code>InstanceConfigs</code> and <code>AllocationStrategy</code> fields to allow for flexible instance management. Specify one or more instance types, count, and the allocation strategy for instance selection.</p> <note> <p> <code>HyperParameterTuningResourceConfig</code> supports the capabilities of <code>ResourceConfig</code> with the exception of <code>KeepAlivePeriodInSeconds</code>. Hyperparameter tuning jobs use warm pools by default, which reuse clusters between training jobs.</p> </note>"
     },
     "HyperParameterValue":{
       "type":"string",
@@ -17531,7 +17636,7 @@
         },
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image.</p>"
+          "documentation":"<p>The ARN of the image.</p>"
         },
         "ImageName":{
           "shape":"ImageName",
@@ -17671,7 +17776,7 @@
         },
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image the version is based on.</p>"
+          "documentation":"<p>The ARN of the image the version is based on.</p>"
         },
         "ImageVersionArn":{
           "shape":"ImageVersionArn",
@@ -17836,15 +17941,15 @@
       "members":{
         "Destination":{
           "shape":"DestinationS3Uri",
-          "documentation":"<p>The Amazon S3 bucket where the inference experiment data is stored. </p>"
+          "documentation":"<p>The Amazon S3 bucket where the inference request and response data is stored. </p>"
         },
         "KmsKey":{
           "shape":"KmsKeyId",
-          "documentation":"<p> The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service key that Amazon SageMaker uses to encrypt captured data when uploading to Amazon S3. </p>"
+          "documentation":"<p> The Amazon Web Services Key Management Service key that Amazon SageMaker uses to encrypt captured data at rest using Amazon S3 server-side encryption. </p>"
         },
         "ContentType":{"shape":"CaptureContentTypeHeader"}
       },
-      "documentation":"<p>The Amazon S3 location and configuration for storing inference experiment data.</p>"
+      "documentation":"<p>The Amazon S3 location and configuration for storing inference request and response data.</p>"
     },
     "InferenceExperimentDescription":{
       "type":"string",
@@ -17948,7 +18053,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images. </p>"
+          "documentation":"<p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images, and manage Amazon SageMaker Inference endpoints for model deployment. </p>"
         }
       },
       "documentation":"<p>Lists a summary of properties of an inference experiment.</p>"
@@ -18394,6 +18499,14 @@
       "max":255,
       "min":1,
       "pattern":".+"
+    },
+    "JobType":{
+      "type":"string",
+      "enum":[
+        "TRAINING",
+        "INFERENCE",
+        "NOTEBOOK_KERNEL"
+      ]
     },
     "JoinSource":{
       "type":"string",
@@ -19042,6 +19155,45 @@
         }
       }
     },
+    "ListAliasesRequest":{
+      "type":"structure",
+      "required":["ImageName"],
+      "members":{
+        "ImageName":{
+          "shape":"ImageName",
+          "documentation":"<p>The name of the image.</p>"
+        },
+        "Alias":{
+          "shape":"SageMakerImageVersionAlias",
+          "documentation":"<p>The alias of the image version.</p>"
+        },
+        "Version":{
+          "shape":"ImageVersionNumber",
+          "documentation":"<p>The version of the image. If image version is not specified, the aliases of all versions of the image are listed.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of aliases to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous call to <code>ListAliases</code> didn't return the full set of aliases, the call returns a token for retrieving the next set of aliases.</p>"
+        }
+      }
+    },
+    "ListAliasesResponse":{
+      "type":"structure",
+      "members":{
+        "SageMakerImageVersionAliases":{
+          "shape":"SageMakerImageVersionAliases",
+          "documentation":"<p>A list of SageMaker image version aliases.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token for getting the next set of aliases, if more aliases exist.</p>"
+        }
+      }
+    },
     "ListAppImageConfigsRequest":{
       "type":"structure",
       "members":{
@@ -19121,11 +19273,11 @@
         },
         "UserProfileNameEquals":{
           "shape":"UserProfileName",
-          "documentation":"<p>A parameter to search by user profile name.</p>"
+          "documentation":"<p>A parameter to search by user profile name. If <code>SpaceNameEquals</code> is set, then this value cannot be set.</p>"
         },
         "SpaceNameEquals":{
           "shape":"SpaceName",
-          "documentation":"<p>A parameter to search by space name.</p>"
+          "documentation":"<p>A parameter to search by space name. If <code>UserProfileNameEquals</code> is set, then this value cannot be set.</p>"
         }
       }
     },
@@ -22581,6 +22733,12 @@
       ]
     },
     "Long":{"type":"long"},
+    "MLFramework":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"
+    },
     "MaxAutoMLJobRuntimeInSeconds":{
       "type":"integer",
       "min":1
@@ -24275,7 +24433,7 @@
       "members":{
         "ModelName":{
           "shape":"ModelName",
-          "documentation":"<p>The name of the model.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Model entity.</p>"
         },
         "VariantName":{
           "shape":"ModelVariantName",
@@ -24305,7 +24463,7 @@
       "members":{
         "ModelName":{
           "shape":"ModelName",
-          "documentation":"<p>The name of the model.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Model entity.</p>"
         },
         "VariantName":{
           "shape":"ModelVariantName",
@@ -24317,7 +24475,7 @@
         },
         "Status":{
           "shape":"ModelVariantStatus",
-          "documentation":"<p>The status of the deployment.</p>"
+          "documentation":"<p>The status of deployment for the model variant on the hosted inference endpoint.</p> <ul> <li> <p> <code>Creating</code> - Amazon SageMaker is preparing the model variant on the hosted inference endpoint. </p> </li> <li> <p> <code>InService</code> - The model variant is running on the hosted inference endpoint. </p> </li> <li> <p> <code>Updating</code> - Amazon SageMaker is updating the model variant on the hosted inference endpoint. </p> </li> <li> <p> <code>Deleting</code> - Amazon SageMaker is deleting the model variant on the hosted inference endpoint. </p> </li> <li> <p> <code>Deleted</code> - The model variant has been deleted on the hosted inference endpoint. This can only happen after stopping the experiment. </p> </li> </ul>"
         }
       },
       "documentation":"<p>Summary of the deployment configuration of a model.</p>"
@@ -25441,7 +25599,7 @@
         },
         "TableFormat":{
           "shape":"TableFormat",
-          "documentation":"<p>Format for the offline store feature group. <code>Iceberg</code> is the optimal format for feature groups shared between offline and online stores.</p>"
+          "documentation":"<p>Format for the offline store table. Supported formats are Glue (Default) and <a href=\"https://iceberg.apache.org/\">Apache Iceberg</a>.</p>"
         }
       },
       "documentation":"<p>The configuration of an <code>OfflineStore</code>.</p> <p>Provide an <code>OfflineStoreConfig</code> in a request to <code>CreateFeatureGroup</code> to create an <code>OfflineStore</code>.</p> <p>To encrypt an <code>OfflineStore</code> using at rest data encryption, specify Amazon Web Services Key Management Service (KMS) key ID, or <code>KMSKeyId</code>, in <code>S3StorageConfig</code>.</p>"
@@ -25836,7 +25994,7 @@
         },
         "ProductionVariants":{
           "shape":"PendingProductionVariantSummaryList",
-          "documentation":"<p>List of <code>PendingProductionVariantSummary</code> objects.</p>"
+          "documentation":"<p>An array of <a>PendingProductionVariantSummary</a> objects, one for each model hosted behind this endpoint for the in-progress deployment.</p>"
         },
         "StartTime":{
           "shape":"Timestamp",
@@ -25844,7 +26002,7 @@
         },
         "ShadowProductionVariants":{
           "shape":"PendingProductionVariantSummaryList",
-          "documentation":"<p> Array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>. </p>"
+          "documentation":"<p>An array of <a>PendingProductionVariantSummary</a> objects, one for each model hosted behind this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code> for the in-progress deployment.</p>"
         }
       },
       "documentation":"<p>The summary of an in-progress deployment when an endpoint is creating or updating with a new endpoint configuration.</p>"
@@ -26820,6 +26978,13 @@
       "max":16384,
       "min":1
     },
+    "Processor":{
+      "type":"string",
+      "enum":[
+        "CPU",
+        "GPU"
+      ]
+    },
     "ProductId":{
       "type":"string",
       "max":256,
@@ -27301,6 +27466,12 @@
         "Disabled"
       ]
     },
+    "ProgrammingLang":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"
+    },
     "Project":{
       "type":"structure",
       "members":{
@@ -27766,6 +27937,10 @@
         "R_STUDIO_USER"
       ]
     },
+    "RandomSeed":{
+      "type":"integer",
+      "min":0
+    },
     "RealTimeInferenceConfig":{
       "type":"structure",
       "required":[
@@ -27775,14 +27950,14 @@
       "members":{
         "InstanceType":{
           "shape":"InstanceType",
-          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>.</p>"
+          "documentation":"<p>The instance type the model is deployed to.</p>"
         },
         "InstanceCount":{
           "shape":"TaskCount",
-          "documentation":"<p>The instance type the model is deployed to.</p>"
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>.</p>"
         }
       },
-      "documentation":"<p>The infrastructure configuration for deploying the model to real-time inference.</p>"
+      "documentation":"<p>The infrastructure configuration for deploying the model to a real-time inference endpoint.</p>"
     },
     "RealtimeInferenceInstanceTypes":{
       "type":"list",
@@ -27891,6 +28066,10 @@
         "Endpoints":{
           "shape":"Endpoints",
           "documentation":"<p>Existing customer endpoints on which to run an Inference Recommender job.</p>"
+        },
+        "VpcConfig":{
+          "shape":"RecommendationJobVpcConfig",
+          "documentation":"<p>Inference Recommender provisions SageMaker endpoints with access to VPC in the inference recommendation job.</p>"
         }
       },
       "documentation":"<p>The input configuration of the recommendation job.</p>"
@@ -27982,6 +28161,46 @@
         "Default",
         "Advanced"
       ]
+    },
+    "RecommendationJobVpcConfig":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"RecommendationJobVpcSecurityGroupIds",
+          "documentation":"<p>The VPC security group IDs. IDs have the form of <code>sg-xxxxxxxx</code>. Specify the security groups for the VPC that is specified in the <code>Subnets</code> field.</p>"
+        },
+        "Subnets":{
+          "shape":"RecommendationJobVpcSubnets",
+          "documentation":"<p>The ID of the subnets in the VPC to which you want to connect your model.</p>"
+        }
+      },
+      "documentation":"<p>Inference Recommender provisions SageMaker endpoints with access to VPC in the inference recommendation job.</p>"
+    },
+    "RecommendationJobVpcSecurityGroupId":{
+      "type":"string",
+      "max":32,
+      "pattern":"[-0-9a-zA-Z]+"
+    },
+    "RecommendationJobVpcSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"RecommendationJobVpcSecurityGroupId"},
+      "max":5,
+      "min":1
+    },
+    "RecommendationJobVpcSubnetId":{
+      "type":"string",
+      "max":32,
+      "pattern":"[-0-9a-zA-Z]+"
+    },
+    "RecommendationJobVpcSubnets":{
+      "type":"list",
+      "member":{"shape":"RecommendationJobVpcSubnetId"},
+      "max":16,
+      "min":1
     },
     "RecommendationMetrics":{
       "type":"structure",
@@ -28133,6 +28352,12 @@
       },
       "documentation":"<p>Metadata for a register model job step.</p>"
     },
+    "ReleaseNotes":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".*"
+    },
     "RenderUiTemplateRequest":{
       "type":"structure",
       "required":[
@@ -28260,7 +28485,7 @@
       "members":{
         "InstanceType":{
           "shape":"TrainingInstanceType",
-          "documentation":"<p>The ML compute instance type. </p>"
+          "documentation":"<p>The ML compute instance type. </p> <note> <p>SageMaker Training on Amazon Elastic Compute Cloud (EC2) P4de instances is in preview release starting December 9th, 2022. </p> <p> <a href=\"http://aws.amazon.com/ec2/instance-types/p4/\">Amazon EC2 P4de instances</a> (currently in preview) are powered by 8 NVIDIA A100 GPUs with 80GB high-performance HBM2e GPU memory, which accelerate the speed of training ML models that need to be trained on large datasets of high-resolution data. In this preview release, Amazon SageMaker supports ML training jobs on P4de instances (<code>ml.p4de.24xlarge</code>) to reduce model training time. The <code>ml.p4de.24xlarge</code> instances are available in the following Amazon Web Services Regions. </p> <ul> <li> <p>US East (N. Virginia) (us-east-1)</p> </li> <li> <p>US West (Oregon) (us-west-2)</p> </li> </ul> <p>To request quota limit increase and start using P4de instances, contact the SageMaker Training service team through your account team.</p> </note>"
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
@@ -28283,7 +28508,7 @@
           "documentation":"<p>The duration of time in seconds to retain configured resources in a warm pool for subsequent training jobs.</p>"
         }
       },
-      "documentation":"<p>Describes the resources, including ML compute instances and ML storage volumes, to use for model training. </p>"
+      "documentation":"<p>Describes the resources, including machine learning (ML) compute instances and ML storage volumes, to use for model training. </p>"
     },
     "ResourceConfigForUpdate":{
       "type":"structure",
@@ -28574,6 +28799,16 @@
       "type":"string",
       "max":1024,
       "pattern":"^(https|s3)://([^/]+)/?(.*)$"
+    },
+    "SageMakerImageVersionAlias":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?!^[.-])^([a-zA-Z0-9-_.]+)$"
+    },
+    "SageMakerImageVersionAliases":{
+      "type":"list",
+      "member":{"shape":"SageMakerImageVersionAlias"}
     },
     "SagemakerServicecatalogStatus":{
       "type":"string",
@@ -28945,14 +29180,14 @@
       "members":{
         "SourceModelVariantName":{
           "shape":"ModelVariantName",
-          "documentation":"<p> The name of the production variant. </p>"
+          "documentation":"<p> The name of the production variant, which takes all the inference requests. </p>"
         },
         "ShadowModelVariants":{
           "shape":"ShadowModelVariantConfigList",
           "documentation":"<p>List of shadow variant configurations.</p>"
         }
       },
-      "documentation":"<p> Shows which variant is a production variant and which variant is a shadow variant. For shadow variants, also shows the sampling percentages. </p>"
+      "documentation":"<p> The configuration of <code>ShadowMode</code> inference experiment type, which specifies a production variant to take all the inference requests, and a shadow variant to which Amazon SageMaker replicates a percentage of the inference requests. For the shadow variant it also specifies the percentage of requests that Amazon SageMaker replicates. </p>"
     },
     "ShadowModelVariantConfig":{
       "type":"structure",
@@ -28967,7 +29202,7 @@
         },
         "SamplingPercentage":{
           "shape":"Percentage",
-          "documentation":"<p>The percentage of inference requests that are replicated to the shadow variant.</p>"
+          "documentation":"<p> The percentage of inference requests that Amazon SageMaker replicates from the production variant to the shadow variant. </p>"
         }
       },
       "documentation":"<p>The name and sampling percentage of a shadow variant.</p>"
@@ -29462,7 +29697,7 @@
         },
         "DesiredModelVariants":{
           "shape":"ModelVariantConfigList",
-          "documentation":"<p> Array of <code>ModelVariantConfig</code> objects. There is one for each variant that you want to deploy after the inference experiment stops. Each <code>ModelVariantConfig</code> describes the infrastructure configuration for deploying the corresponding variant. </p>"
+          "documentation":"<p> An array of <code>ModelVariantConfig</code> objects. There is one for each variant that you want to deploy after the inference experiment stops. Each <code>ModelVariantConfig</code> describes the infrastructure configuration for deploying the corresponding variant. </p>"
         },
         "DesiredState":{
           "shape":"InferenceExperimentStopDesiredState",
@@ -31807,7 +32042,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The new Amazon Resource Name (ARN) for the IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
+          "documentation":"<p>The new ARN for the IAM role that enables Amazon SageMaker to perform tasks on your behalf.</p>"
         }
       }
     },
@@ -31816,7 +32051,70 @@
       "members":{
         "ImageArn":{
           "shape":"ImageArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image.</p>"
+          "documentation":"<p>The ARN of the image.</p>"
+        }
+      }
+    },
+    "UpdateImageVersionRequest":{
+      "type":"structure",
+      "required":["ImageName"],
+      "members":{
+        "ImageName":{
+          "shape":"ImageName",
+          "documentation":"<p>The name of the image.</p>"
+        },
+        "Alias":{
+          "shape":"SageMakerImageVersionAlias",
+          "documentation":"<p>The alias of the image version.</p>"
+        },
+        "Version":{
+          "shape":"ImageVersionNumber",
+          "documentation":"<p>The version of the image.</p>"
+        },
+        "AliasesToAdd":{
+          "shape":"SageMakerImageVersionAliases",
+          "documentation":"<p>A list of aliases to add.</p>"
+        },
+        "AliasesToDelete":{
+          "shape":"SageMakerImageVersionAliases",
+          "documentation":"<p>A list of aliases to delete.</p>"
+        },
+        "VendorGuidance":{
+          "shape":"VendorGuidance",
+          "documentation":"<p>The availability of the image version specified by the maintainer.</p> <ul> <li> <p> <code>NOT_PROVIDED</code>: The maintainers did not provide a status for image version stability.</p> </li> <li> <p> <code>STABLE</code>: The image version is stable.</p> </li> <li> <p> <code>TO_BE_ARCHIVED</code>: The image version is set to be archived. Custom image versions that are set to be archived are automatically archived after three months.</p> </li> <li> <p> <code>ARCHIVED</code>: The image version is archived. Archived image versions are not searchable and are no longer actively supported. </p> </li> </ul>"
+        },
+        "JobType":{
+          "shape":"JobType",
+          "documentation":"<p>Indicates SageMaker job type compatibility.</p> <ul> <li> <p> <code>TRAINING</code>: The image version is compatible with SageMaker training jobs.</p> </li> <li> <p> <code>INFERENCE</code>: The image version is compatible with SageMaker inference jobs.</p> </li> <li> <p> <code>NOTEBOOK_KERNEL</code>: The image version is compatible with SageMaker notebook kernels.</p> </li> </ul>"
+        },
+        "MLFramework":{
+          "shape":"MLFramework",
+          "documentation":"<p>The machine learning framework vended in the image version.</p>"
+        },
+        "ProgrammingLang":{
+          "shape":"ProgrammingLang",
+          "documentation":"<p>The supported programming language and its version.</p>"
+        },
+        "Processor":{
+          "shape":"Processor",
+          "documentation":"<p>Indicates CPU or GPU compatibility.</p> <ul> <li> <p> <code>CPU</code>: The image version is compatible with CPU.</p> </li> <li> <p> <code>GPU</code>: The image version is compatible with GPU.</p> </li> </ul>"
+        },
+        "Horovod":{
+          "shape":"Horovod",
+          "documentation":"<p>Indicates Horovod compatibility.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotes",
+          "documentation":"<p>The maintainer description of the image version.</p>"
+        }
+      }
+    },
+    "UpdateImageVersionResponse":{
+      "type":"structure",
+      "members":{
+        "ImageVersionArn":{
+          "shape":"ImageVersionArn",
+          "documentation":"<p>The ARN of the image version.</p>"
         }
       }
     },
@@ -31838,15 +32136,15 @@
         },
         "ModelVariants":{
           "shape":"ModelVariantConfigList",
-          "documentation":"<p> Array of <code>ModelVariantConfigSummary</code> objects. There is one for each variant, whose infrastructure configuration you want to update. </p>"
+          "documentation":"<p> An array of <code>ModelVariantConfig</code> objects. There is one for each variant, whose infrastructure configuration you want to update. </p>"
         },
         "DataStorageConfig":{
           "shape":"InferenceExperimentDataStorageConfig",
-          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+          "documentation":"<p>The Amazon S3 location and configuration for storing inference request and response data.</p>"
         },
         "ShadowModeConfig":{
           "shape":"ShadowModeConfig",
-          "documentation":"<p>The Amazon S3 storage configuration for the inference experiment.</p>"
+          "documentation":"<p> The configuration of <code>ShadowMode</code> inference experiment type. Use this field to specify a production variant which takes all the inference requests, and a shadow variant to which Amazon SageMaker replicates a percentage of the inference requests. For the shadow variant also specify the percentage of requests that Amazon SageMaker replicates. </p>"
         }
       }
     },
@@ -32606,6 +32904,15 @@
     "VariantWeight":{
       "type":"float",
       "min":0
+    },
+    "VendorGuidance":{
+      "type":"string",
+      "enum":[
+        "NOT_PROVIDED",
+        "STABLE",
+        "TO_BE_ARCHIVED",
+        "ARCHIVED"
+      ]
     },
     "VersionId":{
       "type":"string",

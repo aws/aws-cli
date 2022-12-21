@@ -194,7 +194,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <p>When you create a task that transfers data between Amazon Web Services services in different Amazon Web Services Regions, one of your locations must reside in the Region where you're using DataSync.</p> <p>For more information, see the following topics:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-locations.html\">Working with DataSync locations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-task.html\">Configure DataSync task settings</a> </p> </li> </ul>"
+      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p>"
     },
     "DeleteAgent":{
       "name":"DeleteAgent",
@@ -236,7 +236,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Deletes a task.</p>"
+      "documentation":"<p>Deletes an DataSync task.</p>"
     },
     "DescribeAgent":{
       "name":"DescribeAgent",
@@ -460,7 +460,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns all the tags associated with a specified resource. </p>"
+      "documentation":"<p>Returns all the tags associated with an Amazon Web Services resource.</p>"
     },
     "ListTaskExecutions":{
       "name":"ListTaskExecutions",
@@ -502,7 +502,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Starts a specific invocation of a task. A <code>TaskExecution</code> value represents an individual run of a task. Each task can have at most one <code>TaskExecution</code> at a time.</p> <p> <code>TaskExecution</code> has the following transition phases: INITIALIZING | PREPARING | TRANSFERRING | VERIFYING | SUCCESS/FAILURE. </p> <p>For detailed information, see the Task Execution section in the Components and Terminology topic in the <i>DataSync User Guide</i>.</p>"
+      "documentation":"<p>Starts an DataSync task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -516,7 +516,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Applies a key-value pair to an Amazon Web Services resource.</p>"
+      "documentation":"<p>Applies a <i>tag</i> to an Amazon Web Services resource. Tags are key-value pairs that can help you manage, filter, and search for your resources.</p> <p>These include DataSync resources, such as locations, tasks, and task executions.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -530,7 +530,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Removes a tag from an Amazon Web Services resource.</p>"
+      "documentation":"<p>Removes tags from an Amazon Web Services resource.</p>"
     },
     "UpdateAgent":{
       "name":"UpdateAgent",
@@ -1244,11 +1244,11 @@
         },
         "Options":{
           "shape":"Options",
-          "documentation":"<p>The set of configuration options that control the behavior of a single execution of the task that occurs when you call <code>StartTaskExecution</code>. You can configure these options to preserve metadata such as user ID (UID) and group ID (GID), file permissions, data integrity verification, and so on.</p> <p>For each individual task execution, you can override these options by specifying the <code>OverrideOptions</code> before starting the task execution. For more information, see the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a> operation. </p>"
+          "documentation":"<p>Specifies the configuration options for a task. Some options include preserving file or object metadata and verifying data integrity.</p> <p>You can also override these options before starting an individual run of a task (also known as a <i>task execution</i>). For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a>.</p>"
         },
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p> <p> </p>"
+          "documentation":"<p>Specifies a list of filter rules that exclude specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         },
         "Schedule":{
           "shape":"TaskSchedule",
@@ -1256,11 +1256,11 @@
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents the tag that you want to add to the resource. The value can be an empty string. </p>"
+          "documentation":"<p>Specifies the tags that you want to apply to the Amazon Resource Name (ARN) representing the task.</p> <p> <i>Tags</i> are key-value pairs that help you manage, filter, and search for your DataSync resources.</p>"
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p>"
+          "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         }
       },
       "documentation":"<p>CreateTaskRequest</p>"
@@ -1313,7 +1313,7 @@
       "members":{
         "TaskArn":{
           "shape":"TaskArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task to delete.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task that you want to delete.</p>"
         }
       },
       "documentation":"<p>DeleteTask</p>"
@@ -1809,11 +1809,11 @@
         "Options":{"shape":"Options"},
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p>"
+          "documentation":"<p>A list of filter rules that exclude specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The list should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example: <code>\"/folder1|/folder2\"</code> </p>"
+          "documentation":"<p>A list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         },
         "StartTime":{
           "shape":"Time",
@@ -1821,7 +1821,7 @@
         },
         "EstimatedFilesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The expected number of files that is to be transferred over the network. This value is calculated during the PREPARING phase, before the TRANSFERRING phase. This value is the expected number of files to be transferred. It's calculated based on comparing the content of the source and destination locations and finding the delta that needs to be transferred. </p>"
+          "documentation":"<p>The expected number of files that is to be transferred over the network. This value is calculated during the <code>PREPARING</code> phase before the <code>TRANSFERRING</code> phase of the task execution. This value is the expected number of files to be transferred. It's calculated based on comparing the content of the source and destination locations and finding the delta that needs to be transferred. </p>"
         },
         "EstimatedBytesToTransfer":{
           "shape":"long",
@@ -1829,7 +1829,7 @@
         },
         "FilesTransferred":{
           "shape":"long",
-          "documentation":"<p>The actual number of files that was transferred over the network. This value is calculated and updated on an ongoing basis during the TRANSFERRING phase. It's updated periodically when each file is read from the source and sent over the network. </p> <p>If failures occur during a transfer, this value can be less than <code>EstimatedFilesToTransfer</code>. This value can also be greater than <code>EstimatedFilesTransferred</code> in some cases. This element is implementation-specific for some location types, so don't use it as an indicator for a correct file number or to monitor your task execution.</p>"
+          "documentation":"<p>The actual number of files that was transferred over the network. This value is calculated and updated on an ongoing basis during the <code>TRANSFERRING</code> phase of the task execution. It's updated periodically when each file is read from the source and sent over the network. </p> <p>If failures occur during a transfer, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an indicator for a correct file number or to monitor your task execution.</p>"
         },
         "BytesWritten":{
           "shape":"long",
@@ -1837,7 +1837,7 @@
         },
         "BytesTransferred":{
           "shape":"long",
-          "documentation":"<p>The physical number of bytes transferred over the network.</p>"
+          "documentation":"<p>The total number of bytes that are involved in the transfer. For the number of bytes sent over the network, see <code>BytesCompressed</code>. </p>"
         },
         "Result":{
           "shape":"TaskExecutionResultDetail",
@@ -1845,7 +1845,7 @@
         },
         "BytesCompressed":{
           "shape":"long",
-          "documentation":"<p>The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than <code>BytesTransferred</code>.</p>"
+          "documentation":"<p>The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than <code>BytesTransferred</code> unless the data isn't compressible.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionResponse</p>"
@@ -1878,7 +1878,7 @@
         },
         "CurrentTaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution that is syncing files.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution that is transferring files.</p>"
         },
         "SourceLocationArn":{
           "shape":"LocationArn",
@@ -1894,19 +1894,19 @@
         },
         "SourceNetworkInterfaceArns":{
           "shape":"SourceNetworkInterfaceArns",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the source elastic network interfaces (ENIs) that were created for your subnet.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the network interfaces created for your source location. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">Network interface requirements</a>.</p>"
         },
         "DestinationNetworkInterfaceArns":{
           "shape":"DestinationNetworkInterfaceArns",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the destination elastic network interfaces (ENIs) that were created for your subnet.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the network interfaces created for your destination location. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">Network interface requirements</a>.</p>"
         },
         "Options":{
           "shape":"Options",
-          "documentation":"<p>The set of configuration options that control the behavior of a single execution of the task that occurs when you call <code>StartTaskExecution</code>. You can configure these options to preserve metadata such as user ID (UID) and group (GID), file permissions, data integrity verification, and so on.</p> <p>For each individual task execution, you can override these options by specifying the overriding <code>OverrideOptions</code> value to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a> operation. </p>"
+          "documentation":"<p>The configuration options that control the behavior of the <code>StartTaskExecution</code> operation. Some options include preserving file or object metadata and verifying data integrity.</p> <p>You can override these options for each task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a>.</p>"
         },
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p> <p> </p>"
+          "documentation":"<p>A list of filter rules that exclude specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         },
         "Schedule":{
           "shape":"TaskSchedule",
@@ -1926,7 +1926,7 @@
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2</code>\".</p>"
+          "documentation":"<p>A list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskResponse</p>"
@@ -2328,15 +2328,15 @@
       "members":{
         "ResourceArn":{
           "shape":"TaggableResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource whose tags to list.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the resource that you want tag information on.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of locations to return.</p>"
+          "documentation":"<p>Specifies how many results that you want in the response.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>An opaque string that indicates the position at which to begin the next list of locations.</p>"
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
         }
       },
       "documentation":"<p>ListTagsForResourceRequest</p>"
@@ -2346,11 +2346,11 @@
       "members":{
         "Tags":{
           "shape":"OutputTagList",
-          "documentation":"<p>Array of resource tags.</p>"
+          "documentation":"<p>An array of tags applied to the specified resource.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>An opaque string that indicates the position at which to begin returning the next list of resource tags.</p>"
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
         }
       },
       "documentation":"<p>ListTagsForResourceResponse</p>"
@@ -2615,66 +2615,66 @@
       "members":{
         "VerifyMode":{
           "shape":"VerifyMode",
-          "documentation":"<p>A value that determines whether a data integrity verification should be performed at the end of a task execution after all data and metadata have been transferred. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-task.html\">Configure task settings</a>. </p> <p>Default value: <code>POINT_IN_TIME_CONSISTENT</code> </p> <p> <code>ONLY_FILES_TRANSFERRED</code> (recommended): Perform verification only on files that were transferred. </p> <p> <code>POINT_IN_TIME_CONSISTENT</code>: Scan the entire source and entire destination at the end of the transfer to verify that source and destination are fully synchronized. This option isn't supported when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes.</p> <p> <code>NONE</code>: No additional verification is done at the end of the transfer, but all data transmissions are integrity-checked with checksum verification during the transfer.</p>"
+          "documentation":"<p>Specifies how and when DataSync checks the integrity of your data during a transfer. </p> <p>Default value: <code>POINT_IN_TIME_CONSISTENT</code> </p> <p> <code>ONLY_FILES_TRANSFERRED</code> (recommended): DataSync calculates the checksum of transferred files and metadata at the source location. At the end of the transfer, DataSync then compares this checksum to the checksum calculated on those files at the destination.</p> <p>We recommend this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Storage class considerations with Amazon S3 locations</a>.</p> <p> <code>POINT_IN_TIME_CONSISTENT</code>: At the end of the transfer, DataSync scans the entire source and destination to verify that both locations are fully synchronized.</p> <p>You can't use this option when transferring to S3 Glacier Flexible Retrieval or S3 Glacier Deep Archive storage classes. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Storage class considerations with Amazon S3 locations</a>.</p> <p> <code>NONE</code>: DataSync doesn't run additional verification at the end of the transfer. All data transmissions are still integrity-checked with checksum verification during the transfer.</p>"
         },
         "OverwriteMode":{
           "shape":"OverwriteMode",
-          "documentation":"<p>A value that determines whether files at the destination should be overwritten or preserved when copying files. If set to <code>NEVER</code> a destination file will not be replaced by a source file, even if the destination file differs from the source file. If you modify files in the destination and you sync the files, you can use this value to protect against overwriting those changes. </p> <p>Some storage classes have specific behaviors that can affect your S3 storage cost. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a> in the <i>DataSync User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether data at the destination location should be overwritten or preserved. If set to <code>NEVER</code>, a destination file for example will not be replaced by a source file (even if the destination file differs from the source file). If you modify files in the destination and you sync the files, you can use this value to protect against overwriting those changes. </p> <p>Some storage classes have specific behaviors that can affect your Amazon S3 storage cost. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a>.</p>"
         },
         "Atime":{
           "shape":"Atime",
-          "documentation":"<p>A file metadata value that shows the last time a file was accessed (that is, when the file was read or written to). If you set <code>Atime</code> to <code>BEST_EFFORT</code>, DataSync attempts to preserve the original <code>Atime</code> attribute on all source files (that is, the version before the <code>PREPARING</code> phase). However, <code>Atime</code>'s behavior is not fully standard across platforms, so DataSync can only do this on a best-effort basis. </p> <p>Default value: <code>BEST_EFFORT</code> </p> <p> <code>BEST_EFFORT</code>: Attempt to preserve the per-file <code>Atime</code> value (recommended).</p> <p> <code>NONE</code>: Ignore <code>Atime</code>.</p> <note> <p>If <code>Atime</code> is set to <code>BEST_EFFORT</code>, <code>Mtime</code> must be set to <code>PRESERVE</code>. </p> <p>If <code>Atime</code> is set to <code>NONE</code>, <code>Mtime</code> must also be <code>NONE</code>. </p> </note>"
+          "documentation":"<p>Specifies whether to preserve metadata indicating the last time a file was read or written to. If you set <code>Atime</code> to <code>BEST_EFFORT</code>, DataSync attempts to preserve the original <code>Atime</code> attribute on all source files (that is, the version before the <code>PREPARING</code> phase of the task execution).</p> <note> <p>The behavior of <code>Atime</code> isn't fully standard across platforms, so DataSync can only do this on a best-effort basis.</p> </note> <p>Default value: <code>BEST_EFFORT</code> </p> <p> <code>BEST_EFFORT</code>: Attempt to preserve the per-file <code>Atime</code> value (recommended).</p> <p> <code>NONE</code>: Ignore <code>Atime</code>.</p> <note> <p>If <code>Atime</code> is set to <code>BEST_EFFORT</code>, <code>Mtime</code> must be set to <code>PRESERVE</code>. </p> <p>If <code>Atime</code> is set to <code>NONE</code>, <code>Mtime</code> must also be <code>NONE</code>. </p> </note>"
         },
         "Mtime":{
           "shape":"Mtime",
-          "documentation":"<p>A value that indicates the last time that a file was modified (that is, a file was written to) before the <code>PREPARING</code> phase. This option is required for cases when you need to run the same task more than one time. </p> <p>Default Value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Preserve original <code>Mtime</code> (recommended)</p> <p> <code>NONE</code>: Ignore <code>Mtime</code>. </p> <note> <p>If <code>Mtime</code> is set to <code>PRESERVE</code>, <code>Atime</code> must be set to <code>BEST_EFFORT</code>.</p> <p>If <code>Mtime</code> is set to <code>NONE</code>, <code>Atime</code> must also be set to <code>NONE</code>. </p> </note>"
+          "documentation":"<p>Specifies whether to preserve metadata indicating the last time that a file was written to before the <code>PREPARING</code> phase of your task execution. This option is required when you need to run the a task more than once.</p> <p>Default Value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Preserve original <code>Mtime</code> (recommended)</p> <p> <code>NONE</code>: Ignore <code>Mtime</code>. </p> <note> <p>If <code>Mtime</code> is set to <code>PRESERVE</code>, <code>Atime</code> must be set to <code>BEST_EFFORT</code>.</p> <p>If <code>Mtime</code> is set to <code>NONE</code>, <code>Atime</code> must also be set to <code>NONE</code>. </p> </note>"
         },
         "Uid":{
           "shape":"Uid",
-          "documentation":"<p>The POSIX user ID (UID) of the file's owner.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>INT_VALUE</code>. This preserves the integer value of the ID.</p> <p> <code>INT_VALUE</code>: Preserve the integer value of UID and group ID (GID) (recommended).</p> <p> <code>NONE</code>: Ignore UID and GID. </p>"
+          "documentation":"<p>Specifies the POSIX user ID (UID) of the file's owner.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>INT_VALUE</code>. This preserves the integer value of the ID.</p> <p> <code>INT_VALUE</code>: Preserve the integer value of UID and group ID (GID) (recommended).</p> <p> <code>NONE</code>: Ignore UID and GID. </p>"
         },
         "Gid":{
           "shape":"Gid",
-          "documentation":"<p>The POSIX group ID (GID) of the file's owners.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>INT_VALUE</code>. This preserves the integer value of the ID.</p> <p> <code>INT_VALUE</code>: Preserve the integer value of user ID (UID) and GID (recommended).</p> <p> <code>NONE</code>: Ignore UID and GID.</p>"
+          "documentation":"<p>Specifies the POSIX group ID (GID) of the file's owners.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>INT_VALUE</code>. This preserves the integer value of the ID.</p> <p> <code>INT_VALUE</code>: Preserve the integer value of user ID (UID) and GID (recommended).</p> <p> <code>NONE</code>: Ignore UID and GID.</p>"
         },
         "PreserveDeletedFiles":{
           "shape":"PreserveDeletedFiles",
-          "documentation":"<p>A value that specifies whether files in the destination that don't exist in the source file system should be preserved. This option can affect your storage cost. If your task deletes objects, you might incur minimum storage duration charges for certain storage classes. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a> in the <i>DataSync User Guide</i>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Ignore such destination files (recommended). </p> <p> <code>REMOVE</code>: Delete destination files that aren’t present in the source.</p>"
+          "documentation":"<p>Specifies whether files in the destination location that don't exist in the source should be preserved. This option can affect your Amazon S3 storage cost. If your task deletes objects, you might incur minimum storage duration charges for certain storage classes. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Ignore such destination files (recommended). </p> <p> <code>REMOVE</code>: Delete destination files that aren’t present in the source.</p>"
         },
         "PreserveDevices":{
           "shape":"PreserveDevices",
-          "documentation":"<p>A value that determines whether DataSync should preserve the metadata of block and character devices in the source file system, and re-create the files with that device name and metadata on the destination. DataSync does not copy the contents of such devices, only the name and metadata. </p> <note> <p>DataSync can't sync the actual contents of such devices, because they are nonterminal and don't return an end-of-file (EOF) marker.</p> </note> <p>Default value: <code>NONE</code> </p> <p> <code>NONE</code>: Ignore special devices (recommended). </p> <p> <code>PRESERVE</code>: Preserve character and block device metadata. This option isn't currently supported for Amazon EFS. </p>"
+          "documentation":"<p>Specifies whether DataSync should preserve the metadata of block and character devices in the source location and recreate the files with that device name and metadata on the destination. DataSync copies only the name and metadata of such devices.</p> <note> <p>DataSync can't copy the actual contents of these devices because they're nonterminal and don't return an end-of-file (EOF) marker.</p> </note> <p>Default value: <code>NONE</code> </p> <p> <code>NONE</code>: Ignore special devices (recommended). </p> <p> <code>PRESERVE</code>: Preserve character and block device metadata. This option currently isn't supported for Amazon EFS. </p>"
         },
         "PosixPermissions":{
           "shape":"PosixPermissions",
-          "documentation":"<p>A value that determines which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Preserve POSIX-style permissions (recommended).</p> <p> <code>NONE</code>: Ignore permissions. </p> <note> <p>DataSync can preserve extant permissions of a source location.</p> </note>"
+          "documentation":"<p>Specifies which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html#metadata-copied\">Metadata copied by DataSync</a>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Preserve POSIX-style permissions (recommended).</p> <p> <code>NONE</code>: Ignore permissions. </p> <note> <p>DataSync can preserve extant permissions of a source location.</p> </note>"
         },
         "BytesPerSecond":{
           "shape":"BytesPerSecond",
-          "documentation":"<p>A value that limits the bandwidth used by DataSync. For example, if you want DataSync to use a maximum of 1 MB, set this value to <code>1048576</code> (<code>=1024*1024</code>).</p>"
+          "documentation":"<p>Limits the bandwidth used by a DataSync task. For example, if you want DataSync to use a maximum of 1 MB, set this value to <code>1048576</code> (<code>=1024*1024</code>).</p>"
         },
         "TaskQueueing":{
           "shape":"TaskQueueing",
-          "documentation":"<p>A value that determines whether tasks should be queued before executing the tasks. If set to <code>ENABLED</code>, the tasks will be queued. The default is <code>ENABLED</code>.</p> <p>If you use the same agent to run multiple tasks, you can enable the tasks to run in series. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#queue-task-execution\">Queueing task executions</a>.</p>"
+          "documentation":"<p>Specifies whether tasks should be queued before executing the tasks. The default is <code>ENABLED</code>, which means the tasks will be queued.</p> <p>If you use the same agent to run multiple tasks, you can enable the tasks to run in series. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#queue-task-execution\">Queueing task executions</a>.</p>"
         },
         "LogLevel":{
           "shape":"LogLevel",
-          "documentation":"<p>A value that determines the type of logs that DataSync publishes to a log stream in the Amazon CloudWatch log group that you provide. For more information about providing a log group for DataSync, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateTask.html#DataSync-CreateTask-request-CloudWatchLogGroupArn\">CloudWatchLogGroupArn</a>. If set to <code>OFF</code>, no logs are published. <code>BASIC</code> publishes logs on errors for individual files transferred, and <code>TRANSFER</code> publishes logs for every file or object that is transferred and integrity checked.</p>"
+          "documentation":"<p>Specifies the type of logs that DataSync publishes to a Amazon CloudWatch Logs log group. To specify the log group, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateTask.html#DataSync-CreateTask-request-CloudWatchLogGroupArn\">CloudWatchLogGroupArn</a>.</p> <p>If you set <code>LogLevel</code> to <code>OFF</code>, no logs are published. <code>BASIC</code> publishes logs on errors for individual files transferred. <code>TRANSFER</code> publishes logs for every file or object that is transferred and integrity checked.</p>"
         },
         "TransferMode":{
           "shape":"TransferMode",
-          "documentation":"<p>A value that determines whether DataSync transfers only the data and metadata that differ between the source and the destination location, or whether DataSync transfers all the content from the source, without comparing to the destination location. </p> <p> <code>CHANGED</code>: DataSync copies only data or metadata that is new or different content from the source location to the destination location.</p> <p> <code>ALL</code>: DataSync copies all source location content to the destination, without comparing to existing content on the destination.</p>"
+          "documentation":"<p>Determines whether DataSync transfers only the data and metadata that differ between the source and the destination location or transfers all the content from the source (without comparing what's in the destination).</p> <p> <code>CHANGED</code>: DataSync copies only data or metadata that is new or different content from the source location to the destination location.</p> <p> <code>ALL</code>: DataSync copies all source location content to the destination (without comparing what's in the destination).</p>"
         },
         "SecurityDescriptorCopyFlags":{
           "shape":"SmbSecurityDescriptorCopyFlags",
-          "documentation":"<p>A value that determines which components of the SMB security descriptor are copied from source to destination objects. </p> <p>This value is only used for transfers between SMB and Amazon FSx for Windows File Server locations, or between two Amazon FSx for Windows File Server locations. For more information about how DataSync handles metadata, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html\">How DataSync Handles Metadata and Special Files</a>. </p> <p>Default value: <code>OWNER_DACL</code> </p> <p> <code>OWNER_DACL</code>: For each copied object, DataSync copies the following metadata:</p> <ul> <li> <p>Object owner.</p> </li> <li> <p>NTFS discretionary access control lists (DACLs), which determine whether to grant access to an object.</p> </li> </ul> <p>When choosing this option, DataSync does NOT copy the NTFS system access control lists (SACLs), which are used by administrators to log attempts to access a secured object.</p> <p> <code>OWNER_DACL_SACL</code>: For each copied object, DataSync copies the following metadata:</p> <ul> <li> <p>Object owner.</p> </li> <li> <p>NTFS discretionary access control lists (DACLs), which determine whether to grant access to an object.</p> </li> <li> <p>NTFS system access control lists (SACLs), which are used by administrators to log attempts to access a secured object.</p> </li> </ul> <p>Copying SACLs requires granting additional permissions to the Windows user that DataSync uses to access your SMB location. For information about choosing a user that ensures sufficient permissions to files, folders, and metadata, see <a href=\"create-smb-location.html#SMBuser\">user</a>.</p> <p> <code>NONE</code>: None of the SMB security descriptor components are copied. Destination objects are owned by the user that was provided for accessing the destination location. DACLs and SACLs are set based on the destination server’s configuration. </p>"
+          "documentation":"<p>Specifies which components of the SMB security descriptor are copied from source to destination objects. </p> <p>This value is only used for transfers between SMB and Amazon FSx for Windows File Server locations or between two FSx for Windows File Server locations. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/special-files.html\">how DataSync handles metadata</a>.</p> <p>Default value: <code>OWNER_DACL</code> </p> <p> <code>OWNER_DACL</code>: For each copied object, DataSync copies the following metadata:</p> <ul> <li> <p>The object owner.</p> </li> <li> <p>NTFS discretionary access control lists (DACLs), which determine whether to grant access to an object.</p> <p>DataSync won't copy NTFS system access control lists (SACLs) with this option.</p> </li> </ul> <p> <code>OWNER_DACL_SACL</code>: For each copied object, DataSync copies the following metadata:</p> <ul> <li> <p>The object owner.</p> </li> <li> <p>NTFS discretionary access control lists (DACLs), which determine whether to grant access to an object.</p> </li> <li> <p>SACLs, which are used by administrators to log attempts to access a secured object.</p> <p>Copying SACLs requires granting additional permissions to the Windows user that DataSync uses to access your SMB location. For information about choosing a user that ensures sufficient permissions to files, folders, and metadata, see <a href=\"create-smb-location.html#SMBuser\">user</a>.</p> </li> </ul> <p> <code>NONE</code>: None of the SMB security descriptor components are copied. Destination objects are owned by the user that was provided for accessing the destination location. DACLs and SACLs are set based on the destination server’s configuration. </p>"
         },
         "ObjectTags":{
           "shape":"ObjectTags",
-          "documentation":"<p>Specifies whether object tags are maintained when transferring between object storage systems. If you want your DataSync task to ignore object tags, specify the <code>NONE</code> value.</p> <p>Default Value: <code>PRESERVE</code> </p>"
+          "documentation":"<p>Specifies whether object tags are preserved when transferring between object storage systems. If you want your DataSync task to ignore object tags, specify the <code>NONE</code> value.</p> <p>Default Value: <code>PRESERVE</code> </p>"
         }
       },
-      "documentation":"<p>Represents the options that are available to control the behavior of a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a> operation. Behavior includes preserving metadata such as user ID (UID), group ID (GID), and file permissions, and also overwriting files in the destination, data integrity verification, and so on.</p> <p>A task has a set of default options associated with it. If you don't specify an option in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a>, the default value is used. You can override the defaults options on each task execution by specifying an overriding <code>Options</code> value to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html\">StartTaskExecution</a>.</p>"
+      "documentation":"<p>Configures your DataSync task settings. These options include how DataSync handles files, objects, and their associated metadata. You also can specify how DataSync verifies data integrity, set bandwidth limits for your task, among other options.</p> <p>Each task setting has a default value. Unless you need to, you don't have to configure any of these <code>Options</code> before starting your task.</p>"
     },
     "OutputTagList":{
       "type":"list",
@@ -2791,7 +2791,8 @@
         "INTELLIGENT_TIERING",
         "GLACIER",
         "DEEP_ARCHIVE",
-        "OUTPOSTS"
+        "OUTPOSTS",
+        "GLACIER_INSTANT_RETRIEVAL"
       ]
     },
     "S3Subdirectory":{
@@ -2866,16 +2867,20 @@
       "members":{
         "TaskArn":{
           "shape":"TaskArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task to start.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task that you want to start.</p>"
         },
         "OverrideOptions":{"shape":"Options"},
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p> <p> </p>"
+          "documentation":"<p>Specifies a list of filter rules that determines which files to include when running a task. The pattern should contain a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p>"
         },
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list contains a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p>"
+          "documentation":"<p>Specifies a list of filter rules that determines which files to exclude from a task. The list contains a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>. </p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies the tags that you want to apply to the Amazon Resource Name (ARN) representing the task execution.</p> <p> <i>Tags</i> are key-value pairs that help you manage, filter, and search for your DataSync resources.</p>"
         }
       },
       "documentation":"<p>StartTaskExecutionRequest</p>"
@@ -2885,7 +2890,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the specific task execution that was started.</p>"
+          "documentation":"<p>The ARN of the running task execution.</p>"
         }
       },
       "documentation":"<p>StartTaskExecutionResponse</p>"
@@ -2920,7 +2925,7 @@
           "documentation":"<p>The value for an Amazon Web Services resource tag.</p>"
         }
       },
-      "documentation":"<p>Represents a single entry in a list of Amazon Web Services resource tags. <code>TagListEntry</code> returns an array that contains a list of tasks when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListTagsForResource.html\">ListTagsForResource</a> operation is called.</p>"
+      "documentation":"<p>A key-value pair representing a single tag that's been applied to an Amazon Web Services resource.</p>"
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -2931,11 +2936,11 @@
       "members":{
         "ResourceArn":{
           "shape":"TaggableResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to apply the tag to.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the resource to apply the tag to.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The tags to apply.</p>"
+          "documentation":"<p>Specifies the tags that you want to apply to the resource.</p>"
         }
       },
       "documentation":"<p>TagResourceRequest</p>"
@@ -2954,7 +2959,7 @@
     "TaggableResourceArn":{
       "type":"string",
       "max":128,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location)/(agent|task|loc)-[0-9a-z]{17}$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location)/(agent|task|loc)-[a-f0-9]{17}(/execution/exec-[a-f0-9]{17})?$"
     },
     "TaskArn":{
       "type":"string",
@@ -3148,11 +3153,11 @@
       "members":{
         "ResourceArn":{
           "shape":"TaggableResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to remove the tag from.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the resource to remove the tags from.</p>"
         },
         "Keys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The keys in the key-value pair in the tag to remove.</p>"
+          "documentation":"<p>Specifies the keys in the tags that you want to remove.</p>"
         }
       },
       "documentation":"<p>UntagResourceRequest</p>"
@@ -3375,7 +3380,7 @@
         "Options":{"shape":"Options"},
         "Excludes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to exclude from a task. The list should contain a single filter string that consists of the patterns to exclude. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p> <p> </p>"
+          "documentation":"<p>Specifies a list of filter rules that exclude specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         },
         "Schedule":{
           "shape":"TaskSchedule",
@@ -3391,7 +3396,7 @@
         },
         "Includes":{
           "shape":"FilterList",
-          "documentation":"<p>A list of filter rules that determines which files to include when running a task. The pattern contains a single filter string that consists of the patterns to include. The patterns are delimited by \"|\" (that is, a pipe), for example, <code>\"/folder1|/folder2\"</code>.</p>"
+          "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
         }
       },
       "documentation":"<p>UpdateTaskResponse</p>"

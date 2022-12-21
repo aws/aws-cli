@@ -2,6 +2,44 @@
 CHANGELOG
 =========
 
+2.9.9
+=====
+
+* api-change:``cloudfront``: Updated documentation for CloudFront
+* api-change:``glue``: This release adds support for AWS Glue Crawler with native DeltaLake tables, allowing Crawlers to classify Delta Lake format tables and catalog them for query engines to query against.
+* api-change:``medialive``: This release adds support for two new features to AWS Elemental MediaLive. First, you can now burn-in timecodes to your MediaLive outputs. Second, we now now support the ability to decode Dolby E audio when it comes in on an input.
+* api-change:``ecs``: This release adds support for container port ranges in ECS, a new capability that allows customers to provide container port ranges to simplify use cases where multiple ports are in use in a container. This release updates TaskDefinition mutation APIs and the Task description APIs.
+* api-change:``lookoutequipment``: This release adds support for listing inference schedulers by status.
+* api-change:``ec2``: Adds support for pagination in the EC2 DescribeImages API.
+* api-change:``resource-explorer-2``: Documentation updates for AWS Resource Explorer.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``datasync``: AWS DataSync now supports the use of tags with task executions. With this new feature, you can apply tags each time you execute a task, giving you greater control and management over your task executions.
+* api-change:``backup-gateway``: This release adds support for VMware vSphere tags, enabling customer to protect VMware virtual machines using tag-based policies for AWS tags mapped from vSphere tags. This release also adds support for customer-accessible gateway-hypervisor interaction log and upload bandwidth rate limit schedule.
+* api-change:``sagemaker``: AWS sagemaker - Features: This release adds support for random seed, it's an integer value used to initialize a pseudo-random number generator. Setting a random seed will allow the hyperparameter tuning search strategies to produce more consistent configurations for the same tuning job.
+* api-change:``kinesisvideo``: Amazon Kinesis Video Streams offers capabilities to stream video and audio in real-time via WebRTC to the cloud for storage, playback, and analytical processing. Customers can use our enhanced WebRTC SDK and cloud APIs to enable real-time streaming, as well as media ingestion to the cloud.
+* api-change:``connect``: Added support for "English - New Zealand" and "English - South African" to be used with Amazon Connect Custom Vocabulary APIs.
+* api-change:``rds``: Add support for --enable-customer-owned-ip to RDS create-db-instance-read-replica API for RDS on Outposts.
+* api-change:``appflow``: This release updates the ListConnectorEntities API action so that it returns paginated responses that customers can retrieve with next tokens.
+* api-change:``location``: This release adds support for a new style, "VectorOpenDataStandardLight" which can be used with the new data source, "Open Data Maps (Preview)".
+* api-change:``kinesis-video-webrtc-storage``: Amazon Kinesis Video Streams offers capabilities to stream video and audio in real-time via WebRTC to the cloud for storage, playback, and analytical processing. Customers can use our enhanced WebRTC SDK and cloud APIs to enable real-time streaming, as well as media ingestion to the cloud.
+* api-change:``m2``: Adds an optional create-only `KmsKeyId` property to Environment and Application resources.
+* api-change:``batch``: Adds isCancelled and isTerminated to DescribeJobs response.
+* api-change:``sagemaker``: SageMaker Inference Recommender now allows customers to load tests their models on various instance types using private VPC.
+* api-change:``sagemaker``: Amazon SageMaker Autopilot adds support for new objective metrics in CreateAutoMLJob API.
+* api-change:``securityhub``: Added new resource details objects to ASFF, including resources for AwsEc2LaunchTemplate, AwsSageMakerNotebookInstance, AwsWafv2WebAcl and AwsWafv2RuleGroup.
+* api-change:``kinesis``: Added StreamARN parameter for Kinesis Data Streams APIs. Added a new opaque pagination token for ListStreams. SDKs will auto-generate Account Endpoint when accessing Kinesis Data Streams.
+* api-change:``nimble``: Amazon Nimble Studio now supports configuring session storage volumes and persistence, as well as backup and restore sessions through launch profiles.
+* api-change:``route53domains``: Use Route 53 domain APIs to change owner, create/delete DS record, modify IPS tag, resend authorization. New: AssociateDelegationSignerToDomain, DisassociateDelegationSignerFromDomain, PushDomain, ResendOperationAuthorization. Updated: UpdateDomainContact, ListOperations, CheckDomainTransferability.
+* api-change:``ecs``: This release adds support for alarm-based rollbacks in ECS, a new feature that allows customers to add automated safeguards for Amazon ECS service rolling updates.
+* api-change:``eks``: Add support for Windows managed nodes groups.
+* api-change:``athena``: Add missed InvalidRequestException in GetCalculationExecutionCode,StopCalculationExecution APIs. Correct required parameters (Payload and Type) in UpdateNotebook API. Change Notebook size from 15 Mb to 10 Mb.
+* api-change:``transcribe``: Enable our batch transcription jobs for Swedish and Vietnamese.
+* api-change:``sagemaker``: AWS Sagemaker - Sagemaker Images now supports Aliases as secondary identifiers for ImageVersions. SageMaker Images now supports additional metadata for ImageVersions for better images management.
+* api-change:``iotfleetwise``: Updated error handling for empty resource names in "UpdateSignalCatalog" and "GetModelManifest" operations.
+* api-change:``guardduty``: This release provides the valid characters for the Description and Name field.
+* api-change:``translate``: Raised the input byte size limit of the Text field in the TranslateText API to 10000 bytes.
+
+
 2.9.8
 =====
 

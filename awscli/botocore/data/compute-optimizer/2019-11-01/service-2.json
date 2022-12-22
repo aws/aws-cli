@@ -113,6 +113,26 @@
       ],
       "documentation":"<p>Exports optimization recommendations for Amazon EC2 instances.</p> <p>Recommendations are exported in a comma-separated values (.csv) file, and its metadata in a JavaScript Object Notation (JSON) (.json) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one Amazon EC2 instance export job in progress per Amazon Web Services Region.</p>"
     },
+    "ExportECSServiceRecommendations":{
+      "name":"ExportECSServiceRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportECSServiceRecommendationsRequest"},
+      "output":{"shape":"ExportECSServiceRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Exports optimization recommendations for Amazon ECS services on Fargate. </p> <p>Recommendations are exported in a CSV file, and its metadata in a JSON file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can only have one Amazon ECS service export job in progress per Amazon Web Services Region.</p>"
+    },
     "ExportLambdaFunctionRecommendations":{
       "name":"ExportLambdaFunctionRecommendations",
       "http":{
@@ -212,6 +232,46 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the projected utilization metrics of Amazon EC2 instance recommendations.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned when you run this action. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>"
+    },
+    "GetECSServiceRecommendationProjectedMetrics":{
+      "name":"GetECSServiceRecommendationProjectedMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetECSServiceRecommendationProjectedMetricsRequest"},
+      "output":{"shape":"GetECSServiceRecommendationProjectedMetricsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> Returns the projected metrics of Amazon ECS service recommendations. </p>"
+    },
+    "GetECSServiceRecommendations":{
+      "name":"GetECSServiceRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetECSServiceRecommendationsRequest"},
+      "output":{"shape":"GetECSServiceRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> Returns Amazon ECS service recommendations. </p> <p> Compute Optimizer generates recommendations for Amazon ECS services on Fargate that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>. </p>"
     },
     "GetEffectiveRecommendationPreferences":{
       "name":"GetEffectiveRecommendationPreferences",
@@ -326,7 +386,7 @@
         {"shape":"MissingAuthenticationToken"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the optimization findings for an account.</p> <p>It returns the number of:</p> <ul> <li> <p>Amazon EC2 instances in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>Auto Scaling groups in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon EBS volumes in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Lambda functions in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> </ul>"
+      "documentation":"<p>Returns the optimization findings for an account.</p> <p>It returns the number of:</p> <ul> <li> <p>Amazon EC2 instances in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> <li> <p>Auto Scaling groups in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon EBS volumes in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Lambda functions in an account that are <code>NotOptimized</code>, or <code>Optimized</code>.</p> </li> <li> <p>Amazon ECS services in an account that are <code>Underprovisioned</code>, <code>Overprovisioned</code>, or <code>Optimized</code>.</p> </li> </ul>"
     },
     "PutRecommendationPreferences":{
       "name":"PutRecommendationPreferences",
@@ -407,6 +467,13 @@
     "AccountIds":{
       "type":"list",
       "member":{"shape":"AccountId"}
+    },
+    "AutoScalingConfiguration":{
+      "type":"string",
+      "enum":[
+        "TargetTrackingScalingCpu",
+        "TargetTrackingScalingMemory"
+      ]
     },
     "AutoScalingGroupArn":{"type":"string"},
     "AutoScalingGroupArns":{
@@ -529,6 +596,52 @@
       "member":{"shape":"AutoScalingGroupRecommendation"}
     },
     "Code":{"type":"string"},
+    "ContainerConfiguration":{
+      "type":"structure",
+      "members":{
+        "containerName":{
+          "shape":"ContainerName",
+          "documentation":"<p> The name of the container. </p>"
+        },
+        "memorySizeConfiguration":{
+          "shape":"MemorySizeConfiguration",
+          "documentation":"<p> The memory size configurations for the container. </p>"
+        },
+        "cpu":{
+          "shape":"NullableCpu",
+          "documentation":"<p> The number of CPU units reserved for the container. </p>"
+        }
+      },
+      "documentation":"<p> Describes the container configurations within the tasks of your Amazon ECS service. </p>"
+    },
+    "ContainerConfigurations":{
+      "type":"list",
+      "member":{"shape":"ContainerConfiguration"}
+    },
+    "ContainerName":{"type":"string"},
+    "ContainerRecommendation":{
+      "type":"structure",
+      "members":{
+        "containerName":{
+          "shape":"ContainerName",
+          "documentation":"<p> The name of the container. </p>"
+        },
+        "memorySizeConfiguration":{
+          "shape":"MemorySizeConfiguration",
+          "documentation":"<p> The recommended memory size configurations for the container. </p>"
+        },
+        "cpu":{
+          "shape":"NullableCpu",
+          "documentation":"<p> The recommended number of CPU units reserved for the container. </p>"
+        }
+      },
+      "documentation":"<p> The CPU and memory recommendations for a container within the tasks of your Amazon ECS service. </p>"
+    },
+    "ContainerRecommendations":{
+      "type":"list",
+      "member":{"shape":"ContainerRecommendation"}
+    },
+    "CpuSize":{"type":"integer"},
     "CpuVendorArchitecture":{
       "type":"string",
       "enum":[
@@ -703,6 +816,250 @@
     "EBSUtilizationMetrics":{
       "type":"list",
       "member":{"shape":"EBSUtilizationMetric"}
+    },
+    "ECSServiceLaunchType":{
+      "type":"string",
+      "enum":[
+        "EC2",
+        "Fargate"
+      ]
+    },
+    "ECSServiceMetricName":{
+      "type":"string",
+      "enum":[
+        "Cpu",
+        "Memory"
+      ]
+    },
+    "ECSServiceMetricStatistic":{
+      "type":"string",
+      "enum":[
+        "Maximum",
+        "Average"
+      ]
+    },
+    "ECSServiceProjectedMetric":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ECSServiceMetricName",
+          "documentation":"<p> The name of the projected metric. </p> <p>The following metrics are available:</p> <ul> <li> <p> <code>CPU</code> — The percentage of allocated compute units that are currently in use on the ECS service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that is currently in use on the ECS service tasks.</p> </li> </ul>"
+        },
+        "timestamps":{
+          "shape":"Timestamps",
+          "documentation":"<p> The timestamps of the projected metric. </p>"
+        },
+        "upperBoundValues":{
+          "shape":"MetricValues",
+          "documentation":"<p> The upper bound values for the projected metric. </p>"
+        },
+        "lowerBoundValues":{
+          "shape":"MetricValues",
+          "documentation":"<p> The lower bound values for the projected metric. </p>"
+        }
+      },
+      "documentation":"<p> Describes the projected metrics of an Amazon ECS service recommendation option. </p> <p>To determine the performance difference between your current ECS service and the recommended option, compare the metric data of your service against its projected metric data.</p>"
+    },
+    "ECSServiceProjectedMetrics":{
+      "type":"list",
+      "member":{"shape":"ECSServiceProjectedMetric"}
+    },
+    "ECSServiceProjectedUtilizationMetric":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ECSServiceMetricName",
+          "documentation":"<p> The name of the projected utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>CPU</code> — The percentage of allocated compute units that are currently in use on the ECS service tasks.</p> </li> <li> <p> <code>Memory</code> — The percentage of memory that is currently in use on the ECS service tasks.</p> </li> </ul>"
+        },
+        "statistic":{
+          "shape":"ECSServiceMetricStatistic",
+          "documentation":"<p>The statistic of the projected utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html\">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html\">Amazon CloudWatch User Guide</a>.</p>"
+        },
+        "lowerBoundValue":{
+          "shape":"LowerBoundValue",
+          "documentation":"<p> The lower bound values for the projected utilization metrics. </p>"
+        },
+        "upperBoundValue":{
+          "shape":"UpperBoundValue",
+          "documentation":"<p> The upper bound values for the projected utilization metrics. </p>"
+        }
+      },
+      "documentation":"<p> Describes the projected utilization metrics of an Amazon ECS service recommendation option. </p> <p>To determine the performance difference between your current ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>"
+    },
+    "ECSServiceProjectedUtilizationMetrics":{
+      "type":"list",
+      "member":{"shape":"ECSServiceProjectedUtilizationMetric"}
+    },
+    "ECSServiceRecommendation":{
+      "type":"structure",
+      "members":{
+        "serviceArn":{
+          "shape":"ServiceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the current ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID of the ECS service. </p>"
+        },
+        "currentServiceConfiguration":{
+          "shape":"ServiceConfiguration",
+          "documentation":"<p> The configuration of the current ECS service. </p>"
+        },
+        "utilizationMetrics":{
+          "shape":"ECSServiceUtilizationMetrics",
+          "documentation":"<p> An array of objects that describe the utilization metrics of the ECS service. </p>"
+        },
+        "lookbackPeriodInDays":{
+          "shape":"LookBackPeriodInDays",
+          "documentation":"<p> The number of days the ECS service utilization metrics were analyzed. </p>"
+        },
+        "launchType":{
+          "shape":"ECSServiceLaunchType",
+          "documentation":"<p> The launch type the ECS service is using. </p> <note> <p>Compute Optimizer only supports the Fargate launch type.</p> </note>"
+        },
+        "lastRefreshTimestamp":{
+          "shape":"LastRefreshTimestamp",
+          "documentation":"<p> The timestamp of when the ECS service recommendation was last generated. </p>"
+        },
+        "finding":{
+          "shape":"ECSServiceRecommendationFinding",
+          "documentation":"<p> The finding classification of an ECS service. </p> <p>Findings for ECS services include:</p> <ul> <li> <p> <b> <code>Underprovisioned</code> </b> — When Compute Optimizer detects that there’s not enough memory or CPU, an ECS service is considered under-provisioned. An under-provisioned ECS service might result in poor application performance.</p> </li> <li> <p> <b> <code>Overprovisioned</code> </b> — When Compute Optimizer detects that there’s excessive memory or CPU, an ECS service is considered over-provisioned. An over-provisioned ECS service might result in additional infrastructure costs. </p> </li> <li> <p> <b> <code>Optimized</code> </b> — When both the CPU and memory of your ECS service meet the performance requirements of your workload, the service is considered optimized.</p> </li> </ul>"
+        },
+        "findingReasonCodes":{
+          "shape":"ECSServiceRecommendationFindingReasonCodes",
+          "documentation":"<p> The reason for the finding classification of an ECS service. </p> <p>Finding reason codes for ECS services include:</p> <ul> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The ECS service CPU configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The ECS service CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current service during the look-back period. </p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The ECS service memory configuration can be sized up to enhance the performance of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The ECS service memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>MemoryUtilization</code> metric of the current service during the look-back period.</p> </li> </ul>"
+        },
+        "serviceRecommendationOptions":{
+          "shape":"ECSServiceRecommendationOptions",
+          "documentation":"<p> An array of objects that describe the recommendation options for the ECS service. </p>"
+        },
+        "currentPerformanceRisk":{
+          "shape":"CurrentPerformanceRisk",
+          "documentation":"<p> The risk of the current ECS service not meeting the performance needs of its workloads. The higher the risk, the more likely the current service can't meet the performance requirements of its workload. </p>"
+        }
+      },
+      "documentation":"<p> Describes an Amazon ECS service recommendation. </p>"
+    },
+    "ECSServiceRecommendationFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ECSServiceRecommendationFilterName",
+          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p> Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code. </p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p> The value of the filter. </p> <p>The valid values for this parameter are as follows:</p> <ul> <li> <p>If you specify the <code>name</code> parameter as <code>Finding</code>, specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>Unavailable</code>.</p> </li> <li> <p>If you specify the <code>name</code> parameter as <code>FindingReasonCode</code>, specify <code>CPUUnderprovisioned</code>, <code>CPUOverprovisioned</code>, <code>MemoryUnderprovisioned</code>, or <code>MemoryOverprovisioned</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> Describes a filter that returns a more specific list of Amazon ECS service recommendations. Use this filter with the <a>GetECSServiceRecommendations</a> action. </p>"
+    },
+    "ECSServiceRecommendationFilterName":{
+      "type":"string",
+      "enum":[
+        "Finding",
+        "FindingReasonCode"
+      ]
+    },
+    "ECSServiceRecommendationFilters":{
+      "type":"list",
+      "member":{"shape":"ECSServiceRecommendationFilter"}
+    },
+    "ECSServiceRecommendationFinding":{
+      "type":"string",
+      "enum":[
+        "Optimized",
+        "Underprovisioned",
+        "Overprovisioned"
+      ]
+    },
+    "ECSServiceRecommendationFindingReasonCode":{
+      "type":"string",
+      "enum":[
+        "MemoryOverprovisioned",
+        "MemoryUnderprovisioned",
+        "CPUOverprovisioned",
+        "CPUUnderprovisioned"
+      ]
+    },
+    "ECSServiceRecommendationFindingReasonCodes":{
+      "type":"list",
+      "member":{"shape":"ECSServiceRecommendationFindingReasonCode"}
+    },
+    "ECSServiceRecommendationOption":{
+      "type":"structure",
+      "members":{
+        "memory":{
+          "shape":"NullableMemory",
+          "documentation":"<p> The memory size of the ECS service recommendation option. </p>"
+        },
+        "cpu":{
+          "shape":"NullableCpu",
+          "documentation":"<p> The CPU size of the ECS service recommendation option. </p>"
+        },
+        "savingsOpportunity":{"shape":"SavingsOpportunity"},
+        "projectedUtilizationMetrics":{
+          "shape":"ECSServiceProjectedUtilizationMetrics",
+          "documentation":"<p> An array of objects that describe the projected utilization metrics of the ECS service recommendation option. </p>"
+        },
+        "containerRecommendations":{
+          "shape":"ContainerRecommendations",
+          "documentation":"<p> The CPU and memory size recommendations for the containers within the task of your ECS service. </p>"
+        }
+      },
+      "documentation":"<p> Describes the recommendation options for an Amazon ECS service. </p>"
+    },
+    "ECSServiceRecommendationOptions":{
+      "type":"list",
+      "member":{"shape":"ECSServiceRecommendationOption"}
+    },
+    "ECSServiceRecommendations":{
+      "type":"list",
+      "member":{"shape":"ECSServiceRecommendation"}
+    },
+    "ECSServiceRecommendedOptionProjectedMetric":{
+      "type":"structure",
+      "members":{
+        "recommendedCpuUnits":{
+          "shape":"CpuSize",
+          "documentation":"<p> The recommended CPU size for the ECS service. </p>"
+        },
+        "recommendedMemorySize":{
+          "shape":"MemorySize",
+          "documentation":"<p> The recommended memory size for the ECS service. </p>"
+        },
+        "projectedMetrics":{
+          "shape":"ECSServiceProjectedMetrics",
+          "documentation":"<p> An array of objects that describe the projected metric. </p>"
+        }
+      },
+      "documentation":"<p> Describes the projected metrics of an Amazon ECS service recommendation option. </p> <p>To determine the performance difference between your current ECS service and the recommended option, compare the metric data of your service against its projected metric data.</p>"
+    },
+    "ECSServiceRecommendedOptionProjectedMetrics":{
+      "type":"list",
+      "member":{"shape":"ECSServiceRecommendedOptionProjectedMetric"}
+    },
+    "ECSServiceUtilizationMetric":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ECSServiceMetricName",
+          "documentation":"<p> The name of the utilization metric. </p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> — The amount of CPU units that are used in the service.</p> </li> <li> <p> <code>Memory</code> — The amount of memory that is used in the service.</p> </li> </ul>"
+        },
+        "statistic":{
+          "shape":"ECSServiceMetricStatistic",
+          "documentation":"<p>The statistic of the utilization metric.</p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html\">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html\">Amazon CloudWatch User Guide</a>.</p>"
+        },
+        "value":{
+          "shape":"MetricValue",
+          "documentation":"<p> The value of the utilization metric. </p>"
+        }
+      },
+      "documentation":"<p> Describes the utilization metric of an Amazon ECS service. </p> <p>To determine the performance difference between your current ECS service and the recommended option, compare the utilization metric data of your service against its projected utilization metric data.</p>"
+    },
+    "ECSServiceUtilizationMetrics":{
+      "type":"list",
+      "member":{"shape":"ECSServiceUtilizationMetric"}
     },
     "EffectiveRecommendationPreferences":{
       "type":"structure",
@@ -911,6 +1268,43 @@
         }
       }
     },
+    "ExportECSServiceRecommendationsRequest":{
+      "type":"structure",
+      "required":["s3DestinationConfig"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p> The Amazon Web Services account IDs for the export ECS service recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
+        },
+        "filters":{
+          "shape":"ECSServiceRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that exports a more specific set of ECS service recommendations. </p>"
+        },
+        "fieldsToExport":{
+          "shape":"ExportableECSServiceFields",
+          "documentation":"<p>The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files\">Exported files</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "s3DestinationConfig":{"shape":"S3DestinationConfig"},
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p> The format of the export file. </p> <p>The CSV file is the only export file format currently supported.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"IncludeMemberAccounts",
+          "documentation":"<p>If your account is the management account or the delegated administrator of an organization, this parameter indicates whether to include recommendations for resources in all member accounts of the organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access\">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren't included in the export file.</p> <p>If this parameter or the account ID parameter is omitted, recommendations for member accounts aren't included in the export.</p>"
+        }
+      }
+    },
+    "ExportECSServiceRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID. </p>"
+        },
+        "s3Destination":{"shape":"S3Destination"}
+      }
+    },
     "ExportLambdaFunctionRecommendationsRequest":{
       "type":"structure",
       "required":["s3DestinationConfig"],
@@ -1010,6 +1404,38 @@
     "ExportableAutoScalingGroupFields":{
       "type":"list",
       "member":{"shape":"ExportableAutoScalingGroupField"}
+    },
+    "ExportableECSServiceField":{
+      "type":"string",
+      "enum":[
+        "AccountId",
+        "ServiceArn",
+        "LookbackPeriodInDays",
+        "LastRefreshTimestamp",
+        "LaunchType",
+        "CurrentPerformanceRisk",
+        "CurrentServiceConfigurationMemory",
+        "CurrentServiceConfigurationCpu",
+        "CurrentServiceConfigurationTaskDefinitionArn",
+        "CurrentServiceConfigurationAutoScalingConfiguration",
+        "CurrentServiceContainerConfigurations",
+        "UtilizationMetricsCpuMaximum",
+        "UtilizationMetricsMemoryMaximum",
+        "Finding",
+        "FindingReasonCodes",
+        "RecommendationOptionsMemory",
+        "RecommendationOptionsCpu",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "RecommendationOptionsContainerRecommendations",
+        "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
+      ]
+    },
+    "ExportableECSServiceFields":{
+      "type":"list",
+      "member":{"shape":"ExportableECSServiceField"}
     },
     "ExportableInstanceField":{
       "type":"string",
@@ -1401,6 +1827,89 @@
         }
       }
     },
+    "GetECSServiceRecommendationProjectedMetricsRequest":{
+      "type":"structure",
+      "required":[
+        "serviceArn",
+        "stat",
+        "period",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "serviceArn":{
+          "shape":"ServiceArn",
+          "documentation":"<p> The ARN that identifies the ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>"
+        },
+        "stat":{
+          "shape":"MetricStatistic",
+          "documentation":"<p> The statistic of the projected metrics. </p>"
+        },
+        "period":{
+          "shape":"Period",
+          "documentation":"<p> The granularity, in seconds, of the projected metrics data points. </p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of the first projected metrics data point to return. </p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of the last projected metrics data point to return. </p>"
+        }
+      }
+    },
+    "GetECSServiceRecommendationProjectedMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "recommendedOptionProjectedMetrics":{
+          "shape":"ECSServiceRecommendedOptionProjectedMetrics",
+          "documentation":"<p> An array of objects that describes the projected metrics. </p>"
+        }
+      }
+    },
+    "GetECSServiceRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "serviceArns":{
+          "shape":"ServiceArns",
+          "documentation":"<p> The ARN that identifies the ECS service. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ecs:region:aws_account_id:service/cluster-name/service-name</code> </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to advance to the next page of ECS service recommendations. </p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of ECS service recommendations to return with a single request. </p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>"
+        },
+        "filters":{
+          "shape":"ECSServiceRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that returns a more specific list of ECS service recommendations. </p>"
+        },
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p> Return the ECS service recommendations to the specified Amazon Web Services account IDs. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the ECS service recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>"
+        }
+      }
+    },
+    "GetECSServiceRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to advance to the next page of ECS service recommendations. </p>"
+        },
+        "ecsServiceRecommendations":{
+          "shape":"ECSServiceRecommendations",
+          "documentation":"<p> An array of objects that describe the ECS service recommendations. </p>"
+        },
+        "errors":{
+          "shape":"GetRecommendationErrors",
+          "documentation":"<p> An array of objects that describe errors of the request. </p>"
+        }
+      }
+    },
     "GetEffectiveRecommendationPreferencesRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1420,7 +1929,7 @@
         },
         "externalMetricsPreference":{
           "shape":"ExternalMetricsPreference",
-          "documentation":"<p>The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level.</p> <p>If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/enhanced-infrastructure-metrics.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+          "documentation":"<p>The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level.</p> <p>If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         }
       }
     },
@@ -2037,14 +2546,31 @@
     },
     "LookBackPeriodInDays":{"type":"double"},
     "Low":{"type":"long"},
+    "LowerBoundValue":{"type":"double"},
     "MaxResults":{
       "type":"integer",
-      "box":true
+      "box":true,
+      "max":1000,
+      "min":0
     },
     "MaxSize":{"type":"integer"},
     "Medium":{"type":"long"},
     "MemberAccountsEnrolled":{"type":"boolean"},
     "MemorySize":{"type":"integer"},
+    "MemorySizeConfiguration":{
+      "type":"structure",
+      "members":{
+        "memory":{
+          "shape":"NullableMemory",
+          "documentation":"<p> The amount of memory in the container. </p>"
+        },
+        "memoryReservation":{
+          "shape":"NullableMemoryReservation",
+          "documentation":"<p> The limit of memory reserve for the container. </p>"
+        }
+      },
+      "documentation":"<p> The memory size configurations of a container. </p>"
+    },
     "Message":{"type":"string"},
     "MetadataKey":{"type":"string"},
     "MetricName":{
@@ -2098,6 +2624,9 @@
       "synthetic":true
     },
     "NextToken":{"type":"string"},
+    "NullableCpu":{"type":"integer"},
+    "NullableMemory":{"type":"integer"},
+    "NullableMemoryReservation":{"type":"integer"},
     "NumberOfInvocations":{"type":"long"},
     "NumberOfMemberAccountsOptedIn":{"type":"integer"},
     "OptInRequiredException":{
@@ -2321,7 +2850,8 @@
         "Ec2Instance",
         "AutoScalingGroup",
         "EbsVolume",
-        "LambdaFunction"
+        "LambdaFunction",
+        "EcsService"
       ]
     },
     "RecommendationSources":{
@@ -2398,7 +2928,8 @@
         "AutoScalingGroup",
         "EbsVolume",
         "LambdaFunction",
-        "NotApplicable"
+        "NotApplicable",
+        "EcsService"
       ]
     },
     "S3Destination":{
@@ -2471,6 +3002,37 @@
       ]
     },
     "ScopeValue":{"type":"string"},
+    "ServiceArn":{"type":"string"},
+    "ServiceArns":{
+      "type":"list",
+      "member":{"shape":"ServiceArn"}
+    },
+    "ServiceConfiguration":{
+      "type":"structure",
+      "members":{
+        "memory":{
+          "shape":"NullableMemory",
+          "documentation":"<p> The amount of memory used by the tasks in the ECS service. </p>"
+        },
+        "cpu":{
+          "shape":"NullableCpu",
+          "documentation":"<p> The number of CPU units used by the tasks in the ECS service. </p>"
+        },
+        "containerConfigurations":{
+          "shape":"ContainerConfigurations",
+          "documentation":"<p> The container configurations within a task of an ECS service. </p>"
+        },
+        "autoScalingConfiguration":{
+          "shape":"AutoScalingConfiguration",
+          "documentation":"<p> Describes the Auto Scaling configuration methods for an Amazon ECS service. This affects the generated recommendations. For example, if Auto Scaling is configured on a ECS service’s CPU, then Compute Optimizer doesn’t generate CPU size recommendations. </p> <p>The Auto Scaling configuration methods include:</p> <ul> <li> <p> <code>TARGET_TRACKING_SCALING_CPU</code> — If the ECS service is configured to use target scaling on CPU, Compute Optimizer doesn't generate CPU recommendations.</p> </li> <li> <p> <code>TARGET_TRACKING_SCALING_MEMORY</code> — If the ECS service is configured to use target scaling on memory, Compute Optimizer doesn't generate memory recommendations.</p> </li> </ul> <p>For more information about step scaling and target scaling, see <a href=\"https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-step-scaling-policies.html\"> Step scaling policies for Application Auto Scaling</a> and <a href=\"https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html\"> Target tracking scaling policies for Application Auto Scaling</a> in the <i>Application Auto Scaling User Guide</i>.</p>"
+        },
+        "taskDefinitionArn":{
+          "shape":"TaskDefinitionArn",
+          "documentation":"<p> The task definition ARN used by the tasks in the ECS service. </p>"
+        }
+      },
+      "documentation":"<p> The Amazon ECS service configurations used for recommendations. </p>"
+    },
     "ServiceUnavailableException":{
       "type":"structure",
       "members":{
@@ -2513,6 +3075,7 @@
       "documentation":"<p>The summary of a recommendation.</p>"
     },
     "SummaryValue":{"type":"double"},
+    "TaskDefinitionArn":{"type":"string"},
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -2555,6 +3118,7 @@
         }
       }
     },
+    "UpperBoundValue":{"type":"double"},
     "UtilizationMetric":{
       "type":"structure",
       "members":{
@@ -2693,5 +3257,5 @@
     "VolumeSize":{"type":"integer"},
     "VolumeType":{"type":"string"}
   },
-  "documentation":"<p>Compute Optimizer is a service that analyzes the configuration and utilization metrics of your Amazon Web Services compute resources, such as Amazon EC2 instances, Amazon EC2 Auto Scaling groups, Lambda functions, and Amazon EBS volumes. It reports whether your resources are optimal, and generates optimization recommendations to reduce the cost and improve the performance of your workloads. Compute Optimizer also provides recent utilization metric data, in addition to projected utilization metric data for the recommendations, which you can use to evaluate which recommendation provides the best price-performance trade-off. The analysis of your usage patterns can help you decide when to move or resize your running resources, and still meet your performance and capacity requirements. For more information about Compute Optimizer, including the required permissions to use the service, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/\">Compute Optimizer User Guide</a>.</p>"
+  "documentation":"<p>Compute Optimizer is a service that analyzes the configuration and utilization metrics of your Amazon Web Services compute resources, such as Amazon EC2 instances, Amazon EC2 Auto Scaling groups, Lambda functions, Amazon EBS volumes, and Amazon ECS services on Fargate. It reports whether your resources are optimal, and generates optimization recommendations to reduce the cost and improve the performance of your workloads. Compute Optimizer also provides recent utilization metric data, in addition to projected utilization metric data for the recommendations, which you can use to evaluate which recommendation provides the best price-performance trade-off. The analysis of your usage patterns can help you decide when to move or resize your running resources, and still meet your performance and capacity requirements. For more information about Compute Optimizer, including the required permissions to use the service, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/\">Compute Optimizer User Guide</a>.</p>"
 }

@@ -4630,6 +4630,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.36
+=======
+
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate optimization recommendations for ecs services running on Fargate.
+* api-change:``connect``: Amazon Connect Chat introduces the Idle Participant/Autodisconnect feature, which allows users to set timeouts relating to the activity of chat participants, using the new UpdateParticipantRoleConfig API.
+* api-change:``iotdeviceadvisor``: This release adds the following new features: 1) Documentation updates for IoT Device Advisor APIs. 2) Updated required request parameters for IoT Device Advisor APIs. 3) Added new service feature: ability to provide the test endpoint when customer executing the StartSuiteRun API.
+* api-change:``kinesis-video-webrtc-storage``: Amazon Kinesis Video Streams offers capabilities to stream video and audio in real-time via WebRTC to the cloud for storage, playback, and analytical processing. Customers can use our enhanced WebRTC SDK and cloud APIs to enable real-time streaming, as well as media ingestion to the cloud.
+* api-change:``rds``: Add support for managing master user password in AWS Secrets Manager for the DBInstance and DBCluster.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+
+
+1.27.35
+=======
+
+* api-change:``connect``: Amazon Connect Chat now allows for JSON (application/json) message types to be sent as part of the initial message in the StartChatContact API.
+* api-change:``connectparticipant``: Amazon Connect Chat now allows for JSON (application/json) message types to be sent in the SendMessage API.
+* api-change:``license-manager-linux-subscriptions``: AWS License Manager now offers cross-region, cross-account tracking of commercial Linux subscriptions on AWS. This includes subscriptions purchased as part of EC2 subscription-included AMIs, on the AWS Marketplace, or brought to AWS via Red Hat Cloud Access Program.
+* api-change:``macie2``: This release adds support for analyzing Amazon S3 objects that use the S3 Glacier Instant Retrieval (Glacier_IR) storage class.
+* api-change:``sagemaker``: This release enables adding RStudio Workbench support to an existing Amazon SageMaker Studio domain. It allows setting your RStudio on SageMaker environment configuration parameters and also updating the RStudioConnectUrl and RStudioPackageManagerUrl parameters for existing domains
+* api-change:``scheduler``: Updated the ListSchedules and ListScheduleGroups APIs to allow the NamePrefix field to start with a number. Updated the validation for executionRole field to support any role name.
+* api-change:``ssm``: Doc-only updates for December 2022.
+* api-change:``support``: Documentation updates for the AWS Support API
+* api-change:``transfer``: This release adds support for Decrypt as a workflow step type.
+
+
 1.27.34
 =======
 

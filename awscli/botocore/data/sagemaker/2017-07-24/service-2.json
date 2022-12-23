@@ -14690,6 +14690,10 @@
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
           "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">sts:SourceIdentity key</a>. This configuration can only be modified if there are no apps in the <code>InService</code> or <code>Pending</code> state.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"DomainSecurityGroupIds",
+          "documentation":"<p>The security groups for the Amazon Virtual Private Cloud that the <code>Domain</code> uses for communication between Domain-level apps and user apps.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -17271,7 +17275,7 @@
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
-          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more information.</p>"
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more informcration.</p>"
         },
         "VolumeSizeInGB":{
           "shape":"VolumeSizeInGB",
@@ -27926,7 +27930,15 @@
           "shape":"RoleArn",
           "documentation":"<p>The execution role for the <code>RStudioServerPro</code> Domain-level app.</p>"
         },
-        "DefaultResourceSpec":{"shape":"ResourceSpec"}
+        "DefaultResourceSpec":{"shape":"ResourceSpec"},
+        "RStudioConnectUrl":{
+          "shape":"String",
+          "documentation":"<p>A URL pointing to an RStudio Connect server.</p>"
+        },
+        "RStudioPackageManagerUrl":{
+          "shape":"String",
+          "documentation":"<p>A URL pointing to an RStudio Package Manager server.</p>"
+        }
       },
       "documentation":"<p>A collection of settings that update the current configuration for the <code>RStudioServerPro</code> Domain-level app.</p>"
     },
@@ -31826,6 +31838,10 @@
         "DefaultSpaceSettings":{
           "shape":"DefaultSpaceSettings",
           "documentation":"<p>The default settings used to create a space within the Domain.</p>"
+        },
+        "AppSecurityGroupManagement":{
+          "shape":"AppSecurityGroupManagement",
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
         }
       }
     },

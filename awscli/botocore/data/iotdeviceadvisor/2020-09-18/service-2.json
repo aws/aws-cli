@@ -239,6 +239,7 @@
     },
     "CreateSuiteDefinitionRequest":{
       "type":"structure",
+      "required":["suiteDefinitionConfiguration"],
       "members":{
         "suiteDefinitionConfiguration":{
           "shape":"SuiteDefinitionConfiguration",
@@ -255,19 +256,19 @@
       "members":{
         "suiteDefinitionId":{
           "shape":"UUID",
-          "documentation":"<p>Creates a Device Advisor test suite with suite UUID.</p>"
+          "documentation":"<p>The UUID of the test suite created.</p>"
         },
         "suiteDefinitionArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>Creates a Device Advisor test suite with Amazon Resource Name (ARN).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the test suite.</p>"
         },
         "suiteDefinitionName":{
           "shape":"SuiteDefinitionName",
-          "documentation":"<p>Creates a Device Advisor test suite with suite definition name.</p>"
+          "documentation":"<p>The suite definition name of the test suite. This is a required parameter.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>Creates a Device Advisor test suite with TimeStamp of when it was created.</p>"
+          "documentation":"<p>The timestamp of when the test suite was created.</p>"
         }
       }
     },
@@ -613,7 +614,7 @@
       "members":{
         "resourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN of the IoT Device Advisor resource.</p>",
+          "documentation":"<p>The resource ARN of the IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -673,7 +674,10 @@
     },
     "StartSuiteRunRequest":{
       "type":"structure",
-      "required":["suiteDefinitionId"],
+      "required":[
+        "suiteDefinitionId",
+        "suiteRunConfiguration"
+      ],
       "members":{
         "suiteDefinitionId":{
           "shape":"UUID",
@@ -709,6 +713,10 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>Starts a Device Advisor test suite run based on suite create time.</p>"
+        },
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The response of an Device Advisor test endpoint.</p>"
         }
       }
     },
@@ -764,10 +772,15 @@
     },
     "SuiteDefinitionConfiguration":{
       "type":"structure",
+      "required":[
+        "suiteDefinitionName",
+        "rootGroup",
+        "devicePermissionRoleArn"
+      ],
       "members":{
         "suiteDefinitionName":{
           "shape":"SuiteDefinitionName",
-          "documentation":"<p>Gets Suite Definition Configuration name.</p>"
+          "documentation":"<p>Gets the suite definition name. This is a required parameter.</p>"
         },
         "devices":{
           "shape":"DeviceUnderTestList",
@@ -779,22 +792,22 @@
         },
         "isLongDurationTest":{
           "shape":"IsLongDurationTestBoolean",
-          "documentation":"<p> Verifies if the test suite is a long duration test. </p>"
+          "documentation":"<p>Verifies if the test suite is a long duration test.</p>"
         },
         "rootGroup":{
           "shape":"RootGroup",
-          "documentation":"<p>Gets test suite root group.</p>"
+          "documentation":"<p>Gets the test suite root group. This is a required parameter.</p>"
         },
         "devicePermissionRoleArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>Gets the device permission ARN.</p>"
+          "documentation":"<p>Gets the device permission ARN. This is a required parameter.</p>"
         },
         "protocol":{
           "shape":"Protocol",
-          "documentation":"<p> Gets the MQTT protocol that is configured in the suite definition.</p>"
+          "documentation":"<p>Sets the MQTT protocol that is configured in the suite definition.</p>"
         }
       },
-      "documentation":"<p>Gets Suite Definition Configuration.</p>"
+      "documentation":"<p>Gets the suite definition configuration.</p>"
     },
     "SuiteDefinitionInformation":{
       "type":"structure",
@@ -817,11 +830,11 @@
         },
         "isLongDurationTest":{
           "shape":"IsLongDurationTestBoolean",
-          "documentation":"<p> Verifies if the test suite is a long duration test. </p>"
+          "documentation":"<p>Verifies if the test suite is a long duration test.</p>"
         },
         "protocol":{
           "shape":"Protocol",
-          "documentation":"<p> Gets the MQTT protocol that is configured in the suite definition.</p>"
+          "documentation":"<p>Gets the MQTT protocol that is configured in the suite definition.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -846,14 +859,15 @@
     },
     "SuiteRunConfiguration":{
       "type":"structure",
+      "required":["primaryDevice"],
       "members":{
         "primaryDevice":{
           "shape":"DeviceUnderTest",
-          "documentation":"<p>Gets the primary device for suite run.</p>"
+          "documentation":"<p>Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.</p>"
         },
         "selectedTestList":{
           "shape":"SelectedTestList",
-          "documentation":"<p>Gets test case list.</p>"
+          "documentation":"<p>Sets test case list.</p>"
         },
         "parallelRun":{
           "shape":"ParallelRun",
@@ -954,7 +968,7 @@
       "members":{
         "resourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The resource ARN of an IoT Device Advisor resource.</p>",
+          "documentation":"<p>The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -1102,7 +1116,7 @@
       "members":{
         "resourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The resource ARN of an IoT Device Advisor resource.</p>",
+          "documentation":"<p>The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -1121,7 +1135,10 @@
     },
     "UpdateSuiteDefinitionRequest":{
       "type":"structure",
-      "required":["suiteDefinitionId"],
+      "required":[
+        "suiteDefinitionId",
+        "suiteDefinitionConfiguration"
+      ],
       "members":{
         "suiteDefinitionId":{
           "shape":"UUID",
@@ -1148,7 +1165,7 @@
         },
         "suiteDefinitionName":{
           "shape":"SuiteDefinitionName",
-          "documentation":"<p>Suite definition name of the updated test suite.</p>"
+          "documentation":"<p>Updates the suite definition name. This is a required parameter.</p>"
         },
         "suiteDefinitionVersion":{
           "shape":"SuiteDefinitionVersion",

@@ -360,6 +360,38 @@
       ],
       "documentation":"<p>Returns the detailed parameter list for a particular parameter group.</p>"
     },
+    "DescribeReservedNodes":{
+      "name":"DescribeReservedNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeReservedNodesRequest"},
+      "output":{"shape":"DescribeReservedNodesResponse"},
+      "errors":[
+        {"shape":"ReservedNodeNotFoundFault"},
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Returns information about reserved nodes for this account, or about a specified reserved node.</p>"
+    },
+    "DescribeReservedNodesOfferings":{
+      "name":"DescribeReservedNodesOfferings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeReservedNodesOfferingsRequest"},
+      "output":{"shape":"DescribeReservedNodesOfferingsResponse"},
+      "errors":[
+        {"shape":"ReservedNodesOfferingNotFoundFault"},
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Lists available reserved node offerings.</p>"
+    },
     "DescribeServiceUpdates":{
       "name":"DescribeServiceUpdates",
       "http":{
@@ -474,6 +506,25 @@
         {"shape":"ACLNotFoundFault"}
       ],
       "documentation":"<p>Lists all tags currently on a named resource. A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track your MemoryDB resources. For more information, see <a href=\"https://docs.aws.amazon.com/MemoryDB/latest/devguide/Tagging-Resources.html\">Tagging your MemoryDB resources</a> </p>"
+    },
+    "PurchaseReservedNodesOffering":{
+      "name":"PurchaseReservedNodesOffering",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PurchaseReservedNodesOfferingRequest"},
+      "output":{"shape":"PurchaseReservedNodesOfferingResponse"},
+      "errors":[
+        {"shape":"ReservedNodesOfferingNotFoundFault"},
+        {"shape":"ReservedNodeAlreadyExistsFault"},
+        {"shape":"ReservedNodeQuotaExceededFault"},
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"TagQuotaPerResourceExceeded"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Allows you to purchase a reserved node offering. Reserved nodes are not eligible for cancellation and are non-refundable.</p>"
     },
     "ResetParameterGroup":{
       "name":"ResetParameterGroup",
@@ -1695,6 +1746,94 @@
         }
       }
     },
+    "DescribeReservedNodesOfferingsRequest":{
+      "type":"structure",
+      "members":{
+        "ReservedNodesOfferingId":{
+          "shape":"String",
+          "documentation":"<p>The offering identifier filter value. Use this parameter to show only the available offering that matches the specified reservation identifier.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type for the reserved nodes. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.reserved.html#reserved-nodes-supported\">Supported node types</a>.</p>"
+        },
+        "Duration":{
+          "shape":"String",
+          "documentation":"<p>Duration filter value, specified in years or seconds. Use this parameter to show only reservations for a given duration.</p>"
+        },
+        "OfferingType":{
+          "shape":"String",
+          "documentation":"<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type. Valid values: \"All Upfront\"|\"Partial Upfront\"| \"No Upfront\"</p>"
+        },
+        "MaxResults":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        }
+      }
+    },
+    "DescribeReservedNodesOfferingsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        },
+        "ReservedNodesOfferings":{
+          "shape":"ReservedNodesOfferingList",
+          "documentation":"<p>Lists available reserved node offerings.</p>"
+        }
+      }
+    },
+    "DescribeReservedNodesRequest":{
+      "type":"structure",
+      "members":{
+        "ReservationId":{
+          "shape":"String",
+          "documentation":"<p>The reserved node identifier filter value. Use this parameter to show only the reservation that matches the specified reservation ID.</p>"
+        },
+        "ReservedNodesOfferingId":{
+          "shape":"String",
+          "documentation":"<p>The offering identifier filter value. Use this parameter to show only purchased reservations matching the specified offering identifier.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type filter value. Use this parameter to show only those reservations matching the specified node type. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.reserved.html#reserved-nodes-supported\">Supported node types</a>.</p>"
+        },
+        "Duration":{
+          "shape":"String",
+          "documentation":"<p>The duration filter value, specified in years or seconds. Use this parameter to show only reservations for this duration.</p>"
+        },
+        "OfferingType":{
+          "shape":"String",
+          "documentation":"<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type. Valid values: \"All Upfront\"|\"Partial Upfront\"| \"No Upfront\"</p>"
+        },
+        "MaxResults":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        }
+      }
+    },
+    "DescribeReservedNodesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        },
+        "ReservedNodes":{
+          "shape":"ReservedNodeList",
+          "documentation":"<p>Returns information about reserved nodes for this account, or about a specified reserved node.</p>"
+        }
+      }
+    },
     "DescribeServiceUpdatesRequest":{
       "type":"structure",
       "members":{
@@ -2309,6 +2448,55 @@
       "type":"list",
       "member":{"shape":"PendingModifiedServiceUpdate"}
     },
+    "PurchaseReservedNodesOfferingRequest":{
+      "type":"structure",
+      "required":["ReservedNodesOfferingId"],
+      "members":{
+        "ReservedNodesOfferingId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the reserved node offering to purchase.</p>"
+        },
+        "ReservationId":{
+          "shape":"String",
+          "documentation":"<p>A customer-specified identifier to track this reservation.</p>"
+        },
+        "NodeCount":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of node instances to reserve.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.</p>"
+        }
+      }
+    },
+    "PurchaseReservedNodesOfferingResponse":{
+      "type":"structure",
+      "members":{
+        "ReservedNode":{
+          "shape":"ReservedNode",
+          "documentation":"<p>Represents the output of a <code>PurchaseReservedNodesOffering</code> operation.</p>"
+        }
+      }
+    },
+    "RecurringCharge":{
+      "type":"structure",
+      "members":{
+        "RecurringChargeAmount":{
+          "shape":"Double",
+          "documentation":"<p>The amount of the recurring charge to run this reserved node.</p>"
+        },
+        "RecurringChargeFrequency":{
+          "shape":"String",
+          "documentation":"<p>The frequency of the recurring price charged to run this reserved node.</p>"
+        }
+      },
+      "documentation":"<p>The recurring charge to run this reserved node.</p>"
+    },
+    "RecurringChargeList":{
+      "type":"list",
+      "member":{"shape":"RecurringCharge"}
+    },
     "ReplicaConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -2318,6 +2506,122 @@
         }
       },
       "documentation":"<p>A request to configure the number of replicas in a shard</p>"
+    },
+    "ReservedNode":{
+      "type":"structure",
+      "members":{
+        "ReservationId":{
+          "shape":"String",
+          "documentation":"<p>A customer-specified identifier to track this reservation.</p>"
+        },
+        "ReservedNodesOfferingId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the reserved node offering to purchase.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type for the reserved nodes.</p>"
+        },
+        "StartTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the reservation started.</p>"
+        },
+        "Duration":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the reservation in seconds.</p>"
+        },
+        "FixedPrice":{
+          "shape":"Double",
+          "documentation":"<p>The fixed price charged for this reserved node.</p>"
+        },
+        "NodeCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of nodes that have been reserved.</p>"
+        },
+        "OfferingType":{
+          "shape":"String",
+          "documentation":"<p>The offering type of this reserved node.</p>"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The state of the reserved node.</p>"
+        },
+        "RecurringCharges":{
+          "shape":"RecurringChargeList",
+          "documentation":"<p>The recurring price charged to run this reserved node.</p>"
+        },
+        "ARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the reserved node.</p>"
+        }
+      },
+      "documentation":"<p>Represents the output of a <code>PurchaseReservedNodesOffering</code> operation.</p>"
+    },
+    "ReservedNodeAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You already have a reservation with the given identifier.</p>",
+      "exception":true
+    },
+    "ReservedNodeList":{
+      "type":"list",
+      "member":{"shape":"ReservedNode"}
+    },
+    "ReservedNodeNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The requested node does not exist.</p>",
+      "exception":true
+    },
+    "ReservedNodeQuotaExceededFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request cannot be processed because it would exceed the user's node quota.</p>",
+      "exception":true
+    },
+    "ReservedNodesOffering":{
+      "type":"structure",
+      "members":{
+        "ReservedNodesOfferingId":{
+          "shape":"String",
+          "documentation":"<p>The offering identifier.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type for the reserved nodes. For more information, see <a href=\"https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.reserved.html#reserved-nodes-supported\">Supported node types</a>.</p>"
+        },
+        "Duration":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the reservation in seconds.</p>"
+        },
+        "FixedPrice":{
+          "shape":"Double",
+          "documentation":"<p>The fixed price charged for this reserved node.</p>"
+        },
+        "OfferingType":{
+          "shape":"String",
+          "documentation":"<p>The offering type of this reserved node.</p>"
+        },
+        "RecurringCharges":{
+          "shape":"RecurringChargeList",
+          "documentation":"<p>The recurring price charged to run this reserved node.</p>"
+        }
+      },
+      "documentation":"<p>The offering type of this node.</p>"
+    },
+    "ReservedNodesOfferingList":{
+      "type":"list",
+      "member":{"shape":"ReservedNodesOffering"}
+    },
+    "ReservedNodesOfferingNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The requested node offering does not exist. </p>",
+      "exception":true
     },
     "ResetParameterGroupRequest":{
       "type":"structure",

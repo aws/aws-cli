@@ -4650,6 +4650,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.38
+=======
+
+* api-change:``memorydb``: This release adds support for MemoryDB Reserved nodes which provides a significant discount compared to on-demand node pricing. Reserved nodes are not physical nodes, but rather a billing discount applied to the use of on-demand nodes in your account.
+* api-change:``transfer``: Add additional operations to throw ThrottlingExceptions
+
+
+1.27.37
+=======
+
+* api-change:``connect``: Support for Routing Profile filter, SortCriteria, and grouping by Routing Profiles for GetCurrentMetricData API. Support for RoutingProfiles, UserHierarchyGroups, and Agents as filters, NextStatus and AgentStatusName for GetCurrentUserData. Adds ApproximateTotalCount to both APIs.
+* api-change:``connectparticipant``: Amazon Connect Chat introduces the Message Receipts feature. This feature allows agents and customers to receive message delivered and read receipts after they send a chat message.
+* api-change:``detective``: This release adds a missed AccessDeniedException type to several endpoints.
+* api-change:``fsx``: Fix a bug where a recent release might break certain existing SDKs.
+* api-change:``inspector2``: Amazon Inspector adds support for scanning NodeJS 18.x and Go 1.x AWS Lambda function runtimes.
+
+
 1.27.36
 =======
 

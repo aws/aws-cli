@@ -1913,7 +1913,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Initiates silent monitoring of a contact. The Contact Control Panel (CCP) of the user specified by <i>userId</i> will be set to silent monitoring mode on the contact. Supports voice and chat contacts.</p>"
+      "documentation":"<p>Initiates silent monitoring of a contact. The Contact Control Panel (CCP) of the user specified by <i>userId</i> will be set to silent monitoring mode on the contact.</p>"
     },
     "PutUserStatus":{
       "name":"PutUserStatus",
@@ -3059,6 +3059,10 @@
         "StatusArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the agent's status.</p>"
+        },
+        "StatusName":{
+          "shape":"AgentStatusName",
+          "documentation":"<p>The name of the agent status.</p>"
         }
       },
       "documentation":"<p>Information about the agent's status.</p>"
@@ -3111,6 +3115,12 @@
     },
     "AgentUsername":{
       "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AgentsMinOneMaxHundred":{
+      "type":"list",
+      "member":{"shape":"UserId"},
       "max":100,
       "min":1
     },
@@ -5021,6 +5031,23 @@
       "type":"list",
       "member":{"shape":"CurrentMetricResult"}
     },
+    "CurrentMetricSortCriteria":{
+      "type":"structure",
+      "members":{
+        "SortByMetric":{"shape":"CurrentMetricName"},
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The way to sort.</p>"
+        }
+      },
+      "documentation":"<p>The way to sort the resulting response based on metrics. By default resources are sorted based on <code>AGENTS_ONLINE</code>, <code>DESCENDING</code>. The metric collection is sorted based on the input metrics.</p>"
+    },
+    "CurrentMetricSortCriteriaMaxOne":{
+      "type":"list",
+      "member":{"shape":"CurrentMetricSortCriteria"},
+      "max":1,
+      "min":0
+    },
     "CurrentMetrics":{
       "type":"list",
       "member":{"shape":"CurrentMetric"}
@@ -5972,7 +5999,8 @@
         "Channel":{
           "shape":"Channel",
           "documentation":"<p>The channel used for grouping and filters.</p>"
-        }
+        },
+        "RoutingProfile":{"shape":"RoutingProfileReference"}
       },
       "documentation":"<p>Contains information about the dimensions for a set of metrics.</p>"
     },
@@ -6348,6 +6376,10 @@
         "Channels":{
           "shape":"Channels",
           "documentation":"<p>The channel to use to filter the metrics.</p>"
+        },
+        "RoutingProfiles":{
+          "shape":"RoutingProfiles",
+          "documentation":"<p>A list of up to 100 routing profile IDs or ARNs.</p>"
         }
       },
       "documentation":"<p>Contains the filter to apply when retrieving metrics.</p>"
@@ -6407,11 +6439,11 @@
         },
         "Filters":{
           "shape":"Filters",
-          "documentation":"<p>The queues, up to 100, or channels, to use to filter the metrics returned. Metric data is retrieved only for the resources associated with the queues or channels included in the filter. You can include both queue IDs and queue ARNs in the same request. VOICE, CHAT, and TASK channels are supported.</p>"
+          "documentation":"<p>The filters to apply to returned metrics. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Channels: 3 (VOICE, CHAT, and TASK channels are supported.)</p> </li> </ul> <p>Metric data is retrieved only for the resources associated with the queues or routing profiles, and by any channels included in the filter. (You cannot filter by both queue AND routing profile.) You can include both resource IDs and resource ARNs in the same request. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>"
         },
         "Groupings":{
           "shape":"Groupings",
-          "documentation":"<p>The grouping applied to the metrics returned. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter.</p> </li> <li> <p>If no <code>Grouping</code> is included in the request, a summary of metrics is returned.</p> </li> </ul>"
+          "documentation":"<p>The grouping applied to the metrics returned. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter. In addition, a routing profile filter is required for metrics <code>CONTACTS_SCHEDULED</code>, <code>CONTACTS_IN_QUEUE</code>, and <code> OLDEST_CONTACT_AGE</code>.</p> </li> <li> <p>If no <code>Grouping</code> is included in the request, a summary of metrics is returned.</p> </li> </ul>"
         },
         "CurrentMetrics":{
           "shape":"CurrentMetrics",
@@ -6425,6 +6457,10 @@
           "shape":"MaxResult100",
           "documentation":"<p>The maximum number of results to return per page.</p>",
           "box":true
+        },
+        "SortCriteria":{
+          "shape":"CurrentMetricSortCriteriaMaxOne",
+          "documentation":"<p>The way to sort the resulting response based on metrics. You can enter one sort criteria. By default resources are sorted based on <code>AGENTS_ONLINE</code>, <code>DESCENDING</code>. The metric collection is sorted based on the input metrics.</p> <p>Note the following:</p> <ul> <li> <p>Sorting on <code>SLOTS_ACTIVE</code> and <code>SLOTS_AVAILABLE</code> is not supported.</p> </li> </ul>"
         }
       }
     },
@@ -6442,6 +6478,10 @@
         "DataSnapshotTime":{
           "shape":"timestamp",
           "documentation":"<p>The time at which the metrics were retrieved and cached for pagination.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total count of the result, regardless of the current page size. </p>"
         }
       }
     },
@@ -6460,7 +6500,7 @@
         },
         "Filters":{
           "shape":"UserDataFilters",
-          "documentation":"<p>Filters up to 100 <code>Queues</code>, or up to 9 <code>ContactStates</code>. The user data is retrieved only for those users who are associated with the queues and have contacts that are in the specified <code>ContactState</code>. </p>"
+          "documentation":"<p>The filters to apply to returned user data. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Agents: 100</p> </li> <li> <p>Contact states: 9</p> </li> <li> <p>User hierarchy groups: 1</p> </li> </ul> <p> The user data is retrieved for only the specified values/resources in the filter. A maximum of one filter can be passed from queues, routing profiles, agents, and user hierarchy groups. </p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -6483,6 +6523,10 @@
         "UserDataList":{
           "shape":"UserDataList",
           "documentation":"<p>A list of the user data that is returned.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total count of the result, regardless of the current page size.</p>"
         }
       }
     },
@@ -6701,7 +6745,8 @@
       "type":"string",
       "enum":[
         "QUEUE",
-        "CHANNEL"
+        "CHANNEL",
+        "ROUTING_PROFILE"
       ]
     },
     "Groupings":{
@@ -10562,6 +10607,12 @@
       "type":"list",
       "member":{"shape":"RoutingProfileSummary"}
     },
+    "RoutingProfiles":{
+      "type":"list",
+      "member":{"shape":"RoutingProfileId"},
+      "max":100,
+      "min":1
+    },
     "Rule":{
       "type":"structure",
       "required":[
@@ -11250,6 +11301,13 @@
       "member":{"shape":"TaskTemplateSingleSelectOption"}
     },
     "SnapshotVersion":{"type":"string"},
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
+    },
     "SourceApplicationName":{
       "type":"string",
       "max":100,
@@ -13491,6 +13549,10 @@
         "Contacts":{
           "shape":"AgentContactReferenceList",
           "documentation":"<p>A list of contact reference information.</p>"
+        },
+        "NextStatus":{
+          "shape":"AgentStatusName",
+          "documentation":"<p>The Next status of the agent.</p>"
         }
       },
       "documentation":"<p>Data for a user.</p>"
@@ -13500,14 +13562,32 @@
       "members":{
         "Queues":{
           "shape":"Queues",
-          "documentation":"<p>Contains information about a queue resource for which metrics are returned.</p>"
+          "documentation":"<p>A list of up to 100 queues or ARNs.</p>"
         },
         "ContactFilter":{
           "shape":"ContactFilter",
           "documentation":"<p>A filter for the user data based on the contact information that is associated to the user. It contains a list of contact states. </p>"
+        },
+        "RoutingProfiles":{
+          "shape":"RoutingProfiles",
+          "documentation":"<p>A list of up to 100 routing profile IDs or ARNs.</p>"
+        },
+        "Agents":{
+          "shape":"AgentsMinOneMaxHundred",
+          "documentation":"<p>A list of up to 100 agent IDs or ARNs.</p>"
+        },
+        "UserHierarchyGroups":{
+          "shape":"UserDataHierarchyGroups",
+          "documentation":"<p>A UserHierarchyGroup ID or ARN.</p>"
         }
       },
       "documentation":"<p>A filter for the user data.</p>"
+    },
+    "UserDataHierarchyGroups":{
+      "type":"list",
+      "member":{"shape":"HierarchyGroupId"},
+      "max":1,
+      "min":1
     },
     "UserDataList":{
       "type":"list",

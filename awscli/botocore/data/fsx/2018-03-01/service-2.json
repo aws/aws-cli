@@ -1615,7 +1615,7 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "DeploymentType":{
           "shape":"OpenZFSDeploymentType",
-          "documentation":"<p>Specifies the file system deployment type. Single AZ deployment types are configured for redundancy within a single Availability Zone in an Amazon Web Services Region . Valid values are the following:</p> <ul> <li> <p> <code>SINGLE_AZ_1</code>- (Default) Creates file systems with throughput capacities of 64 - 4,096 MB/s. <code>Single_AZ_1</code> is available in all Amazon Web Services Regions where Amazon FSx for OpenZFS is available, except US West (Oregon).</p> </li> <li> <p> <code>SINGLE_AZ_2</code>- Creates file systems with throughput capacities of 160 - 10,240 MB/s using an NVMe L2ARC cache. <code>Single_AZ_2</code> is available only in the US East (N. Virginia), US East (Ohio), US West (Oregon), and Europe (Ireland) Amazon Web Services Regions.</p> </li> </ul> <p>For more information, see: <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/available-aws-regions.html\">Deployment type availability</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/zfs-fs-performance.html\"> File system performance</a>in the<i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+          "documentation":"<p>Specifies the file system deployment type. Single AZ deployment types are configured for redundancy within a single Availability Zone in an Amazon Web Services Region . Valid values are the following:</p> <ul> <li> <p> <code>SINGLE_AZ_1</code>- (Default) Creates file systems with throughput capacities of 64 - 4,096 MB/s. <code>Single_AZ_1</code> is available in all Amazon Web Services Regions where Amazon FSx for OpenZFS is available, except US West (Oregon).</p> </li> <li> <p> <code>SINGLE_AZ_2</code>- Creates file systems with throughput capacities of 160 - 10,240 MB/s using an NVMe L2ARC cache. <code>Single_AZ_2</code> is available only in the US East (N. Virginia), US East (Ohio), US West (Oregon), and Europe (Ireland) Amazon Web Services Regions.</p> </li> </ul> <p>For more information, see: <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/availability-durability.html#available-aws-regions\">Deployment type availability</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#zfs-fs-performance\">File system performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
@@ -4844,6 +4844,10 @@
           "shape":"StorageVirtualMachineId",
           "documentation":"<p>The SVM's system generated unique ID.</p>"
         },
+        "Subtype":{
+          "shape":"StorageVirtualMachineSubtype",
+          "documentation":"<p>Describes the SVM's subtype.</p>"
+        },
         "UUID":{
           "shape":"UUID",
           "documentation":"<p>The SVM's UUID (universally unique identifier).</p>"
@@ -4936,6 +4940,15 @@
         "UNIX",
         "NTFS",
         "MIXED"
+      ]
+    },
+    "StorageVirtualMachineSubtype":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "DP_DESTINATION",
+        "SYNC_DESTINATION",
+        "SYNC_SOURCE"
       ]
     },
     "StorageVirtualMachines":{

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.40
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``emr``: Update emr command to latest version
+* api-change:``secretsmanager``: Added owning service filter, include planned deletion flag, and next rotation date response parameter in ListSecrets.
+* api-change:``wisdom``: This release extends Wisdom CreateContent and StartContentUpload APIs to support PDF and MicrosoftWord docx document uploading.
+
+
 1.27.39
 =======
 

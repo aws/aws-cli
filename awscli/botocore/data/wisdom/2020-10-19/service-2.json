@@ -991,7 +991,7 @@
     },
     "ContentType":{
       "type":"string",
-      "pattern":"^(text/(plain|html))|(application/x\\.wisdom-json;source=(salesforce|servicenow|zendesk))$"
+      "pattern":"^(text/(plain|html))|(application/(pdf|vnd\\.openxmlformats-officedocument\\.wordprocessingml\\.document))|(application/x\\.wisdom-json;source=(salesforce|servicenow|zendesk))$"
     },
     "CreateAssistantAssociationRequest":{
       "type":"structure",
@@ -1118,7 +1118,7 @@
           "documentation":"<p>The title of the content. If not set, the title is equal to the name.</p>"
         },
         "uploadId":{
-          "shape":"NonEmptyString",
+          "shape":"UploadId",
           "documentation":"<p>A pointer to the uploaded asset. This value is returned by <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a>.</p>"
         }
       }
@@ -2498,7 +2498,7 @@
           "documentation":"<p>The headers to include in the upload.</p>"
         },
         "uploadId":{
-          "shape":"NonEmptyString",
+          "shape":"UploadId",
           "documentation":"<p>The identifier of the upload.</p>"
         },
         "url":{
@@ -2644,7 +2644,7 @@
           "documentation":"<p>The title of the content.</p>"
         },
         "uploadId":{
-          "shape":"NonEmptyString",
+          "shape":"UploadId",
           "documentation":"<p>A pointer to the uploaded asset. This value is returned by <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a>. </p>"
         }
       }
@@ -2685,6 +2685,11 @@
           "documentation":"<p>The knowledge base to update.</p>"
         }
       }
+    },
+    "UploadId":{
+      "type":"string",
+      "max":1200,
+      "min":1
     },
     "Uri":{
       "type":"string",

@@ -14,6 +14,7 @@ The aws-cli package works on Python versions:
 * 3.8.x
 * 3.9.x
 * 3.10.x
+* 3.11.x
 
 .. attention::
    We recommend that all customers regularly monitor the

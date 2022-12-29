@@ -71,6 +71,7 @@ from botocore.utils import instance_cache
 from botocore.utils import merge_dicts
 from botocore.utils import lowercase_dict
 from botocore.utils import get_service_module_name
+from botocore.utils import get_encoding_from_headers
 from botocore.utils import percent_encode_sequence
 from botocore.utils import percent_encode
 from botocore.utils import switch_host_s3_accelerate
@@ -3422,3 +3423,18 @@ class TestDetermineContentLength(unittest.TestCase):
 )
 def test_is_s3_accelerate_url(url, expected):
     assert is_s3_accelerate_url(url) == expected
+
+
+@pytest.mark.parametrize(
+    'headers, default, expected',
+    (
+        ({}, 'ISO-8859-1', None),
+        ({'Content-Type': 'text/html; charset=utf-8'}, 'default', 'utf-8'),
+        ({'Content-Type': 'text/html; charset="utf-8"'}, 'default', 'utf-8'),
+        ({'Content-Type': 'text/html'}, 'ascii', 'ascii'),
+        ({'Content-Type': 'application/json'}, 'ISO-8859-1', None),
+    ),
+)
+def test_get_encoding_from_headers(headers, default, expected):
+    charset = get_encoding_from_headers(HeadersDict(headers), default=default)
+    assert charset == expected

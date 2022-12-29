@@ -25,6 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
     "colorama>=0.2.5,<0.4.7",
@@ -76,7 +77,14 @@ filterwarnings = [
     # next patch. This filter exception should also be removed once it's
     # confirmed that tests are passing again in the latest Python 3.10.
     # https://github.com/python/cpython/issues/100160
-    'default:There is no current event loop:DeprecationWarning'
+    'default:There is no current event loop:DeprecationWarning',
+
+    # pytest-cov is incompatible with pytest-xdist 3.x because pytest-cov
+    # uses the config variable for rsyncdir. This filter exception should
+    # be able to be removed once both of the following issues are resolved.
+    # https://github.com/pytest-dev/pytest-cov/issues/557
+    # https://github.com/pytest-dev/pytest-xdist/issues/825
+    'default:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning'
 ]
 
 [tool.black]

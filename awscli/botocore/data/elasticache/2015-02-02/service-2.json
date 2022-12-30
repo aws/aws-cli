@@ -1665,7 +1665,7 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>You cannot modify the value of <code>TransitEncryptionEnabled</code> after the cluster is created. To enable in-transit encryption on a cluster you must set <code>TransitEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>"
         },
         "AtRestEncryptionEnabled":{
           "shape":"BooleanOptional",
@@ -1690,6 +1690,10 @@
         "IpDiscovery":{
           "shape":"IpDiscovery",
           "documentation":"<p>The network type associated with the cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific cluster.</p>",
@@ -2545,7 +2549,7 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to true. You cannot modify the value of TransitEncryptionEnabled after the cluster is created. To enable in-transit encryption on a cluster you must set <code>TransitEncryptionEnabled</code> to true when you create a cluster.</p> <p> Only available when creating a cache cluster in an Amazon VPC using Memcached version 1.6.12 or later.</p>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p> <p> Only available when creating a cache cluster in an Amazon VPC using Memcached version 1.6.12 or later.</p>"
         },
         "NetworkType":{
           "shape":"NetworkType",
@@ -2742,7 +2746,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The name of the cache engine to be used for the clusters in this replication group. Must be Redis.</p>"
+          "documentation":"<p>The name of the cache engine to be used for the clusters in this replication group. The value must be set to <code>Redis</code>.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -2806,7 +2810,7 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>You cannot modify the value of <code>TransitEncryptionEnabled</code> after the cluster is created. To enable in-transit encryption on a cluster you must set <code>TransitEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p>This parameter is valid only if the <code>Engine</code> parameter is <code>redis</code>, the <code>EngineVersion</code> parameter is <code>3.2.6</code>, <code>4.x</code> or later, and the cluster is being created in an Amazon VPC.</p> <p>If you enable in-transit encryption, you must also specify a value for <code>CacheSubnetGroup</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>This parameter is valid only if the <code>Engine</code> parameter is <code>redis</code>, the <code>EngineVersion</code> parameter is <code>3.2.6</code>, <code>4.x</code> or later, and the cluster is being created in an Amazon VPC.</p> <p>If you enable in-transit encryption, you must also specify a value for <code>CacheSubnetGroup</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important>"
         },
         "AtRestEncryptionEnabled":{
           "shape":"BooleanOptional",
@@ -2835,6 +2839,10 @@
         "IpDiscovery":{
           "shape":"IpDiscovery",
           "documentation":"<p>The network type you choose when creating a replication group, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>When setting <code>TransitEncryptionEnabled</code> to <code>true</code>, you can set your <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can modify the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code> first, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateReplicationGroup</code> operation.</p>"
@@ -3244,7 +3252,7 @@
         },
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of a specific cache parameter group family to return details for.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
+          "documentation":"<p>The name of a specific cache parameter group family to return details for.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -3344,7 +3352,7 @@
       "members":{
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the cache parameter group family.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> </p>"
+          "documentation":"<p>The name of the cache parameter group family.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -4010,7 +4018,7 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to true. You cannot modify the value of <code>TransitEncryptionEnabled</code> after the cluster is created. To enable in-transit encryption on a cluster you must set <code>TransitEncryptionEnabled</code> to true when you create a cluster. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>"
         },
         "AtRestEncryptionEnabled":{
           "shape":"BooleanOptional",
@@ -4797,6 +4805,14 @@
         "IpDiscovery":{
           "shape":"IpDiscovery",
           "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+        },
+        "TransitEncryptionEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A flag that enables in-transit encryption when set to true. If you are enabling in-transit encryption for an existing cluster, you must also set <code>TransitEncryptionMode</code> to <code>preferred</code>.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>You must set <code>TransitEncryptionEnabled</code> to <code>true</code>, for your existing cluster, and set <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can set the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code> first, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>ModifyReplicationGroups</code> operation.</p>"
@@ -5401,6 +5417,14 @@
         "LogDeliveryConfigurations":{
           "shape":"PendingLogDeliveryConfigurationList",
           "documentation":"<p>The log delivery configurations being modified </p>"
+        },
+        "TransitEncryptionEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
         }
       },
       "documentation":"<p>A group of settings that are applied to the cluster in the future, or that are currently being applied.</p>"
@@ -5678,7 +5702,7 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>You cannot modify the value of <code>TransitEncryptionEnabled</code> after the cluster is created. To enable in-transit encryption on a cluster you must set <code>TransitEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>"
         },
         "AtRestEncryptionEnabled":{
           "shape":"BooleanOptional",
@@ -5714,7 +5738,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p> If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions. </p>"
+          "documentation":"<p> If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  </p>"
         },
         "NetworkType":{
           "shape":"NetworkType",
@@ -5723,6 +5747,10 @@
         "IpDiscovery":{
           "shape":"IpDiscovery",
           "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific Redis replication group.</p>",
@@ -5835,6 +5863,14 @@
         "LogDeliveryConfigurations":{
           "shape":"PendingLogDeliveryConfigurationList",
           "documentation":"<p>The log delivery configurations being modified </p>"
+        },
+        "TransitEncryptionEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p>"
+        },
+        "TransitEncryptionMode":{
+          "shape":"TransitEncryptionMode",
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
         }
       },
       "documentation":"<p>The settings to be applied to the Redis replication group, either immediately or during the next maintenance window.</p>"
@@ -6664,6 +6700,13 @@
         }
       },
       "documentation":"<p>Filters update actions from the service updates that are in available status during the time range.</p>"
+    },
+    "TransitEncryptionMode":{
+      "type":"string",
+      "enum":[
+        "preferred",
+        "required"
+      ]
     },
     "UGReplicationGroupIdList":{
       "type":"list",

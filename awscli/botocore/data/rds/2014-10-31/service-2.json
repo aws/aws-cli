@@ -283,9 +283,10 @@
       "errors":[
         {"shape":"CustomDBEngineVersionAlreadyExistsFault"},
         {"shape":"CustomDBEngineVersionQuotaExceededFault"},
+        {"shape":"Ec2ImagePropertiesNotSupportedFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
-      "documentation":"<p>Creates a custom DB engine version (CEV). A CEV is a binary volume snapshot of a database engine and specific AMI. The supported engines are the following:</p> <ul> <li> <p>Oracle Database 12.1 Enterprise Edition with the January 2021 or later RU/RUR</p> </li> <li> <p>Oracle Database 19c Enterprise Edition with the January 2021 or later RU/RUR</p> </li> </ul> <p>Amazon RDS, which is a fully managed service, supplies the Amazon Machine Image (AMI) and database software. The Amazon RDS database software is preinstalled, so you need only select a DB engine and version, and create your database. With Amazon RDS Custom for Oracle, you upload your database installation files in Amazon S3.</p> <p>When you create a custom engine version, you specify the files in a JSON document called a CEV manifest. This document describes installation .zip files stored in Amazon S3. RDS Custom creates your CEV from the installation files that you provided. This service model is called Bring Your Own Media (BYOM).</p> <p>Creation takes approximately two hours. If creation fails, RDS Custom issues <code>RDS-EVENT-0196</code> with the message <code>Creation failed for custom engine version</code>, and includes details about the failure. For example, the event prints missing files.</p> <p>After you create the CEV, it is available for use. You can create multiple CEVs, and create multiple RDS Custom instances from any CEV. You can also change the status of a CEV to make it available or inactive.</p> <note> <p>The MediaImport service that imports files from Amazon S3 to create CEVs isn't integrated with Amazon Web Services CloudTrail. If you turn on data logging for Amazon RDS in CloudTrail, calls to the <code>CreateCustomDbEngineVersion</code> event aren't logged. However, you might see calls from the API gateway that accesses your Amazon S3 bucket. These calls originate from the MediaImport service for the <code>CreateCustomDbEngineVersion</code> event.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.html#custom-cev.create\"> Creating a CEV</a> in the <i>Amazon RDS User Guide</i>.</p>"
+      "documentation":"<p>Creates a custom DB engine version (CEV).</p>"
     },
     "CreateDBCluster":{
       "name":"CreateDBCluster",
@@ -3549,10 +3550,7 @@
       "type":"structure",
       "required":[
         "Engine",
-        "EngineVersion",
-        "DatabaseInstallationFilesS3BucketName",
-        "KMSKeyId",
-        "Manifest"
+        "EngineVersion"
       ],
       "members":{
         "Engine":{
@@ -3570,6 +3568,10 @@
         "DatabaseInstallationFilesS3Prefix":{
           "shape":"String255",
           "documentation":"<p>The Amazon S3 directory that contains the database installation files for your CEV. For example, a valid bucket name is <code>123456789012/cev1</code>. If this setting isn't specified, no prefix is assumed.</p>"
+        },
+        "ImageId":{
+          "shape":"String255",
+          "documentation":"<p>The ID of the AMI. An AMI ID is required to create a CEV for RDS Custom for SQL Server.</p>"
         },
         "KMSKeyId":{
           "shape":"KmsKeyIdOrArn",
@@ -4629,6 +4631,20 @@
       },
       "exception":true
     },
+    "CustomDBEngineVersionAMI":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the ID of the AMI.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the status of a custom engine version (CEV).</p>"
+        }
+      },
+      "documentation":"<p>A value that indicates the AMI information.</p>"
+    },
     "CustomDBEngineVersionAlreadyExistsFault":{
       "type":"structure",
       "members":{
@@ -4681,7 +4697,7 @@
       "type":"string",
       "max":60,
       "min":1,
-      "pattern":"^(11\\.\\d{1}|12\\.\\d{1}|18|19)(\\.[a-zA-Z0-9_.-]{1,50})$"
+      "pattern":"^[a-z0-9_.-]{1,60}$"
     },
     "CustomEngineVersionStatus":{
       "type":"string",
@@ -5621,6 +5637,14 @@
         "DefaultCharacterSet":{
           "shape":"CharacterSet",
           "documentation":"<p>The default character set for new instances of this engine version, if the <code>CharacterSetName</code> parameter of the CreateDBInstance API isn't specified.</p>"
+        },
+        "Image":{
+          "shape":"CustomDBEngineVersionAMI",
+          "documentation":"<p>The EC2 image</p>"
+        },
+        "DBEngineMediaType":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the source media provider of the AMI based on the usage operation. Applicable for RDS Custom for SQL Server.</p>"
         },
         "SupportedCharacterSets":{
           "shape":"SupportedCharacterSetsList",
@@ -8953,6 +8977,18 @@
         "shape":"EC2SecurityGroup",
         "locationName":"EC2SecurityGroup"
       }
+    },
+    "Ec2ImagePropertiesNotSupportedFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The AMI configuration prerequisite has not been met.</p>",
+      "error":{
+        "code":"Ec2ImagePropertiesNotSupportedFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Endpoint":{
       "type":"structure",

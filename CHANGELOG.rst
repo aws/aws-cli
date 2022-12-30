@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.9.12
+======
+
+* api-change:``wisdom``: This release extends Wisdom CreateContent and StartContentUpload APIs to support PDF and MicrosoftWord docx document uploading.
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``secretsmanager``: Added owning service filter, include planned deletion flag, and next rotation date response parameter in ListSecrets.
+* api-change:``route53-recovery-control-config``: Added support for Python paginators in the route53-recovery-control-config List* APIs.
+* api-change:``elasticache``: This release allows you to modify the encryption in transit setting, for existing Redis clusters. You can now change the TLS configuration of your Redis clusters without the need to re-build or re-provision the clusters or impact application availability.
+* api-change:``network-firewall``: AWS Network Firewall now provides status messages for firewalls to help you troubleshoot when your endpoint fails.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``rds``: This release adds support for Custom Engine Version (CEV) on RDS Custom SQL Server.
+
+
 2.9.11
 ======
 

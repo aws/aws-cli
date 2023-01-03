@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.27.42
+=======
+
+* api-change:``securitylake``: Allow CreateSubscriber API to take string input that allows setting more descriptive SubscriberDescription field. Make souceTypes field required in model level for UpdateSubscriberRequest as it is required for every API call on the backend. Allow ListSubscribers take any String as nextToken param.
+
+
 1.27.41
 =======
 

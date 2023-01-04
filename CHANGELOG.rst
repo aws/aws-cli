@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.43
+=======
+
+* api-change:``application-autoscaling``: Customers can now use the existing DescribeScalingActivities API to also see the detailed and machine-readable reasons for Application Auto Scaling not scaling their resources and, if needed, take the necessary corrective actions.
+* api-change:``logs``: Update to remove sequenceToken as a required field in PutLogEvents calls.
+* api-change:``ssm``: Adding support for QuickSetup Document Type in Systems Manager
+
+
 1.27.42
 =======
 

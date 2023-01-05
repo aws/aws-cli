@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.27.44
+=======
+
+* api-change:``amplifybackend``: Updated GetBackendAPIModels response to include ModelIntrospectionSchema json string
+* api-change:``apprunner``: This release adds support of securely referencing secrets and configuration data that are stored in Secrets Manager and SSM Parameter Store by adding them as environment secrets in your App Runner service.
+* api-change:``connect``: Documentation update for a new Initiation Method value in DescribeContact API
+* api-change:``emr-serverless``: Adds support for customized images. You can now provide runtime images when creating or updating EMR Serverless Applications.
+* api-change:``lightsail``: Documentation updates for Amazon Lightsail.
+* api-change:``mwaa``: MWAA supports Apache Airflow version 2.4.3.
+* api-change:``rds``: This release adds support for specifying which certificate authority (CA) to use for a DB instance's server certificate during DB instance creation, as well as other CA enhancements.
+
+
 1.27.43
 =======
 

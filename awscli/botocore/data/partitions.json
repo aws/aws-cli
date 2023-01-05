@@ -77,7 +77,7 @@
         "description" : "Middle East (Bahrain)"
       },
       "sa-east-1" : {
-        "description" : "South America (São Paulo)"
+        "description" : "South America (Sao Paulo)"
       },
       "us-east-1" : {
         "description" : "US East (N. Virginia)"

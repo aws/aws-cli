@@ -40,6 +40,7 @@
       "output":{"shape":"CreateApplicationResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
@@ -287,7 +288,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release version associated with the application.</p>"
+          "documentation":"<p>The EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -336,6 +337,14 @@
         "architecture":{
           "shape":"Architecture",
           "documentation":"<p>The CPU architecture of an application.</p>"
+        },
+        "imageConfiguration":{
+          "shape":"ImageConfiguration",
+          "documentation":"<p>The image configuration applied to all worker types.</p>"
+        },
+        "workerTypeSpecifications":{
+          "shape":"WorkerTypeSpecificationMap",
+          "documentation":"<p>The specification applied to each worker type.</p>"
         }
       },
       "documentation":"<p>Information about an application. EMR Serverless uses applications to run jobs.</p>"
@@ -406,7 +415,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release version associated with the application.</p>"
+          "documentation":"<p>The EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -592,7 +601,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release version associated with the application.</p>"
+          "documentation":"<p>The EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -630,6 +639,14 @@
         "architecture":{
           "shape":"Architecture",
           "documentation":"<p>The CPU architecture of an application.</p>"
+        },
+        "imageConfiguration":{
+          "shape":"ImageConfigurationInput",
+          "documentation":"<p>The image configuration for all worker types. You can either set this parameter or <code>imageConfiguration</code> for each worker type in <code>workerTypeSpecifications</code>.</p>"
+        },
+        "workerTypeSpecifications":{
+          "shape":"WorkerTypeSpecificationInputMap",
+          "documentation":"<p>The key-value pairs that specify worker type to <code>WorkerTypeSpecificationInput</code>. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include <code>Driver</code> and <code>Executor</code> for Spark applications and <code>HiveDriver</code> and <code>TezTask</code> for Hive applications. You can either set image details in this parameter for each worker type, or in <code>imageConfiguration</code> for all worker types.</p>"
         }
       }
     },
@@ -831,6 +848,43 @@
       "min":20,
       "pattern":"arn:(aws[a-zA-Z0-9-]*):iam::(\\d{12})?:(role((\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F))[\\w+=,.@-]+)"
     },
+    "ImageConfiguration":{
+      "type":"structure",
+      "required":["imageUri"],
+      "members":{
+        "imageUri":{
+          "shape":"ImageUri",
+          "documentation":"<p>The image URI.</p>"
+        },
+        "resolvedImageDigest":{
+          "shape":"ImageDigest",
+          "documentation":"<p>The SHA256 digest of the image URI. This indicates which specific image the application is configured for. The image digest doesn't exist until an application has started.</p>"
+        }
+      },
+      "documentation":"<p>The applied image configuration.</p>"
+    },
+    "ImageConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "imageUri":{
+          "shape":"ImageUri",
+          "documentation":"<p>The URI of an image in the Amazon ECR registry. This field is required when you create a new application. If you leave this field blank in an update, Amazon EMR will remove the image configuration.</p>"
+        }
+      },
+      "documentation":"<p>The image configuration.</p>"
+    },
+    "ImageDigest":{
+      "type":"string",
+      "documentation":"<p>Image Digest</p>",
+      "pattern":"sha256:[0-9a-f]{64}"
+    },
+    "ImageUri":{
+      "type":"string",
+      "documentation":"<p>Image URI</p>",
+      "max":1024,
+      "min":1,
+      "pattern":"([a-z0-9]+[a-z0-9-.]*)\\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?:\\:([a-zA-Z0-9_][a-zA-Z0-9-._]{0,299})|@(sha256:[0-9a-f]{64}))"
+    },
     "InitScriptPath":{
       "type":"string",
       "max":256,
@@ -954,7 +1008,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release version associated with the application your job is running on.</p>"
+          "documentation":"<p>The EMR release associated with the application your job is running on.</p>"
         },
         "configurationOverrides":{
           "shape":"ConfigurationOverrides",
@@ -1062,7 +1116,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release version associated with the application your job is running on.</p>"
+          "documentation":"<p>The EMR release associated with the application your job is running on.</p>"
         },
         "type":{
           "shape":"JobRunType",
@@ -1646,6 +1700,14 @@
         "architecture":{
           "shape":"Architecture",
           "documentation":"<p>The CPU architecture of an application.</p>"
+        },
+        "imageConfiguration":{
+          "shape":"ImageConfigurationInput",
+          "documentation":"<p>The image configuration to be used for all worker types. You can either set this parameter or <code>imageConfiguration</code> for each worker type in <code>WorkerTypeSpecificationInput</code>.</p>"
+        },
+        "workerTypeSpecifications":{
+          "shape":"WorkerTypeSpecificationInputMap",
+          "documentation":"<p>The key-value pairs that specify worker type to <code>WorkerTypeSpecificationInput</code>. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include <code>Driver</code> and <code>Executor</code> for Spark applications and <code>HiveDriver</code> and <code>TezTask</code> for Hive applications. You can either set image details in this parameter for each worker type, or in <code>imageConfiguration</code> for all worker types.</p>"
         }
       }
     },
@@ -1709,6 +1771,36 @@
         }
       },
       "documentation":"<p>The cumulative configuration requirements for every worker instance of the worker type.</p>"
+    },
+    "WorkerTypeSpecification":{
+      "type":"structure",
+      "members":{
+        "imageConfiguration":{
+          "shape":"ImageConfiguration",
+          "documentation":"<p>The image configuration for a worker type.</p>"
+        }
+      },
+      "documentation":"<p>The specifications for a worker type.</p>"
+    },
+    "WorkerTypeSpecificationInput":{
+      "type":"structure",
+      "members":{
+        "imageConfiguration":{
+          "shape":"ImageConfigurationInput",
+          "documentation":"<p>The image configuration for a worker type.</p>"
+        }
+      },
+      "documentation":"<p>The specifications for a worker type.</p>"
+    },
+    "WorkerTypeSpecificationInputMap":{
+      "type":"map",
+      "key":{"shape":"WorkerTypeString"},
+      "value":{"shape":"WorkerTypeSpecificationInput"}
+    },
+    "WorkerTypeSpecificationMap":{
+      "type":"map",
+      "key":{"shape":"WorkerTypeString"},
+      "value":{"shape":"WorkerTypeSpecification"}
     },
     "WorkerTypeString":{
       "type":"string",

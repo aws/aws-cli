@@ -529,9 +529,10 @@
         {"shape":"ResponseHeadersPolicyAlreadyExists"},
         {"shape":"TooManyResponseHeadersPolicies"},
         {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"},
-        {"shape":"TooLongCSPInResponseHeadersPolicy"}
+        {"shape":"TooLongCSPInResponseHeadersPolicy"},
+        {"shape":"TooManyRemoveHeadersInResponseHeadersPolicy"}
       ],
-      "documentation":"<p>Creates a response headers policy.</p> <p>A response headers policy contains information about a set of HTTP response headers and their values. To create a response headers policy, you provide some metadata about the policy, and a set of configurations that specify the response headers.</p> <p>After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it's attached to a cache behavior, CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match the cache behavior.</p>"
+      "documentation":"<p>Creates a response headers policy.</p> <p>A response headers policy contains information about a set of HTTP headers. To create a response headers policy, you provide some metadata about the policy and a set of configurations that specify the headers.</p> <p>After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it's attached to a cache behavior, the response headers policy affects the HTTP headers that CloudFront includes in HTTP responses to requests that match the cache behavior. CloudFront adds or removes response headers according to the configuration of the response headers policy.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/modifying-response-headers.html\">Adding or removing HTTP headers in CloudFront responses</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
     "CreateStreamingDistribution":{
       "name":"CreateStreamingDistribution2020_05_31",
@@ -2053,7 +2054,8 @@
         {"shape":"PreconditionFailed"},
         {"shape":"ResponseHeadersPolicyAlreadyExists"},
         {"shape":"TooManyCustomHeadersInResponseHeadersPolicy"},
-        {"shape":"TooLongCSPInResponseHeadersPolicy"}
+        {"shape":"TooLongCSPInResponseHeadersPolicy"},
+        {"shape":"TooManyRemoveHeadersInResponseHeadersPolicy"}
       ],
       "documentation":"<p>Updates a response headers policy.</p> <p>When you update a response headers policy, the entire policy is replaced. You cannot update some policy fields independent of others. To update a response headers policy configuration:</p> <ol> <li> <p>Use <code>GetResponseHeadersPolicyConfig</code> to get the current policy's configuration.</p> </li> <li> <p>Modify the fields in the response headers policy configuration that you want to update.</p> </li> <li> <p>Call <code>UpdateResponseHeadersPolicy</code>, providing the entire response headers policy configuration, including the fields that you modified and those that you didn't.</p> </li> </ol>"
     },
@@ -3627,7 +3629,7 @@
       "members":{
         "ResponseHeadersPolicyConfig":{
           "shape":"ResponseHeadersPolicyConfig",
-          "documentation":"<p>Contains metadata about the response headers policy, and a set of configurations that specify the response headers.</p>",
+          "documentation":"<p>Contains metadata about the response headers policy, and a set of configurations that specify the HTTP headers.</p>",
           "locationName":"ResponseHeadersPolicyConfig",
           "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
         }
@@ -8734,10 +8736,10 @@
         },
         "ResponseHeadersPolicyConfig":{
           "shape":"ResponseHeadersPolicyConfig",
-          "documentation":"<p>A response headers policy configuration.</p> <p>A response headers policy contains information about a set of HTTP response headers and their values. CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match a cache behavior that's associated with the policy.</p>"
+          "documentation":"<p>A response headers policy configuration.</p>"
         }
       },
-      "documentation":"<p>A response headers policy.</p> <p>A response headers policy contains information about a set of HTTP response headers and their values.</p> <p>After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it's attached to a cache behavior, CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match the cache behavior.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/adding-response-headers.html\">Adding HTTP headers to CloudFront responses</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+      "documentation":"<p>A response headers policy.</p> <p>A response headers policy contains information about a set of HTTP response headers.</p> <p>After you create a response headers policy, you can use its ID to attach it to one or more cache behaviors in a CloudFront distribution. When it's attached to a cache behavior, the response headers policy affects the HTTP headers that CloudFront includes in HTTP responses to requests that match the cache behavior. CloudFront adds or removes response headers according to the configuration of the response headers policy.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/modifying-response-headers.html\">Adding or removing HTTP headers in CloudFront responses</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
     "ResponseHeadersPolicyAccessControlAllowHeaders":{
       "type":"structure",
@@ -8857,9 +8859,13 @@
         "CustomHeadersConfig":{
           "shape":"ResponseHeadersPolicyCustomHeadersConfig",
           "documentation":"<p>A configuration for a set of custom HTTP response headers.</p>"
+        },
+        "RemoveHeadersConfig":{
+          "shape":"ResponseHeadersPolicyRemoveHeadersConfig",
+          "documentation":"<p>A configuration for a set of HTTP headers to remove from the HTTP response.</p>"
         }
       },
-      "documentation":"<p>A response headers policy configuration.</p> <p>A response headers policy configuration contains metadata about the response headers policy, and configurations for sets of HTTP response headers and their values. CloudFront adds the headers in the policy to HTTP responses that it sends for requests that match a cache behavior associated with the policy.</p>"
+      "documentation":"<p>A response headers policy configuration.</p> <p>A response headers policy configuration contains metadata about the response headers policy, and configurations for sets of HTTP response headers.</p>"
     },
     "ResponseHeadersPolicyContentSecurityPolicy":{
       "type":"structure",
@@ -9046,6 +9052,39 @@
         }
       },
       "documentation":"<p>Determines whether CloudFront includes the <code>Referrer-Policy</code> HTTP response header and the header's value.</p> <p>For more information about the <code>Referrer-Policy</code> HTTP response header, see <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy\">Referrer-Policy</a> in the MDN Web Docs.</p>"
+    },
+    "ResponseHeadersPolicyRemoveHeader":{
+      "type":"structure",
+      "required":["Header"],
+      "members":{
+        "Header":{
+          "shape":"string",
+          "documentation":"<p>The HTTP header name.</p>"
+        }
+      },
+      "documentation":"<p>The name of an HTTP header that CloudFront removes from HTTP responses to requests that match the cache behavior that this response headers policy is attached to.</p>"
+    },
+    "ResponseHeadersPolicyRemoveHeaderList":{
+      "type":"list",
+      "member":{
+        "shape":"ResponseHeadersPolicyRemoveHeader",
+        "locationName":"ResponseHeadersPolicyRemoveHeader"
+      }
+    },
+    "ResponseHeadersPolicyRemoveHeadersConfig":{
+      "type":"structure",
+      "required":["Quantity"],
+      "members":{
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The number of HTTP header names in the list.</p>"
+        },
+        "Items":{
+          "shape":"ResponseHeadersPolicyRemoveHeaderList",
+          "documentation":"<p>The list of HTTP header names.</p>"
+        }
+      },
+      "documentation":"<p>A list of HTTP header names that CloudFront removes from HTTP responses to requests that match the cache behavior that this response headers policy is attached to.</p>"
     },
     "ResponseHeadersPolicySecurityHeadersConfig":{
       "type":"structure",
@@ -10174,6 +10213,15 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>You have reached the maximum number of real-time log configurations for this Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html\">Quotas</a> (formerly known as limits) in the <i>Amazon CloudFront Developer Guide</i>.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "TooManyRemoveHeadersInResponseHeadersPolicy":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The number of headers in <code>RemoveHeadersConfig</code> in the response headers policy exceeds the maximum.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html\">Quotas</a> (formerly known as limits) in the <i>Amazon CloudFront Developer Guide</i>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },

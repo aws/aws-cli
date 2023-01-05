@@ -6982,6 +6982,14 @@
         "Version":{
           "shape":"DocumentVersion",
           "documentation":"<p>The document version required by the current document.</p>"
+        },
+        "RequireType":{
+          "shape":"RequireType",
+          "documentation":"<p>The document type of the required SSM document.</p>"
+        },
+        "VersionName":{
+          "shape":"DocumentVersionName",
+          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
         }
       },
       "documentation":"<p>An SSM document required by the current document.</p>"
@@ -7108,7 +7116,8 @@
         "ProblemAnalysis",
         "ProblemAnalysisTemplate",
         "CloudFormation",
-        "ConformancePackTemplate"
+        "ConformancePackTemplate",
+        "QuickSetup"
       ]
     },
     "DocumentVersion":{
@@ -13912,6 +13921,11 @@
       "members":{
       }
     },
+    "RequireType":{
+      "type":"string",
+      "max":128,
+      "pattern":"^[a-zA-Z0-9_\\-.]{1,128}$"
+    },
     "ResetServiceSettingRequest":{
       "type":"structure",
       "required":["SettingId"],
@@ -15443,7 +15457,7 @@
     "TagValue":{
       "type":"string",
       "max":256,
-      "min":1,
+      "min":0,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "Target":{

@@ -14,99 +14,127 @@
 """This script is to programatically regenerate the requirements/*-lock.txt
 files. In order to run it you need to have pip-tools installed into the
 curerntly active virtual environment."""
+import argparse
 import sys
 import os
-from typing import List
+from typing import List, Optional, ClassVar
 from pathlib import Path
+from dataclasses import dataclass
 
 from utils import run, BadRCError
 
 
 ROOT = Path(__file__).parents[1]
-REQ_DIR = ROOT / "requirements"
 IS_WINDOWS = sys.platform == "win32"
 LOCK_SUFFIX = "win-lock.txt" if IS_WINDOWS else "lock.txt"
-UNSAFE_PACKAGES = [
-    "flit-core",
-    "setuptools",
-    "pip",
-    "wheel",
-]
 
 
-def pip_compile(args: List[str], allow_unsafe: bool = False):
-    command = [
-        sys.executable,
-        "-m",
-        "piptools",
-        "compile",
-        "--generate-hashes",
+@dataclass
+class LockFileBuilder:
+    _UNSAFE_PACKAGES: ClassVar[List[str]] = [
+        "flit-core",
+        "setuptools",
+        "pip",
+        "wheel",
     ]
-    for unsafe in UNSAFE_PACKAGES:
-        command.append("--unsafe-package")
-        command.append(unsafe)
-    if allow_unsafe:
-        command += ["--allow-unsafe"]
-    command += args
-    return run(command, cwd=ROOT)
+
+    source_directory: Path
+    build_directory: Path
+
+    def raise_if_no_pip_compile(self):
+        try:
+            self._pip_compile(["-h"])
+        except BadRCError:
+            raise RuntimeError(
+                "Must have pip-tools installed to run this script, run the following:\npip install pip-tools"
+            )
+
+    def build_lock_file(
+        self, sources: List[Path], output: Path, allow_unsafe=False
+    ):
+        output_path = self._full_output_path(output)
+        self._delete_file(output_path)
+        args = self._pip_compile_args(sources, output_path)
+        result = self._pip_compile(args, allow_unsafe)
+        self._overwrite_paths(output_path)
+
+    def _full_output_path(self, output: Path) -> Path:
+        lock_path = self.build_directory / f"{output}-{LOCK_SUFFIX}"
+        return lock_path
+
+    def _delete_file(self, path: Path):
+        try:
+            os.remove(path)
+            print(f"Removed existing file: {path}")
+        except FileNotFoundError:
+            pass
+
+    def _pip_compile_args(self, sources: List[str], lock_path: Path):
+        args = [f"--output-file={lock_path}"]
+        for source in sources:
+            args.append(self.source_directory / source)
+        return args
+
+    def _pip_compile(self, args: List[str], allow_unsafe: bool = False):
+        command = [
+            sys.executable,
+            "-m",
+            "piptools",
+            "compile",
+            "--generate-hashes",
+        ]
+        for unsafe in self._UNSAFE_PACKAGES:
+            command.append("--unsafe-package")
+            command.append(unsafe)
+        if allow_unsafe:
+            command += ["--allow-unsafe"]
+        command += args
+        return run(command, cwd=self.build_directory)
+
+    def _overwrite_paths(self, output_path: Path):
+        rel_output_path = os.path.relpath(output_path, self.build_directory)
+        with open(output_path, "r") as f:
+            content = f.read()
+        # Overwrite absolute path in --output-file argument.
+        content = content.replace(str(output_path), str(rel_output_path))
+        # Overwrite absolute paths in the source arguments.
+        content = content.replace(f"{self.source_directory}{os.sep}", "")
+        with open(output_path, "w") as f:
+            f.write(content)
 
 
-def build_lock_file(sources: List[str], output: str, allow_unsafe = False):
-    output_path = _output_path(output)
-    delete_file(output_path)
-    args = _pip_compile_args(sources, output_path)
-    return pip_compile(args, allow_unsafe)
+def main(build_directory: Path):
+    builder = LockFileBuilder(
+        source_directory=ROOT,
+        build_directory=build_directory,
+    )
+    builder.raise_if_no_pip_compile()
 
-
-def _output_path(output: str) -> Path:
-    lock_path = REQ_DIR / f"{output}-{LOCK_SUFFIX}"
-    return lock_path
-
-
-def _pip_compile_args(sources: List[str], lock_path: Path):
-    rel_lock_path = os.path.relpath(lock_path, ROOT)
-    args = [
-        f"--output-file={rel_lock_path}"
-    ]
-    for source in sources:
-        if source == 'pyproject.toml':
-            source_path = ROOT / source
-        else:
-            source_path = REQ_DIR / f"{source}"
-        args.append(os.path.relpath(source_path, ROOT))
-    return args
-
-
-def delete_file(path: Path):
-    try:
-        os.remove(path)
-        print(f"Removed file: {path}")
-    except FileNotFoundError:
-        pass
-
-
-def main():
-    build_lock_file(
-        sources=[os.path.join("download-deps", "bootstrap.txt")],
-        output=os.path.join("download-deps", "bootstrap"),
+    builder.build_lock_file(
+        sources=[Path("requirements/download-deps/bootstrap.txt")],
+        output=Path("requirements/download-deps/bootstrap"),
         allow_unsafe=True,
     )
-    build_lock_file(
-        sources=["portable-exe-extras.txt", "pyproject.toml"],
-        output=os.path.join("download-deps", "portable-exe"),
+    builder.build_lock_file(
+        sources=[
+            Path("requirements/portable-exe-extras.txt"),
+            "pyproject.toml",
+        ],
+        output=Path("requirements", "download-deps", "portable-exe"),
     )
-    build_lock_file(
+    builder.build_lock_file(
         sources=["pyproject.toml"],
-        output=os.path.join("download-deps", "system-sandbox"),
+        output=Path("requirements/download-deps/system-sandbox"),
     )
 
 
 if __name__ == "__main__":
-    try:
-        pip_compile(["-h"])
-    except BadRCError:
-        print(
-            "Must have pip-tools installed to run this script, run the following:\npip install pip-tools"
-        )
-        sys.exit(1)
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--output-directory",
+        default=ROOT,
+        type=Path,
+        help=("Default base directory where output lock files to be written."),
+    )
+    args = parser.parse_args()
+    main(args.output_directory)

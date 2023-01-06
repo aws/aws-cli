@@ -16,11 +16,13 @@ def _autoreconf(args: Optional[List[str]] = None, directory=None):
     if args is None:
         args = []
     command = ['autoreconf'] + args
-    output = subprocess.run(
+    result = subprocess.run(
         command,
         capture_output=True,
         cwd=directory,
-    ).stdout.decode()
+    )
+    assert result.returncode == 0
+    output = result.stdout.decode()
     return output
 
 

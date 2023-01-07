@@ -106,7 +106,7 @@ This will install the aws-cli package as well as all dependencies.
 
    $ sudo python -m pip install awscli --ignore-installed six
 
-On Linux and Mac OS, the AWS CLI can be installed using a `bundled
+On Linux and MacOS, the AWS CLI can be installed using a `bundled
 installer <https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html#install-linux-bundled>`__.
 The AWS CLI can also be installed on Windows via an `MSI
 Installer <https://docs.aws.amazon.com/cli/latest/userguide/install-windows.html#msi-on-windows>`__.
@@ -199,7 +199,7 @@ variable:
 As you can see, you can have multiple ``profiles`` defined in both the
 shared credentials file and the configuration file. You can then specify
 which profile to use by using the ``--profile`` option. If no profile is
-specified the ``default`` profile is used.
+specified, the ``default`` profile is used.
 
 In the config file, except for the default profile, you **must** prefix
 each config section of a profile group with ``profile``. For example, if
@@ -269,7 +269,7 @@ Command Completion
 ~~~~~~~~~~~~~~~~~~
 
 The aws-cli package includes a command completion feature for Unix-like
-systems. This feature is not automatically installed so you need to
+systems. This feature is not automatically installed, so you need to
 configure it manually. To learn more, read the `AWS CLI Command
 completion
 topic <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html>`__.

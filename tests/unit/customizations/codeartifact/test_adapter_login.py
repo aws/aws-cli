@@ -243,6 +243,19 @@ Registered Sources:
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
 
+    _NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT = b"""\
+Welcome to dotnet 2.0!
+
+Registered Sources:
+  1. Source Name 1 [Enabled]
+     https://source1.com/index.json
+  2. ati-nugetserver [Disabled]
+     http://atinugetserver-env.elasticbeanstalk.com/nuget
+warn : You are running the 'list source' operation with an 'HTTP' source,
+'ati-nugetserver' [http://atinugetserver-env..elasticbeanstalk.com/nuget]'.
+Non-HTTPS access will be removed in a future version. Consider migrating
+to an 'HTTPS' source."""
+
     def setUp(self):
         self.domain = 'domain'
         self.domain_owner = 'domain-owner'
@@ -331,6 +344,43 @@ Registered Sources:
     def test_login_dry_run(self):
         self.subprocess_utils.check_output.return_value = \
             self._NUGET_SOURCES_LIST_RESPONSE
+        self.test_subject.login(dry_run=True)
+        self.subprocess_utils.check_output.assert_called_once_with(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
+    def test_login_sources_listed_with_extra_non_list_text(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command_non_windows,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_login_sources_listed_with_extra_non_list_text_on_windows(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command_windows,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_sources_listed_with_extra_non_list_text_dry_run(self):
+        self.subprocess_utils.check_output.return_value = \
+                self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_output.assert_called_once_with(
             self.list_operation_command,

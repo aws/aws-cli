@@ -572,6 +572,34 @@ password: {auth_token}'''
             result.stdout
         )
 
+    _NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT = b"""\
+Welcome to dotnet 2.0!
+
+Registered Sources:
+  1. Source Name 1 [Enabled]
+     https://source1.com/index.json
+  2. ati-nugetserver [Disabled]
+     http://atinugetserver-env.elasticbeanstalk.com/nuget
+warn : You are running the 'list source' operation with an 'HTTP' source,
+'ati-nugetserver' [http://atinugetserver-env..elasticbeanstalk.com/nuget]'.
+Non-HTTPS access will be removed in a future version. Consider migrating
+to an 'HTTPS' source."""
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_sources_listed_with_extra_non_list_text(self):
+
+        self.subprocess_check_output_patch.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+
+        cmdline = self._setup_cmd(tool='dotnet')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        commands = [[
+            'dotnet', 'nuget', 'list', 'source', '--format', 'detailed'
+        ]]
+        self._assert_subprocess_check_output_execution(commands)
+
     def test_npm_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm')
         result = self.cli_runner.run(cmdline)

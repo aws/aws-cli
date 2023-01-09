@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.46
+=======
+
+* bugfix:``codeartifact login``: Fix parsing of dotnet output for aws codeartifact login command; fixes `#6197 <https://github.com/aws/aws-cli/issues/6197>`__
+* api-change:``ecr-public``: This release for Amazon ECR Public makes several change to bring the SDK into sync with the API.
+* api-change:``kendra-ranking``: Introducing Amazon Kendra Intelligent Ranking, a new set of Kendra APIs that leverages Kendra semantic ranking capabilities to improve the quality of search results from other search services (i.e. OpenSearch, ElasticSearch, Solr).
+* api-change:``network-firewall``: Network Firewall now supports the Suricata rule action reject, in addition to the actions pass, drop, and alert.
+* api-change:``ram``: Enabled FIPS aws-us-gov endpoints in SDK.
+* api-change:``workspaces-web``: This release adds support for a new portal authentication type: AWS IAM Identity Center (successor to AWS Single Sign-On).
+
+
 1.27.45
 =======
 

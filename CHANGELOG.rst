@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.47
+=======
+
+* api-change:``location``: This release adds support for two new route travel models, Bicycle and Motorcycle which can be used with Grab data source.
+* api-change:``rds``: This release adds support for configuring allocated storage on the CreateDBInstanceReadReplica, RestoreDBInstanceFromDBSnapshot, and RestoreDBInstanceToPointInTime APIs.
+
+
 1.27.46
 =======
 

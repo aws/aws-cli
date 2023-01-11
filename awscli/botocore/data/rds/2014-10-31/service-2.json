@@ -2433,7 +2433,7 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
-      "documentation":"<p>Starts a database activity stream to monitor activity on the database. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\">Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>Starts a database activity stream to monitor activity on the database. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\"> Monitoring Amazon Aurora with Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html\"> Monitoring Amazon RDS with Database Activity Streams</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
     "StartDBCluster":{
       "name":"StartDBCluster",
@@ -2542,7 +2542,7 @@
         {"shape":"DBClusterNotFoundFault"},
         {"shape":"DBInstanceNotFoundFault"}
       ],
-      "documentation":"<p>Stops a database activity stream that was started using the Amazon Web Services console, the <code>start-activity-stream</code> CLI command, or the <code>StartActivityStream</code> action.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\">Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>Stops a database activity stream that was started using the Amazon Web Services console, the <code>start-activity-stream</code> CLI command, or the <code>StartActivityStream</code> action.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\"> Monitoring Amazon Aurora with Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html\"> Monitoring Amazon RDS with Database Activity Streams</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
     "StopDBCluster":{
       "name":"StopDBCluster",
@@ -4289,6 +4289,10 @@
         "EnableCustomerOwnedIp":{
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts read replica.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the read replica from outside of its virtual private cloud (VPC) on your local network.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
+        },
+        "AllocatedStorage":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the read replica. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough memory for your read replica so that the create operation can succeed. You can also allocate additional memory for future growth.</p> </note>"
         }
       }
     },
@@ -13017,6 +13021,10 @@
         "DBClusterSnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier for the RDS for MySQL Multi-AZ DB cluster snapshot to restore from.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Multi-AZ DB cluster snapshot.</p> </li> <li> <p>Can't be specified when <code>DBSnapshotIdentifier</code> is specified.</p> </li> <li> <p>Must be specified when <code>DBSnapshotIdentifier</code> isn't specified.</p> </li> <li> <p>If you are restoring from a shared manual Multi-AZ DB cluster snapshot, the <code>DBClusterSnapshotIdentifier</code> must be the ARN of the shared snapshot.</p> </li> <li> <p>Can't be the identifier of an Aurora DB cluster snapshot.</p> </li> <li> <p>Can't be the identifier of an RDS for PostgreSQL Multi-AZ DB cluster snapshot.</p> </li> </ul>"
+        },
+        "AllocatedStorage":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance.</p> <note> <p>Be sure to allocate enough memory for your new DB instance so that the restore operation can succeed. You can also allocate additional memory for future growth.</p> </note>"
         }
       },
       "documentation":"<p/>"
@@ -13049,7 +13057,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage (in gigabytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough memory for your new DB instance so that the restore operation can succeed. You can also allocate additional memory for future growth.</p> </note>"
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough memory for your new DB instance so that the restore operation can succeed. You can also allocate additional memory for future growth.</p> </note>"
         },
         "DBInstanceClass":{
           "shape":"String",
@@ -13391,6 +13399,10 @@
         "StorageThroughput":{
           "shape":"IntegerOptional",
           "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+        },
+        "AllocatedStorage":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough memory for your new DB instance so that the restore operation can succeed. You can also allocate additional memory for future growth.</p> </note>"
         }
       },
       "documentation":"<p/>"

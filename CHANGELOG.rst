@@ -4693,6 +4693,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.47
+=======
+
+* api-change:``location``: This release adds support for two new route travel models, Bicycle and Motorcycle which can be used with Grab data source.
+* api-change:``rds``: This release adds support for configuring allocated storage on the CreateDBInstanceReadReplica, RestoreDBInstanceFromDBSnapshot, and RestoreDBInstanceToPointInTime APIs.
+
+
+1.27.46
+=======
+
+* bugfix:``codeartifact login``: Fix parsing of dotnet output for aws codeartifact login command; fixes `#6197 <https://github.com/aws/aws-cli/issues/6197>`__
+* api-change:``ecr-public``: This release for Amazon ECR Public makes several change to bring the SDK into sync with the API.
+* api-change:``kendra-ranking``: Introducing Amazon Kendra Intelligent Ranking, a new set of Kendra APIs that leverages Kendra semantic ranking capabilities to improve the quality of search results from other search services (i.e. OpenSearch, ElasticSearch, Solr).
+* api-change:``network-firewall``: Network Firewall now supports the Suricata rule action reject, in addition to the actions pass, drop, and alert.
+* api-change:``ram``: Enabled FIPS aws-us-gov endpoints in SDK.
+* api-change:``workspaces-web``: This release adds support for a new portal authentication type: AWS IAM Identity Center (successor to AWS Single Sign-On).
+
+
+1.27.45
+=======
+
+* api-change:``acm-pca``: Added revocation parameter validation: bucket names must match S3 bucket naming rules and CNAMEs conform to RFC2396 restrictions on the use of special characters in URIs.
+* api-change:``auditmanager``: This release introduces a new data retention option in your Audit Manager settings. You can now use the DeregistrationPolicy parameter to specify if you want to delete your data when you deregister Audit Manager.
+
+
 1.27.44
 =======
 

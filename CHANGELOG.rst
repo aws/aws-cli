@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.27.48
+=======
+
+* api-change:``kendra``: This release adds support to new document types - RTF, XML, XSLT, MS_EXCEL, CSV, JSON, MD
+
+
 1.27.47
 =======
 

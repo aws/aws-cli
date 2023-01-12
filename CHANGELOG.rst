@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.49
+=======
+
+* api-change:``cleanrooms``: Initial release of AWS Clean Rooms
+* api-change:``lambda``: Add support for MaximumConcurrency parameter for SQS event source. Customers can now limit the maximum concurrent invocations for their SQS Event Source Mapping.
+* api-change:``logs``: Bug fix: logGroupName is now not a required field in GetLogEvents, FilterLogEvents, GetLogGroupFields, and DescribeLogStreams APIs as logGroupIdentifier can be provided instead
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has added support for compact DASH manifest generation, audio normalization using TruePeak measurements, and the ability to clip the sample range in the color corrector.
+* api-change:``secretsmanager``: Update documentation for new ListSecrets and DescribeSecret parameters
+
+
 1.27.48
 =======
 

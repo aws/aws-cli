@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+import argparse
+import re
+import time
+from pathlib import Path
+from subprocess import run
+
+
+ROOT = Path(__file__).parents[2]
+DOCKERFILE_PATH = ROOT / "scripts" / "regenerate-configure" / "Dockerfile"
+IMAGE_RE = re.compile(r"writing image sha256:(?P<image>.*?)\s")
+
+
+def main(cleanup):
+    image = _build_image()
+    container_id = _start_image(image)
+    _extract_configure_file(container_id)
+    if cleanup:
+        _cleanup_image_and_container(image, container_id)
+
+
+def _build_image():
+    print(f"Building docker image from: {DOCKERFILE_PATH}")
+    result = _docker(
+        ["build", "-f", str(DOCKERFILE_PATH), "."],
+        cwd=ROOT,
+    )
+    _assert_success(result)
+
+    match = IMAGE_RE.search(result.stderr.decode())
+    image = match.groups("image")[0]
+    print(f"Image created: {image}")
+    return image
+
+
+def _start_image(image_id):
+    print("Starting image")
+    run_result = _docker(["run", image_id])
+    _assert_success(run_result)
+
+    ps_result = _docker(["ps", "--latest", "-q"])
+    _assert_success(ps_result)
+
+    container_id = ps_result.stdout.decode().strip()
+    print(f"ContainerID: {container_id}")
+    return container_id
+
+
+def _extract_configure_file(container_id):
+    src = f"{container_id}:/build/configure"
+    dst = f"{ROOT}/configure"
+    result = _docker(["cp", src, dst])
+    _assert_success(result)
+    print(f"Replaced configure file")
+
+
+def _cleanup_image_and_container(image, container_id):
+    _docker(["container", "stop", container_id])
+    _docker(["container", "rm", container_id])
+    _docker(["image", "rm", image])
+    print(f"Deleted image: {image} container: {container_id}")
+
+
+def _docker(command, cwd=None):
+    full_command = ["docker"] + command
+    return run(full_command, capture_output=True, cwd=cwd)
+
+
+def _assert_success(result):
+    assert result.returncode == 0, (
+        result.stdout.decode() + result.stderr.decode()
+    )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        default=False,
+        help="Do not clean up docker image and container. Useful for debugging.",
+    )
+    args = parser.parse_args()
+    main(not args.no_cleanup)

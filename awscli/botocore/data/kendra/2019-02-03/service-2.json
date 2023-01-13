@@ -856,7 +856,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Searches an active index. Use this API to search your documents using query. The <code>Query</code> API enables to do faceted search and to filter results based on document attributes.</p> <p>It also enables you to provide user context that Amazon Kendra uses to enforce document access control in the search results.</p> <p>Amazon Kendra searches your index for text content and question and answer (FAQ) content. By default the response contains three types of results.</p> <ul> <li> <p>Relevant passages</p> </li> <li> <p>Matching FAQs</p> </li> <li> <p>Relevant documents</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeConfig</code> parameter.</p> <p>Each query returns the 100 most relevant results. </p>"
+      "documentation":"<p>Searches an active index. Use this API to search your documents using query. The <code>Query</code> API enables to do faceted search and to filter results based on document attributes.</p> <p>It also enables you to provide user context that Amazon Kendra uses to enforce document access control in the search results.</p> <p>Amazon Kendra searches your index for text content and question and answer (FAQ) content. By default the response contains three types of results.</p> <ul> <li> <p>Relevant passages</p> </li> <li> <p>Matching FAQs</p> </li> <li> <p>Relevant documents</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeFilter</code> parameter.</p> <p>Each query returns the 100 most relevant results. </p>"
     },
     "StartDataSourceSyncJob":{
       "name":"StartDataSourceSyncJob",
@@ -1971,7 +1971,7 @@
           "documentation":"<p>The name of the index field to map to the Confluence data source field. The index field type must match the Confluence field type.</p>"
         }
       },
-      "documentation":"<p>&gt;Maps attributes or field names of Confluence pages to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Confluence fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Confluence data source field names must exist in your Confluence custom metadata.</p>"
+      "documentation":"<p>Maps attributes or field names of Confluence pages to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Confluence fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Confluence data source field names must exist in your Confluence custom metadata.</p>"
     },
     "ConfluenceSpaceConfiguration":{
       "type":"structure",
@@ -2041,7 +2041,7 @@
           "documentation":"<p>The name of the index field to map to the Confluence data source field. The index field type must match the Confluence field type.</p>"
         }
       },
-      "documentation":"<p>&gt;Maps attributes or field names of Confluence spaces to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Confluence fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Confluence data source field names must exist in your Confluence custom metadata.</p>"
+      "documentation":"<p>Maps attributes or field names of Confluence spaces to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Confluence fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>. The Confluence data source field names must exist in your Confluence custom metadata.</p>"
     },
     "ConfluenceVersion":{
       "type":"string",
@@ -2108,7 +2108,14 @@
         "HTML",
         "MS_WORD",
         "PLAIN_TEXT",
-        "PPT"
+        "PPT",
+        "RTF",
+        "XML",
+        "XSLT",
+        "MS_EXCEL",
+        "CSV",
+        "JSON",
+        "MD"
       ]
     },
     "Correction":{
@@ -5143,11 +5150,11 @@
       "members":{
         "JiraAccountUrl":{
           "shape":"JiraAccountUrl",
-          "documentation":"<p>The URL of the Jira account. For example, <i>company.atlassian.net</i> or <i>https://jira.company.com</i>. You can find your Jira account URL in the URL of your profile page for Jira desktop.</p>"
+          "documentation":"<p>The URL of the Jira account. For example, <i>company.atlassian.net</i>.</p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a secret in Secrets Manager contains the key-value pairs required to connect to your Jira data source. The secret must contain a JSON structure with the following keys:</p> <ul> <li> <p>jiraId—The Jira username.</p> </li> <li> <p>jiraCredentials—The Jira API token. For more information on creating an API token in Jira, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-jira.html\"> Using a Jira data source</a>.</p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a secret in Secrets Manager contains the key-value pairs required to connect to your Jira data source. The secret must contain a JSON structure with the following keys:</p> <ul> <li> <p>jiraId—The Jira user name or email.</p> </li> <li> <p>jiraCredentials—The Jira API token. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-jira.html\">Using a Jira data source</a>.</p> </li> </ul>"
         },
         "UseChangeLog":{
           "shape":"Boolean",
@@ -5171,23 +5178,23 @@
         },
         "AttachmentFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira attachments to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map attributes or field names of Jira attachments to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
         },
         "CommentFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira comments to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map attributes or field names of Jira comments to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
         },
         "IssueFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira issues to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map attributes or field names of Jira issues to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
         },
         "ProjectFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira projects to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map attributes or field names of Jira projects to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
         },
         "WorkLogFieldMappings":{
           "shape":"DataSourceToIndexFieldMappingList",
-          "documentation":"<p>A list of DataSourceToIndexFieldMapping objects that map attributes or field names of Jira work logs to Amazon Kendra index field names. To create custom fields, use the UpdateIndex API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
+          "documentation":"<p>A list of <code>DataSourceToIndexFieldMapping</code> objects that map attributes or field names of Jira work logs to Amazon Kendra index field names. To create custom fields, use the <code>UpdateIndex</code> API before you map to Jira fields. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\"> Mapping data source fields</a>. The Jira data source field names must exist in your Jira custom metadata.</p>"
         },
         "InclusionPatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
@@ -5199,7 +5206,7 @@
         },
         "VpcConfiguration":{
           "shape":"DataSourceVpcConfiguration",
-          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your Jira. Your Jira account must reside inside your VPC.</p>"
+          "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your Jira. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information to connect to Jira as your data source.</p>"
@@ -5880,7 +5887,7 @@
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Managersecret that contains the user name and password to connect to OneDrive. The user namd should be the application ID for the OneDrive application, and the password is the application key for the OneDrive application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Secrets Managersecret that contains the user name and password to connect to OneDrive. The user name should be the application ID for the OneDrive application, and the password is the application key for the OneDrive application.</p>"
         },
         "OneDriveUsers":{
           "shape":"OneDriveUsers",

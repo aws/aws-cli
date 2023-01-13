@@ -1821,6 +1821,11 @@
           "shape": "__doubleMinNegative59Max0",
           "locationName": "targetLkfs",
           "documentation": "When you use Audio normalization (AudioNormalizationSettings), optionally use this setting to specify a target loudness. If you don't specify a value here, the encoder chooses a value for you, based on the algorithm that you choose for Algorithm (algorithm). If you choose algorithm 1770-1, the encoder will choose -24 LKFS; otherwise, the encoder will choose -23 LKFS."
+        },
+        "TruePeakLimiterThreshold": {
+          "shape": "__doubleMinNegative20Max0",
+          "locationName": "truePeakLimiterThreshold",
+          "documentation": "Specify the True-peak limiter threshold in decibels relative to full scale (dBFS). The peak inter-audio sample loudness in your output will be limited to the value that you specify, without affecting the overall target LKFS. Enter a value from 0 to -20. Leave blank to use the default value 0."
         }
       },
       "documentation": "Advanced audio normalization settings. Ignore these settings unless you need to comply with a loudness standard."
@@ -2766,6 +2771,32 @@
       },
       "documentation": "Channel mapping (ChannelMapping) contains the group of fields that hold the remixing value for each channel, in dB. Specify remix values to indicate how much of the content from your input audio channel you want in your output audio channels. Each instance of the InputChannels or InputChannelsFineTune array specifies these values for one output channel. Use one instance of this array for each output channel. In the console, each array corresponds to a column in the graphical depiction of the mapping matrix. The rows of the graphical matrix correspond to input channels. Valid values are within the range from -60 (mute) through 6. A setting of 0 passes the input channel unchanged to the output channel (no attenuation or amplification). Use InputChannels or InputChannelsFineTune to specify your remix values. Don't use both."
     },
+    "ClipLimits": {
+      "type": "structure",
+      "members": {
+        "MaximumRGBTolerance": {
+          "shape": "__integerMin90Max105",
+          "locationName": "maximumRGBTolerance",
+          "documentation": "Specify the Maximum RGB color sample range tolerance for your output. MediaConvert corrects any YUV values that, when converted to RGB, would be outside the upper tolerance that you specify. Enter an integer from 90 to 105 as an offset percentage to the maximum possible value. Leave blank to use the default value 100. When you specify a value for Maximum RGB tolerance, you must set Sample range conversion to Limited range clip."
+        },
+        "MaximumYUV": {
+          "shape": "__integerMin920Max1023",
+          "locationName": "maximumYUV",
+          "documentation": "Specify the Maximum YUV color sample limit. MediaConvert conforms any pixels in your input above the value that you specify to typical limited range bounds. Enter an integer from 920 to 1023. Leave blank to use the default value 940. The value that you enter applies to 10-bit ranges. For 8-bit ranges, MediaConvert automatically scales this value down. When you specify a value for Maximum YUV, you must set Sample range conversion to Limited range clip."
+        },
+        "MinimumRGBTolerance": {
+          "shape": "__integerMinNegative5Max10",
+          "locationName": "minimumRGBTolerance",
+          "documentation": "Specify the Minimum RGB color sample range tolerance for your output. MediaConvert corrects any YUV values that, when converted to RGB, would be outside the lower tolerance that you specify. Enter an integer from -5 to 10 as an offset percentage to the minimum possible value. Leave blank to use the default value 0. When you specify a value for Minimum RGB tolerance, you must set Sample range conversion to Limited range clip."
+        },
+        "MinimumYUV": {
+          "shape": "__integerMin0Max128",
+          "locationName": "minimumYUV",
+          "documentation": "Specify the Minimum YUV color sample limit. MediaConvert conforms any pixels in your input below the value that you specify to typical limited range bounds. Enter an integer from 0 to 128. Leave blank to use the default value 64. The value that you enter applies to 10-bit ranges. For 8-bit ranges, MediaConvert automatically scales this value down. When you specify a value for Minumum YUV, you must set Sample range conversion to Limited range clip."
+        }
+      },
+      "documentation": "Specify YUV limits and RGB tolerances when you set Sample range conversion to Limited range clip."
+    },
     "CmafAdditionalManifest": {
       "type": "structure",
       "members": {
@@ -2864,6 +2895,11 @@
           "shape": "CmafCodecSpecification",
           "locationName": "codecSpecification",
           "documentation": "Specification to use (RFC-6381 or the default RFC-4281) during m3u8 playlist generation."
+        },
+        "DashManifestStyle": {
+          "shape": "DashManifestStyle",
+          "locationName": "dashManifestStyle",
+          "documentation": "Specify how MediaConvert writes SegmentTimeline in your output DASH manifest. To write a SegmentTimeline in each video Representation: Keep the default value, Basic. To write a common SegmentTimeline in the video AdaptationSet: Choose Compact. Note that MediaConvert will still write a SegmentTimeline in any Representation that does not share a common timeline. To write a video AdaptationSet for each different output framerate, and a common SegmentTimeline in each AdaptationSet: Choose Distinct."
         },
         "Destination": {
           "shape": "__stringPatternS3",
@@ -3195,7 +3231,7 @@
     },
     "CmfcManifestMetadataSignaling": {
       "type": "string",
-      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled.",
+      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled. To enable Manifest metadata signaling, you must also set SCTE-35 source to Passthrough, ESAM SCTE-35 to insert, or ID3 metadata (TimedMetadata) to Passthrough.",
       "enum": [
         "ENABLED",
         "DISABLED"
@@ -3258,7 +3294,7 @@
         "ManifestMetadataSignaling": {
           "shape": "CmfcManifestMetadataSignaling",
           "locationName": "manifestMetadataSignaling",
-          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled."
+          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled. To enable Manifest metadata signaling, you must also set SCTE-35 source to Passthrough, ESAM SCTE-35 to insert, or ID3 metadata (TimedMetadata) to Passthrough."
         },
         "Scte35Esam": {
           "shape": "CmfcScte35Esam",
@@ -3317,6 +3353,11 @@
           "locationName": "brightness",
           "documentation": "Brightness level."
         },
+        "ClipLimits": {
+          "shape": "ClipLimits",
+          "locationName": "clipLimits",
+          "documentation": "Specify YUV limits and RGB tolerances when you set Sample range conversion to Limited range clip."
+        },
         "ColorSpaceConversion": {
           "shape": "ColorSpaceConversion",
           "locationName": "colorSpaceConversion",
@@ -3340,7 +3381,7 @@
         "SampleRangeConversion": {
           "shape": "SampleRangeConversion",
           "locationName": "sampleRangeConversion",
-          "documentation": "Specify the video color sample range for this output. To create a full range output, you must start with a full range YUV input and keep the default value, None (NONE). To create a limited range output from a full range input, choose Limited range (LIMITED_RANGE_SQUEEZE). With RGB inputs, your output is always limited range, regardless of your choice here. When you create a limited range output from a full range input, MediaConvert limits the active pixel values in a way that depends on the output's bit depth: 8-bit outputs contain only values from 16 through 235 and 10-bit outputs contain only values from 64 through 940. With this conversion, MediaConvert also changes the output metadata to note the limited range."
+          "documentation": "Specify how MediaConvert limits the color sample range for this output. To create a limited range output from a full range input: Choose Limited range squeeze. For full range inputs, MediaConvert performs a linear offset to color samples equally across all pixels and frames. Color samples in 10-bit outputs are limited to 64 through 940, and 8-bit outputs are limited to 16 through 235. Note: For limited range inputs, values for color samples are passed through to your output unchanged. MediaConvert does not limit the sample range. To correct pixels in your input that are out of range or out of gamut: Choose Limited range clip. Use for broadcast applications. MediaConvert conforms any pixels outside of the values that you specify under Minimum YUV and Maximum YUV to limited range bounds. MediaConvert also corrects any YUV values that, when converted to RGB, would be outside the bounds you specify under Minimum RGB tolerance and Maximum RGB tolerance. With either limited range conversion, MediaConvert writes the sample range metadata in the output."
         },
         "Saturation": {
           "shape": "__integerMin1Max100",
@@ -3510,7 +3551,7 @@
         "ClientRequestToken": {
           "shape": "__string",
           "locationName": "clientRequestToken",
-          "documentation": "Optional. Idempotency token for CreateJob operation.",
+          "documentation": "Prevent duplicate jobs from being created and ensure idempotency for your requests. A client request token can be any string that includes up to 64 ASCII characters. If you reuse a client request token within one minute of a successful request, the API returns the job details of the original request instead. For more information see https://docs.aws.amazon.com/mediaconvert/latest/apireference/idempotency.html.",
           "idempotencyToken": true
         },
         "HopDestinations": {
@@ -3798,6 +3839,11 @@
           "locationName": "baseUrl",
           "documentation": "A partial URI prefix that will be put in the manifest (.mpd) file at the top level BaseURL element. Can be used if streams are delivered from a different URL than the manifest file."
         },
+        "DashManifestStyle": {
+          "shape": "DashManifestStyle",
+          "locationName": "dashManifestStyle",
+          "documentation": "Specify how MediaConvert writes SegmentTimeline in your output DASH manifest. To write a SegmentTimeline in each video Representation: Keep the default value, Basic. To write a common SegmentTimeline in the video AdaptationSet: Choose Compact. Note that MediaConvert will still write a SegmentTimeline in any Representation that does not share a common timeline. To write a video AdaptationSet for each different output framerate, and a common SegmentTimeline in each AdaptationSet: Choose Distinct."
+        },
         "Destination": {
           "shape": "__stringPatternS3",
           "locationName": "destination",
@@ -4010,6 +4056,15 @@
       "enum": [
         "ENABLED",
         "DISABLED"
+      ]
+    },
+    "DashManifestStyle": {
+      "type": "string",
+      "documentation": "Specify how MediaConvert writes SegmentTimeline in your output DASH manifest. To write a SegmentTimeline in each video Representation: Keep the default value, Basic. To write a common SegmentTimeline in the video AdaptationSet: Choose Compact. Note that MediaConvert will still write a SegmentTimeline in any Representation that does not share a common timeline. To write a video AdaptationSet for each different output framerate, and a common SegmentTimeline in each AdaptationSet: Choose Distinct.",
+      "enum": [
+        "BASIC",
+        "COMPACT",
+        "DISTINCT"
       ]
     },
     "DecryptionMode": {
@@ -9188,7 +9243,7 @@
     },
     "MpdManifestMetadataSignaling": {
       "type": "string",
-      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled.",
+      "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled. To enable Manifest metadata signaling, you must also set SCTE-35 source to Passthrough, ESAM SCTE-35 to insert, or ID3 metadata (TimedMetadata) to Passthrough.",
       "enum": [
         "ENABLED",
         "DISABLED"
@@ -9236,7 +9291,7 @@
         "ManifestMetadataSignaling": {
           "shape": "MpdManifestMetadataSignaling",
           "locationName": "manifestMetadataSignaling",
-          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled."
+          "documentation": "To add an InbandEventStream element in your output MPD manifest for each type of event message, set Manifest metadata signaling to Enabled. For ID3 event messages, the InbandEventStream element schemeIdUri will be same value that you specify for ID3 metadata scheme ID URI. For SCTE35 event messages, the InbandEventStream element schemeIdUri will be \"urn:scte:scte35:2013:bin\". To leave these elements out of your output MPD manifest, set Manifest metadata signaling to Disabled. To enable Manifest metadata signaling, you must also set SCTE-35 source to Passthrough, ESAM SCTE-35 to insert, or ID3 metadata (TimedMetadata) to Passthrough."
         },
         "Scte35Esam": {
           "shape": "MpdScte35Esam",
@@ -10907,10 +10962,11 @@
     },
     "SampleRangeConversion": {
       "type": "string",
-      "documentation": "Specify the video color sample range for this output. To create a full range output, you must start with a full range YUV input and keep the default value, None (NONE). To create a limited range output from a full range input, choose Limited range (LIMITED_RANGE_SQUEEZE). With RGB inputs, your output is always limited range, regardless of your choice here. When you create a limited range output from a full range input, MediaConvert limits the active pixel values in a way that depends on the output's bit depth: 8-bit outputs contain only values from 16 through 235 and 10-bit outputs contain only values from 64 through 940. With this conversion, MediaConvert also changes the output metadata to note the limited range.",
+      "documentation": "Specify how MediaConvert limits the color sample range for this output. To create a limited range output from a full range input: Choose Limited range squeeze. For full range inputs, MediaConvert performs a linear offset to color samples equally across all pixels and frames. Color samples in 10-bit outputs are limited to 64 through 940, and 8-bit outputs are limited to 16 through 235. Note: For limited range inputs, values for color samples are passed through to your output unchanged. MediaConvert does not limit the sample range. To correct pixels in your input that are out of range or out of gamut: Choose Limited range clip. Use for broadcast applications. MediaConvert conforms any pixels outside of the values that you specify under Minimum YUV and Maximum YUV to limited range bounds. MediaConvert also corrects any YUV values that, when converted to RGB, would be outside the bounds you specify under Minimum RGB tolerance and Maximum RGB tolerance. With either limited range conversion, MediaConvert writes the sample range metadata in the output.",
       "enum": [
         "LIMITED_RANGE_SQUEEZE",
-        "NONE"
+        "NONE",
+        "LIMITED_RANGE_CLIP"
       ]
     },
     "ScalingBehavior": {
@@ -12624,6 +12680,9 @@
     "__doubleMin0Max2147483647": {
       "type": "double"
     },
+    "__doubleMinNegative20Max0": {
+      "type": "double"
+    },
     "__doubleMinNegative59Max0": {
       "type": "double"
     },
@@ -13062,6 +13121,16 @@
       "min": 8,
       "max": 4096
     },
+    "__integerMin90Max105": {
+      "type": "integer",
+      "min": 90,
+      "max": 105
+    },
+    "__integerMin920Max1023": {
+      "type": "integer",
+      "min": 920,
+      "max": 1023
+    },
     "__integerMin96Max600": {
       "type": "integer",
       "min": 96,
@@ -13101,6 +13170,11 @@
       "type": "integer",
       "min": -50,
       "max": 50
+    },
+    "__integerMinNegative5Max10": {
+      "type": "integer",
+      "min": -5,
+      "max": 10
     },
     "__integerMinNegative5Max5": {
       "type": "integer",

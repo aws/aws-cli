@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.9.15
+======
+
+* api-change:``kendra``: This release adds support to new document types - RTF, XML, XSLT, MS_EXCEL, CSV, JSON, MD
+* api-change:``cleanrooms``: Initial release of AWS Clean Rooms
+* api-change:``lambda``: Add support for MaximumConcurrency parameter for SQS event source. Customers can now limit the maximum concurrent invocations for their SQS Event Source Mapping.
+* api-change:``logs``: Bug fix: logGroupName is now not a required field in GetLogEvents, FilterLogEvents, GetLogGroupFields, and DescribeLogStreams APIs as logGroupIdentifier can be provided instead
+* enhancement:dependencies: Bumped colorama version range to >=0.2.5,<0.4.7
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has added support for compact DASH manifest generation, audio normalization using TruePeak measurements, and the ability to clip the sample range in the color corrector.
+* api-change:``secretsmanager``: Update documentation for new ListSecrets and DescribeSecret parameters
+
+
 2.9.14
 ======
 

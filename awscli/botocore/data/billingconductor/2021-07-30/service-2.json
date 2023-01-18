@@ -1204,7 +1204,7 @@
         },
         "Service":{
           "shape":"Service",
-          "documentation":"<p> If the <code>Scope</code> attribute is set to <code>SERVICE</code>, the attribute indicates which service the <code>PricingRule</code> is applicable for. </p>"
+          "documentation":"<p> If the <code>Scope</code> attribute is set to <code>SERVICE</code> or <code>SKU</code>, the attribute indicates which service the <code>PricingRule</code> is applicable for. </p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -1217,6 +1217,14 @@
         "Tiering":{
           "shape":"CreateTieringInput",
           "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
+        },
+        "UsageType":{
+          "shape":"UsageType",
+          "documentation":"<p> Usage type is the unit that each service uses to measure the usage of a specific type of resource.</p> <p>If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which usage type the <code>PricingRule</code> is modifying. For example, <code>USW2-BoxUsage:m2.2xlarge</code> describes an<code> M2 High Memory Double Extra Large</code> instance in the US West (Oregon) Region. <pre><code>&lt;/p&gt; </code></pre>"
+        },
+        "Operation":{
+          "shape":"Operation",
+          "documentation":"<p> Operation is the specific Amazon Web Services action covered by this line item. This describes the specific usage of the line item.</p> <p> If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which operation the <code>PricingRule</code> is modifying. For example, a value of <code>RunInstances:0202</code> indicates the operation of running an Amazon EC2 instance.</p>"
         }
       }
     },
@@ -2280,6 +2288,12 @@
       "type":"long",
       "min":0
     },
+    "Operation":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\S+"
+    },
     "PricingPlanArn":{
       "type":"string",
       "pattern":"(arn:aws(-cn)?:billingconductor::[0-9]{12}:pricingplan/)?[a-zA-Z0-9]{10}"
@@ -2914,6 +2928,14 @@
         "Tiering":{
           "shape":"UpdateTieringInput",
           "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
+        },
+        "UsageType":{
+          "shape":"UsageType",
+          "documentation":"<p>Usage type is the unit that each service uses to measure the usage of a specific type of resource.</p> <p>If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which usage type the <code>PricingRule</code> is modifying. For example, <code>USW2-BoxUsage:m2.2xlarge</code> describes an <code>M2 High Memory Double Extra Large</code> instance in the US West (Oregon) Region. </p>"
+        },
+        "Operation":{
+          "shape":"Operation",
+          "documentation":"<p>Operation refers to the specific Amazon Web Services covered by this line item. This describes the specific usage of the line item.</p> <p> If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which operation the <code>PricingRule</code> is modifying. For example, a value of <code>RunInstances:0202</code> indicates the operation of running an Amazon EC2 instance.</p>"
         }
       }
     },
@@ -2927,6 +2949,12 @@
         }
       },
       "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
+    },
+    "UsageType":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\S+"
     },
     "ValidationException":{
       "type":"structure",

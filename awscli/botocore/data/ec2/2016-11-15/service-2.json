@@ -70,7 +70,7 @@
       },
       "input":{"shape":"AcceptVpcEndpointConnectionsRequest"},
       "output":{"shape":"AcceptVpcEndpointConnectionsResult"},
-      "documentation":"<p>Accepts one or more interface VPC endpoint connection requests to your VPC endpoint service.</p>"
+      "documentation":"<p>Accepts connection requests to your VPC endpoint service.</p>"
     },
     "AcceptVpcPeeringConnection":{
       "name":"AcceptVpcPeeringConnection",
@@ -1015,7 +1015,7 @@
       },
       "input":{"shape":"CreateSubnetRequest"},
       "output":{"shape":"CreateSubnetResult"},
-      "documentation":"<p>Creates a subnet in a specified VPC.</p> <p>You must specify an IPv4 CIDR block for the subnet. After you create a subnet, you can't change its CIDR block. The allowed block size is between a /16 netmask (65,536 IP addresses) and /28 netmask (16 IP addresses). The CIDR block must not overlap with the CIDR block of an existing subnet in the VPC.</p> <p>If you've associated an IPv6 CIDR block with your VPC, you can create a subnet with an IPv6 CIDR block that uses a /64 prefix length. </p> <important> <p>Amazon Web Services reserves both the first four and the last IPv4 address in each subnet's CIDR block. They're not available for use.</p> </important> <p>If you add more than one subnet to a VPC, they're set up in a star topology with a logical router in the middle.</p> <p>When you stop an instance in a subnet, it retains its private IPv4 address. It's therefore possible to have a subnet with no running instances (they're all stopped), but no remaining IP addresses available.</p> <p>For more information about subnets, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html\">Your VPC and subnets</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates a subnet in the specified VPC. For an IPv4 only subnet, specify an IPv4 CIDR block. If the VPC has an IPv6 CIDR block, you can create an IPv6 only subnet or a dual stack subnet instead. For an IPv6 only subnet, specify an IPv6 CIDR block. For a dual stack subnet, specify both an IPv4 CIDR block and an IPv6 CIDR block.</p> <p>A subnet CIDR block must not overlap the CIDR block of an existing subnet in the VPC. After you create a subnet, you can't change its CIDR block.</p> <p>The allowed size for an IPv4 subnet is between a /28 netmask (16 IP addresses) and a /16 netmask (65,536 IP addresses). Amazon Web Services reserves both the first four and the last IPv4 address in each subnet's CIDR block. They're not available for your use.</p> <p>If you've associated an IPv6 CIDR block with your VPC, you can associate an IPv6 CIDR block with a subnet when you create it. The allowed block size for an IPv6 subnet is a /64 netmask.</p> <p>If you add more than one subnet to a VPC, they're set up in a star topology with a logical router in the middle.</p> <p>When you stop an instance in a subnet, it retains its private IPv4 address. It's therefore possible to have a subnet with no running instances (they're all stopped), but no remaining IP addresses available.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html\">Subnets</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
     },
     "CreateSubnetCidrReservation":{
       "name":"CreateSubnetCidrReservation",
@@ -1244,7 +1244,7 @@
       },
       "input":{"shape":"CreateVpcRequest"},
       "output":{"shape":"CreateVpcResult"},
-      "documentation":"<p>Creates a VPC with the specified IPv4 CIDR block. The smallest VPC you can create uses a /28 netmask (16 IPv4 addresses), and the largest uses a /16 netmask (65,536 IPv4 addresses). For more information about how large to make your VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html\">Your VPC and subnets</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>You can optionally request an IPv6 CIDR block for the VPC. You can request an Amazon-provided IPv6 CIDR block from Amazon's pool of IPv6 addresses, or an IPv6 CIDR block from an IPv6 address pool that you provisioned through bring your own IP addresses (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">BYOIP</a>).</p> <p>By default, each instance you launch in the VPC has the default DHCP options, which include only a default DNS server that we provide (AmazonProvidedDNS). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP options sets</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>You can specify the instance tenancy value for the VPC when you create it. You can't change this value for the VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html\">Dedicated Instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates a VPC with the specified CIDR blocks. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/configure-your-vpc.html#vpc-cidr-blocks\">VPC CIDR blocks</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>You can optionally request an IPv6 CIDR block for the VPC. You can request an Amazon-provided IPv6 CIDR block from Amazon's pool of IPv6 addresses, or an IPv6 CIDR block from an IPv6 address pool that you provisioned through bring your own IP addresses (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">BYOIP</a>).</p> <p>By default, each instance that you launch in the VPC has the default DHCP options, which include only a default DNS server that we provide (AmazonProvidedDNS). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP option sets</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>You can specify the instance tenancy value for the VPC when you create it. You can't change this value for the VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html\">Dedicated Instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "CreateVpcEndpoint":{
       "name":"CreateVpcEndpoint",
@@ -1274,7 +1274,7 @@
       },
       "input":{"shape":"CreateVpcEndpointServiceConfigurationRequest"},
       "output":{"shape":"CreateVpcEndpointServiceConfigurationResult"},
-      "documentation":"<p>Creates a VPC endpoint service to which service consumers (Amazon Web Services accounts, IAM users, and IAM roles) can connect.</p> <p>Before you create an endpoint service, you must create one of the following for your service:</p> <ul> <li> <p>A <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/network/\">Network Load Balancer</a>. Service consumers connect to your service using an interface endpoint.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/\">Gateway Load Balancer</a>. Service consumers connect to your service using a Gateway Load Balancer endpoint.</p> </li> </ul> <p>If you set the private DNS name, you must prove that you own the private DNS domain name.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/\">Amazon Web Services PrivateLink Guide</a>.</p>"
+      "documentation":"<p>Creates a VPC endpoint service to which service consumers (Amazon Web Services accounts, users, and IAM roles) can connect.</p> <p>Before you create an endpoint service, you must create one of the following for your service:</p> <ul> <li> <p>A <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/network/\">Network Load Balancer</a>. Service consumers connect to your service using an interface endpoint.</p> </li> <li> <p>A <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/\">Gateway Load Balancer</a>. Service consumers connect to your service using a Gateway Load Balancer endpoint.</p> </li> </ul> <p>If you set the private DNS name, you must prove that you own the private DNS domain name.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/\">Amazon Web Services PrivateLink Guide</a>.</p>"
     },
     "CreateVpcPeeringConnection":{
       "name":"CreateVpcPeeringConnection",
@@ -1956,7 +1956,7 @@
       },
       "input":{"shape":"DeleteVpcEndpointConnectionNotificationsRequest"},
       "output":{"shape":"DeleteVpcEndpointConnectionNotificationsResult"},
-      "documentation":"<p>Deletes one or more VPC endpoint connection notifications.</p>"
+      "documentation":"<p>Deletes the specified VPC endpoint connection notifications.</p>"
     },
     "DeleteVpcEndpointServiceConfigurations":{
       "name":"DeleteVpcEndpointServiceConfigurations",
@@ -1966,7 +1966,7 @@
       },
       "input":{"shape":"DeleteVpcEndpointServiceConfigurationsRequest"},
       "output":{"shape":"DeleteVpcEndpointServiceConfigurationsResult"},
-      "documentation":"<p>Deletes one or more VPC endpoint service configurations in your account. Before you delete the endpoint service configuration, you must reject any <code>Available</code> or <code>PendingAcceptance</code> interface endpoint connections that are attached to the service.</p>"
+      "documentation":"<p>Deletes the specified VPC endpoint service configurations. Before you can delete an endpoint service configuration, you must reject any <code>Available</code> or <code>PendingAcceptance</code> interface endpoint connections that are attached to the service.</p>"
     },
     "DeleteVpcEndpoints":{
       "name":"DeleteVpcEndpoints",
@@ -1976,7 +1976,7 @@
       },
       "input":{"shape":"DeleteVpcEndpointsRequest"},
       "output":{"shape":"DeleteVpcEndpointsResult"},
-      "documentation":"<p>Deletes one or more specified VPC endpoints. You can delete any of the following types of VPC endpoints. </p> <ul> <li> <p>Gateway endpoint,</p> </li> <li> <p>Gateway Load Balancer endpoint,</p> </li> <li> <p>Interface endpoint</p> </li> </ul> <p>The following rules apply when you delete a VPC endpoint:</p> <ul> <li> <p>When you delete a gateway endpoint, we delete the endpoint routes in the route tables that are associated with the endpoint.</p> </li> <li> <p>When you delete a Gateway Load Balancer endpoint, we delete the endpoint network interfaces. </p> <p>You can only delete Gateway Load Balancer endpoints when the routes that are associated with the endpoint are deleted.</p> </li> <li> <p>When you delete an interface endpoint, we delete the endpoint network interfaces.</p> </li> </ul>"
+      "documentation":"<p>Deletes the specified VPC endpoints.</p> <p>When you delete a gateway endpoint, we delete the endpoint routes in the route tables for the endpoint.</p> <p>When you delete a Gateway Load Balancer endpoint, we delete its endpoint network interfaces. You can only delete Gateway Load Balancer endpoints when the routes that are associated with the endpoint are deleted.</p> <p>When you delete an interface endpoint, we delete its endpoint network interfaces.</p>"
     },
     "DeleteVpcPeeringConnection":{
       "name":"DeleteVpcPeeringConnection",
@@ -3462,7 +3462,7 @@
       },
       "input":{"shape":"DescribeVpcEndpointsRequest"},
       "output":{"shape":"DescribeVpcEndpointsResult"},
-      "documentation":"<p>Describes one or more of your VPC endpoints.</p>"
+      "documentation":"<p>Describes your VPC endpoints.</p>"
     },
     "DescribeVpcPeeringConnections":{
       "name":"DescribeVpcPeeringConnections",
@@ -5015,7 +5015,7 @@
       },
       "input":{"shape":"ModifyVpcEndpointServicePermissionsRequest"},
       "output":{"shape":"ModifyVpcEndpointServicePermissionsResult"},
-      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (IAM users, IAM roles, and Amazon Web Services accounts) to connect to your endpoint service.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p>"
+      "documentation":"<p>Modifies the permissions for your VPC endpoint service. You can add or remove permissions for service consumers (Amazon Web Services accounts, users, and IAM roles) to connect to your endpoint service.</p> <p>If you grant permissions to all principals, the service is public. Any users who know the name of a public service can send a request to attach an endpoint. If the service does not require manual approval, attachments are automatically approved.</p>"
     },
     "ModifyVpcPeeringConnectionOptions":{
       "name":"ModifyVpcPeeringConnectionOptions",
@@ -5254,7 +5254,7 @@
       },
       "input":{"shape":"RejectVpcEndpointConnectionsRequest"},
       "output":{"shape":"RejectVpcEndpointConnectionsResult"},
-      "documentation":"<p>Rejects one or more VPC endpoint connection requests to your VPC endpoint service.</p>"
+      "documentation":"<p>Rejects VPC endpoint connection requests to your VPC endpoint service.</p>"
     },
     "RejectVpcPeeringConnection":{
       "name":"RejectVpcPeeringConnection",
@@ -5987,7 +5987,7 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>The IDs of one or more interface VPC endpoints.</p>",
+          "documentation":"<p>The IDs of the interface VPC endpoints.</p>",
           "locationName":"VpcEndpointId"
         }
       }
@@ -8353,7 +8353,7 @@
         },
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of port range for the TCP and UDP protocols, or an ICMP type number. For the ICMP type number, use <code>-1</code> to specify all types. If you specify all ICMP types, you must specify all codes.</p> <p>Alternatively, use a set of IP permissions to specify multiple rules and a description for the rule.</p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the start of the port range. If the protocol is ICMP, this is the type number. A value of -1 indicates all ICMP types. If you specify all ICMP types, you must specify all ICMP codes.</p> <p>Alternatively, use a set of IP permissions to specify multiple rules and a description for the rule.</p>"
         },
         "GroupId":{
           "shape":"SecurityGroupId",
@@ -8381,7 +8381,7 @@
         },
         "ToPort":{
           "shape":"Integer",
-          "documentation":"<p>The end of port range for the TCP and UDP protocols, or an ICMP code number. For the ICMP code number, use <code>-1</code> to specify all codes. If you specify all ICMP types, you must specify all codes.</p> <p>Alternatively, use a set of IP permissions to specify multiple rules and a description for the rule.</p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the end of the port range. If the protocol is ICMP, this is the code. A value of -1 indicates all ICMP codes. If you specify all ICMP types, you must specify all ICMP codes.</p> <p>Alternatively, use a set of IP permissions to specify multiple rules and a description for the rule.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -11316,7 +11316,7 @@
       "members":{
         "ClientCidrBlock":{
           "shape":"String",
-          "documentation":"<p>The IPv4 address range, in CIDR notation, from which to assign client IP addresses. The address range cannot overlap with the local CIDR of the VPC in which the associated subnet is located, or the routes that you add manually. The address range cannot be changed after the Client VPN endpoint has been created. The CIDR block should be /22 or greater.</p>"
+          "documentation":"<p>The IPv4 address range, in CIDR notation, from which to assign client IP addresses. The address range cannot overlap with the local CIDR of the VPC in which the associated subnet is located, or the routes that you add manually. The address range cannot be changed after the Client VPN endpoint has been created. Client CIDR range must have a size of at least /22 and must not be greater than /12.</p>"
         },
         "ServerCertificateArn":{
           "shape":"String",
@@ -14772,7 +14772,7 @@
         },
         "ConnectionEvents":{
           "shape":"ValueStringList",
-          "documentation":"<p>One or more endpoint events for which to receive notifications. Valid values are <code>Accept</code>, <code>Connect</code>, <code>Delete</code>, and <code>Reject</code>.</p>"
+          "documentation":"<p>The endpoint events for which to receive notifications. Valid values are <code>Accept</code>, <code>Connect</code>, <code>Delete</code>, and <code>Reject</code>.</p>"
         },
         "ClientToken":{
           "shape":"String",
@@ -14812,11 +14812,11 @@
         },
         "VpcId":{
           "shape":"VpcId",
-          "documentation":"<p>The ID of the VPC in which the endpoint will be used.</p>"
+          "documentation":"<p>The ID of the VPC for the endpoint.</p>"
         },
         "ServiceName":{
           "shape":"String",
-          "documentation":"<p>The service name. To get a list of available services, use the <a>DescribeVpcEndpointServices</a> request, or get the name from the service provider.</p>"
+          "documentation":"<p>The service name.</p>"
         },
         "PolicyDocument":{
           "shape":"String",
@@ -14824,17 +14824,17 @@
         },
         "RouteTableIds":{
           "shape":"VpcEndpointRouteTableIdList",
-          "documentation":"<p>(Gateway endpoint) One or more route table IDs.</p>",
+          "documentation":"<p>(Gateway endpoint) The route table IDs.</p>",
           "locationName":"RouteTableId"
         },
         "SubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The ID of one or more subnets in which to create an endpoint network interface. For a Gateway Load Balancer endpoint, you can specify one subnet only.</p>",
+          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to create an endpoint network interface. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
           "locationName":"SubnetId"
         },
         "SecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The ID of one or more security groups to associate with the endpoint network interface.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interface. If this parameter is not specified, we use the default security group for the VPC.</p>",
           "locationName":"SecurityGroupId"
         },
         "IpAddressType":{
@@ -14858,8 +14858,7 @@
           "documentation":"<p>The tags to associate with the endpoint.</p>",
           "locationName":"TagSpecification"
         }
-      },
-      "documentation":"<p>Contains the parameters for CreateVpcEndpoint.</p>"
+      }
     },
     "CreateVpcEndpointResult":{
       "type":"structure",
@@ -14874,8 +14873,7 @@
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
           "locationName":"clientToken"
         }
-      },
-      "documentation":"<p>Contains the output of CreateVpcEndpoint.</p>"
+      }
     },
     "CreateVpcEndpointServiceConfigurationRequest":{
       "type":"structure",
@@ -14894,12 +14892,12 @@
         },
         "NetworkLoadBalancerArns":{
           "shape":"ValueStringList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more Network Load Balancers for your service.</p>",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the Network Load Balancers.</p>",
           "locationName":"NetworkLoadBalancerArn"
         },
         "GatewayLoadBalancerArns":{
           "shape":"ValueStringList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of one or more Gateway Load Balancers.</p>",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the Gateway Load Balancers.</p>",
           "locationName":"GatewayLoadBalancerArn"
         },
         "SupportedIpAddressTypes":{
@@ -15273,11 +15271,11 @@
         },
         "Metric":{
           "shape":"MetricType",
-          "documentation":"<p>The aggregation metric used for the data query. Currently only <code>aggregation-latency</code> is supported, indicating network latency.</p>"
+          "documentation":"<p>The metric, <code>aggregation-latency</code>, indicating that network latency is aggregated for the query. This is the only supported metric.</p>"
         },
         "Statistic":{
           "shape":"StatisticType",
-          "documentation":"<p>Metric data aggregations over specified periods of time. The following are the supported Infrastructure Performance statistics:</p> <ul> <li> <p> <code>p50</code> - The median value of the metric aggregated over a specified start and end time. For example, a metric of <code>five_minutes</code> is the median of all the data points gathered within those five minutes.</p> </li> </ul>"
+          "documentation":"<p>The metric data aggregation period, <code>p50</code>, between the specified <code>startDate</code> and <code>endDate</code>. For example, a metric of <code>five_minutes</code> is the median of all the data points gathered within those five minutes. <code>p50</code> is the only supported metric.</p>"
         },
         "Period":{
           "shape":"PeriodType",
@@ -15306,7 +15304,7 @@
         },
         "Metric":{
           "shape":"MetricType",
-          "documentation":"<p>The metric used for the network performance request. Currently only <code>aggregate-latency</code> is supported, showing network latency during a specified period. </p>",
+          "documentation":"<p>The metric used for the network performance request. Only <code>aggregate-latency</code> is supported, which shows network latency during a specified period. </p>",
           "locationName":"metric"
         },
         "Statistic":{
@@ -17101,7 +17099,7 @@
         },
         "ConnectionNotificationIds":{
           "shape":"ConnectionNotificationIdsList",
-          "documentation":"<p>One or more notification IDs.</p>",
+          "documentation":"<p>The IDs of the notifications.</p>",
           "locationName":"ConnectionNotificationId"
         }
       }
@@ -17126,7 +17124,7 @@
         },
         "ServiceIds":{
           "shape":"VpcEndpointServiceIdList",
-          "documentation":"<p>The IDs of one or more services.</p>",
+          "documentation":"<p>The IDs of the services.</p>",
           "locationName":"ServiceId"
         }
       }
@@ -17151,11 +17149,10 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>One or more VPC endpoint IDs.</p>",
+          "documentation":"<p>The IDs of the VPC endpoints.</p>",
           "locationName":"VpcEndpointId"
         }
-      },
-      "documentation":"<p>Contains the parameters for DeleteVpcEndpoints.</p>"
+      }
     },
     "DeleteVpcEndpointsResult":{
       "type":"structure",
@@ -17165,8 +17162,7 @@
           "documentation":"<p>Information about the VPC endpoints that were not successfully deleted.</p>",
           "locationName":"unsuccessful"
         }
-      },
-      "documentation":"<p>Contains the output of DeleteVpcEndpoints.</p>"
+      }
     },
     "DeleteVpcPeeringConnectionRequest":{
       "type":"structure",
@@ -19737,7 +19733,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>affinity</code> - The affinity setting for an instance running on a Dedicated Host (<code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>architecture</code> - The instance architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>block-device-mapping.attach-time</code> - The attach time for an EBS volume mapped to the instance, for example, <code>2010-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean that indicates whether the EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.status</code> - The status for the EBS volume (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>block-device-mapping.volume-id</code> - The volume ID of the EBS volume.</p> </li> <li> <p> <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the instance was launched.</p> </li> <li> <p> <code>client-token</code> - The idempotency token you provided when you launched the instance.</p> </li> <li> <p> <code>dns-name</code> - The public DNS name of the instance.</p> </li> <li> <p> <code>group-id</code> - The ID of the security group for the instance. EC2-Classic only.</p> </li> <li> <p> <code>group-name</code> - The name of the security group for the instance. EC2-Classic only.</p> </li> <li> <p> <code>hibernation-options.configured</code> - A Boolean that indicates whether the instance is enabled for hibernation. A value of <code>true</code> means that the instance is enabled for hibernation. </p> </li> <li> <p> <code>host-id</code> - The ID of the Dedicated Host on which the instance is running, if applicable.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type of the instance (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used for both Xen and Nitro hypervisors.</p> </li> <li> <p> <code>iam-instance-profile.arn</code> - The instance profile associated with the instance. Specified as an ARN.</p> </li> <li> <p> <code>image-id</code> - The ID of the image used to launch the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance or a Scheduled Instance (<code>spot</code> | <code>scheduled</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The state of the instance, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t2.micro</code>).</p> </li> <li> <p> <code>instance.group-id</code> - The ID of the security group for the instance. </p> </li> <li> <p> <code>instance.group-name</code> - The name of the security group for the instance. </p> </li> <li> <p> <code>ip-address</code> - The public IPv4 address of the instance.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>key-name</code> - The name of the key pair used when the instance was launched.</p> </li> <li> <p> <code>launch-index</code> - When launching multiple instances, this is the index for the instance in the launch group (for example, 0, 1, 2, and so on). </p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>metadata-options.http-tokens</code> - The metadata request authorization state (<code>optional</code> | <code>required</code>)</p> </li> <li> <p> <code>metadata-options.http-put-response-hop-limit</code> - The http metadata request put response hop limit (integer, possible values <code>1</code> to <code>64</code>)</p> </li> <li> <p> <code>metadata-options.http-endpoint</code> - Enable or disable metadata access on http endpoint (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>monitoring-state</code> - Indicates whether detailed monitoring is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>network-interface.addresses.private-ip-address</code> - The private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.addresses.primary</code> - Specifies whether the IPv4 address of the network interface is the primary private IPv4 address.</p> </li> <li> <p> <code>network-interface.addresses.association.public-ip</code> - The ID of the association of an Elastic IP address (IPv4) with a network interface.</p> </li> <li> <p> <code>network-interface.addresses.association.ip-owner-id</code> - The owner ID of the private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>network-interface.association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>network-interface.association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>network-interface.attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>network-interface.attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>network-interface.attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>network-interface.attachment.delete-on-termination</code> - Specifies whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>network-interface.availability-zone</code> - The Availability Zone for the network interface.</p> </li> <li> <p> <code>network-interface.description</code> - The description of the network interface.</p> </li> <li> <p> <code>network-interface.group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.group-name</code> - The name of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface.network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>network-interface.owner-id</code> - The ID of the owner of the network interface.</p> </li> <li> <p> <code>network-interface.private-dns-name</code> - The private DNS name of the network interface.</p> </li> <li> <p> <code>network-interface.requester-id</code> - The requester ID for the network interface.</p> </li> <li> <p> <code>network-interface.requester-managed</code> - Indicates whether the network interface is being managed by Amazon Web Services.</p> </li> <li> <p> <code>network-interface.status</code> - The status of the network interface (<code>available</code>) | <code>in-use</code>).</p> </li> <li> <p> <code>network-interface.source-dest-check</code> - Whether the network interface performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC.</p> </li> <li> <p> <code>network-interface.subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>network-interface.vpc-id</code> - The ID of the VPC for the network interface.</p> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the instance owner.</p> </li> <li> <p> <code>placement-group-name</code> - The name of the placement group for the instance.</p> </li> <li> <p> <code>placement-partition-number</code> - The partition in which the instance is located.</p> </li> <li> <p> <code>platform</code> - The platform. To list only Windows instances, use <code>windows</code>.</p> </li> <li> <p> <code>private-dns-name</code> - The private IPv4 DNS name of the instance.</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address of the instance.</p> </li> <li> <p> <code>product-code</code> - The product code associated with the AMI used to launch the instance.</p> </li> <li> <p> <code>product-code.type</code> - The type of product code (<code>devpay</code> | <code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>reason</code> - The reason for the current state of the instance (for example, shows \"User Initiated [date]\" when you stop or terminate the instance). Similar to the state-reason-code filter.</p> </li> <li> <p> <code>requester-id</code> - The ID of the entity that launched the instance on your behalf (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>reservation-id</code> - The ID of the instance's reservation. A reservation ID is created any time you launch an instance. A reservation ID has a one-to-one relationship with an instance launch request, but can be associated with more than one instance if you launch multiple instances using the same launch request. For example, if you launch one instance, you get one reservation ID. If you launch ten instances using the same launch request, you also get one reservation ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the instance performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the instance to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>spot-instance-request-id</code> - The ID of the Spot Instance request.</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - A message that describes the state change.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the instance.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> | <code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type of the instance (<code>paravirtual</code> | <code>hvm</code>).</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>affinity</code> - The affinity setting for an instance running on a Dedicated Host (<code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>architecture</code> - The instance architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>block-device-mapping.attach-time</code> - The attach time for an EBS volume mapped to the instance, for example, <code>2010-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean that indicates whether the EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.status</code> - The status for the EBS volume (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>block-device-mapping.volume-id</code> - The volume ID of the EBS volume.</p> </li> <li> <p> <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the instance was launched.</p> </li> <li> <p> <code>client-token</code> - The idempotency token you provided when you launched the instance.</p> </li> <li> <p> <code>dns-name</code> - The public DNS name of the instance.</p> </li> <li> <p> <code>group-id</code> - The ID of the security group for the instance. EC2-Classic only.</p> </li> <li> <p> <code>group-name</code> - The name of the security group for the instance. EC2-Classic only.</p> </li> <li> <p> <code>hibernation-options.configured</code> - A Boolean that indicates whether the instance is enabled for hibernation. A value of <code>true</code> means that the instance is enabled for hibernation. </p> </li> <li> <p> <code>host-id</code> - The ID of the Dedicated Host on which the instance is running, if applicable.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type of the instance (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used for both Xen and Nitro hypervisors.</p> </li> <li> <p> <code>iam-instance-profile.arn</code> - The instance profile associated with the instance. Specified as an ARN.</p> </li> <li> <p> <code>image-id</code> - The ID of the image used to launch the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance or a Scheduled Instance (<code>spot</code> | <code>scheduled</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The state of the instance, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t2.micro</code>).</p> </li> <li> <p> <code>instance.group-id</code> - The ID of the security group for the instance. </p> </li> <li> <p> <code>instance.group-name</code> - The name of the security group for the instance. </p> </li> <li> <p> <code>ip-address</code> - The public IPv4 address of the instance.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>key-name</code> - The name of the key pair used when the instance was launched.</p> </li> <li> <p> <code>launch-index</code> - When launching multiple instances, this is the index for the instance in the launch group (for example, 0, 1, 2, and so on). </p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>metadata-options.http-tokens</code> - The metadata request authorization state (<code>optional</code> | <code>required</code>)</p> </li> <li> <p> <code>metadata-options.http-put-response-hop-limit</code> - The HTTP metadata request put response hop limit (integer, possible values <code>1</code> to <code>64</code>)</p> </li> <li> <p> <code>metadata-options.http-endpoint</code> - The status of access to the HTTP metadata endpoint on your instance (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>metadata-options.instance-metadata-tags</code> - The status of access to instance tags from the instance metadata (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>monitoring-state</code> - Indicates whether detailed monitoring is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>network-interface.addresses.private-ip-address</code> - The private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.addresses.primary</code> - Specifies whether the IPv4 address of the network interface is the primary private IPv4 address.</p> </li> <li> <p> <code>network-interface.addresses.association.public-ip</code> - The ID of the association of an Elastic IP address (IPv4) with a network interface.</p> </li> <li> <p> <code>network-interface.addresses.association.ip-owner-id</code> - The owner ID of the private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>network-interface.association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>network-interface.association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>network-interface.attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>network-interface.attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>network-interface.attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>network-interface.attachment.delete-on-termination</code> - Specifies whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>network-interface.availability-zone</code> - The Availability Zone for the network interface.</p> </li> <li> <p> <code>network-interface.description</code> - The description of the network interface.</p> </li> <li> <p> <code>network-interface.group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.group-name</code> - The name of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface.network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>network-interface.owner-id</code> - The ID of the owner of the network interface.</p> </li> <li> <p> <code>network-interface.private-dns-name</code> - The private DNS name of the network interface.</p> </li> <li> <p> <code>network-interface.requester-id</code> - The requester ID for the network interface.</p> </li> <li> <p> <code>network-interface.requester-managed</code> - Indicates whether the network interface is being managed by Amazon Web Services.</p> </li> <li> <p> <code>network-interface.status</code> - The status of the network interface (<code>available</code>) | <code>in-use</code>).</p> </li> <li> <p> <code>network-interface.source-dest-check</code> - Whether the network interface performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC.</p> </li> <li> <p> <code>network-interface.subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>network-interface.vpc-id</code> - The ID of the VPC for the network interface.</p> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the instance owner.</p> </li> <li> <p> <code>placement-group-name</code> - The name of the placement group for the instance.</p> </li> <li> <p> <code>placement-partition-number</code> - The partition in which the instance is located.</p> </li> <li> <p> <code>platform</code> - The platform. To list only Windows instances, use <code>windows</code>.</p> </li> <li> <p> <code>private-dns-name</code> - The private IPv4 DNS name of the instance.</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address of the instance.</p> </li> <li> <p> <code>product-code</code> - The product code associated with the AMI used to launch the instance.</p> </li> <li> <p> <code>product-code.type</code> - The type of product code (<code>devpay</code> | <code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>reason</code> - The reason for the current state of the instance (for example, shows \"User Initiated [date]\" when you stop or terminate the instance). Similar to the state-reason-code filter.</p> </li> <li> <p> <code>requester-id</code> - The ID of the entity that launched the instance on your behalf (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>reservation-id</code> - The ID of the instance's reservation. A reservation ID is created any time you launch an instance. A reservation ID has a one-to-one relationship with an instance launch request, but can be associated with more than one instance if you launch multiple instances using the same launch request. For example, if you launch one instance, you get one reservation ID. If you launch ten instances using the same launch request, you also get one reservation ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the instance performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the instance to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>spot-instance-request-id</code> - The ID of the Spot Instance request.</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - A message that describes the state change.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the instance.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> | <code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type of the instance (<code>paravirtual</code> | <code>hvm</code>).</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "InstanceIds":{
@@ -23398,7 +23394,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>connection-notification-arn</code> - The ARN of the SNS topic for the notification.</p> </li> <li> <p> <code>connection-notification-id</code> - The ID of the notification.</p> </li> <li> <p> <code>connection-notification-state</code> - The state of the notification (<code>Enabled</code> | <code>Disabled</code>).</p> </li> <li> <p> <code>connection-notification-type</code> - The type of notification (<code>Topic</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the endpoint service.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>connection-notification-arn</code> - The ARN of the SNS topic for the notification.</p> </li> <li> <p> <code>connection-notification-id</code> - The ID of the notification.</p> </li> <li> <p> <code>connection-notification-state</code> - The state of the notification (<code>Enabled</code> | <code>Disabled</code>).</p> </li> <li> <p> <code>connection-notification-type</code> - The type of notification (<code>Topic</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the endpoint service.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23416,7 +23412,7 @@
       "members":{
         "ConnectionNotificationSet":{
           "shape":"ConnectionNotificationSet",
-          "documentation":"<p>One or more notifications.</p>",
+          "documentation":"<p>The notifications.</p>",
           "locationName":"connectionNotificationSet"
         },
         "NextToken":{
@@ -23435,7 +23431,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>vpc-endpoint-owner</code> - The ID of the Amazon Web Services account ID that owns the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>vpc-endpoint-owner</code> - The ID of the Amazon Web Services account ID that owns the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23453,7 +23449,7 @@
       "members":{
         "VpcEndpointConnections":{
           "shape":"VpcEndpointConnectionSet",
-          "documentation":"<p>Information about one or more VPC endpoint connections.</p>",
+          "documentation":"<p>Information about the VPC endpoint connections.</p>",
           "locationName":"vpcEndpointConnectionSet"
         },
         "NextToken":{
@@ -23472,12 +23468,12 @@
         },
         "ServiceIds":{
           "shape":"VpcEndpointServiceIdList",
-          "documentation":"<p>The IDs of one or more services.</p>",
+          "documentation":"<p>The IDs of the endpoint services.</p>",
           "locationName":"ServiceId"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>service-state</code> - The state of the service (<code>Pending</code> | <code>Available</code> | <code>Deleting</code> | <code>Deleted</code> | <code>Failed</code>). </p> </li> <li> <p> <code>supported-ip-address-types</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-id</code> - The ID of the service.</p> </li> <li> <p> <code>service-state</code> - The state of the service (<code>Pending</code> | <code>Available</code> | <code>Deleting</code> | <code>Deleted</code> | <code>Failed</code>). </p> </li> <li> <p> <code>supported-ip-address-types</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23495,7 +23491,7 @@
       "members":{
         "ServiceConfigurations":{
           "shape":"ServiceConfigurationSet",
-          "documentation":"<p>Information about one or more services.</p>",
+          "documentation":"<p>Information about the services.</p>",
           "locationName":"serviceConfigurationSet"
         },
         "NextToken":{
@@ -23519,7 +23515,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>principal</code> - The ARN of the principal.</p> </li> <li> <p> <code>principal-type</code> - The principal type (<code>All</code> | <code>Service</code> | <code>OrganizationUnit</code> | <code>Account</code> | <code>User</code> | <code>Role</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>principal</code> - The ARN of the principal.</p> </li> <li> <p> <code>principal-type</code> - The principal type (<code>All</code> | <code>Service</code> | <code>OrganizationUnit</code> | <code>Account</code> | <code>User</code> | <code>Role</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23537,7 +23533,7 @@
       "members":{
         "AllowedPrincipals":{
           "shape":"AllowedPrincipalSet",
-          "documentation":"<p>Information about one or more allowed principals.</p>",
+          "documentation":"<p>Information about the allowed principals.</p>",
           "locationName":"allowedPrincipals"
         },
         "NextToken":{
@@ -23556,12 +23552,12 @@
         },
         "ServiceNames":{
           "shape":"ValueStringList",
-          "documentation":"<p>One or more service names.</p>",
+          "documentation":"<p>The service names.</p>",
           "locationName":"ServiceName"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>owner</code> - The ID or alias of the Amazon Web Services account that owns the service.</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-type</code> - The type of service (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code>).</p> </li> <li> <p> <code>supported-ip-address-types</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>owner</code> - The ID or alias of the Amazon Web Services account that owns the service.</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-type</code> - The type of service (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code>).</p> </li> <li> <p> <code>supported-ip-address-types</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23572,15 +23568,14 @@
           "shape":"String",
           "documentation":"<p>The token for the next set of items to return. (You received this token from a prior call.)</p>"
         }
-      },
-      "documentation":"<p>Contains the parameters for DescribeVpcEndpointServices.</p>"
+      }
     },
     "DescribeVpcEndpointServicesResult":{
       "type":"structure",
       "members":{
         "ServiceNames":{
           "shape":"ValueStringList",
-          "documentation":"<p>A list of supported services.</p>",
+          "documentation":"<p>The supported services.</p>",
           "locationName":"serviceNameSet"
         },
         "ServiceDetails":{
@@ -23593,8 +23588,7 @@
           "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>",
           "locationName":"nextToken"
         }
-      },
-      "documentation":"<p>Contains the output of DescribeVpcEndpointServices.</p>"
+      }
     },
     "DescribeVpcEndpointsRequest":{
       "type":"structure",
@@ -23605,12 +23599,12 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>One or more endpoint IDs.</p>",
+          "documentation":"<p>The IDs of the VPC endpoints.</p>",
           "locationName":"VpcEndpointId"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -23621,8 +23615,7 @@
           "shape":"String",
           "documentation":"<p>The token for the next set of items to return. (You received this token from a prior call.)</p>"
         }
-      },
-      "documentation":"<p>Contains the parameters for DescribeVpcEndpoints.</p>"
+      }
     },
     "DescribeVpcEndpointsResult":{
       "type":"structure",
@@ -23637,8 +23630,7 @@
           "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>",
           "locationName":"nextToken"
         }
-      },
-      "documentation":"<p>Contains the output of DescribeVpcEndpoints.</p>"
+      }
     },
     "DescribeVpcPeeringConnectionsMaxResults":{
       "type":"integer",
@@ -27941,6 +27933,7 @@
         },
         "InstanceTypes":{
           "shape":"InstanceTypesList",
+          "documentation":"<p>The instance types supported by the AFI.</p>",
           "locationName":"instanceTypes"
         }
       },
@@ -32500,7 +32493,7 @@
       "members":{
         "HttpTokens":{
           "shape":"HttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a session token on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p> <p>Default: <code>optional</code> </p>"
+          "documentation":"<p>IMDSv2 uses token-backed sessions. Set the use of HTTP tokens to <code>optional</code> (in other words, set the use of IMDSv2 to <code>optional</code>) or <code>required</code> (in other words, set the use of IMDSv2 to <code>required</code>).</p> <ul> <li> <p> <code>optional</code> - When IMDSv2 is optional, you can choose to retrieve instance metadata with or without a session token in your request. If you retrieve the IAM role credentials without a token, the IMDSv1 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the IMDSv2 role credentials are returned.</p> </li> <li> <p> <code>required</code> - When IMDSv2 is required, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns IMDSv2 credentials; IMDSv1 credentials are not available.</p> </li> </ul> <p>Default: <code>optional</code> </p>"
         },
         "HttpPutResponseHopLimit":{
           "shape":"Integer",
@@ -32531,7 +32524,7 @@
         },
         "HttpTokens":{
           "shape":"HttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a session token on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p> <p>Default: <code>optional</code> </p>",
+          "documentation":"<p>IMDSv2 uses token-backed sessions. Indicates whether the use of HTTP tokens is <code>optional</code> (in other words, indicates whether the use of IMDSv2 is <code>optional</code>) or <code>required</code> (in other words, indicates whether the use of IMDSv2 is <code>required</code>).</p> <ul> <li> <p> <code>optional</code> - When IMDSv2 is optional, you can choose to retrieve instance metadata with or without a session token in your request. If you retrieve the IAM role credentials without a token, the IMDSv1 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the IMDSv2 role credentials are returned.</p> </li> <li> <p> <code>required</code> - When IMDSv2 is required, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns IMDSv2 credentials; IMDSv1 credentials are not available.</p> </li> </ul> <p>Default: <code>optional</code> </p>",
           "locationName":"httpTokens"
         },
         "HttpPutResponseHopLimit":{
@@ -34351,7 +34344,7 @@
       "members":{
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type number. A value of <code>-1</code> indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all codes.</p>",
+          "documentation":"<p>If the protocol is TCP or UDP, this is the start of the port range. If the protocol is ICMP or ICMPv6, this is the type number. A value of -1 indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>",
           "locationName":"fromPort"
         },
         "IpProtocol":{
@@ -34376,7 +34369,7 @@
         },
         "ToPort":{
           "shape":"Integer",
-          "documentation":"<p>The end of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 code. A value of <code>-1</code> indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all codes.</p>",
+          "documentation":"<p>If the protocol is TCP or UDP, this is the end of the port range. If the protocol is ICMP or ICMPv6, this is the code. A value of -1 indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>",
           "locationName":"toPort"
         },
         "UserIdGroupPairs":{
@@ -36155,7 +36148,7 @@
         },
         "HttpTokens":{
           "shape":"LaunchTemplateHttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p>",
+          "documentation":"<p>Indicates whether IMDSv2 is <code>optional</code> or <code>required</code>.</p> <p> <code>optional</code> - When IMDSv2 is optional, you can choose to retrieve instance metadata with or without a session token in your request. If you retrieve the IAM role credentials without a token, the IMDSv1 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the IMDSv2 role credentials are returned.</p> <p> <code>required</code> - When IMDSv2 is required, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns IMDSv2 credentials; IMDSv1 credentials are not available.</p> <p>Default: <code>optional</code> </p>",
           "locationName":"httpTokens"
         },
         "HttpPutResponseHopLimit":{
@@ -36186,7 +36179,7 @@
       "members":{
         "HttpTokens":{
           "shape":"LaunchTemplateHttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a signed token header on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid signed token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a signed token header with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p>"
+          "documentation":"<p>IMDSv2 uses token-backed sessions. Set the use of HTTP tokens to <code>optional</code> (in other words, set the use of IMDSv2 to <code>optional</code>) or <code>required</code> (in other words, set the use of IMDSv2 to <code>required</code>).</p> <ul> <li> <p> <code>optional</code> - When IMDSv2 is optional, you can choose to retrieve instance metadata with or without a session token in your request. If you retrieve the IAM role credentials without a token, the IMDSv1 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the IMDSv2 role credentials are returned.</p> </li> <li> <p> <code>required</code> - When IMDSv2 is required, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns IMDSv2 credentials; IMDSv1 credentials are not available.</p> </li> </ul> <p>Default: <code>optional</code> </p>"
         },
         "HttpPutResponseHopLimit":{
           "shape":"Integer",
@@ -37731,7 +37724,7 @@
           "locationName":"status"
         }
       },
-      "documentation":"<p>Indicates whether the network was healthy or unhealthy at a particular point. The value is aggregated from the <code>startDate</code> to the <code>endDate</code>. Currently only <code>five_minutes</code> is supported.</p>"
+      "documentation":"<p>Indicates whether the network was healthy or degraded at a particular point. The value is aggregated from the <code>startDate</code> to the <code>endDate</code>. Currently only <code>five_minutes</code> is supported.</p>"
     },
     "MetricPoints":{
       "type":"list",
@@ -38535,7 +38528,7 @@
         },
         "HttpTokens":{
           "shape":"HttpTokensState",
-          "documentation":"<p>The state of token usage for your instance metadata requests. If the parameter is not specified in the request, the default state is <code>optional</code>.</p> <p>If the state is <code>optional</code>, you can choose to retrieve instance metadata with or without a session token on your request. If you retrieve the IAM role credentials without a token, the version 1.0 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the version 2.0 role credentials are returned.</p> <p>If the state is <code>required</code>, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns the version 2.0 credentials; the version 1.0 credentials are not available.</p>"
+          "documentation":"<p>IMDSv2 uses token-backed sessions. Set the use of HTTP tokens to <code>optional</code> (in other words, set the use of IMDSv2 to <code>optional</code>) or <code>required</code> (in other words, set the use of IMDSv2 to <code>required</code>).</p> <ul> <li> <p> <code>optional</code> - When IMDSv2 is optional, you can choose to retrieve instance metadata with or without a session token in your request. If you retrieve the IAM role credentials without a token, the IMDSv1 role credentials are returned. If you retrieve the IAM role credentials using a valid session token, the IMDSv2 role credentials are returned.</p> </li> <li> <p> <code>required</code> - When IMDSv2 is required, you must send a session token with any instance metadata retrieval requests. In this state, retrieving the IAM role credentials always returns IMDSv2 credentials; IMDSv1 credentials are not available.</p> </li> </ul> <p>Default: <code>optional</code> </p>"
         },
         "HttpPutResponseHopLimit":{
           "shape":"Integer",
@@ -39987,7 +39980,7 @@
         },
         "ConnectionEvents":{
           "shape":"ValueStringList",
-          "documentation":"<p>One or more events for the endpoint. Valid values are <code>Accept</code>, <code>Connect</code>, <code>Delete</code>, and <code>Reject</code>.</p>"
+          "documentation":"<p>The events for the endpoint. Valid values are <code>Accept</code>, <code>Connect</code>, <code>Delete</code>, and <code>Reject</code>.</p>"
         }
       }
     },
@@ -40023,32 +40016,32 @@
         },
         "AddRouteTableIds":{
           "shape":"VpcEndpointRouteTableIdList",
-          "documentation":"<p>(Gateway endpoint) One or more route tables IDs to associate with the endpoint.</p>",
+          "documentation":"<p>(Gateway endpoint) The IDs of the route tables to associate with the endpoint.</p>",
           "locationName":"AddRouteTableId"
         },
         "RemoveRouteTableIds":{
           "shape":"VpcEndpointRouteTableIdList",
-          "documentation":"<p>(Gateway endpoint) One or more route table IDs to disassociate from the endpoint.</p>",
+          "documentation":"<p>(Gateway endpoint) The IDs of the route tables to disassociate from the endpoint.</p>",
           "locationName":"RemoveRouteTableId"
         },
         "AddSubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) One or more subnet IDs in which to serve the endpoint. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
+          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to serve the endpoint. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
           "locationName":"AddSubnetId"
         },
         "RemoveSubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface endpoint) One or more subnets IDs in which to remove the endpoint.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the subnets from which to remove the endpoint.</p>",
           "locationName":"RemoveSubnetId"
         },
         "AddSecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) One or more security group IDs to associate with the network interface.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the network interface.</p>",
           "locationName":"AddSecurityGroupId"
         },
         "RemoveSecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) One or more security group IDs to disassociate from the network interface.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to disassociate from the network interface.</p>",
           "locationName":"RemoveSecurityGroupId"
         },
         "IpAddressType":{
@@ -40063,8 +40056,7 @@
           "shape":"Boolean",
           "documentation":"<p>(Interface endpoint) Indicates whether a private hosted zone is associated with the VPC.</p>"
         }
-      },
-      "documentation":"<p>Contains the parameters for ModifyVpcEndpoint.</p>"
+      }
     },
     "ModifyVpcEndpointResult":{
       "type":"structure",
@@ -40187,11 +40179,11 @@
         },
         "AddAllowedPrincipals":{
           "shape":"ValueStringList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of one or more principals. Permissions are granted to the principals in this list. To grant permissions to all principals, specify an asterisk (*).</p>"
+          "documentation":"<p>The Amazon Resource Names (ARN) of the principals. Permissions are granted to the principals in this list. To grant permissions to all principals, specify an asterisk (*).</p>"
         },
         "RemoveAllowedPrincipals":{
           "shape":"ValueStringList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of one or more principals. Permissions are revoked for principals in this list.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARN) of the principals. Permissions are revoked for principals in this list.</p>"
         }
       }
     },
@@ -44241,7 +44233,7 @@
         },
         "VpcEndpointIds":{
           "shape":"VpcEndpointIdList",
-          "documentation":"<p>The IDs of one or more VPC endpoints.</p>",
+          "documentation":"<p>The IDs of the VPC endpoints.</p>",
           "locationName":"VpcEndpointId"
         }
       }
@@ -45009,7 +45001,7 @@
         },
         "DisableApiStop":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to enable the instance for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection\">Stop Protection</a>.</p>"
+          "documentation":"<p>Indicates whether to enable the instance for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection\">Stop protection</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The information to include in the launch template.</p> <note> <p>You must specify at least one parameter for the launch template data.</p> </note>",
@@ -46297,7 +46289,7 @@
         },
         "DisableApiStop":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection\">Stop Protection</a>.</p>",
+          "documentation":"<p>Indicates whether the instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection\">Stop protection</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
           "locationName":"disableApiStop"
         }
       },
@@ -46639,7 +46631,7 @@
         },
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of port range for the TCP and UDP protocols, or an ICMP type number. For the ICMP type number, use <code>-1</code> to specify all ICMP types.</p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the start of the port range. If the protocol is ICMP, this is the type number. A value of -1 indicates all ICMP types.</p>"
         },
         "GroupId":{
           "shape":"SecurityGroupId",
@@ -46667,7 +46659,7 @@
         },
         "ToPort":{
           "shape":"Integer",
-          "documentation":"<p>The end of port range for the TCP and UDP protocols, or an ICMP code number. For the ICMP code number, use <code>-1</code> to specify all ICMP codes for the ICMP type.</p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the end of the port range. If the protocol is ICMP, this is the code. A value of -1 indicates all ICMP codes.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -47028,7 +47020,7 @@
         },
         "SecurityGroups":{
           "shape":"SecurityGroupStringList",
-          "documentation":"<p>[EC2-Classic, default VPC] The names of the security groups. For a nondefault VPC, you must use security group IDs instead.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface.</p> <p>Default: Amazon EC2 uses the default security group.</p>",
+          "documentation":"<p>[EC2-Classic, default VPC] The names of the security groups.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface.</p> <p>Default: Amazon EC2 uses the default security group.</p>",
           "locationName":"SecurityGroup"
         },
         "SubnetId":{
@@ -48011,12 +48003,12 @@
         },
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type. A value of -1 indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all codes.</p>",
+          "documentation":"<p>If the protocol is TCP or UDP, this is the start of the port range. If the protocol is ICMP or ICMPv6, this is the type number. A value of -1 indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>",
           "locationName":"fromPort"
         },
         "ToPort":{
           "shape":"Integer",
-          "documentation":"<p>The end of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 code. A value of <code>-1</code> indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all codes. </p>",
+          "documentation":"<p>If the protocol is TCP or UDP, this is the end of the port range. If the protocol is ICMP or ICMPv6, this is the type number. A value of -1 indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>",
           "locationName":"toPort"
         },
         "CidrIpv4":{
@@ -48097,11 +48089,11 @@
         },
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 type. A value of -1 indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all codes.</p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the start of the port range. If the protocol is ICMP or ICMPv6, this is the type number. A value of -1 indicates all ICMP/ICMPv6 types. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>"
         },
         "ToPort":{
           "shape":"Integer",
-          "documentation":"<p>The end of port range for the TCP and UDP protocols, or an ICMP/ICMPv6 code. A value of <code>-1</code> indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all codes. </p>"
+          "documentation":"<p>If the protocol is TCP or UDP, this is the end of the port range. If the protocol is ICMP or ICMPv6, this is the code. A value of -1 indicates all ICMP/ICMPv6 codes. If you specify all ICMP/ICMPv6 types, you must specify all ICMP/ICMPv6 codes.</p>"
         },
         "CidrIpv4":{
           "shape":"String",
@@ -48254,7 +48246,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Any tags assigned to the service.</p>",
+          "documentation":"<p>The tags assigned to the service.</p>",
           "locationName":"tagSet"
         }
       },
@@ -48339,7 +48331,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Any tags assigned to the service.</p>",
+          "documentation":"<p>The tags assigned to the service.</p>",
           "locationName":"tagSet"
         },
         "PrivateDnsNameVerificationState":{
@@ -49212,7 +49204,7 @@
         },
         "TargetCapacityUnitType":{
           "shape":"TargetCapacityUnitType",
-          "documentation":"<p>The unit for the target capacity.</p> <p>Default: <code>units</code> (translates to number of instances)</p>",
+          "documentation":"<p>The unit for the target capacity. <code>TargetCapacityUnitType</code> can only be specified when <code>InstanceRequirements</code> is specified.</p> <p>Default: <code>units</code> (translates to number of instances)</p>",
           "locationName":"targetCapacityUnitType"
         },
         "TagSpecifications":{
@@ -49669,7 +49661,7 @@
       "members":{
         "FromPort":{
           "shape":"Integer",
-          "documentation":"<p>The start of the port range for the TCP and UDP protocols, or an ICMP type number. A value of <code>-1</code> indicates all ICMP types. </p>",
+          "documentation":"<p>The start of the port range for the TCP and UDP protocols, or an ICMP type number. A value of -1 indicates all ICMP types. </p>",
           "locationName":"fromPort"
         },
         "IpProtocol":{
@@ -50543,7 +50535,7 @@
         },
         "TargetCapacityUnitType":{
           "shape":"TargetCapacityUnitType",
-          "documentation":"<p>The unit for the target capacity.</p> <p>Default: <code>units</code> (translates to number of instances)</p>",
+          "documentation":"<p>The unit for the target capacity. <code>TargetCapacityUnitType</code> can only be specified when <code>InstanceRequirements</code> is specified.</p> <p>Default: <code>units</code> (translates to number of instances)</p>",
           "locationName":"targetCapacityUnitType"
         }
       },
@@ -50571,7 +50563,7 @@
         },
         "TargetCapacityUnitType":{
           "shape":"TargetCapacityUnitType",
-          "documentation":"<p>The unit for the target capacity.</p> <p>Default: <code>units</code> (translates to number of instances)</p>"
+          "documentation":"<p>The unit for the target capacity. <code>TargetCapacityUnitType</code> can only be specified when <code>InstanceRequirements</code> is specified.</p> <p>Default: <code>units</code> (translates to number of instances)</p>"
         }
       },
       "documentation":"<p>The number of units to request. You can choose to set the target capacity as the number of instances. Or you can set the target capacity to a performance characteristic that is important to your application workload, such as vCPUs, memory, or I/O. If the request type is <code>maintain</code>, you can specify a target capacity of 0 and add capacity later.</p> <p>You can use the On-Demand Instance <code>MaxTotalPrice</code> parameter, the Spot Instance <code>MaxTotalPrice</code> parameter, or both parameters to ensure that your fleet cost does not exceed your budget. If you set a maximum price per hour for the On-Demand Instances and Spot Instances in your request, EC2 Fleet will launch instances until it reaches the maximum amount that you're willing to pay. When the maximum amount you're willing to pay is reached, the fleet stops launching instances even if it hasn’t met the target capacity. The <code>MaxTotalPrice</code> parameters are located in <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_OnDemandOptionsRequest\">OnDemandOptionsRequest</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SpotOptionsRequest\">SpotOptionsRequest</a>.</p>"
@@ -55101,7 +55093,7 @@
         },
         "RouteTableIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Gateway endpoint) One or more route tables associated with the endpoint.</p>",
+          "documentation":"<p>(Gateway endpoint) The IDs of the route tables associated with the endpoint.</p>",
           "locationName":"routeTableIdSet"
         },
         "SubnetIds":{
@@ -55136,7 +55128,7 @@
         },
         "NetworkInterfaceIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Interface endpoint) One or more network interfaces for the endpoint.</p>",
+          "documentation":"<p>(Interface endpoint) The network interfaces for the endpoint.</p>",
           "locationName":"networkInterfaceIdSet"
         },
         "DnsEntries":{
@@ -55151,7 +55143,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Any tags assigned to the endpoint.</p>",
+          "documentation":"<p>The tags assigned to the endpoint.</p>",
           "locationName":"tagSet"
         },
         "OwnerId":{
@@ -56022,5 +56014,5 @@
     "totalFpgaMemory":{"type":"integer"},
     "totalGpuMemory":{"type":"integer"}
   },
-  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>Amazon Elastic Compute Cloud (Amazon EC2) provides secure and resizable computing capacity in the Amazon Web Services Cloud. Using Amazon EC2 eliminates the need to invest in hardware up front, so you can develop and deploy applications faster. Amazon Virtual Private Cloud (Amazon VPC) enables you to provision a logically isolated section of the Amazon Web Services Cloud where you can launch Amazon Web Services resources in a virtual network that you've defined. Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes are highly available and reliable storage volumes that can be attached to any running instance and used like a hard drive.</p> <p>To learn more, see the following resources:</p> <ul> <li> <p>Amazon EC2: <a href=\"http://aws.amazon.com/ec2\">AmazonEC2 product page</a>, <a href=\"http://aws.amazon.com/documentation/ec2\">Amazon EC2 documentation</a> </p> </li> <li> <p>Amazon EBS: <a href=\"http://aws.amazon.com/ebs\">Amazon EBS product page</a>, <a href=\"http://aws.amazon.com/documentation/ebs\">Amazon EBS documentation</a> </p> </li> <li> <p>Amazon VPC: <a href=\"http://aws.amazon.com/vpc\">Amazon VPC product page</a>, <a href=\"http://aws.amazon.com/documentation/vpc\">Amazon VPC documentation</a> </p> </li> <li> <p>Amazon Web Services VPN: <a href=\"http://aws.amazon.com/vpn\">Amazon Web Services VPN product page</a>, <a href=\"http://aws.amazon.com/documentation/vpn\">Amazon Web Services VPN documentation</a> </p> </li> </ul>"
+  "documentation":"<fullname>Amazon Elastic Compute Cloud</fullname> <p>Amazon Elastic Compute Cloud (Amazon EC2) provides secure and resizable computing capacity in the Amazon Web Services Cloud. Using Amazon EC2 eliminates the need to invest in hardware up front, so you can develop and deploy applications faster. Amazon Virtual Private Cloud (Amazon VPC) enables you to provision a logically isolated section of the Amazon Web Services Cloud where you can launch Amazon Web Services resources in a virtual network that you've defined. Amazon Elastic Block Store (Amazon EBS) provides block level storage volumes for use with EC2 instances. EBS volumes are highly available and reliable storage volumes that can be attached to any running instance and used like a hard drive.</p> <p>To learn more, see the following resources:</p> <ul> <li> <p>Amazon EC2: <a href=\"http://aws.amazon.com/ec2\">Amazon EC2 product page</a>, <a href=\"https://docs.aws.amazon.com/ec2/index.html\">Amazon EC2 documentation</a> </p> </li> <li> <p>Amazon EBS: <a href=\"http://aws.amazon.com/ebs\">Amazon EBS product page</a>, <a href=\"https://docs.aws.amazon.com/ebs/index.html\">Amazon EBS documentation</a> </p> </li> <li> <p>Amazon VPC: <a href=\"http://aws.amazon.com/vpc\">Amazon VPC product page</a>, <a href=\"https://docs.aws.amazon.com/vpc/index.html\">Amazon VPC documentation</a> </p> </li> <li> <p>VPN: <a href=\"http://aws.amazon.com/vpn\">VPN product page</a>, <a href=\"https://docs.aws.amazon.com/vpn/index.html\">VPN documentation</a> </p> </li> </ul>"
 }

@@ -594,7 +594,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"CallRateLimitExceededException"}
       ],
-      "documentation":"<p>Returns the list of component build versions for the specified semantic version.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Filtering:</b> With semantic versioning, you have the flexibility to use wildcards (x) to specify the most recent versions or nodes when selecting the base image or components for your recipe. When you use a wildcard in any node, all nodes to the right of the first wildcard must also be wildcards.</p> </note>"
+      "documentation":"<p>Returns the list of components that can be filtered by name, or by using the listed <code>filters</code> to streamline results. Newly created components can take up to two minutes to appear in the ListComponents API Results.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Filtering:</b> With semantic versioning, you have the flexibility to use wildcards (x) to specify the most recent versions or nodes when selecting the base image or components for your recipe. When you use a wildcard in any node, all nodes to the right of the first wildcard must also be wildcards.</p> </note>"
     },
     "ListContainerRecipes":{
       "name":"ListContainerRecipes",
@@ -691,7 +691,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"CallRateLimitExceededException"}
       ],
-      "documentation":"<p> Returns a list of images created by the specified pipeline.</p>"
+      "documentation":"<p>Returns a list of images created by the specified pipeline.</p>"
     },
     "ListImagePipelines":{
       "name":"ListImagePipelines",
@@ -748,7 +748,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"CallRateLimitExceededException"}
       ],
-      "documentation":"<p> Returns the list of images that you have access to.</p>"
+      "documentation":"<p>Returns the list of images that you have access to. Newly created images can take up to two minutes to appear in the ListImages API Results.</p>"
     },
     "ListInfrastructureConfigurations":{
       "name":"ListInfrastructureConfigurations",
@@ -1000,7 +1000,7 @@
           "documentation":"<p>Use this property to provide commands or a command script to run when you launch your build instance.</p> <p>The userDataOverride property replaces any commands that Image Builder might have added to ensure that Systems Manager is installed on your Linux build instance. If you override the user data, make sure that you add commands to install Systems Manager, if it is not pre-installed on your base image.</p> <note> <p>The user data is always base 64 encoded. For example, the following commands are encoded as <code>IyEvYmluL2Jhc2gKbWtkaXIgLXAgL3Zhci9iYi8KdG91Y2ggL3Zhci$</code>:</p> <p> <i>#!/bin/bash</i> </p> <p>mkdir -p /var/bb/</p> <p>touch /var</p> </note>"
         }
       },
-      "documentation":"<p>In addition to your infrastruction configuration, these settings provide an extra layer of control over your build instances. For instances where Image Builder installs the Systems Manager agent, you can choose whether to keep it for the AMI that you create. You can also specify commands to run on launch for all of your build instances.</p>"
+      "documentation":"<p>In addition to your infrastructure configuration, these settings provide an extra layer of control over your build instances. You can also specify commands to run on launch for all of your build instances.</p> <p>Image Builder does not automatically install the Systems Manager agent on Windows instances. If your base image includes the Systems Manager agent, then the AMI that you create will also include the agent. For Linux instances, if the base image does not already include the Systems Manager agent, Image Builder installs it. For Linux instances where Image Builder installs the Systems Manager agent, you can choose whether to keep it for the AMI that you create.</p>"
     },
     "Ami":{
       "type":"structure",
@@ -1162,15 +1162,15 @@
         },
         "type":{
           "shape":"ComponentType",
-          "documentation":"<p>The type of the component denotes whether the component is used to build the image or only to test it.</p>"
+          "documentation":"<p>The component type specifies whether Image Builder uses the component to build the image or only to test it.</p>"
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the component.</p>"
+          "documentation":"<p>The operating system platform of the component.</p>"
         },
         "supportedOsVersions":{
           "shape":"OsVersionList",
-          "documentation":"<p>The operating system (OS) version supported by the component. If the OS information is available, a prefix match is performed against the base image OS version during image recipe creation.</p>"
+          "documentation":"<p>The operating system (OS) version supported by the component. If the OS information is available, Image Builder performs a prefix match against the base image OS version during image recipe creation.</p>"
         },
         "state":{
           "shape":"ComponentState",
@@ -1178,7 +1178,7 @@
         },
         "parameters":{
           "shape":"ComponentParameterDetailList",
-          "documentation":"<p>Contains parameter details for each of the parameters that are defined for the component.</p>"
+          "documentation":"<p>Contains parameter details for each of the parameters that the component document defined for the component.</p>"
         },
         "owner":{
           "shape":"NonEmptyString",
@@ -1198,11 +1198,19 @@
         },
         "dateCreated":{
           "shape":"DateTime",
-          "documentation":"<p>The date that the component was created.</p>"
+          "documentation":"<p>The date that Image Builder created the component.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags associated with the component.</p>"
+          "documentation":"<p>The tags that apply to the component.</p>"
+        },
+        "publisher":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Contains the name of the publisher if this is a third-party component. Otherwise, this property is empty.</p>"
+        },
+        "obfuscate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether component source is hidden from view in the console, and from component detail results for API, CLI, or SDK operations.</p>"
         }
       },
       "documentation":"<p>A detailed view of a component.</p>"
@@ -1221,7 +1229,7 @@
         },
         "parameters":{
           "shape":"ComponentParameterList",
-          "documentation":"<p>A group of parameter settings that are used to configure the component for a specific recipe.</p>"
+          "documentation":"<p>A group of parameter settings that Image Builder uses to configure the component for a specific recipe.</p>"
         }
       },
       "documentation":"<p> Configuration details of the component.</p>"
@@ -1351,11 +1359,11 @@
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the component.</p>"
+          "documentation":"<p>The operating system platform of the component.</p>"
         },
         "supportedOsVersions":{
           "shape":"OsVersionList",
-          "documentation":"<p>The operating system (OS) version supported by the component. If the OS information is available, a prefix match is performed against the base image OS version during image recipe creation.</p>"
+          "documentation":"<p>The operating system (OS) version that the component supports. If the OS information is available, Image Builder performs a prefix match against the base image OS version during image recipe creation.</p>"
         },
         "state":{
           "shape":"ComponentState",
@@ -1363,7 +1371,7 @@
         },
         "type":{
           "shape":"ComponentType",
-          "documentation":"<p>The type of the component denotes whether the component is used to build the image or only to test it.</p>"
+          "documentation":"<p>The component type specifies whether Image Builder uses the component to build the image or only to test it.</p>"
         },
         "owner":{
           "shape":"NonEmptyString",
@@ -1375,15 +1383,23 @@
         },
         "changeDescription":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The change description of the component.</p>"
+          "documentation":"<p>The change description for the current version of the component.</p>"
         },
         "dateCreated":{
           "shape":"DateTime",
-          "documentation":"<p>The date that the component was created.</p>"
+          "documentation":"<p>The original creation date of the component.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags associated with the component.</p>"
+          "documentation":"<p>The tags that apply to the component.</p>"
+        },
+        "publisher":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Contains the name of the publisher if this is a third-party component. Otherwise, this property is empty.</p>"
+        },
+        "obfuscate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether component source is hidden from view in the console, and from component detail results for API, CLI, or SDK operations.</p>"
         }
       },
       "documentation":"<p>A high-level summary of a component.</p>"
@@ -1523,7 +1539,7 @@
         },
         "components":{
           "shape":"ComponentConfigurationList",
-          "documentation":"<p>Components for build and test that are included in the container recipe.</p>"
+          "documentation":"<p>Build and test components that are included in the container recipe. Recipes require a minimum of one build component, and can have a maximum of 20 build and test components in any combination.</p>"
         },
         "instanceConfiguration":{
           "shape":"InstanceConfiguration",
@@ -1637,7 +1653,7 @@
         },
         "description":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The description of the component. Describes the contents of the component.</p>"
+          "documentation":"<p>Describes the contents of the component.</p>"
         },
         "changeDescription":{
           "shape":"NonEmptyString",
@@ -1645,7 +1661,7 @@
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the component.</p>"
+          "documentation":"<p>The operating system platform of the component.</p>"
         },
         "supportedOsVersions":{
           "shape":"OsVersionList",
@@ -1661,11 +1677,11 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the KMS key that should be used to encrypt this component.</p>"
+          "documentation":"<p>The ID of the KMS key that is used to encrypt this component.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags of the component.</p>"
+          "documentation":"<p>The tags that apply to the component.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1721,7 +1737,7 @@
         },
         "components":{
           "shape":"ComponentConfigurationList",
-          "documentation":"<p>Components for build and test that are included in the container recipe.</p>"
+          "documentation":"<p>Components for build and test that are included in the container recipe. Recipes require a minimum of one build component, and can have a maximum of 20 build and test components in any combination.</p>"
         },
         "instanceConfiguration":{
           "shape":"InstanceConfiguration",
@@ -1935,7 +1951,7 @@
         },
         "components":{
           "shape":"ComponentConfigurationList",
-          "documentation":"<p>The components of the image recipe.</p>"
+          "documentation":"<p>The components included in the image recipe.</p>"
         },
         "parentImage":{
           "shape":"NonEmptyString",
@@ -2913,7 +2929,7 @@
         },
         "type":{
           "shape":"ImageType",
-          "documentation":"<p>Specifies whether this is an AMI or container image.</p>"
+          "documentation":"<p>Specifies whether this image produces an AMI or a container image.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -2925,15 +2941,15 @@
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the image.</p>"
+          "documentation":"<p>The image operating system platform, such as Linux or Windows.</p>"
         },
         "enhancedImageMetadataEnabled":{
           "shape":"NullableBoolean",
-          "documentation":"<p> Collects additional information about the image being created, including the operating system (OS) version and package list. This information is used to enhance the overall experience of using EC2 Image Builder. Enabled by default.</p>"
+          "documentation":"<p>Indicates whether Image Builder collects additional information about the image, such as the operating system (OS) version and package list.</p>"
         },
         "osVersion":{
           "shape":"OsVersion",
-          "documentation":"<p>The operating system version of the instance. For example, Amazon Linux 2, Ubuntu 18, or Microsoft Windows Server 2019.</p>"
+          "documentation":"<p>The operating system version for instances that launch from this image. For example, Amazon Linux 2, Ubuntu 18, or Microsoft Windows Server 2019.</p>"
         },
         "state":{
           "shape":"ImageState",
@@ -2941,11 +2957,11 @@
         },
         "imageRecipe":{
           "shape":"ImageRecipe",
-          "documentation":"<p>The image recipe used when creating the image.</p>"
+          "documentation":"<p>For images that distribute an AMI, this is the image recipe that Image Builder used to create the image. For container images, this is empty.</p>"
         },
         "containerRecipe":{
           "shape":"ContainerRecipe",
-          "documentation":"<p>The recipe that is used to create an Image Builder container image.</p>"
+          "documentation":"<p>For container images, this is the container recipe that Image Builder used to create the image. For images that distribute an AMI, this is empty.</p>"
         },
         "sourcePipelineName":{
           "shape":"ResourceName",
@@ -2957,31 +2973,35 @@
         },
         "infrastructureConfiguration":{
           "shape":"InfrastructureConfiguration",
-          "documentation":"<p>The infrastructure used when creating this image.</p>"
+          "documentation":"<p>The infrastructure that Image Builder used to create this image.</p>"
         },
         "distributionConfiguration":{
           "shape":"DistributionConfiguration",
-          "documentation":"<p>The distribution configuration used when creating this image.</p>"
+          "documentation":"<p>The distribution configuration that Image Builder used to create this image.</p>"
         },
         "imageTestsConfiguration":{
           "shape":"ImageTestsConfiguration",
-          "documentation":"<p>The image tests configuration used when creating this image.</p>"
+          "documentation":"<p>The image tests that ran when that Image Builder created this image.</p>"
         },
         "dateCreated":{
           "shape":"DateTime",
-          "documentation":"<p>The date on which this image was created.</p>"
+          "documentation":"<p>The date on which Image Builder created this image.</p>"
         },
         "outputResources":{
           "shape":"OutputResources",
-          "documentation":"<p>The output resources produced when creating this image.</p>"
+          "documentation":"<p>The output resources that Image Builder produces for this image.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags of the image.</p>"
+          "documentation":"<p>The tags that apply to this image.</p>"
         },
         "buildType":{
           "shape":"BuildType",
           "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+        },
+        "imageSource":{
+          "shape":"ImageSource",
+          "documentation":"<p>The origin of the base image that Image Builder used to build this image.</p>"
         }
       },
       "documentation":"<p>An Image Builder image. You must specify exactly one recipe for the image – either a container recipe (<code>containerRecipe</code>), which creates a container image, or an image recipe (<code>imageRecipe</code>), which creates an AMI.</p>"
@@ -3073,11 +3093,11 @@
         },
         "dateLastRun":{
           "shape":"DateTime",
-          "documentation":"<p>The date on which this image pipeline was last run.</p>"
+          "documentation":"<p>This is no longer supported, and does not return a value.</p>"
         },
         "dateNextRun":{
           "shape":"DateTime",
-          "documentation":"<p>The date on which this image pipeline will next be run.</p>"
+          "documentation":"<p>This is no longer supported, and does not return a value.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -3127,7 +3147,7 @@
         },
         "components":{
           "shape":"ComponentConfigurationList",
-          "documentation":"<p>The components of the image recipe.</p>"
+          "documentation":"<p>The components that are included in the image recipe. Recipes require a minimum of one build component, and can have a maximum of 20 build and test components in any combination.</p>"
         },
         "parentImage":{
           "shape":"NonEmptyString",
@@ -3198,6 +3218,15 @@
       "type":"list",
       "member":{"shape":"ImageRecipeSummary"}
     },
+    "ImageSource":{
+      "type":"string",
+      "enum":[
+        "AMAZON_MANAGED",
+        "AWS_MARKETPLACE",
+        "IMPORTED",
+        "CUSTOM"
+      ]
+    },
     "ImageState":{
       "type":"structure",
       "members":{
@@ -3241,7 +3270,7 @@
         },
         "type":{
           "shape":"ImageType",
-          "documentation":"<p>Specifies whether this is an AMI or container image.</p>"
+          "documentation":"<p>Specifies whether this image produces an AMI or a container image.</p>"
         },
         "version":{
           "shape":"VersionNumber",
@@ -3249,11 +3278,11 @@
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the image.</p>"
+          "documentation":"<p>The image operating system platform, such as Linux or Windows.</p>"
         },
         "osVersion":{
           "shape":"OsVersion",
-          "documentation":"<p>The operating system version of the instance. For example, Amazon Linux 2, Ubuntu 18, or Microsoft Windows Server 2019.</p>"
+          "documentation":"<p>The operating system version of the instances that launch from this image. For example, Amazon Linux 2, Ubuntu 18, or Microsoft Windows Server 2019.</p>"
         },
         "state":{
           "shape":"ImageState",
@@ -3265,19 +3294,23 @@
         },
         "dateCreated":{
           "shape":"DateTime",
-          "documentation":"<p>The date on which this image was created.</p>"
+          "documentation":"<p>The date on which Image Builder created this image.</p>"
         },
         "outputResources":{
           "shape":"OutputResources",
-          "documentation":"<p>The output resources produced when creating this image.</p>"
+          "documentation":"<p>The output resources that Image Builder produced when it created this image.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags of the image.</p>"
+          "documentation":"<p>The tags that apply to this image.</p>"
         },
         "buildType":{
           "shape":"BuildType",
           "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+        },
+        "imageSource":{
+          "shape":"ImageSource",
+          "documentation":"<p>The origin of the base image that Image Builder used to build this image.</p>"
         }
       },
       "documentation":"<p>An image summary.</p>"
@@ -3295,7 +3328,7 @@
         },
         "timeoutMinutes":{
           "shape":"ImageTestsTimeoutMinutes",
-          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p>"
+          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeoutMinutes attribute is not currently active. This value is ignored.</p> </note>"
         }
       },
       "documentation":"<p>Configure image tests for your pipeline build. Tests run after building the image, to verify that the AMI or container image is valid before distributing it.</p>"
@@ -3325,7 +3358,7 @@
         },
         "type":{
           "shape":"ImageType",
-          "documentation":"<p>Specifies whether this image is an AMI or a container image.</p>"
+          "documentation":"<p>Specifies whether this image produces an AMI or a container image.</p>"
         },
         "version":{
           "shape":"VersionNumber",
@@ -3333,7 +3366,7 @@
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>The platform of the image version, for example \"Windows\" or \"Linux\".</p>"
+          "documentation":"<p>The operating system platform of the image version, for example \"Windows\" or \"Linux\".</p>"
         },
         "osVersion":{
           "shape":"OsVersion",
@@ -3350,6 +3383,10 @@
         "buildType":{
           "shape":"BuildType",
           "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+        },
+        "imageSource":{
+          "shape":"ImageSource",
+          "documentation":"<p>The origin of the base image that Image Builder used to build this image.</p>"
         }
       },
       "documentation":"<p>The defining characteristics of a specific version of an Image Builder image.</p>"
@@ -3688,7 +3725,7 @@
         },
         "httpPutResponseHopLimit":{
           "shape":"HttpPutResponseHopLimit",
-          "documentation":"<p>Limit the number of hops that an instance metadata request can traverse to reach its destination.</p>"
+          "documentation":"<p>Limit the number of hops that an instance metadata request can traverse to reach its destination. The default is one hop. However, if HTTP tokens are required, container image builds need a minimum of two hops.</p>"
         }
       },
       "documentation":"<p>The instance metadata options that apply to the HTTP requests that pipeline builds use to launch EC2 build and test instances. For more information about instance metadata options, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 User Guide</i> </i> for Linux instances, or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 Windows Guide</i> </i> for Windows instances.</p>"
@@ -3860,7 +3897,7 @@
       "members":{
         "owner":{
           "shape":"Ownership",
-          "documentation":"<p>The owner defines which components you want to list. By default, this request will only show components owned by your account. You can use this field to specify if you want to view components owned by yourself, by Amazon, or those components that have been shared with you by other customers.</p>"
+          "documentation":"<p>Filters results based on the type of owner for the component. By default, this request returns a list of components that your account owns. To see results for other types of owners, you can specify components that Amazon manages, third party components, or components that other accounts have shared with you.</p>"
         },
         "filters":{
           "shape":"FilterList",
@@ -3868,7 +3905,7 @@
         },
         "byName":{
           "shape":"Boolean",
-          "documentation":"<p>Returns the list of component build versions for the specified name.</p>"
+          "documentation":"<p>Returns the list of components for the specified name.</p>"
         },
         "maxResults":{
           "shape":"RestrictedInteger",
@@ -4335,7 +4372,8 @@
       "enum":[
         "Self",
         "Shared",
-        "Amazon"
+        "Amazon",
+        "ThirdParty"
       ]
     },
     "PaginationToken":{

@@ -1,6 +1,6 @@
 **Example 1: To generate a 256-bit symmetric data key**
 
-The following ``generate-data-key`` example requests a 256-bit symmetric data key for use outside of AWS. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. You can safely store the encrypted data key with the encrypted data. 
+The following ``generate-data-key`` example requests a 256-bit symmetric data key for use outside of AWS. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. You can safely store the encrypted data key with the encrypted data.
 
 To request a 256-bit data key, use the ``key-spec`` parameter with a value of ``AES_256``. To request a 128-bit data key, use the ``key-spec`` parameter with a value of ``AES_128``. For all other data key lengths, use the ``number-of-bytes`` parameter.
 
@@ -24,9 +24,9 @@ For more information, see `Data keys <https://docs.aws.amazon.com/kms/latest/dev
  
 **Example 2: To generate a 512-bit symmetric data key**
 
-The following ``generate-data-key`` example requests a 512-bit symmetric data key for encryption and decryption. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. YOu can safely store the encrypted data key with the encrypted data. 
+The following ``generate-data-key`` example requests a 512-bit symmetric data key for encryption and decryption. The command returns a plaintext data key for immediate use and deletion, and a copy of that data key encrypted under the specified KMS key. You can safely store the encrypted data key with the encrypted data. 
 
-To request a key length other than 128 or 256 bits, use the ``number-of-bytes`` parameter.
+To request a key length other than 128 or 256 bits, use the ``number-of-bytes`` parameter. To request a 512-bit data key, the following example uses the ``number-of-bytes`` parameter with a value of 64 (bytes).
 
 The KMS key you specify must be a symmetric encryption KMS key, that is, a KMS key with a key spec value of SYMMETRIC_DEFAULT. 
 
@@ -34,7 +34,7 @@ NOTE: The values in the output of this example are truncated for display. ::
 
     aws kms generate-data-key \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --number-of-bytes 512
+        --number-of-bytes 64
 
 Output::
     

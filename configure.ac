@@ -20,15 +20,16 @@ AC_MSG_RESULT($with_install_type)
 AC_MSG_CHECKING(for --with-download-deps)
 AC_ARG_WITH(download_deps,
             AS_HELP_STRING([--with-download-deps],
-                           [Download all dependencies and use those when
-                            building the AWS CLI. If not specified, the dependencies
-                            (including all python packages) must be installed
-                            on your system]),
+	                   [Download all dependencies and use those when
+			    building the AWS CLI. Note that this is best effort
+			    and has no backwards compatibility guarantee. If not
+			    specified, the dependencies (including all python
+			    packages) must be installed on your system]),
 [],
 [with_download_deps=no]
 )
 if test "$with_download_deps" = no; then
-     ${PYTHON} ${srcdir}/backends/build_system validate-env --artifact $with_install_type || AC_MSG_ERROR("Python dependencies not met")
+     ${PYTHON} ${srcdir}/backends/build_system validate-env --artifact $with_install_type || AC_MSG_ERROR("Python dependencies not met. Consider using the --with-download-deps flag.")
      DOWNLOAD_DEPS_FLAG=""
 else
      DOWNLOAD_DEPS_FLAG=--download-deps

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.52
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``ivschat``: Updates the range for a Chat Room's maximumMessageRatePerSecond field.
+* api-change:``wafv2``: Improved the visibility of the guidance for updating AWS WAF resources, such as web ACLs and rule groups.
+
+
 1.27.51
 =======
 

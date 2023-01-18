@@ -3,7 +3,7 @@
 Proposal         | Metadata
 ---------------- | -------------
 **Author**       | Kyle Knapp
-**Status**       | Accepted
+**Status**       | Finalized
 **Created**      | 24-August-2021
 
 ## Abstract
@@ -21,13 +21,13 @@ most platforms and environments, but they do not satisfy all use cases:
 
 * The desired platform (e.g, [ARM 32-bit](https://github.com/aws/aws-cli/issues/5426))
   is not supported by any of the pre-built executables.
-  
+
 * The environment lacks system dependencies that are required for the pre-built
   executable. For example, Alpine Linux uses [musl](https://musl.libc.org/),
   but the current executables require glibc. This causes the pre-built
   executables to not work out of the box for
   [Alpine Linux](https://github.com/aws/aws-cli/issues/4685).
-  
+
 * The environment restricts access to resources only needed by the
   pre-built executable. For example, on security hardened systems, it does not
   give permission to shared memory
@@ -61,7 +61,7 @@ following goals:
 
 1. The source installation process maximizes the number of environments the
    AWS CLI v2 can be installed on.
-   
+
 2. The source installation process is straightforward and intuitive. It minimizes
    the number of cycles required to figure out how to install the AWS CLI from
    source.
@@ -110,10 +110,10 @@ These commands are specific to Autotools where:
   detected and explicitly specified configurations. See the
   [Configuration section](#configuration) for the available configuration
   options.
-  
+
 * `make` - Builds the AWS CLI v2. For details on the build mechanics,
    see the [Build/install mechanics section](#buildinstall-mechanics).
-  
+
 * `make install` - Installs the built AWS CLI v2 to the configured location
    on the system. For details on the install mechanics, see the
    [Build/install mechanics section](#buildinstall-mechanics).
@@ -159,6 +159,7 @@ the `configure` script with the `--help` option:
 ```
 This is a sample output from the help page:
 ```
+✗ ./configure -h
 Configures builds and installs of the AWS CLI
 
 Usage: ./configure [OPTION]... [ENV_VAR=VALUE]...
@@ -177,11 +178,8 @@ Installation directories:
   --bindir=BINDIR         Set install directory for AWS CLI executables. The
                           default value for "BINDIR" is "PREFIX/bin"
                           (i.e., "/usr/local/bin" if "--prefix" is not set).
-
-Optional Packages:
-  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
-  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-install-type=[portable-exe|system-sandbox]
+Optional arguments:
+  --with-install-type=system-sandbox|portable-exe
                           Specify type of AWS CLI installation. Options are:
                           "portable-exe", "system-sandbox" (default is
                           "system-sandbox")
@@ -189,12 +187,11 @@ Optional Packages:
                           building the AWS CLI. If not specified, the
                           dependencies (including all python packages) must be
                           installed on your system
-
 Some influential environment variables:
   PYTHON      the Python interpreter
 
 ```
-The sections below describes the most pertinent options. 
+The sections below describes the most pertinent options.
 
 
 ##### Install location
@@ -206,7 +203,7 @@ install the AWS CLI v2:
   path to the AWS CLI v2 installation is `<libdir-value>/aws-cli`. The default
   `libdir` value is `/usr/local/lib` making the default installation directory
   `/usr/local/lib/aws-cli`
-  
+
 * `bindir` - Directory where the AWS CLI v2 executables
   (e.g., `aws`, `aws_completer`) will be installed. The default location is
   `/usr/local/bin`.
@@ -278,7 +275,7 @@ that are Python libraries. All dependencies are checked when the `configure`
 script is run, and if the system is missing any Python dependencies, the
 `configure` script errors out. For example:
 ```
-$ ./configure 
+$ ./configure
 checking for a Python interpreter with version >= 3.8... python3.8
 checking for python3.8... /usr/local/bin/python3.8
 checking for python3.8 version... 3.8
@@ -315,8 +312,8 @@ In specifying this flag, the build process:
 
 * Skips the configuration check to make sure all Python library dependencies
   are installed on the system.
-  
-* During the `make` step, downloads **all** required dependencies and uses 
+
+* During the `make` step, downloads **all** required dependencies and uses
   **only** the downloaded dependencies to build the AWS CLI v2.
 
 Currently, this flag only downloads Python packages, but may be expanded in
@@ -330,12 +327,12 @@ The source install process supports two different installation types:
 * `system-sandbox` - (Default) Creates an isolated Python virtual environment,
   installs the AWS CLI v2 into the virtual environment, and symlinks to the
   `aws` and `aws_completer` executable in the virtual environment.
-  
+
 * `portable-exe` - Freezes the AWS CLI v2 into a standalone executable that
   can be distributed to environments of similar architectures. This is the
   same process used to generate the official pre-built executables of the AWS
   CLI v2.
-  
+
 The primary difference between the two installation types is that the
 `portable-exe` freezes in a copy of the Python interpreter chosen in the
 `configure` step to use for the runtime of the AWS CLI v2. This allows it to
@@ -357,7 +354,7 @@ For more information on reasons to use one installation type over the over, see 
 
 
 #### Supported make targets and usage
- 
+
 Once the `Makefile` is generated from the `configure` script, users can run a
 variety of targets to manage the building and installing the AWS CLI v2 via
 the command pattern:
@@ -412,11 +409,11 @@ from source that are backwards compatible:
   AWS CLI v2. For example, the commands to install/upgrade the
   AWS CLI v2 will always be: `./configure`, `make`, and `make install`, and
   the command to uninstall the AWS CLI v2 will always be `make uninstall`.
-  
+
 * Documented `configure` options.
 
-* Documented `make` targets. 
- 
+* Documented `make` targets.
+
 * Usage of `libdir` and `bindir` in the installation process. All bits
   related to the  AWS CLI v2 installation will be located in the `libdir` and
   all publicly accessible executables (e.g., `aws` and `aws_completer`) will
@@ -427,11 +424,11 @@ These are the aspects that have **no** backwards compatibility guarantees:
 * Dependencies. The AWS CLI v2 will add new dependencies in the future. This
   means users must install any new dependencies to their system in order to
   install the AWS CLI v2 from source. This includes anything from:
-  
+
   * Increasing minimum required Python version
   * Pulling in a new Python library dependency
   * Requiring a new system dependency
-  
+
   Furthermore, the `--with-download-deps` option does not guarantee that all
   possible new dependencies in the future will be accounted for by the flag. For
   example, a new programming language may  be required in the future
@@ -467,24 +464,23 @@ When running `make`, the following steps are run:
    This includes: `wheel`, `setuptools`, all CLI runtime dependencies, and
    `pyinstaller` (if building the `portable-exe`). These requirements are all
    specified in lock files generated from [`pip-compile`](https://github.com/jazzband/pip-tools).
-   
+
    If `--with-download-deps` was not specified in the `configure` command, it
    copies all Python libraries from the Python interpreter's site package plus
    any scripts (e.g., `pyinstaller`) into the virtual environment being used
    for the build.
-   
+
 3. Run `pip install` directly on the AWS CLI v2 codebase to do an offline,
    in-tree build and install of the AWS CLI v2 into the build virtual
    environment. This is done by including the follow pip flags:
    * [`--no-build-isolation`](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-no-build-isolation)
-   * [`--use-feature=in-tree-build`](https://pip.pypa.io/en/stable/cli/pip_install/#local-project-installs)
    * [`--no-cache-dir`](https://pip.pypa.io/en/stable/cli/pip_install/#caching)
    * [`--no-index`](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-no-index)
-   
+
 4. If the `--install-type` was set to `portable-exe` in the `configure`
    command, run [`pyinstaller`](https://www.pyinstaller.org/) to build a
    standalone executable.
-   
+
 
 #### Install steps
 
@@ -493,7 +489,7 @@ When running `make install`, the following steps are run:
 1. Move the built virtual environment (if the install type is `system-sandbox`)
    or standalone executable (if the install type is a `portable-exe`) to the
    configured install directory (i.e., `<libdir>/awscli`).
-   
+
 2. Create symlinks for both the `aws` and `aws_completer` in the configured
    bin directory (i.e., at `<bindir>/aws` and `<bindir>/aws_completer`).
 
@@ -524,16 +520,16 @@ CLI is written in Python.
 
 To make the AWS CLI v2 codebase compliant, it requires the following changes:
 
-* Port all information from the `setup.py` to the `setup.cfg` that can be
-  programmatically parsed for runtime dependencies.
-  
 * Introduce a `pyproject.toml` file (see [PEP 518](https://www.python.org/dev/peps/pep-0518/))
   and in-tree build backend that builds the autocomplete index when building
   both the sdist and wheel
   (see [PEP 517](https://www.python.org/dev/peps/pep-0517/#in-tree-build-backends)).
-  
+
+* Port all information from the `setup.py` and `setup.cfg` to `pyproject.toml
+  that can be programmatically parsed for runtime dependencies.
+
 * Pull in and maintain the unreleased `botocore` `v2` branch along with
-  `s3transfer` into the AWS CLI v2 codebase. 
+  `s3transfer` into the AWS CLI v2 codebase.
 
 
 ### Hosted source distribution
@@ -595,16 +591,16 @@ Specifically:
   environments the AWS CLI v2 can be installed on. For systems that do not
   have a POSIX-compatible shell (e.g., Windows), there is software available
   to install to help run the scripts (e.g., MSYS2).
-  
+
 * Autotools is one of the most common build systems. This improves familiarity
   for any users looking to install the AWS CLI v2 from source as Autotools
   enabled projects follow the same `configure`, `make`, `make install` command
   flow and share similar configuration flags.
-  
+
 * Autotools is language agnostic. It shields users from having to understand
   Python build tool usage and details and provides stability if we needed to
   change the underlying programming language and corresponding build tools.
-  
+
 
 #### Q. What alternatives to Autotools were considered?
 
@@ -618,15 +614,15 @@ notes on what this interface would look like.
 
 **Pros**
 
-* It is language agnostic (e.g., can abstract over the underlying 
+* It is language agnostic (e.g., can abstract over the underlying
   programming language).
-  
+
 * It is a commonly used build tool.
-  
+
 * It supports a wide range of build systems. Unlike Autotools that can only
   generate GNU Makefiles, CMake can target GNU Makefiles as well as common
   Windows build systems such as NMake and Visual Studio.
-  
+
 * The CMake CLI has built-in commands that allows you to build and install the
   project (e.g., `cmake --build` and `cmake --install`) without having to
   directly use the underlying build system (e.g., `make`). Therefore, you could
@@ -641,7 +637,7 @@ notes on what this interface would look like.
   Furthermore, for Windows, users would still need to install
   Microsoft Visual Studio in order to access build systems that `cmake` would
   target (e.g., `nmake`).
-  
+
 * It introduces a new tool that users will have to know how to use in order to
   build and install the AWS CLI. While we can provide quick getting started
   instructions, there is still the possibility that users will have to learn
@@ -649,7 +645,7 @@ notes on what this interface would look like.
   With Autotools, it is scoped to just running a single `configure` shell
   script followed by `make` commands. From the end user's perspective, there
   is no additional concepts/knowledge needed past that single usage pattern.
-  
+
 * If we want to take advantage of new features in CMake, we will have to force
   users to upgrade to new versions of CMake. This is different from Autotools
   where the authors generate the `configure` script so only the authors need
@@ -668,7 +664,7 @@ leveraged. For the purpose of being a thin, familiar interface, Autotools is
 advantageous over CMake because:
 
 * Minimal dependencies required to use the build/install interface.
-  
+
 * The end user interface is more minimal as it is scoped to running a single
   `configure` script followed by `make` commands. Users do not have to
   potentially learn the usage and concepts for a new tool (e.g., `cmake`).
@@ -677,7 +673,7 @@ In addition, one important note is that the decision between Autotools and
 CMake is **not** a one-way door. It is possible for a project to allow users to
 build and install it using either Autotools or CMake. So, CMake support can
 always be added in the future if needed.
-  
+
 ##### Custom build/install script
 
 Building and installing would be exposed through a custom shell script or
@@ -687,7 +683,7 @@ Makefile.
 
 * It is language agnostic (e.g., can abstract over the underlying
   programming language).
-    
+
 * Can have greater control over build and install interface instead of trying
   to fit the interface into the patterns of an established build tool.
 
@@ -696,14 +692,14 @@ Makefile.
 * Does not bring the same potential familiarity as an Autotools/CMake
   project for users new to the project. Users will have to learn a new
   usage pattern.
-    
+
 * Anything custom-built would not be able to match the maintainability and
   portability of a more mature build system (e.g., Autotools and CMake)
-    
+
 * Easier to deviate from conventions established by other build systems,
   which could make it more difficult to understand how to customize the
   build and install of the AWS CLI.
-  
+
 **Verdict:**
 
 While this option gives similar benefits to Autotools and CMake, it still does
@@ -719,17 +715,17 @@ tools to build and then install the AWS CLI v2.
 
 * It reduces complexity of the project (e.g., we would not have to add
   another layer of abstraction over the Python build logic)
-    
+
 * It introduces no new dependencies. Python is already required to
   build the AWS CLI and it comes with `pip` which is PEP 517 compliant.
   Also, the Python build tools generally have cross-platform support.
-  
+
 **Cons:**
 
 * Requires users to be familiar with Python build and install tooling and
   be familiar how to use them safely (e.g., not install the AWS CLI into
   the global site packages).
-    
+
 * If we were to change programming languages or add new build steps, it
   will require users to rewrite any build logic.
 
@@ -757,7 +753,7 @@ Linux pre-built ZIP). These types of builds are useful because:
 
 * Users can ensure their installation of AWS CLI v2 is not coupled to their
   system installation of Python.
-  
+
 * Users can distribute their build to other similar systems that may not have
   Python installed.
 
@@ -766,7 +762,7 @@ instead of one of the official artifacts because:
 
 * They want to customize the build (e.g., hand select what dependencies are
   bundled into the executable).
-  
+
 * They have compliance/security reasons to not rely on executables built
   by third-parties and want to be able to build it themselves.
 
@@ -788,25 +784,25 @@ PyInstaller install/build does not work whether:
 * There is not a pre-compiled PyInstaller bootloader available compatible for
   their environment and have to
   [build the bootloader themselves](https://pyinstaller.readthedocs.io/en/stable/bootloader-building.html).
-  
+
 * The Python interpreter may need to be recompiled to enable it as a shared
   library (e.g., compile with `--enable-shared` on Linux or
   `--enable-framework` for Mac).
-  
+
 In general, the benefit of having the installation not requiring a system
 Python is not worth the potential problems users will have to work through
 when building the exe when:
 
 * The source install already requires Python to be on the system to build the
   AWS CLI v2.
-  
+
 * One of the main reasons users will be building from source is because there
   is not an official pre-built artifact available for their environment.
   However, these types of environments will likely be the ones where
   users will have to build the PyInstaller bootloader themselves or not be even
   [fully tested](https://github.com/pyinstaller/pyinstaller#untested-platforms),
   and be more prone to running into the issues.
-  
+
 
 #### Q. Why have `--with-download-deps` flag?
 
@@ -816,7 +812,7 @@ users would have to learn how to install the appropriate Python libraries and
 may do so in a way that can be detrimental to their environment setup such as
 install packages into their global site packages directory, which can break
 other system tools.
-  
+
 
 #### Q. Why is there provisional support for PEP 517?
 
@@ -833,7 +829,7 @@ provide a sharp, no-frills escape hatch for installing the AWS CLI v2 whether:
 * The environment is a non-POSIX compliant system, and the user does not want
   or is unable to use additional software (e.g., MSYS2) to be able to run
   the Autotools workflow in order to install the AWS CLI v2.
-  
+
 * The user actually wants the AWS CLI v2 installed directly as part of
   the global or user site-packages directory, which would help minimize the
   number of copies of third-party Python packages managed on the system.
@@ -877,7 +873,7 @@ v2 codebase for the following reasons:
 * It simplifies the building and installing of the AWS CLI v2 as it removes
   the need to download, checkout, and install a specific commit of the
   botocore source in order to install the AWS CLI v2.
-  
+
 * For users that leverage provisional support for PEP 517 to install the
   AWS CLI v2, they do not need to be concerned about the unreleased backwards
   incompatible version of botocore breaking their installation of other Python
@@ -896,7 +892,7 @@ v2 codebase for the following reasons:
   future official major version bump of botocore. It is also worth noting
   that in the future, the team may also be able to stop maintaining its fork
   of botocore in favor of an officially released major version of botocore.
-  
+
 
 The reason s3transfer is being maintained as part of the AWS CLI v2
 codebase because it has a direct dependency on botocore. This is specifically
@@ -905,8 +901,8 @@ problematic because:
 * If s3transfer was not pulled in, it would automatically pull in the official
   version of botocore, which would unnecessarily bloat the size of the
   dependency closure.
-  
-* It ensures that any changes that are made to the AWS CLI v2 maintained 
+
+* It ensures that any changes that are made to the AWS CLI v2 maintained
   version of botocore is compatible with s3transfer interfaces.
 
 
@@ -925,10 +921,10 @@ for better managing source installs such as:
 
 * `dist` - Generates a source distribution that could be distributed similar
   to the official hosted source distributions.
-  
+
 * `check` - Runs smoke tests on the built AWS CLI v2 to make sure the
   AWS CLI v2 is working correctly before actually installing it to the system.
-  
+
 * `html`/`install-html` - Generates the HTML references and installs them
   to the configured location on the system.
 
@@ -940,7 +936,7 @@ some optional dependencies used in running the CLI. For example:
 
 * Pager (e.g., `less`) if not available on the system for redirecting command
   output
-  
+
 * Any standalone executable plugins required for customized commands
   such as the [Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
   to use the `ssm start-session` command.
@@ -952,7 +948,7 @@ These could be either exposed via:
 
 * Adding more opt-in values options to the `--with-download-deps` flag
   (e.g., `--with-download-deps=pager`).
-  
+
 * Adding completely separate flags for downloading these optional dependencies
   that is completely separate from `-with-download-deps`
   (e.g., `--with-download-pager`, `--with-download-plugins`).

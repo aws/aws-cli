@@ -4602,6 +4602,37 @@
       "max":100,
       "min":1
     },
+    "CatalogHudiSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Hudi data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalHudiOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Hudi source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog.</p>"
+    },
     "CatalogIdString":{
       "type":"string",
       "max":255,
@@ -5071,6 +5102,26 @@
         "EvaluateDataQuality":{
           "shape":"EvaluateDataQuality",
           "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
+        },
+        "S3CatalogHudiSource":{
+          "shape":"S3CatalogHudiSource",
+          "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog. The Hudi data source must be stored in Amazon S3.</p>"
+        },
+        "CatalogHudiSource":{
+          "shape":"CatalogHudiSource",
+          "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog.</p>"
+        },
+        "S3HudiSource":{
+          "shape":"S3HudiSource",
+          "documentation":"<p>Specifies a Hudi data source stored in Amazon S3.</p>"
+        },
+        "S3HudiCatalogTarget":{
+          "shape":"S3HudiCatalogTarget",
+          "documentation":"<p>Specifies a target that writes to a Hudi data source in the Glue Data Catalog.</p>"
+        },
+        "S3HudiDirectTarget":{
+          "shape":"S3HudiDirectTarget",
+          "documentation":"<p>Specifies a target that writes to a Hudi data source in Amazon S3.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -12022,6 +12073,15 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "HudiTargetCompressionType":{
+      "type":"string",
+      "enum":[
+        "gzip",
+        "lzo",
+        "uncompressed",
+        "snappy"
+      ]
+    },
     "IdString":{
       "type":"string",
       "max":255,
@@ -15672,6 +15732,37 @@
         }
       }
     },
+    "S3CatalogHudiSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Hudi data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalHudiOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Hudi source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog. The Hudi data source must be stored in Amazon S3.</p>"
+    },
     "S3CatalogSource":{
       "type":"structure",
       "required":[
@@ -15949,6 +16040,111 @@
         }
       },
       "documentation":"<p>Specifies a data target that writes to Amazon S3 in Apache Parquet columnar storage.</p>"
+    },
+    "S3HudiCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Table",
+        "Database",
+        "AdditionalOptions"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the connector.</p>"
+        },
+        "SchemaChangePolicy":{"shape":"CatalogSchemaChangePolicy"}
+      },
+      "documentation":"<p>Specifies a target that writes to a Hudi data source in the Glue Data Catalog.</p>"
+    },
+    "S3HudiDirectTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path",
+        "Compression",
+        "Format",
+        "AdditionalOptions"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon S3 path of your Hudi data source to write to.</p>"
+        },
+        "Compression":{
+          "shape":"HudiTargetCompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Format":{
+          "shape":"TargetFormat",
+          "documentation":"<p>Specifies the data output format for the target.</p>"
+        },
+        "AdditionalOptions":{"shape":"AdditionalOptions"},
+        "SchemaChangePolicy":{"shape":"DirectSchemaChangePolicy"}
+      },
+      "documentation":"<p>Specifies a target that writes to a Hudi data source in Amazon S3.</p>"
+    },
+    "S3HudiSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Hudi source.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A list of the Amazon S3 paths to read from.</p>"
+        },
+        "AdditionalHudiOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "AdditionalOptions":{"shape":"S3DirectSourceAdditionalOptions"},
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Hudi source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Hudi data source stored in Amazon S3.</p>"
     },
     "S3JsonSource":{
       "type":"structure",
@@ -17900,7 +18096,8 @@
         "csv",
         "avro",
         "orc",
-        "parquet"
+        "parquet",
+        "hudi"
       ]
     },
     "TaskRun":{

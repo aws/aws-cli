@@ -17176,6 +17176,10 @@
         "HyperParameterTuningResourceConfig":{
           "shape":"HyperParameterTuningResourceConfig",
           "documentation":"<p>The configuration for the hyperparameter tuning resources, including the compute instances and storage volumes, used for training jobs launched by the tuning job. By default, storage volumes hold model artifacts and incremental states. Choose <code>File</code> for <code>TrainingInputMode</code> in the <code>AlgorithmSpecification</code> parameter to additionally store training data in the storage volume (optional).</p>"
+        },
+        "Environment":{
+          "shape":"HyperParameterTrainingJobEnvironmentMap",
+          "documentation":"<p>An environment variable that you can pass into the SageMaker <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html\">CreateTrainingJob</a> API. You can use an existing <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html#sagemaker-CreateTrainingJob-request-Environment\">environment variable from the training container</a> or use your own. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics.html\">Define metrics and variables</a> for more information.</p> <note> <p>The maximum number of items specified for <code>Map Entries</code> refers to the maximum number of environment variables for each <code>TrainingJobDefinition</code> and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of environment variables for all the training job definitions can't exceed the maximum number specified.</p> </note>"
         }
       },
       "documentation":"<p>Defines the training jobs launched by a hyperparameter tuning job.</p>"
@@ -17191,6 +17195,22 @@
       "member":{"shape":"HyperParameterTrainingJobDefinition"},
       "max":10,
       "min":1
+    },
+    "HyperParameterTrainingJobEnvironmentKey":{
+      "type":"string",
+      "max":512,
+      "pattern":"[a-zA-Z_][a-zA-Z0-9_]*"
+    },
+    "HyperParameterTrainingJobEnvironmentMap":{
+      "type":"map",
+      "key":{"shape":"HyperParameterTrainingJobEnvironmentKey"},
+      "value":{"shape":"HyperParameterTrainingJobEnvironmentValue"},
+      "max":48
+    },
+    "HyperParameterTrainingJobEnvironmentValue":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\S\\s]*"
     },
     "HyperParameterTrainingJobSummaries":{
       "type":"list",
@@ -17275,7 +17295,7 @@
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
-          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more informcration.</p>"
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more information.</p>"
         },
         "VolumeSizeInGB":{
           "shape":"VolumeSizeInGB",
@@ -31875,7 +31895,7 @@
         },
         "ExcludeRetainedVariantProperties":{
           "shape":"VariantPropertyList",
-          "documentation":"<p>When you are updating endpoint resources with <a>UpdateEndpointInput$RetainAllVariantProperties</a>, whose value is set to <code>true</code>, <code>ExcludeRetainedVariantProperties</code> specifies the list of type <a>VariantProperty</a> to override with the values provided by <code>EndpointConfig</code>. If you don't specify a value for <code>ExcludeAllVariantProperties</code>, no variant properties are overridden. </p>"
+          "documentation":"<p>When you are updating endpoint resources with <a>UpdateEndpointInput$RetainAllVariantProperties</a>, whose value is set to <code>true</code>, <code>ExcludeRetainedVariantProperties</code> specifies the list of type <a>VariantProperty</a> to override with the values provided by <code>EndpointConfig</code>. If you don't specify a value for <code>ExcludeRetainedVariantProperties</code>, no variant properties are overridden. </p>"
         },
         "DeploymentConfig":{
           "shape":"DeploymentConfig",

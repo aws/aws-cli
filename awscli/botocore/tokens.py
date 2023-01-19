@@ -205,10 +205,13 @@ class SSOTokenProvider:
             profile_name = "default"
         profile_config = profiles.get(profile_name, {})
 
-        if "sso_session" not in profile_config:
+        sso_session = profile_config.get('sso_session', None)
+        sso_source_profile = profile_config.get('source_profile', None)
+        sso_source_session = profiles.get(
+            sso_source_profile, {}).get('sso_session', None)
+        sso_session_name = sso_session or sso_source_session
+        if not sso_session_name:
             return
-
-        sso_session_name = profile_config["sso_session"]
         sso_config = sso_sessions.get(sso_session_name, None)
 
         if not sso_config:

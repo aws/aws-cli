@@ -33,9 +33,25 @@ def parametrize(cases):
 
 sso_provider_resolution_cases = [
     {
-        "documentation": "Full valid profile",
+        "documentation": "Full valid profile via sso_session",
         "config": {
             "profiles": {"test": {"sso_session": "admin"}},
+            "sso_sessions": {
+                "admin": {
+                    "sso_region": "us-east-1",
+                    "sso_start_url": "https://d-abc123.awsapps.com/start",
+                }
+            },
+        },
+        "resolves": True,
+    },
+    {
+        "documentation": "Full valid profile via source_profile",
+        "config": {
+            "profiles": {
+                "test": {"source_profile": "test2"},
+                "test2": {"sso_session": "admin"},
+            },
             "sso_sessions": {
                 "admin": {
                     "sso_region": "us-east-1",
@@ -82,9 +98,25 @@ sso_provider_resolution_cases = [
         "expectedException": InvalidConfigError,
     },
     {
-        "documentation": "The sso_session must be specified",
+        "documentation": "sso_session or source_profile must be specified",
         "config": {
             "profiles": {"test": {"region": "us-west-2"}},
+            "sso_sessions": {
+                "admin": {
+                    "sso_region": "us-east-1",
+                    "sso_start_url": "https://d-abc123.awsapps.com/start",
+                }
+            },
+        },
+        "resolves": False,
+    },
+    {
+        "documentation": "source_profile must specify sso_session",
+        "config": {
+            "profiles": {
+                "test": {"source_profile": "test2"},
+                "test2": {},
+            },
             "sso_sessions": {
                 "admin": {
                     "sso_region": "us-east-1",

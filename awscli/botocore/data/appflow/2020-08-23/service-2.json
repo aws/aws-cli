@@ -655,6 +655,11 @@
       "max":512,
       "pattern":".*"
     },
+    "BusinessUnitId":{
+      "type":"string",
+      "max":18,
+      "pattern":"\\S+"
+    },
     "CatalogType":{
       "type":"string",
       "enum":["GLUE"]
@@ -1058,7 +1063,11 @@
           "shape":"HoneycodeMetadata",
           "documentation":"<p> The connector metadata specific to Amazon Honeycode. </p>"
         },
-        "SAPOData":{"shape":"SAPODataMetadata"}
+        "SAPOData":{"shape":"SAPODataMetadata"},
+        "Pardot":{
+          "shape":"PardotMetadata",
+          "documentation":"<p>The connector metadata specific to Salesforce Pardot.</p>"
+        }
       },
       "documentation":"<p> A structure to specify connector-specific metadata such as <code>oAuthScopes</code>, <code>supportedRegions</code>, <code>privateLinkServiceUrl</code>, and so on. </p>"
     },
@@ -1156,6 +1165,10 @@
         "CustomConnector":{
           "shape":"Operator",
           "documentation":"<p>Operators supported by the custom connector.</p>"
+        },
+        "Pardot":{
+          "shape":"PardotConnectorOperator",
+          "documentation":"<p>The operation to be performed on the provided Salesforce Pardot source fields.</p>"
         }
       },
       "documentation":"<p> The operation to be performed on the provided source fields. </p>"
@@ -1299,7 +1312,11 @@
           "documentation":"<p> The connector-specific credentials required when using Zendesk. </p>"
         },
         "SAPOData":{"shape":"SAPODataConnectorProfileCredentials"},
-        "CustomConnector":{"shape":"CustomConnectorProfileCredentials"}
+        "CustomConnector":{"shape":"CustomConnectorProfileCredentials"},
+        "Pardot":{
+          "shape":"PardotConnectorProfileCredentials",
+          "documentation":"<p>The connector-specific credentials required when using Salesforce Pardot.</p>"
+        }
       },
       "documentation":"<p> The connector-specific credentials required by a connector. </p>"
     },
@@ -1389,6 +1406,10 @@
         "CustomConnector":{
           "shape":"CustomConnectorProfileProperties",
           "documentation":"<p>The properties required by the custom connector.</p>"
+        },
+        "Pardot":{
+          "shape":"PardotConnectorProfileProperties",
+          "documentation":"<p>The connector-specific properties required by Salesforce Pardot.</p>"
         }
       },
       "documentation":"<p> The connector-specific profile properties required by each connector. </p>"
@@ -1503,7 +1524,8 @@
         "Honeycode",
         "CustomerProfiles",
         "SAPOData",
-        "CustomConnector"
+        "CustomConnector",
+        "Pardot"
       ]
     },
     "ConnectorTypeList":{
@@ -3548,6 +3570,79 @@
         "NO_OP"
       ]
     },
+    "PardotConnectorOperator":{
+      "type":"string",
+      "enum":[
+        "PROJECTION",
+        "EQUAL_TO",
+        "NO_OP",
+        "ADDITION",
+        "MULTIPLICATION",
+        "DIVISION",
+        "SUBTRACTION",
+        "MASK_ALL",
+        "MASK_FIRST_N",
+        "MASK_LAST_N",
+        "VALIDATE_NON_NULL",
+        "VALIDATE_NON_ZERO",
+        "VALIDATE_NON_NEGATIVE",
+        "VALIDATE_NUMERIC"
+      ]
+    },
+    "PardotConnectorProfileCredentials":{
+      "type":"structure",
+      "members":{
+        "accessToken":{
+          "shape":"AccessToken",
+          "documentation":"<p>The credentials used to access protected Salesforce Pardot resources.</p>"
+        },
+        "refreshToken":{
+          "shape":"RefreshToken",
+          "documentation":"<p>The credentials used to acquire new access tokens.</p>"
+        },
+        "oAuthRequest":{"shape":"ConnectorOAuthRequest"},
+        "clientCredentialsArn":{
+          "shape":"ClientCredentialsArn",
+          "documentation":"<p>The secret manager ARN, which contains the client ID and client secret of the connected app.</p>"
+        }
+      },
+      "documentation":"<p>The connector-specific profile credentials required when using Salesforce Pardot.</p>"
+    },
+    "PardotConnectorProfileProperties":{
+      "type":"structure",
+      "members":{
+        "instanceUrl":{
+          "shape":"InstanceUrl",
+          "documentation":"<p>The location of the Salesforce Pardot resource.</p>"
+        },
+        "isSandboxEnvironment":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the connector profile applies to a sandbox or production environment.</p>"
+        },
+        "businessUnitId":{
+          "shape":"BusinessUnitId",
+          "documentation":"<p>The business unit id of Salesforce Pardot instance.</p>"
+        }
+      },
+      "documentation":"<p>The connector-specific profile properties required when using Salesforce Pardot.</p>"
+    },
+    "PardotMetadata":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The connector metadata specific to Salesforce Pardot.</p>"
+    },
+    "PardotSourceProperties":{
+      "type":"structure",
+      "required":["object"],
+      "members":{
+        "object":{
+          "shape":"Object",
+          "documentation":"<p>The object specified in the Salesforce Pardot flow source.</p>"
+        }
+      },
+      "documentation":"<p>The properties that are applied when Salesforce Pardot is being used as a source.</p>"
+    },
     "Password":{
       "type":"string",
       "max":512,
@@ -4660,7 +4755,11 @@
           "documentation":"<p> Specifies the information that is required for querying Zendesk. </p>"
         },
         "SAPOData":{"shape":"SAPODataSourceProperties"},
-        "CustomConnector":{"shape":"CustomConnectorSourceProperties"}
+        "CustomConnector":{"shape":"CustomConnectorSourceProperties"},
+        "Pardot":{
+          "shape":"PardotSourceProperties",
+          "documentation":"<p>Specifies the information that is required for querying Salesforce Pardot.</p>"
+        }
       },
       "documentation":"<p> Specifies the information that is required to query a particular connector. </p>"
     },

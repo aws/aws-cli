@@ -38,7 +38,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Attaches tags to an existing Amazon OpenSearch Service domain. Tags are a set of case-sensitive key-value pairs. An domain can have up to 10 tags. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains.html#managedomains-awsresorcetagging\"> Tagging Amazon OpenSearch Service domains</a>.</p>"
+      "documentation":"<p>Attaches tags to an existing Amazon OpenSearch Service domain. Tags are a set of case-sensitive key-value pairs. A domain can have up to 10 tags. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-awsresourcetagging.html\">Tagging Amazon OpenSearch Service domains</a>.</p>"
     },
     "AssociatePackage":{
       "name":"AssociatePackage",
@@ -320,6 +320,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns domain configuration information about the specified Amazon OpenSearch Service domains.</p>"
+    },
+    "DescribeDryRunProgress":{
+      "name":"DescribeDryRunProgress",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dryRun"
+      },
+      "input":{"shape":"DescribeDryRunProgressRequest"},
+      "output":{"shape":"DescribeDryRunProgressResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Describes the progress of a pre-update dry run analysis on an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#dryrun\">Determining whether a change will cause a blue/green deployment</a>.</p>"
     },
     "DescribeInboundConnections":{
       "name":"DescribeInboundConnections",
@@ -1752,7 +1769,7 @@
       "members":{
         "DomainArn":{
           "shape":"DomainArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to grant access to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain to create the endpoint for.</p>"
         },
         "VpcOptions":{
           "shape":"VPCOptions",
@@ -2038,6 +2055,47 @@
         }
       },
       "documentation":"<p>Contains the status of the specified domains or all domains owned by the account.</p>"
+    },
+    "DescribeDryRunProgressRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "DryRunId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the dry run.</p>",
+          "location":"querystring",
+          "locationName":"dryRunId"
+        },
+        "LoadDryRunConfig":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to include the configuration of the dry run in the response. The configuration specifies the updates that you're planning to make on the domain.</p>",
+          "location":"querystring",
+          "locationName":"loadDryRunConfig"
+        }
+      }
+    },
+    "DescribeDryRunProgressResponse":{
+      "type":"structure",
+      "members":{
+        "DryRunProgressStatus":{
+          "shape":"DryRunProgressStatus",
+          "documentation":"<p>The current status of the dry run, including any validation errors.</p>"
+        },
+        "DryRunConfig":{
+          "shape":"DomainStatus",
+          "documentation":"<p>Details about the changes you're planning to make on the domain.</p>"
+        },
+        "DryRunResults":{
+          "shape":"DryRunResults",
+          "documentation":"<p>The results of the dry run. </p>"
+        }
+      }
     },
     "DescribeInboundConnectionsRequest":{
       "type":"structure",
@@ -2697,6 +2755,45 @@
     },
     "Double":{"type":"double"},
     "DryRun":{"type":"boolean"},
+    "DryRunMode":{
+      "type":"string",
+      "enum":[
+        "Basic",
+        "Verbose"
+      ]
+    },
+    "DryRunProgressStatus":{
+      "type":"structure",
+      "required":[
+        "DryRunId",
+        "DryRunStatus",
+        "CreationDate",
+        "UpdateDate"
+      ],
+      "members":{
+        "DryRunId":{
+          "shape":"GUID",
+          "documentation":"<p>The unique identifier of the dry run.</p>"
+        },
+        "DryRunStatus":{
+          "shape":"String",
+          "documentation":"<p>The current status of the dry run.</p>"
+        },
+        "CreationDate":{
+          "shape":"String",
+          "documentation":"<p>The timestamp when the dry run was initiated.</p>"
+        },
+        "UpdateDate":{
+          "shape":"String",
+          "documentation":"<p>The timestamp when the dry run was last updated.</p>"
+        },
+        "ValidationFailures":{
+          "shape":"ValidationFailures",
+          "documentation":"<p>Any validation failures that occurred as a result of the dry run.</p>"
+        }
+      },
+      "documentation":"<p>Information about the progress of a pre-upgrade dry run analysis.</p>"
+    },
     "DryRunResults":{
       "type":"structure",
       "members":{
@@ -4657,7 +4754,11 @@
         },
         "DryRun":{
           "shape":"DryRun",
-          "documentation":"<p>This flag, when set to True, specifies whether the <code>UpdateDomain</code> request should return the results of validation check without actually applying the change.</p>"
+          "documentation":"<p>This flag, when set to True, specifies whether the <code>UpdateDomain</code> request should return the results of a dry run analysis without actually applying the change. A dry run determines what type of deployment the update will cause.</p>"
+        },
+        "DryRunMode":{
+          "shape":"DryRunMode",
+          "documentation":"<p>The type of dry run to perform.</p> <ul> <li> <p> <code>Basic</code> only returns the type of deployment (blue/green or dynamic) that the update will cause.</p> </li> <li> <p> <code>Verbose</code> runs an additional check to validate the changes you're making. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#validation-check\">Validating a domain update</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"
@@ -4672,7 +4773,11 @@
         },
         "DryRunResults":{
           "shape":"DryRunResults",
-          "documentation":"<p>Results of a dry run performed in an update domain request.</p>"
+          "documentation":"<p>Results of the dry run performed in the update domain request.</p>"
+        },
+        "DryRunProgressStatus":{
+          "shape":"DryRunProgressStatus",
+          "documentation":"<p>The status of the dry run being performed on the domain, if any.</p>"
         }
       },
       "documentation":"<p>The results of an <code>UpdateDomain</code> request. Contains the status of the domain being updated.</p>"
@@ -4941,6 +5046,24 @@
       "documentation":"<p>An exception for missing / invalid input fields. Gives http status code of 400.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ValidationFailure":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code of the failure.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message corresponding to the failure.</p>"
+        }
+      },
+      "documentation":"<p>A validation failure that occurred as the result of a pre-update validation check (verbose dry run) on a domain.</p>"
+    },
+    "ValidationFailures":{
+      "type":"list",
+      "member":{"shape":"ValidationFailure"}
     },
     "ValueStringList":{
       "type":"list",

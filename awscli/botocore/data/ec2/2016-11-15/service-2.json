@@ -12409,6 +12409,10 @@
         "LaunchTemplateData":{
           "shape":"RequestLaunchTemplateData",
           "documentation":"<p>The information for the launch template.</p>"
+        },
+        "ResolveAlias":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageID</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>Default: <code>false</code> </p>"
         }
       }
     },
@@ -20068,6 +20072,10 @@
           "shape":"FilterList",
           "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>create-time</code> - The time the launch template version was created.</p> </li> <li> <p> <code>ebs-optimized</code> - A boolean that indicates whether the instance is optimized for Amazon EBS I/O.</p> </li> <li> <p> <code>http-endpoint</code> - Indicates whether the HTTP metadata endpoint on your instances is enabled (<code>enabled</code> | <code>disabled</code>).</p> </li> <li> <p> <code>http-protocol-ipv4</code> - Indicates whether the IPv4 endpoint for the instance metadata service is enabled (<code>enabled</code> | <code>disabled</code>).</p> </li> <li> <p> <code>host-resource-group-arn</code> - The ARN of the host resource group in which to launch the instances.</p> </li> <li> <p> <code>http-tokens</code> - The state of token usage for your instance metadata requests (<code>optional</code> | <code>required</code>).</p> </li> <li> <p> <code>iam-instance-profile</code> - The ARN of the IAM instance profile.</p> </li> <li> <p> <code>image-id</code> - The ID of the AMI.</p> </li> <li> <p> <code>instance-type</code> - The instance type.</p> </li> <li> <p> <code>is-default-version</code> - A boolean that indicates whether the launch template version is the default version.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>license-configuration-arn</code> - The ARN of the license configuration.</p> </li> <li> <p> <code>network-card-index</code> - The index of the network card.</p> </li> <li> <p> <code>ram-disk-id</code> - The RAM disk ID.</p> </li> </ul>",
           "locationName":"Filter"
+        },
+        "ResolveAlias":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageId</code>.</p> <p>If <code>false</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the parameter is displayed in the response for <code>imageId</code>.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>Default: <code>false</code> </p>"
         }
       }
     },
@@ -44895,7 +44903,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI.</p>"
+          "documentation":"<p>The ID of the AMI. Alternatively, you can specify a Systems Manager parameter, which will resolve to an AMI ID on launch.</p> <p>Valid formats:</p> <ul> <li> <p> <code>ami-17characters00000</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:version-number</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:label</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
         },
         "InstanceType":{
           "shape":"InstanceType",
@@ -46164,7 +46172,7 @@
         },
         "ImageId":{
           "shape":"String",
-          "documentation":"<p>The ID of the AMI that was used to launch the instance.</p>",
+          "documentation":"<p>The ID of the AMI or a Systems Manager parameter. The Systems Manager parameter will resolve to the ID of the AMI at instance launch.</p> <p>The value depends on what you specified in the request. The possible values are:</p> <ul> <li> <p>If an AMI ID was specified in the request, then this is the AMI ID.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>true</code>, then this is the AMI ID that the parameter is mapped to in the Parameter Store.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>false</code>, then this is the parameter value.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>",
           "locationName":"imageId"
         },
         "InstanceType":{

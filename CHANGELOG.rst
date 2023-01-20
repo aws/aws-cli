@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.9.17
+======
+
+* api-change:``sagemaker``: HyperParameterTuningJobs now allow passing environment variables into the corresponding TrainingJobs
+* api-change:``appflow``: Adding support for Salesforce Pardot connector in Amazon AppFlow.
+* api-change:``codeartifact``: Documentation updates for CodeArtifact
+* api-change:``medialive``: AWS Elemental MediaLive adds support for SCTE 35 preRollMilliSeconds.
+* api-change:``logs``: Bug fix - Removed the regex pattern validation from CoralModel to avoid potential security issue.
+* api-change:``ec2``: Adds SSM Parameter Resource Aliasing support to EC2 Launch Templates. Launch Templates can now store parameter aliases in place of AMI Resource IDs. CreateLaunchTemplateVersion and DescribeLaunchTemplateVersions now support a convenience flag, ResolveAlias, to return the resolved parameter value.
+* api-change:``panorama``: Added AllowMajorVersionUpdate option to OTAJobConfig to make appliance software major version updates opt-in.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``connect``: Amazon Connect Chat introduces Persistent Chat, allowing customers to resume previous conversations with context and transcripts carried over from previous chats, eliminating the need to repeat themselves and allowing agents to provide personalized service with access to entire conversation history.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``wafv2``: Improved the visibility of the guidance for updating AWS WAF resources, such as web ACLs and rule groups.
+* api-change:``ivschat``: Updates the range for a Chat Room's maximumMessageRatePerSecond field.
+* enhancement:Python: Update Python interpreter version range support to 3.11
+* api-change:``groundstation``: Add configurable prepass and postpass times for DataflowEndpointGroup. Add Waiter to allow customers to wait for a contact that was reserved through ReserveContact
+* api-change:``glue``: Release Glue Studio Hudi Data Lake Format for SDK/CLI
+* api-change:``connectparticipant``: This release updates Amazon Connect Participant's GetTranscript api to provide transcripts of past chats on a persistent chat session.
+* api-change:``opensearch``: This release adds the enhanced dry run option, that checks for validation errors that might occur when deploying configuration changes and provides a summary of these errors, if any. The feature will also indicate whether a blue/green deployment will be required to apply a change.
+
+
 2.9.16
 ======
 

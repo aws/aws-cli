@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.54
+=======
+
+* api-change:``ec2``: C6in, M6in, M6idn, R6in and R6idn instances are powered by 3rd Generation Intel Xeon Scalable processors (code named Ice Lake) with an all-core turbo frequency of 3.5 GHz.
+* api-change:``ivs``: API and Doc update. Update to arns field in BatchGetStreamKey. Also updates to operations and structures.
+* api-change:``quicksight``: This release adds support for data bars in QuickSight table and increases pivot table field well limit.
+
+
 1.27.53
 =======
 

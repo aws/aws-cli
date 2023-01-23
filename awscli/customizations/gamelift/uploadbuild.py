@@ -34,6 +34,10 @@ class UploadBuildCommand(BasicCommand):
         {'name': 'build-root', 'required': True,
          'help_text':
          'The path to the directory containing the build to upload'},
+        {'name': 'server-sdk-version', 'required': False,
+         'help_text':
+             'The version of the GameLift server SDK used to '
+             'create the game server'},
         {'name': 'operating-system', 'required': False,
          'help_text': 'The operating system the build runs on'}
     ]
@@ -60,7 +64,8 @@ class UploadBuildCommand(BasicCommand):
         }
         if args.operating_system:
             create_build_kwargs['OperatingSystem'] = args.operating_system
-
+        if args.server_sdk_version:
+            create_build_kwargs['ServerSdkVersion'] = args.server_sdk_version
         response = gamelift_client.create_build(**create_build_kwargs)
         build_id = response['Build']['BuildId']
 

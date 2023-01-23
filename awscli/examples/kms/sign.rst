@@ -2,13 +2,17 @@
 
 The following ``sign`` example generates a cryptographic signature for a short message. The output of the command includes a base-64 encoded ``Signature`` field that you can verify by using the ``verify`` command.
 
-You must also specify a signing algorithm that your asymmetric KMS key supports. To get the signing algorithms for your KMS key, use the ``describe-key`` command. 
+You must specify a message to sign and a signing algorithm that your asymmetric KMS key supports. To get the signing algorithms for your KMS key, use the ``describe-key`` command. 
+
+In AWS CLI 2.0, the value of the ``message`` parameter must be Base64-encoded. Or, you can save the message in a file and use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file.
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. The key ID must represent an asymmetric KMS key with a key usage of SIGN_VERIFY. ::
 
+    msg=(echo 'Hello World' | base64)
+    
     aws kms sign \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --message 'hello world' \
+        --message fileb://UnsignedMessage \
         --message-type RAW \
         --signing-algorithm RSASSA_PKCS1_V1_5_SHA_256
 
@@ -24,15 +28,17 @@ For more information about using asymmetric KMS keys in AWS KMS, see `Asymmetric
 
 **Example 2: To save a digital signature in a file (Linux and macOs)**
 
-The following ``sign`` example generates a cryptographic signature for a short message stored in a local file. The command also gets the Signature property from the response, Base64-decodes it and saves it in the ExampleSignature file. You can use the signature file in a ``verify`` command that verifies the signature.
+The following ``sign`` example generates a cryptographic signature for a short message stored in a local file. The command also gets the ``Signature`` property from the response, Base64-decodes it and saves it in the ExampleSignature file. You can use the signature file in a ``verify`` command that verifies the signature.
 
-The ``sign`` command requires a signing algorithm. To get the signing algorithms that your KMS key supports, use the ``describe-key`` command.
+The ``sign`` command requires a Base64-encoded message and a signing algorithm that your asymmetric KMS key supports. To get the signing algorithms that your KMS key supports, use the ``describe-key`` command.
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. The key ID must represent an asymmetric KMS key with a key usage of SIGN_VERIFY. ::
 
+    echo 'hello world' | base64 > EncodedMessage
+    
     aws kms sign \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --message fileb://originalString \
+        --message fileb://EncodedMessage \
         --message-type RAW \
         --signing-algorithm RSASSA_PKCS1_V1_5_SHA_256 \
         --output text \

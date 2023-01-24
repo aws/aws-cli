@@ -141,8 +141,10 @@ class GetTokenCommand(BasicCommand):
                 "token": token,
             },
         }
-
-        uni_print(json.dumps(full_object))
+        if parsed_globals.query is not None:
+            uni_print(parsed_globals.query.search(full_object))
+        else:
+            uni_print(json.dumps(full_object))
         uni_print('\n')
         return 0
 

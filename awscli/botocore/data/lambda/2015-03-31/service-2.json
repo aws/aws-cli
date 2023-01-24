@@ -66,7 +66,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">alias</a> for a Lambda function version. Use aliases to provide clients with a function identifier that you can update to invoke a different version.</p> <p>You can also map an alias to split invocation requests between two versions. Use the <code>RoutingConfig</code> parameter to specify a second version and the percentage of invocation requests that it receives.</p>"
+      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a> for a Lambda function version. Use aliases to provide clients with a function identifier that you can update to invoke a different version.</p> <p>You can also map an alias to split invocation requests between two versions. Use the <code>RoutingConfig</code> parameter to specify a second version and the percentage of invocation requests that it receives.</p>"
     },
     "CreateCodeSigningConfig":{
       "name":"CreateCodeSigningConfig",
@@ -155,7 +155,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Deletes a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">alias</a>.</p>"
+      "documentation":"<p>Deletes a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
     },
     "DeleteCodeSigningConfig":{
       "name":"DeleteCodeSigningConfig",
@@ -338,7 +338,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Returns details about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">alias</a>.</p>"
+      "documentation":"<p>Returns details about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
     },
     "GetCodeSigningConfig":{
       "name":"GetCodeSigningConfig",
@@ -561,6 +561,23 @@
       ],
       "documentation":"<p>Retrieves the provisioned concurrency configuration for a function's alias or version.</p>"
     },
+    "GetRuntimeManagementConfig":{
+      "name":"GetRuntimeManagementConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-07-20/functions/{FunctionName}/runtime-management-config",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRuntimeManagementConfigRequest"},
+      "output":{"shape":"GetRuntimeManagementConfigResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves the runtime management configuration for a function's version. If the runtime update mode is <b>Manual</b>, this includes the ARN of the runtime version and the runtime update mode. If the runtime update mode is <b>Auto</b> or <b>Function update</b>, this includes the runtime update mode and <code>null</code> is returned for the ARN. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html\">Runtime updates</a>.</p>"
+    },
     "Invoke":{
       "name":"Invoke",
       "http":{
@@ -636,7 +653,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">aliases</a> for a Lambda function.</p>"
+      "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">aliases</a> for a Lambda function.</p>"
     },
     "ListCodeSigningConfigs":{
       "name":"ListCodeSigningConfigs",
@@ -718,7 +735,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InvalidParameterValueException"}
       ],
-      "documentation":"<p>Returns a list of Lambda functions, with the version-specific configuration of each. Lambda returns up to 50 functions per call.</p> <p>Set <code>FunctionVersion</code> to <code>ALL</code> to include all published versions of each function in addition to the unpublished version.</p> <note> <p>The <code>ListFunctions</code> operation returns a subset of the <a>FunctionConfiguration</a> fields. To get the additional fields (State, StateReasonCode, StateReason, LastUpdateStatus, LastUpdateStatusReason, LastUpdateStatusReasonCode) for a function or version, use <a>GetFunction</a>.</p> </note>"
+      "documentation":"<p>Returns a list of Lambda functions, with the version-specific configuration of each. Lambda returns up to 50 functions per call.</p> <p>Set <code>FunctionVersion</code> to <code>ALL</code> to include all published versions of each function in addition to the unpublished version.</p> <note> <p>The <code>ListFunctions</code> operation returns a subset of the <a>FunctionConfiguration</a> fields. To get the additional fields (State, StateReasonCode, StateReason, LastUpdateStatus, LastUpdateStatusReason, LastUpdateStatusReasonCode, RuntimeVersionConfig) for a function or version, use <a>GetFunction</a>.</p> </note>"
     },
     "ListFunctionsByCodeSigningConfig":{
       "name":"ListFunctionsByCodeSigningConfig",
@@ -930,6 +947,24 @@
       ],
       "documentation":"<p>Adds a provisioned concurrency configuration to a function's alias or version.</p>"
     },
+    "PutRuntimeManagementConfig":{
+      "name":"PutRuntimeManagementConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-07-20/functions/{FunctionName}/runtime-management-config",
+        "responseCode":200
+      },
+      "input":{"shape":"PutRuntimeManagementConfigRequest"},
+      "output":{"shape":"PutRuntimeManagementConfigResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Sets the runtime management configuration for a function's version. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html\">Runtime updates</a>.</p>"
+    },
     "RemoveLayerVersionPermission":{
       "name":"RemoveLayerVersionPermission",
       "http":{
@@ -1015,7 +1050,7 @@
         {"shape":"PreconditionFailedException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Updates the configuration of a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">alias</a>.</p>"
+      "documentation":"<p>Updates the configuration of a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
     },
     "UpdateCodeSigningConfig":{
       "name":"UpdateCodeSigningConfig",
@@ -1351,7 +1386,7 @@
           "documentation":"<p>A unique identifier that changes when you update the alias.</p>"
         }
       },
-      "documentation":"<p>Provides configuration information about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">alias</a>.</p>"
+      "documentation":"<p>Provides configuration information about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
     },
     "AliasList":{
       "type":"list",
@@ -2650,6 +2685,10 @@
         "SnapStart":{
           "shape":"SnapStartResponse",
           "documentation":"<p>Set <code>ApplyOn</code> to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">Improving startup performance with Lambda SnapStart</a>.</p>"
+        },
+        "RuntimeVersionConfig":{
+          "shape":"RuntimeVersionConfig",
+          "documentation":"<p>The ARN of the runtime and any errors that occured.</p>"
         }
       },
       "documentation":"<p>Details about a function's configuration.</p>"
@@ -3204,6 +3243,37 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a>.</p>"
+        }
+      }
+    },
+    "GetRuntimeManagementConfigRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"Qualifier",
+          "documentation":"<p>Specify a version of the function. This can be <code>$LATEST</code> or a published version number. If no value is specified, the configuration for the <code>$LATEST</code> version is returned.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        }
+      }
+    },
+    "GetRuntimeManagementConfigResponse":{
+      "type":"structure",
+      "members":{
+        "UpdateRuntimeOn":{
+          "shape":"UpdateRuntimeOn",
+          "documentation":"<p>The current runtime update mode of the function.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeVersionArn",
+          "documentation":"<p>The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.</p>"
         }
       }
     },
@@ -4664,6 +4734,56 @@
         }
       }
     },
+    "PutRuntimeManagementConfigRequest":{
+      "type":"structure",
+      "required":[
+        "FunctionName",
+        "UpdateRuntimeOn"
+      ],
+      "members":{
+        "FunctionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"Qualifier",
+          "documentation":"<p>Specify a version of the function. This can be <code>$LATEST</code> or a published version number. If no value is specified, the configuration for the <code>$LATEST</code> version is returned.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        },
+        "UpdateRuntimeOn":{
+          "shape":"UpdateRuntimeOn",
+          "documentation":"<p>Specify the runtime update mode.</p> <ul> <li> <p> <b>Auto (default)</b> - Automatically update to the most recent and secure runtime version using a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-two-phase\">Two-phase runtime version rollout</a>. This is the best choice for most customers to ensure they always benefit from runtime updates.</p> </li> <li> <p> <b>Function update</b> - Lambda updates the runtime of your function to the most recent and secure runtime version when you update your function. This approach synchronizes runtime updates with function deployments, giving you control over when runtime updates are applied and allowing you to detect and mitigate rare runtime update incompatibilities early. When using this setting, you need to regularly update your functions to keep their runtime up-to-date.</p> </li> <li> <p> <b>Manual</b> - You specify a runtime version in your function configuration. The function will use this runtime version indefinitely. In the rare case where a new runtime version is incompatible with an existing function, this allows you to roll back your function to an earlier runtime version. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html#runtime-management-rollback\">Roll back a runtime version</a>.</p> </li> </ul>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeVersionArn",
+          "documentation":"<p>The ARN of the runtime version you want the function to use.</p> <note> <p>This is only required if you're using the <b>Manual</b> runtime update mode.</p> </note>"
+        }
+      }
+    },
+    "PutRuntimeManagementConfigResponse":{
+      "type":"structure",
+      "required":[
+        "UpdateRuntimeOn",
+        "FunctionArn"
+      ],
+      "members":{
+        "UpdateRuntimeOn":{
+          "shape":"UpdateRuntimeOn",
+          "documentation":"<p>The runtime update mode.</p>"
+        },
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The ARN of the function</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeVersionArn",
+          "documentation":"<p>The ARN of the runtime the function is configured to use. If the runtime update mode is <b>manual</b>, the ARN is returned, otherwise <code>null</code> is returned.</p>"
+        }
+      }
+    },
     "Qualifier":{
       "type":"string",
       "max":128,
@@ -4856,6 +4976,40 @@
         "nodejs18.x"
       ]
     },
+    "RuntimeVersionArn":{
+      "type":"string",
+      "max":2048,
+      "min":26,
+      "pattern":"^arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}::runtime:.+$"
+    },
+    "RuntimeVersionConfig":{
+      "type":"structure",
+      "members":{
+        "RuntimeVersionArn":{
+          "shape":"RuntimeVersionArn",
+          "documentation":"<p>The ARN of the runtime version you want the function to use.</p>"
+        },
+        "Error":{
+          "shape":"RuntimeVersionError",
+          "documentation":"<p>Error response when Lambda is unable to retrieve the runtime version for a function.</p>"
+        }
+      },
+      "documentation":"<p>The ARN of the runtime and any errors that occured.</p>"
+    },
+    "RuntimeVersionError":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>"
+        },
+        "Message":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>Any error returned when the runtime version information for the function could not be retrieved.</p>"
+    },
     "S3Bucket":{
       "type":"string",
       "max":63,
@@ -4951,7 +5105,7 @@
         "Type":{"shape":"String"},
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The runtime restore hook encountered an error. For more information, check the Amazon CloudWatch logs.</p>",
+      "documentation":"<p>The <code>afterRestore()</code> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-runtime-hooks.html\">runtime hook</a> encountered an error. For more information, check the Amazon CloudWatch logs.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -4992,7 +5146,7 @@
         "Type":{"shape":"String"},
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The runtime restore hook failed to complete within the timeout limit (2 seconds).</p>",
+      "documentation":"<p>Lambda couldn't restore the snapshot within the timeout limit.</p>",
       "error":{"httpStatusCode":408},
       "exception":true
     },
@@ -5607,6 +5761,14 @@
           "documentation":"<p>When the function URL configuration was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
         }
       }
+    },
+    "UpdateRuntimeOn":{
+      "type":"string",
+      "enum":[
+        "Auto",
+        "Manual",
+        "FunctionUpdate"
+      ]
     },
     "Version":{
       "type":"string",

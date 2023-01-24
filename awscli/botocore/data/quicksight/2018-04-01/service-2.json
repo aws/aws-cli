@@ -1758,7 +1758,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceUnavailableException"}
       ],
-      "documentation":"<p>Creates an Amazon QuickSight user, whose identity is associated with the Identity and Access Management (IAM) identity or role specified in the request. </p>"
+      "documentation":"<p>Creates an Amazon QuickSight user whose identity is associated with the Identity and Access Management (IAM) identity or role specified in the request. When you register a new user from the Amazon QuickSight API, Amazon QuickSight generates a registration URL. The user accesses this registration URL to create their account. Amazon QuickSight doesn't send a registration email to users who are registered from the Amazon QuickSight API. If you want new users to receive a registration email, then add those users in the Amazon QuickSight console. For more information on registering a new user in the Amazon QuickSight console, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/managing-users.html#inviting-users\"> Inviting users to access Amazon QuickSight</a>.</p>"
     },
     "RestoreAnalysis":{
       "name":"RestoreAnalysis",
@@ -6677,6 +6677,25 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DataBarsOptions":{
+      "type":"structure",
+      "required":["FieldId"],
+      "members":{
+        "FieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The field ID for the data bars options.</p>"
+        },
+        "PositiveColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the positive data bar.</p>"
+        },
+        "NegativeColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the negative data bar.</p>"
+        }
+      },
+      "documentation":"<p>The options for data bars.</p>"
     },
     "DataColor":{
       "type":"structure",
@@ -15514,7 +15533,7 @@
         },
         "DataTransforms":{
           "shape":"TransformOperationList",
-          "documentation":"<p>Transform operations that act on this logical table.</p>"
+          "documentation":"<p>Transform operations that act on this logical table. For this structure to be valid, only one of the attributes can be non-null. </p>"
         },
         "Source":{
           "shape":"LogicalTableSource",
@@ -17092,7 +17111,7 @@
     "PivotMeasureFieldList":{
       "type":"list",
       "member":{"shape":"MeasureField"},
-      "max":20
+      "max":40
     },
     "PivotTableAggregatedFieldWells":{
       "type":"structure",
@@ -17227,7 +17246,7 @@
     "PivotTableDimensionList":{
       "type":"list",
       "member":{"shape":"DimensionField"},
-      "max":20
+      "max":40
     },
     "PivotTableFieldOption":{
       "type":"structure",
@@ -20254,6 +20273,10 @@
         "PaginatedReportOptions":{
           "shape":"TablePaginatedReportOptions",
           "documentation":"<p>The paginated report options for a table visual.</p>"
+        },
+        "TableInlineVisualizations":{
+          "shape":"TableInlineVisualizationList",
+          "documentation":"<p>A collection of inline visualizations to display within a chart.</p>"
         }
       },
       "documentation":"<p>The configuration for a <code>TableVisual</code>.</p>"
@@ -20407,6 +20430,21 @@
         }
       },
       "documentation":"<p>The field wells for a table visual.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "TableInlineVisualization":{
+      "type":"structure",
+      "members":{
+        "DataBars":{
+          "shape":"DataBarsOptions",
+          "documentation":"<p>The configuration of the inline visualization of the data bars within a chart.</p>"
+        }
+      },
+      "documentation":"<p>The inline visualization of a specific type to display within a chart.</p>"
+    },
+    "TableInlineVisualizationList":{
+      "type":"list",
+      "member":{"shape":"TableInlineVisualization"},
+      "max":200
     },
     "TableOptions":{
       "type":"structure",
@@ -20731,7 +20769,7 @@
         },
         "ViolatedEntities":{
           "shape":"EntityList",
-          "documentation":"<p/>"
+          "documentation":"<p>An error path that shows which entities caused the template error.</p>"
         }
       },
       "documentation":"<p>List of errors that occurred when the template version creation failed.</p>"
@@ -20850,7 +20888,7 @@
         },
         "Status":{
           "shape":"ResourceStatus",
-          "documentation":"<p>The HTTP status of the request.</p>"
+          "documentation":"<p>The status that is associated with the template.</p> <ul> <li> <p> <code>CREATION_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATION_SUCCESSFUL</code> </p> </li> <li> <p> <code>CREATION_FAILED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>UPDATE_SUCCESSFUL</code> </p> </li> <li> <p> <code>UPDATE_FAILED</code> </p> </li> <li> <p> <code>DELETED</code> </p> </li> </ul>"
         },
         "DataSetConfigurations":{
           "shape":"DataSetConfigurationList",

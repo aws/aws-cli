@@ -168,6 +168,21 @@
       ],
       "documentation":"<p>Lists the SAP HANA databases of an application registered with AWS Systems Manager for SAP.</p>"
     },
+    "ListOperations":{
+      "name":"ListOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-operations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListOperationsInput"},
+      "output":{"shape":"ListOperationsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the operations performed by AWS Systems Manager for SAP.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -263,7 +278,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p/>"
+      "documentation":"<p>Updates the settings of an application registered with AWS Systems Manager for SAP.</p>"
     }
   },
   "shapes":{
@@ -276,38 +291,38 @@
       "members":{
         "Id":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "Type":{
           "shape":"ApplicationType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the application.</p>"
         },
         "Arn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application.</p>"
         },
         "AppRegistryArn":{
           "shape":"AppRegistryArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application Registry.</p>"
         },
         "Status":{
           "shape":"ApplicationStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the application.</p>"
         },
         "Components":{
           "shape":"ComponentIdList",
-          "documentation":"<p/>"
+          "documentation":"<p>The components of the application.</p>"
         },
         "LastUpdated":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The time at which the application was last updated.</p>"
         },
         "StatusMessage":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The status message.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>An SAP application registered with AWS Systems Manager for SAP.</p>"
     },
     "ApplicationCredential":{
       "type":"structure",
@@ -319,18 +334,18 @@
       "members":{
         "DatabaseName":{
           "shape":"DatabaseName",
-          "documentation":"<p/>"
+          "documentation":"<p>The name of the SAP HANA database.</p>"
         },
         "CredentialType":{
           "shape":"CredentialType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the application credentials. </p>"
         },
         "SecretId":{
           "shape":"SecretId",
-          "documentation":"<p/>"
+          "documentation":"<p>The secret ID created in AWS Secrets Manager to store the credentials of the SAP application. </p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The credentials of your SAP application.</p>"
     },
     "ApplicationCredentialList":{
       "type":"list",
@@ -360,22 +375,22 @@
       "members":{
         "Id":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "Type":{
           "shape":"ApplicationType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the application.</p>"
         },
         "Arn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags on the application.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The summary of the SAP application registered with AWS Systems Manager for SAP. </p>"
     },
     "ApplicationSummaryList":{
       "type":"list",
@@ -394,38 +409,38 @@
       "members":{
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentType":{
           "shape":"ComponentType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the component.</p>"
         },
         "Status":{
           "shape":"ComponentStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the component.</p>"
         },
         "Databases":{
           "shape":"DatabaseIdList",
-          "documentation":"<p/>"
+          "documentation":"<p>The SAP HANA databases of the component.</p>"
         },
         "Hosts":{
           "shape":"HostList",
-          "documentation":"<p/>"
+          "documentation":"<p>The hosts of the component.</p>"
         },
         "PrimaryHost":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The primary host of the component.</p>"
         },
         "LastUpdated":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The time at which the component was last updated.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The SAP component of your application.</p>"
     },
     "ComponentId":{
       "type":"string",
@@ -444,22 +459,22 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "ComponentType":{
           "shape":"ComponentType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the component.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags of the component.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The summary of the component.</p>"
     },
     "ComponentSummaryList":{
       "type":"list",
@@ -474,7 +489,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>A conflict has occurred.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -490,50 +505,50 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "Credentials":{
           "shape":"ApplicationCredentialList",
-          "documentation":"<p/>"
+          "documentation":"<p>The credentials of the database.</p>"
         },
         "DatabaseId":{
           "shape":"DatabaseId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the SAP HANA database.</p>"
         },
         "DatabaseName":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The name of the database.</p>"
         },
         "DatabaseType":{
           "shape":"DatabaseType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the database.</p>"
         },
         "Arn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database.</p>"
         },
         "Status":{
           "shape":"DatabaseStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the database.</p>"
         },
         "PrimaryHost":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The primary host of the database.</p>"
         },
         "SQLPort":{
           "shape":"Integer",
-          "documentation":"<p/>"
+          "documentation":"<p>The SQL port of the database.</p>"
         },
         "LastUpdated":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The time at which the database was last updated.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The SAP HANA database of the application registered with AWS Systems Manager for SAP.</p>"
     },
     "DatabaseId":{
       "type":"string",
@@ -563,30 +578,30 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "DatabaseId":{
           "shape":"DatabaseId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the database.</p>"
         },
         "DatabaseType":{
           "shape":"DatabaseType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the database.</p>"
         },
         "Arn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags of the database.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The summary of the database.</p>"
     },
     "DatabaseSummaryList":{
       "type":"list",
@@ -605,15 +620,15 @@
       "members":{
         "ActionType":{
           "shape":"PermissionActionType",
-          "documentation":"<p/>"
+          "documentation":"<p>Delete or restore the permissions on the target database.</p>"
         },
         "SourceResourceArn":{
           "shape":"Arn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source resource.</p>"
         },
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       }
     },
@@ -622,7 +637,7 @@
       "members":{
         "Policy":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The policy that removes permissions on the target database.</p>"
         }
       }
     },
@@ -632,7 +647,7 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         }
       }
     },
@@ -641,16 +656,67 @@
       "members":{
       }
     },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value",
+        "Operator"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the filter. Filter names are case-sensitive. </p>"
+        },
+        "Value":{
+          "shape":"FilterValue",
+          "documentation":"<p>The filter values. Filter values are case-sensitive. If you specify multiple values for a filter, the values are joined with an OR, and the request returns all results that match any of the specified values</p>"
+        },
+        "Operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>The operator for the filter. </p>"
+        }
+      },
+      "documentation":"<p>A specific result obtained by specifying the name, value, and operator. </p>"
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"},
+      "max":10,
+      "min":1
+    },
+    "FilterName":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
+    "FilterOperator":{
+      "type":"string",
+      "enum":[
+        "Equals",
+        "GreaterThanOrEquals",
+        "LessThanOrEquals"
+      ]
+    },
+    "FilterValue":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "GetApplicationInput":{
       "type":"structure",
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ApplicationArn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application. </p>"
+        },
+        "AppRegistryArn":{
+          "shape":"AppRegistryArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application registry.</p>"
         }
       }
     },
@@ -659,11 +725,11 @@
       "members":{
         "Application":{
           "shape":"Application",
-          "documentation":"<p/>"
+          "documentation":"<p>Returns all of the metadata of an application registered with AWS Systems Manager for SAP.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags of a registered application.</p>"
         }
       }
     },
@@ -676,11 +742,11 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         }
       }
     },
@@ -689,7 +755,7 @@
       "members":{
         "Component":{
           "shape":"Component",
-          "documentation":"<p/>"
+          "documentation":"<p>The component of an application registered with AWS Systems Manager for SAP.</p>"
         }
       }
     },
@@ -698,19 +764,19 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "DatabaseId":{
           "shape":"DatabaseId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the database.</p>"
         },
         "DatabaseArn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database.</p>"
         }
       }
     },
@@ -719,11 +785,11 @@
       "members":{
         "Database":{
           "shape":"Database",
-          "documentation":"<p/>"
+          "documentation":"<p>The SAP HANA database of an application registered with AWS Systems Manager for SAP.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags of a database.</p>"
         }
       }
     },
@@ -733,7 +799,7 @@
       "members":{
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the operation.</p>"
         }
       }
     },
@@ -742,7 +808,7 @@
       "members":{
         "Operation":{
           "shape":"Operation",
-          "documentation":"<p/>"
+          "documentation":"<p>Returns the details of an operation.</p>"
         }
       }
     },
@@ -756,7 +822,7 @@
         },
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       }
     },
@@ -774,22 +840,22 @@
       "members":{
         "HostName":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The name of the Dedicated Host.</p>"
         },
         "HostRole":{
           "shape":"HostRole",
-          "documentation":"<p/>"
+          "documentation":"<p>The role of the Dedicated Host.</p>"
         },
         "HostIp":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The IP address of the Dedicated Host. </p>"
         },
         "InstanceId":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The instance ID of the instance on the Dedicated Host.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Describes the properties of the Dedicated Host. </p>"
     },
     "HostList":{
       "type":"list",
@@ -823,7 +889,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>An internal error has occurred.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -833,11 +899,11 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token for the next page of results.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p/>",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. </p>",
           "box":true
         }
       }
@@ -847,11 +913,11 @@
       "members":{
         "Applications":{
           "shape":"ApplicationSummaryList",
-          "documentation":"<p/>"
+          "documentation":"<p>The applications registered with AWS Systems Manager for SAP.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
         }
       }
     },
@@ -860,15 +926,15 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token for the next page of results.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p/>",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p> <p>If you do not specify a value for MaxResults, the request returns 50 items per page by default.</p>",
           "box":true
         }
       }
@@ -878,11 +944,11 @@
       "members":{
         "Components":{
           "shape":"ComponentSummaryList",
-          "documentation":"<p/>"
+          "documentation":"<p>List of components registered with AWS System Manager for SAP.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
         }
       }
     },
@@ -891,19 +957,19 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ComponentId":{
           "shape":"ComponentId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the component.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token for the next page of results. </p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p/>",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If you do not specify a value for MaxResults, the request returns 50 items per page by default.</p>",
           "box":true
         }
       }
@@ -913,11 +979,47 @@
       "members":{
         "Databases":{
           "shape":"DatabaseSummaryList",
-          "documentation":"<p/>"
+          "documentation":"<p>The SAP HANA databases of an application.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p/>"
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListOperationsInput":{
+      "type":"structure",
+      "required":["ApplicationId"],
+      "members":{
+        "ApplicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. If you do not specify a value for MaxResults, the request returns 50 items per page by default.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results. </p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters of an operation.</p>"
+        }
+      }
+    },
+    "ListOperationsOutput":{
+      "type":"structure",
+      "members":{
+        "Operations":{
+          "shape":"OperationList",
+          "documentation":"<p>List of operations performed by AWS Systems Manager for SAP.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
         }
       }
     },
@@ -927,7 +1029,7 @@
       "members":{
         "resourceArn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -956,50 +1058,50 @@
       "members":{
         "Id":{
           "shape":"OperationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the operation.</p>"
         },
         "Type":{
           "shape":"OperationType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the operation.</p>"
         },
         "Status":{
           "shape":"OperationStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the operation.</p>"
         },
         "StatusMessage":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The status message of the operation.</p>"
         },
         "Properties":{
           "shape":"OperationProperties",
-          "documentation":"<p/>"
+          "documentation":"<p>The properties of the operation.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p/>"
+          "documentation":"<p>The resource type of the operation.</p>"
         },
         "ResourceId":{
           "shape":"ResourceId",
-          "documentation":"<p/>"
+          "documentation":"<p>The resource ID of the operation.</p>"
         },
         "ResourceArn":{
           "shape":"Arn",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the operation.</p>"
         },
         "StartTime":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The start time of the operation.</p>"
         },
         "EndTime":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The end time of the operation.</p>"
         },
         "LastUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p/>"
+          "documentation":"<p>The time at which the operation was last updated.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The operations performed by AWS Systems Manager for SAP.</p>"
     },
     "OperationId":{
       "type":"string",
@@ -1008,6 +1110,10 @@
     "OperationIdList":{
       "type":"list",
       "member":{"shape":"OperationId"}
+    },
+    "OperationList":{
+      "type":"list",
+      "member":{"shape":"Operation"}
     },
     "OperationProperties":{
       "type":"map",
@@ -1069,31 +1175,31 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "ApplicationType":{
           "shape":"ApplicationType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of the application.</p>"
         },
         "Instances":{
           "shape":"InstanceList",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon EC2 instances on which your SAP application is running.</p>"
         },
         "SapInstanceNumber":{
           "shape":"SAPInstanceNumber",
-          "documentation":"<p/>"
+          "documentation":"<p>The SAP instance number of the application.</p>"
         },
         "Sid":{
           "shape":"SID",
-          "documentation":"<p/>"
+          "documentation":"<p>The System ID of the application.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags to be attached to the SAP application.</p>"
         },
         "Credentials":{
           "shape":"ApplicationCredentialList",
-          "documentation":"<p/>"
+          "documentation":"<p>The credentials of the SAP application.</p>"
         }
       }
     },
@@ -1102,11 +1208,11 @@
       "members":{
         "Application":{
           "shape":"Application",
-          "documentation":"<p/>"
+          "documentation":"<p>The application registered with AWS Systems Manager for SAP.</p>"
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the operation.</p>"
         }
       }
     },
@@ -1120,7 +1226,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The resource is not available.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -1173,13 +1279,13 @@
       "members":{
         "resourceArn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p/>"
+          "documentation":"<p>The tags on a resource.</p>"
         }
       }
     },
@@ -1203,7 +1309,7 @@
       "members":{
         "resourceArn":{
           "shape":"SsmSapArn",
-          "documentation":"<p/>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -1226,15 +1332,15 @@
       "members":{
         "ApplicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the application.</p>"
         },
         "CredentialsToAddOrUpdate":{
           "shape":"ApplicationCredentialList",
-          "documentation":"<p/>"
+          "documentation":"<p>The credentials to be added or updated.</p>"
         },
         "CredentialsToRemove":{
           "shape":"ApplicationCredentialList",
-          "documentation":"<p/>"
+          "documentation":"<p>The credentials to be removed.</p>"
         }
       }
     },
@@ -1243,11 +1349,11 @@
       "members":{
         "Message":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The update message.</p>"
         },
         "OperationIds":{
           "shape":"OperationIdList",
-          "documentation":"<p/>"
+          "documentation":"<p>The IDs of the operations.</p>"
         }
       }
     },
@@ -1256,7 +1362,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true

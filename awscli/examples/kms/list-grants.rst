@@ -33,7 +33,7 @@ The output shows that the grant gives Amazon DynamoDB permission to use the KMS 
                 "KeyId": "arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
                 "RetiringPrincipal": "dynamodb.us-west-2.amazonaws.com",
                 "GranteePrincipal": "dynamodb.us-west-2.amazonaws.com",
-                "CreationDate": 1518567315.0
+                "CreationDate": "2021-05-13T18:32:45.144000+00:00"
             }
         ]
     }

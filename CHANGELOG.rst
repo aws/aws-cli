@@ -4756,6 +4756,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.56
+=======
+
+* api-change:``databrew``: Enabled FIPS us-gov-west-1 endpoints in SDK.
+* api-change:``route53``: Amazon Route 53 now supports the Asia Pacific (Melbourne) Region (ap-southeast-4) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``ssm-sap``: This release provides updates to documentation and support for listing operations performed by AWS Systems Manager for SAP.
+
+
+1.27.55
+=======
+
+* enhancement:``gamelift upload-build``: Add ``--server-sdk-version`` parameter to the ``upload-build`` command
+* api-change:``lambda``: Release Lambda RuntimeManagementConfig, enabling customers to better manage runtime updates to their Lambda functions. This release adds two new APIs, GetRuntimeManagementConfig and PutRuntimeManagementConfig, as well as support on existing Create/Get/Update function APIs.
+* api-change:``sagemaker``: Amazon SageMaker Inference now supports P4de instance types.
+
+
+1.27.54
+=======
+
+* api-change:``ec2``: C6in, M6in, M6idn, R6in and R6idn instances are powered by 3rd Generation Intel Xeon Scalable processors (code named Ice Lake) with an all-core turbo frequency of 3.5 GHz.
+* api-change:``ivs``: API and Doc update. Update to arns field in BatchGetStreamKey. Also updates to operations and structures.
+* api-change:``quicksight``: This release adds support for data bars in QuickSight table and increases pivot table field well limit.
+
+
 1.27.53
 =======
 

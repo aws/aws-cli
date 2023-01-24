@@ -8,7 +8,7 @@ from subprocess import run
 
 ROOT = Path(__file__).parents[2]
 DOCKERFILE_PATH = ROOT / "scripts" / "regenerate-configure" / "Dockerfile"
-IMAGE_RE = re.compile(r"writing image sha256:(?P<image>.*?)\s")
+IMAGE_RE = re.compile(r"sha256:(?P<image>.*?)\s")
 
 
 def main(cleanup):
@@ -22,12 +22,11 @@ def main(cleanup):
 def _build_image():
     print(f"Building docker image from: {DOCKERFILE_PATH}")
     result = _docker(
-        ["build", "-f", str(DOCKERFILE_PATH), "."],
+        ["build", "-f", str(DOCKERFILE_PATH), ".", "--quiet"],
         cwd=ROOT,
     )
     _assert_success(result)
-
-    match = IMAGE_RE.search(result.stderr.decode())
+    match = IMAGE_RE.search(result.stdout.decode())
     image = match.groups("image")[0]
     print(f"Image created: {image}")
     return image

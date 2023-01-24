@@ -3,7 +3,7 @@ ENV AUTOCONF_VERSION=2.71
 ENV AUTOMAKE_VERSION=1.16.5
 
 WORKDIR /build
-COPY ../ /build
+COPY ./ /build
 RUN yum -y update
 RUN yum -y install curl xz gzip  m4 perl perl-Data-Dumper make tar help2man cpanminus
 RUN cpanm Thread::Queue

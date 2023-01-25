@@ -95,6 +95,28 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             },
         )
 
+    @mock.patch('awscli.customizations.eks.get_token.datetime')
+    def test_query_nested_object(self, mock_datetime):
+        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd += ' --query status'
+        response = self.run_get_token(cmd)
+        self.assertEqual(
+            response,
+            {
+                "expirationTimestamp": "2019-10-23T23:14:00Z",
+                "token": mock.ANY,  # This is asserted in later cases
+            },
+        )
+
+    def test_query_value(self):
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd += ' --query apiVersion'
+        response = self.run_get_token(cmd)
+        self.assertEqual(
+            response, "client.authentication.k8s.io/v1beta1",
+        )
+
     def test_url(self):
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         response = self.run_get_token(cmd)

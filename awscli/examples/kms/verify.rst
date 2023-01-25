@@ -1,6 +1,6 @@
 **To verify a digital signature**
 
-The following ``verify`` example verifies a cryptographic signature for a short message. The key ID, message, message type, and signing algorithm must be same ones that were used to sign the message. The signature that you specify cannot be base64-encoded. For help decoding the signature that the ``sign`` command returns, see the ``sign`` command examples.
+The following ``verify`` example verifies a cryptographic signature for a short, Base64-encoded message. The key ID, message, message type, and signing algorithm must be same ones that were used to sign the message. The signature that you specify cannot be base64-encoded. For help decoding the signature that the ``sign`` command returns, see the ``sign`` command examples.
 
 The output of the command includes a Boolean ``SignatureValid`` field that indicates that the signature was verified. If the signature validation fails, the ``verify`` command fails, too.
 
@@ -8,7 +8,7 @@ Before running this command, replace the example key ID with a valid key ID from
 
     aws kms verify \
         --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
-        --message fileb://originalString \
+        --message fileb://EncodedMessage \
         --message-type RAW \
         --signing-algorithm RSASSA_PKCS1_V1_5_SHA_256 \
         --signature fileb://ExampleSignature

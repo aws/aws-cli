@@ -18,7 +18,7 @@ authorize operations:
 * --port:  A single integer or a range (min-max). You can specify ``all``
   to mean all ports (for example, port range 0-65535)
 * --source-group: Either the source security group ID or name.
-* --cidr -  The CIDR range. Cannot be used when specifying a source or
+* --cidr -  The IPv4 address range, in CIDR format. Cannot be used when specifying a source or
   destination security group.
 """
 
@@ -108,7 +108,7 @@ PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
              ' A value of -1 indicates all ICMP codes for'
              ' all ICMP types. A value of -1 just for <code>type</code>'
              ' indicates all ICMP codes for the specified ICMP type.</p>')
-CIDR_DOCS = '<p>The CIDR IP range.</p>'
+CIDR_DOCS = '<p>The IPv4 address range, in CIDR format.</p>'
 SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group.</p>')
 GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
                    'group. Cannot be used when specifying a CIDR IP '

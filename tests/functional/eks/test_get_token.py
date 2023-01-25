@@ -117,6 +117,26 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             response, "client.authentication.k8s.io/v1beta1",
         )
 
+    @mock.patch('awscli.customizations.eks.get_token.datetime')
+    def test_output_text(self, mock_datetime):
+        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd += ' --output text'
+        stdout, _, _ = self.run_cmd(cmd)
+        self.assertIn("ExecCredential", stdout)
+        self.assertIn("client.authentication.k8s.io/v1beta1", stdout)
+        self.assertIn("2019-10-23T23:14:00Z", stdout)
+
+    @mock.patch('awscli.customizations.eks.get_token.datetime')
+    def test_output_table(self, mock_datetime):
+        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd += ' --output table'
+        stdout, _, _ = self.run_cmd(cmd)
+        self.assertIn("ExecCredential", stdout)
+        self.assertIn("client.authentication.k8s.io/v1beta1", stdout)
+        self.assertIn("2019-10-23T23:14:00Z", stdout)
+
     def test_url(self):
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         response = self.run_get_token(cmd)

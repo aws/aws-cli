@@ -4770,6 +4770,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.58
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``iotfleetwise``: Add model validation to BatchCreateVehicle and BatchUpdateVehicle operations that invalidate requests with an empty vehicles list.
+* api-change:``s3``: Allow FIPS to be used with path-style URLs.
+
+
+1.27.57
+=======
+
+* enhancement:ec2 customization: Update --cidr parameter description to indicate the address range must be IPv4
+* api-change:``cloudformation``: Enabled FIPS aws-us-gov endpoints in SDK.
+* api-change:``ec2``: This release adds new functionality that allows customers to provision IPv6 CIDR blocks through Amazon VPC IP Address Manager (IPAM) as well as allowing customers to utilize IPAM Resource Discovery APIs.
+* api-change:``m2``: Add returnCode, batchJobIdentifier in GetBatchJobExecution response, for user to view the batch job execution result & unique identifier from engine. Also removed unused headers from REST APIs
+* api-change:``polly``: Add 5 new neural voices - Sergio (es-ES), Andres (es-MX), Remi (fr-FR), Adriano (it-IT) and Thiago (pt-BR).
+* api-change:``redshift-serverless``: Added query monitoring rules as possible parameters for create and update workgroup operations.
+* api-change:``s3control``: Add additional endpoint tests for S3 Control. Fix missing endpoint parameters for PutBucketVersioning and GetBucketVersioning. Prior to this fix, those operations may have resulted in an invalid endpoint being resolved.
+* api-change:``sagemaker``: SageMaker Inference Recommender now decouples from Model Registry and could accept Model Name to invoke inference recommendations job; Inference Recommender now provides CPU/Memory Utilization metrics data in recommendation output.
+* api-change:``sts``: Doc only change to update wording in a key topic
+
+
 1.27.56
 =======
 

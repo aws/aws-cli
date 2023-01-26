@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.58
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``iotfleetwise``: Add model validation to BatchCreateVehicle and BatchUpdateVehicle operations that invalidate requests with an empty vehicles list.
+* api-change:``s3``: Allow FIPS to be used with path-style URLs.
+
+
 1.27.57
 =======
 

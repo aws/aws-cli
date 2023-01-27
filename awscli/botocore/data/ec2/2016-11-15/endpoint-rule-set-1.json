@@ -165,12 +165,18 @@
                             "rules": [
                                 {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://ec2-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://ec2-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -238,7 +244,7 @@
                                                 }
                                             ],
                                             "endpoint": {
-                                                "url": "https://ec2.{Region}.{PartitionResult#dnsSuffix}",
+                                                "url": "https://ec2.{Region}.amazonaws.com",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -300,12 +306,18 @@
                             "rules": [
                                 {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://ec2.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://ec2.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -318,12 +330,56 @@
                 },
                 {
                     "conditions": [],
-                    "endpoint": {
-                        "url": "https://ec2.{Region}.{PartitionResult#dnsSuffix}",
-                        "properties": {},
-                        "headers": {}
-                    },
-                    "type": "endpoint"
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        },
+                                        "us-gov-east-1"
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://ec2.us-gov-east-1.amazonaws.com",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        },
+                                        "us-gov-west-1"
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://ec2.us-gov-west-1.amazonaws.com",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://ec2.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        }
+                    ]
                 }
             ]
         }

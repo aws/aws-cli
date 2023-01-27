@@ -2234,7 +2234,19 @@
         {
             "documentation": "ForcePathStyle, aws-global region with fips is invalid",
             "expect": {
-                "error": "Path-style addressing cannot be used with FIPS"
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "s3",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true,
+                                "name": "sigv4"
+                            }
+                        ]
+                    },
+                    "url": "https://s3-fips.us-east-1.amazonaws.com/bucket-name"
+                }
             },
             "params": {
                 "Region": "aws-global",
@@ -3304,32 +3316,42 @@
             }
         },
         {
-            "documentation": "path style + fips@us-west-2",
+            "documentation": "fips@us-gov-west-2, bucket is not S3-dns-compatible (subdomains)",
             "expect": {
-                "error": "Path-style addressing cannot be used with FIPS"
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "s3",
+                                "signingRegion": "us-gov-west-1",
+                                "disableDoubleEncoding": true,
+                                "name": "sigv4"
+                            }
+                        ]
+                    },
+                    "url": "https://s3-fips.us-gov-west-1.amazonaws.com/bucket.with.dots"
+                }
             },
             "operationInputs": [
                 {
                     "builtInParams": {
-                        "AWS::Region": "us-west-2",
+                        "AWS::Region": "us-gov-west-1",
                         "AWS::UseFIPS": true,
                         "AWS::S3::ForcePathStyle": true
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "bucket-name",
+                        "Bucket": "bucket.with.dots",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Accelerate": false,
-                "Bucket": "bucket-name",
-                "ForcePathStyle": true,
-                "Region": "us-west-2",
+                "Bucket": "bucket.with.dots",
+                "Region": "us-gov-west-1",
                 "UseDualStack": false,
-                "UseFIPS": true,
-                "___key": "key"
+                "UseFIPS": true
             }
         },
         {
@@ -3552,7 +3574,19 @@
         {
             "documentation": "path style + fips@cn-north-1",
             "expect": {
-                "error": "Path-style addressing cannot be used with FIPS"
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "s3",
+                                "signingRegion": "cn-north-1",
+                                "disableDoubleEncoding": true,
+                                "name": "sigv4"
+                            }
+                        ]
+                    },
+                    "url": "https://s3-fips.cn-north-1.amazonaws.com.cn/bucket-name"
+                }
             },
             "operationInputs": [
                 {
@@ -3574,8 +3608,7 @@
                 "ForcePathStyle": true,
                 "Region": "cn-north-1",
                 "UseDualStack": false,
-                "UseFIPS": true,
-                "___key": "key"
+                "UseFIPS": true
             }
         },
         {
@@ -3798,7 +3831,19 @@
         {
             "documentation": "path style + fips@af-south-1",
             "expect": {
-                "error": "Path-style addressing cannot be used with FIPS"
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "s3",
+                                "signingRegion": "af-south-1",
+                                "disableDoubleEncoding": true,
+                                "name": "sigv4"
+                            }
+                        ]
+                    },
+                    "url": "https://s3-fips.af-south-1.amazonaws.com/bucket-name"
+                }
             },
             "operationInputs": [
                 {
@@ -3820,8 +3865,7 @@
                 "ForcePathStyle": true,
                 "Region": "af-south-1",
                 "UseDualStack": false,
-                "UseFIPS": true,
-                "___key": "key"
+                "UseFIPS": true
             }
         },
         {

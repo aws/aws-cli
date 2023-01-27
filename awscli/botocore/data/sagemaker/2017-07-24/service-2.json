@@ -2467,6 +2467,9 @@
       },
       "input":{"shape":"ListInferenceRecommendationsJobStepsRequest"},
       "output":{"shape":"ListInferenceRecommendationsJobStepsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
       "documentation":"<p>Returns a list of the subtasks for an Inference Recommender job.</p> <p>The supported subtasks are benchmarks, which evaluate the performance of your model on different instance types.</p>"
     },
     "ListInferenceRecommendationsJobs":{
@@ -18127,6 +18130,10 @@
         "ModelConfiguration":{
           "shape":"ModelConfiguration",
           "documentation":"<p>Defines the model configuration.</p>"
+        },
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID which uniquely identifies each recommendation.</p>"
         }
       },
       "documentation":"<p>A list of recommendations made by Amazon SageMaker Inference Recommender.</p>"
@@ -23444,6 +23451,10 @@
         "EnvironmentParameters":{
           "shape":"EnvironmentParameters",
           "documentation":"<p>Defines the environment parameters that includes key, value types, and values.</p>"
+        },
+        "CompilationJobName":{
+          "shape":"RecommendationJobCompilationJobName",
+          "documentation":"<p>The name of the compilation job used to create the recommended model artifacts.</p>"
         }
       },
       "documentation":"<p>Defines the model configuration. Includes the specification name and environment parameters.</p>"
@@ -28002,6 +28013,12 @@
       "max":256,
       "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:inference-recommendations-job/.*"
     },
+    "RecommendationJobCompilationJobName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
     "RecommendationJobCompiledOutputConfig":{
       "type":"structure",
       "members":{
@@ -28042,9 +28059,19 @@
         "SupportedInstanceTypes":{
           "shape":"RecommendationJobSupportedInstanceTypes",
           "documentation":"<p>A list of the instance types that are used to generate inferences in real-time.</p>"
+        },
+        "DataInputConfig":{
+          "shape":"RecommendationJobDataInputConfig",
+          "documentation":"<p>Specifies the name and shape of the expected data inputs for your trained model with a JSON dictionary form. This field is used for optimizing your model using SageMaker Neo. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_InputConfig.html#sagemaker-Type-InputConfig-DataInputConfig\">DataInputConfig</a>.</p>"
         }
       },
       "documentation":"<p>Specifies mandatory fields for running an Inference Recommender job directly in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateInferenceRecommendationsJob.html\">CreateInferenceRecommendationsJob</a> API. The fields specified in <code>ContainerConfig</code> override the corresponding fields in the model package. Use <code>ContainerConfig</code> if you want to specify these fields for the recommendation job but don't want to edit them in your model package.</p>"
+    },
+    "RecommendationJobDataInputConfig":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\S\\s]+"
     },
     "RecommendationJobDescription":{
       "type":"string",
@@ -28066,7 +28093,6 @@
     },
     "RecommendationJobInputConfig":{
       "type":"structure",
-      "required":["ModelPackageVersionArn"],
       "members":{
         "ModelPackageVersionArn":{
           "shape":"ModelPackageArn",
@@ -28103,6 +28129,10 @@
         "VpcConfig":{
           "shape":"RecommendationJobVpcConfig",
           "documentation":"<p>Inference Recommender provisions SageMaker endpoints with access to VPC in the inference recommendation job.</p>"
+        },
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the created model.</p>"
         }
       },
       "documentation":"<p>The input configuration of the recommendation job.</p>"
@@ -28259,6 +28289,14 @@
         "ModelLatency":{
           "shape":"Integer",
           "documentation":"<p>The expected model latency at maximum invocation per minute for the instance.</p>"
+        },
+        "CpuUtilization":{
+          "shape":"UtilizationMetric",
+          "documentation":"<p>The expected CPU utilization at maximum invocations per minute for the instance.</p> <p> <code>NaN</code> indicates that the value is not available.</p>"
+        },
+        "MemoryUtilization":{
+          "shape":"UtilizationMetric",
+          "documentation":"<p>The expected memory utilization at maximum invocations per minute for the instance.</p> <p> <code>NaN</code> indicates that the value is not available.</p>"
         }
       },
       "documentation":"<p>The metrics of recommendations.</p>"
@@ -32888,6 +32926,10 @@
         }
       },
       "documentation":"<p>A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"
+    },
+    "UtilizationMetric":{
+      "type":"float",
+      "min":0.0
     },
     "ValidationFraction":{
       "type":"float",

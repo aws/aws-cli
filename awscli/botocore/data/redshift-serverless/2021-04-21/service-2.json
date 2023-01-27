@@ -546,7 +546,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Restores a table from a snapshot to your Amazon Redshift Serverless instance.</p>"
+      "documentation":"<p>Restores a table from a snapshot to your Amazon Redshift Serverless instance. You can't use this operation to restore tables with <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/t_Sorting_data.html#t_Sorting_data-interleaved\">interleaved sort keys</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -612,7 +612,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates a namespace with the specified settings.</p>"
+      "documentation":"<p>Updates a namespace with the specified settings. Unless required, you can't update multiple parameters in one request. For example, you must specify both <code>adminUsername</code> and <code>adminUserPassword</code> to update either field, but you can't update both <code>kmsKeyId</code> and <code>logExports</code> in a single request.</p>"
     },
     "UpdateSnapshot":{
       "name":"UpdateSnapshot",
@@ -661,7 +661,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates a workgroup with the specified configuration settings.</p>"
+      "documentation":"<p>Updates a workgroup with the specified configuration settings. You can't update multiple parameters in one request. For example, you can update <code>baseCapacity</code> or <code>port</code> in a single request, but you can't update both in the same request.</p>"
     }
   },
   "shapes":{
@@ -692,7 +692,7 @@
       "members":{
         "parameterKey":{
           "shape":"ParameterKey",
-          "documentation":"<p>The key of the parameter. The options are <code>datestyle</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and <code>max_query_execution_time</code>.</p>"
+          "documentation":"<p>The key of the parameter. The options are <code>auto_mv</code>, <code>datestyle</code>, <code>enable_case_sensitivity_identifier</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and query monitoring metrics that let you define performance boundaries. For more information about query monitoring rules and available metrics, see <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-query-monitoring-metrics-serverless\">Query monitoring metrics for Amazon Redshift Serverless</a>.</p>"
         },
         "parameterValue":{
           "shape":"ParameterValue",
@@ -920,7 +920,7 @@
         },
         "configParameters":{
           "shape":"ConfigParameterList",
-          "documentation":"<p>An array of parameters to set for more control over a serverless database. The options are <code>datestyle</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and <code>max_query_execution_time</code>.</p>"
+          "documentation":"<p>An array of parameters to set for advanced control over a database. The options are <code>auto_mv</code>, <code>datestyle</code>, <code>enable_case_sensitivity_identifier</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and query monitoring metrics that let you define performance boundaries. For more information about query monitoring rules and available metrics, see <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-query-monitoring-metrics-serverless\"> Query monitoring metrics for Amazon Redshift Serverless</a>.</p>"
         },
         "enhancedVpcRouting":{
           "shape":"Boolean",
@@ -2396,19 +2396,19 @@
       "members":{
         "adminUserPassword":{
           "shape":"DbPassword",
-          "documentation":"<p>The password of the administrator for the first database created in the namespace.</p>"
+          "documentation":"<p>The password of the administrator for the first database created in the namespace. This parameter must be updated together with <code>adminUsername</code>.</p>"
         },
         "adminUsername":{
           "shape":"DbUser",
-          "documentation":"<p>The username of the administrator for the first database created in the namespace.</p>"
+          "documentation":"<p>The username of the administrator for the first database created in the namespace. This parameter must be updated together with <code>adminUserPassword</code>.</p>"
         },
         "defaultIamRoleArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to set as a default in the namespace.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to set as a default in the namespace. This parameter must be updated together with <code>iamRoles</code>.</p>"
         },
         "iamRoles":{
           "shape":"IamRoleArnList",
-          "documentation":"<p>A list of IAM roles to associate with the namespace.</p>"
+          "documentation":"<p>A list of IAM roles to associate with the namespace. This parameter must be updated together with <code>defaultIamRoleArn</code>.</p>"
         },
         "kmsKeyId":{
           "shape":"String",
@@ -2420,7 +2420,7 @@
         },
         "namespaceName":{
           "shape":"NamespaceName",
-          "documentation":"<p>The name of the namespace.</p>"
+          "documentation":"<p>The name of the namespace to update. You can't update the name of a namespace once it is created.</p>"
         }
       }
     },
@@ -2494,7 +2494,7 @@
         },
         "configParameters":{
           "shape":"ConfigParameterList",
-          "documentation":"<p>An array of parameters to set for advanced control over a database. The options are <code>datestyle</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and <code>max_query_execution_time</code>.</p>"
+          "documentation":"<p>An array of parameters to set for advanced control over a database. The options are <code>auto_mv</code>, <code>datestyle</code>, <code>enable_case_sensitivity_identifier</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and query monitoring metrics that let you define performance boundaries. For more information about query monitoring rules and available metrics, see <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-query-monitoring-metrics-serverless\"> Query monitoring metrics for Amazon Redshift Serverless</a>.</p>"
         },
         "enhancedVpcRouting":{
           "shape":"Boolean",
@@ -2518,7 +2518,7 @@
         },
         "workgroupName":{
           "shape":"WorkgroupName",
-          "documentation":"<p>The name of the workgroup to update.</p>"
+          "documentation":"<p>The name of the workgroup to update. You can't update the name of a workgroup once it is created.</p>"
         }
       }
     },
@@ -2658,7 +2658,7 @@
         },
         "configParameters":{
           "shape":"ConfigParameterList",
-          "documentation":"<p>An array of parameters to set for finer control over a database. The options are <code>datestyle</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, <code>search_path</code>, and <code>max_query_execution_time</code>.</p>"
+          "documentation":"<p>An array of parameters to set for advanced control over a database. The options are <code>auto_mv</code>, <code>datestyle</code>, <code>enable_case_sensitivity_identifier</code>, <code>enable_user_activity_logging</code>, <code>query_group</code>, , <code>search_path</code>, and query monitoring metrics that let you define performance boundaries. For more information about query monitoring rules and available metrics, see <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-query-monitoring-metrics-serverless\"> Query monitoring metrics for Amazon Redshift Serverless</a>.</p>"
         },
         "creationDate":{
           "shape":"SyntheticTimestamp_date_time",

@@ -548,6 +548,9 @@
       "documentation":"<note> <p>This operation returns the versioning state only for S3 on Outposts buckets. To return the versioning state for an S3 bucket, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketVersioning.html\">GetBucketVersioning</a> in the <i>Amazon S3 API Reference</i>. </p> </note> <p>Returns the versioning state for an S3 on Outposts bucket. With versioning, you can save multiple distinct copies of your data and recover from unintended user actions and application failures.</p> <p>If you've never set versioning on your bucket, it has no versioning state. In that case, the <code>GetBucketVersioning</code> request does not return a versioning state value.</p> <p>For more information about versioning, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html\">Versioning</a> in the <i>Amazon S3 User Guide</i>.</p> <p>All Amazon S3 on Outposts REST API requests for this action require an additional parameter of <code>x-amz-outpost-id</code> to be passed with the request. In addition, you must use an S3 on Outposts endpoint hostname prefix instead of <code>s3-control</code>. For an example of the request syntax for Amazon S3 on Outposts that uses the S3 on Outposts endpoint hostname prefix and the <code>x-amz-outpost-id</code> derived by using the access point ARN, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetBucketVersioning.html#API_control_GetBucketVersioning_Examples\">Examples</a> section.</p> <p>The following operations are related to <code>GetBucketVersioning</code> for S3 on Outposts.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutBucketVersioning.html\">PutBucketVersioning</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutBucketLifecycleConfiguration.html\">PutBucketLifecycleConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetBucketLifecycleConfiguration.html\">GetBucketLifecycleConfiguration</a> </p> </li> </ul>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
       }
     },
     "GetJobTagging":{
@@ -912,7 +915,10 @@
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
-      "httpChecksumRequired":true
+      "httpChecksumRequired":true,
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
     },
     "PutJobTagging":{
       "name":"PutJobTagging",
@@ -2659,6 +2665,7 @@
         "AccountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID of the S3 on Outposts bucket.</p>",
+          "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
           "locationName":"x-amz-account-id"
@@ -2666,6 +2673,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The S3 on Outposts bucket to return the versioning state for.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"name"
         }
@@ -4552,6 +4560,7 @@
         "AccountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID of the S3 on Outposts bucket.</p>",
+          "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
           "locationName":"x-amz-account-id"
@@ -4559,6 +4568,7 @@
         "Bucket":{
           "shape":"BucketName",
           "documentation":"<p>The S3 on Outposts bucket to set the versioning state for.</p>",
+          "contextParam":{"name":"Bucket"},
           "location":"uri",
           "locationName":"name"
         },

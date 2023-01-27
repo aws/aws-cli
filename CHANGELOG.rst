@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.27.59
+=======
+
+* api-change:``application-autoscaling``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``appstream``: Fixing the issue where Appstream waiters hang for fleet_started and fleet_stopped.
+* api-change:``elasticbeanstalk``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``fis``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``glacier``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``greengrass``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``greengrassv2``: Enabled FIPS endpoints for GovCloud (US) in SDK.
+* api-change:``mediatailor``: This release introduces the As Run logging type, along with API and documentation updates.
+* api-change:``outposts``: Adding support for payment term in GetOrder, CreateOrder responses.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``sagemaker``: This release supports running SageMaker Training jobs with container images that are in a private Docker registry.
+* api-change:``serverlessrepo``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+
+
 1.27.58
 =======
 

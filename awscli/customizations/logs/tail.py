@@ -95,7 +95,7 @@ class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
     def _format_pretty_json(self, log_message):
         try:
             loaded_json = json.loads(log_message)
-            return '\n%s' % json.dumps(loaded_json, indent=4)
+            return '\n%s' % json.dumps(loaded_json, indent=4, ensure_ascii=False)
         except json.decoder.JSONDecodeError:
             pass
         return log_message

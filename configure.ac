@@ -3,6 +3,22 @@ AC_INIT([awscli], [2.7.31])
 AC_CONFIG_SRCDIR([bin/aws])
 AM_PATH_PYTHON([3.8])
 
+AC_MSG_CHECKING(for sqlite3)
+read -r -d '' SQLITE_TEST_PROG <<-EOF
+import sys
+try:
+    import sqlite3
+except ImportError:
+    sys.exit(1)
+EOF
+$PYTHON -c "${SQLITE_TEST_PROG}"
+if [[ $? -eq 0 ]]
+then
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_ERROR(AWS CLI requires a Python interpreter compiled with sqlite3. $PYTHON does not have sqlite3., 1)
+fi
+
 AC_MSG_CHECKING(for --with-install-type)
 AC_ARG_WITH(install_type,
             AS_HELP_STRING([--with-install-type=@<:@system-sandbox|portable-exe@:>@],

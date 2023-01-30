@@ -2030,6 +2030,24 @@ printf "%s\n" "$am_cv_python_pyexecdir" >&6; }
   fi
 
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sqlite3" >&5
+printf %s "checking for sqlite3... " >&6; }
+read -r -d '' SQLITE_TEST_PROG <<-EOF
+import sys
+try:
+    import sqlite3
+except ImportError:
+    sys.exit(1)
+EOF
+$PYTHON -c "${SQLITE_TEST_PROG}"
+if [ $? -eq 0 ]
+then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else
+    as_fn_error 1 "AWS CLI requires a Python interpreter compiled with sqlite3. $PYTHON does not have sqlite3." "$LINENO" 5
+fi
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for --with-install-type" >&5
 printf %s "checking for --with-install-type... " >&6; }
 

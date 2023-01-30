@@ -323,7 +323,12 @@ def _apply_request_trailer_checksum(request):
         return
 
     headers["Transfer-Encoding"] = "chunked"
-    headers["Content-Encoding"] = "aws-chunked"
+    if "Content-Encoding" in headers:
+        # We need to preserve the existing content encoding and add
+        # aws-chunked as a new content encoding.
+        headers["Content-Encoding"] += ",aws-chunked"
+    else:
+        headers["Content-Encoding"] = "aws-chunked"
     headers["X-Amz-Trailer"] = location_name
 
     content_length = determine_content_length(body)

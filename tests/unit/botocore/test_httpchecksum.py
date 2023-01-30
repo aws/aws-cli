@@ -300,6 +300,34 @@ class TestHttpChecksumHandlers(unittest.TestCase):
         # The body should not have been wrapped
         self.assertIsInstance(request["body"], bytes)
 
+    def test_apply_request_checksum_content_encoding_preset(self):
+        request = self._build_request(b"")
+        request["context"]["checksum"] = {
+            "request_algorithm": {
+                "in": "trailer",
+                "algorithm": "crc32",
+                "name": "x-amz-checksum-crc32",
+            }
+        }
+        request["headers"]["Content-Encoding"] = "foo"
+        apply_request_checksum(request)
+        # The content encoding should only have been appended
+        self.assertEqual(
+            request["headers"]["Content-Encoding"], "foo,aws-chunked"
+        )
+
+    def test_apply_request_checksum_content_encoding_default(self):
+        request = self._build_request(b"")
+        request["context"]["checksum"] = {
+            "request_algorithm": {
+                "in": "trailer",
+                "algorithm": "crc32",
+                "name": "x-amz-checksum-crc32",
+            }
+        }
+        apply_request_checksum(request)
+        self.assertEqual(request["headers"]["Content-Encoding"], "aws-chunked")
+
     def test_response_checksum_algorithm_no_model(self):
         request = self._build_request(b"")
         operation_model = self._make_operation_model()

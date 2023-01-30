@@ -1918,6 +1918,27 @@ def test_checksums_included_in_expected_operations(operation, operation_kwargs):
             assert 'Content-MD5' in stub.requests[-1].headers
 
 
+@pytest.mark.parametrize(
+    "content_encoding, expected_header",
+    [("foo", b"foo,aws-chunked"), (None, b"aws-chunked")],
+)
+def test_checksum_content_encoding(content_encoding, expected_header):
+    op_kwargs = {
+        "Bucket": "mybucket",
+        "Key": "mykey",
+        "Body": b"foo",
+        "ChecksumAlgorithm": "sha256",
+    }
+    if content_encoding is not None:
+        op_kwargs["ContentEncoding"] = content_encoding
+    s3 = _create_s3_client()
+    with ClientHTTPStubber(s3) as http_stubber:
+        http_stubber.add_response()
+        s3.put_object(**op_kwargs)
+        request_headers = http_stubber.requests[-1].headers
+        assert request_headers["Content-Encoding"] == expected_header
+
+
 def _s3_addressing_test_cases():
     # The default behavior for DNS compatible buckets
     yield dict(region='us-west-2', bucket='bucket', key='key',

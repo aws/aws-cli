@@ -1903,19 +1903,12 @@ accesspoint_cross_region_arn_gov = (
 @pytest.mark.parametrize("operation, operation_kwargs", _checksum_test_cases())
 def test_checksums_included_in_expected_operations(operation, operation_kwargs):
     """Validate expected calls include Content-MD5 header"""
-    environ = {}
-    with mock.patch('os.environ', environ):
-        environ['AWS_ACCESS_KEY_ID'] = 'access_key'
-        environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
-        environ['AWS_CONFIG_FILE'] = 'no-exist-foo'
-        session = create_session()
-        session.config_filename = 'no-exist-foo'
-        client = session.create_client('s3')
-        with ClientHTTPStubber(client) as stub:
-            stub.add_response()
-            call = getattr(client, operation)
-            call(**operation_kwargs)
-            assert 'Content-MD5' in stub.requests[-1].headers
+    client = _create_s3_client()
+    with ClientHTTPStubber(client) as stub:
+        stub.add_response()
+        call = getattr(client, operation)
+        call(**operation_kwargs)
+        assert 'Content-MD5' in stub.requests[-1].headers
 
 
 @pytest.mark.parametrize(
@@ -2703,12 +2696,12 @@ def _verify_expected_exception(
 
 
 def _create_s3_client(
-        region,
-        is_secure,
-        endpoint_url,
-        s3_config,
-        signature_version,
-        use_fips_endpoint=None,
+    region='us-west-2',
+    is_secure=True,
+    endpoint_url=None,
+    s3_config=None,
+    signature_version='s3v4',
+    use_fips_endpoint=None,
 ):
     environ = {}
     with mock.patch('os.environ', environ):

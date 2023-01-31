@@ -119,7 +119,7 @@ Output::
     {
         "TargetGroups": [
             {
-                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:850631746142:targetgroup/my-glb-targetgroup/00c3d57eacd6f40b6f",
+                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-glb-targetgroup/00c3d57eacd6f40b6f",
                 "TargetGroupName": "my-glb-targetgroup",
                 "Protocol": "GENEVE",
                 "Port": 6081,
@@ -129,8 +129,8 @@ Output::
                 "HealthCheckEnabled": true,
                 "HealthCheckIntervalSeconds": 10,
                 "HealthCheckTimeoutSeconds": 5,
-                "HealthyThresholdCount": 3,
-                "UnhealthyThresholdCount": 3,
+                "HealthyThresholdCount": 5,
+                "UnhealthyThresholdCount": 2,
                 "TargetType": "instance"
             }
         ]

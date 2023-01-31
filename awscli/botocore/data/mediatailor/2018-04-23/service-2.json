@@ -13,6 +13,17 @@
     "uid":"mediatailor-2018-04-23"
   },
   "operations":{
+    "ConfigureLogsForChannel":{
+      "name":"ConfigureLogsForChannel",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/configureLogs/channel",
+        "responseCode":200
+      },
+      "input":{"shape":"ConfigureLogsForChannelRequest"},
+      "output":{"shape":"ConfigureLogsForChannelResponse"},
+      "documentation":"<p>Configures Amazon CloudWatch log settings for a channel.</p>"
+    },
     "ConfigureLogsForPlaybackConfiguration":{
       "name":"ConfigureLogsForPlaybackConfiguration",
       "http":{
@@ -676,6 +687,7 @@
         "Arn",
         "ChannelName",
         "ChannelState",
+        "LogConfiguration",
         "Outputs",
         "PlaybackMode",
         "Tier"
@@ -704,6 +716,10 @@
         "LastModifiedTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the channel was last modified.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfigurationForChannel",
+          "documentation":"<p>The log configuration.</p>"
         },
         "Outputs":{
           "shape":"ResponseOutputs",
@@ -755,6 +771,36 @@
         "documentation":"<p>Map of aliases to the value to be used at request time.</p>"
       },
       "documentation":"<p>The predefined aliases for dynamic variables.</p>"
+    },
+    "ConfigureLogsForChannelRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "LogTypes"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the channel.</p>"
+        },
+        "LogTypes":{
+          "shape":"LogTypes",
+          "documentation":"<p>The types of logs to collect.</p>"
+        }
+      }
+    },
+    "ConfigureLogsForChannelResponse":{
+      "type":"structure",
+      "members":{
+        "ChannelName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the channel.</p>"
+        },
+        "LogTypes":{
+          "shape":"LogTypes",
+          "documentation":"<p>The types of logs collected.</p>"
+        }
+      }
     },
     "ConfigureLogsForPlaybackConfigurationRequest":{
       "type":"structure",
@@ -1477,6 +1523,7 @@
     },
     "DescribeChannelResponse":{
       "type":"structure",
+      "required":["LogConfiguration"],
       "members":{
         "Arn":{
           "shape":"__string",
@@ -1501,6 +1548,10 @@
         "LastModifiedTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the channel was last modified.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfigurationForChannel",
+          "documentation":"<p>The log configuration for the channel.</p>"
         },
         "Outputs":{
           "shape":"ResponseOutputs",
@@ -2343,6 +2394,24 @@
         }
       },
       "documentation":"<p>Returns Amazon CloudWatch log settings for a playback configuration.</p>"
+    },
+    "LogConfigurationForChannel":{
+      "type":"structure",
+      "members":{
+        "LogTypes":{
+          "shape":"LogTypes",
+          "documentation":"<p>The log types.</p>"
+        }
+      },
+      "documentation":"<p>The log configuration for the channel.</p>"
+    },
+    "LogType":{
+      "type":"string",
+      "enum":["AS_RUN"]
+    },
+    "LogTypes":{
+      "type":"list",
+      "member":{"shape":"LogType"}
     },
     "ManifestProcessingRules":{
       "type":"structure",

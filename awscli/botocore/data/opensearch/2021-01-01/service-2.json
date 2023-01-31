@@ -888,7 +888,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occurred because user does not have permissions to access the resource. Returns HTTP status code 403.</p>",
+      "documentation":"<p>An error occurred because you don't have permissions to access the resource.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
     },
@@ -1577,7 +1577,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occurred because the client attempts to remove a resource that is currently in use. Returns HTTP status code 409.</p>",
+      "documentation":"<p>An error occurred because the client attempts to remove a resource that's currently in use.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -1592,6 +1592,24 @@
       "max":256,
       "min":10,
       "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "ConnectionMode":{
+      "type":"string",
+      "documentation":"<p>The connection mode for the cross-cluster connection.</p> <ul> <li> <p> <b>DIRECT</b> - Used for cross-cluster search or cross-cluster replication.</p> </li> <li> <p> <b>VPC_ENDPOINT</b> - Used for remote reindex between Amazon OpenSearch Service VPC domains.</p> </li> </ul>",
+      "enum":[
+        "DIRECT",
+        "VPC_ENDPOINT"
+      ]
+    },
+    "ConnectionProperties":{
+      "type":"structure",
+      "members":{
+        "Endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The endpoint of the remote domain.</p>"
+        }
+      },
+      "documentation":"<p>The connection properties of an outbound connection.</p>"
     },
     "ConnectionStatusMessage":{"type":"string"},
     "CreateDomainRequest":{
@@ -1693,6 +1711,10 @@
         "ConnectionAlias":{
           "shape":"ConnectionAlias",
           "documentation":"<p>Name of the connection.</p>"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>CreateOutboundConnection</code> operation.</p>"
@@ -1719,6 +1741,14 @@
         "ConnectionId":{
           "shape":"ConnectionId",
           "documentation":"<p>The unique identifier for the created outbound connection, which is used for subsequent operations on the connection.</p>"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The <code>ConnectionProperties</code> for the newly created connection.</p>"
         }
       },
       "documentation":"<p>The result of a <code>CreateOutboundConnection</code> request. Contains details about the newly created cross-cluster connection.</p>"
@@ -2375,7 +2405,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occured because the client wanted to access a not supported operation. Gives http status code of 409.</p>",
+      "documentation":"<p>An error occured because the client wanted to access an unsupported operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -3119,6 +3149,10 @@
         "ConnectionStatus":{
           "shape":"InboundConnectionStatus",
           "documentation":"<p>The current status of the connection.</p>"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode.</p>"
         }
       },
       "documentation":"<p>Describes an inbound cross-cluster connection for Amazon OpenSearch Service. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cross-cluster-search.html\">Cross-cluster search for Amazon OpenSearch Service</a>.</p>"
@@ -3232,7 +3266,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The request processing has failed because of an unknown error, exception or failure (the failure is internal to the service) . Gives http status code of 500.</p>",
+      "documentation":"<p>Request processing failed because of an unknown error, exception, or internal failure.</p>",
       "error":{"httpStatusCode":500},
       "exception":true
     },
@@ -3240,7 +3274,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The request processing has failed because of invalid pagination token provided by customer. Returns an HTTP status code of 400. </p>",
+      "documentation":"<p>The request processing has failed because you provided an invalid pagination token.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -3248,7 +3282,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for trying to create or access sub-resource that is either invalid or not supported. Gives http status code of 409.</p>",
+      "documentation":"<p>An exception for trying to create or access a sub-resource that's either invalid or not supported.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -3268,7 +3302,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for trying to create more than allowed resources or sub-resources. Gives http status code of 409.</p>",
+      "documentation":"<p>An exception for trying to create more than the allowed number of resources or sub-resources.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -3886,6 +3920,14 @@
         "ConnectionStatus":{
           "shape":"OutboundConnectionStatus",
           "documentation":"<p>Status of the connection.</p>"
+        },
+        "ConnectionMode":{
+          "shape":"ConnectionMode",
+          "documentation":"<p>The connection mode.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>Properties for the outbound connection.</p>"
         }
       },
       "documentation":"<p>Specifies details about an outbound cross-cluster connection.</p>"
@@ -4299,7 +4341,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for creating a resource that already exists. Gives http status code of 400.</p>",
+      "documentation":"<p>An exception for creating a resource that already exists.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -4307,7 +4349,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for accessing or deleting a resource that does not exist. Gives http status code of 400.</p>",
+      "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -5043,7 +5085,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for missing / invalid input fields. Gives http status code of 400.</p>",
+      "documentation":"<p>An exception for missing or invalid input fields.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },

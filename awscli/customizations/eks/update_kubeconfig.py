@@ -77,6 +77,12 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'proxy-url',
+            'help_text': ("Optionally specify a proxy url to route "
+                          "traffic via when connecting to a cluster."),
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -281,13 +287,23 @@ class EKSClient(object):
         endpoint = self.cluster_description.get("endpoint")
         arn = self.cluster_description.get("arn")
 
-        return OrderedDict([
-            ("cluster", OrderedDict([
-                ("certificate-authority-data", cert_data),
-                ("server", endpoint)
-            ])),
-            ("name", arn)
-        ])
+        if self._proxy_url is None:
+            return OrderedDict([
+                ("cluster", OrderedDict([
+                    ("certificate-authority-data", cert_data),
+                    ("server", endpoint)
+                ])),
+                ("name", arn)
+            ])
+        else:
+            return OrderedDict([
+                ("cluster", OrderedDict([
+                    ("certificate-authority-data", cert_data),
+                    ("proxy-url", self._proxy_url),
+                    ("server", endpoint)
+                ])),
+                ("name", arn)
+            ])
 
     def get_user_entry(self, user_alias=None):
         """

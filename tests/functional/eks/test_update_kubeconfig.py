@@ -141,7 +141,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
     def assert_cmd_dry(self, passed_config,
                        env_variable_configs,
-                       default_config=os.path.join(".kube", "config")):
+                       default_config=os.path.join(".kube", "config"),
+                       proxy_url=None):
         """
         Run update-kubeconfig using dry-run,
         assert_cmd_dry runs directly referencing the testdata directory,
@@ -169,6 +170,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
         args = ["--name", "ExampleCluster", "--dry-run"]
         if passed_config is not None:
             args += ["--kubeconfig", get_testdata(passed_config)]
+        if proxy_url is not None:
+            args += ["--proxy-url", proxy_url]
 
         with capture_output() as captured:
             with mock.patch.dict(os.environ, {'KUBECONFIG': env_variable}):
@@ -186,7 +189,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
     def assert_cmd(self, configs, passed_config,
                    env_variable_configs,
                    default_config=os.path.join(".kube", "config"),
-                   verbose=False):
+                   verbose=False,
+                   proxy_url=None):
         """
         Run update-kubeconfig in a temp directory,
         This directory will have copies of all testdata files whose names
@@ -216,6 +220,8 @@ class TestUpdateKubeconfig(unittest.TestCase):
             args += ["--kubeconfig", self._get_temp_config(passed_config)]
         if verbose:
             args += ["--verbose"]
+        if proxy_url is not None:
+            args += ["--proxy-url", proxy_url]
 
         with mock.patch.dict(os.environ, {'KUBECONFIG': env_variable}):
             with mock.patch(
@@ -233,6 +239,14 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
         captured_output = self.assert_cmd_dry(passed, environment)
         self.assert_output(captured_output, 'output_single')
+
+    def test_dry_run_new_proxy(self):
+        passed = "new_proxy_config"
+        environment = []
+        proxy_url = "https://myproxy.com"
+
+        captured_output = self.assert_cmd_dry(passed, environment, proxy_url=proxy_url)
+        self.assert_output(captured_output, 'output_single_with_proxy')
 
     def test_dry_run_existing(self):
         passed = "valid_existing"
@@ -262,6 +276,15 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
         self.assert_cmd(configs, passed, environment)
         self.assert_config_state("new_config", "output_single")
+
+    def test_write_new_with_proxy(self):
+        configs = []
+        passed = "new_config"
+        environment = []
+        proxy_url = "https://myproxy.com"
+
+        self.assert_cmd(configs, passed, environment, proxy_url=proxy_url)
+        self.assert_config_state("new_config", "output_single_with_proxy")
 
     def test_use_environment(self):
         configs = ['invalid_string_clusters',

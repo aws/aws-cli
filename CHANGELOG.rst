@@ -2,6 +2,48 @@
 CHANGELOG
 =========
 
+2.9.20
+======
+
+* api-change:``glacier``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``imagebuilder``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``opensearch``: Amazon OpenSearch Service adds the option for a VPC endpoint connection between two domains when the local domain uses OpenSearch version 1.3 or 2.3. You can now use remote reindex to copy indices from one VPC domain to another without a reverse proxy.
+* api-change:``securityhub``: New fields have been added to the AWS Security Finding Format. Compliance.SecurityControlId is a unique identifier for a security control across standards. Compliance.AssociatedStandards contains all enabled standards in which a security control is enabled.
+* api-change:``elasticbeanstalk``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``fis``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``kafka``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``application-autoscaling``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``appstream``: Fixing the issue where Appstream waiters hang for fleet_started and fleet_stopped.
+* api-change:``serverlessrepo``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``discovery``: Update ImportName validation to 255 from the current length of 100
+* api-change:``connectparticipant``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``cloudformation``: This feature provides a method of obtaining which regions a stackset has stack instances deployed in.
+* api-change:``kinesis``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``ec2``: This launch allows customers to associate up to 8 IP addresses to their NAT Gateways to increase the limit on concurrent connections to a single destination by eight times from 55K to 440K.
+* api-change:``mediatailor``: This release introduces the As Run logging type, along with API and documentation updates.
+* api-change:``polly``: Amazon Polly adds two new neural American English voices - Ruth, Stephen
+* api-change:``cloudtrail-data``: Add CloudTrail Data Service to enable users to ingest activity events from non-AWS sources into CloudTrail Lake.
+* api-change:``iot``: Added support for IoT Rules Engine Cloudwatch Logs action batch mode.
+* api-change:``greengrass``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``dlm``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``swf``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``mediaconvert``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``groundstation``: DigIF Expansion changes to the Customer APIs.
+* api-change:``appsync``: This release introduces the feature to support EventBridge as AppSync data source.
+* api-change:``outposts``: Adding support for payment term in GetOrder, CreateOrder responses.
+* api-change:``support``: This fixes incorrect endpoint construction when a customer is explicitly setting a region.
+* api-change:``ec2``: We add Prefix Lists as a new route destination option for LocalGatewayRoutes. This will allow customers to create routes to Prefix Lists. Prefix List routes will allow customers to group individual CIDR routes with the same target into a single route.
+* api-change:``codeartifact``: This release introduces a new DeletePackage API, which enables deletion of a package and all of its versions from a repository.
+* api-change:``greengrassv2``: Enabled FIPS endpoints for GovCloud (US) in SDK.
+* api-change:``cloudtrail``: Add new "Channel" APIs to enable users to manage channels used for CloudTrail Lake integrations, and "Resource Policy" APIs to enable users to manage the resource-based permissions policy attached to a channel.
+* api-change:``accessanalyzer``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now supports more completion criteria for Hyperparameter Optimization.
+* api-change:``outposts``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``sagemaker``: This release supports running SageMaker Training jobs with container images that are in a private Docker registry.
+* api-change:``clouddirectory``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+
+
 2.9.19
 ======
 

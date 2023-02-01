@@ -3935,6 +3935,10 @@
         "ContainerArguments":{
           "shape":"TrainingContainerArguments",
           "documentation":"<p>The arguments for a container used to run a training job. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html\">How Amazon SageMaker Runs Your Training Image</a> for additional information.</p>"
+        },
+        "TrainingImageConfig":{
+          "shape":"TrainingImageConfig",
+          "documentation":"<p>The configuration to use an image from a private Docker registry for a training job.</p>"
         }
       },
       "documentation":"<p>Specifies the training algorithm to use in a <a>CreateTrainingJob</a> request.</p> <p>For more information about algorithms provided by SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>. For information about using your own algorithms, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html\">Using Your Own Algorithms with Amazon SageMaker</a>. </p>"
@@ -5346,6 +5350,16 @@
       },
       "documentation":"<p>Input object for the batch transform job.</p>"
     },
+    "BestObjectiveNotImproving":{
+      "type":"structure",
+      "members":{
+        "MaxNumberOfTrainingJobsNotImproving":{
+          "shape":"MaxNumberOfTrainingJobsNotImproving",
+          "documentation":"<p>The number of training jobs that have failed to improve model performance by 1% or greater over prior training jobs as evaluated against an objective function.</p>"
+        }
+      },
+      "documentation":"<p>A structure that keeps track of which training jobs launched by your hyperparameter tuning job are not improving model performance as evaluated against an objective function.</p>"
+    },
     "Bias":{
       "type":"structure",
       "members":{
@@ -6410,6 +6424,13 @@
       "min":3,
       "pattern":".*"
     },
+    "CompleteOnConvergence":{
+      "type":"string",
+      "enum":[
+        "Disabled",
+        "Enabled"
+      ]
+    },
     "CompressionType":{
       "type":"string",
       "enum":[
@@ -6677,6 +6698,16 @@
       "member":{"shape":"ContinuousParameterRange"},
       "max":30,
       "min":0
+    },
+    "ConvergenceDetected":{
+      "type":"structure",
+      "members":{
+        "CompleteOnConvergence":{
+          "shape":"CompleteOnConvergence",
+          "documentation":"<p>A flag to stop a tuning job once AMT has detected that the job has converged.</p>"
+        }
+      },
+      "documentation":"<p>A flag to indicating that automatic model tuning (AMT) has detected model convergence, defined as a lack of significant improvement (1% or less) against an objective metric.</p>"
     },
     "CreateActionRequest":{
       "type":"structure",
@@ -12104,7 +12135,12 @@
         "FailureReason":{
           "shape":"FailureReason",
           "documentation":"<p>If the tuning job failed, the reason it failed.</p>"
-        }
+        },
+        "TuningJobCompletionDetails":{
+          "shape":"HyperParameterTuningJobCompletionDetails",
+          "documentation":"<p>Tuning job completion information returned as the response from a hyperparameter tuning job. This information tells if your tuning job has or has not converged. It also includes the number of training jobs that have not improved model performance as evaluated against the objective function.</p>"
+        },
+        "ConsumedResources":{"shape":"HyperParameterTuningJobConsumedResources"}
       }
     },
     "DescribeImageRequest":{
@@ -17318,6 +17354,20 @@
       "max":256,
       "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:hyper-parameter-tuning-job/.*"
     },
+    "HyperParameterTuningJobCompletionDetails":{
+      "type":"structure",
+      "members":{
+        "NumberOfTrainingJobsObjectiveNotImproving":{
+          "shape":"Integer",
+          "documentation":"<p>The number of training jobs launched by a tuning job that are not improving (1% or less) as measured by model performance evaluated against an objective function.</p>"
+        },
+        "ConvergenceDetectedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time in timestamp format that AMT detected model convergence, as defined by a lack of significant improvement over time based on criteria developed over a wide range of diverse benchmarking tests.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains runtime information about both current and completed hyperparameter tuning jobs.</p>"
+    },
     "HyperParameterTuningJobConfig":{
       "type":"structure",
       "required":[
@@ -17359,6 +17409,16 @@
         }
       },
       "documentation":"<p>Configures a hyperparameter tuning job.</p>"
+    },
+    "HyperParameterTuningJobConsumedResources":{
+      "type":"structure",
+      "members":{
+        "RuntimeInSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The wall clock runtime in seconds used by your hyperparameter tuning job.</p>"
+        }
+      },
+      "documentation":"<p>The total resources consumed by your hyperparameter tuning job.</p>"
     },
     "HyperParameterTuningJobName":{
       "type":"string",
@@ -17440,6 +17500,14 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with a hyperparameter tuning job. For more information see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>.</p>"
+        },
+        "TuningJobCompletionDetails":{
+          "shape":"HyperParameterTuningJobCompletionDetails",
+          "documentation":"<p>Information about either a current or completed hyperparameter tuning job.</p>"
+        },
+        "ConsumedResources":{
+          "shape":"HyperParameterTuningJobConsumedResources",
+          "documentation":"<p>The total amount of resources consumed by a hyperparameter tuning job.</p>"
         }
       },
       "documentation":"<p>An entity returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchRecord.html\">SearchRecord</a> API containing the properties of a hyperparameter tuning job.</p>"
@@ -17474,7 +17542,7 @@
     },
     "HyperParameterTuningJobStrategyType":{
       "type":"string",
-      "documentation":"<p>The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model. Currently, the only supported value is <code>Bayesian</code>.</p>",
+      "documentation":"<p>The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model. </p>",
       "enum":[
         "Bayesian",
         "Random",
@@ -17565,6 +17633,11 @@
         "IdenticalDataAndAlgorithm",
         "TransferLearning"
       ]
+    },
+    "HyperParameterTuningMaxRuntimeInSeconds":{
+      "type":"integer",
+      "max":15768000,
+      "min":120
     },
     "HyperParameterTuningResourceConfig":{
       "type":"structure",
@@ -22803,6 +22876,10 @@
     "MaxNumberOfTrainingJobs":{
       "type":"integer",
       "min":1
+    },
+    "MaxNumberOfTrainingJobsNotImproving":{
+      "type":"integer",
+      "min":3
     },
     "MaxParallelExecutionSteps":{
       "type":"integer",
@@ -28623,6 +28700,10 @@
         "MaxParallelTrainingJobs":{
           "shape":"MaxParallelTrainingJobs",
           "documentation":"<p>The maximum number of concurrent training jobs that a hyperparameter tuning job can launch.</p>"
+        },
+        "MaxRuntimeInSeconds":{
+          "shape":"HyperParameterTuningMaxRuntimeInSeconds",
+          "documentation":"<p>The maximum time in seconds that a training job launched by a hyperparameter tuning job can run.</p>"
         }
       },
       "documentation":"<p>Specifies the maximum number of training jobs and parallel training jobs that a hyperparameter tuning job can launch.</p>"
@@ -30411,6 +30492,21 @@
       "max":512,
       "pattern":"[\\S\\s]*"
     },
+    "TrainingImageConfig":{
+      "type":"structure",
+      "required":["TrainingRepositoryAccessMode"],
+      "members":{
+        "TrainingRepositoryAccessMode":{
+          "shape":"TrainingRepositoryAccessMode",
+          "documentation":"<p>The method that your training job will use to gain access to the images in your private Docker registry. For access to an image in a private Docker registry, set to <code>Vpc</code>.</p>"
+        },
+        "TrainingRepositoryAuthConfig":{
+          "shape":"TrainingRepositoryAuthConfig",
+          "documentation":"<p>An object containing authentication information for a private Docker registry containing your training images.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to use an image from a private Docker registry for a training job.</p>"
+    },
     "TrainingInputMode":{
       "type":"string",
       "documentation":"<p>The training input mode that the algorithm supports. For more information about input modes, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html\">Algorithms</a>.</p> <p> <b>Pipe mode</b> </p> <p>If an algorithm supports <code>Pipe</code> mode, Amazon SageMaker streams data directly from Amazon S3 to the container.</p> <p> <b>File mode</b> </p> <p>If an algorithm supports <code>File</code> mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container.</p> <p>You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any.</p> <p>For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training.</p> <p> <b>FastFile mode</b> </p> <p>If an algorithm supports <code>FastFile</code> mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk.</p> <p> <code>FastFile</code> mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.</p>",
@@ -30778,6 +30874,30 @@
         }
       },
       "documentation":"<p>Provides summary information about a training job.</p>"
+    },
+    "TrainingRepositoryAccessMode":{
+      "type":"string",
+      "enum":[
+        "Platform",
+        "Vpc"
+      ]
+    },
+    "TrainingRepositoryAuthConfig":{
+      "type":"structure",
+      "required":["TrainingRepositoryCredentialsProviderArn"],
+      "members":{
+        "TrainingRepositoryCredentialsProviderArn":{
+          "shape":"TrainingRepositoryCredentialsProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Web Services Lambda function used to give SageMaker access credentials to your private Docker registry.</p>"
+        }
+      },
+      "documentation":"<p>An object containing authentication information for a private Docker registry.</p>"
+    },
+    "TrainingRepositoryCredentialsProviderArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[\\p{Alnum}\\-]+:lambda:[\\p{Alnum}\\-]+:[0-9]{12}:function:.*"
     },
     "TrainingSpecification":{
       "type":"structure",
@@ -31612,11 +31732,18 @@
     },
     "TuningJobCompletionCriteria":{
       "type":"structure",
-      "required":["TargetObjectiveMetricValue"],
       "members":{
         "TargetObjectiveMetricValue":{
           "shape":"TargetObjectiveMetricValue",
           "documentation":"<p>The value of the objective metric.</p>"
+        },
+        "BestObjectiveNotImproving":{
+          "shape":"BestObjectiveNotImproving",
+          "documentation":"<p>A flag to stop your hyperparameter tuning job if model performance fails to improve as evaluated against an objective function.</p>"
+        },
+        "ConvergenceDetected":{
+          "shape":"ConvergenceDetected",
+          "documentation":"<p>A flag to top your hyperparameter tuning job if automatic model tuning (AMT) has detected that your model has converged as evaluated against your objective function.</p>"
         }
       },
       "documentation":"<p>The job completion criteria.</p>"

@@ -152,6 +152,16 @@
       "output":{"shape":"AssignPrivateIpAddressesResult"},
       "documentation":"<p>Assigns one or more secondary private IP addresses to the specified network interface.</p> <p>You can specify one or more specific secondary IP addresses, or you can specify the number of secondary IP addresses to be automatically assigned within the subnet's CIDR block range. The number of secondary IP addresses that you can assign to an instance varies by instance type. For information about instance types, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Types</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about Elastic IP addresses, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>When you move a secondary private IP address to another network interface, any Elastic IP address that is associated with the IP address is also moved.</p> <p>Remapping an IP address is an asynchronous operation. When you move an IP address from one network interface to another, check <code>network/interfaces/macs/mac/local-ipv4s</code> in the instance metadata to confirm that the remapping is complete.</p> <p>You must specify either the IP addresses or the IP address count in the request.</p> <p>You can optionally use Prefix Delegation on the network interface. You must specify either the IPv4 Prefix Delegation prefixes, or the IPv4 Prefix Delegation count. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\"> Assigning prefixes to Amazon EC2 network interfaces</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
+    "AssignPrivateNatGatewayAddress":{
+      "name":"AssignPrivateNatGatewayAddress",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssignPrivateNatGatewayAddressRequest"},
+      "output":{"shape":"AssignPrivateNatGatewayAddressResult"},
+      "documentation":"<p>Assigns one or more private IPv4 addresses to a private NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-working-with\">Work with NAT gateways</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
+    },
     "AssociateAddress":{
       "name":"AssociateAddress",
       "http":{
@@ -220,6 +230,16 @@
       "input":{"shape":"AssociateIpamResourceDiscoveryRequest"},
       "output":{"shape":"AssociateIpamResourceDiscoveryResult"},
       "documentation":"<p>Associates an IPAM resource discovery with an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "AssociateNatGatewayAddress":{
+      "name":"AssociateNatGatewayAddress",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateNatGatewayAddressRequest"},
+      "output":{"shape":"AssociateNatGatewayAddressResult"},
+      "documentation":"<p>Associates Elastic IP addresses (EIPs) and private IPv4 addresses with a public NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-working-with\">Work with NAT gateways</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>By default, you can associate up to 2 Elastic IP addresses per public NAT gateway. You can increase the limit by requesting a quota adjustment. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-eips\">Elastic IP address quotas</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
     },
     "AssociateRouteTable":{
       "name":"AssociateRouteTable",
@@ -3789,6 +3809,16 @@
       "output":{"shape":"DisassociateIpamResourceDiscoveryResult"},
       "documentation":"<p>Disassociates a resource discovery from an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
     },
+    "DisassociateNatGatewayAddress":{
+      "name":"DisassociateNatGatewayAddress",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateNatGatewayAddressRequest"},
+      "output":{"shape":"DisassociateNatGatewayAddressResult"},
+      "documentation":"<p>Disassociates secondary Elastic IP addresses (EIPs) from a public NAT gateway. You cannot disassociate your primary EIP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>While disassociating is in progress, you cannot associate/disassociate additional EIPs while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>An EIP will only be released at the end of MaxDrainDurationSeconds. The EIPs stay associated and support the existing connections but do not support any new connections (new connections are distributed across the remaining associated EIPs). As the existing connections drain out, the EIPs (and the corresponding private IPs mapped to them) get released.</p>"
+    },
     "DisassociateRouteTable":{
       "name":"DisassociateRouteTable",
       "http":{
@@ -5766,6 +5796,16 @@
       "input":{"shape":"UnassignPrivateIpAddressesRequest"},
       "documentation":"<p>Unassigns one or more secondary private IP addresses, or IPv4 Prefix Delegation prefixes from a network interface.</p>"
     },
+    "UnassignPrivateNatGatewayAddress":{
+      "name":"UnassignPrivateNatGatewayAddress",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UnassignPrivateNatGatewayAddressRequest"},
+      "output":{"shape":"UnassignPrivateNatGatewayAddressResult"},
+      "documentation":"<p>Unassigns secondary private NAT gateway IPv4 addresses from a private NAT gateway. You cannot unassign your primary private IP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p> <p>While unassigning is in progress, you cannot assign/unassign additional IP addresses while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>A private IP address will only be released at the end of MaxDrainDurationSeconds. The private IP addresses stay associated and support the existing connections but do not support any new connections (new connections are distributed across the remaining assigned private IP address). After the existing connections drain out, the private IP addresses get released. </p> <p/> <p/>"
+    },
     "UnmonitorInstances":{
       "name":"UnmonitorInstances",
       "http":{
@@ -7358,6 +7398,44 @@
         }
       }
     },
+    "AssignPrivateNatGatewayAddressRequest":{
+      "type":"structure",
+      "required":["NatGatewayId"],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>"
+        },
+        "PrivateIpAddresses":{
+          "shape":"IpList",
+          "documentation":"<p>The private IPv4 addresses you want to assign to the private NAT gateway.</p>",
+          "locationName":"PrivateIpAddress"
+        },
+        "PrivateIpAddressCount":{
+          "shape":"PrivateIpAddressCount",
+          "documentation":"<p>The number of private IP addresses to assign to the NAT gateway. You can't specify this parameter when also specifying private IP addresses.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssignPrivateNatGatewayAddressResult":{
+      "type":"structure",
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>",
+          "locationName":"natGatewayId"
+        },
+        "NatGatewayAddresses":{
+          "shape":"NatGatewayAddressList",
+          "documentation":"<p>NAT gateway IP addresses.</p>",
+          "locationName":"natGatewayAddressSet"
+        }
+      }
+    },
     "AssignedPrivateIpAddress":{
       "type":"structure",
       "members":{
@@ -7490,11 +7568,11 @@
       "type":"structure",
       "members":{
         "CertificateArn":{
-          "shape":"ResourceArn",
+          "shape":"CertificateId",
           "documentation":"<p>The ARN of the ACM certificate with which to associate the IAM role.</p>"
         },
         "RoleArn":{
-          "shape":"ResourceArn",
+          "shape":"RoleId",
           "documentation":"<p>The ARN of the IAM role to associate with the ACM certificate. You can associate up to 16 IAM roles with an ACM certificate.</p>"
         },
         "DryRun":{
@@ -7619,6 +7697,48 @@
           "shape":"IpamResourceDiscoveryAssociation",
           "documentation":"<p>A resource discovery association. An associated resource discovery is a resource discovery that has been associated with an IPAM.</p>",
           "locationName":"ipamResourceDiscoveryAssociation"
+        }
+      }
+    },
+    "AssociateNatGatewayAddressRequest":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "AllocationIds"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>"
+        },
+        "AllocationIds":{
+          "shape":"AllocationIdList",
+          "documentation":"<p>The allocation IDs of EIPs that you want to associate with your NAT gateway.</p>",
+          "locationName":"AllocationId"
+        },
+        "PrivateIpAddresses":{
+          "shape":"IpList",
+          "documentation":"<p>The private IPv4 addresses that you want to assign to the NAT gateway.</p>",
+          "locationName":"PrivateIpAddress"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateNatGatewayAddressResult":{
+      "type":"structure",
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>",
+          "locationName":"natGatewayId"
+        },
+        "NatGatewayAddresses":{
+          "shape":"NatGatewayAddressList",
+          "documentation":"<p>The IP addresses.</p>",
+          "locationName":"natGatewayAddressSet"
         }
       }
     },
@@ -9919,6 +10039,7 @@
       },
       "documentation":"<p>Information about the client certificate to be used for authentication.</p>"
     },
+    "CertificateId":{"type":"string"},
     "CidrAuthorizationContext":{
       "type":"structure",
       "required":[
@@ -11113,7 +11234,7 @@
           "locationName":"kmsKeyId"
         },
         "PresignedUrl":{
-          "shape":"String",
+          "shape":"CopySnapshotRequestPSU",
           "documentation":"<p>When you copy an encrypted source snapshot using the Amazon EC2 Query API, you must supply a pre-signed URL. This parameter is optional for unencrypted snapshots. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html\">Query requests</a>.</p> <p>The <code>PresignedUrl</code> should use the snapshot source endpoint, the <code>CopySnapshot</code> action, and include the <code>SourceRegion</code>, <code>SourceSnapshotId</code>, and <code>DestinationRegion</code> parameters. The <code>PresignedUrl</code> must be signed using Amazon Web Services Signature Version 4. Because EBS snapshots are stored in Amazon S3, the signing algorithm for this parameter uses the same logic that is described in <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html\">Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)</a> in the <i>Amazon Simple Storage Service API Reference</i>. An invalid or improperly signed <code>PresignedUrl</code> will cause the copy operation to fail asynchronously, and the snapshot will move to an <code>error</code> state.</p>",
           "locationName":"presignedUrl"
         },
@@ -11136,6 +11257,10 @@
           "locationName":"dryRun"
         }
       }
+    },
+    "CopySnapshotRequestPSU":{
+      "type":"string",
+      "sensitive":true
     },
     "CopySnapshotResult":{
       "type":"structure",
@@ -12606,10 +12731,7 @@
     },
     "CreateLocalGatewayRouteRequest":{
       "type":"structure",
-      "required":[
-        "DestinationCidrBlock",
-        "LocalGatewayRouteTableId"
-      ],
+      "required":["LocalGatewayRouteTableId"],
       "members":{
         "DestinationCidrBlock":{
           "shape":"String",
@@ -12630,6 +12752,10 @@
         "NetworkInterfaceId":{
           "shape":"NetworkInterfaceId",
           "documentation":"<p>The ID of the network interface.</p>"
+        },
+        "DestinationPrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p> The ID of the prefix list. Use a prefix list in place of <code>DestinationCidrBlock</code>. You cannot use <code>DestinationPrefixListId</code> and <code>DestinationCidrBlock</code> in the same request. </p>"
         }
       }
     },
@@ -12818,7 +12944,7 @@
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The subnet in which to create the NAT gateway.</p>"
+          "documentation":"<p>The ID of the subnet in which to create the NAT gateway.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -12832,6 +12958,20 @@
         "PrivateIpAddress":{
           "shape":"String",
           "documentation":"<p>The private IPv4 address to assign to the NAT gateway. If you don't provide an address, a private IPv4 address will be automatically assigned.</p>"
+        },
+        "SecondaryAllocationIds":{
+          "shape":"AllocationIdList",
+          "documentation":"<p>Secondary EIP allocation IDs. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>",
+          "locationName":"SecondaryAllocationId"
+        },
+        "SecondaryPrivateIpAddresses":{
+          "shape":"IpList",
+          "documentation":"<p>Secondary private IPv4 addresses. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>",
+          "locationName":"SecondaryPrivateIpAddress"
+        },
+        "SecondaryPrivateIpAddressCount":{
+          "shape":"PrivateIpAddressCount",
+          "documentation":"<p>[Private NAT gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT gateway. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon Virtual Private Cloud User Guide</i>.</p>"
         }
       }
     },
@@ -16194,10 +16334,7 @@
     },
     "DeleteLocalGatewayRouteRequest":{
       "type":"structure",
-      "required":[
-        "DestinationCidrBlock",
-        "LocalGatewayRouteTableId"
-      ],
+      "required":["LocalGatewayRouteTableId"],
       "members":{
         "DestinationCidrBlock":{
           "shape":"String",
@@ -16210,6 +16347,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DestinationPrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p> Use a prefix list in place of <code>DestinationCidrBlock</code>. You cannot use <code>DestinationPrefixListId</code> and <code>DestinationCidrBlock</code> in the same request. </p>"
         }
       }
     },
@@ -16814,7 +16955,7 @@
       "required":["TrafficMirrorFilterRuleId"],
       "members":{
         "TrafficMirrorFilterRuleId":{
-          "shape":"TrafficMirrorFilterRuleId",
+          "shape":"TrafficMirrorFilterRuleIdWithResolver",
           "documentation":"<p>The ID of the Traffic Mirror rule.</p>"
         },
         "DryRun":{
@@ -24953,11 +25094,11 @@
       "type":"structure",
       "members":{
         "CertificateArn":{
-          "shape":"ResourceArn",
+          "shape":"CertificateId",
           "documentation":"<p>The ARN of the ACM certificate from which to disassociate the IAM role.</p>"
         },
         "RoleArn":{
-          "shape":"ResourceArn",
+          "shape":"RoleId",
           "documentation":"<p>The ARN of the IAM role to disassociate.</p>"
         },
         "DryRun":{
@@ -25048,6 +25189,47 @@
           "shape":"IpamResourceDiscoveryAssociation",
           "documentation":"<p>A resource discovery association.</p>",
           "locationName":"ipamResourceDiscoveryAssociation"
+        }
+      }
+    },
+    "DisassociateNatGatewayAddressRequest":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "AssociationIds"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>"
+        },
+        "AssociationIds":{
+          "shape":"EipAssociationIdList",
+          "documentation":"<p>The association IDs of EIPs that have been associated with the NAT gateway.</p>",
+          "locationName":"AssociationId"
+        },
+        "MaxDrainDurationSeconds":{
+          "shape":"DrainSeconds",
+          "documentation":"<p>The maximum amount of time to wait (in seconds) before forcibly releasing the IP addresses if connections are still in progress. Default value is 350 seconds.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateNatGatewayAddressResult":{
+      "type":"structure",
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>",
+          "locationName":"natGatewayId"
+        },
+        "NatGatewayAddresses":{
+          "shape":"NatGatewayAddressList",
+          "documentation":"<p>Information about the NAT gateway IP addresses.</p>",
+          "locationName":"natGatewayAddressSet"
         }
       }
     },
@@ -25481,6 +25663,11 @@
       "max":99.999,
       "min":0.001
     },
+    "DrainSeconds":{
+      "type":"integer",
+      "max":4000,
+      "min":1
+    },
     "DynamicRoutingValue":{
       "type":"string",
       "enum":[
@@ -25711,6 +25898,13 @@
       "type":"list",
       "member":{
         "shape":"EgressOnlyInternetGateway",
+        "locationName":"item"
+      }
+    },
+    "EipAssociationIdList":{
+      "type":"list",
+      "member":{
+        "shape":"ElasticIpAssociationId",
         "locationName":"item"
       }
     },
@@ -28371,7 +28565,7 @@
       "type":"structure",
       "members":{
         "CertificateArn":{
-          "shape":"ResourceArn",
+          "shape":"CertificateId",
           "documentation":"<p>The ARN of the ACM certificate for which to view the associated IAM roles, encryption keys, and Amazon S3 object information.</p>"
         },
         "DryRun":{
@@ -32743,6 +32937,7 @@
         "locationName":"InstanceId"
       }
     },
+    "InstanceIdWithVolumeResolver":{"type":"string"},
     "InstanceIdsSet":{
       "type":"list",
       "member":{
@@ -33566,9 +33761,10 @@
     },
     "InstanceSpecification":{
       "type":"structure",
+      "required":["InstanceId"],
       "members":{
         "InstanceId":{
-          "shape":"InstanceId",
+          "shape":"InstanceIdWithVolumeResolver",
           "documentation":"<p>The instance to specify which volumes should be snapshotted.</p>"
         },
         "ExcludeBootVolume":{
@@ -34794,6 +34990,13 @@
         "dualstack",
         "ipv6"
       ]
+    },
+    "IpList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
     },
     "IpPermission":{
       "type":"structure",
@@ -37946,6 +38149,11 @@
           "shape":"NetworkInterfaceId",
           "documentation":"<p>The ID of the network interface.</p>",
           "locationName":"networkInterfaceId"
+        },
+        "DestinationPrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p> The ID of the prefix list. </p>",
+          "locationName":"destinationPrefixListId"
         }
       },
       "documentation":"<p>Describes a route for a local gateway route table.</p>"
@@ -39657,10 +39865,7 @@
     },
     "ModifyLocalGatewayRouteRequest":{
       "type":"structure",
-      "required":[
-        "DestinationCidrBlock",
-        "LocalGatewayRouteTableId"
-      ],
+      "required":["LocalGatewayRouteTableId"],
       "members":{
         "DestinationCidrBlock":{
           "shape":"String",
@@ -39681,6 +39886,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "DestinationPrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p> The ID of the prefix list. Use a prefix list in place of <code>DestinationCidrBlock</code>. You cannot use <code>DestinationPrefixListId</code> and <code>DestinationCidrBlock</code> in the same request. </p>"
         }
       }
     },
@@ -40090,7 +40299,7 @@
       "required":["TrafficMirrorFilterRuleId"],
       "members":{
         "TrafficMirrorFilterRuleId":{
-          "shape":"TrafficMirrorFilterRuleId",
+          "shape":"TrafficMirrorFilterRuleIdWithResolver",
           "documentation":"<p>The ID of the Traffic Mirror rule.</p>"
         },
         "TrafficDirection":{
@@ -41566,6 +41775,26 @@
           "shape":"String",
           "documentation":"<p>[Public NAT gateway only] The Elastic IP address associated with the NAT gateway.</p>",
           "locationName":"publicIp"
+        },
+        "AssociationId":{
+          "shape":"String",
+          "documentation":"<p>[Public NAT gateway only] The association ID of the Elastic IP address that's associated with the NAT gateway.</p>",
+          "locationName":"associationId"
+        },
+        "IsPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>Defines if the IP address is the primary address.</p>",
+          "locationName":"isPrimary"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>The address failure message.</p>",
+          "locationName":"failureMessage"
+        },
+        "Status":{
+          "shape":"NatGatewayAddressStatus",
+          "documentation":"<p>The address status.</p>",
+          "locationName":"status"
         }
       },
       "documentation":"<p>Describes the IP addresses and network interface associated with a NAT gateway.</p>"
@@ -41576,6 +41805,17 @@
         "shape":"NatGatewayAddress",
         "locationName":"item"
       }
+    },
+    "NatGatewayAddressStatus":{
+      "type":"string",
+      "enum":[
+        "assigning",
+        "unassigning",
+        "associating",
+        "disassociating",
+        "succeeded",
+        "failed"
+      ]
     },
     "NatGatewayId":{"type":"string"},
     "NatGatewayIdStringList":{
@@ -44017,6 +44257,11 @@
         "shape":"ScheduledInstancesPrivateIpAddressConfig",
         "locationName":"PrivateIpAddressConfigSet"
       }
+    },
+    "PrivateIpAddressCount":{
+      "type":"integer",
+      "max":7,
+      "min":1
     },
     "PrivateIpAddressSpecification":{
       "type":"structure",
@@ -47525,6 +47770,7 @@
         }
       }
     },
+    "RoleId":{"type":"string"},
     "RootDeviceType":{
       "type":"string",
       "enum":[
@@ -48583,7 +48829,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>route-search.exact-match</code> - The exact match of the specified filter.</p> </li> <li> <p> <code>route-search.longest-prefix-match</code> - The longest prefix that matches the route.</p> </li> <li> <p> <code>route-search.subnet-of-match</code> - The routes with a subnet that match the specified CIDR filter.</p> </li> <li> <p> <code>route-search.supernet-of-match</code> - The routes with a CIDR that encompass the CIDR filter. For example, if you have 10.0.1.0/29 and 10.0.1.0/31 routes in your route table and you specify <code>supernet-of-match</code> as 10.0.1.0/30, then the result returns 10.0.1.0/29.</p> </li> <li> <p> <code>state</code> - The state of the route.</p> </li> <li> <p> <code>type</code> - The route type.</p> </li> </ul>",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>prefix-list-id</code> - The ID of the prefix list.</p> </li> <li> <p> <code>route-search.exact-match</code> - The exact match of the specified filter.</p> </li> <li> <p> <code>route-search.longest-prefix-match</code> - The longest prefix that matches the route.</p> </li> <li> <p> <code>route-search.subnet-of-match</code> - The routes with a subnet that match the specified CIDR filter.</p> </li> <li> <p> <code>route-search.supernet-of-match</code> - The routes with a CIDR that encompass the CIDR filter. For example, if you have 10.0.1.0/29 and 10.0.1.0/31 routes in your route table and you specify <code>supernet-of-match</code> as 10.0.1.0/30, then the result returns 10.0.1.0/29.</p> </li> <li> <p> <code>state</code> - The state of the route.</p> </li> <li> <p> <code>type</code> - The route type.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -51879,7 +52125,7 @@
       "type":"list",
       "member":{"shape":"TrafficMirrorFilterRuleField"}
     },
-    "TrafficMirrorFilterRuleId":{"type":"string"},
+    "TrafficMirrorFilterRuleIdWithResolver":{"type":"string"},
     "TrafficMirrorFilterRuleList":{
       "type":"list",
       "member":{
@@ -54052,6 +54298,47 @@
         }
       },
       "documentation":"<p>Contains the parameters for UnassignPrivateIpAddresses.</p>"
+    },
+    "UnassignPrivateNatGatewayAddressRequest":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "PrivateIpAddresses"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>"
+        },
+        "PrivateIpAddresses":{
+          "shape":"IpList",
+          "documentation":"<p>The private IPv4 addresses you want to unassign.</p>",
+          "locationName":"PrivateIpAddress"
+        },
+        "MaxDrainDurationSeconds":{
+          "shape":"DrainSeconds",
+          "documentation":"<p>The maximum amount of time to wait (in seconds) before forcibly releasing the IP addresses if connections are still in progress. Default value is 350 seconds.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "UnassignPrivateNatGatewayAddressResult":{
+      "type":"structure",
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT gateway ID.</p>",
+          "locationName":"natGatewayId"
+        },
+        "NatGatewayAddresses":{
+          "shape":"NatGatewayAddressList",
+          "documentation":"<p>Information about the NAT gateway IP addresses.</p>",
+          "locationName":"natGatewayAddressSet"
+        }
+      }
     },
     "UnlimitedSupportedInstanceFamily":{
       "type":"string",

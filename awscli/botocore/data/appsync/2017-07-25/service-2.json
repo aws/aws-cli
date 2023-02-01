@@ -1423,6 +1423,10 @@
         "relationalDatabaseConfig":{
           "shape":"RelationalDatabaseDataSourceConfig",
           "documentation":"<p>Relational database settings.</p>"
+        },
+        "eventBridgeConfig":{
+          "shape":"EventBridgeDataSourceConfig",
+          "documentation":"<p>Amazon EventBridge settings.</p>"
         }
       }
     },
@@ -1700,7 +1704,7 @@
         },
         "type":{
           "shape":"DataSourceType",
-          "documentation":"<p>The type of the data source.</p> <ul> <li> <p> <b>AWS_LAMBDA</b>: The data source is an Lambda function.</p> </li> <li> <p> <b>AMAZON_DYNAMODB</b>: The data source is an Amazon DynamoDB table.</p> </li> <li> <p> <b>AMAZON_ELASTICSEARCH</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>AMAZON_OPENSEARCH_SERVICE</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>NONE</b>: There is no data source. Use this type when you want to invoke a GraphQL operation without connecting to a data source, such as when you're performing data transformation with resolvers or invoking a subscription from a mutation.</p> </li> <li> <p> <b>HTTP</b>: The data source is an HTTP endpoint.</p> </li> <li> <p> <b>RELATIONAL_DATABASE</b>: The data source is a relational database.</p> </li> </ul>"
+          "documentation":"<p>The type of the data source.</p> <ul> <li> <p> <b>AWS_LAMBDA</b>: The data source is an Lambda function.</p> </li> <li> <p> <b>AMAZON_DYNAMODB</b>: The data source is an Amazon DynamoDB table.</p> </li> <li> <p> <b>AMAZON_ELASTICSEARCH</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>AMAZON_OPENSEARCH_SERVICE</b>: The data source is an Amazon OpenSearch Service domain.</p> </li> <li> <p> <b>AMAZON_EVENTBRIDGE</b>: The data source is an Amazon EventBridge configuration.</p> </li> <li> <p> <b>NONE</b>: There is no data source. Use this type when you want to invoke a GraphQL operation without connecting to a data source, such as when you're performing data transformation with resolvers or invoking a subscription from a mutation.</p> </li> <li> <p> <b>HTTP</b>: The data source is an HTTP endpoint.</p> </li> <li> <p> <b>RELATIONAL_DATABASE</b>: The data source is a relational database.</p> </li> </ul>"
         },
         "serviceRoleArn":{
           "shape":"String",
@@ -1729,6 +1733,10 @@
         "relationalDatabaseConfig":{
           "shape":"RelationalDatabaseDataSourceConfig",
           "documentation":"<p>Relational database settings.</p>"
+        },
+        "eventBridgeConfig":{
+          "shape":"EventBridgeDataSourceConfig",
+          "documentation":"<p>Amazon EventBridge settings.</p>"
         }
       },
       "documentation":"<p>Describes a data source.</p>"
@@ -1742,7 +1750,8 @@
         "NONE",
         "HTTP",
         "RELATIONAL_DATABASE",
-        "AMAZON_OPENSEARCH_SERVICE"
+        "AMAZON_OPENSEARCH_SERVICE",
+        "AMAZON_EVENTBRIDGE"
       ]
     },
     "DataSources":{
@@ -2178,6 +2187,17 @@
       "max":65536,
       "min":0,
       "pattern":"^[\\s\\S]*$"
+    },
+    "EventBridgeDataSourceConfig":{
+      "type":"structure",
+      "required":["eventBusArn"],
+      "members":{
+        "eventBusArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the event bus. For more information about event buses, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html\">Amazon EventBridge event buses</a>.</p>"
+        }
+      },
+      "documentation":"<p>Describes an Amazon EventBridge bus data source configuration.</p>"
     },
     "FieldLogLevel":{
       "type":"string",
@@ -3590,6 +3610,10 @@
         "relationalDatabaseConfig":{
           "shape":"RelationalDatabaseDataSourceConfig",
           "documentation":"<p>The new relational database configuration.</p>"
+        },
+        "eventBridgeConfig":{
+          "shape":"EventBridgeDataSourceConfig",
+          "documentation":"<p>The new Amazon EventBridge settings.</p>"
         }
       }
     },

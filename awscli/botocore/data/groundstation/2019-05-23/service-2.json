@@ -194,6 +194,22 @@
       ],
       "documentation":"<p>Describes an existing ephemeris.</p>"
     },
+    "GetAgentConfiguration":{
+      "name":"GetAgentConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agent/{agentId}/configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentConfigurationRequest"},
+      "output":{"shape":"GetAgentConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the latest configuration information for a registered agent.</p>"
+    },
     "GetConfig":{
       "name":"GetConfig",
       "http":{
@@ -402,6 +418,22 @@
       ],
       "documentation":"<p>Returns a list of tags for a specified resource.</p>"
     },
+    "RegisterAgent":{
+      "name":"RegisterAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/agent",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterAgentRequest"},
+      "output":{"shape":"RegisterAgentResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Registers a new agent with AWS Groundstation.</p>"
+    },
     "ReserveContact":{
       "name":"ReserveContact",
       "http":{
@@ -449,6 +481,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deassigns a resource tag.</p>",
+      "idempotent":true
+    },
+    "UpdateAgentStatus":{
+      "name":"UpdateAgentStatus",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/agent/{agentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentStatusRequest"},
+      "output":{"shape":"UpdateAgentStatusResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Update the status of the agent.</p>",
       "idempotent":true
     },
     "UpdateConfig":{
@@ -509,6 +558,63 @@
       "max":128,
       "min":1,
       "pattern":"^[\\w-]+$"
+    },
+    "AgentDetails":{
+      "type":"structure",
+      "required":[
+        "agentVersion",
+        "componentVersions",
+        "instanceId",
+        "instanceType",
+        "reservedCpuCores"
+      ],
+      "members":{
+        "agentVersion":{
+          "shape":"VersionString",
+          "documentation":"<p>Current agent version.</p>"
+        },
+        "componentVersions":{
+          "shape":"ComponentVersionList",
+          "documentation":"<p>List of versions being used by agent components.</p>"
+        },
+        "instanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>ID of EC2 instance agent is running on.</p>"
+        },
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>Type of EC2 instance agent is running on.</p>"
+        },
+        "reservedCpuCores":{
+          "shape":"ReservedCpuCoresList",
+          "documentation":"<p>Number of Cpu cores reserved for agent.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about the agent.</p>"
+    },
+    "AgentStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "AggregateStatus":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "signatureMap":{
+          "shape":"SignatureMap",
+          "documentation":"<p>Sparse map of failure signatures.</p>"
+        },
+        "status":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Aggregate status.</p>"
+        }
+      },
+      "documentation":"<p>Aggregate status of Agent components.</p>"
     },
     "AngleUnits":{
       "type":"string",
@@ -589,6 +695,44 @@
       "min":5,
       "pattern":"^(arn:aws:)[\\s\\S]{0,1024}$"
     },
+    "AuditResults":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
+    },
+    "AwsGroundStationAgentEndpoint":{
+      "type":"structure",
+      "required":[
+        "egressAddress",
+        "ingressAddress",
+        "name"
+      ],
+      "members":{
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>The status of AgentEndpoint.</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>The results of the audit.</p>"
+        },
+        "egressAddress":{
+          "shape":"ConnectionDetails",
+          "documentation":"<p>The egress address of AgentEndpoint.</p>"
+        },
+        "ingressAddress":{
+          "shape":"RangedConnectionDetails",
+          "documentation":"<p>The ingress address of AgentEndpoint.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Name string associated with AgentEndpoint. Used as a human-readable identifier for AgentEndpoint.</p>"
+        }
+      },
+      "documentation":"<p>Information about AwsGroundStationAgentEndpoint.</p>"
+    },
     "BandwidthUnits":{
       "type":"string",
       "enum":[
@@ -614,6 +758,91 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "CapabilityArn":{"type":"string"},
+    "CapabilityArnList":{
+      "type":"list",
+      "member":{"shape":"CapabilityArn"},
+      "max":20,
+      "min":1
+    },
+    "ComponentStatusData":{
+      "type":"structure",
+      "required":[
+        "capabilityArn",
+        "componentType",
+        "dataflowId",
+        "status"
+      ],
+      "members":{
+        "bytesReceived":{
+          "shape":"Long",
+          "documentation":"<p>Bytes received by the component.</p>"
+        },
+        "bytesSent":{
+          "shape":"Long",
+          "documentation":"<p>Bytes sent by the component.</p>"
+        },
+        "capabilityArn":{
+          "shape":"CapabilityArn",
+          "documentation":"<p>Capability ARN of the component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The Component type.</p>"
+        },
+        "dataflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>Dataflow UUID associated with the component.</p>"
+        },
+        "packetsDropped":{
+          "shape":"Long",
+          "documentation":"<p>Packets dropped by component.</p>"
+        },
+        "status":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Component status.</p>"
+        }
+      },
+      "documentation":"<p>Data on the status of agent components.</p>"
+    },
+    "ComponentStatusList":{
+      "type":"list",
+      "member":{"shape":"ComponentStatusData"},
+      "max":20,
+      "min":1
+    },
+    "ComponentType":{
+      "type":"string",
+      "enum":[
+        "LAMINAR_FLOW",
+        "PRISM",
+        "DIGITIZER"
+      ]
+    },
+    "ComponentVersion":{
+      "type":"structure",
+      "required":[
+        "componentType",
+        "versions"
+      ],
+      "members":{
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>Component type.</p>"
+        },
+        "versions":{
+          "shape":"VersionStringList",
+          "documentation":"<p>List of versions.</p>"
+        }
+      },
+      "documentation":"<p>Version information for agent components.</p>"
+    },
+    "ComponentVersionList":{
+      "type":"list",
+      "member":{"shape":"ComponentVersion"},
+      "max":20,
+      "min":1
     },
     "ConfigArn":{"type":"string"},
     "ConfigCapabilityType":{
@@ -722,6 +951,21 @@
       },
       "documentation":"<p>Object containing the parameters of a <code>Config</code>.</p> <p>See the subtype definitions for what each type of <code>Config</code> contains.</p>",
       "union":true
+    },
+    "ConnectionDetails":{
+      "type":"structure",
+      "required":["socketAddress"],
+      "members":{
+        "mtu":{
+          "shape":"Integer",
+          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
+        },
+        "socketAddress":{
+          "shape":"SocketAddress",
+          "documentation":"<p>A socket address.</p>"
+        }
+      },
+      "documentation":"<p>Egress address of AgentEndpoint with an optional mtu.</p>"
     },
     "ContactData":{
       "type":"structure",
@@ -927,6 +1171,14 @@
         "name":{
           "shape":"SafeName",
           "documentation":"<p>Name of a mission profile.</p>"
+        },
+        "streamsKmsKey":{
+          "shape":"KmsKey",
+          "documentation":"<p>KMS key to use for encrypting streams.</p>"
+        },
+        "streamsKmsRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1309,6 +1561,29 @@
       },
       "documentation":"<p>Dataflow details for the destination side.</p>"
     },
+    "DiscoveryData":{
+      "type":"structure",
+      "required":[
+        "capabilityArns",
+        "privateIpAddresses",
+        "publicIpAddresses"
+      ],
+      "members":{
+        "capabilityArns":{
+          "shape":"CapabilityArnList",
+          "documentation":"<p>List of capabilities to associate with agent.</p>"
+        },
+        "privateIpAddresses":{
+          "shape":"IpAddressList",
+          "documentation":"<p>List of private IP addresses to associate with agent.</p>"
+        },
+        "publicIpAddresses":{
+          "shape":"IpAddressList",
+          "documentation":"<p>List of public IP addresses to associate with agent.</p>"
+        }
+      },
+      "documentation":"<p>Data for agent discovery.</p>"
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -1362,6 +1637,10 @@
     "EndpointDetails":{
       "type":"structure",
       "members":{
+        "awsGroundStationAgentEndpoint":{
+          "shape":"AwsGroundStationAgentEndpoint",
+          "documentation":"<p>An agent endpoint.</p>"
+        },
         "endpoint":{
           "shape":"DataflowEndpoint",
           "documentation":"<p>A dataflow endpoint.</p>"
@@ -1577,6 +1856,31 @@
         "kHz"
       ]
     },
+    "GetAgentConfigurationRequest":{
+      "type":"structure",
+      "required":["agentId"],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of agent to get configuration information for.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        }
+      }
+    },
+    "GetAgentConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of agent.</p>"
+        },
+        "taskingDocument":{
+          "shape":"String",
+          "documentation":"<p>Tasking document for agent.</p>"
+        }
+      }
+    },
     "GetConfigRequest":{
       "type":"structure",
       "required":[
@@ -1770,6 +2074,14 @@
           "shape":"AWSRegion",
           "documentation":"<p>Region of a mission profile.</p>"
         },
+        "streamsKmsKey":{
+          "shape":"KmsKey",
+          "documentation":"<p>KMS key to use for encrypting streams.</p>"
+        },
+        "streamsKmsRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to a mission profile.</p>"
@@ -1854,9 +2166,39 @@
       "min":4,
       "pattern":"^[ a-zA-Z0-9-._:=]{4,256}$"
     },
+    "InstanceId":{
+      "type":"string",
+      "max":64,
+      "min":10,
+      "pattern":"^[a-z0-9-]{10,64}$"
+    },
+    "InstanceType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9.-]{1,64}$"
+    },
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "IntegerRange":{
+      "type":"structure",
+      "required":[
+        "maximum",
+        "minimum"
+      ],
+      "members":{
+        "maximum":{
+          "shape":"Integer",
+          "documentation":"<p>A maximum value.</p>"
+        },
+        "minimum":{
+          "shape":"Integer",
+          "documentation":"<p>A minimum value.</p>"
+        }
+      },
+      "documentation":"<p>An integer range that has a minimum and maximum value.</p>"
     },
     "InvalidParameterException":{
       "type":"structure",
@@ -1874,13 +2216,46 @@
       },
       "exception":true
     },
+    "IpAddressList":{
+      "type":"list",
+      "member":{"shape":"IpV4Address"},
+      "max":20,
+      "min":1
+    },
+    "IpV4Address":{
+      "type":"string",
+      "max":16,
+      "min":7,
+      "pattern":"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+    },
     "JsonString":{
       "type":"string",
       "max":8192,
       "min":2,
       "pattern":"^[{}\\[\\]:.,\"0-9A-z\\-_\\s]{2,8192}$"
     },
+    "KeyAliasArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^arn:aws[a-zA-Z-]{0,16}:kms:[a-z]{2}(-[a-z]{1,16}){1,3}-\\d{1}:\\d{12}:((alias/[a-zA-Z0-9:/_-]{1,256}))$"
+    },
     "KeyArn":{"type":"string"},
+    "KmsKey":{
+      "type":"structure",
+      "members":{
+        "kmsAliasArn":{
+          "shape":"KeyAliasArn",
+          "documentation":"<p>KMS Alias Arn.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>KMS Key Arn.</p>"
+        }
+      },
+      "documentation":"<p>AWS Key Management Service (KMS) Key.</p>",
+      "union":true
+    },
     "ListConfigsRequest":{
       "type":"structure",
       "members":{
@@ -2178,6 +2553,10 @@
       },
       "documentation":"<p/>"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MissionProfileArn":{"type":"string"},
     "MissionProfileIdResponse":{
       "type":"structure",
@@ -2261,6 +2640,71 @@
       "max":21600,
       "min":1
     },
+    "RangedConnectionDetails":{
+      "type":"structure",
+      "required":["socketAddress"],
+      "members":{
+        "mtu":{
+          "shape":"RangedConnectionDetailsMtuInteger",
+          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
+        },
+        "socketAddress":{
+          "shape":"RangedSocketAddress",
+          "documentation":"<p>A ranged socket address.</p>"
+        }
+      },
+      "documentation":"<p>Ingress address of AgentEndpoint with a port range and an optional mtu.</p>"
+    },
+    "RangedConnectionDetailsMtuInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1500,
+      "min":1400
+    },
+    "RangedSocketAddress":{
+      "type":"structure",
+      "required":[
+        "name",
+        "portRange"
+      ],
+      "members":{
+        "name":{
+          "shape":"IpV4Address",
+          "documentation":"<p>IPv4 socket address.</p>"
+        },
+        "portRange":{
+          "shape":"IntegerRange",
+          "documentation":"<p>Port range of a socket address.</p>"
+        }
+      },
+      "documentation":"<p>A socket address with a port range.</p>"
+    },
+    "RegisterAgentRequest":{
+      "type":"structure",
+      "required":[
+        "agentDetails",
+        "discoveryData"
+      ],
+      "members":{
+        "agentDetails":{
+          "shape":"AgentDetails",
+          "documentation":"<p>Detailed information about the agent being registered.</p>"
+        },
+        "discoveryData":{
+          "shape":"DiscoveryData",
+          "documentation":"<p>Data for associating and agent with the capabilities it is managing.</p>"
+        }
+      }
+    },
+    "RegisterAgentResponse":{
+      "type":"structure",
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of registered agent.</p>"
+        }
+      }
+    },
     "ReserveContactRequest":{
       "type":"structure",
       "required":[
@@ -2297,6 +2741,12 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "ReservedCpuCoresList":{
+      "type":"list",
+      "member":{"shape":"Integer"},
+      "max":256,
+      "min":1
     },
     "ResourceLimitExceededException":{
       "type":"structure",
@@ -2467,6 +2917,11 @@
     "SecurityGroupIdList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "SignatureMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Boolean"}
     },
     "SocketAddress":{
       "type":"structure",
@@ -2696,6 +3151,45 @@
       },
       "documentation":"<p/>"
     },
+    "UpdateAgentStatusRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "aggregateStatus",
+        "componentStatuses",
+        "taskId"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of agent to update.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "aggregateStatus":{
+          "shape":"AggregateStatus",
+          "documentation":"<p>Aggregate status for agent.</p>"
+        },
+        "componentStatuses":{
+          "shape":"ComponentStatusList",
+          "documentation":"<p>List of component statuses for agent.</p>"
+        },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of agent task.</p>"
+        }
+      }
+    },
+    "UpdateAgentStatusResponse":{
+      "type":"structure",
+      "required":["agentId"],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of updated agent.</p>"
+        }
+      }
+    },
     "UpdateConfigRequest":{
       "type":"structure",
       "required":[
@@ -2785,6 +3279,14 @@
           "shape":"SafeName",
           "documentation":"<p>Name of a mission profile.</p>"
         },
+        "streamsKmsKey":{
+          "shape":"KmsKey",
+          "documentation":"<p>KMS key to use for encrypting streams.</p>"
+        },
+        "streamsKmsRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
+        },
         "trackingConfigArn":{
           "shape":"ConfigArn",
           "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
@@ -2830,6 +3332,18 @@
       "max":128,
       "min":1,
       "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "VersionString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*))*$"
+    },
+    "VersionStringList":{
+      "type":"list",
+      "member":{"shape":"VersionString"},
+      "max":20,
+      "min":1
     },
     "Year":{
       "type":"integer",

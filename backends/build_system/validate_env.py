@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import re
+import sys
+import shlex
 from pathlib import Path
 import importlib.metadata
 
@@ -29,12 +31,31 @@ EXTRACT_DEPENDENCIES_RE = re.compile(r'"(.+)"')
 
 
 class UnmetDependenciesException(Exception):
-    def __init__(self, unmet_deps):
+    def __init__(self, unmet_deps, in_venv):
+        pip_install_command_args = ["-m", "pip", "install"]
         msg = "Environment requires following Python dependencies:\n\n"
         for package, actual_version, required in unmet_deps:
             msg += (
                 f"{package} (required: {required.constraints}) "
                 f"(version installed: {actual_version})\n"
+            )
+            pip_install_command_args.append(f'{package}{required.string_constraints()}')
+
+        msg += (
+            "\n"
+            "We recommend using --with-download-deps flag to automatically create a "
+            "virtualenv and download the dependencies.\n\n"
+            "If you want to manage the dependencies yourself instead, run the following "
+            "pip command:\n"
+        )
+        msg += f"{sys.executable} {shlex.join(pip_install_command_args)}\n"
+
+        if not in_venv:
+            msg += (
+                "\nWe noticed you are not in a virtualenv.\nIf not using --with-download-deps "
+                "we highly recommend using a virtualenv to prevent dependencies "
+                "from being installed into your global "
+                "Python environment.\n"
             )
         super().__init__(msg)
 
@@ -43,7 +64,8 @@ def validate_env(target_artifact):
     requirements = _get_requires_list(target_artifact)
     unmet_deps = _get_unmet_dependencies(requirements)
     if unmet_deps:
-        raise UnmetDependenciesException(unmet_deps)
+        in_venv = sys.prefix != sys.base_prefix
+        raise UnmetDependenciesException(unmet_deps, in_venv)
 
 
 def _get_requires_list(target_artifact):
@@ -74,8 +96,12 @@ def _parse_requirements(requirements_file):
 
 def _get_unmet_dependencies(requirements):
     unmet = []
+    checked = set()
     for requirement in requirements:
         project_name = requirement.name
+        if project_name in checked:
+            continue
+        checked.add(project_name)
         try:
             actual_version = importlib.metadata.version(project_name)
         except importlib.metadata.PackageNotFoundError:

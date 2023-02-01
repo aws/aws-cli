@@ -27,10 +27,10 @@ PACKAGE_NAME = re.compile(r"(?P<name>[A-Za-z][A-Za-z0-9_\.\-]+)(?P<rest>.+)")
 CONSTRAINT = re.compile(r"(?P<comparison>[=\<\>]+)(?P<version>.+)")
 COMPARISONS: Dict[str, Callable[[List[int], List[int]], bool]] = {
     '==': lambda a, b: a == b,
-    '>':  lambda a, b: a > b,
-    '>=':  lambda a, b: a >= b,
-    '<':  lambda a, b: a < b,
-    '<=':  lambda a, b: a <= b,
+    '>': lambda a, b: a > b,
+    '>=': lambda a, b: a >= b,
+    '<': lambda a, b: a < b,
+    '<=': lambda a, b: a <= b,
 }
 
 
@@ -84,6 +84,9 @@ class Requirement:
         if other is None:
             return False
         return (self.name == other.name and self.constraints == other.constraints)
+
+    def string_constraints(self):
+        return ','.join(self.constraints)
 
 
 class ParseError(Exception):

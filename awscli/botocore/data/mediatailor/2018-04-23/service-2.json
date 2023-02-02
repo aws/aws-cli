@@ -493,6 +493,18 @@
       "documentation":"<p>Updates a live source's configuration.</p>",
       "idempotent":true
     },
+    "UpdateProgram":{
+      "name":"UpdateProgram",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/channel/{ChannelName}/program/{ProgramName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProgramRequest"},
+      "output":{"shape":"UpdateProgramResponse"},
+      "documentation":"<p>Updates a program within a channel.</p>",
+      "idempotent":true
+    },
     "UpdateSourceLocation":{
       "name":"UpdateSourceLocation",
       "http":{
@@ -747,6 +759,17 @@
         "RUNNING",
         "STOPPED"
       ]
+    },
+    "ClipRange":{
+      "type":"structure",
+      "required":["EndOffsetMillis"],
+      "members":{
+        "EndOffsetMillis":{
+          "shape":"__long",
+          "documentation":"<p>The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.</p>"
+        }
+      },
+      "documentation":"<p>Clip range configuration for the VOD source associated with the program.</p>"
     },
     "ConfigurationAliasesRequest":{
       "type":"map",
@@ -1104,9 +1127,17 @@
           "shape":"__string",
           "documentation":"<p>The name to assign to the channel for this program.</p>"
         },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
         "CreationTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The time the program was created.</p>"
+        },
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
         },
         "LiveSourceName":{
           "shape":"__string",
@@ -1663,9 +1694,17 @@
           "shape":"__string",
           "documentation":"<p>The name of the channel that the program belongs to.</p>"
         },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
         "CreationTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the program was created.</p>"
+        },
+        "DurationMillis":{
+          "shape":"Long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
         },
         "LiveSourceName":{
           "shape":"__string",
@@ -2413,6 +2452,10 @@
       "type":"list",
       "member":{"shape":"LogType"}
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "ManifestProcessingRules":{
       "type":"structure",
       "members":{
@@ -2886,6 +2929,10 @@
       "type":"structure",
       "required":["Transition"],
       "members":{
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>Program clip range configuration.</p>"
+        },
         "Transition":{
           "shape":"Transition",
           "documentation":"<p>Program transition configurations.</p>"
@@ -3368,6 +3415,113 @@
           "locationName":"tags"
         }
       }
+    },
+    "UpdateProgramRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "ProgramName",
+        "ScheduleConfiguration"
+      ],
+      "members":{
+        "AdBreaks":{
+          "shape":"__listOfAdBreak",
+          "documentation":"<p>The ad break configuration settings.</p>"
+        },
+        "ChannelName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the channel for this Program.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        },
+        "ProgramName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the Program.</p>",
+          "location":"uri",
+          "locationName":"ProgramName"
+        },
+        "ScheduleConfiguration":{
+          "shape":"UpdateProgramScheduleConfiguration",
+          "documentation":"<p>The schedule configuration settings.</p>"
+        }
+      }
+    },
+    "UpdateProgramResponse":{
+      "type":"structure",
+      "members":{
+        "AdBreaks":{
+          "shape":"__listOfAdBreak",
+          "documentation":"<p>The ad break configuration settings.</p>"
+        },
+        "Arn":{
+          "shape":"__string",
+          "documentation":"<p>The ARN to assign to the program.</p>"
+        },
+        "ChannelName":{
+          "shape":"__string",
+          "documentation":"<p>The name to assign to the channel for this program.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
+        "CreationTime":{
+          "shape":"__timestampUnix",
+          "documentation":"<p>The time the program was created.</p>"
+        },
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
+        },
+        "LiveSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the LiveSource for this Program.</p>"
+        },
+        "ProgramName":{
+          "shape":"__string",
+          "documentation":"<p>The name to assign to this program.</p>"
+        },
+        "ScheduledStartTime":{
+          "shape":"__timestampUnix",
+          "documentation":"<p>The scheduled start time for this Program.</p>"
+        },
+        "SourceLocationName":{
+          "shape":"__string",
+          "documentation":"<p>The name to assign to the source location for this program.</p>"
+        },
+        "VodSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name that's used to refer to a VOD source.</p>"
+        }
+      }
+    },
+    "UpdateProgramScheduleConfiguration":{
+      "type":"structure",
+      "members":{
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>Program clip range configuration.</p>"
+        },
+        "Transition":{
+          "shape":"UpdateProgramTransition",
+          "documentation":"<p>Program transition configuration.</p>"
+        }
+      },
+      "documentation":"<p>Schedule configuration parameters.</p>"
+    },
+    "UpdateProgramTransition":{
+      "type":"structure",
+      "members":{
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in seconds.</p>"
+        },
+        "ScheduledStartTimeMillis":{
+          "shape":"__long",
+          "documentation":"<p>The date and time that the program is scheduled to start, in epoch milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Program transition configuration.</p>"
     },
     "UpdateSourceLocationRequest":{
       "type":"structure",

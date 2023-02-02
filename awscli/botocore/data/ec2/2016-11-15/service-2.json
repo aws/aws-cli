@@ -229,7 +229,7 @@
       },
       "input":{"shape":"AssociateIpamResourceDiscoveryRequest"},
       "output":{"shape":"AssociateIpamResourceDiscoveryResult"},
-      "documentation":"<p>Associates an IPAM resource discovery with an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Associates an IPAM resource discovery with an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "AssociateNatGatewayAddress":{
       "name":"AssociateNatGatewayAddress",
@@ -766,7 +766,7 @@
       },
       "input":{"shape":"CreateIpamResourceDiscoveryRequest"},
       "output":{"shape":"CreateIpamResourceDiscoveryResult"},
-      "documentation":"<p>Creates an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Creates an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "CreateIpamScope":{
       "name":"CreateIpamScope",
@@ -1510,7 +1510,7 @@
       },
       "input":{"shape":"DeleteIpamResourceDiscoveryRequest"},
       "output":{"shape":"DeleteIpamResourceDiscoveryResult"},
-      "documentation":"<p>Deletes an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Deletes an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "DeleteIpamScope":{
       "name":"DeleteIpamScope",
@@ -2682,7 +2682,7 @@
       },
       "input":{"shape":"DescribeIpamResourceDiscoveriesRequest"},
       "output":{"shape":"DescribeIpamResourceDiscoveriesResult"},
-      "documentation":"<p>Describes IPAM resource discoveries. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Describes IPAM resource discoveries. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "DescribeIpamResourceDiscoveryAssociations":{
       "name":"DescribeIpamResourceDiscoveryAssociations",
@@ -3807,7 +3807,7 @@
       },
       "input":{"shape":"DisassociateIpamResourceDiscoveryRequest"},
       "output":{"shape":"DisassociateIpamResourceDiscoveryResult"},
-      "documentation":"<p>Disassociates a resource discovery from an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Disassociates a resource discovery from an Amazon VPC IPAM. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "DisassociateNatGatewayAddress":{
       "name":"DisassociateNatGatewayAddress",
@@ -4274,7 +4274,7 @@
       },
       "input":{"shape":"GetIpamResourceCidrsRequest"},
       "output":{"shape":"GetIpamResourceCidrsResult"},
-      "documentation":"<p>Returns resource CIDRs managed by IPAM in a given scope. If an IPAM is associated with more than one resource discovery, the resource CIDRs across all of the resource discoveries is returned. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Returns resource CIDRs managed by IPAM in a given scope. If an IPAM is associated with more than one resource discovery, the resource CIDRs across all of the resource discoveries is returned. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "GetLaunchTemplateData":{
       "name":"GetLaunchTemplateData",
@@ -4810,7 +4810,7 @@
       },
       "input":{"shape":"ModifyIpamResourceDiscoveryRequest"},
       "output":{"shape":"ModifyIpamResourceDiscoveryResult"},
-      "documentation":"<p>Modifies a resource discovery. A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>Modifies a resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "ModifyIpamScope":{
       "name":"ModifyIpamScope",
@@ -6134,6 +6134,7 @@
     },
     "AcceptVpcPeeringConnectionRequest":{
       "type":"structure",
+      "required":["VpcPeeringConnectionId"],
       "members":{
         "DryRun":{
           "shape":"Boolean",
@@ -7566,6 +7567,10 @@
     },
     "AssociateEnclaveCertificateIamRoleRequest":{
       "type":"structure",
+      "required":[
+        "CertificateArn",
+        "RoleArn"
+      ],
       "members":{
         "CertificateArn":{
           "shape":"CertificateId",
@@ -7818,6 +7823,11 @@
     },
     "AssociateTransitGatewayMulticastDomainRequest":{
       "type":"structure",
+      "required":[
+        "TransitGatewayMulticastDomainId",
+        "TransitGatewayAttachmentId",
+        "SubnetIds"
+      ],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -12040,7 +12050,7 @@
         },
         "ExcessCapacityTerminationPolicy":{
           "shape":"FleetExcessCapacityTerminationPolicy",
-          "documentation":"<p>Indicates whether running instances should be terminated if the total target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p>"
+          "documentation":"<p>Indicates whether running instances should be terminated if the total target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p> <p>Supported only for fleets of type <code>maintain</code>.</p>"
         },
         "LaunchTemplateConfigs":{
           "shape":"FleetLaunchTemplateConfigListRequest",
@@ -15037,7 +15047,7 @@
         },
         "VolumeType":{
           "shape":"VolumeType",
-          "documentation":"<p>The volume type. This parameter can be one of the following values:</p> <ul> <li> <p>General Purpose SSD: <code>gp2</code> | <code>gp3</code> </p> </li> <li> <p>Provisioned IOPS SSD: <code>io1</code> | <code>io2</code> </p> </li> <li> <p>Throughput Optimized HDD: <code>st1</code> </p> </li> <li> <p>Cold HDD: <code>sc1</code> </p> </li> <li> <p>Magnetic: <code>standard</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html\">Amazon EBS volume types</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>Default: <code>gp2</code> </p>"
+          "documentation":"<p>The volume type. This parameter can be one of the following values:</p> <ul> <li> <p>General Purpose SSD: <code>gp2</code> | <code>gp3</code> </p> </li> <li> <p>Provisioned IOPS SSD: <code>io1</code> | <code>io2</code> </p> </li> <li> <p>Throughput Optimized HDD: <code>st1</code> </p> </li> <li> <p>Cold HDD: <code>sc1</code> </p> </li> <li> <p>Magnetic: <code>standard</code> </p> </li> </ul> <important> <p>Throughput Optimized HDD (<code>st1</code>) and Cold HDD (<code>sc1</code>) volumes can't be used as boot volumes.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html\">Amazon EBS volume types</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>Default: <code>gp2</code> </p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -15250,6 +15260,7 @@
     },
     "CreateVpcPeeringConnectionRequest":{
       "type":"structure",
+      "required":["VpcId"],
       "members":{
         "DryRun":{
           "shape":"Boolean",
@@ -25092,6 +25103,10 @@
     },
     "DisassociateEnclaveCertificateIamRoleRequest":{
       "type":"structure",
+      "required":[
+        "CertificateArn",
+        "RoleArn"
+      ],
       "members":{
         "CertificateArn":{
           "shape":"CertificateId",
@@ -25277,6 +25292,11 @@
     },
     "DisassociateTransitGatewayMulticastDomainRequest":{
       "type":"structure",
+      "required":[
+        "TransitGatewayMulticastDomainId",
+        "TransitGatewayAttachmentId",
+        "SubnetIds"
+      ],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -25720,7 +25740,7 @@
         },
         "Encrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-parameters\">Amazon EBS encryption</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#EBSEncryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImageAttribute.html\">DescribeImageAttribute</a>.</p>",
+          "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#encryption-parameters\">Amazon EBS encryption</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#EBSEncryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImageAttribute.html\">DescribeImageAttribute</a>.</p> <p>For <a>CreateImage</a> and <a>RegisterImage</a>, you can specify this parameter only for block device mappings that result in new, empty volumes when instances are launched from the image. Omit this parameter on block device mappings that include an existing volume or snapshot. If you include this parameter, and specify an encryption setting that is different from the existing volume or snapshot, the request will fail.</p>",
           "locationName":"encrypted"
         }
       },
@@ -27804,7 +27824,7 @@
         },
         "ExcessCapacityTerminationPolicy":{
           "shape":"FleetExcessCapacityTerminationPolicy",
-          "documentation":"<p>Indicates whether running instances should be terminated if the target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p>",
+          "documentation":"<p>Indicates whether running instances should be terminated if the target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p> <p>Supported only for fleets of type <code>maintain</code>.</p>",
           "locationName":"excessCapacityTerminationPolicy"
         },
         "FulfilledCapacity":{
@@ -28563,6 +28583,7 @@
     },
     "GetAssociatedEnclaveCertificateIamRolesRequest":{
       "type":"structure",
+      "required":["CertificateArn"],
       "members":{
         "CertificateArn":{
           "shape":"CertificateId",
@@ -29883,6 +29904,7 @@
     },
     "GetTransitGatewayMulticastDomainAssociationsRequest":{
       "type":"structure",
+      "required":["TransitGatewayMulticastDomainId"],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -32644,6 +32666,7 @@
     },
     "InstanceCreditSpecificationRequest":{
       "type":"structure",
+      "required":["InstanceId"],
       "members":{
         "InstanceId":{
           "shape":"InstanceId",
@@ -35876,7 +35899,7 @@
           "locationName":"tagSet"
         }
       },
-      "documentation":"<p>A resource discovery is an IPAM component that enables IPAM Service to manage and monitor resources that belong to the owning account.</p>"
+      "documentation":"<p>A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
     },
     "IpamResourceDiscoveryAssociation":{
       "type":"structure",
@@ -39018,7 +39041,7 @@
         },
         "ExcessCapacityTerminationPolicy":{
           "shape":"FleetExcessCapacityTerminationPolicy",
-          "documentation":"<p>Indicates whether running instances should be terminated if the total target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p>"
+          "documentation":"<p>Indicates whether running instances should be terminated if the total target capacity of the EC2 Fleet is decreased below the current size of the EC2 Fleet.</p> <p>Supported only for fleets of type <code>maintain</code>.</p>"
         },
         "LaunchTemplateConfigs":{
           "shape":"FleetLaunchTemplateConfigListRequest",
@@ -39992,6 +40015,7 @@
     },
     "ModifyPrivateDnsNameOptionsRequest":{
       "type":"structure",
+      "required":["InstanceId"],
       "members":{
         "DryRun":{
           "shape":"Boolean",
@@ -40169,7 +40193,7 @@
       "members":{
         "ExcessCapacityTerminationPolicy":{
           "shape":"ExcessCapacityTerminationPolicy",
-          "documentation":"<p>Indicates whether running Spot Instances should be terminated if the target capacity of the Spot Fleet request is decreased below the current size of the Spot Fleet.</p>",
+          "documentation":"<p>Indicates whether running instances should be terminated if the target capacity of the Spot Fleet request is decreased below the current size of the Spot Fleet.</p> <p>Supported only for fleets of type <code>maintain</code>.</p>",
           "locationName":"excessCapacityTerminationPolicy"
         },
         "LaunchTemplateConfigs":{
@@ -45157,6 +45181,10 @@
     },
     "RegisterTransitGatewayMulticastGroupMembersRequest":{
       "type":"structure",
+      "required":[
+        "TransitGatewayMulticastDomainId",
+        "NetworkInterfaceIds"
+      ],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -45188,6 +45216,10 @@
     },
     "RegisterTransitGatewayMulticastGroupSourcesRequest":{
       "type":"structure",
+      "required":[
+        "TransitGatewayMulticastDomainId",
+        "NetworkInterfaceIds"
+      ],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -45975,7 +46007,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI. Alternatively, you can specify a Systems Manager parameter, which will resolve to an AMI ID on launch.</p> <p>Valid formats:</p> <ul> <li> <p> <code>ami-17characters00000</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:version-number</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:label</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+          "documentation":"<p>The ID of the AMI. Alternatively, you can specify a Systems Manager parameter, which will resolve to an AMI ID on launch.</p> <p>Valid formats:</p> <ul> <li> <p> <code>ami-17characters00000</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:version-number</code> </p> </li> <li> <p> <code>resolve:ssm:parameter-name:label</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html#using-systems-manager-parameter-to-find-AMI\">Use a Systems Manager parameter to find an AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
         },
         "InstanceType":{
           "shape":"InstanceType",
@@ -48297,7 +48329,7 @@
       "members":{
         "AWSAccessKeyId":{
           "shape":"String",
-          "documentation":"<p>The access key ID of the owner of the bucket. Before you specify a value for your access key ID, review and follow the guidance in <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html\">Best practices for managing Amazon Web Services access keys</a>.</p>"
+          "documentation":"<p>The access key ID of the owner of the bucket. Before you specify a value for your access key ID, review and follow the guidance in <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/best-practices.html\">Best Practices for Amazon Web Services accounts</a> in the <i>Account ManagementReference Guide</i>.</p>"
         },
         "Bucket":{
           "shape":"String",
@@ -48863,6 +48895,7 @@
     },
     "SearchTransitGatewayMulticastGroupsRequest":{
       "type":"structure",
+      "required":["TransitGatewayMulticastDomainId"],
       "members":{
         "TransitGatewayMulticastDomainId":{
           "shape":"TransitGatewayMulticastDomainId",
@@ -49203,6 +49236,7 @@
     },
     "SecurityGroupRuleUpdate":{
       "type":"structure",
+      "required":["SecurityGroupRuleId"],
       "members":{
         "SecurityGroupRuleId":{
           "shape":"SecurityGroupRuleId",
@@ -50187,7 +50221,7 @@
         },
         "ExcessCapacityTerminationPolicy":{
           "shape":"ExcessCapacityTerminationPolicy",
-          "documentation":"<p>Indicates whether running Spot Instances should be terminated if you decrease the target capacity of the Spot Fleet request below the current size of the Spot Fleet.</p>",
+          "documentation":"<p>Indicates whether running instances should be terminated if you decrease the target capacity of the Spot Fleet request below the current size of the Spot Fleet.</p> <p>Supported only for fleets of type <code>maintain</code>.</p>",
           "locationName":"excessCapacityTerminationPolicy"
         },
         "FulfilledCapacity":{

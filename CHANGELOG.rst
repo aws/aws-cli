@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.64
+=======
+
+* api-change:``proton``: Add new GetResourcesSummary API
+* api-change:``redshift``: Corrects descriptions of the parameters for the API operations RestoreFromClusterSnapshot, RestoreTableFromClusterSnapshot, and CreateCluster.
+
+
 1.27.63
 =======
 

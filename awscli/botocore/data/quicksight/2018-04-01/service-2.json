@@ -88,7 +88,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates an analysis in Amazon QuickSight.</p>"
+      "documentation":"<p>Creates an analysis in Amazon QuickSight. Analyses can be created either from a template or from an <code>AnalysisDefinition</code>.</p>"
     },
     "CreateDashboard":{
       "name":"CreateDashboard",
@@ -108,7 +108,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a dashboard from a template. To first create a template, see the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation.</p> <p>A dashboard is an entity in Amazon QuickSight that identifies Amazon QuickSight reports, created from analyses. You can share Amazon QuickSight dashboards. With the right permissions, you can create scheduled email reports from them. If you have the correct permissions, you can create a dashboard from a template that exists in a different Amazon Web Services account.</p>"
+      "documentation":"<p>Creates a dashboard from either a template or directly with a <code>DashboardDefinition</code>. To first create a template, see the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation.</p> <p>A dashboard is an entity in Amazon QuickSight that identifies Amazon QuickSight reports, created from analyses. You can share Amazon QuickSight dashboards. With the right permissions, you can create scheduled email reports from them. If you have the correct permissions, you can create a dashboard from a template that exists in a different Amazon Web Services account.</p>"
     },
     "CreateDataSet":{
       "name":"CreateDataSet",
@@ -311,7 +311,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a template from an existing Amazon QuickSight analysis or template. You can use the resulting template to create a dashboard.</p> <p>A <i>template</i> is an entity in Amazon QuickSight that encapsulates the metadata required to create an analysis and that you can use to create s dashboard. A template adds a layer of abstraction by using placeholders to replace the dataset associated with the analysis. You can use templates to create dashboards by replacing dataset placeholders with datasets that follow the same schema that was used to create the source analysis and template.</p>"
+      "documentation":"<p>Creates a template either from a <code>TemplateDefinition</code> or from an existing Amazon QuickSight analysis or template. You can use the resulting template to create additional dashboards, templates, or analyses.</p> <p>A <i>template</i> is an entity in Amazon QuickSight that encapsulates the metadata required to create an analysis and that you can use to create s dashboard. A template adds a layer of abstraction by using placeholders to replace the dataset associated with the analysis. You can use templates to create dashboards by replacing dataset placeholders with datasets that follow the same schema that was used to create the source analysis and template.</p>"
     },
     "CreateTemplateAlias":{
       "name":"CreateTemplateAlias",
@@ -3938,7 +3938,8 @@
       "type":"structure",
       "required":[
         "FilterId",
-        "Column"
+        "Column",
+        "Configuration"
       ],
       "members":{
         "FilterId":{
@@ -4998,7 +4999,7 @@
         },
         "SourceEntity":{
           "shape":"AnalysisSourceEntity",
-          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets.</p>"
+          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "ThemeArn":{
           "shape":"Arn",
@@ -5010,7 +5011,7 @@
         },
         "Definition":{
           "shape":"AnalysisDefinition",
-          "documentation":"<p>The definition of an analysis.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+          "documentation":"<p>The definition of an analysis.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         }
       }
     },
@@ -5085,7 +5086,7 @@
         },
         "SourceEntity":{
           "shape":"DashboardSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon QuickSight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon QuickSight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -5105,7 +5106,7 @@
         },
         "Definition":{
           "shape":"DashboardVersionDefinition",
-          "documentation":"<p>The definition of a dashboard.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+          "documentation":"<p>The definition of a dashboard.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         }
       }
     },
@@ -5806,7 +5807,7 @@
         },
         "SourceEntity":{
           "shape":"TemplateSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon QuickSight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon QuickSight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -5818,7 +5819,7 @@
         },
         "Definition":{
           "shape":"TemplateVersionDefinition",
-          "documentation":"<p>The definition of a template.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+          "documentation":"<p>The definition of a template.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         }
       }
     },
@@ -6369,7 +6370,7 @@
         },
         "ViolatedEntities":{
           "shape":"EntityList",
-          "documentation":"<p/>"
+          "documentation":"<p>Lists the violated entities that caused the dashboard error.</p>"
         }
       },
       "documentation":"<p>Dashboard error.</p>"
@@ -6428,7 +6429,37 @@
         },
         "VisualPublishOptions":{
           "shape":"DashboardVisualPublishOptions",
-          "documentation":"<p/>"
+          "documentation":"<p>The visual publish options of a visual in a dashboard.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"VisualPublishOptions property will reach its end of standard support in a future release. To perform this action, use ExportWithHiddenFields."
+        },
+        "SheetLayoutElementMaximizationOption":{
+          "shape":"SheetLayoutElementMaximizationOption",
+          "documentation":"<p>The sheet layout maximization options of a dashbaord.</p>"
+        },
+        "VisualMenuOption":{
+          "shape":"VisualMenuOption",
+          "documentation":"<p>The menu options of a visual in a dashboard.</p>"
+        },
+        "VisualAxisSortOption":{
+          "shape":"VisualAxisSortOption",
+          "documentation":"<p>The axis sort options of a dashboard.</p>"
+        },
+        "ExportWithHiddenFieldsOption":{
+          "shape":"ExportWithHiddenFieldsOption",
+          "documentation":"<p>Determines if hidden fields are exported with a dashboard.</p>"
+        },
+        "DataPointDrillUpDownOption":{
+          "shape":"DataPointDrillUpDownOption",
+          "documentation":"<p>The drill-down options of data points in a dashboard.</p>"
+        },
+        "DataPointMenuLabelOption":{
+          "shape":"DataPointMenuLabelOption",
+          "documentation":"<p>The data point menu label options of a dashboard.</p>"
+        },
+        "DataPointTooltipOption":{
+          "shape":"DataPointTooltipOption",
+          "documentation":"<p>The data point tool tip options of a dashboard.</p>"
         }
       },
       "documentation":"<p>Dashboard publish options.</p>"
@@ -6673,10 +6704,10 @@
       "members":{
         "ExportHiddenFieldsOption":{
           "shape":"ExportHiddenFieldsOption",
-          "documentation":"<p/>"
+          "documentation":"<p>Determines if hidden fields are included in an exported dashboard.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The visual publish options of a visual in a dashboard</p>"
     },
     "DataBarsOptions":{
       "type":"structure",
@@ -6940,6 +6971,36 @@
       "type":"list",
       "member":{"shape":"DataPathValue"},
       "max":20
+    },
+    "DataPointDrillUpDownOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the drill down options of data points.</p>"
+        }
+      },
+      "documentation":"<p>The drill down options for data points in a dashbaord.</p>"
+    },
+    "DataPointMenuLabelOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the data point menu options.</p>"
+        }
+      },
+      "documentation":"<p>The data point menu options of a dashboard.</p>"
+    },
+    "DataPointTooltipOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the data point tool tip options.</p>"
+        }
+      },
+      "documentation":"<p>The data point tooltip options.</p>"
     },
     "DataSet":{
       "type":"structure",
@@ -9078,6 +9139,10 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "DashboardPublishOptions":{
+          "shape":"DashboardPublishOptions",
+          "documentation":"<p>Options for publishing the dashboard:</p> <ul> <li> <p> <code>AvailabilityStatus</code> for <code>AdHocFilteringOption</code> - This status can be either <code>ENABLED</code> or <code>DISABLED</code>. When this is set to <code>DISABLED</code>, Amazon QuickSight disables the left filter pane on the published dashboard, which can be used for ad hoc (one-time) filtering. This option is <code>ENABLED</code> by default. </p> </li> <li> <p> <code>AvailabilityStatus</code> for <code>ExportToCSVOption</code> - This status can be either <code>ENABLED</code> or <code>DISABLED</code>. The visual option to export data to .CSV format isn't enabled when this is set to <code>DISABLED</code>. This option is <code>ENABLED</code> by default. </p> </li> <li> <p> <code>VisibilityState</code> for <code>SheetControlsOption</code> - This visibility state can be either <code>COLLAPSED</code> or <code>EXPANDED</code>. This option is <code>COLLAPSED</code> by default. </p> </li> </ul>"
         }
       }
     },
@@ -10471,10 +10536,10 @@
       "members":{
         "AvailabilityStatus":{
           "shape":"DashboardBehavior",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the export hidden fields options of a dashbaord.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Determines if hidden fields are included in an exported dashboard.</p>"
     },
     "ExportToCSVOption":{
       "type":"structure",
@@ -10485,6 +10550,16 @@
         }
       },
       "documentation":"<p>Export to .csv option.</p>"
+    },
+    "ExportWithHiddenFieldsOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the export with hidden fields options.</p>"
+        }
+      },
+      "documentation":"<p>Determines whether or not hidden fields are visible on exported dashbaords.</p>"
     },
     "Expression":{
       "type":"string",
@@ -17690,6 +17765,196 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "RadarChartAggregatedFieldWells":{
+      "type":"structure",
+      "members":{
+        "Category":{
+          "shape":"RadarChartCategoryFieldList",
+          "documentation":"<p>The aggregated field well categories of a radar chart.</p>"
+        },
+        "Color":{
+          "shape":"RadarChartColorFieldList",
+          "documentation":"<p>The color that are assigned to the aggregated field wells of a radar chart.</p>"
+        },
+        "Values":{
+          "shape":"RadarChartValuesFieldList",
+          "documentation":"<p>The values that are assigned to the aggregated field wells of a radar chart.</p>"
+        }
+      },
+      "documentation":"<p>The aggregated field well configuration of a <code>RadarChartVisual</code>.</p>"
+    },
+    "RadarChartAreaStyleSettings":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility settings of a radar chart.</p>"
+        }
+      },
+      "documentation":"<p>The configured style settings of a radar chart.</p>"
+    },
+    "RadarChartCategoryFieldList":{
+      "type":"list",
+      "member":{"shape":"DimensionField"},
+      "max":1
+    },
+    "RadarChartColorFieldList":{
+      "type":"list",
+      "member":{"shape":"DimensionField"},
+      "max":1
+    },
+    "RadarChartConfiguration":{
+      "type":"structure",
+      "members":{
+        "FieldWells":{
+          "shape":"RadarChartFieldWells",
+          "documentation":"<p>The field well configuration of a <code>RadarChartVisual</code>.</p>"
+        },
+        "SortConfiguration":{
+          "shape":"RadarChartSortConfiguration",
+          "documentation":"<p>The sort configuration of a <code>RadarChartVisual</code>.</p>"
+        },
+        "Shape":{
+          "shape":"RadarChartShape",
+          "documentation":"<p>The shape of the radar chart.</p>"
+        },
+        "BaseSeriesSettings":{
+          "shape":"RadarChartSeriesSettings",
+          "documentation":"<p>The base sreies settings of a radar chart.</p>"
+        },
+        "StartAngle":{
+          "shape":"RadarChartStartAngle",
+          "documentation":"<p>The start angle of a radar chart's axis.</p>"
+        },
+        "VisualPalette":{
+          "shape":"VisualPalette",
+          "documentation":"<p>The palette (chart color) display setup of the visual.</p>"
+        },
+        "AlternateBandColorsVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Determines the visibility of the colors of alternatign bands in a radar chart.</p>"
+        },
+        "AlternateBandEvenColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the even-numbered alternate bands of a radar chart.</p>"
+        },
+        "AlternateBandOddColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the odd-numbered alternate bands of a radar chart.</p>"
+        },
+        "CategoryAxis":{
+          "shape":"AxisDisplayOptions",
+          "documentation":"<p>The category axis of a radar chart.</p>"
+        },
+        "CategoryLabelOptions":{
+          "shape":"ChartAxisLabelOptions",
+          "documentation":"<p>The category label options of a radar chart.</p>"
+        },
+        "ColorAxis":{
+          "shape":"AxisDisplayOptions",
+          "documentation":"<p>The color axis of a radar chart.</p>"
+        },
+        "ColorLabelOptions":{
+          "shape":"ChartAxisLabelOptions",
+          "documentation":"<p>The color label options of a radar chart.</p>"
+        },
+        "Legend":{
+          "shape":"LegendOptions",
+          "documentation":"<p>The legend display setup of the visual.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a <code>RadarChartVisual</code>.</p>"
+    },
+    "RadarChartFieldWells":{
+      "type":"structure",
+      "members":{
+        "RadarChartAggregatedFieldWells":{
+          "shape":"RadarChartAggregatedFieldWells",
+          "documentation":"<p>The aggregated field wells of a radar chart visual.</p>"
+        }
+      },
+      "documentation":"<p>The field wells of a radar chart visual.</p>"
+    },
+    "RadarChartSeriesSettings":{
+      "type":"structure",
+      "members":{
+        "AreaStyleSettings":{
+          "shape":"RadarChartAreaStyleSettings",
+          "documentation":"<p>The area style settings of a radar chart.</p>"
+        }
+      },
+      "documentation":"<p>The series settings of a radar chart.</p>"
+    },
+    "RadarChartShape":{
+      "type":"string",
+      "enum":[
+        "CIRCLE",
+        "POLYGON"
+      ]
+    },
+    "RadarChartSortConfiguration":{
+      "type":"structure",
+      "members":{
+        "CategorySort":{
+          "shape":"FieldSortOptionsList",
+          "documentation":"<p>The category sort options of a radar chart.</p>"
+        },
+        "CategoryItemsLimit":{
+          "shape":"ItemsLimitConfiguration",
+          "documentation":"<p>The category items limit for a radar chart.</p>"
+        },
+        "ColorSort":{
+          "shape":"FieldSortOptionsList",
+          "documentation":"<p>The color sort configuration of a radar chart.</p>"
+        },
+        "ColorItemsLimit":{
+          "shape":"ItemsLimitConfiguration",
+          "documentation":"<p>The color items limit of a radar chart.</p>"
+        }
+      },
+      "documentation":"<p>The sort configuration of a <code>RadarChartVisual</code>.</p>"
+    },
+    "RadarChartStartAngle":{
+      "type":"double",
+      "max":360,
+      "min":-360
+    },
+    "RadarChartValuesFieldList":{
+      "type":"list",
+      "member":{"shape":"MeasureField"},
+      "max":20
+    },
+    "RadarChartVisual":{
+      "type":"structure",
+      "required":["VisualId"],
+      "members":{
+        "VisualId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The unique identifier of a visual. This identifier must be unique within the context of a dashboard, template, or analysis. Two dashboards, analyses, or templates can have visuals with the same identifiers.</p>"
+        },
+        "Title":{
+          "shape":"VisualTitleLabelOptions",
+          "documentation":"<p>The title that is displayed on the visual.</p>"
+        },
+        "Subtitle":{
+          "shape":"VisualSubtitleLabelOptions",
+          "documentation":"<p>The subtitle that is displayed on the visual.</p>"
+        },
+        "ChartConfiguration":{
+          "shape":"RadarChartConfiguration",
+          "documentation":"<p>The configuration settings of the visual.</p>"
+        },
+        "Actions":{
+          "shape":"VisualCustomActionList",
+          "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "ColumnHierarchies":{
+          "shape":"ColumnHierarchyList",
+          "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        }
+      },
+      "documentation":"<p>A radar chart visual.</p>"
+    },
     "RangeEndsLabelType":{
       "type":"structure",
       "members":{
@@ -19643,6 +19908,16 @@
       "type":"list",
       "member":{"shape":"SheetElementRenderingRule"},
       "max":10000
+    },
+    "SheetLayoutElementMaximizationOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The status of the sheet layout maximization options of a dashbaord.</p>"
+        }
+      },
+      "documentation":"<p>The sheet layout maximization options of a dashbaord.</p>"
     },
     "SheetList":{
       "type":"list",
@@ -23814,9 +24089,23 @@
         "EmptyVisual":{
           "shape":"EmptyVisual",
           "documentation":"<p>An empty visual.</p>"
+        },
+        "RadarChartVisual":{
+          "shape":"RadarChartVisual",
+          "documentation":"<p>A radar chart visual.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/radar-chart.html\">Using radar charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A visual displayed on a sheet in an analysis, dashboard, or template.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "VisualAxisSortOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The availaiblity status of a visual's axis sort options.</p>"
+        }
+      },
+      "documentation":"<p>The axis sort options for a visual.</p>"
     },
     "VisualCustomAction":{
       "type":"structure",
@@ -23899,6 +24188,16 @@
       "type":"list",
       "member":{"shape":"Visual"},
       "max":30
+    },
+    "VisualMenuOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The availaiblity status of a visual's menu options.</p>"
+        }
+      },
+      "documentation":"<p>The menu options for a visual.</p>"
     },
     "VisualPalette":{
       "type":"structure",

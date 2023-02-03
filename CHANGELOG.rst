@@ -4830,6 +4830,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.63
+=======
+
+* api-change:``appconfig``: AWS AppConfig introduces KMS customer-managed key (CMK) encryption of configuration data, along with AWS Secrets Manager as a new configuration data source. S3 objects using SSE-KMS encryption and SSM Parameter Store SecureStrings are also now supported.
+* api-change:``connect``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``ec2``: Documentation updates for EC2.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``keyspaces``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``quicksight``: QuickSight support for Radar Chart and Dashboard Publish Options
+* api-change:``redshift``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``sso-admin``: Enabled FIPS endpoints for GovCloud (US) regions in SDK.
+
+
+1.27.62
+=======
+
+* api-change:``devops-guru``: This release adds filter support ListAnomalyForInsight API.
+* api-change:``forecast``: This release will enable customer select INCREMENTAL as ImportModel in Forecast's CreateDatasetImportJob API. Verified latest SDK containing required attribute, following https://w.amazon.com/bin/view/AWS-Seer/Launch/Trebuchet/
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``mediatailor``: The AWS Elemental MediaTailor SDK for Channel Assembly has added support for program updates, and the ability to clip the end of VOD sources in programs.
+* api-change:``sns``: Additional attributes added for set-topic-attributes.
+
+
 1.27.61
 =======
 

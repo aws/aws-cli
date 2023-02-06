@@ -4,13 +4,14 @@ from typing import List, Any
 
 import pytest
 
-from tests import skip_if_windows, if_windows
 
 from build_system.install import Installer
 from build_system.install import Uninstaller
+from backends.build_system.utils import Utils
+from tests.backends.build_system.markers import skip_if_windows, if_windows
 
 
-class FakeUtils:
+class FakeUtils(Utils):
     def __init__(self, is_exe: bool, responses: bool = False):
         self._is_exe = is_exe
         self._responses = responses
@@ -108,14 +109,7 @@ class TestInstaller:
                 os.path.join("build_dir", "exe", "aws", "dist"),
                 "lib_dir",
             ),
-            ("path_exists", "bin_dir"),
-            ("makedirs", "bin_dir"),
-            ("islink", os.path.join("bin_dir", "aws.cmd")),
-            (
-                "symlink",
-                os.path.join("lib_dir", "aws.cmd"),
-                os.path.join("bin_dir", "aws.cmd"),
-            ),
+            ("write_file", "bin_dir\\aws.cmd", "@echo off\nlib_dir\\aws.exe %*\n"),
         ]
 
     @skip_if_windows

@@ -77,8 +77,9 @@ class Installer:
             self._symlink_executables(install_dir, bin_dir)
 
     def _install_executables_on_windows(self, install_dir, bin_dir):
-        with open(os.path.join(bin_dir, "aws.cmd"), "w") as f:
-            f.write(WINDOWS_CMD_TEMPLATE.format(path=os.path.join(install_dir, "aws.exe")))
+        filepath = os.path.join(bin_dir, "aws.cmd")
+        content = WINDOWS_CMD_TEMPLATE.format(path=os.path.join(install_dir, "aws.exe"))
+        self._utils.write_file(filepath, content)
 
     def _symlink_executables(self, install_dir, bin_dir):
         if not self._utils.path_exists(bin_dir):

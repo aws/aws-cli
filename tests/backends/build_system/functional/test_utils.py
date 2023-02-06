@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import json
+import platform
 from typing import List
 
 import pytest
@@ -21,7 +22,7 @@ from build_system.utils import parse_requirements
 from build_system.utils import ParseError
 from build_system.utils import Requirement
 
-from tests import skip_if_windows, if_windows
+from tests.backends.build_system.markers import skip_if_windows, if_windows
 
 
 @pytest.fixture

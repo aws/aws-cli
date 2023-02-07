@@ -625,6 +625,22 @@
       ],
       "documentation":"<p>Get the sync status of a repository used for Proton template sync. For more information about template sync, see .</p> <note> <p>A repository sync status isn't tied to the Proton Repository resource (or any other Proton resource). Therefore, tags on an Proton Repository resource have no effect on this action. Specifically, you can't use these tags to control access to this action using Attribute-based access control (ABAC).</p> <p>For more information about ABAC, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/security_iam_service-with-iam.html#security_iam_service-with-iam-tags\">ABAC</a> in the <i>Proton User Guide</i>.</p> </note>"
     },
+    "GetResourcesSummary":{
+      "name":"GetResourcesSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcesSummaryInput"},
+      "output":{"shape":"GetResourcesSummaryOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get counts of Proton resources.</p> <p>For infrastructure-provisioning resources (environments, services, service instances, pipelines), the action returns staleness counts. A resource is stale when it's behind the recommended version of the Proton template that it uses and it needs an update to become current.</p> <p>The action returns staleness counts (counts of resources that are up-to-date, behind a template major version, or behind a template minor version), the total number of resources, and the number of resources that are in a failed state, grouped by resource type. Components, environments, and service templates are exceptions—see the <code>components</code>, <code>environments</code>, and <code>serviceTemplates</code> field descriptions.</p> <p>For context, the action also returns the total number of each type of Proton template in the Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/monitoring-dashboard.html\">Proton dashboard</a> in the <i>Proton User Guide</i>.</p>"
+    },
     "GetService":{
       "name":"GetService",
       "http":{
@@ -1701,6 +1717,40 @@
       },
       "documentation":"<p>The request <i>couldn't</i> be made due to a conflicting operation or resource.</p>",
       "exception":true
+    },
+    "CountsSummary":{
+      "type":"structure",
+      "members":{
+        "components":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The total number of components in the Amazon Web Services account.</p> <p>The semantics of the <code>components</code> field are different from the semantics of results for other infrastructure-provisioning resources. That's because at this time components don't have associated templates, therefore they don't have the concept of staleness. The <code>components</code> object will only contain <code>total</code> and <code>failed</code> members.</p>"
+        },
+        "environmentTemplates":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The total number of environment templates in the Amazon Web Services account.</p>"
+        },
+        "environments":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The staleness counts for Proton environments in the Amazon Web Services account. The <code>environments</code> object will only contain <code>total</code> members.</p>"
+        },
+        "pipelines":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The staleness counts for Proton pipelines in the Amazon Web Services account.</p>"
+        },
+        "serviceInstances":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The staleness counts for Proton service instances in the Amazon Web Services account.</p>"
+        },
+        "serviceTemplates":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The total number of service templates in the Amazon Web Services account. The <code>serviceTemplates</code> object will only contain <code>total</code> members.</p>"
+        },
+        "services":{
+          "shape":"ResourceCountsSummary",
+          "documentation":"<p>The staleness counts for Proton services in the Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p>Summary counts of each Proton resource type.</p>"
     },
     "CreateComponentInput":{
       "type":"structure",
@@ -3230,6 +3280,21 @@
         }
       }
     },
+    "GetResourcesSummaryInput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetResourcesSummaryOutput":{
+      "type":"structure",
+      "required":["counts"],
+      "members":{
+        "counts":{
+          "shape":"CountsSummary",
+          "documentation":"<p>Summary counts of each Proton resource type.</p>"
+        }
+      }
+    },
     "GetServiceInput":{
       "type":"structure",
       "required":["name"],
@@ -3397,6 +3462,10 @@
       "type":"string",
       "max":200,
       "min":1
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -4469,6 +4538,33 @@
         "FAILED",
         "QUEUED"
       ]
+    },
+    "ResourceCountsSummary":{
+      "type":"structure",
+      "required":["total"],
+      "members":{
+        "behindMajor":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of this type in the Amazon Web Services account that need a major template version update.</p>"
+        },
+        "behindMinor":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of this type in the Amazon Web Services account that need a minor template version update.</p>"
+        },
+        "failed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of this type in the Amazon Web Services account that failed to deploy.</p>"
+        },
+        "total":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of resources of this type in the Amazon Web Services account.</p>"
+        },
+        "upToDate":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of this type in the Amazon Web Services account that are up-to-date with their template.</p>"
+        }
+      },
+      "documentation":"<p>Summary counts of each Proton resource types.</p>"
     },
     "ResourceDeploymentStatus":{
       "type":"string",

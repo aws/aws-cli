@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.67
+=======
+
+* api-change:``backup``: This release added one attribute (resource name) in the output model of our 9 existing APIs in AWS backup so that customers will see the resource name at the output. No input required from Customers.
+* api-change:``cloudfront``: CloudFront Origin Access Control extends support to AWS Elemental MediaStore origins.
+* api-change:``glue``: DirectJDBCSource + Glue 4.0 streaming options
+* api-change:``lakeformation``: This release removes the LFTagpolicyResource expression limits.
+
+
 1.27.66
 =======
 

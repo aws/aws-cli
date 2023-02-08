@@ -1031,7 +1031,7 @@
         },
         "EncryptionAlgorithm":{
           "shape":"EncryptionAlg",
-          "documentation":"<p>The algorithm that is used to encrypt the file.</p>"
+          "documentation":"<p>The algorithm that is used to encrypt the file.</p> <note> <p>You can only specify <code>NONE</code> if the URL for your connector uses HTTPS. This ensures that no traffic is sent in clear text.</p> </note>"
         },
         "SigningAlgorithm":{
           "shape":"SigningAlg",
@@ -1039,7 +1039,7 @@
         },
         "MdnSigningAlgorithm":{
           "shape":"MdnSigningAlg",
-          "documentation":"<p>The signing algorithm for the MDN response.</p> <note> <p>If set to DEFAULT (or not set at all), the value for <code>SigningAlogorithm</code> is used.</p> </note>"
+          "documentation":"<p>The signing algorithm for the MDN response.</p> <note> <p>If set to DEFAULT (or not set at all), the value for <code>SigningAlgorithm</code> is used.</p> </note>"
         },
         "MdnResponse":{
           "shape":"MdnResponse",
@@ -1158,15 +1158,15 @@
         },
         "DestinationFileLocation":{
           "shape":"InputFileLocation",
-          "documentation":"<p>Specifies the location for the file being copied. Only applicable for Copy type workflow steps. Use <code>${Transfer:username}</code> in this field to parametrize the destination prefix by username.</p>"
+          "documentation":"<p>Specifies the location for the file being copied. Use <code>${Transfer:username}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:username}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded.</p> </note> </li> </ul>"
         },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
-          "documentation":"<p>A flag that indicates whether or not to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
-          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>To use the previous file as the input, enter <code>${previous.file}</code>. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>To use the originally uploaded file location as input for this step, enter <code>${original.file}</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
@@ -1255,7 +1255,7 @@
         },
         "BaseDirectory":{
           "shape":"HomeDirectory",
-          "documentation":"<p>The landing directory (folder) for files transferred by using the AS2 protocol.</p> <p>A <code>BaseDirectory</code> example is <i>DOC-EXAMPLE-BUCKET</i>/<i>home</i>/<i>mydirectory</i>.</p>"
+          "documentation":"<p>The landing directory (folder) for files transferred by using the AS2 protocol.</p> <p>A <code>BaseDirectory</code> example is <code>/DOC-EXAMPLE-BUCKET/home/mydirectory</code>.</p>"
         },
         "AccessRole":{
           "shape":"Role",
@@ -1377,7 +1377,7 @@
         },
         "HostKey":{
           "shape":"HostKey",
-          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your SFTP-enabled server. You can add multiple host keys, in case you want to rotate keys, or have a set of active keys that use different algorithms.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Update host keys for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
+          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your SFTP-enabled server. You can add multiple host keys, in case you want to rotate keys, or have a set of active keys that use different algorithms.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Manage host keys for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
@@ -1401,7 +1401,7 @@
         },
         "Protocols":{
           "shape":"Protocols",
-          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
+          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be either <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set any of the supported identity types: <code>SERVICE_MANAGED</code>, <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
         },
         "ProtocolDetails":{
           "shape":"ProtocolDetails",
@@ -1417,7 +1417,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In additon to a workflow to execute when a file is uploaded completely, <code>WorkflowDeatails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
         }
       }
     },
@@ -1469,7 +1469,7 @@
         },
         "SshPublicKeyBody":{
           "shape":"SshPublicKeyBody",
-          "documentation":"<p>The public portion of the Secure Shell (SSH) key used to authenticate the user to the server.</p> <p>Transfer Family accepts RSA, ECDSA, and ED25519 keys.</p>"
+          "documentation":"<p>The public portion of the Secure Shell (SSH) key used to authenticate the user to the server.</p> <p>The three standard SSH public key format elements are <code>&lt;key type&gt;</code>, <code>&lt;body base64&gt;</code>, and an optional <code>&lt;comment&gt;</code>, with spaces between each element.</p> <p>Transfer Family accepts RSA, ECDSA, and ED25519 keys.</p> <ul> <li> <p>For RSA keys, the key type is <code>ssh-rsa</code>.</p> </li> <li> <p>For ED25519 keys, the key type is <code>ssh-ed25519</code>.</p> </li> <li> <p>For ECDSA keys, the key type is either <code>ecdsa-sha2-nistp256</code>, <code>ecdsa-sha2-nistp384</code>, or <code>ecdsa-sha2-nistp521</code>, depending on the size of the key you generated.</p> </li> </ul>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1508,7 +1508,7 @@
         },
         "Steps":{
           "shape":"WorkflowSteps",
-          "documentation":"<p>Specifies the details for the steps that are in the specified workflow.</p> <p> The <code>TYPE</code> specifies which of the following actions is being taken for this step. </p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul> <note> <p> Currently, copying and tagging are supported only on S3. </p> </note> <p> For file location, you specify either the S3 bucket and key, or the EFS file system ID and path. </p>"
+          "documentation":"<p>Specifies the details for the steps that are in the specified workflow.</p> <p> The <code>TYPE</code> specifies which of the following actions is being taken for this step. </p> <ul> <li> <p> <b> <code>COPY</code> </b> - Copy the file to another location.</p> </li> <li> <p> <b> <code>CUSTOM</code> </b> - Perform a custom step with an Lambda function target.</p> </li> <li> <p> <b> <code>DECRYPT</code> </b> - Decrypt a file that was encrypted before it was uploaded.</p> </li> <li> <p> <b> <code>DELETE</code> </b> - Delete the file.</p> </li> <li> <p> <b> <code>TAG</code> </b> - Add a tag to the file.</p> </li> </ul> <note> <p> Currently, copying and tagging are supported only on S3. </p> </note> <p> For file location, you specify either the Amazon S3 bucket and key, or the Amazon EFS file system ID and path. </p>"
         },
         "OnExceptionSteps":{
           "shape":"WorkflowSteps",
@@ -1547,7 +1547,7 @@
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
-          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>To use the previous file as the input, enter <code>${previous.file}</code>. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>To use the originally uploaded file location as input for this step, enter <code>${original.file}</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
@@ -1577,12 +1577,25 @@
         "DestinationFileLocation"
       ],
       "members":{
-        "Name":{"shape":"WorkflowStepName"},
-        "Type":{"shape":"EncryptionType"},
-        "SourceFileLocation":{"shape":"SourceFileLocation"},
-        "OverwriteExisting":{"shape":"OverwriteExisting"},
+        "Name":{
+          "shape":"WorkflowStepName",
+          "documentation":"<p>The name of the step, used as an identifier.</p>"
+        },
+        "Type":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption used. Currently, this value must be <code>PGP</code>.</p>"
+        },
+        "SourceFileLocation":{
+          "shape":"SourceFileLocation",
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>To use the previous file as the input, enter <code>${previous.file}</code>. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>To use the originally uploaded file location as input for this step, enter <code>${original.file}</code>.</p> </li> </ul>"
+        },
+        "OverwriteExisting":{
+          "shape":"OverwriteExisting",
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+        },
         "DestinationFileLocation":{"shape":"InputFileLocation"}
-      }
+      },
+      "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
     },
     "DeleteAccessRequest":{
       "type":"structure",
@@ -1706,7 +1719,7 @@
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
-          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>To use the previous file as the input, enter <code>${previous.file}</code>. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>To use the originally uploaded file location as input for this step, enter <code>${original.file}</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The name of the step, used to identify the delete step.</p>"
@@ -2376,7 +2389,7 @@
         },
         "Protocols":{
           "shape":"Protocols",
-          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
+          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be either <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set any of the supported identity types: <code>SERVICE_MANAGED</code>, <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
@@ -2400,7 +2413,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In additon to a workflow to execute when a file is uploaded completely, <code>WorkflowDeatails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -2514,7 +2527,7 @@
           "documentation":"<p>The pathname for the folder being used by a workflow.</p>"
         }
       },
-      "documentation":"<p>Reserved for future use.</p> <p> </p>"
+      "documentation":"<p>Specifies the details for the file location for the file that's being used in the workflow. Only applicable if you are using Amazon Elastic File Systems (Amazon EFS) for storage.</p> <p> </p>"
     },
     "EfsFileSystemId":{
       "type":"string",
@@ -2640,7 +2653,7 @@
       "members":{
         "StepType":{
           "shape":"WorkflowStepType",
-          "documentation":"<p>One of the available step types.</p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul>"
+          "documentation":"<p>One of the available step types.</p> <ul> <li> <p> <b> <code>COPY</code> </b> - Copy the file to another location.</p> </li> <li> <p> <b> <code>CUSTOM</code> </b> - Perform a custom step with an Lambda function target.</p> </li> <li> <p> <b> <code>DECRYPT</code> </b> - Decrypt a file that was encrypted before it was uploaded.</p> </li> <li> <p> <b> <code>DELETE</code> </b> - Delete the file.</p> </li> <li> <p> <b> <code>TAG</code> </b> - Add a tag to the file.</p> </li> </ul>"
         },
         "Outputs":{
           "shape":"StepResultOutputsJson",
@@ -2798,7 +2811,7 @@
         },
         "Certificate":{
           "shape":"CertificateBodyType",
-          "documentation":"<p>The file that contains the certificate to import.</p>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a certificate in URI format. For example, <code>--certificate file://encryption-cert.pem</code>. Alternatively, you can provide the raw content.</p> </li> <li> <p>For the SDK, specify the raw content of a certificate file. For example, <code>--certificate \"`cat encryption-cert.pem`\"</code>.</p> </li> </ul>"
         },
         "CertificateChain":{
           "shape":"CertificateChainType",
@@ -2806,7 +2819,7 @@
         },
         "PrivateKey":{
           "shape":"PrivateKeyType",
-          "documentation":"<p>The file that contains the private key for the certificate that's being imported.</p>"
+          "documentation":"<ul> <li> <p>For the CLI, provide a file path for a private key in URI format.For example, <code>--private-key file://encryption-key.pem</code>. Alternatively, you can provide the raw content of the private key file.</p> </li> <li> <p>For the SDK, specify the raw content of a private key file. For example, <code>--private-key \"`cat encryption-key.pem`\"</code> </p> </li> </ul>"
         },
         "ActiveDate":{
           "shape":"CertDate",
@@ -2849,7 +2862,7 @@
         },
         "HostKeyBody":{
           "shape":"HostKey",
-          "documentation":"<p>The public key portion of an SSH key pair.</p> <p>Transfer Family accepts RSA, ECDSA, and ED25519 keys.</p>"
+          "documentation":"<p>The private key portion of an SSH key pair.</p> <p>Transfer Family accepts RSA, ECDSA, and ED25519 keys.</p>"
         },
         "Description":{
           "shape":"HostKeyDescription",
@@ -2928,14 +2941,14 @@
       "members":{
         "S3FileLocation":{
           "shape":"S3InputFileLocation",
-          "documentation":"<p>Specifies the details for the S3 file being copied.</p>"
+          "documentation":"<p>Specifies the details for the Amazon S3 file that's being copied or decrypted.</p>"
         },
         "EfsFileLocation":{
           "shape":"EfsFileLocation",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Specifies the details for the Amazon Elastic File System (Amazon EFS) file that's being decrypted.</p>"
         }
       },
-      "documentation":"<p>Specifies the location for the file being copied. Only applicable for the Copy type of workflow steps.</p>"
+      "documentation":"<p>Specifies the location for the file that's being processed.</p>"
     },
     "InternalServiceError":{
       "type":"structure",
@@ -3944,7 +3957,7 @@
           "documentation":"<p>The name assigned to the file when it was created in Amazon S3. You use the object key to retrieve the object.</p>"
         }
       },
-      "documentation":"<p>Specifies the customer input S3 file location. If it is used inside <code>copyStepDetails.DestinationFileLocation</code>, it should be the S3 copy destination.</p> <p> You need to provide the bucket and key. The key can represent either a path or a file. This is determined by whether or not you end the key value with the forward slash (/) character. If the final character is \"/\", then your file is copied to the folder, and its name does not change. If, rather, the final character is alphanumeric, your uploaded file is renamed to the path value. In this case, if a file with that name already exists, it is overwritten. </p> <p>For example, if your path is <code>shared-files/bob/</code>, your uploaded files are copied to the <code>shared-files/bob/</code>, folder. If your path is <code>shared-files/today</code>, each uploaded file is copied to the <code>shared-files</code> folder and named <code>today</code>: each upload overwrites the previous version of the <i>bob</i> file.</p>"
+      "documentation":"<p>Specifies the customer input Amazon S3 file location. If it is used inside <code>copyStepDetails.DestinationFileLocation</code>, it should be the S3 copy destination.</p> <p> You need to provide the bucket and key. The key can represent either a path or a file. This is determined by whether or not you end the key value with the forward slash (/) character. If the final character is \"/\", then your file is copied to the folder, and its name does not change. If, rather, the final character is alphanumeric, your uploaded file is renamed to the path value. In this case, if a file with that name already exists, it is overwritten. </p> <p>For example, if your path is <code>shared-files/bob/</code>, your uploaded files are copied to the <code>shared-files/bob/</code>, folder. If your path is <code>shared-files/today</code>, each uploaded file is copied to the <code>shared-files</code> folder and named <code>today</code>: each upload overwrites the previous version of the <i>bob</i> file.</p>"
     },
     "S3Key":{
       "type":"string",
@@ -4284,7 +4297,7 @@
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
-          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>Enter <code>${previous.file}</code> to use the previous file as the input. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>Enter <code>${original.file}</code> to use the originally-uploaded file location as input for this step.</p> </li> </ul>"
+          "documentation":"<p>Specifies which file to use as input to the workflow step: either the output from the previous step, or the originally uploaded file for the workflow.</p> <ul> <li> <p>To use the previous file as the input, enter <code>${previous.file}</code>. In this case, this workflow step uses the output file from the previous workflow step as input. This is the default value.</p> </li> <li> <p>To use the originally uploaded file location as input for this step, enter <code>${original.file}</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p> <p>The key/value pairs used to tag a file during the execution of a workflow step.</p>"
@@ -4651,7 +4664,7 @@
         },
         "HostKey":{
           "shape":"HostKey",
-          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your SFTP-enabled server. You can add multiple host keys, in case you want to rotate keys, or have a set of active keys that use different algorithms.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Update host keys for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
+          "documentation":"<p>The RSA, ECDSA, or ED25519 private key to use for your SFTP-enabled server. You can add multiple host keys, in case you want to rotate keys, or have a set of active keys that use different algorithms.</p> <p>Use the following command to generate an RSA 2048 bit key with no passphrase:</p> <p> <code>ssh-keygen -t rsa -b 2048 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Use a minimum value of 2048 for the <code>-b</code> option. You can create a stronger key by using 3072 or 4096.</p> <p>Use the following command to generate an ECDSA 256 bit key with no passphrase:</p> <p> <code>ssh-keygen -t ecdsa -b 256 -N \"\" -m PEM -f my-new-server-key</code>.</p> <p>Valid values for the <code>-b</code> option for ECDSA are 256, 384, and 521.</p> <p>Use the following command to generate an ED25519 key with no passphrase:</p> <p> <code>ssh-keygen -t ed25519 -N \"\" -f my-new-server-key</code>.</p> <p>For all of these commands, you can replace <i>my-new-server-key</i> with a string of your choice.</p> <important> <p>If you aren't planning to migrate existing users from an existing SFTP-enabled server to a new server, don't update the host key. Accidentally changing a server's host key can be disruptive.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/edit-server-config.html#configuring-servers-change-host-key\">Manage host keys for your SFTP-enabled server</a> in the <i>Transfer Family User Guide</i>.</p>"
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
@@ -4671,7 +4684,7 @@
         },
         "Protocols":{
           "shape":"Protocols",
-          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set to <code>SERVICE_MANAGED</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
+          "documentation":"<p>Specifies the file transfer protocol or protocols over which your file transfer protocol client can connect to your server's endpoint. The available protocols are:</p> <ul> <li> <p> <code>SFTP</code> (Secure Shell (SSH) File Transfer Protocol): File transfer over SSH</p> </li> <li> <p> <code>FTPS</code> (File Transfer Protocol Secure): File transfer with TLS encryption</p> </li> <li> <p> <code>FTP</code> (File Transfer Protocol): Unencrypted file transfer</p> </li> <li> <p> <code>AS2</code> (Applicability Statement 2): used for transporting structured business-to-business data</p> </li> </ul> <note> <ul> <li> <p>If you select <code>FTPS</code>, you must choose a certificate stored in Certificate Manager (ACM) which is used to identify your server when clients connect to it over FTPS.</p> </li> <li> <p>If <code>Protocol</code> includes either <code>FTP</code> or <code>FTPS</code>, then the <code>EndpointType</code> must be <code>VPC</code> and the <code>IdentityProviderType</code> must be either <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>FTP</code>, then <code>AddressAllocationIds</code> cannot be associated.</p> </li> <li> <p>If <code>Protocol</code> is set only to <code>SFTP</code>, the <code>EndpointType</code> can be set to <code>PUBLIC</code> and the <code>IdentityProviderType</code> can be set any of the supported identity types: <code>SERVICE_MANAGED</code>, <code>AWS_DIRECTORY_SERVICE</code>, <code>AWS_LAMBDA</code>, or <code>API_GATEWAY</code>.</p> </li> <li> <p>If <code>Protocol</code> includes <code>AS2</code>, then the <code>EndpointType</code> must be <code>VPC</code>, and domain must be Amazon S3.</p> </li> </ul> </note>"
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
@@ -4683,7 +4696,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In additon to a workflow to execute when a file is uploaded completely, <code>WorkflowDeatails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
         }
       }
     },
@@ -4822,7 +4835,7 @@
           "documentation":"<p>Includes the necessary permissions for S3, EFS, and Lambda operations that Transfer can assume, so that all workflow steps can operate on the required resources</p>"
         }
       },
-      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In additon to a workflow to execute when a file is uploaded completely, <code>WorkflowDeatails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
     },
     "WorkflowDetails":{
       "type":"structure",
@@ -4849,15 +4862,15 @@
       "members":{
         "Type":{
           "shape":"WorkflowStepType",
-          "documentation":"<p> Currently, the following step types are supported. </p> <ul> <li> <p> <i>COPY</i>: Copy the file to another location.</p> </li> <li> <p> <i>CUSTOM</i>: Perform a custom step with an Lambda function target.</p> </li> <li> <p> <i>DELETE</i>: Delete the file.</p> </li> <li> <p> <i>TAG</i>: Add a tag to the file.</p> </li> </ul>"
+          "documentation":"<p> Currently, the following step types are supported. </p> <ul> <li> <p> <b> <code>COPY</code> </b> - Copy the file to another location.</p> </li> <li> <p> <b> <code>CUSTOM</code> </b> - Perform a custom step with an Lambda function target.</p> </li> <li> <p> <b> <code>DECRYPT</code> </b> - Decrypt a file that was encrypted before it was uploaded.</p> </li> <li> <p> <b> <code>DELETE</code> </b> - Delete the file.</p> </li> <li> <p> <b> <code>TAG</code> </b> - Add a tag to the file.</p> </li> </ul>"
         },
         "CopyStepDetails":{
           "shape":"CopyStepDetails",
-          "documentation":"<p>Details for a step that performs a file copy.</p> <p> Consists of the following values: </p> <ul> <li> <p>A description</p> </li> <li> <p>An S3 location for the destination of the file copy.</p> </li> <li> <p>A flag that indicates whether or not to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> </li> </ul>"
+          "documentation":"<p>Details for a step that performs a file copy.</p> <p> Consists of the following values: </p> <ul> <li> <p>A description</p> </li> <li> <p>An Amazon S3 location for the destination of the file copy.</p> </li> <li> <p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> </li> </ul>"
         },
         "CustomStepDetails":{
           "shape":"CustomStepDetails",
-          "documentation":"<p>Details for a step that invokes a lambda function.</p> <p> Consists of the lambda function name, target, and timeout (in seconds). </p>"
+          "documentation":"<p>Details for a step that invokes an Lambda function.</p> <p>Consists of the Lambda function's name, target, and timeout (in seconds). </p>"
         },
         "DeleteStepDetails":{
           "shape":"DeleteStepDetails",
@@ -4865,9 +4878,12 @@
         },
         "TagStepDetails":{
           "shape":"TagStepDetails",
-          "documentation":"<p>Details for a step that creates one or more tags.</p> <p>You specify one or more tags: each tag contains a key/value pair.</p>"
+          "documentation":"<p>Details for a step that creates one or more tags.</p> <p>You specify one or more tags. Each tag contains a key-value pair.</p>"
         },
-        "DecryptStepDetails":{"shape":"DecryptStepDetails"}
+        "DecryptStepDetails":{
+          "shape":"DecryptStepDetails",
+          "documentation":"<p>Details for a step that decrypts an encrypted file.</p> <p>Consists of the following values:</p> <ul> <li> <p>A descriptive name</p> </li> <li> <p>An Amazon S3 or Amazon Elastic File System (Amazon EFS) location for the source file to decrypt.</p> </li> <li> <p>An S3 or Amazon EFS location for the destination of the file decryption.</p> </li> <li> <p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> </li> <li> <p>The type of encryption that's used. Currently, only PGP encryption is supported.</p> </li> </ul>"
+        }
       },
       "documentation":"<p>The basic building block of a workflow.</p>"
     },

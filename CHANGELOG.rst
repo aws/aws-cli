@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.9.22
+======
+
+* api-change:``proton``: Add new GetResourcesSummary API
+* api-change:``customer-profiles``: This release deprecates the PartyType and Gender enum data types from the Profile model and replaces them with new PartyTypeString and GenderString attributes, which accept any string of length up to 255.
+* api-change:``outposts``: Adds OrderType to Order structure. Adds PreviousOrderId and PreviousLineItemId to LineItem structure. Adds new line item status REPLACED. Increases maximum length of pagination token.
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has added improved scene change detection capabilities and a bandwidth reduction filter, along with video quality enhancements, to the AVC encoder.
+* api-change:``compute-optimizer``: AWS Compute optimizer can now infer if Kafka is running on an instance.
+* api-change:``frauddetector``: My AWS Service (Amazon Fraud Detector) - This release introduces Cold Start Model Training which optimizes training for small datasets and adds intelligent methods for treating unlabeled data. You can now train Online Fraud Insights or Transaction Fraud Insights models with minimal historical-data.
+* api-change:``redshift``: Corrects descriptions of the parameters for the API operations RestoreFromClusterSnapshot, RestoreTableFromClusterSnapshot, and CreateCluster.
+* api-change:``transfer``: Updated the documentation for the ImportCertificate API call, and added examples.
+
+
 2.9.21
 ======
 

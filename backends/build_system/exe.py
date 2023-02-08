@@ -13,7 +13,7 @@
 import os
 from dataclasses import dataclass, field
 
-from constants import EXE_ASSETS_DIR, PYINSTALLER_DIR, DISTRIBUTION_SOURCE, PYINSTALLER_EXE_NAME
+from constants import EXE_ASSETS_DIR, PYINSTALLER_DIR, DISTRIBUTION_SOURCE_EXE, PYINSTALLER_EXE_NAME
 from utils import Utils
 from awscli_venv import AwsCliVenv
 
@@ -41,9 +41,16 @@ class ExeBuilder:
         self._build_aws()
         self._build_aws_completer()
         self._utils.copy_directory_contents_into(EXE_ASSETS_DIR, self._exe_dir)
+        self._update_metadata()
         if cleanup:
             self._cleanup()
         print(f"Built exe at {self._exe_dir}")
+
+    def _update_metadata(self):
+        self._utils.update_metadata(
+            self._final_dist_dir,
+            distribution_source=DISTRIBUTION_SOURCE_EXE,
+        )
 
     def _ensure_no_existing_build_dir(self):
         if self._utils.isdir(self._dist_dir):
@@ -51,10 +58,6 @@ class ExeBuilder:
 
     def _build_aws(self):
         aws_exe_build_dir = self._run_pyinstaller("aws.spec")
-        self._utils.update_metadata(
-            aws_exe_build_dir,
-            distribution_source=DISTRIBUTION_SOURCE,
-        )
         self._utils.copy_directory(aws_exe_build_dir, self._final_dist_dir)
 
     def _build_aws_completer(self):

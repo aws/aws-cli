@@ -986,7 +986,7 @@ Below is an example Dockerfile that can be used to get a working
 installation of the AWS CLI v2 in an Alpine Linux container as an
 [alternative to pre-built binaries for Alpine](https://github.com/aws/aws-cli/issues/4685):
 ```dockerfile
-FROM python:3.8-alpine
+FROM python:3.8-alpine AS builder
 
 ENV AWSCLI_VERSION=2.2.1
 
@@ -995,6 +995,7 @@ RUN apk add --no-cache \
     make \
     cmake \
     gcc \
+    g++ \
     libc-dev \
     libffi-dev \
     openssl-dev \

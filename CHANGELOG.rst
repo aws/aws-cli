@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.9.23
+======
+
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``backup``: This release added one attribute (resource name) in the output model of our 9 existing APIs in AWS backup so that customers will see the resource name at the output. No input required from Customers.
+* api-change:``workspaces``: Removed Windows Server 2016 BYOL and made changes based on IAM campaign.
+* api-change:``evidently``: Updated entity overrides parameter to accept up to 2500 overrides or a total of 40KB.
+* api-change:``chime-sdk-meetings``: Documentation updates for Chime Meetings SDK
+* api-change:``cloudfront``: CloudFront Origin Access Control extends support to AWS Elemental MediaStore origins.
+* api-change:``lakeformation``: This release removes the LFTagpolicyResource expression limits.
+* api-change:``lightsail``: Documentation updates for Lightsail
+* api-change:``emr-containers``: EMR on EKS allows configuring retry policies for job runs through the StartJobRun API. Using retry policies, a job cause a driver pod to be restarted automatically if it fails or is deleted. The job's status can be seen in the DescribeJobRun and ListJobRun APIs and monitored using CloudWatch events.
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``workdocs``: Doc only update for the WorkDocs APIs.
+* api-change:``migration-hub-refactor-spaces``: This release adds support for creating environments with a network fabric type of NONE
+* api-change:``glue``: DirectJDBCSource + Glue 4.0 streaming options
+
+
 2.9.22
 ======
 

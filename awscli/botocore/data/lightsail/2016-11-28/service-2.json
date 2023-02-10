@@ -3392,7 +3392,7 @@
           "documentation":"<p>The state of the Availability Zone.</p>"
         }
       },
-      "documentation":"<p>Describes an Availability Zone.</p>"
+      "documentation":"<p>Describes an Availability Zone. This is returned only as part of a <code>GetRegions</code> request.</p>"
     },
     "AvailabilityZoneList":{
       "type":"list",
@@ -4465,14 +4465,14 @@
         },
         "expiresAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp of when the container image registry username and password expire.</p> <p>The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials using the <code>CreateContainerServiceRegistryLogin</code> action.</p>"
+          "documentation":"<p>The timestamp of when the container image registry sign-in credentials expire.</p> <p>The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials using the <code>CreateContainerServiceRegistryLogin</code> action.</p>"
         },
         "registry":{
           "shape":"string",
           "documentation":"<p>The address to use to push container images to the container image registry of a Lightsail account.</p>"
         }
       },
-      "documentation":"<p>Describes the login information for the container image registry of an Amazon Lightsail account.</p>"
+      "documentation":"<p>Describes the sign-in credentials for the container image registry of an Amazon Lightsail account.</p>"
     },
     "ContainerServiceScale":{
       "type":"integer",
@@ -6407,7 +6407,7 @@
         },
         "isAlias":{
           "shape":"boolean",
-          "documentation":"<p>When <code>true</code>, specifies whether the domain entry is an alias used by the Lightsail load balancer. You can include an alias (A type) record in your request, which points to a load balancer DNS name and routes traffic to your load balancer.</p>"
+          "documentation":"<p>When <code>true</code>, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another Amazon Web Services resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other Amazon Web Services resource and routes traffic to that resource.</p>"
         },
         "type":{
           "shape":"DomainEntryType",
@@ -10423,7 +10423,10 @@
           "shape":"NameServersUpdateState",
           "documentation":"<p>An object that describes the state of the name server records that are automatically added to the Route 53 domain by Lightsail.</p>"
         },
-        "r53HostedZoneDeletionState":{"shape":"R53HostedZoneDeletionState"}
+        "r53HostedZoneDeletionState":{
+          "shape":"R53HostedZoneDeletionState",
+          "documentation":"<p>Describes the deletion state of an Amazon Route 53 hosted zone for a domain that is being automatically delegated to an Amazon Lightsail DNS zone.</p>"
+        }
       },
       "documentation":"<p>Describes the delegation state of an Amazon Route 53 registered domain to Amazon Lightsail.</p> <p>When you delegate an Amazon Route 53 registered domain to Lightsail, you can manage the DNS of the domain using a Lightsail DNS zone. You no longer use the Route 53 hosted zone to manage the DNS of the domain. To delegate the domain, Lightsail automatically updates the domain's name servers in Route 53 to the name servers of the Lightsail DNS zone. Then, Lightsail automatically deletes the Route 53 hosted zone for the domain.</p> <p>All of the following conditions must be true for automatic domain delegation to be successful:</p> <ul> <li> <p>The registered domain must be in the same Amazon Web Services account as the Lightsail account making the request.</p> </li> <li> <p>The user or entity making the request must have permission to manage domains in Route 53.</p> </li> <li> <p>The Route 53 hosted zone for the domain must be empty. It cannot contain DNS records other than start of authority (SOA) and name server records.</p> </li> </ul> <p>If automatic domain delegation fails, or if you manage the DNS of your domain using a service other than Route 53, then you must manually add the Lightsail DNS zone name servers to your domain in order to delegate management of its DNS to Lightsail. For more information, see <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/lightsail-how-to-create-dns-entry\">Creating a DNS zone to manage your domain’s records in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
@@ -11599,7 +11602,10 @@
     "UpdateInstanceMetadataOptionsResult":{
       "type":"structure",
       "members":{
-        "operation":{"shape":"Operation"}
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
+        }
       }
     },
     "UpdateLoadBalancerAttributeRequest":{

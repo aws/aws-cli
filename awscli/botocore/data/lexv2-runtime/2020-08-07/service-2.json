@@ -695,6 +695,10 @@
         "eventId":{
           "shape":"EventId",
           "documentation":"<p>A unique identifier of the event sent by Amazon Lex V2. The identifier is in the form <code>RESPONSE-N</code>, where N is a number starting with one and incremented for each event sent by Amazon Lex V2 in the current session.</p>"
+        },
+        "recognizedBotMember":{
+          "shape":"RecognizedBotMember",
+          "documentation":"<p>The bot member that is processing the intent.</p>"
         }
       },
       "documentation":"<p>Contains the current state of the conversation between the client application and Amazon Lex V2.</p>",
@@ -1000,6 +1004,10 @@
         "sessionId":{
           "shape":"SessionId",
           "documentation":"<p>The identifier of the session in use.</p>"
+        },
+        "recognizedBotMember":{
+          "shape":"RecognizedBotMember",
+          "documentation":"<p>The bot member that recognized the text.</p>"
         }
       }
     },
@@ -1057,7 +1065,7 @@
         },
         "responseContentType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The message that Amazon Lex V2 returns in the response can be either text or speech based on the <code>responseContentType</code> value.</p> <ul> <li> <p>If the value is <code>text/plain;charset=utf-8</code>, Amazon Lex V2 returns text in the response.</p> </li> <li> <p>If the value begins with <code>audio/</code>, Amazon Lex V2 returns speech in the response. Amazon Lex V2 uses Amazon Polly to generate the speech using the configuration that you specified in the <code>requestContentType</code> parameter. For example, if you specify <code>audio/mpeg</code> as the value, Amazon Lex V2 returns speech in the MPEG format.</p> </li> <li> <p>If the value is <code>audio/pcm</code>, the speech returned is <code>audio/pcm</code> at 16 KHz in 16-bit, little-endian format.</p> </li> <li> <p>The following are the accepted values:</p> <ul> <li> <p>audio/mpeg</p> </li> <li> <p>audio/ogg</p> </li> <li> <p>audio/pcm (16 KHz)</p> </li> <li> <p>audio/* (defaults to mpeg)</p> </li> <li> <p>text/plain; charset=utf-8</p> </li> </ul> </li> </ul>",
+          "documentation":"<p>The message that Amazon Lex V2 returns in the response can be either text or speech based on the <code>responseContentType</code> value.</p> <ul> <li> <p>If the value is <code>text/plain;charset=utf-8</code>, Amazon Lex V2 returns text in the response.</p> </li> <li> <p>If the value begins with <code>audio/</code>, Amazon Lex V2 returns speech in the response. Amazon Lex V2 uses Amazon Polly to generate the speech using the configuration that you specified in the <code>responseContentType</code> parameter. For example, if you specify <code>audio/mpeg</code> as the value, Amazon Lex V2 returns speech in the MPEG format.</p> </li> <li> <p>If the value is <code>audio/pcm</code>, the speech returned is <code>audio/pcm</code> at 16 KHz in 16-bit, little-endian format.</p> </li> <li> <p>The following are the accepted values:</p> <ul> <li> <p>audio/mpeg</p> </li> <li> <p>audio/ogg</p> </li> <li> <p>audio/pcm (16 KHz)</p> </li> <li> <p>audio/* (defaults to mpeg)</p> </li> <li> <p>text/plain; charset=utf-8</p> </li> </ul> </li> </ul>",
           "location":"header",
           "locationName":"Response-Content-Type"
         },
@@ -1122,9 +1130,30 @@
         "audioStream":{
           "shape":"BlobStream",
           "documentation":"<p>The prompt or statement to send to the user. This is based on the bot configuration and context. For example, if Amazon Lex V2 did not understand the user intent, it sends the <code>clarificationPrompt</code> configured for the bot. If the intent requires confirmation before taking the fulfillment action, it sends the <code>confirmationPrompt</code>. Another example: Suppose that the Lambda function successfully fulfilled the intent, and sent a message to convey to the user. Then Amazon Lex V2 sends that message in the response.</p>"
+        },
+        "recognizedBotMember":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The bot member that recognized the utterance.</p>",
+          "location":"header",
+          "locationName":"x-amz-lex-recognized-bot-member"
         }
       },
       "payload":"audioStream"
+    },
+    "RecognizedBotMember":{
+      "type":"structure",
+      "required":["botId"],
+      "members":{
+        "botId":{
+          "shape":"BotIdentifier",
+          "documentation":"<p>The identifier of the bot member that processes the request.</p>"
+        },
+        "botName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the bot member that processes the request.</p>"
+        }
+      },
+      "documentation":"<p>The bot member that processes the request.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1557,5 +1586,5 @@
       "member":{"shape":"Slot"}
     }
   },
-  "documentation":"<p/>"
+  "documentation":"<p>This section contains documentation for the Amazon Lex V2 Runtime V2 API operations.</p>"
 }

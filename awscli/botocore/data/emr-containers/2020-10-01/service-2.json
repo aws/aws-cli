@@ -54,7 +54,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a managed endpoint. A managed endpoint is a gateway that connects EMR Studio to Amazon EMR on EKS so that EMR Studio can communicate with your virtual cluster.</p>"
+      "documentation":"<p>Creates a managed endpoint. A managed endpoint is a gateway that connects Amazon EMR Studio to Amazon EMR on EKS so that Amazon EMR Studio can communicate with your virtual cluster.</p>"
     },
     "CreateVirtualCluster":{
       "name":"CreateVirtualCluster",
@@ -97,7 +97,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a managed endpoint. A managed endpoint is a gateway that connects EMR Studio to Amazon EMR on EKS so that EMR Studio can communicate with your virtual cluster.</p>"
+      "documentation":"<p>Deletes a managed endpoint. A managed endpoint is a gateway that connects Amazon EMR Studio to Amazon EMR on EKS so that Amazon EMR Studio can communicate with your virtual cluster.</p>"
     },
     "DeleteVirtualCluster":{
       "name":"DeleteVirtualCluster",
@@ -156,7 +156,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Displays detailed information about a managed endpoint. A managed endpoint is a gateway that connects EMR Studio to Amazon EMR on EKS so that EMR Studio can communicate with your virtual cluster.</p>"
+      "documentation":"<p>Displays detailed information about a managed endpoint. A managed endpoint is a gateway that connects Amazon EMR Studio to Amazon EMR on EKS so that Amazon EMR Studio can communicate with your virtual cluster.</p>"
     },
     "DescribeVirtualCluster":{
       "name":"DescribeVirtualCluster",
@@ -213,7 +213,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists managed endpoints based on a set of parameters. A managed endpoint is a gateway that connects EMR Studio to Amazon EMR on EKS so that EMR Studio can communicate with your virtual cluster.</p>"
+      "documentation":"<p>Lists managed endpoints based on a set of parameters. A managed endpoint is a gateway that connects Amazon EMR Studio to Amazon EMR on EKS so that Amazon EMR Studio can communicate with your virtual cluster.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -272,7 +272,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Assigns tags to resources. A tag is a label that you assign to an AWS resource. Each tag consists of a key and an optional value, both of which you define. Tags enable you to categorize your AWS resources by attributes such as purpose, owner, or environment. When you have many resources of the same type, you can quickly identify a specific resource based on the tags you've assigned to it. For example, you can define a set of tags for your Amazon EMR on EKS clusters to help you track each cluster's owner and stack level. We recommend that you devise a consistent set of tag keys for each resource type. You can then search and filter the resources based on the tags that you add.</p>"
+      "documentation":"<p>Assigns tags to resources. A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value, both of which you define. Tags enable you to categorize your Amazon Web Services resources by attributes such as purpose, owner, or environment. When you have many resources of the same type, you can quickly identify a specific resource based on the tags you've assigned to it. For example, you can define a set of tags for your Amazon EMR on EKS clusters to help you track each cluster's owner and stack level. We recommend that you devise a consistent set of tag keys for each resource type. You can then search and filter the resources based on the tags that you add.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -420,7 +420,7 @@
       "members":{
         "eksInfo":{
           "shape":"EksInfo",
-          "documentation":"<p>The information about the EKS cluster.</p>"
+          "documentation":"<p>The information about the Amazon EKS cluster.</p>"
         }
       },
       "documentation":"<p>The information about the container used for a job run or a managed endpoint.</p>",
@@ -435,7 +435,7 @@
       "members":{
         "type":{
           "shape":"ContainerProviderType",
-          "documentation":"<p>The type of the container provider. EKS is the only supported type as of now.</p>"
+          "documentation":"<p>The type of the container provider. Amazon EKS is the only supported type as of now.</p>"
         },
         "id":{
           "shape":"ClusterId",
@@ -810,10 +810,10 @@
       "members":{
         "namespace":{
           "shape":"KubernetesNamespace",
-          "documentation":"<p>The namespaces of the EKS cluster.</p>"
+          "documentation":"<p>The namespaces of the Amazon EKS cluster.</p>"
         }
       },
-      "documentation":"<p>The information about the EKS cluster.</p>"
+      "documentation":"<p>The information about the Amazon EKS cluster.</p>"
     },
     "Endpoint":{
       "type":"structure",
@@ -1060,6 +1060,14 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The assigned tags of the job run.</p>"
+        },
+        "retryPolicyConfiguration":{
+          "shape":"RetryPolicyConfiguration",
+          "documentation":"<p>The configuration of the retry policy that the job runs on.</p>"
+        },
+        "retryPolicyExecution":{
+          "shape":"RetryPolicyExecution",
+          "documentation":"<p>The current status of the retry policy executed on the job.</p>"
         }
       },
       "documentation":"<p>This entity describes a job run. A job run is a unit of work, such as a Spark jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on EKS. </p>"
@@ -1378,7 +1386,7 @@
         },
         "containerProviderType":{
           "shape":"ContainerProviderType",
-          "documentation":"<p>The container provider type of the virtual cluster. EKS is the only supported type as of now.</p>",
+          "documentation":"<p>The container provider type of the virtual cluster. Amazon EKS is the only supported type as of now.</p>",
           "location":"querystring",
           "locationName":"containerProviderType"
         },
@@ -1565,6 +1573,28 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "RetryPolicyConfiguration":{
+      "type":"structure",
+      "required":["maxAttempts"],
+      "members":{
+        "maxAttempts":{
+          "shape":"JavaInteger",
+          "documentation":"<p>The maximum number of attempts on the job's driver.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the retry policy that the job runs on.</p>"
+    },
+    "RetryPolicyExecution":{
+      "type":"structure",
+      "required":["currentAttemptCount"],
+      "members":{
+        "currentAttemptCount":{
+          "shape":"JavaInteger",
+          "documentation":"<p>The current number of attempts made on the driver of the job.</p>"
+        }
+      },
+      "documentation":"<p>The current status of the retry policy executed on the job.</p>"
+    },
     "RsiArn":{
       "type":"string",
       "max":500,
@@ -1685,6 +1715,10 @@
         "jobTemplateParameters":{
           "shape":"TemplateParameterInputMap",
           "documentation":"<p>The values of job template parameters to start a job run.</p>"
+        },
+        "retryPolicyConfiguration":{
+          "shape":"RetryPolicyConfiguration",
+          "documentation":"<p>The retry policy configuration for the job run.</p>"
         }
       }
     },
@@ -1791,7 +1825,7 @@
       "members":{
         "type":{
           "shape":"TemplateParameterDataType",
-          "documentation":"<p>The type of the job template parameter. Allowed values are: ‘String’, ‘Number’.</p>"
+          "documentation":"<p>The type of the job template parameter. Allowed values are: ‘STRING’, ‘NUMBER’.</p>"
         },
         "defaultValue":{
           "shape":"String1024",
@@ -1898,7 +1932,7 @@
           "documentation":"<p>The assigned tags of the virtual cluster.</p>"
         }
       },
-      "documentation":"<p>This entity describes a virtual cluster. A virtual cluster is a Kubernetes namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters to run jobs and host endpoints. Multiple virtual clusters can be backed by the same physical cluster. However, each virtual cluster maps to one namespace on an EKS cluster. Virtual clusters do not create any active resources that contribute to your bill or that require lifecycle management outside the service.</p>"
+      "documentation":"<p>This entity describes a virtual cluster. A virtual cluster is a Kubernetes namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters to run jobs and host endpoints. Multiple virtual clusters can be backed by the same physical cluster. However, each virtual cluster maps to one namespace on an Amazon EKS cluster. Virtual clusters do not create any active resources that contribute to your bill or that require lifecycle management outside the service.</p>"
     },
     "VirtualClusterArn":{
       "type":"string",
@@ -1925,5 +1959,5 @@
       "member":{"shape":"VirtualCluster"}
     }
   },
-  "documentation":"<p>Amazon EMR on EKS provides a deployment option for Amazon EMR that allows you to run open-source big data frameworks on Amazon Elastic Kubernetes Service (Amazon EKS). With this deployment option, you can focus on running analytics workloads while Amazon EMR on EKS builds, configures, and manages containers for open-source applications. For more information about Amazon EMR on EKS concepts and tasks, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/emr-eks.html\">What is Amazon EMR on EKS</a>.</p> <p> <i>Amazon EMR containers</i> is the API name for Amazon EMR on EKS. The <code>emr-containers</code> prefix is used in the following scenarios: </p> <ul> <li> <p>It is the prefix in the CLI commands for Amazon EMR on EKS. For example, <code>aws emr-containers start-job-run</code>.</p> </li> <li> <p>It is the prefix before IAM policy actions for Amazon EMR on EKS. For example, <code>\"Action\": [ \"emr-containers:StartJobRun\"]</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/security_iam_service-with-iam.html#security_iam_service-with-iam-id-based-policies-actions\">Policy actions for Amazon EMR on EKS</a>.</p> </li> <li> <p>It is the prefix used in Amazon EMR on EKS service endpoints. For example, <code>emr-containers.us-east-2.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/service-quotas.html#service-endpoints\">Amazon EMR on EKS Service Endpoints</a>.</p> </li> </ul>"
+  "documentation":"<p>Amazon EMR on EKS provides a deployment option for Amazon EMR that allows you to run open-source big data frameworks on Amazon Elastic Kubernetes Service (Amazon EKS). With this deployment option, you can focus on running analytics workloads while Amazon EMR on EKS builds, configures, and manages containers for open-source applications. For more information about Amazon EMR on EKS concepts and tasks, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/emr-eks.html\">What is shared id=\"EMR-EKS\"/&gt;</a>.</p> <p> <i>Amazon EMR containers</i> is the API name for Amazon EMR on EKS. The <code>emr-containers</code> prefix is used in the following scenarios: </p> <ul> <li> <p>It is the prefix in the CLI commands for Amazon EMR on EKS. For example, <code>aws emr-containers start-job-run</code>.</p> </li> <li> <p>It is the prefix before IAM policy actions for Amazon EMR on EKS. For example, <code>\"Action\": [ \"emr-containers:StartJobRun\"]</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/security_iam_service-with-iam.html#security_iam_service-with-iam-id-based-policies-actions\">Policy actions for Amazon EMR on EKS</a>.</p> </li> <li> <p>It is the prefix used in Amazon EMR on EKS service endpoints. For example, <code>emr-containers.us-east-2.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/service-quotas.html#service-endpoints\">Amazon EMR on EKSService Endpoints</a>.</p> </li> </ul>"
 }

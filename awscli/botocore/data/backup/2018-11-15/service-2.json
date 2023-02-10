@@ -960,7 +960,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p> <note> <p>Backup Vault Lock has yet to receive a third-party assessment for SEC 17a-4(f) and CFTC.</p> </note>",
+      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p> <note> <p>Backup Vault Lock has been assessed by Cohasset Associates for use in environments that are subject to SEC 17a-4, CFTC, and FINRA regulations. For more information about how Backup Vault Lock relates to these regulations, see the <a href=\"samples/cohassetreport.zip\">Cohasset Associates Compliance Assessment.</a> </p> </note>",
       "idempotent":true
     },
     "PutBackupVaultNotifications":{
@@ -1342,6 +1342,10 @@
         "IsParent":{
           "shape":"boolean",
           "documentation":"<p>This is a boolean value indicating this is a parent (composite) backup job.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a backup job.</p>"
@@ -2026,6 +2030,10 @@
         "ChildJobsInState":{
           "shape":"CopyJobChildJobsInState",
           "documentation":"<p>This returns the statistics of the included child (nested) copy jobs.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a copy job.</p>"
@@ -2624,6 +2632,10 @@
         "ChildJobsInState":{
           "shape":"BackupJobChildJobsInState",
           "documentation":"<p>This returns the statistics of the included child (nested) backup jobs.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       }
     },
@@ -2798,6 +2810,10 @@
         "LastBackupTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       }
     },
@@ -2912,6 +2928,10 @@
         "IsParent":{
           "shape":"boolean",
           "documentation":"<p>This returns the boolean value that a recovery point is a parent (composite) job.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       }
     },
@@ -4460,6 +4480,10 @@
         "LastBackupTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a resource was last backed up, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastBackupTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about a backed-up resource.</p>"
@@ -4618,6 +4642,10 @@
         "IsParent":{
           "shape":"boolean",
           "documentation":"<p>This is a boolean value indicating this is a parent (composite) recovery point.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -4664,6 +4692,10 @@
         "ParentRecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+        },
+        "ResourceName":{
+          "shape":"string",
+          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -5090,7 +5122,7 @@
         },
         "RecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+          "documentation":"<p> <i>Note: This field is only returned for Amazon EFS and Advanced DynamoDB resources.</i> </p> <p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",

@@ -32,7 +32,7 @@ EXTRACT_DEPENDENCIES_RE = re.compile(r'"(.+)"')
 
 class UnmetDependenciesException(Exception):
     def __init__(self, unmet_deps, in_venv):
-        pip_install_command_args = ["-m", "pip", "install"]
+        pip_install_command_args = ["-m", "pip", "install", "--prefer-binary"]
         msg = "Environment requires following Python dependencies:\n\n"
         for package, actual_version, required in unmet_deps:
             msg += (

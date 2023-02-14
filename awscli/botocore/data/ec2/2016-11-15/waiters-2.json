@@ -421,6 +421,25 @@
         }
       ]
     },
+    "SnapshotImported": {
+      "delay": 15,
+      "operation": "DescribeImportSnapshotTasks",
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "expected": "completed",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "ImportSnapshotTasks[].SnapshotTaskDetail.Status"
+        },
+        {
+          "expected": "error",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "ImportSnapshotTasks[].SnapshotTaskDetail.Status"
+        }
+      ]
+    },
     "SecurityGroupExists": {
       "operation": "DescribeSecurityGroups",
       "delay": 5,

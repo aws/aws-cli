@@ -30,6 +30,40 @@
       "documentation":"<p>Deletes the specified alternate contact from an Amazon Web Services account.</p> <p>For complete details about how to use the alternate contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Access or updating the alternate contacts</a>.</p> <note> <p>Before you can update the alternate contact information for an Amazon Web Services account that is managed by Organizations, you must first enable integration between Amazon Web Services Account Management and Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/using-orgs-trusted-access.html\">Enabling trusted access for Amazon Web Services Account Management</a>.</p> </note>",
       "idempotent":true
     },
+    "DisableRegion":{
+      "name":"DisableRegion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/disableRegion",
+        "responseCode":200
+      },
+      "input":{"shape":"DisableRegionRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disables (opts-out) a particular Region for an account.</p>"
+    },
+    "EnableRegion":{
+      "name":"EnableRegion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/enableRegion",
+        "responseCode":200
+      },
+      "input":{"shape":"EnableRegionRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Enables (opts-in) a particular Region for an account.</p>"
+    },
     "GetAlternateContact":{
       "name":"GetAlternateContact",
       "http":{
@@ -65,6 +99,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves the primary contact information of an Amazon Web Services account.</p> <p>For complete details about how to use the primary contact operations, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-contact.html\">Update the primary and alternate contact information</a>.</p>"
+    },
+    "GetRegionOptStatus":{
+      "name":"GetRegionOptStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getRegionOptStatus",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRegionOptStatusRequest"},
+      "output":{"shape":"GetRegionOptStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the opt-in status of a particular Region.</p>"
+    },
+    "ListRegions":{
+      "name":"ListRegions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listRegions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRegionsRequest"},
+      "output":{"shape":"ListRegionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all the Regions for a given account and their respective opt-in statuses. Optionally, this list can be filtered by the <code>region-opt-status-contains</code> parameter. </p>"
     },
     "PutAlternateContact":{
       "name":"PutAlternateContact",
@@ -171,6 +239,19 @@
       "min":1,
       "sensitive":true
     },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request could not be processed because of a conflict in the current status of the resource. For example, this happens if you try to enable a Region that is currently being disabled (in a status of DISABLING).</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "ContactInformation":{
       "type":"structure",
       "required":[
@@ -260,6 +341,20 @@
         }
       }
     },
+    "DisableRegionRequest":{
+      "type":"structure",
+      "required":["RegionName"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        },
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>Specifies the Region-code for a given Region name (for example, <code>af-south-1</code>). When you disable a Region, AWS performs actions to deactivate that Region in your account, such as destroying IAM resources in the Region. This process takes a few minutes for most accounts, but this can take several hours. You cannot enable the Region until the disabling process is fully completed.</p>"
+        }
+      }
+    },
     "DistrictOrCounty":{
       "type":"string",
       "max":50,
@@ -272,6 +367,20 @@
       "min":1,
       "pattern":"^[\\s]*[\\w+=.#!&-]+@[\\w.-]+\\.[\\w]+[\\s]*$",
       "sensitive":true
+    },
+    "EnableRegionRequest":{
+      "type":"structure",
+      "required":["RegionName"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        },
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>Specifies the Region-code for a given Region name (for example, <code>af-south-1</code>). When you enable a Region, AWS performs actions to prepare your account in that Region, such as distributing your IAM resources to the Region. This process takes a few minutes for most accounts, but it can take several hours. You cannot use the Region until this process is complete. Furthermore, you cannot disable the Region until the enabling process is fully completed.</p>"
+        }
+      }
     },
     "FullName":{
       "type":"string",
@@ -320,6 +429,33 @@
         }
       }
     },
+    "GetRegionOptStatusRequest":{
+      "type":"structure",
+      "required":["RegionName"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        },
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>Specifies the Region-code for a given Region name (for example, <code>af-south-1</code>). This function will return the status of whatever Region you pass into this parameter. </p>"
+        }
+      }
+    },
+    "GetRegionOptStatusResponse":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The Region code that was passed in.</p>"
+        },
+        "RegionOptStatus":{
+          "shape":"RegionOptStatus",
+          "documentation":"<p>One of the potential statuses a Region can undergo (Enabled, Enabling, Disabled, Disabling, Enabled_By_Default).</p>"
+        }
+      }
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -331,6 +467,51 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListRegionsRequest":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. If you don't specify this parameter, it defaults to the Amazon Web Services account of the identity used to call the operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must also be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-trusted-access.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/using-orgs-delegated-admin.html\">delegated admin</a> account assigned.</p> <note> <p>The management account can't specify its own <code>AccountId</code>. It must call the operation in standalone context by not including the <code>AccountId</code> parameter.</p> </note> <p>To call this operation on an account that is not a member of an organization, don't specify this parameter. Instead, call the operation using an identity belonging to the account whose contacts you wish to retrieve or modify.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListRegionsRequestMaxResultsInteger",
+          "documentation":"<p>The total number of items to return in the command’s output. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the command’s output. To resume pagination, provide the <code>NextToken</code> value in the <code>starting-token</code> argument of a subsequent command. Do not use the <code>NextToken</code> response element directly outside of the Amazon Web Services CLI. For usage examples, see <a href=\"http://docs.aws.amazon.com/cli/latest/userguide/pagination.html\">Pagination</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>. </p>"
+        },
+        "NextToken":{
+          "shape":"ListRegionsRequestNextTokenString",
+          "documentation":"<p>A token used to specify where to start paginating. This is the <code>NextToken</code> from a previously truncated response. For usage examples, see <a href=\"http://docs.aws.amazon.com/cli/latest/userguide/pagination.html\">Pagination</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>.</p>"
+        },
+        "RegionOptStatusContains":{
+          "shape":"RegionOptStatusList",
+          "documentation":"<p>A list of Region statuses (Enabling, Enabled, Disabling, Disabled, Enabled_by_default) to use to filter the list of Regions for a given account. For example, passing in a value of ENABLING will only return a list of Regions with a Region status of ENABLING.</p>"
+        }
+      }
+    },
+    "ListRegionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListRegionsRequestNextTokenString":{
+      "type":"string",
+      "max":1000,
+      "min":0
+    },
+    "ListRegionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If there is more data to be returned, this will be populated. It should be passed into the <code>next-token</code> request parameter of <code>list-regions</code>.</p>"
+        },
+        "Regions":{
+          "shape":"RegionOptList",
+          "documentation":"<p>This is a list of Regions for a given account, or if the filtered parameter was used, a list of Regions that match the filter criteria set in the <code>filter</code> parameter.</p>"
+        }
+      }
     },
     "Name":{
       "type":"string",
@@ -401,6 +582,43 @@
         }
       }
     },
+    "Region":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The Region code of a given Region (for example, <code>us-east-1</code>).</p>"
+        },
+        "RegionOptStatus":{
+          "shape":"RegionOptStatus",
+          "documentation":"<p>One of potential statuses a Region can undergo (Enabled, Enabling, Disabled, Disabling, Enabled_By_Default).</p>"
+        }
+      },
+      "documentation":"<p>This is a structure that expresses the Region for a given account, consisting of a name and opt-in status.</p>"
+    },
+    "RegionName":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "RegionOptList":{
+      "type":"list",
+      "member":{"shape":"Region"}
+    },
+    "RegionOptStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "ENABLING",
+        "DISABLING",
+        "DISABLED",
+        "ENABLED_BY_DEFAULT"
+      ]
+    },
+    "RegionOptStatusList":{
+      "type":"list",
+      "member":{"shape":"RegionOptStatus"}
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["message"],
@@ -413,6 +631,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "StateOrRegion":{
       "type":"string",
@@ -445,7 +667,18 @@
       "type":"structure",
       "required":["message"],
       "members":{
-        "message":{"shape":"String"}
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The field where the invalid entry was detected.</p>"
+        },
+        "message":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The message that informs you about what was invalid about the request.</p>"
+        },
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason that validation failed.</p>"
+        }
       },
       "documentation":"<p>The operation failed because one of the input parameters was invalid.</p>",
       "error":{
@@ -453,6 +686,35 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "message",
+        "name"
+      ],
+      "members":{
+        "message":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A message about the validation exception.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The field name where the invalid entry was detected.</p>"
+        }
+      },
+      "documentation":"<p>The input failed to meet the constraints specified by the AWS service in a specified field.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "invalidRegionOptTarget",
+        "fieldValidationFailed"
+      ]
     },
     "WebsiteUrl":{
       "type":"string",

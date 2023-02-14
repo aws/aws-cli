@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import re
 import sys
-import shlex
 from pathlib import Path
 import importlib.metadata
 
@@ -21,6 +20,8 @@ from constants import (
     PORTABLE_EXE_REQUIREMENTS,
 )
 from utils import get_install_requires, parse_requirements
+from utils import UnmetDependenciesException
+
 
 ROOT = Path(__file__).parents[2]
 PYPROJECT = ROOT / "pyproject.toml"
@@ -28,36 +29,6 @@ BUILD_REQS_RE = re.compile(
     r"requires = \[([\s\S]+?)\]\s", re.MULTILINE
 )
 EXTRACT_DEPENDENCIES_RE = re.compile(r'"(.+)"')
-
-
-class UnmetDependenciesException(Exception):
-    def __init__(self, unmet_deps, in_venv):
-        pip_install_command_args = ["-m", "pip", "install", "--prefer-binary"]
-        msg = "Environment requires following Python dependencies:\n\n"
-        for package, actual_version, required in unmet_deps:
-            msg += (
-                f"{package} (required: {required.constraints}) "
-                f"(version installed: {actual_version})\n"
-            )
-            pip_install_command_args.append(f'{package}{required.string_constraints()}')
-
-        msg += (
-            "\n"
-            "We recommend using --with-download-deps flag to automatically create a "
-            "virtualenv and download the dependencies.\n\n"
-            "If you want to manage the dependencies yourself instead, run the following "
-            "pip command:\n"
-        )
-        msg += f"{sys.executable} {shlex.join(pip_install_command_args)}\n"
-
-        if not in_venv:
-            msg += (
-                "\nWe noticed you are not in a virtualenv.\nIf not using --with-download-deps "
-                "we highly recommend using a virtualenv to prevent dependencies "
-                "from being installed into your global "
-                "Python environment.\n"
-            )
-        super().__init__(msg)
 
 
 def validate_env(target_artifact):

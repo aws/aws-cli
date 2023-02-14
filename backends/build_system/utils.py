@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 import re
+import sys
+import shlex
 import json
 import shutil
 import subprocess
@@ -21,6 +23,7 @@ from typing import List, Dict, Any, Optional, Callable
 
 from constants import ROOT_DIR
 from constants import IS_WINDOWS
+from constants import BOOTSTRAP_REQUIREMENTS
 
 
 PACKAGE_NAME = re.compile(r"(?P<name>[A-Za-z][A-Za-z0-9_\.\-]+)(?P<rest>.+)")
@@ -32,6 +35,39 @@ COMPARISONS: Dict[str, Callable[[List[int], List[int]], bool]] = {
     '<': lambda a, b: a < b,
     '<=': lambda a, b: a <= b,
 }
+
+
+class UnmetDependenciesException(Exception):
+    def __init__(self, unmet_deps, in_venv, reason=None):
+        pip_install_command_args = ["-m", "pip", "install", "--prefer-binary"]
+        msg = "Environment requires following Python dependencies:\n\n"
+        for package, actual_version, required in unmet_deps:
+            msg += (
+                f"{package} (required: {required.constraints}) "
+                f"(version installed: {actual_version})\n"
+            )
+            pip_install_command_args.append(f'{package}{required.string_constraints()}')
+
+        if reason:
+            msg += f"\n{reason}\n"
+
+        msg += (
+            "\n"
+            "We recommend using --with-download-deps flag to automatically create a "
+            "virtualenv and download the dependencies.\n\n"
+            "If you want to manage the dependencies yourself instead, run the following "
+            "pip command:\n"
+        )
+        msg += f"{sys.executable} {shlex.join(pip_install_command_args)}\n"
+
+        if not in_venv:
+            msg += (
+                "\nWe noticed you are not in a virtualenv.\nIf not using --with-download-deps "
+                "we highly recommend using a virtualenv to prevent dependencies "
+                "from being installed into your global "
+                "Python environment.\n"
+            )
+        super().__init__(msg)
 
 
 @contextlib.contextmanager
@@ -121,7 +157,11 @@ def _parse_req_line(line: str):
 
 
 def get_install_requires():
-    import flit_core.buildapi
+    try:
+        import flit_core.buildapi
+    except ImportError:
+        flit_core_exception = get_flit_core_unmet_exception()
+        raise flit_core_exception
 
     with cd(ROOT_DIR):
         requires = flit_core.buildapi.get_requires_for_build_wheel()
@@ -138,6 +178,23 @@ def get_install_requires():
     raw_dependencies = dependency_block_re.findall(data)[0]
     dependencies = extract_dependencies_re.findall(raw_dependencies)
     return dependencies
+
+
+def get_flit_core_unmet_exception():
+    in_venv = sys.prefix != sys.base_prefix
+    with open(BOOTSTRAP_REQUIREMENTS, 'r') as f:
+        flit_core_req = [
+            l for l in f.read().split('\n')
+            if 'flit_core' in l
+        ]
+    return UnmetDependenciesException(
+        [('flit_core', None, list(parse_requirements(flit_core_req))[0])],
+        in_venv,
+        reason=(
+            'flit_core is needed ahead of time in order to parse the '
+            'rest of the requirements.'
+        )
+    )
 
 
 class Utils:

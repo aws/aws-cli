@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import sys
 import json
 import platform
 from typing import List
@@ -21,6 +22,7 @@ from build_system.utils import Utils
 from build_system.utils import parse_requirements
 from build_system.utils import ParseError
 from build_system.utils import Requirement
+from build_system.utils import UnmetDependenciesException
 
 from tests.backends.build_system.markers import skip_if_windows, if_windows
 
@@ -241,4 +243,41 @@ class TestUtils:
         )
 
     def assert_dir_has_content(self, path: str, expected_files: List[str]):
-        assert set(expected_files).issubset(set(os.listdir(path)))
+        assert set(l.lower() for l in expected_files).issubset(
+            set(l.lower() for l in os.listdir(path))
+        )
+
+
+@pytest.fixture
+def unmet_error(request):
+    error = UnmetDependenciesException([
+        ('colorama', '1.0', Requirement('colorama', '>=2.0', '<3.0')),
+    ], **request.param)
+    return str(error)
+
+
+class TestUnmetDependencies:
+    @pytest.mark.parametrize('unmet_error', [{'in_venv': False}], indirect=True)
+    def test_in_error_message(self, unmet_error):
+        assert (
+            "colorama (required: ('>=2.0', '<3.0')) (version installed: 1.0)"
+        ) in unmet_error
+        assert (
+            f"{sys.executable} -m pip install --prefer-binary 'colorama>=2.0,<3.0'"
+        ) in unmet_error
+
+    @pytest.mark.parametrize('unmet_error', [{'in_venv': False}], indirect=True)
+    def test_not_in_venv(self, unmet_error):
+        assert 'We noticed you are not in a virtualenv.' in unmet_error
+
+    @pytest.mark.parametrize('unmet_error', [{'in_venv': True}], indirect=True)
+    def test_in_venv(self, unmet_error):
+        assert 'We noticed you are not in a virtualenv.' not in unmet_error
+
+    @pytest.mark.parametrize(
+        'unmet_error',
+        [{'in_venv': False, 'reason': "custom reason message"}],
+        indirect=True,
+    )
+    def test_custom_reason(self, unmet_error):
+        assert 'custom reason message' in unmet_error

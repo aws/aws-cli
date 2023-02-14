@@ -15,5 +15,6 @@ To use with the Docker CLI, pipe the output of the ``get-login-password`` comman
     | docker login \
         --username AWS \
         --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+        # --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com.cn for China regions
 
 For more information, see `Registry Authentication <https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries#registry_auth>`__ in the *Amazon ECR User Guide*.

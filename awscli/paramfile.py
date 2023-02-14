@@ -110,7 +110,11 @@ PARAMFILE_DISABLED = set([
     'service-catalog.create-product.support-url',
     'service-catalog.update-product.support-url',
 
+    'ses.create-custom-verification-email-template.failure-redirection-url',
+    'ses.create-custom-verification-email-template.success-redirection-url',
     'ses.put-account-details.website-url',
+    'ses.update-custom-verification-email-template.failure-redirection-url',
+    'ses.update-custom-verification-email-template.success-redirection-url',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',

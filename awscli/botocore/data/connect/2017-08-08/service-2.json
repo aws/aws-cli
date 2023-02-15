@@ -118,7 +118,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Allows the specified Amazon Connect instance to access the specified Amazon Lex bot.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Allows the specified Amazon Connect instance to access the specified Amazon Lex V1 bot. This API only supports the association of Amazon Lex V1 bots.</p>"
     },
     "AssociatePhoneNumberContactFlow":{
       "name":"AssociatePhoneNumberContactFlow",
@@ -3749,6 +3749,10 @@
         "RelatedContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId that is <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html#relatedcontactid\">related</a> to this contact.</p>"
+        },
+        "WisdomInfo":{
+          "shape":"WisdomInfo",
+          "documentation":"<p>Information about Amazon Connect Wisdom.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -4486,7 +4490,7 @@
         },
         "QueueConfigs":{
           "shape":"RoutingProfileQueueConfigList",
-          "documentation":"<p>The inbound queues associated with the routing profile. If no queue is added, the agent can make only outbound calls.</p>"
+          "documentation":"<p>The inbound queues associated with the routing profile. If no queue is added, the agent can make only outbound calls.</p> <p>The limit of 10 array members applies to the maximum number of <code>RoutingProfileQueueConfig</code> objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect service quotas</a>. </p>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -14043,6 +14047,16 @@
         "TO_AGENT",
         "ALL"
       ]
+    },
+    "WisdomInfo":{
+      "type":"structure",
+      "members":{
+        "SessionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Wisdom session.</p>"
+        }
+      },
+      "documentation":"<p>Information about Amazon Connect Wisdom.</p>"
     },
     "timestamp":{"type":"timestamp"}
   },

@@ -1249,6 +1249,12 @@
           "box":true,
           "location":"header",
           "locationName":"Latest-Version-Number"
+        },
+        "VersionLabel":{
+          "shape":"VersionLabel",
+          "documentation":"<p>An optional, user-defined label for the AppConfig hosted configuration version. This value must contain at least one non-numeric character. For example, \"v2.2.0\".</p>",
+          "location":"header",
+          "locationName":"VersionLabel"
         }
       },
       "payload":"Content"
@@ -2088,6 +2094,12 @@
           "documentation":"<p>A standard MIME type describing the format of the configuration content. For more information, see <a href=\"https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17\">Content-Type</a>.</p>",
           "location":"header",
           "locationName":"Content-Type"
+        },
+        "VersionLabel":{
+          "shape":"VersionLabel",
+          "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>",
+          "location":"header",
+          "locationName":"VersionLabel"
         }
       },
       "payload":"Content"
@@ -2114,6 +2126,10 @@
         "ContentType":{
           "shape":"StringWithLengthBetween1And255",
           "documentation":"<p>A standard MIME type describing the format of the configuration content. For more information, see <a href=\"https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17\">Content-Type</a>.</p>"
+        },
+        "VersionLabel":{
+          "shape":"VersionLabel",
+          "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>"
         }
       },
       "documentation":"<p>Information about the configuration.</p>"
@@ -2407,6 +2423,12 @@
           "documentation":"<p>A token to start the list. Use this token to get the next set of results. </p>",
           "location":"querystring",
           "locationName":"next_token"
+        },
+        "VersionLabel":{
+          "shape":"QueryName",
+          "documentation":"<p>An optional filter that can be used to specify the version label of an AppConfig hosted configuration version. This parameter supports filtering by prefix using a wildcard, for example \"v2*\". If you don't specify an asterisk at the end of the value, only an exact match is returned.</p>",
+          "location":"querystring",
+          "locationName":"version_label"
         }
       }
     },
@@ -2591,7 +2613,7 @@
         },
         "ConfigurationVersion":{
           "shape":"Version",
-          "documentation":"<p>The configuration version to deploy.</p>"
+          "documentation":"<p>The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -2973,6 +2995,12 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "VersionLabel":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".*[^0-9].*"
     }
   },
   "documentation":"<p>Use AppConfig, a capability of Amazon Web Services Systems Manager, to create, manage, and quickly deploy application configurations. AppConfig supports controlled deployments to applications of any size and includes built-in validation checks and monitoring. You can use AppConfig with applications hosted on Amazon EC2 instances, Lambda, containers, mobile applications, or IoT devices.</p> <p>To prevent errors when deploying application configurations, especially for production systems where a simple typo could cause an unexpected outage, AppConfig includes validators. A validator provides a syntactic or semantic check to ensure that the configuration you want to deploy works as intended. To validate your application configuration data, you provide a schema or an Amazon Web Services Lambda function that runs against the configuration. The configuration deployment or update can only proceed when the configuration data is valid.</p> <p>During a configuration deployment, AppConfig monitors the application to ensure that the deployment is successful. If the system encounters an error, AppConfig rolls back the change to minimize impact for your application users. You can configure a deployment strategy for each application or environment that includes deployment criteria, including velocity, bake time, and alarms to monitor. Similar to error monitoring, if a deployment triggers an alarm, AppConfig automatically rolls back to the previous version. </p> <p>AppConfig supports multiple use cases. Here are some examples:</p> <ul> <li> <p> <b>Feature flags</b>: Use AppConfig to turn on new features that require a timely deployment, such as a product launch or announcement. </p> </li> <li> <p> <b>Application tuning</b>: Use AppConfig to carefully introduce changes to your application that can only be tested with production traffic.</p> </li> <li> <p> <b>Allow list</b>: Use AppConfig to allow premium subscribers to access paid content. </p> </li> <li> <p> <b>Operational issues</b>: Use AppConfig to reduce stress on your application when a dependency or other external factor impacts the system.</p> </li> </ul> <p>This reference is intended to be used with the <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html\">AppConfig User Guide</a>.</p>"

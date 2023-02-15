@@ -166,7 +166,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket that DataSync can access for a transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a> in the <i>DataSync User Guide</i>.</p>"
+      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a>.</p>"
     },
     "CreateLocationSmb":{
       "name":"CreateLocationSmb",
@@ -180,7 +180,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Defines a file system on a Server Message Block (SMB) server that can be read from or written to.</p>"
+      "documentation":"<p>Creates an endpoint for a Server Message Block (SMB) file server that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">Creating an SMB location</a>.</p>"
     },
     "CreateTask":{
       "name":"CreateTask",
@@ -250,7 +250,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata such as the name, the network interfaces, and the status (that is, whether the agent is running or not) for an agent. To specify which agent to describe, use the Amazon Resource Name (ARN) of the agent in your request. </p>"
+      "documentation":"<p>Returns metadata about an DataSync agent, such as its name, endpoint type, and status.</p>"
     },
     "DescribeLocationEfs":{
       "name":"DescribeLocationEfs",
@@ -432,7 +432,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns a list of agents owned by an Amazon Web Services account in the Amazon Web Services Region specified in the request. The returned list is ordered by agent Amazon Resource Name (ARN).</p> <p>By default, this operation returns a maximum of 100 agents. This operation supports pagination that enables you to optionally reduce the number of agents returned in a response.</p> <p>If you have more agents than are returned in a response (that is, the response returns only a truncated list of your agents), the response contains a marker that you can specify in your next request to fetch the next page of agents.</p>"
+      "documentation":"<p>Returns a list of DataSync agents that belong to an Amazon Web Services account in the Amazon Web Services Region specified in the request.</p> <p>With pagination, you can reduce the number of agents returned in a response. If you get a truncated list of agents in a response, the response contains a marker that you can specify in your next request to fetch the next page of agents.</p> <p> <code>ListAgents</code> is eventually consistent. This means the result of running the operation might not reflect that you just created or deleted an agent. For example, if you create an agent with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateAgent.html\">CreateAgent</a> and then immediately run <code>ListAgents</code>, that agent might not show up in the list right away. In situations like this, you can always confirm whether an agent has been created (or deleted) by using <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeAgent.html\">DescribeAgent</a>.</p>"
     },
     "ListLocations":{
       "name":"ListLocations",
@@ -657,18 +657,18 @@
       "members":{
         "AgentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a DataSync agent.</p>"
         },
         "Name":{
           "shape":"TagValue",
-          "documentation":"<p>The name of the agent.</p>"
+          "documentation":"<p>The name of an agent.</p>"
         },
         "Status":{
           "shape":"AgentStatus",
-          "documentation":"<p>The status of the agent.</p>"
+          "documentation":"<p>The status of an agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/understand-agent-statuses.html\">DataSync agent statuses</a>.</p>"
         }
       },
-      "documentation":"<p>Represents a single entry in a list of agents. <code>AgentListEntry</code> returns an array that contains a list of agents when the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListAgents.html\">ListAgents</a> operation is called.</p>"
+      "documentation":"<p>Represents a single entry in a list (or array) of DataSync agents when you call the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListAgents.html\">ListAgents</a> operation.</p>"
     },
     "AgentStatus":{
       "type":"string",
@@ -842,11 +842,11 @@
         },
         "StorageVirtualMachineArn":{
           "shape":"StorageVirtualMachineArn",
-          "documentation":"<p>Specifies the ARN of the storage virtual machine (SVM) on your file system where you're copying data to or from.</p>"
+          "documentation":"<p>Specifies the ARN of the storage virtual machine (SVM) in your file system where you want to copy data to or from.</p>"
         },
         "Subdirectory":{
           "shape":"FsxOntapSubdirectory",
-          "documentation":"<p>Specifies the junction path (also known as a mount point) in the SVM volume where you're copying data to or from (for example, <code>/vol1</code>).</p> <note> <p>Don't specify a junction path in the SVM's root volume. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing FSx for ONTAP storage virtual machines</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a path to the file share in the SVM where you'll copy your data.</p> <p>You can specify a junction path (also known as a mount point), qtree path (for NFS file shares), or share name (for SMB file shares). For example, your mount path might be <code>/vol1</code>, <code>/vol1/tree1</code>, or <code>/share1</code>.</p> <note> <p>Don't specify a junction path in the SVM's root volume. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing FSx for ONTAP storage virtual machines</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p> </note>"
         },
         "Tags":{
           "shape":"InputTagList",
@@ -1176,35 +1176,35 @@
       "members":{
         "Subdirectory":{
           "shape":"SmbSubdirectory",
-          "documentation":"<p>The subdirectory in the SMB file system that is used to read data from the SMB source location or write data to the SMB destination. The SMB path should be a path that's exported by the SMB server, or a subdirectory of that path. The path should be such that it can be mounted by other SMB clients in your network.</p> <note> <p> <code>Subdirectory</code> must be specified with forward slashes. For example, <code>/path/to/folder</code>.</p> </note> <p>To transfer all the data in the folder you specified, DataSync needs to have permissions to mount the SMB share, as well as to access all the data in that share. To ensure this, either ensure that the user/password specified belongs to the user who can mount the share, and who has the appropriate permissions for all of the files and directories that you want DataSync to access, or use credentials of a member of the Backup Operators group to mount the share. Doing either enables the agent to access the data. For the agent to access directories, you must additionally enable all execute access.</p>"
+          "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the specified subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>The name of the SMB server. This value is the IP address or Domain Name Service (DNS) name of the SMB server. An agent that is installed on-premises uses this hostname to mount the SMB server in a network.</p> <note> <p>This name must either be DNS-compliant or must be an IP version 4 (IPv4) address.</p> </note>"
+          "documentation":"<p>Specifies the Domain Name Service (DNS) name or IP address of the SMB file server that your DataSync agent will mount.</p> <note> <p>You can't specify an IP version 6 (IPv6) address.</p> </note>"
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>The user who can mount the share, has the permissions to access files and folders in the SMB share.</p> <p>For information about choosing a user name that ensures sufficient permissions to files, folders, and metadata, see the <a href=\"create-smb-location.html#SMBuser\">User setting</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the user name that can mount your SMB file server and has permission to access the files and folders involved in your transfer.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
-          "documentation":"<p>The name of the Windows domain that the SMB server belongs to.</p>"
+          "documentation":"<p>Specifies the Windows domain name that your SMB file server belongs to. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
         },
         "Password":{
           "shape":"SmbPassword",
-          "documentation":"<p>The password of the user who can mount the share, has the permissions to access files and folders in the SMB share.</p>"
+          "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of agents to use for a Simple Message Block (SMB) location. </p>"
+          "documentation":"<p>Specifies the DataSync agent (or agents) which you want to connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).</p>"
         },
         "MountOptions":{
           "shape":"SmbMountOptions",
-          "documentation":"<p>The mount options used by DataSync to access the SMB server.</p>"
+          "documentation":"<p>Specifies the version of the SMB protocol that DataSync uses to access your SMB file server.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents the tag that you want to add to the location. The value can be an empty string. We recommend using tags to name your resources.</p>"
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your location.</p>"
         }
       },
       "documentation":"<p>CreateLocationSmbRequest</p>"
@@ -1214,7 +1214,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the source SMB file system location that is created.</p>"
+          "documentation":"<p>The ARN of the SMB location that you created.</p>"
         }
       },
       "documentation":"<p>CreateLocationSmbResponse</p>"
@@ -1329,7 +1329,7 @@
       "members":{
         "AgentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the agent to describe.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent to describe.</p>"
         }
       },
       "documentation":"<p>DescribeAgent</p>"
@@ -1339,7 +1339,7 @@
       "members":{
         "AgentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+          "documentation":"<p>The ARN of the agent.</p>"
         },
         "Name":{
           "shape":"TagValue",
@@ -2267,11 +2267,11 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of agents to list.</p>"
+          "documentation":"<p>Specifies the maximum number of DataSync agents to list in a response. By default, a response shows a maximum of 100 agents.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>An opaque string that indicates the position at which to begin the next list of agents.</p>"
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
         }
       },
       "documentation":"<p>ListAgentsRequest</p>"
@@ -2281,11 +2281,11 @@
       "members":{
         "Agents":{
           "shape":"AgentList",
-          "documentation":"<p>A list of agents in your account.</p>"
+          "documentation":"<p>A list of DataSync agents in your Amazon Web Services account in the Amazon Web Services Region specified in the request. The list is ordered by the agents' Amazon Resource Names (ARNs).</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>An opaque string that indicates the position at which to begin returning the next list of agents.</p>"
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
         }
       },
       "documentation":"<p>ListAgentsResponse</p>"
@@ -2619,7 +2619,7 @@
         },
         "OverwriteMode":{
           "shape":"OverwriteMode",
-          "documentation":"<p>Specifies whether data at the destination location should be overwritten or preserved. If set to <code>NEVER</code>, a destination file for example will not be replaced by a source file (even if the destination file differs from the source file). If you modify files in the destination and you sync the files, you can use this value to protect against overwriting those changes. </p> <p>Some storage classes have specific behaviors that can affect your Amazon S3 storage cost. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a>.</p>"
+          "documentation":"<p>Specifies whether data at the destination location should be overwritten or preserved. If set to <code>NEVER</code>, a destination file for example will not be replaced by a source file (even if the destination file differs from the source file). If you modify files in the destination and you sync the files, you can use this value to protect against overwriting those changes. </p> <p>Some storage classes have specific behaviors that can affect your Amazon S3 storage cost. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync</a>.</p>"
         },
         "Atime":{
           "shape":"Atime",
@@ -2639,7 +2639,7 @@
         },
         "PreserveDeletedFiles":{
           "shape":"PreserveDeletedFiles",
-          "documentation":"<p>Specifies whether files in the destination location that don't exist in the source should be preserved. This option can affect your Amazon S3 storage cost. If your task deletes objects, you might incur minimum storage duration charges for certain storage classes. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync </a>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Ignore such destination files (recommended). </p> <p> <code>REMOVE</code>: Delete destination files that aren’t present in the source.</p>"
+          "documentation":"<p>Specifies whether files in the destination location that don't exist in the source should be preserved. This option can affect your Amazon S3 storage cost. If your task deletes objects, you might incur minimum storage duration charges for certain storage classes. For detailed information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Considerations when working with Amazon S3 storage classes in DataSync</a>.</p> <p>Default value: <code>PRESERVE</code> </p> <p> <code>PRESERVE</code>: Ignore such destination files (recommended). </p> <p> <code>REMOVE</code>: Delete destination files that aren’t present in the source.</p> <note> <p>If you set this parameter to <code>REMOVE</code>, you can't set <code>TransferMode</code> to <code>ALL</code>. When you transfer all data, DataSync doesn't scan your destination location and doesn't know what to delete.</p> </note>"
         },
         "PreserveDevices":{
           "shape":"PreserveDevices",
@@ -2820,10 +2820,10 @@
       "members":{
         "Version":{
           "shape":"SmbVersion",
-          "documentation":"<p>Specifies the SMB version that you want DataSync to use when mounting your SMB share. If you don't specify a version, DataSync defaults to <code>AUTOMATIC</code> and chooses a version based on negotiation with the SMB server.</p>"
+          "documentation":"<p>By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically.</p> <p>These are the following options for configuring the SMB version:</p> <ul> <li> <p> <code>AUTOMATIC</code> (default): DataSync and the SMB file server negotiate a protocol version that they mutually support. (DataSync supports SMB versions 1.0 and later.)</p> <p>This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an <code>Operation Not Supported</code> error.</p> </li> <li> <p> <code>SMB3</code>: Restricts the protocol negotiation to only SMB version 3.0.2.</p> </li> <li> <p> <code>SMB2</code>: Restricts the protocol negotiation to only SMB version 2.1.</p> </li> <li> <p> <code>SMB2_0</code>: Restricts the protocol negotiation to only SMB version 2.0.</p> </li> <li> <p> <code>SMB1</code>: Restricts the protocol negotiation to only SMB version 1.0.</p> <note> <p>The <code>SMB1</code> option isn't available when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateLocationFsxOntap.html\">creating an Amazon FSx for NetApp ONTAP location</a>.</p> </note> </li> </ul>"
         }
       },
-      "documentation":"<p>Specifies how DataSync can access a location using the SMB protocol.</p>"
+      "documentation":"<p>Specifies the version of the Server Message Block (SMB) protocol that DataSync uses to access an SMB file server.</p>"
     },
     "SmbPassword":{
       "type":"string",
@@ -2854,7 +2854,9 @@
       "enum":[
         "AUTOMATIC",
         "SMB2",
-        "SMB3"
+        "SMB3",
+        "SMB1",
+        "SMB2_0"
       ]
     },
     "SourceNetworkInterfaceArns":{

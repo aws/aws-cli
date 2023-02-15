@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import sys
+
+from contextlib import contextmanager
+from pathlib import Path
+from subprocess import check_call
+
+REPO_ROOT = Path(__file__).parents[2].absolute()
+RUN_TESTS_SCRIPTS = os.path.join(REPO_ROOT, "scripts", "ci", "run-tests")
+
+
+@contextmanager
+def cd(path):
+    """Change directory while inside context manager."""
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+def main(tests_path=None):
+    if tests_path is None:
+        tests_path = REPO_ROOT / "tests"
+    with cd(tests_path):
+        run(
+            f"{sys.executable} {RUN_TESTS_SCRIPTS} "
+            f"--tests-path {tests_path} "
+            f"backends/build_system/ --allow-repo-root-on-path"
+        )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tests-path", default=None, type=os.path.abspath)
+    args = parser.parse_args()
+    main(args.tests_path)

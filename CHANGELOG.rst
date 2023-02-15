@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.10.0
+======
+
+* api-change:``connect``: This update provides the Wisdom session ARN for contacts enabled for Wisdom in the chat channel.
+* api-change:``appconfigdata``: AWS AppConfig now offers the option to set a version label on hosted configuration versions. If a labeled hosted configuration version is deployed, its version label is available in the GetLatestConfiguration response.
+* api-change:``datasync``: With this launch, we are giving customers the ability to use older SMB protocol versions, enabling them to use DataSync to copy data to and from their legacy storage arrays.
+* api-change:``ec2``: Adds support for waiters that automatically poll for an imported snapshot until it reaches the completed state.
+* api-change:``autoscaling``: You can now either terminate/replace, ignore, or wait for EC2 Auto Scaling instances on standby or protected from scale in. Also, you can also roll back changes from a failed instance refresh.
+* bugfix:``s3``: AWS CLI no longer overwrites user supplied `Content-Encoding` with `aws-chunked` when user also supplies `ChecksumAlgorithm`.
+* feature:Source Distribution: Add supported autotools interface for building from source.
+* api-change:``sns``: This release adds support for SNS X-Ray active tracing as well as other updates.
+* api-change:``ec2``: With this release customers can turn host maintenance on or off when allocating or modifying a supported dedicated host. Host maintenance is turned on by default for supported hosts.
+* api-change:``sagemaker``: Amazon SageMaker Autopilot adds support for selecting algorithms in CreateAutoMLJob API.
+* api-change:``appconfig``: AWS AppConfig now offers the option to set a version label on hosted configuration versions. Version labels allow you to identify specific hosted configuration versions based on an alternate versioning scheme that you define.
+* api-change:``account``: This release of the Account Management API enables customers to view and manage whether AWS Opt-In Regions are enabled or disabled for their Account. For more information, see https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html
+* api-change:``polly``: Amazon Polly adds two new neural Japanese voices - Kazuha, Tomoko
+* api-change:``snowball``: Adds support for EKS Anywhere on Snowball. AWS Snow Family customers can now install EKS Anywhere service on Snowball Edge Compute Optimized devices.
+
+
 2.9.23
 ======
 

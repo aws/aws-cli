@@ -462,6 +462,29 @@ INSTANCE_FLEETS_SCHEMA = {
                         }
                     }
                 }
+            },
+            "ResizeSpecifications": {
+                "type": "object",
+                "properties": {
+                    "SpotResizeSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "TimeoutDurationMinutes": {
+                                "type" : "integer",
+                                "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
+                            }
+                        }
+                    },
+                    "OnDemandResizeSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "TimeoutDurationMinutes": {
+                                "type" : "integer",
+                                "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
+                            }
+                        }
+                    }
+                }
             }
         }
     }

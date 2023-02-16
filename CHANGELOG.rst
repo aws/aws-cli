@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.73
+=======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``grafana``: With this release Amazon Managed Grafana now supports inbound Network Access Control that helps you to restrict user access to your Grafana workspaces
+* api-change:``ivs``: Doc-only update. Updated text description in DeleteChannel, Stream, and StreamSummary.
+* api-change:``wafv2``: Added a notice for account takeover prevention (ATP). The interface incorrectly lets you to configure ATP response inspection in regional web ACLs in Region US East (N. Virginia), without returning an error. ATP response inspection is only available in web ACLs that protect CloudFront distributions.
+
+
 1.27.72
 =======
 

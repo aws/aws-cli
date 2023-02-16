@@ -296,7 +296,7 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Provides Temporary, basic HTTP credentials that are associated with a given runtime IAM role and used by a cluster with fine-grained access control activated. You can use these credentials to connect to cluster endpoints that support username-based and password-based authentication.</p>"
+      "documentation":"<p>Provides temporary, HTTP basic credentials that are associated with a given runtime IAM role and used by a cluster with fine-grained access control activated. You can use these credentials to connect to cluster endpoints that support username and password authentication.</p>"
     },
     "GetManagedScalingPolicy":{
       "name":"GetManagedScalingPolicy",
@@ -2124,7 +2124,7 @@
       "members":{
         "Credentials":{
           "shape":"Credentials",
-          "documentation":"<p>The credentials that you can use to connect to cluster endpoints that support username-based and password-based authentication.</p>"
+          "documentation":"<p>The credentials that you can use to connect to cluster endpoints that support username and password authentication.</p>"
         },
         "ExpiresAt":{
           "shape":"Date",
@@ -2340,6 +2340,10 @@
         "LaunchSpecifications":{
           "shape":"InstanceFleetProvisioningSpecifications",
           "documentation":"<p>Describes the launch specification for an instance fleet. </p>"
+        },
+        "ResizeSpecifications":{
+          "shape":"InstanceFleetResizingSpecifications",
+          "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
       "documentation":"<p>Describes an instance fleet, which is a group of EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
@@ -2371,6 +2375,10 @@
         "LaunchSpecifications":{
           "shape":"InstanceFleetProvisioningSpecifications",
           "documentation":"<p>The launch specification for the instance fleet.</p>"
+        },
+        "ResizeSpecifications":{
+          "shape":"InstanceFleetResizingSpecifications",
+          "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
       "documentation":"<p>The configuration that defines an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
@@ -2399,6 +2407,10 @@
         "TargetSpotCapacity":{
           "shape":"WholeNumber",
           "documentation":"<p>The target capacity of Spot units for the instance fleet. For more information, see <a>InstanceFleetConfig$TargetSpotCapacity</a>.</p>"
+        },
+        "ResizeSpecifications":{
+          "shape":"InstanceFleetResizingSpecifications",
+          "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
       "documentation":"<p>Configuration parameters for an instance fleet modification request.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
@@ -2408,14 +2420,28 @@
       "members":{
         "SpotSpecification":{
           "shape":"SpotProvisioningSpecification",
-          "documentation":"<p>The launch specification for Spot Instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p>"
+          "documentation":"<p>The launch specification for Spot instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p>"
         },
         "OnDemandSpecification":{
           "shape":"OnDemandProvisioningSpecification",
           "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR version 5.12.1 and later.</p> </note>"
         }
       },
-      "documentation":"<p>The launch specification for Spot Instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand and Spot Instance allocation strategies are available in Amazon EMR version 5.12.1 and later.</p> </note>"
+      "documentation":"<p>The launch specification for Spot Instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand and Spot instance allocation strategies are available in Amazon EMR version 5.12.1 and later.</p> </note>"
+    },
+    "InstanceFleetResizingSpecifications":{
+      "type":"structure",
+      "members":{
+        "SpotResizeSpecification":{
+          "shape":"SpotResizingSpecification",
+          "documentation":"<p>The resize specification for Spot Instances in the instance fleet, which contains the resize timeout period. </p>"
+        },
+        "OnDemandResizeSpecification":{
+          "shape":"OnDemandResizingSpecification",
+          "documentation":"<p>The resize specification for On-Demand Instances in the instance fleet, which contains the resize timeout period. </p>"
+        }
+      },
+      "documentation":"<p>The resize specification for On-Demand and Spot Instances in the fleet.</p>"
     },
     "InstanceFleetState":{
       "type":"string",
@@ -4001,6 +4027,17 @@
       },
       "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR versions 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR version 5.12.1 and later.</p> </note>"
     },
+    "OnDemandResizingSpecification":{
+      "type":"structure",
+      "required":["TimeoutDurationMinutes"],
+      "members":{
+        "TimeoutDurationMinutes":{
+          "shape":"WholeNumber",
+          "documentation":"<p>On-Demand resize timeout in minutes. If On-Demand Instances are not provisioned within this time, the resize workflow stops. The minimum value is 5 minutes, and the maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.</p>"
+        }
+      },
+      "documentation":"<p>The resize specification for On-Demand Instances in the instance fleet, which contains the resize timeout period. </p>"
+    },
     "OptionalArnType":{
       "type":"string",
       "max":2048,
@@ -4700,7 +4737,7 @@
       "members":{
         "TimeoutDurationMinutes":{
           "shape":"WholeNumber",
-          "documentation":"<p>The spot provisioning timeout period in minutes. If Spot Instances are not provisioned within this time period, the <code>TimeOutAction</code> is taken. Minimum value is 5 and maximum value is 1440. The timeout applies only during initial provisioning, when the cluster is first created.</p>"
+          "documentation":"<p>The Spot provisioning timeout period in minutes. If Spot Instances are not provisioned within this time period, the <code>TimeOutAction</code> is taken. Minimum value is 5 and maximum value is 1440. The timeout applies only during initial provisioning, when the cluster is first created.</p>"
         },
         "TimeoutAction":{
           "shape":"SpotProvisioningTimeoutAction",
@@ -4723,6 +4760,17 @@
         "SWITCH_TO_ON_DEMAND",
         "TERMINATE_CLUSTER"
       ]
+    },
+    "SpotResizingSpecification":{
+      "type":"structure",
+      "required":["TimeoutDurationMinutes"],
+      "members":{
+        "TimeoutDurationMinutes":{
+          "shape":"WholeNumber",
+          "documentation":"<p>Spot resize timeout in minutes. If Spot Instances are not provisioned within this time, the resize workflow will stop provisioning of Spot instances. Minimum value is 5 minutes and maximum value is 10,080 minutes (7 days). The timeout applies to all resize workflows on the Instance Fleet. The resize could be triggered by Amazon EMR Managed Scaling or by the customer (via Amazon EMR Console, Amazon EMR CLI modify-instance-fleet or Amazon EMR SDK ModifyInstanceFleet API) or by Amazon EMR due to Amazon EC2 Spot Reclamation.</p>"
+        }
+      },
+      "documentation":"<p>The resize specification for Spot Instances in the instance fleet, which contains the resize timeout period. </p>"
     },
     "StartNotebookExecutionInput":{
       "type":"structure",

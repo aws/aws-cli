@@ -5128,7 +5128,8 @@
         "S3HudiDirectTarget":{
           "shape":"S3HudiDirectTarget",
           "documentation":"<p>Specifies a target that writes to a Hudi data source in Amazon S3.</p>"
-        }
+        },
+        "DirectJDBCSource":{"shape":"DirectJDBCSource"}
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
     },
@@ -8814,6 +8815,43 @@
       "max":25,
       "min":1
     },
+    "DirectJDBCSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table",
+        "ConnectionName",
+        "ConnectionType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the JDBC source connection.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The database of the JDBC source connection.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The table of the JDBC source connection.</p>"
+        },
+        "ConnectionName":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The connection name of the JDBC source.</p>"
+        },
+        "ConnectionType":{
+          "shape":"JDBCConnectionType",
+          "documentation":"<p>The connection type of the JDBC source.</p>"
+        },
+        "RedshiftTmpDir":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The temp directory of the JDBC Redshift source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the direct JDBC source connection.</p>"
+    },
     "DirectKafkaSource":{
       "type":"structure",
       "required":["Name"],
@@ -12208,6 +12246,16 @@
       "exception":true
     },
     "IsVersionValid":{"type":"boolean"},
+    "JDBCConnectionType":{
+      "type":"string",
+      "enum":[
+        "sqlserver",
+        "mysql",
+        "oracle",
+        "postgresql",
+        "redshift"
+      ]
+    },
     "JDBCConnectorOptions":{
       "type":"structure",
       "members":{

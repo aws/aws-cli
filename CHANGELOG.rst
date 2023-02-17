@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.10.1
+======
+
+* api-change:``grafana``: With this release Amazon Managed Grafana now supports inbound Network Access Control that helps you to restrict user access to your Grafana workspaces
+* api-change:``glue``: Fix DirectJDBCSource not showing up in CLI code gen
+* api-change:``cloudtrail``: This release adds an InsufficientEncryptionPolicyException type to the StartImport endpoint
+* api-change:``frauddetector``: This release introduces Lists feature which allows customers to reference a set of values in Fraud Detector's rules. With Lists, customers can dynamically manage these attributes in real time. Lists can be created/deleted and its contents can be modified using the Fraud Detector API.
+* api-change:``rds``: Database Activity Stream support for RDS for SQL Server.
+* api-change:``ivs``: Doc-only update. Updated text description in DeleteChannel, Stream, and StreamSummary.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``wafv2``: Added a notice for account takeover prevention (ATP). The interface incorrectly lets you to configure ATP response inspection in regional web ACLs in Region US East (N. Virginia), without returning an error. ATP response inspection is only available in web ACLs that protect CloudFront distributions.
+* api-change:``wafv2``: For protected CloudFront distributions, you can now use the AWS WAF Fraud Control account takeover prevention (ATP) managed rule group to block new login attempts from clients that have recently submitted too many failed login attempts.
+* api-change:``privatenetworks``: This release introduces a new StartNetworkResourceUpdate API, which enables return/replacement of hardware from a NetworkSite.
+* api-change:``emr``: Update emr command to latest version
+
+
 2.10.0
 ======
 

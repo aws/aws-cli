@@ -54,5 +54,17 @@ def validate_and_build_instance_fleets(parsed_instance_fleets):
                 instance_fleet_config['LaunchSpecifications']['OnDemandSpecification'] = \
                     instanceFleetProvisioningSpecifications['OnDemandSpecification']
 
+        if 'ResizeSpecifications' in keys:
+            instanceFleetResizeSpecifications = instance_fleet['ResizeSpecifications']
+            instance_fleet_config['ResizeSpecifications'] = {}
+
+            if 'SpotResizeSpecification' in instanceFleetResizeSpecifications:
+                instance_fleet_config['ResizeSpecifications']['SpotResizeSpecification'] = \
+                    instanceFleetResizeSpecifications['SpotResizeSpecification']
+
+            if 'OnDemandResizeSpecification' in instanceFleetResizeSpecifications:
+                instance_fleet_config['ResizeSpecifications']['OnDemandResizeSpecification'] = \
+                    instanceFleetResizeSpecifications['OnDemandResizeSpecification']
+
         instance_fleets.append(instance_fleet_config)
     return instance_fleets

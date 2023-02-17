@@ -141,6 +141,7 @@
       "output":{"shape":"DeleteNetworkResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
@@ -158,6 +159,7 @@
       "output":{"shape":"DeleteNetworkSiteResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
@@ -258,7 +260,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists device identifiers. Add filters to your request to return a more specific list of results. Use filters to match the Amazon Resource Name (ARN) of an order, the status of device identifiers, or the ARN of the traffic group.</p> <pre><code> &lt;p&gt;If you specify multiple filters, filters are joined with an OR, and the request </code></pre> <p>returns results that match all of the specified filters.</p></p>"
+      "documentation":"<p>Lists device identifiers. Add filters to your request to return a more specific list of results. Use filters to match the Amazon Resource Name (ARN) of an order, the status of device identifiers, or the ARN of the traffic group.</p> <p>If you specify multiple filters, filters are joined with an OR, and the request returns results that match all of the specified filters.</p>"
     },
     "ListNetworkResources":{
       "name":"ListNetworkResources",
@@ -354,6 +356,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Checks the health of the service.</p>"
+    },
+    "StartNetworkResourceUpdate":{
+      "name":"StartNetworkResourceUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/network-resources/update",
+        "responseCode":200
+      },
+      "input":{"shape":"StartNetworkResourceUpdateRequest"},
+      "output":{"shape":"StartNetworkResourceUpdateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts an update of the specified network resource.</p> <p>After you submit a request to replace or return a network resource, the status of the network resource is <code>CREATING_SHIPPING_LABEL</code>. The shipping label is available when the status of the network resource is <code>PENDING_RETURN</code>. After the network resource is successfully returned, its status is <code>DELETED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/private-networks/latest/userguide/radio-units.html#return-radio-unit\">Return a radio unit</a>.</p>",
+      "idempotent":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -1106,8 +1125,7 @@
         },
         "maxResults":{
           "shape":"ListDeviceIdentifiersRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return.</p>"
         },
         "networkArn":{
           "shape":"Arn",
@@ -1148,8 +1166,7 @@
         },
         "maxResults":{
           "shape":"ListNetworkResourcesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return.</p>"
         },
         "networkArn":{
           "shape":"Arn",
@@ -1190,8 +1207,7 @@
         },
         "maxResults":{
           "shape":"ListNetworkSitesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return.</p>"
         },
         "networkArn":{
           "shape":"Arn",
@@ -1231,8 +1247,7 @@
         },
         "maxResults":{
           "shape":"ListNetworksRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return.</p>"
         },
         "startToken":{
           "shape":"PaginationToken",
@@ -1269,8 +1284,7 @@
         },
         "maxResults":{
           "shape":"ListOrdersRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return.</p>",
-          "box":true
+          "documentation":"<p>The maximum number of results to return.</p>"
         },
         "networkArn":{
           "shape":"Arn",
@@ -1442,6 +1456,10 @@
           "shape":"Position",
           "documentation":"<p>The position of the network resource.</p>"
         },
+        "returnInformation":{
+          "shape":"ReturnInformation",
+          "documentation":"<p>Information about a request to return the network resource.</p>"
+        },
         "serialNumber":{
           "shape":"String",
           "documentation":"<p>The serial number of the network resource.</p>"
@@ -1533,7 +1551,8 @@
         "AVAILABLE",
         "DELETING",
         "PENDING_RETURN",
-        "DELETED"
+        "DELETED",
+        "CREATING_SHIPPING_LABEL"
       ]
     },
     "NetworkResourceType":{
@@ -1755,6 +1774,28 @@
       },
       "exception":true
     },
+    "ReturnInformation":{
+      "type":"structure",
+      "members":{
+        "replacementOrderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replacement order.</p>"
+        },
+        "returnReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the return. If the return request did not include a reason for the return, this value is null.</p>"
+        },
+        "shippingAddress":{
+          "shape":"Address",
+          "documentation":"<p>The shipping address.</p>"
+        },
+        "shippingLabel":{
+          "shape":"String",
+          "documentation":"<p>The URL of the shipping label. The shipping label is available for download only if the status of the network resource is <code>PENDING_RETURN</code>. For more information, see <a href=\"https://docs.aws.amazon.com/private-networks/latest/userguide/radio-units.html#return-radio-unit\">Return a radio unit</a>.</p>"
+        }
+      },
+      "documentation":"<p>Information about a request to return a network resource.</p>"
+    },
     "SitePlan":{
       "type":"structure",
       "members":{
@@ -1768,6 +1809,45 @@
         }
       },
       "documentation":"<p>Information about a site plan.</p>"
+    },
+    "StartNetworkResourceUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "networkResourceArn",
+        "updateType"
+      ],
+      "members":{
+        "networkResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network resource.</p>"
+        },
+        "returnReason":{
+          "shape":"StartNetworkResourceUpdateRequestReturnReasonString",
+          "documentation":"<p>The reason for the return. Providing a reason for a return is optional.</p>"
+        },
+        "shippingAddress":{
+          "shape":"Address",
+          "documentation":"<p>The shipping address. If you don't provide a shipping address when replacing or returning a network resource, we use the address from the original order for the network resource.</p>"
+        },
+        "updateType":{
+          "shape":"UpdateType",
+          "documentation":"<p>The update type.</p> <ul> <li> <p> <code>REPLACE</code> - Submits a request to replace a defective radio unit. We provide a shipping label that you can use for the return process and we ship a replacement radio unit to you.</p> </li> <li> <p> <code>RETURN</code> - Submits a request to replace a radio unit that you no longer need. We provide a shipping label that you can use for the return process.</p> </li> </ul>"
+        }
+      }
+    },
+    "StartNetworkResourceUpdateRequestReturnReasonString":{
+      "type":"string",
+      "max":1000,
+      "min":0
+    },
+    "StartNetworkResourceUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "networkResource":{
+          "shape":"NetworkResource",
+          "documentation":"<p>The network resource.</p>"
+        }
+      }
     },
     "String":{"type":"string"},
     "TagKey":{
@@ -1929,6 +2009,13 @@
           "documentation":"<p> The network site tags. </p>"
         }
       }
+    },
+    "UpdateType":{
+      "type":"string",
+      "enum":[
+        "REPLACE",
+        "RETURN"
+      ]
     },
     "ValidationException":{
       "type":"structure",

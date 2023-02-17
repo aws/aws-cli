@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.74
+=======
+
+* api-change:``apprunner``: This release supports removing MaxSize limit for AutoScalingConfiguration.
+* api-change:``glue``: Release of Delta Lake Data Lake Format for Glue Studio Service
+
+
 1.27.73
 =======
 

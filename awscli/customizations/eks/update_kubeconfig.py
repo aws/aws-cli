@@ -242,7 +242,8 @@ class EKSClient(object):
         self._cluster_description = None
         self._globals = parsed_globals
 
-    def _get_cluster_description(self):
+    @property
+    def cluster_description(self):
         """
         Use an eks describe-cluster call to get the cluster description
         Cache the response in self._cluster_description.
@@ -276,10 +277,9 @@ class EKSClient(object):
         the previously obtained description.
         """
 
-        cert_data = self._get_cluster_description().get("certificateAuthority",
-                                                        {"data": ""})["data"]
-        endpoint = self._get_cluster_description().get("endpoint")
-        arn = self._get_cluster_description().get("arn")
+        cert_data = self.cluster_description.get("certificateAuthority", {}).get("data", "")
+        endpoint = self.cluster_description.get("endpoint")
+        arn = self.cluster_description.get("arn")
 
         return OrderedDict([
             ("cluster", OrderedDict([
@@ -294,9 +294,8 @@ class EKSClient(object):
         Return a user entry generated using
         the previously obtained description.
         """
-        cluster_description = self._get_cluster_description()
-        region = cluster_description.get("arn").split(":")[3]
-        outpost_config = cluster_description.get("outpostConfig")
+        region = self.cluster_description.get("arn").split(":")[3]
+        outpost_config = self.cluster_description.get("outpostConfig")
 
         if outpost_config is None:
             cluster_identification_parameter = "--cluster-name"
@@ -304,10 +303,10 @@ class EKSClient(object):
         else:
             # If cluster contains outpostConfig, use id for identification
             cluster_identification_parameter = "--cluster-id"
-            cluster_identification_value = cluster_description.get("id")
+            cluster_identification_value = self.cluster_description.get("id")
 
         generated_user = OrderedDict([
-            ("name", user_alias or self._get_cluster_description().get("arn", "")),
+            ("name", user_alias or self.cluster_description.get("arn", "")),
             ("user", OrderedDict([
                 ("exec", OrderedDict([
                     ("apiVersion", API_VERSION),

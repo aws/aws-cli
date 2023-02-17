@@ -220,7 +220,7 @@ class TestEKSClient(unittest.TestCase):
         self._client = EKSClient(self._session, "ExampleCluster", None)
 
     def test_get_cluster_description(self):
-        self.assertEqual(self._client._get_cluster_description(),
+        self.assertEqual(self._client.cluster_description,
                          describe_cluster_response()["cluster"])
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
@@ -230,8 +230,8 @@ class TestEKSClient(unittest.TestCase):
     def test_get_cluster_description_no_status(self):
         self._mock_client.describe_cluster.return_value = \
             describe_cluster_no_status_response()
-        self.assertRaises(EKSClusterError,
-                          self._client._get_cluster_description)
+        with self.assertRaises(EKSClusterError):
+            self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
@@ -276,8 +276,8 @@ class TestEKSClient(unittest.TestCase):
     def test_cluster_creating(self):
         self._mock_client.describe_cluster.return_value =\
                                            describe_cluster_creating_response()
-        self.assertRaises(EKSClusterError,
-                          self._client._get_cluster_description)
+        with self.assertRaises(EKSClusterError):
+            self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
@@ -286,8 +286,8 @@ class TestEKSClient(unittest.TestCase):
     def test_cluster_deleting(self):
         self._mock_client.describe_cluster.return_value =\
                                            describe_cluster_deleting_response()
-        self.assertRaises(EKSClusterError,
-                          self._client._get_cluster_description)
+        with self.assertRaises(EKSClusterError):
+            self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )

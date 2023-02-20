@@ -104,22 +104,35 @@ def _create_mock_session(config):
     return mock_session
 
 
+def _run_token_provider_test_case(provider, test_case):
+    expected_exception = test_case.get("expectedException")
+    if expected_exception is not None:
+        with pytest.raises(expected_exception):
+            auth_token = provider.load_token()
+        return
+
+    auth_token = provider.load_token()
+    if test_case["resolves"]:
+        assert auth_token is not None
+    else:
+        assert auth_token is None
+
+
 @parametrize(sso_provider_resolution_cases)
 def test_sso_token_provider_resolution(test_case):
     mock_session = _create_mock_session(test_case["config"])
     resolver = SSOTokenProvider(mock_session)
 
-    expected_exception = test_case.get("expectedException")
-    if expected_exception is not None:
-        with pytest.raises(expected_exception):
-            auth_token = resolver.load_token()
-        return
+    _run_token_provider_test_case(resolver, test_case)
 
-    auth_token = resolver.load_token()
-    if test_case["resolves"]:
-        assert auth_token is not None
-    else:
-        assert auth_token is None
+
+@parametrize(sso_provider_resolution_cases)
+def test_sso_token_provider_profile_name_overrides_session_profile(test_case):
+    mock_session = _create_mock_session(test_case["config"])
+    mock_session.get_config_variable.return_value = "default"
+    resolver = SSOTokenProvider(mock_session, profile_name='test')
+
+    _run_token_provider_test_case(resolver, test_case)
 
 
 sso_provider_refresh_cases = [

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.75
+=======
+
+* api-change:``auditmanager``: This release introduces a ServiceQuotaExceededException to the UpdateAssessmentFrameworkShare API operation.
+* api-change:``connect``: Reasons for failed diff has been approved by SDK Reviewer
+
+
 1.27.74
 =======
 

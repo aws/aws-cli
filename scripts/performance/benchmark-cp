@@ -1,14 +1,27 @@
 #!/usr/bin/env python
-from benchmark_utils import summarize, clean
-from benchmark_utils import get_default_argparser, get_transfer_command
-from benchmark_utils import create_random_subfolder, benchmark_command
 
+import argparse
+import shutil
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
-def benchmark_cp(args):
-    destination = args.destination
+from benchmark_utils import (benchmark_command, clean, get_default_argparser,
+                             get_transfer_command, summarize)
+
+TRANSFER_METHODS = ['cp', 'rsync', 's3']
+
+def copy_files(args):
+    """Copy files using the specified transfer method."""
+    destination = Path(args.destination)
     if args.recursive:
-        destination = create_random_subfolder(destination)
-    command = 'cp %s %s' % (args.source, destination)
+        with TemporaryDirectory() as tmpdir:
+            tmpdir_path = Path(tmpdir) / destination.name
+            shutil.copytree(args.source, tmpdir_path)
+            source_path = tmpdir_path
+    else:
+        source_path = Path(args.source)
+
+    command = f'{args.transfer_method} {source_path} {destination}'
     command = get_transfer_command(command, args.recursive, args.quiet)
 
     def cleanup():
@@ -16,13 +29,13 @@ def benchmark_cp(args):
             clean(destination, args.recursive)
 
     benchmark_command(
-        command, args.benchmark_script,  args.summarize_script,
+        command, args.benchmark_script, args.summarize_script,
         args.result_dir, args.num_iterations, args.dry_run,
         cleanup=cleanup
     )
 
 
-if __name__ == "__main__":
+def main():
     parser = get_default_argparser()
     parser.add_argument(
         '-s', '--source', required=True,
@@ -33,4 +46,22 @@ if __name__ == "__main__":
         help='A local path or s3 path. A directory will be created in this '
              'location to copy to in the case of a recursive transfer.'
     )
-    benchmark_cp(parser.parse_args())
+    parser.add_argument(
+        '-t', '--transfer-method', choices=TRANSFER_METHODS,
+        default='cp',
+        help='The transfer method to use. Defaults to "cp".'
+    )
+    args = parser.parse_args()
+
+    if args.transfer_method == 'cp':
+        copy_files(args)
+    elif args.transfer_method == 'rsync':
+        # TODO: implement rsync
+        pass
+    elif args.transfer_method == 's3':
+        # TODO: implement s3
+        pass
+
+
+if __name__ == "__main__":
+    main()

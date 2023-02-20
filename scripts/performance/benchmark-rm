@@ -1,22 +1,65 @@
 #!/usr/bin/env python
-from benchmark_utils import benchmark_command, get_transfer_command
-from benchmark_utils import backup, copy, clean, get_default_argparser
+import argparse
+import logging
+
+from benchmark_utils import (
+    benchmark_command,
+    get_transfer_command,
+    backup,
+    copy,
+    clean,
+)
 
 
 def benchmark_rm(args):
+    """
+    Benchmarks the `rm` command on an S3 path.
+
+    Args:
+        args: An argparse Namespace object containing the script arguments.
+    """
     command = get_transfer_command(
-        'rm %s' % args.target, args.recursive, args.quiet)
+        f'rm {args.target}', args.recursive, args.quiet)
     backup_path = backup(args.target, args.recursive)
 
     benchmark_command(
-        command, args.benchmark_script,  args.summarize_script,
-        args.result_dir, args.num_iterations, args.dry_run,
+        command,
+        args.benchmark_script,
+        args.summarize_script,
+        args.result_dir,
+        args.num_iterations,
+        args.dry_run,
         upkeep=lambda: copy(backup_path, args.target, args.recursive),
-        cleanup=lambda: clean(backup_path, args.recursive)
+        cleanup=lambda: clean(backup_path, args.recursive),
     )
 
 
-if __name__ == "__main__":
-    parser = get_default_argparser()
-    parser.add_argument('-t', '--target', required=True, help='An S3 path.')
-    benchmark_rm(parser.parse_args())
+if __name__ == '__main__':
+    # Set up logging
+    logging.basicConfig(level=logging.INFO)
+
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-t', '--target', required=True, help='An S3 path.')
+    parser.add_argument(
+        '-r', '--recursive', action='store_true', help='Remove directories recursively.')
+    parser.add_argument(
+        '-q', '--quiet', action='store_true', help='Suppress output messages.')
+    parser.add_argument(
+        '-s', '--benchmark-script', required=True, help='Path to the benchmark script.')
+    parser.add_argument(
+        '-m', '--summarize-script', required=True, help='Path to the summarize script.')
+    parser.add_argument(
+        '-o', '--result-dir', required=True, help='Path to the result directory.')
+    parser.add_argument(
+        '-n', '--num-iterations', type=int, default=1, help='Number of iterations to run.')
+    parser.add_argument(
+        '-d', '--dry-run', action='store_true', help='Dry run (don\'t actually run the command).')
+    args = parser.parse_args()
+
+    # Run benchmark
+    try:
+        benchmark_rm(args)
+    except Exception as e:
+        logging.exception(e)

@@ -237,9 +237,10 @@ class TestAssumeRole(BaseAssumeRoleTest):
         mock_instance.CANONICAL_NAME = provider_cls.CANONICAL_NAME
         return mock_instance
 
-    def create_session(self, profile=None):
+    def create_session(self, profile=None, sso_token_cache=None):
         session = StubbedSession(profile=profile)
-
+        if not sso_token_cache:
+            sso_token_cache = JSONFileCache(self.tempdir)
         # We have to set bogus credentials here or otherwise we'll trigger
         # an early credential chain resolution.
         sts = session.create_client(
@@ -259,7 +260,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
             ]),
             profile_provider_builder=ProfileProviderBuilder(
                 session,
-                sso_token_cache=JSONFileCache(self.tempdir),
+                sso_token_cache=sso_token_cache,
             ),
         )
         stubber = session.stub('sts')
@@ -555,7 +556,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         with self.assertRaises(InvalidConfigError):
             session.get_credentials()
 
-    def test_sso_source_profile(self):
+    def test_sso_source_profile_legacy(self):
         token_cache_key = 'f395038c92f1828cbb3991d2d6152d326b895606'
         cached_token = {
             'accessToken': 'a.token',
@@ -577,6 +578,68 @@ class TestAssumeRole(BaseAssumeRoleTest):
         self.write_config(config)
 
         session, sts_stubber = self.create_session(profile='A')
+        client_config = Config(
+            region_name='us-east-1',
+            signature_version=UNSIGNED,
+        )
+        sso_stubber = session.stub('sso', config=client_config)
+        sso_stubber.activate()
+        # The expiration needs to be in milliseconds
+        expiration = datetime2timestamp(self.some_future_time()) * 1000
+        sso_role_creds = self.create_random_credentials()
+        sso_role_response = {
+            'roleCredentials': {
+                'accessKeyId': sso_role_creds.access_key,
+                'secretAccessKey': sso_role_creds.secret_key,
+                'sessionToken': sso_role_creds.token,
+                'expiration': int(expiration),
+            }
+        }
+        sso_stubber.add_response('get_role_credentials', sso_role_response)
+
+        expected_creds = self.create_random_credentials()
+        assume_role_response = self.create_assume_role_response(expected_creds)
+        sts_stubber.add_response('assume_role', assume_role_response)
+
+        actual_creds = session.get_credentials()
+        self.assert_creds_equal(actual_creds, expected_creds)
+        sts_stubber.assert_no_pending_responses()
+        # Assert that the client was created with the credentials from the
+        # SSO get role credentials response
+        self.assertEqual(self.mock_client_creator.call_count, 1)
+        _, kwargs = self.mock_client_creator.call_args_list[0]
+        expected_kwargs = {
+            'aws_access_key_id': sso_role_creds.access_key,
+            'aws_secret_access_key': sso_role_creds.secret_key,
+            'aws_session_token': sso_role_creds.token,
+        }
+        self.assertEqual(kwargs, expected_kwargs)
+
+    def test_sso_source_profile(self):
+        token_cache_key = '32096c2e0eff33d844ee6d675407ace18289357d'
+        cached_token = {
+            'accessToken': 'C',
+            'expiresAt': TIME_IN_ONE_HOUR.strftime('%Y-%m-%dT%H:%M:%SZ'),
+        }
+        temp_cache = JSONFileCache(self.tempdir)
+        temp_cache[token_cache_key] = cached_token
+        config = (
+            '[profile A]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleA\n'
+            'source_profile = B\n'
+            '[profile B]\n'
+            'sso_session = C\n'
+            'sso_role_name = SSORole\n'
+            'sso_account_id = 1234567890\n'
+            '[sso-session C]\n'
+            'sso_region = us-east-1\n'
+            'sso_start_url = https://test.url/start\n'
+        )
+        self.write_config(config)
+
+        session, sts_stubber = self.create_session(
+            profile='A', sso_token_cache=temp_cache
+        )
         client_config = Config(
             region_name='us-east-1',
             signature_version=UNSIGNED,

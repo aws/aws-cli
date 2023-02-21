@@ -2045,7 +2045,8 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
         {"shape":"PermissionTypeMismatchException"}
-      ]
+      ],
+      "documentation":"<p>Retrieves partition metadata from the Data Catalog that contains unfiltered metadata.</p> <p>For IAM authorization, the public IAM action associated with this API is <code>glue:GetPartition</code>.</p>"
     },
     "GetUnfilteredPartitionsMetadata":{
       "name":"GetUnfilteredPartitionsMetadata",
@@ -2062,7 +2063,8 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
         {"shape":"PermissionTypeMismatchException"}
-      ]
+      ],
+      "documentation":"<p>Retrieves partition metadata from the Data Catalog that contains unfiltered metadata.</p> <p>For IAM authorization, the public IAM action associated with this API is <code>glue:GetPartitions</code>.</p>"
     },
     "GetUnfilteredTableMetadata":{
       "name":"GetUnfilteredTableMetadata",
@@ -2079,7 +2081,8 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
         {"shape":"PermissionTypeMismatchException"}
-      ]
+      ],
+      "documentation":"<p>Retrieves table metadata from the Data Catalog that contains unfiltered metadata.</p> <p>For IAM authorization, the public IAM action associated with this API is <code>glue:GetTable</code>.</p>"
     },
     "GetUserDefinedFunction":{
       "name":"GetUserDefinedFunction",
@@ -4567,6 +4570,37 @@
       "members":{
       }
     },
+    "CatalogDeltaSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Delta Lake data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalDeltaOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Delta Lake source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Delta Lake data source that is registered in the Glue Data Catalog.</p>"
+    },
     "CatalogEncryptionMode":{
       "type":"string",
       "enum":[
@@ -5111,7 +5145,7 @@
         },
         "S3CatalogHudiSource":{
           "shape":"S3CatalogHudiSource",
-          "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog. The Hudi data source must be stored in Amazon S3.</p>"
+          "documentation":"<p>Specifies a Hudi data source that is registered in the Glue Data Catalog. The data source must be stored in Amazon S3.</p>"
         },
         "CatalogHudiSource":{
           "shape":"CatalogHudiSource",
@@ -5129,7 +5163,27 @@
           "shape":"S3HudiDirectTarget",
           "documentation":"<p>Specifies a target that writes to a Hudi data source in Amazon S3.</p>"
         },
-        "DirectJDBCSource":{"shape":"DirectJDBCSource"}
+        "DirectJDBCSource":{"shape":"DirectJDBCSource"},
+        "S3CatalogDeltaSource":{
+          "shape":"S3CatalogDeltaSource",
+          "documentation":"<p>Specifies a Delta Lake data source that is registered in the Glue Data Catalog. The data source must be stored in Amazon S3.</p>"
+        },
+        "CatalogDeltaSource":{
+          "shape":"CatalogDeltaSource",
+          "documentation":"<p>Specifies a Delta Lake data source that is registered in the Glue Data Catalog.</p>"
+        },
+        "S3DeltaSource":{
+          "shape":"S3DeltaSource",
+          "documentation":"<p>Specifies a Delta Lake data source stored in Amazon S3.</p>"
+        },
+        "S3DeltaCatalogTarget":{
+          "shape":"S3DeltaCatalogTarget",
+          "documentation":"<p>Specifies a target that writes to a Delta Lake data source in the Glue Data Catalog.</p>"
+        },
+        "S3DeltaDirectTarget":{
+          "shape":"S3DeltaDirectTarget",
+          "documentation":"<p>Specifies a target that writes to a Delta Lake data source in Amazon S3.</p>"
+        }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
     },
@@ -5297,9 +5351,16 @@
     "ColumnRowFilter":{
       "type":"structure",
       "members":{
-        "ColumnName":{"shape":"NameString"},
-        "RowFilterExpression":{"shape":"PredicateString"}
-      }
+        "ColumnName":{
+          "shape":"NameString",
+          "documentation":"<p>A string containing the name of the column.</p>"
+        },
+        "RowFilterExpression":{
+          "shape":"PredicateString",
+          "documentation":"<p>A string containing the row-level filter expression.</p>"
+        }
+      },
+      "documentation":"<p>A filter that uses both column-level and row-level filtering.</p>"
     },
     "ColumnRowFilterList":{
       "type":"list",
@@ -5576,7 +5637,7 @@
         },
         "ConnectionProperties":{
           "shape":"ConnectionProperties",
-          "documentation":"<p>These key-value pairs define parameters for the connection:</p> <ul> <li> <p> <code>HOST</code> - The host URI: either the fully qualified domain name (FQDN) or the IPv4 address of the database host.</p> </li> <li> <p> <code>PORT</code> - The port number, between 1024 and 65535, of the port on which the database host is listening for database connections.</p> </li> <li> <p> <code>USER_NAME</code> - The name under which to log in to the database. The value string for <code>USER_NAME</code> is \"<code>USERNAME</code>\".</p> </li> <li> <p> <code>PASSWORD</code> - A password, if one is used, for the user name.</p> </li> <li> <p> <code>ENCRYPTED_PASSWORD</code> - When you enable connection password protection by setting <code>ConnectionPasswordEncryption</code> in the Data Catalog encryption settings, this field stores the encrypted password.</p> </li> <li> <p> <code>JDBC_DRIVER_JAR_URI</code> - The Amazon Simple Storage Service (Amazon S3) path of the JAR file that contains the JDBC driver to use.</p> </li> <li> <p> <code>JDBC_DRIVER_CLASS_NAME</code> - The class name of the JDBC driver to use.</p> </li> <li> <p> <code>JDBC_ENGINE</code> - The name of the JDBC engine to use.</p> </li> <li> <p> <code>JDBC_ENGINE_VERSION</code> - The version of the JDBC engine to use.</p> </li> <li> <p> <code>CONFIG_FILES</code> - (Reserved for future use.)</p> </li> <li> <p> <code>INSTANCE_ID</code> - The instance ID to use.</p> </li> <li> <p> <code>JDBC_CONNECTION_URL</code> - The URL for connecting to a JDBC data source.</p> </li> <li> <p> <code>JDBC_ENFORCE_SSL</code> - A Boolean string (true, false) specifying whether Secure Sockets Layer (SSL) with hostname matching is enforced for the JDBC connection on the client. The default is false.</p> </li> <li> <p> <code>CUSTOM_JDBC_CERT</code> - An Amazon S3 location specifying the customer's root certificate. Glue uses this root certificate to validate the customer’s certificate when connecting to the customer database. Glue only handles X.509 certificates. The certificate provided must be DER-encoded and supplied in Base64 encoding PEM format.</p> </li> <li> <p> <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code> - By default, this is <code>false</code>. Glue validates the Signature algorithm and Subject Public Key Algorithm for the customer certificate. The only permitted algorithms for the Signature algorithm are SHA256withRSA, SHA384withRSA or SHA512withRSA. For the Subject Public Key Algorithm, the key length must be at least 2048. You can set the value of this property to <code>true</code> to skip Glue’s validation of the customer certificate.</p> </li> <li> <p> <code>CUSTOM_JDBC_CERT_STRING</code> - A custom JDBC certificate string which is used for domain match or distinguished name match to prevent a man-in-the-middle attack. In Oracle database, this is used as the <code>SSL_SERVER_CERT_DN</code>; in Microsoft SQL Server, this is used as the <code>hostNameInCertificate</code>.</p> </li> <li> <p> <code>CONNECTION_URL</code> - The URL for connecting to a general (non-JDBC) data source.</p> </li> <li> <p> <code>SECRET_ID</code> - The secret ID used for the secret manager of credentials.</p> </li> <li> <p> <code>CONNECTOR_URL</code> - The connector URL for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>CONNECTOR_TYPE</code> - The connector type for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>CONNECTOR_CLASS_NAME</code> - The connector class name for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>KAFKA_BOOTSTRAP_SERVERS</code> - A comma-separated list of host and port pairs that are the addresses of the Apache Kafka brokers in a Kafka cluster to which a Kafka client will connect to and bootstrap itself.</p> </li> <li> <p> <code>KAFKA_SSL_ENABLED</code> - Whether to enable or disable SSL on an Apache Kafka connection. Default value is \"true\".</p> </li> <li> <p> <code>KAFKA_CUSTOM_CERT</code> - The Amazon S3 URL for the private CA cert file (.pem format). The default is an empty string.</p> </li> <li> <p> <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code> - Whether to skip the validation of the CA cert file or not. Glue validates for three algorithms: SHA256withRSA, SHA384withRSA and SHA512withRSA. Default value is \"false\".</p> </li> <li> <p> <code>KAFKA_CLIENT_KEYSTORE</code> - The Amazon S3 location of the client keystore file for Kafka client side authentication (Optional).</p> </li> <li> <p> <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The password to access the provided keystore (Optional).</p> </li> <li> <p> <code>KAFKA_CLIENT_KEY_PASSWORD</code> - A keystore can consist of multiple keys, so this is the password to access the client key to be used with the Kafka server side key (Optional).</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The encrypted version of the Kafka client keystore password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code> - The encrypted version of the Kafka client key password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>KAFKA_SASL_MECHANISM</code> - <code>\"SCRAM-SHA-512\"</code> or <code>\"GSSAPI\"</code>. These are the two supported <a href=\"https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml\">SASL Mechanisms</a>.</p> </li> <li> <p> <code>KAFKA_SASL_SCRAM_USERNAME</code> - A plaintext username used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p> </li> <li> <p> <code>KAFKA_SASL_SCRAM_PASSWORD</code> - A plaintext password used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code> - The encrypted version of the Kafka SASL SCRAM password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_KEYTAB</code> - The S3 location of a Kerberos <code>keytab</code> file. A keytab stores long-term keys for one or more principals. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html\">MIT Kerberos Documentation: Keytab</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code> - The S3 location of a Kerberos <code>krb5.conf</code> file. A krb5.conf stores Kerberos configuration information, such as the location of the KDC server. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html\">MIT Kerberos Documentation: krb5.conf</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_SERVICE</code> - The Kerberos service name, as set with <code>sasl.kerberos.service.name</code> in your <a href=\"https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name\">Kafka Configuration</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code> - The name of the Kerberos princial used by Glue. For more information, see <a href=\"https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig\">Kafka Documentation: Configuring Kafka Brokers</a>.</p> </li> </ul>"
+          "documentation":"<p>These key-value pairs define parameters for the connection:</p> <ul> <li> <p> <code>HOST</code> - The host URI: either the fully qualified domain name (FQDN) or the IPv4 address of the database host.</p> </li> <li> <p> <code>PORT</code> - The port number, between 1024 and 65535, of the port on which the database host is listening for database connections.</p> </li> <li> <p> <code>USER_NAME</code> - The name under which to log in to the database. The value string for <code>USER_NAME</code> is \"<code>USERNAME</code>\".</p> </li> <li> <p> <code>PASSWORD</code> - A password, if one is used, for the user name.</p> </li> <li> <p> <code>ENCRYPTED_PASSWORD</code> - When you enable connection password protection by setting <code>ConnectionPasswordEncryption</code> in the Data Catalog encryption settings, this field stores the encrypted password.</p> </li> <li> <p> <code>JDBC_DRIVER_JAR_URI</code> - The Amazon Simple Storage Service (Amazon S3) path of the JAR file that contains the JDBC driver to use.</p> </li> <li> <p> <code>JDBC_DRIVER_CLASS_NAME</code> - The class name of the JDBC driver to use.</p> </li> <li> <p> <code>JDBC_ENGINE</code> - The name of the JDBC engine to use.</p> </li> <li> <p> <code>JDBC_ENGINE_VERSION</code> - The version of the JDBC engine to use.</p> </li> <li> <p> <code>CONFIG_FILES</code> - (Reserved for future use.)</p> </li> <li> <p> <code>INSTANCE_ID</code> - The instance ID to use.</p> </li> <li> <p> <code>JDBC_CONNECTION_URL</code> - The URL for connecting to a JDBC data source.</p> </li> <li> <p> <code>JDBC_ENFORCE_SSL</code> - A Boolean string (true, false) specifying whether Secure Sockets Layer (SSL) with hostname matching is enforced for the JDBC connection on the client. The default is false.</p> </li> <li> <p> <code>CUSTOM_JDBC_CERT</code> - An Amazon S3 location specifying the customer's root certificate. Glue uses this root certificate to validate the customer’s certificate when connecting to the customer database. Glue only handles X.509 certificates. The certificate provided must be DER-encoded and supplied in Base64 encoding PEM format.</p> </li> <li> <p> <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code> - By default, this is <code>false</code>. Glue validates the Signature algorithm and Subject Public Key Algorithm for the customer certificate. The only permitted algorithms for the Signature algorithm are SHA256withRSA, SHA384withRSA or SHA512withRSA. For the Subject Public Key Algorithm, the key length must be at least 2048. You can set the value of this property to <code>true</code> to skip Glue’s validation of the customer certificate.</p> </li> <li> <p> <code>CUSTOM_JDBC_CERT_STRING</code> - A custom JDBC certificate string which is used for domain match or distinguished name match to prevent a man-in-the-middle attack. In Oracle database, this is used as the <code>SSL_SERVER_CERT_DN</code>; in Microsoft SQL Server, this is used as the <code>hostNameInCertificate</code>.</p> </li> <li> <p> <code>CONNECTION_URL</code> - The URL for connecting to a general (non-JDBC) data source.</p> </li> <li> <p> <code>SECRET_ID</code> - The secret ID used for the secret manager of credentials.</p> </li> <li> <p> <code>CONNECTOR_URL</code> - The connector URL for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>CONNECTOR_TYPE</code> - The connector type for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>CONNECTOR_CLASS_NAME</code> - The connector class name for a MARKETPLACE or CUSTOM connection.</p> </li> <li> <p> <code>KAFKA_BOOTSTRAP_SERVERS</code> - A comma-separated list of host and port pairs that are the addresses of the Apache Kafka brokers in a Kafka cluster to which a Kafka client will connect to and bootstrap itself.</p> </li> <li> <p> <code>KAFKA_SSL_ENABLED</code> - Whether to enable or disable SSL on an Apache Kafka connection. Default value is \"true\".</p> </li> <li> <p> <code>KAFKA_CUSTOM_CERT</code> - The Amazon S3 URL for the private CA cert file (.pem format). The default is an empty string.</p> </li> <li> <p> <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code> - Whether to skip the validation of the CA cert file or not. Glue validates for three algorithms: SHA256withRSA, SHA384withRSA and SHA512withRSA. Default value is \"false\".</p> </li> <li> <p> <code>KAFKA_CLIENT_KEYSTORE</code> - The Amazon S3 location of the client keystore file for Kafka client side authentication (Optional).</p> </li> <li> <p> <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The password to access the provided keystore (Optional).</p> </li> <li> <p> <code>KAFKA_CLIENT_KEY_PASSWORD</code> - A keystore can consist of multiple keys, so this is the password to access the client key to be used with the Kafka server side key (Optional).</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code> - The encrypted version of the Kafka client keystore password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code> - The encrypted version of the Kafka client key password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>KAFKA_SASL_MECHANISM</code> - <code>\"SCRAM-SHA-512\"</code>, <code>\"GSSAPI\"</code>, or <code>\"AWS_MSK_IAM\"</code>. These are the supported <a href=\"https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml\">SASL Mechanisms</a>.</p> </li> <li> <p> <code>KAFKA_SASL_SCRAM_USERNAME</code> - A plaintext username used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p> </li> <li> <p> <code>KAFKA_SASL_SCRAM_PASSWORD</code> - A plaintext password used to authenticate with the \"SCRAM-SHA-512\" mechanism.</p> </li> <li> <p> <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code> - The encrypted version of the Kafka SASL SCRAM password (if the user has the Glue encrypt passwords setting selected).</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_KEYTAB</code> - The S3 location of a Kerberos <code>keytab</code> file. A keytab stores long-term keys for one or more principals. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html\">MIT Kerberos Documentation: Keytab</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code> - The S3 location of a Kerberos <code>krb5.conf</code> file. A krb5.conf stores Kerberos configuration information, such as the location of the KDC server. For more information, see <a href=\"https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html\">MIT Kerberos Documentation: krb5.conf</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_SERVICE</code> - The Kerberos service name, as set with <code>sasl.kerberos.service.name</code> in your <a href=\"https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name\">Kafka Configuration</a>.</p> </li> <li> <p> <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code> - The name of the Kerberos princial used by Glue. For more information, see <a href=\"https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig\">Kafka Documentation: Configuring Kafka Brokers</a>.</p> </li> </ul>"
         },
         "PhysicalConnectionRequirements":{
           "shape":"PhysicalConnectionRequirements",
@@ -5607,7 +5668,7 @@
       "members":{
         "Name":{
           "shape":"NameString",
-          "documentation":"<p>The name of the connection.</p>"
+          "documentation":"<p>The name of the connection. Connection will not function as expected without a name.</p>"
         },
         "Description":{
           "shape":"DescriptionString",
@@ -5615,7 +5676,7 @@
         },
         "ConnectionType":{
           "shape":"ConnectionType",
-          "documentation":"<p>The type of the connection. Currently, these types are supported:</p> <ul> <li> <p> <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p> </li> <li> <p> <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p> </li> <li> <p> <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p> </li> <li> <p> <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p> </li> <li> <p> <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p> </li> <li> <p> <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p> </li> </ul> <p>SFTP is not supported.</p>"
+          "documentation":"<p>The type of the connection. Currently, these types are supported:</p> <ul> <li> <p> <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p> <p> <code>JDBC</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> <li> <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>. These parameters are used to configure SSL with JDBC.</p> </li> </ul> </li> <li> <p> <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p> <p> <code>KAFKA</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>KAFKA_BOOTSTRAP_SERVERS</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SSL_ENABLED</code>, <code>KAFKA_CUSTOM_CERT</code>, <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code>. These parameters are used to configure SSL with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_CLIENT_KEYSTORE</code>, <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>KAFKA_CLIENT_KEY_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code>. These parameters are used to configure TLS client configuration with SSL in <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_MECHANISM</code>. Can be specified as <code>SCRAM-SHA-512</code>, <code>GSSAPI</code>, or <code>AWS_MSK_IAM</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_SCRAM_USERNAME</code>, <code>KAFKA_SASL_SCRAM_PASSWORD</code>, <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code>. These parameters are used to configure SASL/SCRAM-SHA-512 authentication with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_GSSAPI_KEYTAB</code>, <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code>, <code>KAFKA_SASL_GSSAPI_SERVICE</code>, <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code>. These parameters are used to configure SASL/GSSAPI authentication with <code>KAFKA</code>.</p> </li> </ul> </li> <li> <p> <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p> <p> <code>MONGODB</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p> <p> <code>NETWORK</code> Connections do not require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.</p> </li> <li> <p> <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p> <p> <code>MARKETPLACE</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTOR_TYPE</code>, <code>CONNECTOR_URL</code>, <code>CONNECTOR_CLASS_NAME</code>, <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required for <code>JDBC</code> <code>CONNECTOR_TYPE</code> connections: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p> </li> </ul> <p> <code>SFTP</code> is not supported.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue, consult <a href=\"https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html\">Glue connection properties</a>.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue Studio, consult <a href=\"https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html\">Using connectors and connections</a>.</p>"
         },
         "MatchCriteria":{
           "shape":"MatchCriteria",
@@ -7914,7 +7975,7 @@
         },
         "CreateTableDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
-          "documentation":"<p>Creates a set of default permissions on the table for principals. </p>"
+          "documentation":"<p>Creates a set of default permissions on the table for principals. Used by Lake Formation. Not used in the normal course of Glue operations.</p>"
         },
         "TargetDatabase":{
           "shape":"DatabaseIdentifier",
@@ -7963,7 +8024,7 @@
         },
         "CreateTableDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
-          "documentation":"<p>Creates a set of default permissions on the table for principals. </p>"
+          "documentation":"<p>Creates a set of default permissions on the table for principals. Used by Lake Formation. Not used in the normal course of Glue operations.</p>"
         },
         "TargetDatabase":{
           "shape":"DatabaseIdentifier",
@@ -8664,6 +8725,13 @@
         }
       },
       "documentation":"<p>Specifies a Delta data store to crawl one or more Delta tables.</p>"
+    },
+    "DeltaTargetCompressionType":{
+      "type":"string",
+      "enum":[
+        "uncompressed",
+        "snappy"
+      ]
     },
     "DeltaTargetList":{
       "type":"list",
@@ -11602,20 +11670,47 @@
         "SupportedPermissionTypes"
       ],
       "members":{
-        "CatalogId":{"shape":"CatalogIdString"},
-        "DatabaseName":{"shape":"NameString"},
-        "TableName":{"shape":"NameString"},
-        "PartitionValues":{"shape":"ValueStringList"},
-        "AuditContext":{"shape":"AuditContext"},
-        "SupportedPermissionTypes":{"shape":"PermissionTypeList"}
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The catalog ID where the partition resides.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>(Required) Specifies the name of a database that contains the partition.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>(Required) Specifies the name of a table that contains the partition.</p>"
+        },
+        "PartitionValues":{
+          "shape":"ValueStringList",
+          "documentation":"<p>(Required) A list of partition key values.</p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>A structure containing Lake Formation audit context information.</p>"
+        },
+        "SupportedPermissionTypes":{
+          "shape":"PermissionTypeList",
+          "documentation":"<p>(Required) A list of supported permission types. </p>"
+        }
       }
     },
     "GetUnfilteredPartitionMetadataResponse":{
       "type":"structure",
       "members":{
-        "Partition":{"shape":"Partition"},
-        "AuthorizedColumns":{"shape":"NameStringList"},
-        "IsRegisteredWithLakeFormation":{"shape":"Boolean"}
+        "Partition":{
+          "shape":"Partition",
+          "documentation":"<p>A Partition object containing the partition metadata.</p>"
+        },
+        "AuthorizedColumns":{
+          "shape":"NameStringList",
+          "documentation":"<p>A list of column names that the user has been granted access to.</p>"
+        },
+        "IsRegisteredWithLakeFormation":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the partition location is registered with Lake Formation.</p>"
+        }
       }
     },
     "GetUnfilteredPartitionsMetadataRequest":{
@@ -11627,22 +11722,55 @@
         "SupportedPermissionTypes"
       ],
       "members":{
-        "CatalogId":{"shape":"CatalogIdString"},
-        "DatabaseName":{"shape":"NameString"},
-        "TableName":{"shape":"NameString"},
-        "Expression":{"shape":"PredicateString"},
-        "AuditContext":{"shape":"AuditContext"},
-        "SupportedPermissionTypes":{"shape":"PermissionTypeList"},
-        "NextToken":{"shape":"Token"},
-        "Segment":{"shape":"Segment"},
-        "MaxResults":{"shape":"PageSize"}
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the partitions in question reside. If none is provided, the AWS account ID is used by default. </p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the catalog database where the partitions reside.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table that contains the partition.</p>"
+        },
+        "Expression":{
+          "shape":"PredicateString",
+          "documentation":"<p>An expression that filters the partitions to be returned.</p> <p>The expression uses SQL syntax similar to the SQL <code>WHERE</code> filter clause. The SQL statement parser <a href=\"http://jsqlparser.sourceforge.net/home.php\">JSQLParser</a> parses the expression. </p> <p> <i>Operators</i>: The following are the operators that you can use in the <code>Expression</code> API call:</p> <dl> <dt>=</dt> <dd> <p>Checks whether the values of the two operands are equal; if yes, then the condition becomes true.</p> <p>Example: Assume 'variable a' holds 10 and 'variable b' holds 20. </p> <p>(a = b) is not true.</p> </dd> <dt>&lt; &gt;</dt> <dd> <p>Checks whether the values of two operands are equal; if the values are not equal, then the condition becomes true.</p> <p>Example: (a &lt; &gt; b) is true.</p> </dd> <dt>&gt;</dt> <dd> <p>Checks whether the value of the left operand is greater than the value of the right operand; if yes, then the condition becomes true.</p> <p>Example: (a &gt; b) is not true.</p> </dd> <dt>&lt;</dt> <dd> <p>Checks whether the value of the left operand is less than the value of the right operand; if yes, then the condition becomes true.</p> <p>Example: (a &lt; b) is true.</p> </dd> <dt>&gt;=</dt> <dd> <p>Checks whether the value of the left operand is greater than or equal to the value of the right operand; if yes, then the condition becomes true.</p> <p>Example: (a &gt;= b) is not true.</p> </dd> <dt>&lt;=</dt> <dd> <p>Checks whether the value of the left operand is less than or equal to the value of the right operand; if yes, then the condition becomes true.</p> <p>Example: (a &lt;= b) is true.</p> </dd> <dt>AND, OR, IN, BETWEEN, LIKE, NOT, IS NULL</dt> <dd> <p>Logical operators.</p> </dd> </dl> <p> <i>Supported Partition Key Types</i>: The following are the supported partition keys.</p> <ul> <li> <p> <code>string</code> </p> </li> <li> <p> <code>date</code> </p> </li> <li> <p> <code>timestamp</code> </p> </li> <li> <p> <code>int</code> </p> </li> <li> <p> <code>bigint</code> </p> </li> <li> <p> <code>long</code> </p> </li> <li> <p> <code>tinyint</code> </p> </li> <li> <p> <code>smallint</code> </p> </li> <li> <p> <code>decimal</code> </p> </li> </ul> <p>If an type is encountered that is not valid, an exception is thrown. </p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>A structure containing Lake Formation audit context information.</p>"
+        },
+        "SupportedPermissionTypes":{
+          "shape":"PermissionTypeList",
+          "documentation":"<p>A list of supported permission types. </p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is not the first call to retrieve these partitions.</p>"
+        },
+        "Segment":{
+          "shape":"Segment",
+          "documentation":"<p>The segment of the table's partitions to scan in this request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of partitions to return in a single response.</p>"
+        }
       }
     },
     "GetUnfilteredPartitionsMetadataResponse":{
       "type":"structure",
       "members":{
-        "UnfilteredPartitions":{"shape":"UnfilteredPartitionList"},
-        "NextToken":{"shape":"Token"}
+        "UnfilteredPartitions":{
+          "shape":"UnfilteredPartitionList",
+          "documentation":"<p>A list of requested partitions.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if the returned list of partitions does not include the last one.</p>"
+        }
       }
     },
     "GetUnfilteredTableMetadataRequest":{
@@ -11654,20 +11782,47 @@
         "SupportedPermissionTypes"
       ],
       "members":{
-        "CatalogId":{"shape":"CatalogIdString"},
-        "DatabaseName":{"shape":"NameString"},
-        "Name":{"shape":"NameString"},
-        "AuditContext":{"shape":"AuditContext"},
-        "SupportedPermissionTypes":{"shape":"PermissionTypeList"}
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The catalog ID where the table resides.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>(Required) Specifies the name of a database that contains the table.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>(Required) Specifies the name of a table for which you are requesting metadata.</p>"
+        },
+        "AuditContext":{
+          "shape":"AuditContext",
+          "documentation":"<p>A structure containing Lake Formation audit context information.</p>"
+        },
+        "SupportedPermissionTypes":{
+          "shape":"PermissionTypeList",
+          "documentation":"<p>(Required) A list of supported permission types. </p>"
+        }
       }
     },
     "GetUnfilteredTableMetadataResponse":{
       "type":"structure",
       "members":{
-        "Table":{"shape":"Table"},
-        "AuthorizedColumns":{"shape":"NameStringList"},
-        "IsRegisteredWithLakeFormation":{"shape":"Boolean"},
-        "CellFilters":{"shape":"ColumnRowFilterList"}
+        "Table":{
+          "shape":"Table",
+          "documentation":"<p>A Table object containing the table metadata.</p>"
+        },
+        "AuthorizedColumns":{
+          "shape":"NameStringList",
+          "documentation":"<p>A list of column names that the user has been granted access to.</p>"
+        },
+        "IsRegisteredWithLakeFormation":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the partition location is registered with Lake Formation.</p>"
+        },
+        "CellFilters":{
+          "shape":"ColumnRowFilterList",
+          "documentation":"<p>A list of column row filters.</p>"
+        }
       }
     },
     "GetUserDefinedFunctionRequest":{
@@ -15806,6 +15961,37 @@
         }
       }
     },
+    "S3CatalogDeltaSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Database",
+        "Table"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Delta Lake data source.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to read from.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to read from.</p>"
+        },
+        "AdditionalDeltaOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Delta Lake source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Delta Lake data source that is registered in the Glue Data Catalog. The data source must be stored in Amazon S3.</p>"
+    },
     "S3CatalogHudiSource":{
       "type":"structure",
       "required":[
@@ -15991,6 +16177,121 @@
         }
       },
       "documentation":"<p>Specifies a command-separated value (CSV) data store stored in Amazon S3.</p>"
+    },
+    "S3DeltaCatalogTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Table",
+        "Database"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Table":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the table in the database to write to.</p>"
+        },
+        "Database":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The name of the database to write to.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the connector.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"CatalogSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that writes to a Delta Lake data source in the Glue Data Catalog.</p>"
+    },
+    "S3DeltaDirectTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Path",
+        "Compression",
+        "Format"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data target.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        },
+        "PartitionKeys":{
+          "shape":"GlueStudioPathList",
+          "documentation":"<p>Specifies native partitioning using a sequence of keys.</p>"
+        },
+        "Path":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>The Amazon S3 path of your Delta Lake data source to write to.</p>"
+        },
+        "Compression":{
+          "shape":"DeltaTargetCompressionType",
+          "documentation":"<p>Specifies how the data is compressed. This is generally not necessary if the data has a standard file extension. Possible values are <code>\"gzip\"</code> and <code>\"bzip\"</code>).</p>"
+        },
+        "Format":{
+          "shape":"TargetFormat",
+          "documentation":"<p>Specifies the data output format for the target.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options for the connector.</p>"
+        },
+        "SchemaChangePolicy":{
+          "shape":"DirectSchemaChangePolicy",
+          "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target that writes to a Delta Lake data source in Amazon S3.</p>"
+    },
+    "S3DeltaSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Paths"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Delta Lake source.</p>"
+        },
+        "Paths":{
+          "shape":"EnclosedInStringProperties",
+          "documentation":"<p>A list of the Amazon S3 paths to read from.</p>"
+        },
+        "AdditionalDeltaOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional connection options.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"S3DirectSourceAdditionalOptions",
+          "documentation":"<p>Specifies additional options for the connector.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies the data schema for the Delta Lake source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Delta Lake data source stored in Amazon S3.</p>"
     },
     "S3DirectSourceAdditionalOptions":{
       "type":"structure",
@@ -17948,15 +18249,15 @@
         },
         "ViewOriginalText":{
           "shape":"ViewTextString",
-          "documentation":"<p>If the table is a view, the original text of the view; otherwise <code>null</code>.</p>"
+          "documentation":"<p>Included for Apache Hive compatibility. Not used in the normal course of Glue operations. If the table is a <code>VIRTUAL_VIEW</code>, certain Athena configuration encoded in base64.</p>"
         },
         "ViewExpandedText":{
           "shape":"ViewTextString",
-          "documentation":"<p>If the table is a view, the expanded text of the view; otherwise <code>null</code>.</p>"
+          "documentation":"<p>Included for Apache Hive compatibility. Not used in the normal course of Glue operations.</p>"
         },
         "TableType":{
           "shape":"TableTypeString",
-          "documentation":"<p>The type of this table (<code>EXTERNAL_TABLE</code>, <code>VIRTUAL_VIEW</code>, etc.).</p>"
+          "documentation":"<p>The type of this table. Glue will create tables with the <code>EXTERNAL_TABLE</code> type. Other services, such as Athena, may create tables with additional table types. </p> <p>Glue related table types:</p> <dl> <dt>EXTERNAL_TABLE</dt> <dd> <p>Hive compatible attribute - indicates a non-Hive managed table.</p> </dd> <dt>GOVERNED</dt> <dd> <p>Used by Lake Formation. The Glue Data Catalog understands <code>GOVERNED</code>.</p> </dd> </dl>"
         },
         "Parameters":{
           "shape":"ParametersMap",
@@ -18035,7 +18336,7 @@
         },
         "Owner":{
           "shape":"NameString",
-          "documentation":"<p>The table owner.</p>"
+          "documentation":"<p>The table owner. Included for Apache Hive compatibility. Not used in the normal course of Glue operations.</p>"
         },
         "LastAccessTime":{
           "shape":"Timestamp",
@@ -18059,15 +18360,15 @@
         },
         "ViewOriginalText":{
           "shape":"ViewTextString",
-          "documentation":"<p>If the table is a view, the original text of the view; otherwise <code>null</code>.</p>"
+          "documentation":"<p>Included for Apache Hive compatibility. Not used in the normal course of Glue operations. If the table is a <code>VIRTUAL_VIEW</code>, certain Athena configuration encoded in base64.</p>"
         },
         "ViewExpandedText":{
           "shape":"ViewTextString",
-          "documentation":"<p>If the table is a view, the expanded text of the view; otherwise <code>null</code>.</p>"
+          "documentation":"<p>Included for Apache Hive compatibility. Not used in the normal course of Glue operations.</p>"
         },
         "TableType":{
           "shape":"TableTypeString",
-          "documentation":"<p>The type of this table (<code>EXTERNAL_TABLE</code>, <code>VIRTUAL_VIEW</code>, etc.).</p>"
+          "documentation":"<p>The type of this table. Glue will create tables with the <code>EXTERNAL_TABLE</code> type. Other services, such as Athena, may create tables with additional table types. </p> <p>Glue related table types:</p> <dl> <dt>EXTERNAL_TABLE</dt> <dd> <p>Hive compatible attribute - indicates a non-Hive managed table.</p> </dd> <dt>GOVERNED</dt> <dd> <p>Used by Lake Formation. The Glue Data Catalog understands <code>GOVERNED</code>.</p> </dd> </dl>"
         },
         "Parameters":{
           "shape":"ParametersMap",
@@ -18183,7 +18484,8 @@
         "avro",
         "orc",
         "parquet",
-        "hudi"
+        "hudi",
+        "delta"
       ]
     },
     "TaskRun":{
@@ -18660,10 +18962,20 @@
     "UnfilteredPartition":{
       "type":"structure",
       "members":{
-        "Partition":{"shape":"Partition"},
-        "AuthorizedColumns":{"shape":"NameStringList"},
-        "IsRegisteredWithLakeFormation":{"shape":"Boolean"}
-      }
+        "Partition":{
+          "shape":"Partition",
+          "documentation":"<p>The partition object.</p>"
+        },
+        "AuthorizedColumns":{
+          "shape":"NameStringList",
+          "documentation":"<p>The list of columns the user has permissions to access.</p>"
+        },
+        "IsRegisteredWithLakeFormation":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value indicating that the partition location is registered with Lake Formation.</p>"
+        }
+      },
+      "documentation":"<p>A partition that contains unfiltered metadata.</p>"
     },
     "UnfilteredPartitionList":{
       "type":"list",

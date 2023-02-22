@@ -20,28 +20,17 @@ from tests.backends.build_system.integration import VEnvWorkspace
 
 
 class TestBuildBackend(BaseArtifactTest):
-    def test_exe_with_deps(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("portable-exe", download_deps=True)
+    def test_exe_with_deps(self, exe_deps: VEnvWorkspace):
+        self.assert_built_exe_is_correct(exe_deps.cli_path)
 
-        self.assert_built_exe_is_correct(workspace.cli_path)
+    def test_exe_without_deps(self, exe_no_deps: VEnvWorkspace):
+        self.assert_built_exe_is_correct(exe_no_deps.cli_path)
 
-    def test_exe_without_deps(self, workspace: VEnvWorkspace):
-        workspace.install_dependencies()
-        workspace.install_pyinstaller()
-        workspace.call_build_system("portable-exe", download_deps=False)
+    def test_venv_with_deps(self, sdist_deps: VEnvWorkspace):
+        self.assert_built_venv_is_correct(sdist_deps.build_path)
 
-        self.assert_built_exe_is_correct(workspace.cli_path)
-
-    def test_venv_with_deps(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("system-sandbox", download_deps=True)
-
-        self.assert_built_venv_is_correct(workspace.build_path)
-
-    def test_venv_without_deps(self, workspace: VEnvWorkspace):
-        workspace.install_dependencies()
-        workspace.call_build_system("system-sandbox", download_deps=False)
-
-        self.assert_built_venv_is_correct(workspace.build_path)
+    def test_venv_without_deps(self, sdist_no_deps: VEnvWorkspace):
+        self.assert_built_venv_is_correct(sdist_no_deps.build_path)
 
 
 class TestBuildBackendFailureCases:
@@ -61,55 +50,51 @@ class TestBuildBackendFailureCases:
 
 
 class TestInstall(BaseArtifactTest):
-    def test_install_exe(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("portable-exe", download_deps=True)
-        workspace.call_install(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+    def test_install_exe(self, exe_deps: VEnvWorkspace):
+        exe_deps.call_install(
+            bin_path=exe_deps.bin_path,
+            lib_path=exe_deps.lib_path,
         )
 
-        self.assert_installed_exe_is_correct(workspace.bin_path)
+        self.assert_installed_exe_is_correct(exe_deps.bin_path)
 
-    def test_install_venv(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("system-sandbox", download_deps=True)
-        workspace.call_install(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+    def test_install_venv(self, sdist_deps: VEnvWorkspace):
+        sdist_deps.call_install(
+            bin_path=sdist_deps.bin_path,
+            lib_path=sdist_deps.lib_path,
         )
 
         self.assert_installed_venv_is_correct(
-            workspace.bin_path,
-            workspace.lib_path,
+            sdist_deps.bin_path,
+            sdist_deps.lib_path,
         )
 
 
 class TestUninstall(BaseArtifactTest):
-    def test_uninstall_exe(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("portable-exe", download_deps=True)
-        workspace.call_install(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+    def test_uninstall_exe(self, exe_deps: VEnvWorkspace):
+        exe_deps.call_install(
+            bin_path=exe_deps.bin_path,
+            lib_path=exe_deps.lib_path,
         )
 
-        workspace.call_uninstall(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+        exe_deps.call_uninstall(
+            bin_path=exe_deps.bin_path,
+            lib_path=exe_deps.lib_path,
         )
 
-        assert os.listdir(workspace.bin_path) == []
-        assert os.listdir(workspace.lib_path) == []
+        assert os.listdir(exe_deps.bin_path) == []
+        assert os.listdir(exe_deps.lib_path) == []
 
-    def test_uninstall_venv(self, workspace: VEnvWorkspace):
-        workspace.call_build_system("system-sandbox", download_deps=True)
-        workspace.call_install(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+    def test_uninstall_venv(self, sdist_deps: VEnvWorkspace):
+        sdist_deps.call_install(
+            bin_path=sdist_deps.bin_path,
+            lib_path=sdist_deps.lib_path,
         )
 
-        workspace.call_uninstall(
-            bin_path=workspace.bin_path,
-            lib_path=workspace.lib_path,
+        sdist_deps.call_uninstall(
+            bin_path=sdist_deps.bin_path,
+            lib_path=sdist_deps.lib_path,
         )
 
-        assert os.listdir(workspace.bin_path) == []
-        assert os.listdir(workspace.lib_path) == []
+        assert os.listdir(sdist_deps.bin_path) == []
+        assert os.listdir(sdist_deps.lib_path) == []

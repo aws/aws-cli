@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.77
+=======
+
+* api-change:``chime-sdk-voice``: This release introduces support for Voice Connector media metrics in the Amazon Chime SDK Voice namespace
+* api-change:``cloudfront``: CloudFront now supports block lists in origin request policies so that you can forward all headers, cookies, or query string from viewer requests to the origin *except* for those specified in the block list.
+* api-change:``datasync``: AWS DataSync has relaxed the minimum length constraint of AccessKey for Object Storage locations to 1.
+* api-change:``opensearch``: This release lets customers configure Off-peak window and software update related properties for a new/existing domain. It enhances the capabilities of StartServiceSoftwareUpdate API; adds 2 new APIs - ListScheduledActions & UpdateScheduledAction; and allows Auto-tune to make use of Off-peak window.
+* api-change:``rum``: CloudWatch RUM now supports CloudWatch Custom Metrics
+* api-change:``ssm``: Document only update for Feb 2023
+
+
 1.27.76
 =======
 

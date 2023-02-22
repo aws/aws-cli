@@ -29,7 +29,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Adds the resource mapping for the draft application version.</p>"
+      "documentation":"<p>Adds the resource mapping for the draft application version. You can also update an existing resource mapping to a new physical resource.</p>"
     },
     "CreateApp":{
       "name":"CreateApp",
@@ -49,7 +49,47 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a Resilience Hub application. A Resilience Hub application is a collection of Amazon Web Services resources structured to prevent and recover Amazon Web Services application disruptions. To describe a Resilience Hub application, you provide an application name, resources from one or more–up to five–CloudFormation stacks, and an appropriate resiliency policy.</p> <p>After you create a Resilience Hub application, you publish it so that you can run a resiliency assessment on it. You can then use recommendations from the assessment to improve resiliency by running another assessment, comparing results, and then iterating the process until you achieve your goals for recovery time objective (RTO) and recovery point objective (RPO).</p>"
+      "documentation":"<p>Creates an AWS Resilience Hub application. An AWS Resilience Hub application is a collection of Amazon Web Services resources structured to prevent and recover Amazon Web Services application disruptions. To describe a AWS Resilience Hub application, you provide an application name, resources from one or more–up to five–CloudFormation stacks, and an appropriate resiliency policy.</p> <p>After you create an AWS Resilience Hub application, you publish it so that you can run a resiliency assessment on it. You can then use recommendations from the assessment to improve resiliency by running another assessment, comparing results, and then iterating the process until you achieve your goals for recovery time objective (RTO) and recovery point objective (RPO).</p>"
+    },
+    "CreateAppVersionAppComponent":{
+      "name":"CreateAppVersionAppComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/create-app-version-app-component",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAppVersionAppComponentRequest"},
+      "output":{"shape":"CreateAppVersionAppComponentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a new Application Component in the AWS Resilience Hub application.</p> <note> <p>This API updates the AWS Resilience Hub application draft version. To use this Application Component for running assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </note>"
+    },
+    "CreateAppVersionResource":{
+      "name":"CreateAppVersionResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/create-app-version-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAppVersionResourceRequest"},
+      "output":{"shape":"CreateAppVersionResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Adds a resource to the AWS Resilience Hub applicationand assigns it to the specified Application Components. If you specify a new Application Component, AWS Resilience Hub will automatically create the Application Component.</p> <note> <ul> <li> <p>This action has no effect outside AWS Resilience Hub.</p> </li> <li> <p>This API updates the AWS Resilience Hub application draft version. To use this resource for running resiliency assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </li> <li> <p>To update application version with new <code>physicalResourceID</code>, you must call <code>ResolveAppVersionResources</code> API.</p> </li> </ul> </note>"
     },
     "CreateRecommendationTemplate":{
       "name":"CreateRecommendationTemplate",
@@ -64,11 +104,12 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a new recommendation template.</p>"
+      "documentation":"<p>Creates a new recommendation template for the AWS Resilience Hub application.</p>"
     },
     "CreateResiliencyPolicy":{
       "name":"CreateResiliencyPolicy",
@@ -125,6 +166,63 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes an AWS Resilience Hub application assessment. This is a destructive action that can't be undone.</p>"
+    },
+    "DeleteAppInputSource":{
+      "name":"DeleteAppInputSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-app-input-source",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAppInputSourceRequest"},
+      "output":{"shape":"DeleteAppInputSourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the input source and all of its imported resources from the AWS Resilience Hub application.</p>"
+    },
+    "DeleteAppVersionAppComponent":{
+      "name":"DeleteAppVersionAppComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-app-version-app-component",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAppVersionAppComponentRequest"},
+      "output":{"shape":"DeleteAppVersionAppComponentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an Application Component from the AWS Resilience Hub application.</p> <note> <ul> <li> <p>This API updates the AWS Resilience Hub application draft version. To use this Application Component for running assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </li> <li> <p>You will not be able to delete an Application Component if it has resources associated with it.</p> </li> </ul> </note>"
+    },
+    "DeleteAppVersionResource":{
+      "name":"DeleteAppVersionResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-app-version-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAppVersionResourceRequest"},
+      "output":{"shape":"DeleteAppVersionResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a resource from the AWS Resilience Hub application.</p> <note> <ul> <li> <p>You can only delete a manually added resource. To exclude non-manually added resources, use the <code>UpdateAppVersionResource</code> API.</p> </li> <li> <p>This action has no effect outside AWS Resilience Hub.</p> </li> <li> <p>This API updates the AWS Resilience Hub application draft version. To use this resource for running resiliency assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </li> </ul> </note>"
     },
     "DeleteRecommendationTemplate":{
       "name":"DeleteRecommendationTemplate",
@@ -199,6 +297,62 @@
       ],
       "documentation":"<p>Describes an assessment for an AWS Resilience Hub application.</p>"
     },
+    "DescribeAppVersion":{
+      "name":"DescribeAppVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-app-version",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppVersionRequest"},
+      "output":{"shape":"DescribeAppVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the AWS Resilience Hub application version.</p>"
+    },
+    "DescribeAppVersionAppComponent":{
+      "name":"DescribeAppVersionAppComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-app-version-app-component",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppVersionAppComponentRequest"},
+      "output":{"shape":"DescribeAppVersionAppComponentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an Application Component in the AWS Resilience Hub application.</p>"
+    },
+    "DescribeAppVersionResource":{
+      "name":"DescribeAppVersionResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-app-version-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppVersionResourceRequest"},
+      "output":{"shape":"DescribeAppVersionResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes a resource of the AWS Resilience Hub application.</p> <note> <p>This API accepts only one of the following parameters to descibe the resource:</p> <ul> <li> <p> <code>resourceName</code> </p> </li> <li> <p> <code>logicalResourceId</code> </p> </li> <li> <p> <code>physicalResourceId</code> (Along with <code>physicalResourceId</code>, you can also provide <code>awsAccountId</code>, and <code>awsRegion</code>)</p> </li> </ul> </note>"
+    },
     "DescribeAppVersionResourcesResolutionStatus":{
       "name":"DescribeAppVersionResourcesResolutionStatus",
       "http":{
@@ -233,7 +387,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes details about an AWS Resilience Hub </p>"
+      "documentation":"<p>Describes details about an AWS Resilience Hub application.</p>"
     },
     "DescribeDraftAppVersionResourcesImportStatus":{
       "name":"DescribeDraftAppVersionResourcesImportStatus",
@@ -251,7 +405,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes the status of importing resources to an application version.</p>"
+      "documentation":"<p>Describes the status of importing resources to an application version.</p> <note> <p>If you get a 404 error with <code>ResourceImportStatusNotFoundAppMetadataException</code>, you must call <code>importResourcesToDraftAppVersion</code> after creating the application and before calling <code>describeDraftAppVersionResourcesImportStatus</code> to obtain the status.</p> </note>"
     },
     "DescribeResiliencyPolicy":{
       "name":"DescribeResiliencyPolicy",
@@ -288,7 +442,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Imports resources from sources such as a CloudFormation stack, resource-groups, or application registry app to a draft application version.</p>"
+      "documentation":"<p>Imports resources to AWS Resilience Hub application draft version from different input sources. For more information about the input sources supported by AWS Resilience Hub, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/discover-structure.html\">Discover the structure and describe your Resilience Hub application</a>.</p>"
     },
     "ListAlarmRecommendations":{
       "name":"ListAlarmRecommendations",
@@ -306,7 +460,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the alarm recommendations for a AWS Resilience Hub application.</p>"
+      "documentation":"<p>Lists the alarm recommendations for an AWS Resilience Hub application.</p>"
     },
     "ListAppAssessments":{
       "name":"ListAppAssessments",
@@ -342,7 +496,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the compliances for an AWS Resilience Hub component.</p>"
+      "documentation":"<p>Lists the compliances for an AWS Resilience Hub Application Component.</p>"
     },
     "ListAppComponentRecommendations":{
       "name":"ListAppComponentRecommendations",
@@ -360,7 +514,44 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the recommendations for an AWS Resilience Hub component.</p>"
+      "documentation":"<p>Lists the recommendations for an AWS Resilience Hub Application Component.</p>"
+    },
+    "ListAppInputSources":{
+      "name":"ListAppInputSources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-app-input-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppInputSourcesRequest"},
+      "output":{"shape":"ListAppInputSourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all the input sources of the AWS Resilience Hub application. For more information about the input sources supported by AWS Resilience Hub, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/discover-structure.html\">Discover the structure and describe your Resilience Hub application</a>.</p>"
+    },
+    "ListAppVersionAppComponents":{
+      "name":"ListAppVersionAppComponents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-app-version-app-components",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppVersionAppComponentsRequest"},
+      "output":{"shape":"ListAppVersionAppComponentsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all the Application Components in the AWS Resilience Hub application.</p>"
     },
     "ListAppVersionResourceMappings":{
       "name":"ListAppVersionResourceMappings",
@@ -397,7 +588,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all the resources in an application version.</p>"
+      "documentation":"<p>Lists all the resources in an AWS Resilience Hub application.</p>"
     },
     "ListAppVersions":{
       "name":"ListAppVersions",
@@ -414,7 +605,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the different versions for the Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the different versions for the AWS Resilience Hub applications.</p>"
     },
     "ListApps":{
       "name":"ListApps",
@@ -431,7 +622,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists your Resilience Hub applications.</p>"
+      "documentation":"<p>Lists your AWS Resilience Hub applications.</p> <note> <p>You can filter applications using only one filter at a time or without using any filter. If you try to filter applications using multiple filters, you will get the following error:</p> <p> <code>An error occurred (ValidationException) when calling the ListApps operation: Only one filter is supported for this operation.</code> </p> </note>"
     },
     "ListRecommendationTemplates":{
       "name":"ListRecommendationTemplates",
@@ -448,7 +639,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the recommendation templates for the Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the recommendation templates for the AWS Resilience Hub applications.</p>"
     },
     "ListResiliencyPolicies":{
       "name":"ListResiliencyPolicies",
@@ -466,7 +657,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the resiliency policies for the Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the resiliency policies for the AWS Resilience Hub applications.</p>"
     },
     "ListSopRecommendations":{
       "name":"ListSopRecommendations",
@@ -485,7 +676,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the standard operating procedure (SOP) recommendations for the Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the standard operating procedure (SOP) recommendations for the AWS Resilience Hub applications.</p>"
     },
     "ListSuggestedResiliencyPolicies":{
       "name":"ListSuggestedResiliencyPolicies",
@@ -503,7 +694,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the suggested resiliency policies for the Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the suggested resiliency policies for the AWS Resilience Hub applications.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -521,7 +712,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the tags for your resources in your Resilience Hub applications.</p>"
+      "documentation":"<p>Lists the tags for your resources in your AWS Resilience Hub applications.</p>"
     },
     "ListTestRecommendations":{
       "name":"ListTestRecommendations",
@@ -540,7 +731,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the test recommendations for the Resilience Hub application.</p>"
+      "documentation":"<p>Lists the test recommendations for the AWS Resilience Hub application.</p>"
     },
     "ListUnsupportedAppVersionResources":{
       "name":"ListUnsupportedAppVersionResources",
@@ -559,7 +750,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the resources that are not currently supported in AWS Resilience Hub. An unsupported resource is a resource that exists in the object that was used to create an app, but is not supported by Resilience Hub.</p>"
+      "documentation":"<p>Lists the resources that are not currently supported in AWS Resilience Hub. An unsupported resource is a resource that exists in the object that was used to create an app, but is not supported by AWS Resilience Hub.</p>"
     },
     "PublishAppVersion":{
       "name":"PublishAppVersion",
@@ -578,7 +769,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Publishes a new version of a specific Resilience Hub application.</p>"
+      "documentation":"<p>Publishes a new version of a specific AWS Resilience Hub application.</p>"
     },
     "PutDraftAppVersionTemplate":{
       "name":"PutDraftAppVersionTemplate",
@@ -597,7 +788,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Adds or updates the app template for a draft version of a Resilience Hub app.</p>"
+      "documentation":"<p>Adds or updates the app template for an AWS Resilience Hub application draft version.</p>"
     },
     "RemoveDraftAppVersionResourceMappings":{
       "name":"RemoveDraftAppVersionResourceMappings",
@@ -712,6 +903,64 @@
       ],
       "documentation":"<p>Updates an application.</p>"
     },
+    "UpdateAppVersion":{
+      "name":"UpdateAppVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/update-app-version",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppVersionRequest"},
+      "output":{"shape":"UpdateAppVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the AWS Resilience Hub application version.</p> <note> <p>This API updates the AWS Resilience Hub application draft version. To use this information for running resiliency assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </note>"
+    },
+    "UpdateAppVersionAppComponent":{
+      "name":"UpdateAppVersionAppComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/update-app-version-app-component",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppVersionAppComponentRequest"},
+      "output":{"shape":"UpdateAppVersionAppComponentResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an existing Application Component in the AWS Resilience Hub application.</p> <note> <p>This API updates the AWS Resilience Hub application draft version. To use this Application Component for running assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </note>"
+    },
+    "UpdateAppVersionResource":{
+      "name":"UpdateAppVersionResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/update-app-version-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppVersionResourceRequest"},
+      "output":{"shape":"UpdateAppVersionResourceResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the resource details in the AWS Resilience Hub application.</p> <note> <ul> <li> <p>This action has no effect outside AWS Resilience Hub.</p> </li> <li> <p>This API updates the AWS Resilience Hub application draft version. To use this resource for running resiliency assessments, you must publish the AWS Resilience Hub application using the <code>PublishAppVersion</code> API.</p> </li> <li> <p>To update application version with new <code>physicalResourceID</code>, you must call <code>ResolveAppVersionResources</code> API.</p> </li> </ul> </note>"
+    },
     "UpdateResiliencyPolicy":{
       "name":"UpdateResiliencyPolicy",
       "http":{
@@ -754,11 +1003,11 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "resourceMappings":{
           "shape":"ResourceMappingList",
-          "documentation":"<p> Mappings used to map logical resources from the template to physical resources. You can use the mapping type <code>CFN_STACK</code> if the application template uses a logical stack name. Or you can map individual resources by using the mapping type <code>RESOURCE</code>. We recommend using the mapping type <code>CFN_STACK</code> if the application is backed by a CloudFormation stack.</p>"
+          "documentation":"<p>Mappings used to map logical resources from the template to physical resources. You can use the mapping type <code>CFN_STACK</code> if the application template uses a logical stack name. Or you can map individual resources by using the mapping type <code>RESOURCE</code>. We recommend using the mapping type <code>CFN_STACK</code> if the application is backed by a CloudFormation stack.</p>"
         }
       }
     },
@@ -772,7 +1021,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -783,6 +1032,17 @@
           "documentation":"<p>Mappings used to map logical resources from the template to physical resources. You can use the mapping type <code>CFN_STACK</code> if the application template uses a logical stack name. Or you can map individual resources by using the mapping type <code>RESOURCE</code>. We recommend using the mapping type <code>CFN_STACK</code> if the application is backed by a CloudFormation stack.</p>"
         }
       }
+    },
+    "AdditionalInfoMap":{
+      "type":"map",
+      "key":{"shape":"String128WithoutWhitespace"},
+      "value":{"shape":"AdditionalInfoValueList"}
+    },
+    "AdditionalInfoValueList":{
+      "type":"list",
+      "member":{"shape":"String1024"},
+      "max":10,
+      "min":1
     },
     "AlarmRecommendation":{
       "type":"structure",
@@ -795,7 +1055,7 @@
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The application component for the CloudWatch alarm recommendation.</p>"
+          "documentation":"<p>The Application Component for the CloudWatch alarm recommendation.</p>"
         },
         "description":{
           "shape":"EntityDescription",
@@ -858,7 +1118,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentSchedule":{
           "shape":"AppAssessmentScheduleType",
@@ -890,7 +1150,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "resiliencyScore":{
           "shape":"Double",
@@ -905,7 +1165,7 @@
           "documentation":"<p>The tags assigned to the resource. A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key/value pair.</p>"
         }
       },
-      "documentation":"<p>Defines a Resilience Hub application.</p>"
+      "documentation":"<p>Defines an AWS Resilience Hub application.</p>"
     },
     "AppAssessment":{
       "type":"structure",
@@ -917,7 +1177,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -925,7 +1185,7 @@
         },
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentName":{
           "shape":"EntityName",
@@ -998,7 +1258,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1006,7 +1266,7 @@
         },
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentName":{
           "shape":"EntityName",
@@ -1067,27 +1327,35 @@
         "type"
       ],
       "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note>"
+        },
+        "id":{
+          "shape":"String255",
+          "documentation":"<p>Unique identifier of the Application Component.</p>"
+        },
         "name":{
           "shape":"String255",
-          "documentation":"<p>The name of the application component.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "type":{
           "shape":"String255",
-          "documentation":"<p>The type of application component.</p>"
+          "documentation":"<p>The type of Application Component.</p>"
         }
       },
-      "documentation":"<p>Defines an application component.</p>"
+      "documentation":"<p>Defines an Application Component.</p>"
     },
     "AppComponentCompliance":{
       "type":"structure",
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The name of the application component.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "compliance":{
           "shape":"AssessmentCompliance",
-          "documentation":"<p>The compliance of the application component against the resiliency policy.</p>"
+          "documentation":"<p>The compliance of the Application Component against the resiliency policy.</p>"
         },
         "cost":{
           "shape":"Cost",
@@ -1106,11 +1374,46 @@
           "documentation":"<p>The status of the action.</p>"
         }
       },
-      "documentation":"<p>Defines the compliance of an application component against the resiliency policy.</p>"
+      "documentation":"<p>Defines the compliance of an Application Component against the resiliency policy.</p>"
     },
     "AppComponentList":{
       "type":"list",
       "member":{"shape":"AppComponent"}
+    },
+    "AppComponentNameList":{
+      "type":"list",
+      "member":{"shape":"String255"}
+    },
+    "AppInputSource":{
+      "type":"structure",
+      "required":["importType"],
+      "members":{
+        "importType":{
+          "shape":"ResourceMappingType",
+          "documentation":"<p>The resource type of the input source.</p>"
+        },
+        "resourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources that were imported.</p>"
+        },
+        "sourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the input source. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "sourceName":{
+          "shape":"String255",
+          "documentation":"<p>The name of the input source.</p>"
+        },
+        "terraformSource":{
+          "shape":"TerraformSource",
+          "documentation":"<p>The name of the Terraform s3 state ﬁle.</p>"
+        }
+      },
+      "documentation":"<p>The list of AWS Resilience Hub application input sources.</p>"
+    },
+    "AppInputSourceList":{
+      "type":"list",
+      "member":{"shape":"AppInputSource"}
     },
     "AppStatusType":{
       "type":"string",
@@ -1129,7 +1432,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentSchedule":{
           "shape":"AppAssessmentScheduleType",
@@ -1189,7 +1492,7 @@
     },
     "Arn":{
       "type":"string",
-      "pattern":"^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+      "pattern":"^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+.-]{0,1023}$"
     },
     "ArnList":{
       "type":"list",
@@ -1257,7 +1560,7 @@
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The name of the application component.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "configRecommendations":{
           "shape":"ConfigRecommendationList",
@@ -1268,7 +1571,7 @@
           "documentation":"<p>The recommendation status.</p>"
         }
       },
-      "documentation":"<p>Defines recommendations for a Resilience Hub application component, returned as an object. This object contains component names, configuration recommendations, and recommendation statuses.</p>"
+      "documentation":"<p>Defines recommendations for an AWS Resilience Hub Application Component, returned as an object. This object contains component names, configuration recommendations, and recommendation statuses.</p>"
     },
     "ComponentRecommendationList":{
       "type":"list",
@@ -1284,7 +1587,7 @@
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The application component name.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "compliance":{
           "shape":"AssessmentCompliance",
@@ -1353,7 +1656,7 @@
           "documentation":"<p>The type of the resource that the exception applies to.</p>"
         }
       },
-      "documentation":"<p>Occurs when a conflict with a previous successful write is detected. This generally occurs when the previous write did not have time to propagate to the host serving the current request. A retry (with appropriate backoff logic) is the recommended response to this exception.</p>",
+      "documentation":"<p>This exception occurs when a conflict with a previous successful write is detected. This generally occurs when the previous write did not have time to propagate to the host serving the current request. A retry (with appropriate backoff logic) is the recommended response to this exception.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -1415,7 +1718,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1433,6 +1736,134 @@
         }
       }
     },
+    "CreateAppVersionAppComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "name",
+        "type"
+      ],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Currently, there is no supported additional information for Application Components.</p>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "id":{
+          "shape":"String255",
+          "documentation":"<p>The identifier of the Application Component.</p>"
+        },
+        "name":{
+          "shape":"String255",
+          "documentation":"<p>The name of the Application Component.</p>"
+        },
+        "type":{
+          "shape":"String255",
+          "documentation":"<p>The type of Application Component. For more information about the types of Application Component, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/AppComponent.grouping.html\">Grouping resources in an AppComponent</a>.</p>"
+        }
+      }
+    },
+    "CreateAppVersionAppComponentResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponent":{"shape":"AppComponent"},
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
+    "CreateAppVersionResourceRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appComponents",
+        "logicalResourceId",
+        "physicalResourceId",
+        "resourceName",
+        "resourceType"
+      ],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Currently, there is no supported additional information for resources.</p>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponents":{
+          "shape":"AppComponentNameList",
+          "documentation":"<p>The list of Application Components that this resource belongs to. If an Application Component is not part of the AWS Resilience Hub application, it will be added.</p>"
+        },
+        "awsAccountId":{
+          "shape":"CustomerId",
+          "documentation":"<p>The Amazon Web Services account that owns the physical resource.</p>"
+        },
+        "awsRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services region that owns the physical resource.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical identifier of the resource.</p>"
+        },
+        "physicalResourceId":{
+          "shape":"String2048",
+          "documentation":"<p>The physical identifier of the resource.</p>"
+        },
+        "resourceName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "resourceType":{
+          "shape":"String255",
+          "documentation":"<p>The type of resource.</p>"
+        }
+      }
+    },
+    "CreateAppVersionResourceResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "physicalResource":{
+          "shape":"PhysicalResource",
+          "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or a Resilience Hub-native identifier.</p>"
+        }
+      }
+    },
     "CreateRecommendationTemplateRequest":{
       "type":"structure",
       "required":[
@@ -1442,7 +1873,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "bucketName":{
           "shape":"EntityName",
@@ -1556,7 +1987,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1574,11 +2005,47 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentStatus":{
           "shape":"AssessmentStatus",
           "documentation":"<p>The current status of the assessment for the resiliency policy.</p>"
+        }
+      }
+    },
+    "DeleteAppInputSourceRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "sourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the imported resource you want to remove from the AWS Resilience Hub application. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "terraformSource":{
+          "shape":"TerraformSource",
+          "documentation":"<p>The imported Terraform s3 state ﬁle you want to remove from the AWS Resilience Hub application.</p>"
+        }
+      }
+    },
+    "DeleteAppInputSourceResponse":{
+      "type":"structure",
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appInputSource":{
+          "shape":"AppInputSource",
+          "documentation":"<p>The name of the input source from where the application resource is imported from.</p>"
         }
       }
     },
@@ -1588,7 +2055,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1597,7 +2064,7 @@
         },
         "forceDelete":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A boolean option to force the deletion of a Resilience Hub application. </p>"
+          "documentation":"<p>A boolean option to force the deletion of an AWS Resilience Hub application. </p>"
         }
       }
     },
@@ -1607,7 +2074,103 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        }
+      }
+    },
+    "DeleteAppVersionAppComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "id"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "id":{
+          "shape":"String255",
+          "documentation":"<p>The identifier of the Application Component.</p>"
+        }
+      }
+    },
+    "DeleteAppVersionAppComponentResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponent":{"shape":"AppComponent"},
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
+    "DeleteAppVersionResourceRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "awsAccountId":{
+          "shape":"CustomerId",
+          "documentation":"<p>The Amazon Web Services account that owns the physical resource.</p>"
+        },
+        "awsRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services region that owns the physical resource.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        },
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical identifier of the resource.</p>"
+        },
+        "physicalResourceId":{
+          "shape":"String2048",
+          "documentation":"<p>The physical identifier of the resource.</p>"
+        },
+        "resourceName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the resource.</p>"
+        }
+      }
+    },
+    "DeleteAppVersionResourceResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "physicalResource":{
+          "shape":"PhysicalResource",
+          "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or a Resilience Hub-native identifier.</p>"
         }
       }
     },
@@ -1654,7 +2217,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1664,7 +2227,7 @@
       "members":{
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1674,7 +2237,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1694,7 +2257,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1708,6 +2271,121 @@
         }
       }
     },
+    "DescribeAppVersionAppComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion",
+        "id"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "id":{
+          "shape":"String255",
+          "documentation":"<p>The identifier of the Application Component.</p>"
+        }
+      }
+    },
+    "DescribeAppVersionAppComponentResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponent":{"shape":"AppComponent"},
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
+    "DescribeAppVersionRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
+    "DescribeAppVersionResourceRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "awsAccountId":{
+          "shape":"CustomerId",
+          "documentation":"<p>The Amazon Web Services account that owns the physical resource.</p>"
+        },
+        "awsRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services region that owns the physical resource.</p>"
+        },
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical identifier of the resource.</p>"
+        },
+        "physicalResourceId":{
+          "shape":"String2048",
+          "documentation":"<p>The physical identifier of the resource.</p>"
+        },
+        "resourceName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the resource.</p>"
+        }
+      }
+    },
+    "DescribeAppVersionResourceResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "physicalResource":{
+          "shape":"PhysicalResource",
+          "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or a Resilience Hub-native identifier.</p>"
+        }
+      }
+    },
     "DescribeAppVersionResourcesResolutionStatusRequest":{
       "type":"structure",
       "required":[
@@ -1717,7 +2395,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1740,7 +2418,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1760,6 +2438,27 @@
         }
       }
     },
+    "DescribeAppVersionResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter supports only failover region and account.</p> </note>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
     "DescribeAppVersionTemplateRequest":{
       "type":"structure",
       "required":[
@@ -1769,7 +2468,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1787,11 +2486,11 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appTemplateBody":{
           "shape":"AppTemplateBody",
-          "documentation":"<p>The body of the template.</p>"
+          "documentation":"<p>A JSON string that provides information about your application structure. To learn more about the <code>appTemplateBody</code> template, see the sample template provided in the <i>Examples</i> section.</p> <p>The <code>appTemplateBody</code> JSON string has the following structure:</p> <ul> <li> <p> <b> <code>resources</code> </b> </p> <p>The list of logical resources that needs to be included in the application.</p> <p>Type: Array</p> <note> <p>Don't add the resources that you want to exclude.</p> </note> <p>Each <code>resources</code> array item includes the following fields:</p> <ul> <li> <p> <i> <code>logicalResourceId</code> </i> </p> <p>The logical identifier of the resource.</p> <p>Type: Object</p> <p>Each <code>logicalResourceId</code> object includes the following fields:</p> <ul> <li> <p> <code>identifier</code> </p> <p>The identifier of the resource.</p> <p>Type: String</p> </li> <li> <p> <code>logicalStackName</code> </p> <p>The name of the CloudFormation stack this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>resourceGroupName</code> </p> <p>The name of the resource group this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>terraformSourceName</code> </p> <p>The name of the Terraform S3 state file this resource belongs to.</p> <p>Type: String</p> </li> </ul> </li> <li> <p> <i> <code>type</code> </i> </p> <p>The type of resource.</p> <p>Type: string</p> </li> <li> <p> <i> <code>name</code> </i> </p> <p>The name of the resource.</p> <p>Type: String</p> </li> </ul> </li> <li> <p> <b> <code>appComponents</code> </b> </p> <p>The list of Application Components that this resource belongs to. If an Application Component is not part of the AWS Resilience Hub application, it will be added.</p> <p>Type: Array</p> <p>Each <code>appComponents</code> array item includes the following fields:</p> <ul> <li> <p> <code>name</code> </p> <p>The name of the Application Component.</p> <p>Type: String</p> </li> <li> <p> <code>type</code> </p> <p>The type of Application Component. For more information about the types of Application Component, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/AppComponent.grouping.html\">Grouping resources in an AppComponent</a>.</p> <p>Type: String</p> </li> <li> <p> <code>resourceNames</code> </p> <p>The list of included resources that are assigned to the Application Component.</p> <p>Type: Array of strings</p> </li> <li> <p> <code>additionalInfo</code> </p> <p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note> </li> </ul> </li> <li> <p> <b> <code>excludedResources</code> </b> </p> <p>The list of logical resource identifiers to be excluded from the application.</p> <p>Type: Array</p> <note> <p>Don't add the resources that you want to include.</p> </note> <p>Each <code>excludedResources</code> array item includes the following fields:</p> <ul> <li> <p> <i> <code>logicalResourceIds</code> </i> </p> <p>The logical identifier of the resource.</p> <p>Type: Object</p> <note> <p>You can configure only one of the following fields:</p> <ul> <li> <p> <code>logicalStackName</code> </p> </li> <li> <p> <code>resourceGroupName</code> </p> </li> <li> <p> <code>terraformSourceName</code> </p> </li> </ul> </note> <p>Each <code>logicalResourceIds</code> object includes the following fields:</p> <ul> <li> <p> <code>identifier</code> </p> <p>The identifier of the resource.</p> <p>Type: String</p> </li> <li> <p> <code>logicalStackName</code> </p> <p>The name of the CloudFormation stack this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>resourceGroupName</code> </p> <p>The name of the resource group this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>terraformSourceName</code> </p> <p>The name of the Terraform S3 state file this resource belongs to.</p> <p>Type: String</p> </li> </ul> </li> </ul> </li> </ul>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1805,7 +2504,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1820,7 +2519,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -1846,7 +2545,7 @@
       "members":{
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -1939,7 +2638,7 @@
     },
     "EntityId":{
       "type":"string",
-      "pattern":"^\\S{1,100}$"
+      "pattern":"^\\S{1,255}$"
     },
     "EntityName":{
       "type":"string",
@@ -2001,7 +2700,11 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "importStrategy":{
+          "shape":"ResourceImportStrategyType",
+          "documentation":"<p>The import strategy you would like to set to import resources into AWS Resilience Hub application.</p>"
         },
         "sourceArns":{
           "shape":"ArnList",
@@ -2023,7 +2726,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2043,6 +2746,7 @@
         }
       }
     },
+    "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -2059,7 +2763,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2077,7 +2781,7 @@
       "members":{
         "alarmRecommendations":{
           "shape":"AlarmRecommendationList",
-          "documentation":"<p>The alarm recommendations for an AWS Resilience Hub application, returned as an object. This object includes application component names, descriptions, information about whether a recommendation has already been implemented or not, prerequisites, and more.</p>"
+          "documentation":"<p>The alarm recommendations for an AWS Resilience Hub application, returned as an object. This object includes Application Component names, descriptions, information about whether a recommendation has already been implemented or not, prerequisites, and more.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2090,7 +2794,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>",
           "location":"querystring",
           "locationName":"appArn"
         },
@@ -2158,7 +2862,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2176,7 +2880,7 @@
       "members":{
         "componentCompliances":{
           "shape":"ComponentCompliancesList",
-          "documentation":"<p>The compliances for an AWS Resilience Hub application component, returned as an object. This object contains component names, compliances, costs, resiliency scores, outage scores, and more.</p>"
+          "documentation":"<p>The compliances for an AWS Resilience Hub Application Component, returned as an object. This object contains the names of the Application Components, compliances, costs, resiliency scores, outage scores, and more.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2190,7 +2894,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2208,7 +2912,96 @@
       "members":{
         "componentRecommendations":{
           "shape":"ComponentRecommendationList",
-          "documentation":"<p>The recommendations for an Resilience Hub application component, returned as an object. This object contains component names, configuration recommendations, and recommendation statuses.</p>"
+          "documentation":"<p>The recommendations for an AWS Resilience Hub Application Component, returned as an object. This object contains the names of the Application Components, configuration recommendations, and recommendation statuses.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListAppInputSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of input sources to be displayed per AWS Resilience Hub application.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListAppInputSourcesResponse":{
+      "type":"structure",
+      "required":["appInputSources"],
+      "members":{
+        "appInputSources":{
+          "shape":"AppInputSourceList",
+          "documentation":"<p>The list of AWS Resilience Hub application input sources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListAppVersionAppComponentsRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The version of the Application Component.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of Application Components to be displayed per AWS Resilience Hub application version.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListAppVersionAppComponentsResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponents":{
+          "shape":"AppComponentList",
+          "documentation":"<p>Defines an Application Component.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2225,7 +3018,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2264,7 +3057,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2301,7 +3094,7 @@
         },
         "resolutionId":{
           "shape":"String255",
-          "documentation":"<p>The identifier for a specific resolution.</p>"
+          "documentation":"<p>The ID for a specific resolution.</p>"
         }
       }
     },
@@ -2311,7 +3104,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2342,7 +3135,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>",
           "location":"querystring",
           "locationName":"appArn"
         },
@@ -2372,7 +3165,7 @@
       "members":{
         "appSummaries":{
           "shape":"AppSummaryList",
-          "documentation":"<p>Summaries for the Resilience Hub application.</p>"
+          "documentation":"<p>Summaries for the AWS Resilience Hub application.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2386,7 +3179,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>",
           "location":"querystring",
           "locationName":"assessmentArn"
         },
@@ -2437,7 +3230,7 @@
         },
         "recommendationTemplates":{
           "shape":"RecommendationTemplateList",
-          "documentation":"<p>The recommendation templates for the Resilience Hub applications.</p>"
+          "documentation":"<p>The recommendation templates for the AWS Resilience Hub applications.</p>"
         }
       }
     },
@@ -2474,7 +3267,7 @@
         },
         "resiliencyPolicies":{
           "shape":"ResiliencyPolicies",
-          "documentation":"<p>The resiliency policies for the Resilience Hub applications.</p>"
+          "documentation":"<p>The resiliency policies for the AWS Resilience Hub applications.</p>"
         }
       }
     },
@@ -2484,7 +3277,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2506,7 +3299,7 @@
         },
         "sopRecommendations":{
           "shape":"SopRecommendationList",
-          "documentation":"<p>The standard operating procedure (SOP) recommendations for the Resilience Hub applications.</p>"
+          "documentation":"<p>The standard operating procedure (SOP) recommendations for the AWS Resilience Hub applications.</p>"
         }
       }
     },
@@ -2537,7 +3330,7 @@
         },
         "resiliencyPolicies":{
           "shape":"ResiliencyPolicies",
-          "documentation":"<p>The suggested resiliency policies for the Resilience Hub applications.</p>"
+          "documentation":"<p>The suggested resiliency policies for the AWS Resilience Hub applications.</p>"
         }
       }
     },
@@ -2547,7 +3340,7 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for a specific resource in your Resilience Hub application.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) for a specific resource in your AWS Resilience Hub application.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -2568,7 +3361,7 @@
       "members":{
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2590,7 +3383,7 @@
         },
         "testRecommendations":{
           "shape":"TestRecommendationList",
-          "documentation":"<p>The test recommendations for the Resilience Hub application.</p>"
+          "documentation":"<p>The test recommendations for the AWS Resilience Hub application.</p>"
         }
       }
     },
@@ -2603,7 +3396,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2692,9 +3485,17 @@
         "resourceType"
       ],
       "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note>"
+        },
         "appComponents":{
           "shape":"AppComponentList",
           "documentation":"<p>The application components that belong to this resource.</p>"
+        },
+        "excluded":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates if a resource is included or excluded from the assessment.</p>"
         },
         "logicalResourceId":{
           "shape":"LogicalResourceId",
@@ -2713,7 +3514,7 @@
           "documentation":"<p>The type of resource.</p>"
         }
       },
-      "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or a Resilience Hub-native identifier. </p>"
+      "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or an AWS Resilience Hub-native identifier. </p>"
     },
     "PhysicalResourceId":{
       "type":"structure",
@@ -2736,7 +3537,7 @@
         },
         "type":{
           "shape":"PhysicalIdentifierType",
-          "documentation":"<p>Specifies the type of physical resource identifier.</p> <dl> <dt>Arn</dt> <dd> <p>The resource identifier is an Amazon Resource Name (ARN) .</p> </dd> <dt>Native</dt> <dd> <p>The resource identifier is a Resilience Hub-native identifier.</p> </dd> </dl>"
+          "documentation":"<p>Specifies the type of physical resource identifier.</p> <dl> <dt>Arn</dt> <dd> <p>The resource identifier is an Amazon Resource Name (ARN) .</p> </dd> <dt>Native</dt> <dd> <p>The resource identifier is an AWS Resilience Hub-native identifier.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>Defines a physical resource identifier.</p>"
@@ -2751,7 +3552,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -2761,7 +3562,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2778,11 +3579,11 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appTemplateBody":{
           "shape":"AppTemplateBody",
-          "documentation":"<p>A JSON string that contains the body of the app template.</p>"
+          "documentation":"<p>A JSON string that provides information about your application structure. To learn more about the <code>appTemplateBody</code> template, see the sample template provided in the <i>Examples</i> section.</p> <p>The <code>appTemplateBody</code> JSON string has the following structure:</p> <ul> <li> <p> <b> <code>resources</code> </b> </p> <p>The list of logical resources that needs to be included in the application.</p> <p>Type: Array</p> <note> <p>Don't add the resources that you want to exclude.</p> </note> <p>Each <code>resources</code> array item includes the following fields:</p> <ul> <li> <p> <i> <code>logicalResourceId</code> </i> </p> <p>The logical identifier of the resource.</p> <p>Type: Object</p> <p>Each <code>logicalResourceId</code> object includes the following fields:</p> <ul> <li> <p> <code>identifier</code> </p> <p>The identifier of the resource.</p> <p>Type: String</p> </li> <li> <p> <code>logicalStackName</code> </p> <p>The name of the CloudFormation stack this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>resourceGroupName</code> </p> <p>The name of the resource group this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>terraformSourceName</code> </p> <p>The name of the Terraform S3 state file this resource belongs to.</p> <p>Type: String</p> </li> </ul> </li> <li> <p> <i> <code>type</code> </i> </p> <p>The type of resource.</p> <p>Type: string</p> </li> <li> <p> <i> <code>name</code> </i> </p> <p>The name of the resource.</p> <p>Type: String</p> </li> </ul> </li> <li> <p> <b> <code>appComponents</code> </b> </p> <p>The list of Application Components that this resource belongs to. If an Application Component is not part of the AWS Resilience Hub application, it will be added.</p> <p>Type: Array</p> <p>Each <code>appComponents</code> array item includes the following fields:</p> <ul> <li> <p> <code>name</code> </p> <p>The name of the Application Component.</p> <p>Type: String</p> </li> <li> <p> <code>type</code> </p> <p>The type of Application Component. For more information about the types of Application Component, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/AppComponent.grouping.html\">Grouping resources in an AppComponent</a>.</p> <p>Type: String</p> </li> <li> <p> <code>resourceNames</code> </p> <p>The list of included resources that are assigned to the Application Component.</p> <p>Type: Array of strings</p> </li> <li> <p> <code>additionalInfo</code> </p> <p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note> </li> </ul> </li> <li> <p> <b> <code>excludedResources</code> </b> </p> <p>The list of logical resource identifiers to be excluded from the application.</p> <p>Type: Array</p> <note> <p>Don't add the resources that you want to include.</p> </note> <p>Each <code>excludedResources</code> array item includes the following fields:</p> <ul> <li> <p> <i> <code>logicalResourceIds</code> </i> </p> <p>The logical identifier of the resource.</p> <p>Type: Object</p> <note> <p>You can configure only one of the following fields:</p> <ul> <li> <p> <code>logicalStackName</code> </p> </li> <li> <p> <code>resourceGroupName</code> </p> </li> <li> <p> <code>terraformSourceName</code> </p> </li> </ul> </note> <p>Each <code>logicalResourceIds</code> object includes the following fields:</p> <ul> <li> <p> <code>identifier</code> </p> <p>The identifier of the resource.</p> <p>Type: String</p> </li> <li> <p> <code>logicalStackName</code> </p> <p>The name of the CloudFormation stack this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>resourceGroupName</code> </p> <p>The name of the resource group this resource belongs to.</p> <p>Type: String</p> </li> <li> <p> <code>terraformSourceName</code> </p> <p>The name of the Terraform S3 state file this resource belongs to.</p> <p>Type: String</p> </li> </ul> </li> </ul> </li> </ul>"
         }
       }
     },
@@ -2791,7 +3592,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -2884,11 +3685,11 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "endTime":{
           "shape":"TimeStamp",
@@ -2966,27 +3767,27 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appRegistryAppNames":{
           "shape":"EntityNameList",
-          "documentation":"<p>The names of the registered applications to remove from the resource mappings.</p>"
+          "documentation":"<p>The names of the registered applications you want to remove from the resource mappings.</p>"
         },
         "logicalStackNames":{
           "shape":"String255List",
-          "documentation":"<p>The names of the CloudFormation stacks to remove from the resource mappings.</p>"
+          "documentation":"<p>The names of the CloudFormation stacks you want to remove from the resource mappings.</p>"
         },
         "resourceGroupNames":{
           "shape":"EntityNameList",
-          "documentation":"<p>The names of the resource groups to remove from the resource mappings.</p>"
+          "documentation":"<p>The names of the resource groups you want to remove from the resource mappings.</p>"
         },
         "resourceNames":{
           "shape":"EntityNameList",
-          "documentation":"<p>The names of the resources to remove from the resource mappings.</p>"
+          "documentation":"<p>The names of the resources you want to remove from the resource mappings.</p>"
         },
         "terraformSourceNames":{
           "shape":"String255List",
-          "documentation":"<p> <pre><code>&lt;/p&gt; </code></pre>"
+          "documentation":"<p>The names of the Terraform sources you want to remove from the resource mappings.</p>"
         }
       }
     },
@@ -2995,7 +3796,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -3042,7 +3843,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "policyDescription":{
           "shape":"EntityDescription",
@@ -3100,7 +3901,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -3119,7 +3920,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -3182,6 +3983,13 @@
         "InProgress",
         "Failed",
         "Success"
+      ]
+    },
+    "ResourceImportStrategyType":{
+      "type":"string",
+      "enum":[
+        "AddOnly",
+        "ReplaceAll"
       ]
     },
     "ResourceMapping":{
@@ -3249,7 +4057,7 @@
           "documentation":"<p>The type of the resource that the exception applies to.</p>"
         }
       },
-      "documentation":"<p>The specified resource could not be found.</p>",
+      "documentation":"<p>This exception occurs when the specified resource could not be found.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -3302,7 +4110,7 @@
       "members":{
         "message":{"shape":"String500"}
       },
-      "documentation":"<p>You have exceeded your service quota. To perform the requested action, remove some of the relevant resources, or use Service Quotas to request a service quota increase.</p>",
+      "documentation":"<p>This exception occurs when you have exceeded your service quota. To perform the requested action, remove some of the relevant resources, or use Service Quotas to request a service quota increase.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -3319,7 +4127,7 @@
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The application component name.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "description":{
           "shape":"String500",
@@ -3375,7 +4183,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "appVersion":{
           "shape":"EntityVersion",
@@ -3405,6 +4213,20 @@
           "documentation":"<p>The assessment created.</p>"
         }
       }
+    },
+    "String1024":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "String128WithoutWhitespace":{
+      "type":"string",
+      "pattern":"^\\S{1,128}$"
+    },
+    "String2048":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "String255":{
       "type":"string",
@@ -3503,7 +4325,7 @@
       "members":{
         "appComponentName":{
           "shape":"EntityId",
-          "documentation":"<p>The name of the application component.</p>"
+          "documentation":"<p>The name of the Application Component.</p>"
         },
         "dependsOnAlarms":{
           "shape":"AlarmReferenceIdList",
@@ -3578,7 +4400,7 @@
           "documentation":"<p>The number of seconds to wait before retrying the operation.</p>"
         }
       },
-      "documentation":"<p>The limit on the number of requests per second was exceeded.</p>",
+      "documentation":"<p>This exception occurs when you have exceeded the limit on the number of requests per second.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -3607,7 +4429,7 @@
           "documentation":"<p>The type of resource.</p>"
         }
       },
-      "documentation":"<p>Defines a resource that is not supported by Resilience Hub.</p>"
+      "documentation":"<p>Defines a resource that is not supported by AWS Resilience Hub.</p>"
     },
     "UnsupportedResourceList":{
       "type":"list",
@@ -3628,7 +4450,7 @@
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The keys of the tags to remove.</p>",
+          "documentation":"<p>The keys of the tags you want to remove.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -3645,7 +4467,7 @@
       "members":{
         "appArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "assessmentSchedule":{
           "shape":"AppAssessmentScheduleType",
@@ -3661,7 +4483,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         }
       }
     },
@@ -3672,6 +4494,155 @@
         "app":{
           "shape":"App",
           "documentation":"<p>The specified application, returned as an object with details including compliance status, creation time, description, resiliency score, and more.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionAppComponentRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "id"
+      ],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Currently, there is no supported additional information for Application Components.</p>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "id":{
+          "shape":"String255",
+          "documentation":"<p>The identifier of the Application Component.</p>"
+        },
+        "name":{
+          "shape":"String255",
+          "documentation":"<p>The name of the Application Component.</p>"
+        },
+        "type":{
+          "shape":"String255",
+          "documentation":"<p>The type of Application Component. For more information about the types of Application Component, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/AppComponent.grouping.html\">Grouping resources in an AppComponent</a>.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionAppComponentResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponent":{"shape":"AppComponent"},
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionResourceRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Currently, there is no supported additional information for resources.</p>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appComponents":{
+          "shape":"AppComponentNameList",
+          "documentation":"<p>The list of Application Components that this resource belongs to. If an Application Component is not part of the AWS Resilience Hub application, it will be added.</p>"
+        },
+        "awsAccountId":{
+          "shape":"CustomerId",
+          "documentation":"<p>The Amazon Web Services account that owns the physical resource.</p>"
+        },
+        "awsRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services region that owns the physical resource.</p>"
+        },
+        "excluded":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates if a resource is excluded from an AWS Resilience Hub application.</p> <note> <p>You can exclude only imported resources from an AWS Resilience Hub application.</p> </note>"
+        },
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical identifier of the resource.</p>"
+        },
+        "physicalResourceId":{
+          "shape":"String2048",
+          "documentation":"<p>The physical identifier of the resource.</p>"
+        },
+        "resourceName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "resourceType":{
+          "shape":"String255",
+          "documentation":"<p>The type of resource.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionResourceResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
+        },
+        "physicalResource":{
+          "shape":"PhysicalResource",
+          "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or a Resilience Hub-native identifier.</p>"
+        }
+      }
+    },
+    "UpdateAppVersionResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "appVersion"
+      ],
+      "members":{
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Additional configuration parameters for an AWS Resilience Hub application.</p> <note> <p>Currently, this parameter supports only failover region and account.</p> </note>"
+        },
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>The AWS Resilience Hub application version.</p>"
         }
       }
     },
@@ -3689,7 +4660,7 @@
         },
         "policyArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency policy. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:resiliency-policy/<code>policy-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i> guide.</p>"
         },
         "policyDescription":{
           "shape":"EntityDescription",
@@ -3724,7 +4695,7 @@
       "members":{
         "message":{"shape":"String500"}
       },
-      "documentation":"<p>Indicates that a request was not valid.</p>",
+      "documentation":"<p>This exception occurs when a request is not valid.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true

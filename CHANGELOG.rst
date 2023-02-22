@@ -4914,6 +4914,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.76
+=======
+
+* api-change:``quicksight``: S3 data sources now accept a custom IAM role.
+* api-change:``resiliencehub``: In this release we improved resilience hub application creation and maintenance by introducing new resource and app component crud APIs, improving visibility and maintenance of application input sources and added support for additional information attributes to be provided by customers.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``tnb``: This is the initial SDK release for AWS Telco Network Builder (TNB). AWS Telco Network Builder is a network automation service that helps you deploy and manage telecom networks.
+
+
+1.27.75
+=======
+
+* api-change:``auditmanager``: This release introduces a ServiceQuotaExceededException to the UpdateAssessmentFrameworkShare API operation.
+* api-change:``connect``: Reasons for failed diff has been approved by SDK Reviewer
+
+
+1.27.74
+=======
+
+* api-change:``apprunner``: This release supports removing MaxSize limit for AutoScalingConfiguration.
+* api-change:``glue``: Release of Delta Lake Data Lake Format for Glue Studio Service
+
+
 1.27.73
 =======
 

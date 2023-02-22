@@ -1,6 +1,6 @@
 **To delete a contact**
 
-The following ``command-name`` example deletes a contact. The contact will no longer be reachable from any escalation plan that refers to them. ::
+The following ``delete-contact`` example deletes a contact. The contact will no longer be reachable from any escalation plan that refers to them. ::
 
     aws ssm-contacts delete-contact \
         --contact-id "arn:aws:ssm-contacts:us-east-1:111122223333:contact/alejr"

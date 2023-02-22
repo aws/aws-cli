@@ -518,7 +518,7 @@ For more information, see `Basic Operations for Tables <https://docs.aws.amazon.
 
 **Example 7: To create a table with Streams enabled**
 
-The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Both new and old images of each item will be written to the stream.
+The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Both new and old images of each item will be written to the stream. ::
 
     aws dynamodb create-table \
         --table-name GameScores \

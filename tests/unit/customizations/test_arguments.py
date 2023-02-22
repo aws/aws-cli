@@ -11,9 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import mock
 
-from awscli.testutils import unittest, FileCreator, skip_if_windows
+from awscli.testutils import mock, unittest, FileCreator, skip_if_windows
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.arguments import StatefulArgument
 from awscli.customizations.arguments import QueryOutFileArgument
@@ -70,11 +69,11 @@ class TestArgumentHelpers(unittest.TestCase):
 
     def test_works_with_valid_filename(self):
         filename = self.files.create_file('valid', '')
-        self.assertEquals(filename, resolve_given_outfile_path(filename))
+        self.assertEqual(filename, resolve_given_outfile_path(filename))
 
     def test_works_with_relative_filename(self):
         filename = '../valid'
-        self.assertEquals(filename, resolve_given_outfile_path(filename))
+        self.assertEqual(filename, resolve_given_outfile_path(filename))
 
     def test_raises_when_cannot_write_to_file(self):
         filename = os.sep.join(['_path', 'not', '_exist_', 'file.xyz'])
@@ -123,14 +122,14 @@ class TestQueryFileArgument(unittest.TestCase):
         arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200},
                         'baz': 'abc123'})
         with open(outfile) as fp:
-            self.assertEquals('abc123', fp.read())
-        self.assertEquals(1, session.register.call_count)
+            self.assertEqual('abc123', fp.read())
+        self.assertEqual(1, session.register.call_count)
         session.register.assert_called_with('event', arg.save_query)
 
     def test_does_not_save_when_not_set(self):
         session = mock.Mock()
         QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
-        self.assertEquals(0, session.register.call_count)
+        self.assertEqual(0, session.register.call_count)
 
     def test_saves_query_to_file_as_empty_string_when_none_result(self):
         outfile = self.files.create_file('none-test', '')
@@ -139,7 +138,7 @@ class TestQueryFileArgument(unittest.TestCase):
         arg.add_to_params({}, outfile)
         arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200}})
         with open(outfile) as fp:
-            self.assertEquals('', fp.read())
+            self.assertEqual('', fp.read())
 
     @skip_if_windows("Test not valid on windows.")
     def test_permissions_on_created_file(self):

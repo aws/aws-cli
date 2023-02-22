@@ -200,7 +200,7 @@ class BaseResultHandler(object):
 
 
 class ResultRecorder(BaseResultHandler):
-    """Records and track transfer statistics based on results receieved"""
+    """Records and track transfer statistics based on results received"""
     def __init__(self):
         self.bytes_transferred = 0
         self.bytes_failed_to_transfer = 0
@@ -286,7 +286,7 @@ class ResultRecorder(BaseResultHandler):
         # gets created that the timestamp on the progress result is less
         # than the timestamp of when the result processor actually
         # processes that initial queued result. So this will avoid
-        # negative progress being displayed or zero divison occuring.
+        # negative progress being displayed or zero division occurring.
         if result.timestamp > self.start_time:
             self.bytes_transfer_speed = self.bytes_transferred / (
                 result.timestamp - self.start_time)

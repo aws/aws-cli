@@ -33,19 +33,11 @@ import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
+from unittest import mock
 
 from awscli.compat import StringIO
 
 
-try:
-    import mock
-except ImportError as e:
-    # In the off chance something imports this module
-    # that's not suppose to, we should not stop the CLI
-    # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's a
-    # different story.
-    mock = None
 from awscli.compat import six
 from botocore.session import Session
 from botocore.exceptions import ClientError
@@ -925,6 +917,7 @@ class TestEventHandler(object):
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
+        self.__test__ = False
 
     @property
     def called(self):

@@ -10,8 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
+from awscli.testutils import mock
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
@@ -44,4 +43,4 @@ class TestCommand(BaseAWSCommandParamsTest):
         cmd = FakeCommand(mock_session)
         cmd._run_main(mocked_parsed_args, parsed_globals)
 
-        self.assertEquals(cmd.region, 'eu-central-1')
+        self.assertEqual(cmd.region, 'eu-central-1')

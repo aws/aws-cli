@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+"""Generate a global options section.
+
+The purpose of this script is to pre-generate
+global options for the help docs.
+The output of this script is loaded and applied to
+every subcommand's help docs.
+
+"""
+
+import os
+
+from awscli.clidriver import create_clidriver
+from awscli.clidocs import (
+    EXAMPLES_DIR, GLOBAL_OPTIONS_FILE,
+    GLOBAL_OPTIONS_SYNOPSIS_FILE, GlobalOptionsDocumenter
+)
+
+
+def main():
+    if not os.path.isdir(EXAMPLES_DIR):
+        os.makedirs(EXAMPLES_DIR)
+    driver = create_clidriver()
+    options_help_command = driver.create_help_command()
+    synopsis_help_command = driver.create_help_command()
+    options_documenter = GlobalOptionsDocumenter(options_help_command)
+    synopsis_documenter = GlobalOptionsDocumenter(synopsis_help_command)
+
+    with open(GLOBAL_OPTIONS_FILE, 'w') as f:
+        for line in options_documenter.doc_global_options():
+            f.write(line)
+    with open(GLOBAL_OPTIONS_SYNOPSIS_FILE, 'w') as f:
+        for line in synopsis_documenter.doc_global_synopsis():
+            f.write(line)
+
+
+if __name__ == "__main__":
+    main()

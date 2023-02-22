@@ -1,11 +1,15 @@
 **To generate a random password**
 
-The following example shows how to request a randomly generated password. This example includes the optional flags to require spaces and at least one character of each included type. It specifies a length of 20 characters. ::
+The following ``get-random-password`` example generates a random password 20 characters long that includes at least one uppercase letter, lowercase letter, number, and punctuation. ::
 
-	aws secretsmanager get-random-password --include-space --password-length 20 --require-each-included-type 
+    aws secretsmanager get-random-password \
+        --require-each-included-type \
+        --password-length 20
 
-The output shows the following: ::
+Output::
 
-	{
-	  "RandomPassword": "N+Z43a,>vx7j O8^*<8i3"
-	}
+    {
+        "RandomPassword": "EXAMPLE-PASSWORD"
+    }
+
+For more information, see `Create and manage secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets.html>`__ in the *Secrets Manager User Guide*.

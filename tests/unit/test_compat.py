@@ -13,7 +13,8 @@
 import os
 import signal
 
-from nose.tools import assert_equal
+import pytest
+
 from botocore.compat import six
 
 from awscli.compat import ensure_text_type
@@ -54,40 +55,54 @@ class TestEnsureText(unittest.TestCase):
             ensure_text_type(value)
 
 
-def test_compat_shell_quote_windows():
-    windows_cases = {
-        '': '""',
-        '"': '\\"',
-        '\\': '\\',
-        '\\a': '\\a',
-        '\\\\': '\\\\',
-        '\\"': '\\\\\\"',
-        '\\\\"': '\\\\\\\\\\"',
-        'foo bar': '"foo bar"',
-        'foo\tbar': '"foo\tbar"',
-    }
-    for input_string, expected_output in windows_cases.items():
-        yield ShellQuoteTestCase().run, input_string, expected_output, "win32"
+@pytest.mark.parametrize(
+    "input_string, expected_output",
+    (
+        ('', '""'),
+        ('"', '\\"'),
+        ('\\', '\\'),
+        ('\\a', '\\a'),
+        ('\\\\', '\\\\'),
+        ('\\"', '\\\\\\"'),
+        ('\\\\"', '\\\\\\\\\\"'),
+        ('foo bar', '"foo bar"'),
+        ('foo\tbar', '"foo\tbar"'),
+    )
+)
+def test_compat_shell_quote_windows(input_string, expected_output):
+    assert compat_shell_quote(input_string, "win32") == expected_output
 
 
-def test_comat_shell_quote_unix():
-    unix_cases = {
-        "": "''",
-        "*": "'*'",
-        "foo": "foo",
-        "foo bar": "'foo bar'",
-        "foo\tbar": "'foo\tbar'",
-        "foo\nbar": "'foo\nbar'",
-        "foo'bar": "'foo'\"'\"'bar'",
-    }
-    for input_string, expected_output in unix_cases.items():
-        yield ShellQuoteTestCase().run, input_string, expected_output, "linux2"
-        yield ShellQuoteTestCase().run, input_string, expected_output, "darwin"
+@pytest.mark.parametrize(
+    "input_string, expected_output",
+    (
+        ('', "''"),
+        ('*', "'*'"),
+        ('foo', 'foo'),
+        ('foo bar', "'foo bar'"),
+        ('foo\tbar', "'foo\tbar'"),
+        ('foo\nbar', "'foo\nbar'"),
+        ("foo'bar", '\'foo\'"\'"\'bar\'')
+    )
+)
+def test_comat_shell_quote_linux(input_string, expected_output):
+    assert compat_shell_quote(input_string, "linux2") == expected_output
 
 
-class ShellQuoteTestCase(object):
-    def run(self, s, expected, platform=None):
-        assert_equal(compat_shell_quote(s, platform), expected)
+@pytest.mark.parametrize(
+    "input_string, expected_output",
+    (
+        ('', "''"),
+        ('*', "'*'"),
+        ('foo', 'foo'),
+        ('foo bar', "'foo bar'"),
+        ('foo\tbar', "'foo\tbar'"),
+        ('foo\nbar', "'foo\nbar'"),
+        ("foo'bar", '\'foo\'"\'"\'bar\'')
+    )
+)
+def test_comat_shell_quote_darwin(input_string, expected_output):
+    assert compat_shell_quote(input_string, "darwin") == expected_output
 
 
 class TestGetPopenPagerCmd(unittest.TestCase):

@@ -260,4 +260,4 @@ Output::
         "ModelVersion": "0.0.0"
     }
 
-For more information, see `Infer RxNorm <https://docs.aws.amazon.com/comprehend/latest/dg/ontology-linking-rxnorm.html>`__ in the *Amazon Comprehend Medical Developer Guide*.
+For more information, see `Infer RxNorm <https://docs.aws.amazon.com/comprehend-medical/latest/dev/ontology-RxNorm.html>`__ in the *Amazon Comprehend Medical Developer Guide*.

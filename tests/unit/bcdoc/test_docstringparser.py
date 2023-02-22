@@ -18,8 +18,7 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-import mock
-import unittest
+from awscli.testutils import mock, unittest
 
 import awscli.bcdoc.docstringparser as parser
 from awscli.bcdoc.restdoc import ReSTDocument

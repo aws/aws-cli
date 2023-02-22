@@ -1,17 +1,24 @@
-**To create an Internet gateway**
+**To create an internet gateway**
 
-This example creates an Internet gateway.
+The following ``create-internet-gateway`` example creates an internet gateway with the tag ``Name=my-igw``. ::
 
-Command::
-
-  aws ec2 create-internet-gateway 
+    aws ec2 create-internet-gateway \
+        --tag-specifications ResourceType=internet-gateway,Tags=[{Key=Name,Value=my-igw}]
 
 Output::
 
-  {
-      "InternetGateway": {
-          "Tags": [],
-          "InternetGatewayId": "igw-c0a643a9",
-          "Attachments": []
-      }
-  }
+    {
+        "InternetGateway": {
+            "Attachments": [],
+            "InternetGatewayId": "igw-0d0fb496b3994d755",
+            "OwnerId": "123456789012",
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "my-igw"
+                }
+            ]
+        }
+    }
+
+For more information, see `Internet gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *Amazon VPC User Guide*.

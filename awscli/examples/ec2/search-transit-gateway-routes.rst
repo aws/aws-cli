@@ -38,4 +38,4 @@ Output::
         "AdditionalRoutesAvailable": false
     }
 
-For more information, see `View Transit Gateway Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html#WorkWithRouteTables>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Transit gateway route tables <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html>`__ in the *Transit Gateways Guide*.

@@ -11,14 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import gzip
-from mock import Mock, patch
 
 from awscli.compat import six
 from botocore.exceptions import ClientError
 from tests.unit.customizations.cloudtrail.test_validation import \
     create_scenario, TEST_TRAIL_ARN, START_DATE, END_DATE, VALID_TEST_KEY, \
     DigestProvider, MockDigestProvider, TEST_ACCOUNT_ID
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestTraverser, \
     DATE_FORMAT, format_display_date, S3ClientProvider
 from botocore.handlers import parse_get_bucket_location
@@ -87,7 +86,7 @@ class BaseCloudTrailCommandTest(BaseAWSCommandParamsTest):
 class TestCloudTrailCommand(BaseCloudTrailCommandTest):
     def setUp(self):
         super(TestCloudTrailCommand, self).setUp()
-        self._traverser_patch = patch(RETRIEVER_FUNCTION)
+        self._traverser_patch = mock.patch(RETRIEVER_FUNCTION)
         self._mock_traverser = self._traverser_patch.start()
 
     def tearDown(self):
@@ -177,11 +176,11 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             stdout)
 
     def test_warns_when_no_digests_after_start_date(self):
-        key_provider = Mock()
+        key_provider = mock.Mock()
         key_provider.get_public_keys.return_value = [{'Fingerprint': 'a'}]
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = []
-        validator = Mock()
+        validator = mock.Mock()
         _setup_mock_traverser(self._mock_traverser, key_provider,
                               digest_provider, validator)
         stdout, stderr, rc = self.run_cmd(
@@ -193,11 +192,11 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
                          format_display_date(END_DATE)), stdout)
 
     def test_warns_when_no_digests_found_in_range(self):
-        key_provider = Mock()
+        key_provider = mock.Mock()
         key_provider.get_public_keys.return_value = [{'Fingerprint': 'a'}]
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = []
-        validator = Mock()
+        validator = mock.Mock()
         _setup_mock_traverser(self._mock_traverser, key_provider,
                               digest_provider, validator)
         stdout, stderr, rc = self.run_cmd(
@@ -270,11 +269,11 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
                   'previousDigestSignature': '...',
                   'digestStartTime': '...',
                   'digestEndTime': '...'}
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (digest, key_name)
-        _setup_mock_traverser(self._mock_traverser, Mock(),
-                              digest_provider, Mock())
+        _setup_mock_traverser(self._mock_traverser, mock.Mock(),
+                              digest_provider, mock.Mock())
         stdout, stderr, rc = self.run_cmd(
             "cloudtrail validate-logs --trail-arn %s --start-time %s"
             % (TEST_TRAIL_ARN, START_TIME_ARG), 1)
@@ -284,12 +283,12 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
 
     def test_fails_when_digest_is_missing_keys_before_validation(self):
         digest = {}
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         key_name = END_TIME_ARG + '.json.gz'
         digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (digest, key_name)
-        _setup_mock_traverser(self._mock_traverser, Mock(),
-                              digest_provider, Mock())
+        _setup_mock_traverser(self._mock_traverser, mock.Mock(),
+                              digest_provider, mock.Mock())
         stdout, stderr, rc = self.run_cmd(
             "cloudtrail validate-logs --trail-arn %s --start-time %s"
             % (TEST_TRAIL_ARN, START_TIME_ARG), 1)
@@ -308,12 +307,12 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         s3_client_provider = S3ClientProvider(self.driver.session, 'us-east-1')
         digest_provider = DigestProvider(
             s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1')
-        key_provider = Mock()
+        key_provider = mock.Mock()
         key_provider.get_public_keys.return_value = {
             'a': {'Value': VALID_TEST_KEY}
         }
         _setup_mock_traverser(self._mock_traverser, key_provider,
-                              digest_provider, Mock())
+                              digest_provider, mock.Mock())
         stdout, stderr, rc = self.run_cmd(
             ("cloudtrail validate-logs --trail-arn %s --start-time %s "
              "--region us-east-1") % (TEST_TRAIL_ARN, START_TIME_ARG), 1)
@@ -359,7 +358,7 @@ class TestCloudTrailCommandWithMissingLogs(BaseCloudTrailCommandTest):
         # raise a ClientError exception.
         key_provider, digest_provider, validator = create_scenario(
             ['gap'], [[self._logs[0]]])
-        with patch(RETRIEVER_FUNCTION) as mock_create_digest_traverser:
+        with mock.patch(RETRIEVER_FUNCTION) as mock_create_digest_traverser:
             _setup_mock_traverser(mock_create_digest_traverser,
                                   key_provider, digest_provider, validator)
             stdout, stderr, rc = self.run_cmd(

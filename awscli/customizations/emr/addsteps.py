@@ -30,6 +30,10 @@ class AddSteps(Command):
          'nargs': '+',
          'schema': argumentschema.STEPS_SCHEMA,
          'help_text': helptext.STEPS
+         },
+        {'name': 'execution-role-arn',
+         'required': False,
+         'help_text': helptext.EXECUTION_ROLE_ARN
          }
     ]
 
@@ -47,6 +51,9 @@ class AddSteps(Command):
             'JobFlowId': parsed_args.cluster_id,
             'Steps': step_list
         }
+
+        if parsed_args.execution_role_arn is not None:
+            parameters['ExecutionRoleArn'] = parsed_args.execution_role_arn
 
         emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
                                            parameters, parsed_globals)

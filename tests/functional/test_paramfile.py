@@ -8,13 +8,11 @@
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# ANY KIND, either express or implied. See the License for the specific
+# mock.ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
 
-from mock import patch, ANY
-
-from awscli.testutils import FileCreator, BaseAWSCommandParamsTest
+from awscli.testutils import mock, FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver
 
 logger = logging.getLogger(__name__)
@@ -42,10 +40,10 @@ class BaseTestCLIFollowParamURL(BaseAWSCommandParamsTest):
         # is what happened to the arguments before they were passed to botocore
         # which we get from the params={} key. For binary types we will fail in
         # python 3 with an rc of 255 and get an rc of 0 in python 2 where it
-        # can't tell the difference, so we pass ANY here to ignore the rc.
+        # can't tell the difference, so we pass mock.ANY here to ignore the rc.
         self.assert_params_for_cmd(cmd,
                                    params={'FunctionName': expected_param},
-                                   expected_rc=ANY)
+                                   expected_rc=mock.ANY)
 
 
 class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
@@ -55,7 +53,7 @@ class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
             expected_param='foobar'
         )
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_use_http_prefix(self, mock_send):
         content = 'http_content'
         mock_send.return_value = FakeResponse(content=content)
@@ -65,7 +63,7 @@ class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
             expected_param=content
         )
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_use_https_prefix(self, mock_send):
         content = 'https_content'
         mock_send.return_value = FakeResponse(content=content)
@@ -110,7 +108,7 @@ class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
             expected_param=param
         )
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_not_use_http_prefix(self, mock_send):
         param = 'http://foobar'
         self.assert_param_expansion_is_correct(
@@ -119,7 +117,7 @@ class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
         )
         mock_send.assert_not_called()
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_not_use_https_prefix(self, mock_send):
         param = 'https://foobar'
         self.assert_param_expansion_is_correct(
@@ -159,7 +157,7 @@ class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
     def test_does_not_prefixes_when_none_in_param(self):
         self.assert_param_expansion_is_correct('foobar', 'foobar')
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_use_http_prefix(self, mock_send):
         content = 'http_content'
         mock_send.return_value = FakeResponse(content=content)
@@ -169,7 +167,7 @@ class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
             expected_param=content
         )
 
-    @patch('awscli.paramfile.URLLib3Session.send')
+    @mock.patch('awscli.paramfile.URLLib3Session.send')
     def test_does_use_https_prefix(self, mock_send):
         content = 'https_content'
         mock_send.return_value = FakeResponse(content=content)

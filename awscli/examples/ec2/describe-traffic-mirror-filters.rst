@@ -25,10 +25,10 @@ Output::
                 ],
                 "EgressFilterRules": [],
                 "NetworkServices": [],
-                "Description": "Exanple Filter",
+                "Description": "Example filter",
                 "Tags": []
             }
         ]
     }
 
-For more information, see `View Your Traffic Mirror Filters <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#view-traffic-mirroring-filter>`__ in the *AWS Traffic Mirroring Guide*.
+For more information, see `View your traffic mirror filters <https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-filter.html#view-traffic-mirroring-filter>`__ in the *Traffic Mirroring Guide*.

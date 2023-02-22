@@ -1,14 +1,11 @@
-Listing your Domains
---------------------
+**Example 1: To list your registered domains**
 
-To list the SWF domains that you have registered for your account, you can use ``swf list-domains``. There is only one
-required parameter: ``--registration-status``, which you can set to either ``REGISTERED`` or ``DEPRECATED``.
+The following ``list-domains`` command example lists the ``REGISTERED`` SWF domains that you have registered for your account. ::
 
-Here's a typical example::
+    aws swf list-domains \
+        --registration-status REGISTERED
 
-    aws swf list-domains --registration-status REGISTERED
-
-Result::
+Output::
 
     {
       "domainInfos": [
@@ -23,12 +20,16 @@ Result::
       ]
     }
 
-If you set ``--registration-status`` to ``DEPRECATED``, you will see deprecated domains (domains that can not register
-new workflows or activities, but that can still be queried). For example::
+For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
 
-    aws swf list-domains --registration-status DEPRECATED
+**Example 2: To list your deprecated domains**
 
-Result::
+The following ``list-domains`` command example lists the ``DEPRECATED`` SWF domains that you have registered for your account. Deprecated domains are domains that can not register new workflows or activities, but that can still be queried. ::
+
+    aws swf list-domains \
+        --registration-status DEPRECATED
+
+Output::
 
     {
       "domainInfos": [
@@ -39,48 +40,54 @@ Result::
       ]
     }
 
+For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
 
-If you have many domains, you can set the ``--maximum-page-size`` option to limit the number of results returned. If
-there are more results to return than the maximum number that you specified, you will receive a ``nextPageToken`` that
-you can send to the next call to ``list-domains`` to retrieve additional entries.
 
-Here's an example of using ``--maximum-page-size``::
+**Example 3: To list the first page of registered domains**
 
-    aws swf list-domains --registration-status REGISTERED --maximum-page-size 1
+The following ``list-domains`` command example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option. ::
 
-Result::
+    aws swf list-domains \
+        --registration-status REGISTERED \
+        --maximum-page-size 1
+
+Output::
 
     {
-      "domainInfos": [
-        {
-          "status": "REGISTERED",
-          "name": "DataFrobotz"
-        }
-      ],
-      "nextPageToken": "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
+        "domainInfos": [
+            {
+                "status": "REGISTERED",
+                "name": "DataFrobotz"
+            }
+        ],
+    "nextPageToken": "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
     }
 
-When you make the call again, this time supplying the value of ``nextPageToken`` in the ``--next-page-token`` argument,
-you'll get another page of results::
+For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
 
-    aws swf list-domains --registration-status REGISTERED --maximum-page-size 1 --next-page-token "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
+**Example 4: To list the specified single page of registered domains**
 
-Result::
+The following ``list-domains`` command example lists the first page ``REGISTERED`` SWF domains that you have registered for your account using the ``--maximum-page-size`` option.
+
+When you make the call again, this time supplying the value of ``nextPageToken`` in the ``--next-page-token`` argument, you'll get another page of results. ::
+
+    aws swf list-domains \
+        --registration-status REGISTERED \
+        --maximum-page-size 1 \
+        --next-page-token "AAAAKgAAAAEAAAAAAAAAA2QJKNtidVgd49TTeNwYcpD+QKT2ynuEbibcQWe2QKrslMGe63gpS0MgZGpcpoKttL4OCXRFn98Xif557it+wSZUsvUDtImjDLvguyuyyFdIZtvIxIKEOPm3k2r4OjAGaFsGOuVbrKljvla7wdU7FYH3OlkNCP8b7PBj9SBkUyGoiAghET74P93AuVIIkdKGtQ=="
+
+Output::
 
     {
-      "domainInfos": [
-        {
-          "status": "REGISTERED",
-          "name": "erontest"
-        }
-      ]
+        "domainInfos": [
+            {
+                "status": "REGISTERED",
+                "name": "erontest"
+            }
+        ]
     }
 
 When there are no further pages of results to retrieve, ``nextPageToken`` will not be returned in the results.
 
-See Also
---------
-
--  `ListDomains <http://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__
-   in the *Amazon Simple Workflow Service API Reference*
+For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
 

@@ -161,4 +161,4 @@ The output repeats back the contents of the JSON file, plus the following values
 * ``Tags`` is set to the default (null).
 * ``PipelinesRunningCount`` and ``State`` show the current status of the channel.
 
-For more information, see `Creating a Channel from Scratch<http://docs.aws.amazon.com/medialive/latest/ug/creating-channel-scratch.html>`__ in the *AWS Elemental MediaLive User Guide*.
+For more information, see `Creating a Channel from Scratch <https://docs.aws.amazon.com/medialive/latest/ug/creating-channel-scratch.html>`__ in the *AWS Elemental MediaLive User Guide*.

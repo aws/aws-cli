@@ -1,10 +1,12 @@
-**Example 1: To generate a 256-bit random number (Linux or macOs)**
+**Example 1: To generate a 256-bit random byte string (Linux or macOs)**
 
 The following ``generate-random`` example generates a 256-bit (32-byte), base64-encoded random byte string. The example decodes the byte string and saves it in the `random` file. 
 
-When you run this command, you must use the ``number-of-bytes`` parameter to specify the length of the random number in bytes.
+When you run this command, you must use the ``number-of-bytes`` parameter to specify the length of the random value in bytes.
 
-You don't specify a CMK when you run this command. Unless you specify a `custom key store<https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html>`__, AWS KMS generates the random number. It is not associated with any particular CMK. 
+You don't specify a KMS key when you run this command. The random byte string is unrelated to any KMS key. 
+
+By default, AWS KMS generates the random number. However, if you specify a `custom key store<https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html>`__, the random byte string is generated in the AWS CloudHSM cluster associated with the custom key store.
 
 This example uses the following parameters and values:
 

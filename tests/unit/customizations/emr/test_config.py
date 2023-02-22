@@ -1,4 +1,4 @@
-
+from awscli.testutils import mock
 from awscli.customizations.emr.createcluster import CreateCluster
 from awscli.customizations.emr.exceptions import InvalidBooleanConfigError
 from awscli.customizations.emr.ssh import Get
@@ -6,7 +6,6 @@ from awscli.customizations.emr.ssh import Put
 from awscli.customizations.emr.ssh import SSH
 from awscli.customizations.emr.ssh import Socks
 from awscli.testutils import BaseAWSHelpOutputTest
-import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 
@@ -102,7 +101,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             config_value='False1', config_key='enable_debugging',
             profile_var_name='default'))
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     @mock.patch.object(CreateCluster, '_run_main_command')
     def test_ignore_role_configs_when_use_default_roles(self,

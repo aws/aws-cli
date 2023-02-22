@@ -79,7 +79,7 @@ class Filter(object):
     """
     def __init__(self, patterns, rootdir, dst_rootdir):
         """
-        :var patterns: A list of patterns. A pattern consits of a list
+        :var patterns: A list of patterns. A pattern consists of a list
             whose first member is a string 'exclude' or 'include'.
             The second member is the actual rule.
         :var rootdir: The root directory where the patterns are evaluated.

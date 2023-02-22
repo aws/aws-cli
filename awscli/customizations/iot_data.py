@@ -21,10 +21,10 @@ def add_custom_endpoint_url_note(help_command, **kwargs):
     style = help_command.doc.style
     style.start_note()
     style.doc.writeln(
-        'The default endpoint data.iot.[region].amazonaws.com is intended '
-        'for testing purposes only. For production code it is strongly '
-        'recommended to use the custom endpoint for your account '
-        ' (retrievable via the iot describe-endpoint command) to ensure best '
-        'availability and reachability of the service.'
+        'For production code it is strongly recommended to use the custom endpoint '
+        'for your account (retrievable via the iot describe-endpoint command) to ensure '
+        'best availability and reachability of the service. The default endpoints '
+        '(intended for testing purposes only) can be found at '
+        'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints'
     )
     style.end_note()

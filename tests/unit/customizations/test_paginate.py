@@ -10,14 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 from botocore.exceptions import DataNotFoundError, PaginationError
 from botocore.model import OperationModel
 from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
-
-import mock
-from mock import Mock, patch
 
 from awscli.customizations import paginate
 
@@ -61,7 +58,7 @@ class TestArgumentTableModifications(TestPaginateBase):
         self.assertTrue(argument_table['foo']._UNDOCUMENTED)
         # Also need to hide the limit key.
         self.assertTrue(argument_table['bar']._UNDOCUMENTED)
-        # We also need to inject startin-token and max-items.
+        # We also need to inject starting-token and max-items.
         self.assertIn('starting-token', argument_table)
         self.assertIn('max-items', argument_table)
         self.assertIn('page-size', argument_table)
@@ -103,11 +100,11 @@ class TestArgumentTableModifications(TestPaginateBase):
 
 class TestHelpDocumentationModifications(TestPaginateBase):
     def test_injects_pagination_help_text(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': 'abc'}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('``foo`` is a paginated operation. Multiple API',
@@ -116,22 +113,22 @@ class TestHelpDocumentationModifications(TestPaginateBase):
                           help_command.doc.getvalue().decode())
 
     def test_shows_result_keys_when_array(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': ['abc', '123']}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('following query expressions: ``abc``, ``123``',
                           help_command.doc.getvalue().decode())
 
     def test_does_not_show_result_key_if_not_present(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'limit_key': 'aaa'}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('``foo`` is a paginated operation. Multiple API',
@@ -140,11 +137,11 @@ class TestHelpDocumentationModifications(TestPaginateBase):
                              help_command.doc.getvalue().decode())
 
     def test_does_not_inject_when_no_pagination(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value=None):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertNotIn('``foo`` is a paginated operation',

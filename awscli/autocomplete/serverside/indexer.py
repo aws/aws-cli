@@ -43,6 +43,8 @@ class APICallIndexer(object):
               command = :command AND
               parent = :parent))
     """
+    _START_TRANSACTION = "START TRANSACTION"
+    _COMMIT_TRANSACTION = "COMMIT"
 
     def __init__(self, db_connection):
         self._db_connection = db_connection
@@ -88,6 +90,7 @@ class APICallIndexer(object):
         if op_model.name not in completions['operations']:
             return
         completion_for_op = completions['operations'][op_model.name]
+        # self._db_connection.execute(self._START_TRANSACTION)
         for arg_name, arg_obj in sorted(command.arg_table.items()):
             if not hasattr(arg_obj, '_serialized_name'):
                 continue
@@ -99,6 +102,7 @@ class APICallIndexer(object):
                 completion_for_op[api_casing], completions['resources'],
                 service_name)
             self._insert_into_db(transformed, arg_name, command)
+        # self._db_connection.execute(self._COMMIT_TRANSACTION)
 
     def _insert_into_db(self, transformed, arg_name, command):
         parent = '.'.join(['aws'] + command.lineage_names[:-1])

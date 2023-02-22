@@ -103,7 +103,7 @@ class BaseArtifactTest:
 class VEnvWorkspace:
     def __init__(self, path):
         self.path = path
-        self.cli_path = path / "aws"
+        self.cli_path = ROOT
         self.venv_path = path / "venv"
         self.install_path = path / "install"
         self.bin_path = path / "install" / "bin"
@@ -114,11 +114,12 @@ class VEnvWorkspace:
         self._init_install_path()
 
     def _init_cli_directory(self):
-        shutil.copytree(
-            ROOT,
-            self.cli_path,
-            ignore=shutil.ignore_patterns(".git", "build", ".tox"),
-        )
+        # shutil.copytree(
+        #     ROOT,
+        #     self.cli_path,
+        #     ignore=shutil.ignore_patterns(".git", "build", ".tox"),
+        # )
+        pass
 
     def _init_venv_directory(self):
         venv.create(self.venv_path, with_pip=True)

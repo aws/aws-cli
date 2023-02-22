@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.10.2
+======
+
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``glue``: Release of Delta Lake Data Lake Format for Glue Studio Service
+* api-change:``tnb``: This is the initial SDK release for AWS Telco Network Builder (TNB). AWS Telco Network Builder is a network automation service that helps you deploy and manage telecom networks.
+* bugfix:SSO: Fixes aws/aws-cli`#7496 <https://github.com/aws/aws-cli/issues/7496>`__ by using the correct profile name rather than the one set in the session.
+* api-change:``quicksight``: S3 data sources now accept a custom IAM role.
+* api-change:``connect``: Reasons for failed diff has been approved by SDK Reviewer
+* api-change:``resiliencehub``: In this release we improved resilience hub application creation and maintenance by introducing new resource and app component crud APIs, improving visibility and maintenance of application input sources and added support for additional information attributes to be provided by customers.
+* api-change:``auditmanager``: This release introduces a ServiceQuotaExceededException to the UpdateAssessmentFrameworkShare API operation.
+* api-change:``apprunner``: This release supports removing MaxSize limit for AutoScalingConfiguration.
+
+
 2.10.1
 ======
 

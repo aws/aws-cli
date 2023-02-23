@@ -599,6 +599,23 @@
       ],
       "documentation":"<p>Lists all packages associated with an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "ListScheduledActions":{
+      "name":"ListScheduledActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/scheduledActions"
+      },
+      "input":{"shape":"ListScheduledActionsRequest"},
+      "output":{"shape":"ListScheduledActionsResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves a list of configuration changes that are scheduled for a domain. These changes can be <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">service software updates</a> or <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html#auto-tune-types\">blue/green Auto-Tune enhancements</a>.</p>"
+    },
     "ListTags":{
       "name":"ListTags",
       "http":{
@@ -793,6 +810,25 @@
       ],
       "documentation":"<p>Updates a package for use with Amazon OpenSearch Service domains. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "UpdateScheduledAction":{
+      "name":"UpdateScheduledAction",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/scheduledAction/update"
+      },
+      "input":{"shape":"UpdateScheduledActionRequest"},
+      "output":{"shape":"UpdateScheduledActionResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"SlotNotAvailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Reschedules a planned domain configuration change for a later time. This change can be a scheduled <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">service software update</a> or a <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html#auto-tune-types\">blue/green Auto-Tune enhancement</a>.</p>"
+    },
     "UpdateVpcEndpoint":{
       "name":"UpdateVpcEndpoint",
       "http":{
@@ -909,6 +945,33 @@
         }
       },
       "documentation":"<p>The configured access rules for the domain's search endpoint, and the current status of those rules.</p>"
+    },
+    "ActionSeverity":{
+      "type":"string",
+      "enum":[
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
+    },
+    "ActionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_UPDATE",
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETED",
+        "NOT_ELIGIBLE",
+        "ELIGIBLE"
+      ]
+    },
+    "ActionType":{
+      "type":"string",
+      "enum":[
+        "SERVICE_SOFTWARE_UPDATE",
+        "JVM_HEAP_SIZE_TUNING",
+        "JVM_YOUNG_GEN_TUNING"
+      ]
     },
     "AddTagsRequest":{
       "type":"structure",
@@ -1175,7 +1238,7 @@
           "documentation":"<p>A cron expression for a recurring maintenance schedule during which Auto-Tune can deploy changes.</p>"
         }
       },
-      "documentation":"<p>The Auto-Tune maintenance schedule. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a>.</p>"
+      "documentation":"<note> <p>This object is deprecated. Use the domain's <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html\">off-peak window</a> to schedule Auto-Tune optimizations. For migration instructions, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html#off-peak-migrate\">Migrating from Auto-Tune maintenance windows</a>.</p> </note> <p>The Auto-Tune maintenance schedule. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a>.</p>"
     },
     "AutoTuneMaintenanceScheduleList":{
       "type":"list",
@@ -1195,7 +1258,11 @@
         },
         "MaintenanceSchedules":{
           "shape":"AutoTuneMaintenanceScheduleList",
-          "documentation":"<p>A list of maintenance schedules during which Auto-Tune can deploy changes.</p>"
+          "documentation":"<p>DEPRECATED. Use <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html\">off-peak window</a> instead.</p> <p>A list of maintenance schedules during which Auto-Tune can deploy changes.</p>"
+        },
+        "UseOffPeakWindow":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to use the domain's <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html\">off-peak window</a> to deploy configuration changes on the domain rather than a maintenance schedule.</p>"
         }
       },
       "documentation":"<p>Auto-Tune settings when updating a domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a>.</p>"
@@ -1209,10 +1276,14 @@
         },
         "MaintenanceSchedules":{
           "shape":"AutoTuneMaintenanceScheduleList",
-          "documentation":"<p>A list of maintenance schedules during which Auto-Tune can deploy changes. Maintenance schedules are overwrite, not append. If your request includes no schedules, the request deletes all existing schedules. To preserve existing schedules, make a call to <code>DescribeDomainConfig</code> first and use the <code>MaintenanceSchedules</code> portion of the response as the basis for this section.</p>"
+          "documentation":"<p>A list of maintenance schedules during which Auto-Tune can deploy changes. Maintenance windows are deprecated and have been replaced with <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html\">off-peak windows</a>.</p>"
+        },
+        "UseOffPeakWindow":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to schedule Auto-Tune optimizations that require blue/green deployments during the domain's configured daily off-peak window.</p>"
         }
       },
-      "documentation":"<p>Options for configuring Auto-Tune. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a>.</p>"
+      "documentation":"<p>Options for configuring Auto-Tune. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a> </p>"
     },
     "AutoTuneOptionsOutput":{
       "type":"structure",
@@ -1224,6 +1295,10 @@
         "ErrorMessage":{
           "shape":"String",
           "documentation":"<p>Any errors that occurred while enabling or disabling Auto-Tune.</p>"
+        },
+        "UseOffPeakWindow":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the domain's off-peak window will be used to deploy Auto-Tune changes rather than a maintenance schedule.</p>"
         }
       },
       "documentation":"<p>The Auto-Tune settings for a domain, displayed when enabling or disabling Auto-Tune.</p>"
@@ -1244,7 +1319,7 @@
     },
     "AutoTuneState":{
       "type":"string",
-      "documentation":"<p>The Auto-Tune state for the domain. For valid states see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\"> Auto-Tune for Amazon OpenSearch Service</a>. </p>",
+      "documentation":"<p>The Auto-Tune state for the domain. For valid states see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html\">Auto-Tune for Amazon OpenSearch Service</a>. </p>",
       "enum":[
         "ENABLED",
         "DISABLED",
@@ -1577,7 +1652,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occurred because the client attempts to remove a resource that's currently in use.</p>",
+      "documentation":"<p>An error occurred because the client attempts to remove a resource that is currently in use.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -1679,6 +1754,14 @@
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsInput",
           "documentation":"<p>Options for Auto-Tune.</p>"
+        },
+        "OffPeakWindowOptions":{
+          "shape":"OffPeakWindowOptions",
+          "documentation":"<p>Specifies a daily 10-hour time block during which OpenSearch Service can perform configuration changes on the domain, including service software updates and Auto-Tune enhancements that require a blue/green deployment. If no options are specified, the default start time of 10:00 P.M. local time (for the Region that the domain is created in) is used.</p>"
+        },
+        "SoftwareUpdateOptions":{
+          "shape":"SoftwareUpdateOptions",
+          "documentation":"<p>Software update options for the domain.</p>"
         }
       }
     },
@@ -2405,7 +2488,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occured because the client wanted to access an unsupported operation.</p>",
+      "documentation":"<p>An error occured because the client wanted to access a not supported operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -2460,7 +2543,7 @@
         },
         "EBSOptions":{
           "shape":"EBSOptionsStatus",
-          "documentation":"<p>Container for EBS options configured for an OpenSearch Service domain.</p>"
+          "documentation":"<p>Container for EBS options configured for the domain.</p>"
         },
         "AccessPolicies":{
           "shape":"AccessPoliciesStatus",
@@ -2509,6 +2592,14 @@
         "ChangeProgressDetails":{
           "shape":"ChangeProgressDetails",
           "documentation":"<p>Container for information about the progress of an existing configuration change.</p>"
+        },
+        "OffPeakWindowOptions":{
+          "shape":"OffPeakWindowOptionsStatus",
+          "documentation":"<p>Container for off-peak window options for the domain.</p>"
+        },
+        "SoftwareUpdateOptions":{
+          "shape":"SoftwareUpdateOptionsStatus",
+          "documentation":"<p>Software update options for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -2774,6 +2865,14 @@
         "ChangeProgressDetails":{
           "shape":"ChangeProgressDetails",
           "documentation":"<p>Information about a configuration change happening on the domain.</p>"
+        },
+        "OffPeakWindowOptions":{
+          "shape":"OffPeakWindowOptions",
+          "documentation":"<p>Options that specify a custom 10-hour window during which OpenSearch Service can perform configuration changes on the domain.</p>"
+        },
+        "SoftwareUpdateOptions":{
+          "shape":"SoftwareUpdateOptions",
+          "documentation":"<p>Service software update options for the domain.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -3479,6 +3578,43 @@
       },
       "documentation":"<p>Container for the response parameters to the <code>ListPackagesForDomain</code> operation.</p>"
     },
+    "ListScheduledActionsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If your initial <code>ListScheduledActions</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListScheduledActions</code> operations, which returns results in the next page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListScheduledActionsResponse":{
+      "type":"structure",
+      "members":{
+        "ScheduledActions":{
+          "shape":"ScheduledActionsList",
+          "documentation":"<p>A list of actions that are scheduled for the domain.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
+        }
+      }
+    },
     "ListTagsRequest":{
       "type":"structure",
       "required":["ARN"],
@@ -3749,6 +3885,44 @@
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9\\-\\_\\.]+"
+    },
+    "OffPeakWindow":{
+      "type":"structure",
+      "members":{
+        "WindowStartTime":{
+          "shape":"WindowStartTime",
+          "documentation":"<p>A custom start time for the off-peak window, in Coordinated Universal Time (UTC). The window length will always be 10 hours, so you can't specify an end time. For example, if you specify 11:00 P.M. UTC as a start time, the end time will automatically be set to 9:00 A.M.</p>"
+        }
+      },
+      "documentation":"<p>A custom 10-hour, low-traffic window during which OpenSearch Service can perform mandatory configuration changes on the domain. These actions can include scheduled service software updates and blue/green Auto-Tune enhancements. OpenSearch Service will schedule these actions during the window that you specify.</p> <p>If you don't specify a window start time, it defaults to 10:00 P.M. local time.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html\">Defining off-peak maintenance windows for Amazon OpenSearch Service</a>.</p>"
+    },
+    "OffPeakWindowOptions":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable an off-peak window.</p> <p>This option is only available when modifying a domain created prior to February 13, 2023, not when creating a new domain. All domains created after this date have the off-peak window enabled by default. You can't disable the off-peak window after it's enabled for a domain.</p>"
+        },
+        "OffPeakWindow":{
+          "shape":"OffPeakWindow",
+          "documentation":"<p>Off-peak window settings for the domain.</p>"
+        }
+      },
+      "documentation":"<p>Options for a domain's <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html\">off-peak window</a>, during which OpenSearch Service can perform mandatory configuration changes on the domain.</p>"
+    },
+    "OffPeakWindowOptionsStatus":{
+      "type":"structure",
+      "members":{
+        "Options":{
+          "shape":"OffPeakWindowOptions",
+          "documentation":"<p>The domain's off-peak window configuration.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of off-peak window options.</p>"
+        }
+      },
+      "documentation":"<p>The status of <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html\">off-peak window</a> options for a domain.</p>"
     },
     "OpenSearchPartitionInstanceType":{
       "type":"string",
@@ -4349,7 +4523,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
+      "documentation":"<p>An exception for accessing or deleting a resource that does not exist..</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -4489,6 +4663,66 @@
       },
       "documentation":"<p>Describes the SAML application configured for the domain.</p>"
     },
+    "ScheduleAt":{
+      "type":"string",
+      "enum":[
+        "NOW",
+        "TIMESTAMP",
+        "OFF_PEAK_WINDOW"
+      ]
+    },
+    "ScheduledAction":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Type",
+        "Severity",
+        "ScheduledTime"
+      ],
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the scheduled action.</p>"
+        },
+        "Type":{
+          "shape":"ActionType",
+          "documentation":"<p>The type of action that will be taken on the domain.</p>"
+        },
+        "Severity":{
+          "shape":"ActionSeverity",
+          "documentation":"<p>The severity of the action.</p>"
+        },
+        "ScheduledTime":{
+          "shape":"Long",
+          "documentation":"<p>The time when the change is scheduled to happen.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the action to be taken.</p>"
+        },
+        "ScheduledBy":{
+          "shape":"ScheduledBy",
+          "documentation":"<p>Whether the action was scheduled manually (<code>CUSTOMER</code>, or by OpenSearch Service automatically (<code>SYSTEM</code>).</p>"
+        },
+        "Status":{
+          "shape":"ActionStatus",
+          "documentation":"<p>The current status of the scheduled action.</p>"
+        },
+        "Mandatory":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the action is required or optional.</p>"
+        },
+        "Cancellable":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not the scheduled action is cancellable.</p>"
+        }
+      },
+      "documentation":"<p>Information about a scheduled configuration change for an OpenSearch Service domain. This actions can be a <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">service software update</a> or a <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html#auto-tune-types\">blue/green Auto-Tune enhancement</a>.</p>"
+    },
+    "ScheduledActionsList":{
+      "type":"list",
+      "member":{"shape":"ScheduledAction"}
+    },
     "ScheduledAutoTuneActionType":{
       "type":"string",
       "documentation":"<p>The Auto-Tune action type.</p>",
@@ -4530,6 +4764,13 @@
         "LOW",
         "MEDIUM",
         "HIGH"
+      ]
+    },
+    "ScheduledBy":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER",
+        "SYSTEM"
       ]
     },
     "ServiceSoftwareOptions":{
@@ -4574,6 +4815,22 @@
       "type":"string",
       "documentation":"<p>The domain endpoint to which index and search requests are submitted. For example, <code>search-imdb-movies-oopcnjfn6ugo.eu-west-1.es.amazonaws.com</code> or <code>doc-imdb-movies-oopcnjfn6u.eu-west-1.es.amazonaws.com</code>.</p>"
     },
+    "SlotList":{
+      "type":"list",
+      "member":{"shape":"Long"}
+    },
+    "SlotNotAvailableException":{
+      "type":"structure",
+      "members":{
+        "SlotSuggestions":{
+          "shape":"SlotList",
+          "documentation":"<p>Alternate time slots during which OpenSearch Service has available capacity to schedule a domain action.</p>"
+        }
+      },
+      "documentation":"<p>An exception for attempting to schedule a domain action during an unavailable time slot.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "SnapshotOptions":{
       "type":"structure",
       "members":{
@@ -4602,6 +4859,30 @@
       },
       "documentation":"<p>Container for information about a daily automated snapshot for an OpenSearch Service domain.</p>"
     },
+    "SoftwareUpdateOptions":{
+      "type":"structure",
+      "members":{
+        "AutoSoftwareUpdateEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether automatic service software updates are enabled for the domain.</p>"
+        }
+      },
+      "documentation":"<p>Options for configuring service software updates for a domain.</p>"
+    },
+    "SoftwareUpdateOptionsStatus":{
+      "type":"structure",
+      "members":{
+        "Options":{
+          "shape":"SoftwareUpdateOptions",
+          "documentation":"<p>The service software update options for a domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The status of service software update options, including creation date and last updated date.</p>"
+        }
+      },
+      "documentation":"<p>The status of the service software options for a domain.</p>"
+    },
     "StartAt":{"type":"timestamp"},
     "StartServiceSoftwareUpdateRequest":{
       "type":"structure",
@@ -4610,6 +4891,14 @@
         "DomainName":{
           "shape":"DomainName",
           "documentation":"<p>The name of the domain that you want to update to the latest service software.</p>"
+        },
+        "ScheduleAt":{
+          "shape":"ScheduleAt",
+          "documentation":"<p>When to start the service software update.</p> <ul> <li> <p> <code>NOW</code> - Immediately schedules the update to happen in the current hour if there's capacity available.</p> </li> <li> <p> <code>TIMESTAMP</code> - Lets you specify a custom date and time to apply the update. If you specify this value, you must also provide a value for <code>DesiredStartTime</code>.</p> </li> <li> <p> <code>OFF_PEAK_WINDOW</code> - Marks the update to be picked up during an upcoming off-peak window. There's no guarantee that the update will happen during the next immediate window. Depending on capacity, it might happen in subsequent days.</p> </li> </ul> <p>Default: <code>NOW</code> if you don't specify a value for <code>DesiredStartTime</code>, and <code>TIMESTAMP</code> if you do.</p>"
+        },
+        "DesiredStartTime":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch timestamp when you want the service software update to start. You only need to specify this parameter if you set <code>ScheduleAt</code> to <code>TIMESTAMP</code>.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>StartServiceSoftwareUpdate</code> operation.</p>"
@@ -4623,6 +4912,16 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>StartServiceSoftwareUpdate</code> operation. Contains the status of the update.</p>"
+    },
+    "StartTimeHours":{
+      "type":"long",
+      "max":23,
+      "min":0
+    },
+    "StartTimeMinutes":{
+      "type":"long",
+      "max":59,
+      "min":0
     },
     "StartTimestamp":{"type":"timestamp"},
     "StorageSubTypeName":{
@@ -4772,7 +5071,7 @@
         },
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
-          "documentation":"<p>Options to publish OpenSearch lots to Amazon CloudWatch Logs.</p>"
+          "documentation":"<p>Options to publish OpenSearch logs to Amazon CloudWatch Logs.</p>"
         },
         "EncryptionAtRestOptions":{
           "shape":"EncryptionAtRestOptions",
@@ -4784,7 +5083,7 @@
         },
         "NodeToNodeEncryptionOptions":{
           "shape":"NodeToNodeEncryptionOptions",
-          "documentation":"<p>Node-To-Node Encryption options for the domain.</p>"
+          "documentation":"<p>Node-to-node encryption options for the domain.</p>"
         },
         "AdvancedSecurityOptions":{
           "shape":"AdvancedSecurityOptionsInput",
@@ -4801,6 +5100,14 @@
         "DryRunMode":{
           "shape":"DryRunMode",
           "documentation":"<p>The type of dry run to perform.</p> <ul> <li> <p> <code>Basic</code> only returns the type of deployment (blue/green or dynamic) that the update will cause.</p> </li> <li> <p> <code>Verbose</code> runs an additional check to validate the changes you're making. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#validation-check\">Validating a domain update</a>.</p> </li> </ul>"
+        },
+        "OffPeakWindowOptions":{
+          "shape":"OffPeakWindowOptions",
+          "documentation":"<p>Off-peak window options for the domain.</p>"
+        },
+        "SoftwareUpdateOptions":{
+          "shape":"SoftwareUpdateOptions",
+          "documentation":"<p>Service software update options for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"
@@ -4859,6 +5166,48 @@
         }
       },
       "documentation":"<p>Container for the response returned by the <code>UpdatePackage</code> operation.</p>"
+    },
+    "UpdateScheduledActionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ActionID",
+        "ActionType",
+        "ScheduleAt"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain to reschedule an action for.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ActionID":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the action to reschedule. To retrieve this ID, send a <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_ListScheduledActions.html\">ListScheduledActions</a> request.</p>"
+        },
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The type of action to reschedule. Can be one of <code>SERVICE_SOFTWARE_UPDATE</code>, <code>JVM_HEAP_SIZE_TUNING</code>, or <code>JVM_YOUNG_GEN_TUNING</code>. To retrieve this value, send a <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_ListScheduledActions.html\">ListScheduledActions</a> request.</p>"
+        },
+        "ScheduleAt":{
+          "shape":"ScheduleAt",
+          "documentation":"<p>When to schedule the action.</p> <ul> <li> <p> <code>NOW</code> - Immediately schedules the update to happen in the current hour if there's capacity available.</p> </li> <li> <p> <code>TIMESTAMP</code> - Lets you specify a custom date and time to apply the update. If you specify this value, you must also provide a value for <code>DesiredStartTime</code>.</p> </li> <li> <p> <code>OFF_PEAK_WINDOW</code> - Marks the action to be picked up during an upcoming off-peak window. There's no guarantee that the change will be implemented during the next immediate window. Depending on capacity, it might happen in subsequent days.</p> </li> </ul>"
+        },
+        "DesiredStartTime":{
+          "shape":"Long",
+          "documentation":"<p>The time to implement the change, in Coordinated Universal Time (UTC). Only specify this parameter if you set <code>ScheduleAt</code> to <code>TIMESTAMP</code>.</p>"
+        }
+      }
+    },
+    "UpdateScheduledActionResponse":{
+      "type":"structure",
+      "members":{
+        "ScheduledAction":{
+          "shape":"ScheduledAction",
+          "documentation":"<p>Information about the rescheduled action.</p>"
+        }
+      }
     },
     "UpdateTimestamp":{"type":"timestamp"},
     "UpdateVpcEndpointRequest":{
@@ -5085,7 +5434,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for missing or invalid input fields.</p>",
+      "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -5261,6 +5610,24 @@
     "VpcEndpoints":{
       "type":"list",
       "member":{"shape":"VpcEndpoint"}
+    },
+    "WindowStartTime":{
+      "type":"structure",
+      "required":[
+        "Hours",
+        "Minutes"
+      ],
+      "members":{
+        "Hours":{
+          "shape":"StartTimeHours",
+          "documentation":"<p>The start hour of the window in Coordinated Universal Time (UTC), using 24-hour time. For example, <code>17</code> refers to 5:00 P.M. UTC.</p>"
+        },
+        "Minutes":{
+          "shape":"StartTimeMinutes",
+          "documentation":"<p>The start minute of the window, in UTC.</p>"
+        }
+      },
+      "documentation":"<p>The desired start time for an <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_OffPeakWindow.html\">off-peak maintenance window</a>.</p>"
     },
     "ZoneAwarenessConfig":{
       "type":"structure",

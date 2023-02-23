@@ -3769,7 +3769,7 @@
           "documentation": "<p>The total number of buckets that Amazon Macie wasn't able to evaluate permissions settings for. Macie can't determine whether these buckets are publicly accessible.</p>"
         }
       },
-      "documentation": "<p>Provides information about the number of S3 buckets that are publicly accessible based on a combination of permissions settings for each bucket.</p>"
+      "documentation": "<p>Provides information about the number of S3 buckets that are publicly accessible due to a combination of permissions settings for each bucket.</p>"
     },
     "BucketCountByEncryptionType": {
       "type": "structure",
@@ -3803,25 +3803,25 @@
         "external": {
           "shape": "__long",
           "locationName": "external",
-          "documentation": "<p>The total number of buckets that are shared with an Amazon Web Services account that isn't part of the same Amazon Macie organization.</p>"
+          "documentation": "<p>The total number of buckets that are shared with one or more of the following or any combination of the following: an Amazon Web Services account that isn't in the same Amazon Macie organization, an Amazon CloudFront OAI, or a CloudFront OAC.</p>"
         },
         "internal": {
           "shape": "__long",
           "locationName": "internal",
-          "documentation": "<p>The total number of buckets that are shared with an Amazon Web Services account that's part of the same Amazon Macie organization.</p>"
+          "documentation": "<p>The total number of buckets that are shared with one or more Amazon Web Services accounts in the same Amazon Macie organization. These buckets aren't shared with Amazon CloudFront OAIs or OACs.</p>"
         },
         "notShared": {
           "shape": "__long",
           "locationName": "notShared",
-          "documentation": "<p>The total number of buckets that aren't shared with other Amazon Web Services accounts.</p>"
+          "documentation": "<p>The total number of buckets that aren't shared with other Amazon Web Services accounts, Amazon CloudFront OAIs, or CloudFront OACs.</p>"
         },
         "unknown": {
           "shape": "__long",
           "locationName": "unknown",
-          "documentation": "<p>The total number of buckets that Amazon Macie wasn't able to evaluate shared access settings for. Macie can't determine whether these buckets are shared with other Amazon Web Services accounts.</p>"
+          "documentation": "<p>The total number of buckets that Amazon Macie wasn't able to evaluate shared access settings for. Macie can't determine whether these buckets are shared with other Amazon Web Services accounts, Amazon CloudFront OAIs, or CloudFront OACs.</p>"
         }
       },
-      "documentation": "<p>Provides information about the number of S3 buckets that are or aren't shared with other Amazon Web Services accounts.</p>"
+      "documentation": "<p>Provides information about the number of S3 buckets that are or aren't shared with other Amazon Web Services accounts, Amazon CloudFront origin access identities (OAIs), or CloudFront origin access controls (OACs). In this data, an <i>Amazon Macie organization</i> is defined as a set of Macie accounts that are centrally managed as a group of related accounts through Organizations or by Macie invitation.</p>"
     },
     "BucketCountPolicyAllowsUnencryptedObjectUploads": {
       "type": "structure",
@@ -3937,7 +3937,7 @@
         "bucketCreatedAt": {
           "shape": "__timestampIso8601",
           "locationName": "bucketCreatedAt",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the bucket was created, or changes such as edits to the bucket's policy were most recently made to the bucket.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the bucket was created. This value can also indicate when changes such as edits to the bucket's policy were most recently made to the bucket.</p>"
         },
         "bucketName": {
           "shape": "__string",
@@ -3957,7 +3957,7 @@
         "errorCode": {
           "shape": "BucketMetadataErrorCode",
           "locationName": "errorCode",
-          "documentation": "<p>Specifies the error code for an error that prevented Amazon Macie from retrieving and processing information about the bucket and the bucket's objects. If this value is ACCESS_DENIED, Macie doesn't have permission to retrieve the information. For example, the bucket has a restrictive bucket policy and Amazon S3 denied the request. If this value is null, Macie was able to retrieve and process the information.</p>"
+          "documentation": "<p>The error code for an error that prevented Amazon Macie from retrieving and processing information about the bucket and the bucket's objects. If this value is ACCESS_DENIED, Macie doesn't have permission to retrieve the information. For example, the bucket has a restrictive bucket policy and Amazon S3 denied the request. If this value is null, Macie was able to retrieve and process the information.</p>"
         },
         "errorMessage": {
           "shape": "__string",
@@ -3972,12 +3972,12 @@
         "lastAutomatedDiscoveryTime": {
           "shape": "__timestampIso8601",
           "locationName": "lastAutomatedDiscoveryTime",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently performed automated sensitive data discovery for the bucket. This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently analyzed data in the bucket while performing automated sensitive data discovery for your account. This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
         },
         "lastUpdated": {
           "shape": "__timestampIso8601",
           "locationName": "lastUpdated",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently retrieved both bucket and object metadata from Amazon S3 for the bucket.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently retrieved bucket or object metadata from Amazon S3 for the bucket.</p>"
         },
         "objectCount": {
           "shape": "__long",
@@ -3987,7 +3987,7 @@
         "objectCountByEncryptionType": {
           "shape": "ObjectCountByEncryptionType",
           "locationName": "objectCountByEncryptionType",
-          "documentation": "<p>The total number of objects that are in the bucket, grouped by server-side encryption type. This includes a grouping that reports the total number of objects that aren't encrypted or use client-side encryption.</p>"
+          "documentation": "<p>The total number of objects in the bucket, grouped by server-side encryption type. This includes a grouping that reports the total number of objects that aren't encrypted or use client-side encryption.</p>"
         },
         "publicAccess": {
           "shape": "BucketPublicAccess",
@@ -4007,7 +4007,7 @@
         "sensitivityScore": {
           "shape": "__integer",
           "locationName": "sensitivityScore",
-          "documentation": "<p>The sensitivity score for the bucket, ranging from\u00a0-1\u00a0(no analysis due to an error) to\u00a0100 (sensitive). This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
+          "documentation": "<p>The sensitivity score for the bucket, ranging from -1 (classification error) to 100 (sensitive). This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
         },
         "serverSideEncryption": {
           "shape": "BucketServerSideEncryption",
@@ -4017,7 +4017,7 @@
         "sharedAccess": {
           "shape": "SharedAccess",
           "locationName": "sharedAccess",
-          "documentation": " <p>Specifies whether the bucket is shared with another Amazon Web Services account. Possible values are:</p> <ul><li><p>EXTERNAL - The bucket is shared with an Amazon Web Services account that isn't part of the same Amazon Macie organization.</p></li> <li><p>INTERNAL - The bucket is shared with an Amazon Web Services account that's part of the same Amazon Macie organization.</p></li> <li><p>NOT_SHARED - The bucket isn't shared with other Amazon Web Services accounts.</p></li> <li><p>UNKNOWN - Amazon Macie wasn't able to evaluate the shared access settings for the bucket.</p></li></ul>"
+          "documentation": "<p>Specifies whether the bucket is shared with another Amazon Web Services account, an Amazon CloudFront origin access identity (OAI), or a CloudFront origin access control (OAC). Possible values are:</p> <ul><li><p>EXTERNAL - The bucket is shared with one or more of the following or any combination of the following: an Amazon Web Services account that isn't part of your Amazon Macie organization, a CloudFront OAI, or a CloudFront OAC.</p></li> <li><p>INTERNAL - The bucket is shared with one or more Amazon Web Services accounts that are part of your Amazon Macie organization. It isn't shared with a CloudFront OAI or OAC.</p></li> <li><p>NOT_SHARED - The bucket isn't shared with another Amazon Web Services account, a CloudFront OAI, or a CloudFront OAC.</p></li> <li><p>UNKNOWN - Amazon Macie wasn't able to evaluate the shared access settings for the bucket.</p></li></ul> <p>An <i>Amazon Macie organization</i> is a set of Macie accounts that are centrally managed as a group of related accounts through Organizations or by Macie invitation.</p>"
         },
         "sizeInBytes": {
           "shape": "__long",
@@ -4050,7 +4050,7 @@
           "documentation": "<p>Specifies whether versioning is enabled for the bucket.</p>"
         }
       },
-      "documentation": "<p>Provides statistical data and other information about an S3 bucket that Amazon Macie monitors and analyzes for your account. If an error occurs when Macie attempts to retrieve and process metadata from Amazon S3 for the bucket and the bucket's objects, the value for the versioning property is false and the value for most other properties is null. Key exceptions are accountId, bucketArn, bucketCreatedAt, bucketName, lastUpdated, and region. To identify the cause of the error, refer to the errorCode and errorMessage values.</p>"
+      "documentation": "<p>Provides statistical data and other information about an S3 bucket that Amazon Macie monitors and analyzes for your account. By default, object count and storage size values include data for object parts that are the result of incomplete multipart uploads. For more information, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/monitoring-s3-how-it-works.html\">How Macie monitors Amazon S3 data security</a> in the <i>Amazon Macie User Guide</i>.</p> <p>If an error occurs when Macie attempts to retrieve and process metadata from Amazon S3 for the bucket or the bucket's objects, the value for the versioning property is false and the value for most other properties is null. Key exceptions are accountId, bucketArn, bucketCreatedAt, bucketName, lastUpdated, and region. To identify the cause of the error, refer to the errorCode and errorMessage values.</p>"
     },
     "BucketMetadataErrorCode": {
       "type": "string",
@@ -4155,7 +4155,7 @@
         "notSensitive": {
           "shape": "SensitivityAggregations",
           "locationName": "notSensitive",
-          "documentation": "<p>The aggregated statistical data for all buckets that have a sensitivity score of 0-49.</p>"
+          "documentation": "<p>The aggregated statistical data for all buckets that have a sensitivity score of 1-49.</p>"
         },
         "sensitive": {
           "shape": "SensitivityAggregations",
@@ -4287,7 +4287,7 @@
         "reason": {
           "shape": "__string",
           "locationName": "reason",
-          "documentation": "<p>A brief description of the status of the finding. This value is null if the status (code) of the finding is COMPLETE.</p> <p>Amazon Macie uses this value to notify you of any errors, warnings, or considerations that might impact your analysis of the finding and the affected S3 object. Possible values are:</p> <ul><li><p>ARCHIVE_CONTAINS_UNPROCESSED_FILES - The object is an archive file and Macie extracted and analyzed only some or none of the files in the archive. To determine which files Macie analyzed, if any, you can refer to the corresponding sensitive data discovery result for the finding (ClassificationDetails.detailedResultsLocation).</p></li> <li><p>ARCHIVE_EXCEEDS_SIZE_LIMIT - The object is an archive file whose total storage size exceeds the size quota for this type of archive.</p></li> <li><p>ARCHIVE_NESTING_LEVEL_OVER_LIMIT - The object is an archive file whose nested depth exceeds the quota for the maximum number of nested levels that Macie analyzes for this type of archive.</p></li> <li><p>ARCHIVE_TOTAL_BYTES_EXTRACTED_OVER_LIMIT - The object is an archive file that exceeds the quota for the maximum amount of data that Macie extracts and analyzes for this type of archive.</p></li> <li><p>ARCHIVE_TOTAL_DOCUMENTS_PROCESSED_OVER_LIMIT - The object is an archive file that contains more than the maximum number of files that Macie extracts and analyzes for this type of archive.</p></li> <li><p>FILE_EXCEEDS_SIZE_LIMIT - The storage size of the object exceeds the size quota for this type of file.</p></li> <li><p>INVALID_ENCRYPTION - The object is encrypted using server-side encryption but Macie isn\u2019t allowed to use the key. Macie can\u2019t decrypt and analyze the object.</p></li> <li><p>INVALID_KMS_KEY - The object is encrypted with an KMS key that was disabled or is being deleted. Macie can\u2019t decrypt and analyze the object.</p></li> <li><p>INVALID_OBJECT_STATE - The object doesn\u2019t use a supported Amazon S3 storage class. For more information, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/data-classification.html\">Discovering sensitive data</a> in the <i>Amazon Macie User Guide</i>.</p></li> <li><p>JSON_NESTING_LEVEL_OVER_LIMIT - The object contains JSON data and the nested depth of the data exceeds the quota for the number of nested levels that Macie analyzes for this type of file.</p></li> <li><p>MALFORMED_FILE - The object is a malformed or corrupted file. An error occurred when Macie attempted to detect the file\u2019s type or extract data from the file.</p></li> <li><p>OBJECT_VERSION_MISMATCH - The object was changed while Macie was analyzing it.</p></li> <li><p>NO_SUCH_BUCKET_AVAILABLE - The object was in a bucket that was deleted shortly before or when Macie attempted to analyze the object.</p></li> <li><p>MALFORMED_OR_FILE_SIZE_EXCEEDS_LIMIT - The object is a Microsoft Office file that is malformed or exceeds the size quota for this type of file. If the file is malformed, an error occurred when Macie attempted to extract data from the file.</p></li> <li><p>OOXML_UNCOMPRESSED_SIZE_EXCEEDS_LIMIT - The object is an Office Open XML file that exceeds the size quota for this type of file.</p></li> <li><p>OOXML_UNCOMPRESSED_RATIO_EXCEEDS_LIMIT - The object is an Office Open XML file whose compression ratio exceeds the compression quota for this type of file.</p></li> <li><p>PERMISSION_DENIED - Macie isn\u2019t allowed to access the object. The object\u2019s permissions settings prevent Macie from analyzing the object.</p></li> <li><p>SOURCE_OBJECT_NO_LONGER_AVAILABLE - The object was deleted shortly before or when Macie attempted to analyze it.</p></li> <li><p>UNABLE_TO_PARSE_FILE - The object is a file that contains structured data and an error occurred when Macie attempted to parse the data.</p></li> <li><p>UNSUPPORTED_FILE_TYPE_EXCEPTION - The object is a file that uses an unsupported file or storage format. For more information, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/discovery-supported-formats.html\">Supported file and storage formats</a> in the <i>Amazon Macie User Guide</i>.</p></li></ul> <p>For information about sensitive data discovery quotas for files, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/macie-quotas.html\">Amazon Macie quotas</a> in the <i>Amazon Macie User Guide</i>.</p>"
+          "documentation": "<p>A brief description of the status of the finding. This value is null if the status (code) of the finding is COMPLETE.</p> <p>Amazon Macie uses this value to notify you of any errors, warnings, or considerations that might impact your analysis of the finding and the affected S3 object. Possible values are:</p> <ul><li><p>ARCHIVE_CONTAINS_UNPROCESSED_FILES - The object is an archive file and Macie extracted and analyzed only some or none of the files in the archive. To determine which files Macie analyzed, if any, refer to the corresponding sensitive data discovery result for the finding (ClassificationDetails.detailedResultsLocation).</p></li> <li><p>ARCHIVE_EXCEEDS_SIZE_LIMIT - The object is an archive file whose total storage size exceeds the size quota for this type of archive.</p></li> <li><p>ARCHIVE_NESTING_LEVEL_OVER_LIMIT - The object is an archive file whose nested depth exceeds the quota for the maximum number of nested levels that Macie analyzes for this type of archive.</p></li> <li><p>ARCHIVE_TOTAL_BYTES_EXTRACTED_OVER_LIMIT - The object is an archive file that exceeds the quota for the maximum amount of data that Macie extracts and analyzes for this type of archive.</p></li> <li><p>ARCHIVE_TOTAL_DOCUMENTS_PROCESSED_OVER_LIMIT - The object is an archive file that contains more than the maximum number of files that Macie extracts and analyzes for this type of archive.</p></li> <li><p>FILE_EXCEEDS_SIZE_LIMIT - The storage size of the object exceeds the size quota for this type of file.</p></li> <li><p>INVALID_ENCRYPTION - The object is encrypted using server-side encryption but Macie isn't allowed to use the key. Macie can't decrypt and analyze the object.</p></li> <li><p>INVALID_KMS_KEY - The object is encrypted with an KMS key that was disabled or is being deleted. Macie can't decrypt and analyze the object.</p></li> <li><p>INVALID_OBJECT_STATE - The object doesn't use a supported Amazon S3 storage class.</p></li> <li><p>JSON_NESTING_LEVEL_OVER_LIMIT - The object contains JSON data and the nested depth of the data exceeds the quota for the number of nested levels that Macie analyzes for this type of file.</p></li> <li><p>MALFORMED_FILE - The object is a malformed or corrupted file. An error occurred when Macie attempted to detect the file's type or extract data from the file.</p></li> <li><p>MALFORMED_OR_FILE_SIZE_EXCEEDS_LIMIT - The object is a Microsoft Office file that is malformed or exceeds the size quota for this type of file. If the file is malformed, an error occurred when Macie attempted to extract data from the file.</p></li> <li><p>NO_SUCH_BUCKET_AVAILABLE - The object was in a bucket that was deleted shortly before or when Macie attempted to analyze the object.</p></li> <li><p>OBJECT_VERSION_MISMATCH - The object was changed while Macie was analyzing it.</p></li> <li><p>OOXML_UNCOMPRESSED_RATIO_EXCEEDS_LIMIT - The object is an Office Open XML file whose compression ratio exceeds the compression quota for this type of file.</p></li> <li><p>OOXML_UNCOMPRESSED_SIZE_EXCEEDS_LIMIT - The object is an Office Open XML file that exceeds the size quota for this type of file.</p></li> <li><p>PERMISSION_DENIED - Macie isn't allowed to access the object. The object's permissions settings prevent Macie from analyzing the object.</p></li> <li><p>SOURCE_OBJECT_NO_LONGER_AVAILABLE - The object was deleted shortly before or when Macie attempted to analyze it.</p></li> <li><p>TIME_CUT_OFF_REACHED - Macie started analyzing the object but additional analysis would exceed the time quota for analyzing an object.</p></li> <li><p>UNABLE_TO_PARSE_FILE - The object is a file that contains structured data and an error occurred when Macie attempted to parse the data.</p></li> <li><p>UNSUPPORTED_FILE_TYPE_EXCEPTION - The object is a file that uses an unsupported file or storage format.</p></li></ul> <p>For information about quotas, supported storage classes, and supported file and storage formats, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/macie-quotas.html\">Quotas</a> and <a href=\"https://docs.aws.amazon.com/macie/latest/user/discovery-supported-storage.html\">Supported storage classes and formats</a> in the <i>Amazon Macie User Guide</i>.</p>"
         }
       },
       "documentation": "<p>Provides information about the status of a sensitive data finding.</p>"
@@ -4313,7 +4313,7 @@
         "name": {
           "shape": "ClassificationScopeName",
           "locationName": "name",
-          "documentation": "<p>The name of the classification scope.</p>"
+          "documentation": "<p>The name of the classification scope: automated-sensitive-data-discovery.</p>"
         }
       },
       "documentation": "<p>Provides information about the classification scope for an Amazon Macie account. Macie uses the scope's settings when it performs automated sensitive data discovery for the account.</p>"
@@ -4824,7 +4824,7 @@
         "arn": {
           "shape": "__string",
           "locationName": "arn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the custom data identifier.</p>"
+          "documentation": "<p>The unique identifier for the custom data identifier.</p>"
         },
         "count": {
           "shape": "__long",
@@ -5657,7 +5657,8 @@
         "Policy:IAMUser/S3BucketSharedExternally",
         "Policy:IAMUser/S3BucketReplicatedExternally",
         "Policy:IAMUser/S3BucketEncryptionDisabled",
-        "Policy:IAMUser/S3BlockPublicAccessDisabled"
+        "Policy:IAMUser/S3BlockPublicAccessDisabled",
+        "Policy:IAMUser/S3BucketSharedWithCloudFront"
       ]
     },
     "FindingsFilterAction": {
@@ -5837,7 +5838,7 @@
         "bucketCountByEffectivePermission": {
           "shape": "BucketCountByEffectivePermission",
           "locationName": "bucketCountByEffectivePermission",
-          "documentation": "<p>The total number of buckets that are publicly accessible based on a combination of permissions settings for each bucket.</p>"
+          "documentation": "<p>The total number of buckets that are publicly accessible due to a combination of permissions settings for each bucket.</p>"
         },
         "bucketCountByEncryptionType": {
           "shape": "BucketCountByEncryptionType",
@@ -5852,7 +5853,7 @@
         "bucketCountBySharedAccessType": {
           "shape": "BucketCountBySharedAccessType",
           "locationName": "bucketCountBySharedAccessType",
-          "documentation": "<p>The total number of buckets that are or aren't shared with another Amazon Web Services account.</p>"
+          "documentation": "<p>The total number of buckets that are or aren't shared with other Amazon Web Services accounts, Amazon CloudFront origin access identities (OAIs), or CloudFront origin access controls (OACs).</p>"
         },
         "bucketStatisticsBySensitivity": {
           "shape": "BucketStatisticsBySensitivity",
@@ -5872,7 +5873,7 @@
         "lastUpdated": {
           "shape": "__timestampIso8601",
           "locationName": "lastUpdated",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently retrieved both bucket and object metadata from Amazon S3 for the buckets.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently retrieved bucket or object metadata from Amazon S3 for the buckets.</p>"
         },
         "objectCount": {
           "shape": "__long",
@@ -5940,7 +5941,7 @@
         "name": {
           "shape": "ClassificationScopeName",
           "locationName": "name",
-          "documentation": "<p>The name of the classification scope.</p>"
+          "documentation": "<p>The name of the classification scope: automated-sensitive-data-discovery.</p>"
         },
         "s3": {
           "shape": "S3ClassificationScope",
@@ -6264,12 +6265,12 @@
         "email": {
           "shape": "__string",
           "locationName": "email",
-          "documentation": "<p>The email address for the account.</p>"
+          "documentation": "<p>The email address for the account. This value is null if the account is associated with the administrator account through Organizations.</p>"
         },
         "invitedAt": {
           "shape": "__timestampIso8601",
           "locationName": "invitedAt",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when an Amazon Macie membership invitation was last sent to the account. This value is null if an invitation hasn't been sent to the account.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when an Amazon Macie membership invitation was last sent to the account. This value is null if a Macie membership invitation hasn't been sent to the account.</p>"
         },
         "masterAccountId": {
           "shape": "__string",
@@ -6318,7 +6319,7 @@
         "sensitivityScore": {
           "shape": "__integer",
           "locationName": "sensitivityScore",
-          "documentation": "<p>The current sensitivity score for the bucket, ranging from\u00a0-1\u00a0(no analysis due to an error) to\u00a0100 (sensitive). By default, this score is calculated automatically based on the amount of data that Amazon Macie has analyzed in the bucket and the amount of sensitive data that Macie has found in the bucket.</p>"
+          "documentation": "<p>The current sensitivity score for the bucket, ranging from -1 (classification error) to 100 (sensitive). By default, this score is calculated automatically based on the amount of data that Amazon Macie has analyzed in the bucket and the amount of sensitive data that Macie has found in the bucket.</p>"
         },
         "sensitivityScoreOverridden": {
           "shape": "__boolean",
@@ -6444,7 +6445,7 @@
         "name": {
           "shape": "__string",
           "locationName": "name",
-          "documentation": "<p>The name of the template.</p>"
+          "documentation": "<p>The name of the template: automated-sensitive-data-discovery.</p>"
         },
         "sensitivityInspectionTemplateId": {
           "shape": "SensitivityInspectionTemplateId",
@@ -7370,7 +7371,7 @@
         "artifacts": {
           "shape": "__listOfResourceProfileArtifact",
           "locationName": "artifacts",
-          "documentation": "<p>An array of objects, one for each S3 object that Amazon Macie selected for analysis.</p>"
+          "documentation": "<p>An array of objects, one for each of 1-100 S3 objects that Amazon Macie selected for analysis.</p> <p>If Macie has analyzed more than 100 objects in the bucket, Macie populates the array based on the value for the ResourceProfileArtifact.sensitive field for an object: true (sensitive), followed by false (not sensitive). Macie then populates any remaining items in the array with information about objects where the value for the ResourceProfileArtifact.classificationResultStatus field is SKIPPED.</p>"
         },
         "nextToken": {
           "shape": "__string",
@@ -7536,7 +7537,7 @@
         "errorCode": {
           "shape": "BucketMetadataErrorCode",
           "locationName": "errorCode",
-          "documentation": "<p>Specifies the error code for an error that prevented Amazon Macie from retrieving and processing information about the bucket and the bucket's objects. If this value is ACCESS_DENIED, Macie doesn't have permission to retrieve the information. For example, the bucket has a restrictive bucket policy and Amazon S3 denied the request. If this value is null, Macie was able to retrieve and process the information.</p>"
+          "documentation": "<p>The error code for an error that prevented Amazon Macie from retrieving and processing information about the bucket and the bucket's objects. If this value is ACCESS_DENIED, Macie doesn't have permission to retrieve the information. For example, the bucket has a restrictive bucket policy and Amazon S3 denied the request. If this value is null, Macie was able to retrieve and process the information.</p>"
         },
         "errorMessage": {
           "shape": "__string",
@@ -7551,7 +7552,7 @@
         "lastAutomatedDiscoveryTime": {
           "shape": "__timestampIso8601",
           "locationName": "lastAutomatedDiscoveryTime",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently performed automated sensitive data discovery for the bucket. This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when Amazon Macie most recently analyzed data in the bucket while performing automated sensitive data discovery for your account. This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
         },
         "objectCount": {
           "shape": "__long",
@@ -7566,7 +7567,7 @@
         "sensitivityScore": {
           "shape": "__integer",
           "locationName": "sensitivityScore",
-          "documentation": "<p>The current sensitivity score for the bucket, ranging from\u00a0-1\u00a0(no analysis due to an error) to\u00a0100 (sensitive). This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
+          "documentation": "<p>The current sensitivity score for the bucket, ranging from -1 (classification error) to 100 (sensitive). This value is null if automated sensitive data discovery is currently disabled for your account.</p>"
         },
         "sizeInBytes": {
           "shape": "__long",
@@ -7589,7 +7590,7 @@
           "documentation": "<p>The total storage size, in bytes, of the objects that Amazon Macie can't analyze in the bucket. These objects don't use a supported storage class or don't have a file name extension for a supported file or storage format.</p>"
         }
       },
-      "documentation": "<p>Provides statistical data and other information about an S3 bucket that Amazon Macie monitors and analyzes for your account. If an error occurs when Macie attempts to retrieve and process information about the bucket or the bucket's objects, the value for most of these properties is null. Key exceptions are accountId and bucketName. To identify the cause of the error, refer to the errorCode and errorMessage values.</p>"
+      "documentation": "<p>Provides statistical data and other information about an S3 bucket that Amazon Macie monitors and analyzes for your account. By default, object count and storage size values include data for object parts that are the result of incomplete multipart uploads. For more information, see <a href=\"https://docs.aws.amazon.com/macie/latest/user/monitoring-s3-how-it-works.html\">How Macie monitors Amazon S3 data security</a> in the <i>Amazon Macie User Guide</i>.</p> <p>If an error occurs when Macie attempts to retrieve and process information about the bucket or the bucket's objects, the value for most of these properties is null. Key exceptions are accountId and bucketName. To identify the cause of the error, refer to the errorCode and errorMessage values.</p>"
     },
     "MatchingResource": {
       "type": "structure",
@@ -7628,12 +7629,12 @@
         "email": {
           "shape": "__string",
           "locationName": "email",
-          "documentation": "<p>The email address for the account.</p>"
+          "documentation": "<p>The email address for the account. This value is null if the account is associated with the administrator account through Organizations.</p>"
         },
         "invitedAt": {
           "shape": "__timestampIso8601",
           "locationName": "invitedAt",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when an Amazon Macie membership invitation was last sent to the account. This value is null if an invitation hasn't been sent to the account.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when an Amazon Macie membership invitation was last sent to the account. This value is null if a Macie membership invitation hasn't been sent to the account.</p>"
         },
         "masterAccountId": {
           "shape": "__string",
@@ -7737,7 +7738,7 @@
         "lineRanges": {
           "shape": "Ranges",
           "locationName": "lineRanges",
-          "documentation": "<p>An array of objects, one for each occurrence of sensitive data in a non-binary text file, such as an HTML, TXT, or XML file. Each Range object specifies a line or inclusive range of lines that contains the sensitive data, and the position of the data on the specified line or lines.</p> <p>This value is often null for file types that are supported by Cell, Page, or Record objects. Exceptions are the location of sensitive data in: unstructured sections of an otherwise structured file, such as a comment in a file; a malformed file that Amazon Macie analyzes as plain text; and, a CSV or TSV file that has any column names that contain sensitive data.</p>"
+          "documentation": "<p>An array of objects, one for each occurrence of sensitive data in an email message or a non-binary text file such as an HTML, TXT, or XML file. Each Range object specifies a line or inclusive range of lines that contains the sensitive data, and the position of the data on the specified line or lines.</p> <p>This value is often null for file types that are supported by Cell, Page, or Record objects. Exceptions are the location of sensitive data in: unstructured sections of an otherwise structured file, such as a comment in a file; a malformed file that Amazon Macie analyzes as plain text; and, a CSV or TSV file that has any column names that contain sensitive data.</p>"
         },
         "offsetRanges": {
           "shape": "Ranges",
@@ -7878,7 +7879,7 @@
           "documentation": "<p>The number of characters, with spaces and starting from 1, from the beginning of the first line that contains the sensitive data (start) to the beginning of the sensitive data.</p>"
         }
       },
-      "documentation": "<p>Specifies the location of an occurrence of sensitive data in a non-binary text file, such as an HTML, TXT, or XML file.</p>"
+      "documentation": "<p>Specifies the location of an occurrence of sensitive data in an email message or a non-binary text file such as an HTML, TXT, or XML file.</p>"
     },
     "Ranges": {
       "type": "list",
@@ -7937,12 +7938,12 @@
         "replicatedExternally": {
           "shape": "__boolean",
           "locationName": "replicatedExternally",
-          "documentation": "<p>Specifies whether the bucket is configured to replicate one or more objects to an Amazon Web Services account that isn't part of the same Amazon Macie organization.</p>"
+          "documentation": "<p>Specifies whether the bucket is configured to replicate one or more objects to a bucket for an Amazon Web Services account that isn't part of your Amazon Macie organization. An <i>Amazon Macie organization</i> is a set of Macie accounts that are centrally managed as a group of related accounts through Organizations or by Macie invitation.</p>"
         },
         "replicationAccounts": {
           "shape": "__listOf__string",
           "locationName": "replicationAccounts",
-          "documentation": "<p>An array of Amazon Web Services account IDs, one for each Amazon Web Services account that the bucket is configured to replicate one or more objects to.</p>"
+          "documentation": "<p>An array of Amazon Web Services account IDs, one for each Amazon Web Services account that owns a bucket that the bucket is configured to replicate one or more objects to.</p>"
         }
       },
       "documentation": "<p>Provides information about settings that define whether one or more objects in an S3 bucket are replicated to S3 buckets for other Amazon Web Services accounts and, if so, which accounts.</p>"
@@ -8106,7 +8107,7 @@
         "createdAt": {
           "shape": "__timestampIso8601",
           "locationName": "createdAt",
-          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the bucket was created.</p>"
+          "documentation": "<p>The date and time, in UTC and extended ISO 8601 format, when the bucket was created. This value can also indicate when changes such as edits to the bucket's policy were most recently made to the bucket, relative to when the finding was created or last updated.</p>"
         },
         "defaultServerSideEncryption": {
           "shape": "ServerSideEncryption",
@@ -8672,7 +8673,7 @@
         "publiclyAccessibleCount": {
           "shape": "__long",
           "locationName": "publiclyAccessibleCount",
-          "documentation": "<p>The total number of buckets that are publicly accessible based on a combination of permissions settings for each bucket.</p>"
+          "documentation": "<p>The total number of buckets that are publicly accessible due to a combination of permissions settings for each bucket.</p>"
         },
         "totalCount": {
           "shape": "__long",
@@ -8734,7 +8735,7 @@
         "name": {
           "shape": "__string",
           "locationName": "name",
-          "documentation": "<p>The name of the sensitivity inspection template for the account.</p>"
+          "documentation": "<p>The name of the sensitivity inspection template for the account: automated-sensitive-data-discovery.</p>"
         }
       },
       "documentation": "<p>Provides information about the sensitivity inspection template for an Amazon Macie account. Macie uses the template's settings when it performs automated sensitive data discovery for the account.</p>"
@@ -8834,7 +8835,7 @@
         "arn": {
           "shape": "__string",
           "locationName": "arn",
-          "documentation": "<p>The Amazon Resource Name (ARN) of the source account, IAM user, or role that was used to get the credentials.</p>"
+          "documentation": "<p>The Amazon Resource Name (ARN) of the source account, Identity and Access Management (IAM) user, or role that was used to get the credentials.</p>"
         },
         "principalId": {
           "shape": "__string",
@@ -9433,7 +9434,7 @@
         "description": {
           "shape": "__string",
           "locationName": "description",
-          "documentation": "<p>A custom description of the filter. The description can contain as many as 512 characters.</p> <p>We strongly recommend that you avoid including any sensitive data in the description of a filter. Other users might be able to see this description, depending on the actions that they're allowed to perform in Amazon Macie.</p>"
+          "documentation": "<p>A custom description of the filter. The description can contain as many as 512 characters.</p> <p>We strongly recommend that you avoid including any sensitive data in the description of a filter. Other users of your account might be able to see this description, depending on the actions that they're allowed to perform in Amazon Macie.</p>"
         },
         "findingCriteria": {
           "shape": "FindingCriteria",
@@ -9449,7 +9450,7 @@
         "name": {
           "shape": "__string",
           "locationName": "name",
-          "documentation": "<p>A custom name for the filter. The name must contain at least 3 characters and can contain as many as 64 characters.</p> <p>We strongly recommend that you avoid including any sensitive data in the name of a filter. Other users might be able to see this name, depending on the actions that they're allowed to perform in Amazon Macie.</p>"
+          "documentation": "<p>A custom name for the filter. The name must contain at least 3 characters and can contain as many as 64 characters.</p> <p>We strongly recommend that you avoid including any sensitive data in the name of a filter. Other users of your account might be able to see this name, depending on the actions that they're allowed to perform in Amazon Macie.</p>"
         },
         "position": {
           "shape": "__integer",
@@ -9611,7 +9612,7 @@
         "description": {
           "shape": "__string",
           "locationName": "description",
-          "documentation": "<p>A custom description of the template.</p>"
+          "documentation": "<p>A custom description of the template. The description can contain as many as 200 characters.</p>"
         },
         "excludes": {
           "shape": "SensitivityInspectionTemplateExcludes",

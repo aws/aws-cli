@@ -937,7 +937,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get the position information for a given wireless device or a wireless gateway resource. The postion information uses the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
+      "documentation":"<p>Get the position information for a given wireless device or a wireless gateway resource. The position information uses the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
     },
     "GetServiceEndpoint":{
       "name":"GetServiceEndpoint",
@@ -1776,7 +1776,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Update the position information of a given wireless device or a wireless gateway resource. The postion coordinates are based on the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
+      "documentation":"<p>Update the position information of a given wireless device or a wireless gateway resource. The position coordinates are based on the <a href=\"https://gisgeography.com/wgs84-world-geodetic-system/\"> World Geodetic System (WGS84)</a>.</p>"
     },
     "UpdateWirelessDevice":{
       "name":"UpdateWirelessDevice",
@@ -2289,7 +2289,7 @@
         },
         "BaseLng":{
           "shape":"BaseLng",
-          "documentation":"<p>CDMA base station longtitude in degrees.</p>"
+          "documentation":"<p>CDMA base station longitude in degrees.</p>"
         },
         "CdmaNmr":{
           "shape":"CdmaNmrList",
@@ -2538,7 +2538,10 @@
         "LoRaWAN":{"shape":"LoRaWANFuotaTask"},
         "FirmwareUpdateImage":{"shape":"FirmwareUpdateImage"},
         "FirmwareUpdateRole":{"shape":"FirmwareUpdateRole"},
-        "Tags":{"shape":"TagList"}
+        "Tags":{"shape":"TagList"},
+        "RedundancyPercent":{"shape":"RedundancyPercent"},
+        "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
       }
     },
     "CreateFuotaTaskResponse":{
@@ -3543,6 +3546,16 @@
       "max":2048,
       "min":1
     },
+    "FragmentIntervalMS":{
+      "type":"integer",
+      "documentation":"<p>The interval of sending fragments in milliseconds. Currently the interval will be rounded to the nearest second. Note that this interval only controls the timing when the cloud sends the fragments down. The actual delay of receiving fragments at device side depends on the device's class and the communication delay with the cloud.</p>",
+      "min":1
+    },
+    "FragmentSizeBytes":{
+      "type":"integer",
+      "documentation":"<p>The size of each fragment in bytes. Currently only supported in fuota tasks with multicast groups.</p>",
+      "min":1
+    },
     "FuotaDeviceStatus":{
       "type":"string",
       "documentation":"<p>The status of a wireless device in a FUOTA task.</p>",
@@ -3763,7 +3776,10 @@
         "LoRaWAN":{"shape":"LoRaWANFuotaTaskGetInfo"},
         "FirmwareUpdateImage":{"shape":"FirmwareUpdateImage"},
         "FirmwareUpdateRole":{"shape":"FirmwareUpdateRole"},
-        "CreatedAt":{"shape":"CreatedAt"}
+        "CreatedAt":{"shape":"CreatedAt"},
+        "RedundancyPercent":{"shape":"RedundancyPercent"},
+        "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
       }
     },
     "GetLogLevelsByResourceTypesRequest":{
@@ -3943,7 +3959,7 @@
         },
         "Timestamp":{
           "shape":"CreationDate",
-          "documentation":"<p>Optional information that specifies the time when the position information will be resolved. It uses the UNIX timestamp format. If not specified, the time at which the request was received will be used.</p>"
+          "documentation":"<p>Optional information that specifies the time when the position information will be resolved. It uses the Unix timestamp format. If not specified, the time at which the request was received will be used.</p>"
         }
       }
     },
@@ -4098,7 +4114,7 @@
       "members":{
         "ResourceIdentifier":{
           "shape":"PositionResourceIdentifier",
-          "documentation":"<p>The identifier of the resource for which position information is retrieved. It can be the wireless device ID or the wireless gateway ID depending on the resource type.</p>",
+          "documentation":"<p>The identifier of the resource for which position information is retrieved. It can be the wireless device ID or the wireless gateway ID, depending on the resource type.</p>",
           "location":"uri",
           "locationName":"ResourceIdentifier"
         },
@@ -4519,7 +4535,7 @@
         },
         "AssistPosition":{
           "shape":"AssistPosition",
-          "documentation":"<p>Optional assistance position information, specified using latitude and longitude values in degrees. The co-ordinates are inside the WGS84 reference frame.</p>"
+          "documentation":"<p>Optional assistance position information, specified using latitude and longitude values in degrees. The coordinates are inside the WGS84 reference frame.</p>"
         },
         "AssistAltitude":{
           "shape":"Coordinate",
@@ -6425,6 +6441,12 @@
       "min":-128
     },
     "RaAllowed":{"type":"boolean"},
+    "RedundancyPercent":{
+      "type":"integer",
+      "documentation":"<p>The percentage of added redundant fragments. For example, if firmware file is 100 bytes and fragment size is 10 bytes, with <code>RedundancyPercent</code> set to 50(%), the final number of encoded fragments is (100 / 10) + (100 / 10 * 50%) = 15.</p>",
+      "max":100,
+      "min":0
+    },
     "RegParamsRevision":{
       "type":"string",
       "max":64
@@ -7409,7 +7431,10 @@
         "Description":{"shape":"Description"},
         "LoRaWAN":{"shape":"LoRaWANFuotaTask"},
         "FirmwareUpdateImage":{"shape":"FirmwareUpdateImage"},
-        "FirmwareUpdateRole":{"shape":"FirmwareUpdateRole"}
+        "FirmwareUpdateRole":{"shape":"FirmwareUpdateRole"},
+        "RedundancyPercent":{"shape":"RedundancyPercent"},
+        "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
       }
     },
     "UpdateFuotaTaskResponse":{
@@ -7610,7 +7635,7 @@
       "members":{
         "ResourceIdentifier":{
           "shape":"PositionResourceIdentifier",
-          "documentation":"<p>The identifier of the resource for which position information is updated. It can be the wireless device ID or the wireless gateway ID depending on the resource type.</p>",
+          "documentation":"<p>The identifier of the resource for which position information is updated. It can be the wireless device ID or the wireless gateway ID, depending on the resource type.</p>",
           "location":"uri",
           "locationName":"ResourceIdentifier"
         },

@@ -206,6 +206,27 @@
       "endpoint":{"hostPrefix":"geofencing."},
       "idempotent":true
     },
+    "CreateKey":{
+      "name":"CreateKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metadata/v0/keys",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateKeyRequest"},
+      "output":{"shape":"CreateKeyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an API key resource in your Amazon Web Services account, which lets you grant <code>geo:GetMap*</code> actions for Amazon Location Map resources to the API key bearer.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "endpoint":{"hostPrefix":"metadata."},
+      "idempotent":true
+    },
     "CreateMap":{
       "name":"CreateMap",
       "http":{
@@ -223,7 +244,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a map resource in your AWS account, which provides map tiles of different styles sourced from global location data providers.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">AWS service terms</a> for more details.</p> </note>",
+      "documentation":"<p>Creates a map resource in your Amazon Web Services account, which provides map tiles of different styles sourced from global location data providers.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
       "endpoint":{"hostPrefix":"maps."},
       "idempotent":true
     },
@@ -244,7 +265,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a place index resource in your AWS account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation, and enable autosuggestions by using the <code>SearchPlaceIndexForSuggestions</code> operation.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">AWS service terms</a> for more details.</p> </note>",
+      "documentation":"<p>Creates a place index resource in your Amazon Web Services account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation, and enable autosuggestions by using the <code>SearchPlaceIndexForSuggestions</code> operation.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
       "endpoint":{"hostPrefix":"places."},
       "idempotent":true
     },
@@ -265,7 +286,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a route calculator resource in your AWS account.</p> <p>You can send requests to a route calculator resource to estimate travel time, distance, and get directions. A route calculator sources traffic and road network data from your chosen data provider.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">AWS service terms</a> for more details.</p> </note>",
+      "documentation":"<p>Creates a route calculator resource in your Amazon Web Services account.</p> <p>You can send requests to a route calculator resource to estimate travel time, distance, and get directions. A route calculator sources traffic and road network data from your chosen data provider.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
       "endpoint":{"hostPrefix":"routes."},
       "idempotent":true
     },
@@ -285,7 +306,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a tracker resource in your AWS account, which lets you retrieve current and historical location of devices.</p>",
+      "documentation":"<p>Creates a tracker resource in your Amazon Web Services account, which lets you retrieve current and historical location of devices.</p>",
       "endpoint":{"hostPrefix":"tracking."},
       "idempotent":true
     },
@@ -305,8 +326,28 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a geofence collection from your AWS account.</p> <note> <p>This operation deletes the resource permanently. If the geofence collection is the target of a tracker resource, the devices will no longer be monitored.</p> </note>",
+      "documentation":"<p>Deletes a geofence collection from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently. If the geofence collection is the target of a tracker resource, the devices will no longer be monitored.</p> </note>",
       "endpoint":{"hostPrefix":"geofencing."},
+      "idempotent":true
+    },
+    "DeleteKey":{
+      "name":"DeleteKey",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/metadata/v0/keys/{KeyName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteKeyRequest"},
+      "output":{"shape":"DeleteKeyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified API key. The API key must have been deactivated more than 90 days previously.</p>",
+      "endpoint":{"hostPrefix":"metadata."},
       "idempotent":true
     },
     "DeleteMap":{
@@ -325,7 +366,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a map resource from your AWS account.</p> <note> <p>This operation deletes the resource permanently. If the map is being used in an application, the map may not render.</p> </note>",
+      "documentation":"<p>Deletes a map resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently. If the map is being used in an application, the map may not render.</p> </note>",
       "endpoint":{"hostPrefix":"maps."},
       "idempotent":true
     },
@@ -345,7 +386,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a place index resource from your AWS account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
+      "documentation":"<p>Deletes a place index resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
       "endpoint":{"hostPrefix":"places."},
       "idempotent":true
     },
@@ -365,7 +406,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a route calculator resource from your AWS account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
+      "documentation":"<p>Deletes a route calculator resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
       "endpoint":{"hostPrefix":"routes."},
       "idempotent":true
     },
@@ -385,7 +426,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a tracker resource from your AWS account.</p> <note> <p>This operation deletes the resource permanently. If the tracker resource is in use, you may encounter an error. Make sure that the target resource isn't a dependency for your applications.</p> </note>",
+      "documentation":"<p>Deletes a tracker resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently. If the tracker resource is in use, you may encounter an error. Make sure that the target resource isn't a dependency for your applications.</p> </note>",
       "endpoint":{"hostPrefix":"tracking."},
       "idempotent":true
     },
@@ -407,6 +448,25 @@
       ],
       "documentation":"<p>Retrieves the geofence collection details.</p>",
       "endpoint":{"hostPrefix":"geofencing."}
+    },
+    "DescribeKey":{
+      "name":"DescribeKey",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metadata/v0/keys/{KeyName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeKeyRequest"},
+      "output":{"shape":"DescribeKeyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the API key resource details.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "endpoint":{"hostPrefix":"metadata."}
     },
     "DescribeMap":{
       "name":"DescribeMap",
@@ -652,7 +712,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Finds a place by its unique ID. A <code>PlaceId</code> is returned by other search operations.</p> <note> <p>A PlaceId is valid only if all of the following are the same in the original search request and the call to <code>GetPlace</code>.</p> <ul> <li> <p>Customer AWS account</p> </li> <li> <p>AWS Region</p> </li> <li> <p>Data provider specified in the place index resource</p> </li> </ul> </note>",
+      "documentation":"<p>Finds a place by its unique ID. A <code>PlaceId</code> is returned by other search operations.</p> <note> <p>A PlaceId is valid only if all of the following are the same in the original search request and the call to <code>GetPlace</code>.</p> <ul> <li> <p>Customer Amazon Web Services account</p> </li> <li> <p>Amazon Web Services Region</p> </li> <li> <p>Data provider specified in the place index resource</p> </li> </ul> </note>",
       "endpoint":{"hostPrefix":"places."}
     },
     "ListDevicePositions":{
@@ -688,7 +748,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists geofence collections in your AWS account.</p>",
+      "documentation":"<p>Lists geofence collections in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"geofencing."}
     },
     "ListGeofences":{
@@ -710,6 +770,24 @@
       "documentation":"<p>Lists geofences stored in a given geofence collection.</p>",
       "endpoint":{"hostPrefix":"geofencing."}
     },
+    "ListKeys":{
+      "name":"ListKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metadata/v0/list-keys",
+        "responseCode":200
+      },
+      "input":{"shape":"ListKeysRequest"},
+      "output":{"shape":"ListKeysResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists API key resources in your Amazon Web Services account.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "endpoint":{"hostPrefix":"metadata."}
+    },
     "ListMaps":{
       "name":"ListMaps",
       "http":{
@@ -725,7 +803,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists map resources in your AWS account.</p>",
+      "documentation":"<p>Lists map resources in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"maps."}
     },
     "ListPlaceIndexes":{
@@ -743,7 +821,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists place index resources in your AWS account.</p>",
+      "documentation":"<p>Lists place index resources in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"places."}
     },
     "ListRouteCalculators":{
@@ -761,7 +839,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists route calculator resources in your AWS account.</p>",
+      "documentation":"<p>Lists route calculator resources in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"routes."}
     },
     "ListTagsForResource":{
@@ -817,7 +895,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists tracker resources in your AWS account.</p>",
+      "documentation":"<p>Lists tracker resources in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"tracking."}
     },
     "PutGeofence":{
@@ -956,6 +1034,26 @@
       "endpoint":{"hostPrefix":"geofencing."},
       "idempotent":true
     },
+    "UpdateKey":{
+      "name":"UpdateKey",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/metadata/v0/keys/{KeyName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateKeyRequest"},
+      "output":{"shape":"UpdateKeyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the specified properties of a given API key resource.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "endpoint":{"hostPrefix":"metadata."},
+      "idempotent":true
+    },
     "UpdateMap":{
       "name":"UpdateMap",
       "http":{
@@ -1054,6 +1152,66 @@
       },
       "exception":true
     },
+    "ApiKey":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "sensitive":true
+    },
+    "ApiKeyAction":{
+      "type":"string",
+      "pattern":"^geo:GetMap\\*$"
+    },
+    "ApiKeyFilter":{
+      "type":"structure",
+      "members":{
+        "KeyStatus":{
+          "shape":"Status",
+          "documentation":"<p>Filter on <code>Active</code> or <code>Expired</code> API keys.</p>"
+        }
+      },
+      "documentation":"<p>Options for filtering API keys.</p>"
+    },
+    "ApiKeyRestrictions":{
+      "type":"structure",
+      "required":[
+        "AllowActions",
+        "AllowResources"
+      ],
+      "members":{
+        "AllowActions":{
+          "shape":"ApiKeyRestrictionsAllowActionsList",
+          "documentation":"<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>[\"geo:GetMap*\"]</code> is valid but <code>[\"geo:GetMapTile\"]</code> is not.</p> </note>"
+        },
+        "AllowReferers":{
+          "shape":"ApiKeyRestrictionsAllowReferersList",
+          "documentation":"<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>"
+        },
+        "AllowResources":{
+          "shape":"ApiKeyRestrictionsAllowResourcesList",
+          "documentation":"<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>API Restrictions on the allowed actions, resources, and referers for an API key resource.</p>"
+    },
+    "ApiKeyRestrictionsAllowActionsList":{
+      "type":"list",
+      "member":{"shape":"ApiKeyAction"},
+      "max":1,
+      "min":1
+    },
+    "ApiKeyRestrictionsAllowReferersList":{
+      "type":"list",
+      "member":{"shape":"RefererPattern"},
+      "max":5,
+      "min":1
+    },
+    "ApiKeyRestrictionsAllowResourcesList":{
+      "type":"list",
+      "member":{"shape":"GeoArn"},
+      "max":5,
+      "min":1
+    },
     "Arn":{
       "type":"string",
       "max":1600,
@@ -1073,7 +1231,7 @@
       "members":{
         "ConsumerArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection to be associated to tracker resource. Used when you need to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection to be associated to tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>"
         },
         "TrackerName":{
           "shape":"ResourceName",
@@ -1894,7 +2052,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">AWS KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN. </p>"
+          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN. </p>"
         },
         "PricingPlan":{
           "shape":"PricingPlan",
@@ -1924,7 +2082,7 @@
       "members":{
         "CollectionArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all AWS. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
         },
         "CollectionName":{
           "shape":"ResourceName",
@@ -1933,6 +2091,66 @@
         "CreateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the geofence collection was created in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
+        }
+      }
+    },
+    "CreateKeyRequest":{
+      "type":"structure",
+      "required":[
+        "KeyName",
+        "Restrictions"
+      ],
+      "members":{
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the API key resource.</p>"
+        },
+        "ExpireTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The optional timestamp for when the API key resource will expire in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.</p>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>A custom name for the API key resource.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique API key name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleAPIKey</code>.</p> </li> </ul>"
+        },
+        "NoExpiry":{
+          "shape":"Boolean",
+          "documentation":"<p>Optionally set to <code>true</code> to set no expiration time for the API key. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.</p>"
+        },
+        "Restrictions":{
+          "shape":"ApiKeyRestrictions",
+          "documentation":"<p>The API key restrictions for the API key resource.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Applies one or more tags to the map resource. A tag is a key-value pair that helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>\"key\" : \"value\"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use \"aws:\" as a prefix for a key.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateKeyResponse":{
+      "type":"structure",
+      "required":[
+        "CreateTime",
+        "Key",
+        "KeyArn",
+        "KeyName"
+      ],
+      "members":{
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource was created in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The key value/string of an API key. This value is used when making API calls to authorize the call. For example, see <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_GetMapGlyphs.html\">GetMapGlyphs</a>.</p>"
+        },
+        "KeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource.</p>"
         }
       }
     },
@@ -1981,7 +2199,7 @@
         },
         "MapArn":{
           "shape":"GeoArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>"
         },
         "MapName":{
           "shape":"ResourceName",
@@ -1998,7 +2216,7 @@
       "members":{
         "DataSource":{
           "shape":"String",
-          "documentation":"<p>Specifies the geospatial data provider for the new place index.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/esri.html\">Esri</a>'s coverage in your region of interest, see <a href=\"https://developers.arcgis.com/rest/geocode/api-reference/geocode-coverage.htm\">Esri details on geocoding coverage</a>.</p> </li> <li> <p> <code>Grab</code> – Grab provides place index functionality for Southeast Asia. For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/grab.html\">GrabMaps</a>' coverage, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area\">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/HERE.html\">HERE Technologies</a>' coverage in your region of interest, see <a href=\"https://developer.here.com/documentation/geocoder/dev_guide/topics/coverage-geocoder.html\">HERE details on goecoding coverage</a>.</p> <important> <p>If you specify HERE Technologies (<code>Here</code>) as the data provider, you may not <a href=\"https://docs.aws.amazon.com/location-places/latest/APIReference/API_DataSourceConfiguration.html\">store results</a> for locations in Japan. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">AWS Service Terms</a> for Amazon Location Service.</p> </important> </li> </ul> <p>For additional information , see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html\">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>"
+          "documentation":"<p>Specifies the geospatial data provider for the new place index.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/esri.html\">Esri</a>'s coverage in your region of interest, see <a href=\"https://developers.arcgis.com/rest/geocode/api-reference/geocode-coverage.htm\">Esri details on geocoding coverage</a>.</p> </li> <li> <p> <code>Grab</code> – Grab provides place index functionality for Southeast Asia. For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/grab.html\">GrabMaps</a>' coverage, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area\">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/HERE.html\">HERE Technologies</a>' coverage in your region of interest, see <a href=\"https://developer.here.com/documentation/geocoder/dev_guide/topics/coverage-geocoder.html\">HERE details on goecoding coverage</a>.</p> <important> <p>If you specify HERE Technologies (<code>Here</code>) as the data provider, you may not <a href=\"https://docs.aws.amazon.com/location-places/latest/APIReference/API_DataSourceConfiguration.html\">store results</a> for locations in Japan. For more information, see the <a href=\"http://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> for Amazon Location Service.</p> </important> </li> </ul> <p>For additional information , see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html\">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>"
         },
         "DataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
@@ -2038,7 +2256,7 @@
         },
         "IndexArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across AWS. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>"
         },
         "IndexName":{
           "shape":"ResourceName",
@@ -2087,7 +2305,7 @@
       "members":{
         "CalculatorArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the route calculator resource. Use the ARN when you specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the route calculator resource. Use the ARN when you specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>"
         },
         "CalculatorName":{
           "shape":"ResourceName",
@@ -2109,7 +2327,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">AWS KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN.</p>"
+          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN.</p>"
         },
         "PositionFiltering":{
           "shape":"PositionFiltering",
@@ -2151,7 +2369,7 @@
         },
         "TrackerArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>"
         },
         "TrackerName":{
           "shape":"ResourceName",
@@ -2182,6 +2400,23 @@
       }
     },
     "DeleteGeofenceCollectionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteKeyRequest":{
+      "type":"structure",
+      "required":["KeyName"],
+      "members":{
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key to delete.</p>",
+          "location":"uri",
+          "locationName":"KeyName"
+        }
+      }
+    },
+    "DeleteKeyResponse":{
       "type":"structure",
       "members":{
       }
@@ -2278,7 +2513,7 @@
       "members":{
         "CollectionArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all AWS. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
         },
         "CollectionName":{
           "shape":"ResourceName",
@@ -2294,7 +2529,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">AWS KMS customer managed key</a> assigned to the Amazon Location resource</p>"
+          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource</p>"
         },
         "PricingPlan":{
           "shape":"PricingPlan",
@@ -2315,6 +2550,65 @@
         "UpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the geofence collection was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
+        }
+      }
+    },
+    "DescribeKeyRequest":{
+      "type":"structure",
+      "required":["KeyName"],
+      "members":{
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource.</p>",
+          "location":"uri",
+          "locationName":"KeyName"
+        }
+      }
+    },
+    "DescribeKeyResponse":{
+      "type":"structure",
+      "required":[
+        "CreateTime",
+        "ExpireTime",
+        "Key",
+        "KeyArn",
+        "KeyName",
+        "Restrictions",
+        "UpdateTime"
+      ],
+      "members":{
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource was created in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The optional description for the API key resource.</p>"
+        },
+        "ExpireTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource will expire in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The key value/string of an API key.</p>"
+        },
+        "KeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource.</p>"
+        },
+        "Restrictions":{"shape":"ApiKeyRestrictions"},
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags associated with the API key resource.</p>"
+        },
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
         }
       }
     },
@@ -2360,7 +2654,7 @@
         },
         "MapArn":{
           "shape":"GeoArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>"
         },
         "MapName":{
           "shape":"ResourceName",
@@ -2424,7 +2718,7 @@
         },
         "IndexArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across AWS. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>"
         },
         "IndexName":{
           "shape":"ResourceName",
@@ -2471,7 +2765,7 @@
       "members":{
         "CalculatorArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the Route calculator resource. Use the ARN when you specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Route calculator resource. Use the ARN when you specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>"
         },
         "CalculatorName":{
           "shape":"ResourceName",
@@ -2537,7 +2831,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">AWS KMS customer managed key</a> assigned to the Amazon Location resource.</p>"
+          "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource.</p>"
         },
         "PositionFiltering":{
           "shape":"PositionFiltering",
@@ -2561,7 +2855,7 @@
         },
         "TrackerArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>"
         },
         "TrackerName":{
           "shape":"ResourceName",
@@ -2659,7 +2953,7 @@
       "members":{
         "ConsumerArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection to be disassociated from the tracker resource. Used when you need to specify a resource across all AWS. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the geofence collection to be disassociated from the tracker resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>",
           "location":"uri",
           "locationName":"ConsumerArn"
         },
@@ -2892,6 +3186,12 @@
           "location":"uri",
           "locationName":"FontUnicodeRange"
         },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "MapName":{
           "shape":"ResourceName",
           "documentation":"<p>The map resource associated with the glyph ﬁle.</p>",
@@ -2909,7 +3209,13 @@
       "members":{
         "Blob":{
           "shape":"Blob",
-          "documentation":"<p>The blob's content type.</p>"
+          "documentation":"<p>The glyph, as binary blob.</p>"
+        },
+        "CacheControl":{
+          "shape":"String",
+          "documentation":"<p>The HTTP Cache-Control directive for the value.</p>",
+          "location":"header",
+          "locationName":"Cache-Control"
         },
         "ContentType":{
           "shape":"String",
@@ -2933,6 +3239,12 @@
           "location":"uri",
           "locationName":"FileName"
         },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "MapName":{
           "shape":"ResourceName",
           "documentation":"<p>The map resource associated with the sprite ﬁle.</p>",
@@ -2952,6 +3264,12 @@
           "shape":"Blob",
           "documentation":"<p>Contains the body of the sprite sheet or JSON offset ﬁle.</p>"
         },
+        "CacheControl":{
+          "shape":"String",
+          "documentation":"<p>The HTTP Cache-Control directive for the value.</p>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
         "ContentType":{
           "shape":"String",
           "documentation":"<p>The content type of the sprite sheet and offsets. For example, the sprite sheet content type is <code>image/png</code>, and the sprite offset JSON document is <code>application/json</code>. </p>",
@@ -2965,6 +3283,12 @@
       "type":"structure",
       "required":["MapName"],
       "members":{
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "MapName":{
           "shape":"ResourceName",
           "documentation":"<p>The map resource to retrieve the style descriptor from.</p>",
@@ -2979,6 +3303,12 @@
         "Blob":{
           "shape":"Blob",
           "documentation":"<p>Contains the body of the style descriptor.</p>"
+        },
+        "CacheControl":{
+          "shape":"String",
+          "documentation":"<p>The HTTP Cache-Control directive for the value.</p>",
+          "location":"header",
+          "locationName":"Cache-Control"
         },
         "ContentType":{
           "shape":"String",
@@ -2998,6 +3328,12 @@
         "Z"
       ],
       "members":{
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "MapName":{
           "shape":"ResourceName",
           "documentation":"<p>The map resource to retrieve the map tiles from.</p>",
@@ -3042,6 +3378,12 @@
         "Blob":{
           "shape":"Blob",
           "documentation":"<p>Contains Mapbox Vector Tile (MVT) data.</p>"
+        },
+        "CacheControl":{
+          "shape":"String",
+          "documentation":"<p>The HTTP Cache-Control directive for the value.</p>",
+          "location":"header",
+          "locationName":"Cache-Control"
         },
         "ContentType":{
           "shape":"String",
@@ -3307,7 +3649,7 @@
       "members":{
         "Entries":{
           "shape":"ListGeofenceCollectionsResponseEntryList",
-          "documentation":"<p>Lists the geofence collections that exist in your AWS account.</p>"
+          "documentation":"<p>Lists the geofence collections that exist in your Amazon Web Services account.</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -3436,6 +3778,81 @@
         }
       }
     },
+    "ListKeysRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"ApiKeyFilter",
+          "documentation":"<p>Optionally filter the list to only <code>Active</code> or <code>Expired</code> API keys.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListKeysRequestMaxResultsInteger",
+          "documentation":"<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>"
+        }
+      }
+    },
+    "ListKeysRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListKeysResponse":{
+      "type":"structure",
+      "required":["Entries"],
+      "members":{
+        "Entries":{
+          "shape":"ListKeysResponseEntryList",
+          "documentation":"<p>Contains API key resources in your Amazon Web Services account. Details include API key name, allowed referers and timestamp for when the API key will expire.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "ListKeysResponseEntry":{
+      "type":"structure",
+      "required":[
+        "CreateTime",
+        "ExpireTime",
+        "KeyName",
+        "Restrictions",
+        "UpdateTime"
+      ],
+      "members":{
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the API key was created, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.</p>"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The optional description for the API key resource.</p>"
+        },
+        "ExpireTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource will expire, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.</p>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource.</p>"
+        },
+        "Restrictions":{"shape":"ApiKeyRestrictions"},
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the API key was last updated, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.</p>"
+        }
+      },
+      "documentation":"<p>An API key resource listed in your Amazon Web Services account.</p>"
+    },
+    "ListKeysResponseEntryList":{
+      "type":"list",
+      "member":{"shape":"ListKeysResponseEntry"}
+    },
     "ListMapsRequest":{
       "type":"structure",
       "members":{
@@ -3461,7 +3878,7 @@
       "members":{
         "Entries":{
           "shape":"ListMapsResponseEntryList",
-          "documentation":"<p>Contains a list of maps in your AWS account</p>"
+          "documentation":"<p>Contains a list of maps in your Amazon Web Services account</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -3506,7 +3923,7 @@
           "documentation":"<p>The timestamp for when the map resource was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.</p>"
         }
       },
-      "documentation":"<p>Contains details of an existing map resource in your AWS account.</p>"
+      "documentation":"<p>Contains details of an existing map resource in your Amazon Web Services account.</p>"
     },
     "ListMapsResponseEntryList":{
       "type":"list",
@@ -3537,7 +3954,7 @@
       "members":{
         "Entries":{
           "shape":"ListPlaceIndexesResponseEntryList",
-          "documentation":"<p>Lists the place index resources that exist in your AWS account</p>"
+          "documentation":"<p>Lists the place index resources that exist in your Amazon Web Services account</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -3582,7 +3999,7 @@
           "documentation":"<p>The timestamp for when the place index resource was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
         }
       },
-      "documentation":"<p>A place index resource listed in your AWS account.</p>"
+      "documentation":"<p>A place index resource listed in your Amazon Web Services account.</p>"
     },
     "ListPlaceIndexesResponseEntryList":{
       "type":"list",
@@ -3613,7 +4030,7 @@
       "members":{
         "Entries":{
           "shape":"ListRouteCalculatorsResponseEntryList",
-          "documentation":"<p>Lists the route calculator resources that exist in your AWS account</p>"
+          "documentation":"<p>Lists the route calculator resources that exist in your Amazon Web Services account</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -3658,7 +4075,7 @@
           "documentation":"<p>The timestamp when the route calculator resource was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>"
         }
       },
-      "documentation":"<p>A route calculator resource listed in your AWS account.</p>"
+      "documentation":"<p>A route calculator resource listed in your Amazon Web Services account.</p>"
     },
     "ListRouteCalculatorsResponseEntryList":{
       "type":"list",
@@ -3750,7 +4167,7 @@
       "members":{
         "Entries":{
           "shape":"ListTrackersResponseEntryList",
-          "documentation":"<p>Contains tracker resources in your AWS account. Details include tracker name, description and timestamps for when the tracker was created and last updated.</p>"
+          "documentation":"<p>Contains tracker resources in your Amazon Web Services account. Details include tracker name, description and timestamps for when the tracker was created and last updated.</p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -4000,6 +4417,12 @@
           "documentation":"<p>The timestamp for when the geofence was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
         }
       }
+    },
+    "RefererPattern":{
+      "type":"string",
+      "max":253,
+      "min":0,
+      "pattern":"^([$\\-._+!*\\x{60}(),;/?:@=&\\w]|%([0-9a-fA-F?]{2}|[0-9a-fA-F?]?[*]))+$"
     },
     "ResourceDescription":{
       "type":"string",
@@ -4479,6 +4902,13 @@
       },
       "exception":true
     },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Expired"
+      ]
+    },
     "Step":{
       "type":"structure",
       "required":[
@@ -4751,7 +5181,7 @@
       "members":{
         "CollectionArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the updated geofence collection. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated geofence collection. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>"
         },
         "CollectionName":{
           "shape":"ResourceName",
@@ -4760,6 +5190,60 @@
         "UpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the geofence collection was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> </p>"
+        }
+      }
+    },
+    "UpdateKeyRequest":{
+      "type":"structure",
+      "required":["KeyName"],
+      "members":{
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>Updates the description for the API key resource.</p>"
+        },
+        "ExpireTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Updates the timestamp for when the API key resource will expire in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
+        },
+        "ForceUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>The boolean flag to be included for updating <code>ExpireTime</code> or <code>Restrictions</code> details.</p> <p>Must be set to <code>true</code> to update an API key resource that has been used in the past 7 days.</p> <p> <code>False</code> if force update is not preferred</p> <p>Default value: <code>False</code> </p>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource to update.</p>",
+          "location":"uri",
+          "locationName":"KeyName"
+        },
+        "NoExpiry":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the API key should expire. Set to <code>true</code> to set the API key to have no expiration time.</p>"
+        },
+        "Restrictions":{
+          "shape":"ApiKeyRestrictions",
+          "documentation":"<p>Updates the API key restrictions for the API key resource.</p>"
+        }
+      }
+    },
+    "UpdateKeyResponse":{
+      "type":"structure",
+      "required":[
+        "KeyArn",
+        "KeyName",
+        "UpdateTime"
+      ],
+      "members":{
+        "KeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>"
+        },
+        "KeyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the API key resource.</p>"
+        },
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the API key resource was last updated in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p>"
         }
       }
     },
@@ -4843,7 +5327,7 @@
       "members":{
         "IndexArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the upated place index resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place- index/ExamplePlaceIndex</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the upated place index resource. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place- index/ExamplePlaceIndex</code> </p> </li> </ul>"
         },
         "IndexName":{
           "shape":"ResourceName",

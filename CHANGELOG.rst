@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.27.78
+=======
+
+* api-change:``appflow``: This release enables the customers to choose whether to use Private Link for Metadata and Authorization call when using a private Salesforce connections
+* api-change:``ecs``: This release supports deleting Amazon ECS task definitions that are in the INACTIVE state.
+* api-change:``grafana``: Doc-only update. Updated information on attached role policies for customer provided roles
+* api-change:``guardduty``: Updated API and data types descriptions for CreateFilter, UpdateFilter, and TriggerDetails.
+* api-change:``iotwireless``: In this release, we add additional capabilities for the FUOTA which allows user to configure the fragment size, the sending interval and the redundancy ratio of the FUOTA tasks
+* api-change:``location``: This release adds support for using Maps APIs with an API Key in addition to AWS Cognito. This includes support for adding, listing, updating and deleting API Keys.
+* api-change:``macie2``: This release adds support for a new finding type, Policy:IAMUser/S3BucketSharedWithCloudFront, and S3 bucket metadata that indicates if a bucket is shared with an Amazon CloudFront OAI or OAC.
+* api-change:``wafv2``: You can now associate an AWS WAF v2 web ACL with an AWS App Runner service.
+
+
 1.27.77
 =======
 

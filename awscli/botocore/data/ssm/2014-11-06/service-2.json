@@ -1601,7 +1601,7 @@
         {"shape":"DocumentPermissionLimit"},
         {"shape":"DocumentLimitExceeded"}
       ],
-      "documentation":"<p>Shares a Amazon Web Services Systems Manager document (SSM document)publicly or privately. If you share a document privately, you must specify the Amazon Web Services user account IDs for those people who can use the document. If you share a document publicly, you must specify <i>All</i> as the account ID.</p>"
+      "documentation":"<p>Shares a Amazon Web Services Systems Manager document (SSM document)publicly or privately. If you share a document privately, you must specify the Amazon Web Services user IDs for those people who can use the document. If you share a document publicly, you must specify <i>All</i> as the account ID.</p>"
     },
     "PutComplianceItems":{
       "name":"PutComplianceItems",
@@ -1972,7 +1972,7 @@
         {"shape":"AssociationVersionLimitExceeded"},
         {"shape":"InvalidTargetMaps"}
       ],
-      "documentation":"<p>Updates an association. You can update the association name and version, the document version, schedule, parameters, and Amazon Simple Storage Service (Amazon S3) output. When you call <code>UpdateAssociation</code>, the system removes all optional parameters from the request and overwrites the association with null values for those parameters. This is by design. You must specify all optional parameters in the call, even if you are not changing the parameters. This includes the <code>Name</code> parameter. Before calling this API action, we recommend that you call the <a>DescribeAssociation</a> API operation and make a note of all optional parameters required for your <code>UpdateAssociation</code> call.</p> <p>In order to call this API operation, your Identity and Access Management (IAM) user account, group, or role must be configured with permission to call the <a>DescribeAssociation</a> API operation. If you don't have permission to call <code>DescribeAssociation</code>, then you receive the following error: <code>An error occurred (AccessDeniedException) when calling the UpdateAssociation operation: User: &lt;user_arn&gt; isn't authorized to perform: ssm:DescribeAssociation on resource: &lt;resource_arn&gt;</code> </p> <important> <p>When you update an association, the association immediately runs against the specified targets. You can add the <code>ApplyOnlyAtCronInterval</code> parameter to run the association during the next schedule run.</p> </important>"
+      "documentation":"<p>Updates an association. You can update the association name and version, the document version, schedule, parameters, and Amazon Simple Storage Service (Amazon S3) output. When you call <code>UpdateAssociation</code>, the system removes all optional parameters from the request and overwrites the association with null values for those parameters. This is by design. You must specify all optional parameters in the call, even if you are not changing the parameters. This includes the <code>Name</code> parameter. Before calling this API action, we recommend that you call the <a>DescribeAssociation</a> API operation and make a note of all optional parameters required for your <code>UpdateAssociation</code> call.</p> <p>In order to call this API operation, a user, group, or role must be granted permission to call the <a>DescribeAssociation</a> API operation. If you don't have permission to call <code>DescribeAssociation</code>, then you receive the following error: <code>An error occurred (AccessDeniedException) when calling the UpdateAssociation operation: User: &lt;user_arn&gt; isn't authorized to perform: ssm:DescribeAssociation on resource: &lt;resource_arn&gt;</code> </p> <important> <p>When you update an association, the association immediately runs against the specified targets. You can add the <code>ApplyOnlyAtCronInterval</code> parameter to run the association during the next schedule run.</p> </important>"
     },
     "UpdateAssociationStatus":{
       "name":"UpdateAssociationStatus",
@@ -2332,7 +2332,7 @@
       "members":{
         "IgnorePollAlarmFailure":{
           "shape":"Boolean",
-          "documentation":"<p>If you specify <code>true</code> for this value, your automation or command continue to run even if we can't gather information about the state of your CloudWatch alarm. The default value is <code>false</code>.</p>"
+          "documentation":"<p>When this value is <i>true</i>, your automation or command continues to run in cases where we can’t retrieve alarm status information from CloudWatch. In cases where we successfully retrieve an alarm status of OK or INSUFFICIENT_DATA, the automation or command continues to run, regardless of this value. Default is <i>false</i>.</p>"
         },
         "Alarms":{
           "shape":"AlarmList",
@@ -4566,7 +4566,7 @@
       "members":{
         "Name":{
           "shape":"DocumentARN",
-          "documentation":"<p>The name of the SSM Command document or Automation runbook that contains the configuration information for the managed node.</p> <p>You can specify Amazon Web Services-predefined documents, documents you created, or a document that is shared with you from another account.</p> <p>For Systems Manager documents (SSM documents) that are shared with you from other Amazon Web Services accounts, you must specify the complete SSM document ARN, in the following format:</p> <p> <code>arn:<i>partition</i>:ssm:<i>region</i>:<i>account-id</i>:document/<i>document-name</i> </code> </p> <p>For example:</p> <p> <code>arn:aws:ssm:us-east-2:12345678912:document/My-Shared-Document</code> </p> <p>For Amazon Web Services-predefined documents and SSM documents you created in your account, you only need to specify the document name. For example, <code>AWS-ApplyPatchBaseline</code> or <code>My-Document</code>.</p>"
+          "documentation":"<p>The name of the SSM Command document or Automation runbook that contains the configuration information for the managed node.</p> <p>You can specify Amazon Web Services-predefined documents, documents you created, or a document that is shared with you from another Amazon Web Services account.</p> <p>For Systems Manager documents (SSM documents) that are shared with you from other Amazon Web Services accounts, you must specify the complete SSM document ARN, in the following format:</p> <p> <code>arn:<i>partition</i>:ssm:<i>region</i>:<i>account-id</i>:document/<i>document-name</i> </code> </p> <p>For example:</p> <p> <code>arn:aws:ssm:us-east-2:12345678912:document/My-Shared-Document</code> </p> <p>For Amazon Web Services-predefined documents and SSM documents you created in your account, you only need to specify the document name. For example, <code>AWS-ApplyPatchBaseline</code> or <code>My-Document</code>.</p>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",
@@ -4664,7 +4664,7 @@
       "members":{
         "Content":{
           "shape":"DocumentContent",
-          "documentation":"<p>The content for the new SSM document in JSON or YAML format. We recommend storing the contents for your new document in an external JSON or YAML file and referencing the file in a command.</p> <p>For examples, see the following topics in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-api.html\">Create an SSM document (Amazon Web Services API)</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-cli.html\">Create an SSM document (Amazon Web Services CLI)</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-api.html\">Create an SSM document (API)</a> </p> </li> </ul>"
+          "documentation":"<p>The content for the new SSM document in JSON or YAML format. The content of the document must not exceed 64KB. This quota also includes the content specified for input parameters at runtime. We recommend storing the contents for your new document in an external JSON or YAML file and referencing the file in a command.</p> <p>For examples, see the following topics in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-api.html\">Create an SSM document (Amazon Web Services API)</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-cli.html\">Create an SSM document (Amazon Web Services CLI)</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-document-api.html\">Create an SSM document (API)</a> </p> </li> </ul>"
         },
         "Requires":{
           "shape":"DocumentRequiresList",
@@ -6630,7 +6630,7 @@
         },
         "Owner":{
           "shape":"DocumentOwner",
-          "documentation":"<p>The Amazon Web Services user account that created the document.</p>"
+          "documentation":"<p>The Amazon Web Services user that created the document.</p>"
         },
         "CreatedDate":{
           "shape":"DateTime",
@@ -6804,7 +6804,7 @@
         },
         "Owner":{
           "shape":"DocumentOwner",
-          "documentation":"<p>The Amazon Web Services user account that created the document.</p>"
+          "documentation":"<p>The Amazon Web Services user that created the document.</p>"
         },
         "VersionName":{
           "shape":"DocumentVersionName",
@@ -6938,7 +6938,7 @@
           "documentation":"<p>If specified, the default values for the parameters. Parameters without a default value are required. Parameters with a default value are optional.</p>"
         }
       },
-      "documentation":"<p>Parameters specified in a System Manager document that run on the server when the command is run. </p>"
+      "documentation":"<p>Parameters specified in a Systems Manager document that run on the server when the command is run. </p>"
     },
     "DocumentParameterDefaultValue":{"type":"string"},
     "DocumentParameterDescrption":{"type":"string"},
@@ -6959,7 +6959,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The document can't be shared with more Amazon Web Services user accounts. You can specify a maximum of 20 accounts per API operation to share a private document.</p> <p>By default, you can share a private document with a maximum of 1,000 accounts and publicly share up to five documents.</p> <p>If you need to increase the quota for privately or publicly shared Systems Manager documents, contact Amazon Web Services Support.</p>",
+      "documentation":"<p>The document can't be shared with more Amazon Web Services accounts. You can specify a maximum of 20 accounts per API operation to share a private document.</p> <p>By default, you can share a private document with a maximum of 1,000 accounts and publicly share up to five documents.</p> <p>If you need to increase the quota for privately or publicly shared Systems Manager documents, contact Amazon Web Services Support.</p>",
       "exception":true
     },
     "DocumentPermissionMaxResults":{
@@ -8490,7 +8490,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the GetServiceSetting API operation.</p>"
@@ -11327,11 +11327,11 @@
         },
         "AccountIdsToAdd":{
           "shape":"AccountIdList",
-          "documentation":"<p>The Amazon Web Services user accounts that should have access to the document. The account IDs can either be a group of account IDs or <i>All</i>.</p>"
+          "documentation":"<p>The Amazon Web Services users that should have access to the document. The account IDs can either be a group of account IDs or <i>All</i>.</p>"
         },
         "AccountIdsToRemove":{
           "shape":"AccountIdList",
-          "documentation":"<p>The Amazon Web Services user accounts that should no longer have access to the document. The Amazon Web Services user account can either be a group of account IDs or <i>All</i>. This action has a higher priority than <i>AccountIdsToAdd</i>. If you specify an account ID to add and the same ID to remove, the system removes access to the document.</p>"
+          "documentation":"<p>The Amazon Web Services users that should no longer have access to the document. The Amazon Web Services user can either be a group of account IDs or <i>All</i>. This action has a higher priority than <i>AccountIdsToAdd</i>. If you specify an ID to add and the same ID to remove, the system removes access to the document.</p>"
         },
         "SharedDocumentVersion":{
           "shape":"SharedDocumentVersion",
@@ -13554,7 +13554,7 @@
         },
         "KeyId":{
           "shape":"ParameterKeyId",
-          "documentation":"<p>The Key Management Service (KMS) ID that you want to use to encrypt a parameter. Either the default KMS key automatically assigned to your Amazon Web Services account or a custom key. Required for parameters that use the <code>SecureString</code> data type.</p> <p>If you don't specify a key ID, the system uses the default key associated with your Amazon Web Services account.</p> <ul> <li> <p>To use your default KMS key, choose the <code>SecureString</code> data type, and do <i>not</i> specify the <code>Key ID</code> when you create the parameter. The system automatically populates <code>Key ID</code> with your default KMS key.</p> </li> <li> <p>To use a custom KMS key, choose the <code>SecureString</code> data type with the <code>Key ID</code> parameter.</p> </li> </ul>"
+          "documentation":"<p>The Key Management Service (KMS) ID that you want to use to encrypt a parameter. Use a custom key for better security. Required for parameters that use the <code>SecureString</code> data type.</p> <p>If you don't specify a key ID, the system uses the default key associated with your Amazon Web Services account which is not as secure as using a custom key.</p> <ul> <li> <p>To use a custom KMS key, choose the <code>SecureString</code> data type with the <code>Key ID</code> parameter.</p> </li> </ul>"
         },
         "Overwrite":{
           "shape":"Boolean",
@@ -13579,7 +13579,7 @@
         },
         "DataType":{
           "shape":"ParameterDataType",
-          "documentation":"<p>The data type for a <code>String</code> parameter. Supported data types include plain text and Amazon Machine Image (AMI) IDs.</p> <p> <b>The following data type values are supported.</b> </p> <ul> <li> <p> <code>text</code> </p> </li> <li> <p> <code>aws:ec2:image</code> </p> </li> <li> <p> <code>aws:ssm:integration</code> </p> </li> </ul> <p>When you create a <code>String</code> parameter and specify <code>aws:ec2:image</code>, Amazon Web Services Systems Manager validates the parameter value is in the required format, such as <code>ami-12345abcdeEXAMPLE</code>, and that the specified AMI is available in your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-ec2-aliases.html\">Native parameter support for Amazon Machine Image (AMI) IDs</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The data type for a <code>String</code> parameter. Supported data types include plain text and Amazon Machine Image (AMI) IDs.</p> <p> <b>The following data type values are supported.</b> </p> <ul> <li> <p> <code>text</code> </p> </li> <li> <p> <code>aws:ec2:image</code> </p> </li> <li> <p> <code>aws:ssm:integration</code> </p> </li> </ul> <p>When you create a <code>String</code> parameter and specify <code>aws:ec2:image</code>, Amazon Web Services Systems Manager validates the parameter value is in the required format, such as <code>ami-12345abcdeEXAMPLE</code>, and that the specified AMI is available in your Amazon Web Services account.</p> <note> <p>If the action is successful, the service sends back an HTTP 200 response which indicates a successful <code>PutParameter</code> call for all cases except for data type <code>aws:ec2:image</code>. If you call <code>PutParameter</code> with <code>aws:ec2:image</code> data type, a successful HTTP 200 response does not guarantee that your parameter was successfully created or updated. The <code>aws:ec2:image</code> value is validated asynchronously, and the <code>PutParameter</code> call returns before the validation is complete. If you submit an invalid AMI value, the PutParameter operation will return success, but the asynchronous validation will fail and the parameter will not be created or updated. To monitor whether your <code>aws:ec2:image</code> parameters are created successfully, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-cwe.html\">Setting up notifications or trigger actions based on Parameter Store events</a>. For more information about AMI format validation , see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-ec2-aliases.html\">Native parameter support for Amazon Machine Image (AMI) IDs</a>. </p> </note>"
         }
       }
     },
@@ -14786,7 +14786,7 @@
         },
         "Owner":{
           "shape":"SessionOwner",
-          "documentation":"<p>The ID of the Amazon Web Services user account that started the session.</p>"
+          "documentation":"<p>The ID of the Amazon Web Services user that started the session.</p>"
         },
         "Reason":{
           "shape":"SessionReason",
@@ -14825,7 +14825,7 @@
         },
         "value":{
           "shape":"SessionFilterValue",
-          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p>InvokedAfter: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started August 29, 2018, and later.</p> </li> <li> <p>InvokedBefore: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started before August 29, 2018.</p> </li> <li> <p>Target: Specify a managed node to which session connections have been made.</p> </li> <li> <p>Owner: Specify an Amazon Web Services user account to see a list of sessions started by that user.</p> </li> <li> <p>Status: Specify a valid session status to see a list of all sessions with that status. Status values you can specify include:</p> <ul> <li> <p>Connected</p> </li> <li> <p>Connecting</p> </li> <li> <p>Disconnected</p> </li> <li> <p>Terminated</p> </li> <li> <p>Terminating</p> </li> <li> <p>Failed</p> </li> </ul> </li> <li> <p>SessionId: Specify a session ID to return details about the session.</p> </li> </ul>"
+          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p>InvokedAfter: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started August 29, 2018, and later.</p> </li> <li> <p>InvokedBefore: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started before August 29, 2018.</p> </li> <li> <p>Target: Specify a managed node to which session connections have been made.</p> </li> <li> <p>Owner: Specify an Amazon Web Services user to see a list of sessions started by that user.</p> </li> <li> <p>Status: Specify a valid session status to see a list of all sessions with that status. Status values you can specify include:</p> <ul> <li> <p>Connected</p> </li> <li> <p>Connecting</p> </li> <li> <p>Disconnected</p> </li> <li> <p>Terminated</p> </li> <li> <p>Terminating</p> </li> <li> <p>Failed</p> </li> </ul> </li> <li> <p>SessionId: Specify a session ID to return details about the session.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes a filter for Session Manager information.</p>"
@@ -14975,7 +14975,7 @@
     },
     "SharedDocumentVersion":{
       "type":"string",
-      "documentation":"<p>The document version shared with other accounts. You can share <code>Latest</code>, <code>Default</code> or <code>All versions</code>.</p>",
+      "documentation":"<p>The document version shared with other Amazon Web Services accounts. You can share <code>Latest</code>, <code>Default</code> or <code>All versions</code>.</p>",
       "max":8,
       "pattern":"([$]LATEST|[$]DEFAULT|[$]ALL)"
     },
@@ -16569,7 +16569,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         },
         "SettingValue":{
           "shape":"ServiceSettingValue",

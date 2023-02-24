@@ -30,7 +30,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Specifies the extended metrics that you want a CloudWatch RUM app monitor to send to a destination. Valid destinations include CloudWatch and Evidently.</p> <p>By default, RUM app monitors send some metrics to CloudWatch. These default metrics are listed in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html\">CloudWatch metrics that you can collect with CloudWatch RUM</a>.</p> <p>If you also send extended metrics, you can send metrics to Evidently as well as CloudWatch, and you can also optionally send the metrics with additional dimensions. The valid dimension names for the additional dimensions are <code>BrowserName</code>, <code>CountryCode</code>, <code>DeviceType</code>, <code>FileType</code>, <code>OSName</code>, and <code>PageId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Extended metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> <p>The maximum number of metric definitions that you can specify in one <code>BatchCreateRumMetricDefinitions</code> operation is 200.</p> <p>The maximum number of metric definitions that one destination can contain is 2000.</p> <p>Extended metrics sent are charged as CloudWatch custom metrics. Each combination of additional dimension name and dimension value counts as a custom metric. For more information, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>You must have already created a destination for the metrics before you send them. For more information, see <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html\">PutRumMetricsDestination</a>.</p> <p>If some metric definitions specified in a <code>BatchCreateRumMetricDefinitions</code> operations are not valid, those metric definitions fail and return errors, but all valid metric definitions in the same operation still succeed.</p>",
+      "documentation":"<p>Specifies the extended metrics and custom metrics that you want a CloudWatch RUM app monitor to send to a destination. Valid destinations include CloudWatch and Evidently.</p> <p>By default, RUM app monitors send some metrics to CloudWatch. These default metrics are listed in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html\">CloudWatch metrics that you can collect with CloudWatch RUM</a>.</p> <p>In addition to these default metrics, you can choose to send extended metrics or custom metrics or both.</p> <ul> <li> <p>Extended metrics enable you to send metrics with additional dimensions not included in the default metrics. You can also send extended metrics to Evidently as well as CloudWatch. The valid dimension names for the additional dimensions for extended metrics are <code>BrowserName</code>, <code>CountryCode</code>, <code>DeviceType</code>, <code>FileType</code>, <code>OSName</code>, and <code>PageId</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Extended metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> </li> <li> <p>Custom metrics are metrics that you define. You can send custom metrics to CloudWatch or to CloudWatch Evidently or to both. With custom metrics, you can use any metric name and namespace, and to derive the metrics you can use any custom events, built-in events, custom attributes, or default attributes. </p> <p>You can't send custom metrics to the <code>AWS/RUM</code> namespace. You must send custom metrics to a custom namespace that you define. The namespace that you use can't start with <code>AWS/</code>. CloudWatch RUM prepends <code>RUM/CustomMetrics/</code> to the custom namespace that you define, so the final namespace for your metrics in CloudWatch is <code>RUM/CustomMetrics/<i>your-custom-namespace</i> </code>.</p> </li> </ul> <p>The maximum number of metric definitions that you can specify in one <code>BatchCreateRumMetricDefinitions</code> operation is 200.</p> <p>The maximum number of metric definitions that one destination can contain is 2000.</p> <p>Extended metrics sent to CloudWatch and RUM custom metrics are charged as CloudWatch custom metrics. Each combination of additional dimension name and dimension value counts as a custom metric. For more information, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>You must have already created a destination for the metrics before you send them. For more information, see <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html\">PutRumMetricsDestination</a>.</p> <p>If some metric definitions specified in a <code>BatchCreateRumMetricDefinitions</code> operations are not valid, those metric definitions fail and return errors, but all valid metric definitions in the same operation still succeed.</p>",
       "idempotent":true
     },
     "BatchDeleteRumMetricDefinitions":{
@@ -253,7 +253,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates or updates a destination to receive extended metrics from CloudWatch RUM. You can send extended metrics to CloudWatch or to a CloudWatch Evidently experiment.</p> <p>For more information about extended metrics, see <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_AddRumMetrics.html\">AddRumMetrics</a>.</p>",
+      "documentation":"<p>Creates or updates a destination to receive extended metrics from CloudWatch RUM. You can send extended metrics to CloudWatch or to a CloudWatch Evidently experiment.</p> <p>For more information about extended metrics, see <a href=\"https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_BatchCreateRumMetricDefinitions.html\">BatchCreateRumMetricDefinitions</a>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -873,7 +873,9 @@
     "DimensionKeysMap":{
       "type":"map",
       "key":{"shape":"DimensionKey"},
-      "value":{"shape":"DimensionName"}
+      "value":{"shape":"DimensionName"},
+      "max":29,
+      "min":0
     },
     "DimensionName":{
       "type":"string",
@@ -1130,6 +1132,10 @@
           "shape":"MetricName",
           "documentation":"<p>The name of the metric that is defined in this structure.</p>"
         },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>If this metric definition is for a custom metric instead of an extended metric, this field displays the metric namespace that the custom metric is published to.</p>"
+        },
         "UnitLabel":{
           "shape":"UnitLabel",
           "documentation":"<p>Use this field only if you are sending this metric to CloudWatch. It defines the CloudWatch metric unit that this metric is measured in. </p>"
@@ -1156,7 +1162,7 @@
       "members":{
         "DimensionKeys":{
           "shape":"DimensionKeysMap",
-          "documentation":"<p>Use this field only if you are sending the metric to CloudWatch.</p> <p>This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch. Valid values for the entries in this field are the following:</p> <ul> <li> <p> <code>\"metadata.pageId\": \"PageId\"</code> </p> </li> <li> <p> <code>\"metadata.browserName\": \"BrowserName\"</code> </p> </li> <li> <p> <code>\"metadata.deviceType\": \"DeviceType\"</code> </p> </li> <li> <p> <code>\"metadata.osName\": \"OSName\"</code> </p> </li> <li> <p> <code>\"metadata.countryCode\": \"CountryCode\"</code> </p> </li> <li> <p> <code>\"event_details.fileType\": \"FileType\"</code> </p> </li> </ul> <p> All dimensions listed in this field must also be included in <code>EventPattern</code>.</p>"
+          "documentation":"<p>Use this field only if you are sending the metric to CloudWatch.</p> <p>This field is a map of field paths to dimension names. It defines the dimensions to associate with this metric in CloudWatch. For extended metrics, valid values for the entries in this field are the following:</p> <ul> <li> <p> <code>\"metadata.pageId\": \"PageId\"</code> </p> </li> <li> <p> <code>\"metadata.browserName\": \"BrowserName\"</code> </p> </li> <li> <p> <code>\"metadata.deviceType\": \"DeviceType\"</code> </p> </li> <li> <p> <code>\"metadata.osName\": \"OSName\"</code> </p> </li> <li> <p> <code>\"metadata.countryCode\": \"CountryCode\"</code> </p> </li> <li> <p> <code>\"event_details.fileType\": \"FileType\"</code> </p> </li> </ul> <p> For both extended metrics and custom metrics, all dimensions listed in this field must also be included in <code>EventPattern</code>.</p>"
         },
         "EventPattern":{
           "shape":"EventPattern",
@@ -1164,7 +1170,11 @@
         },
         "Name":{
           "shape":"MetricName",
-          "documentation":"<p>The name for the metric that is defined in this structure. Valid values are the following:</p> <ul> <li> <p> <code>PerformanceNavigationDuration</code> </p> </li> <li> <p> <code>PerformanceResourceDuration </code> </p> </li> <li> <p> <code>NavigationSatisfiedTransaction</code> </p> </li> <li> <p> <code>NavigationToleratedTransaction</code> </p> </li> <li> <p> <code>NavigationFrustratedTransaction</code> </p> </li> <li> <p> <code>WebVitalsCumulativeLayoutShift</code> </p> </li> <li> <p> <code>WebVitalsFirstInputDelay</code> </p> </li> <li> <p> <code>WebVitalsLargestContentfulPaint</code> </p> </li> <li> <p> <code>JsErrorCount</code> </p> </li> <li> <p> <code>HttpErrorCount</code> </p> </li> <li> <p> <code>SessionCount</code> </p> </li> </ul>"
+          "documentation":"<p>The name for the metric that is defined in this structure. For custom metrics, you can specify any name that you like. For extended metrics, valid values are the following:</p> <ul> <li> <p> <code>PerformanceNavigationDuration</code> </p> </li> <li> <p> <code>PerformanceResourceDuration </code> </p> </li> <li> <p> <code>NavigationSatisfiedTransaction</code> </p> </li> <li> <p> <code>NavigationToleratedTransaction</code> </p> </li> <li> <p> <code>NavigationFrustratedTransaction</code> </p> </li> <li> <p> <code>WebVitalsCumulativeLayoutShift</code> </p> </li> <li> <p> <code>WebVitalsFirstInputDelay</code> </p> </li> <li> <p> <code>WebVitalsLargestContentfulPaint</code> </p> </li> <li> <p> <code>JsErrorCount</code> </p> </li> <li> <p> <code>HttpErrorCount</code> </p> </li> <li> <p> <code>SessionCount</code> </p> </li> </ul>"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>If this structure is for a custom metric instead of an extended metrics, use this parameter to define the metric namespace for that custom metric. Do not specify this parameter if this structure is for an extended metric.</p> <p>You cannot use any string that starts with <code>AWS/</code> for your namespace.</p>"
         },
         "UnitLabel":{
           "shape":"UnitLabel",
@@ -1175,7 +1185,7 @@
           "documentation":"<p>The field within the event object that the metric value is sourced from.</p> <p>If you omit this field, a hardcoded value of 1 is pushed as the metric value. This is useful if you just want to count the number of events that the filter catches. </p> <p>If this metric is sent to CloudWatch Evidently, this field will be passed to Evidently raw and Evidently will handle data extraction from the event.</p>"
         }
       },
-      "documentation":"<p>Use this structure to define one extended metric that RUM will send to CloudWatch or CloudWatch Evidently. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Additional metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> <p>Only certain combinations of values for <code>Name</code>, <code>ValueKey</code>, and <code>EventPattern</code> are valid. In addition to what is displayed in the list below, the <code>EventPattern</code> can also include information used by the <code>DimensionKeys</code> field.</p> <ul> <li> <p>If <code>Name</code> is <code>PerformanceNavigationDuration</code>, then <code>ValueKey</code>must be <code>event_details.duration</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.performance_navigation_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>PerformanceResourceDuration</code>, then <code>ValueKey</code>must be <code>event_details.duration</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.performance_resource_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationSatisfiedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;\",2000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationToleratedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;=\",2000,\"&lt;\"8000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationFrustratedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;=\",8000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsCumulativeLayoutShift</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.cumulative_layout_shift_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsFirstInputDelay</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.first_input_delay_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsLargestContentfulPaint</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.largest_contentful_paint_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>JsErrorCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.js_error_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>HttpErrorCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.http_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>SessionCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.session_start_event\"]}</code> </p> </li> </ul>"
+      "documentation":"<p>Use this structure to define one extended metric or custom metric that RUM will send to CloudWatch or CloudWatch Evidently. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html\"> Additional metrics that you can send to CloudWatch and CloudWatch Evidently</a>.</p> <p>This structure is validated differently for extended metrics and custom metrics. For extended metrics that are sent to the <code>AWS/RUM</code> namespace, the following validations apply:</p> <ul> <li> <p>The <code>Namespace</code> parameter must be omitted or set to <code>AWS/RUM</code>.</p> </li> <li> <p>Only certain combinations of values for <code>Name</code>, <code>ValueKey</code>, and <code>EventPattern</code> are valid. In addition to what is displayed in the list below, the <code>EventPattern</code> can also include information used by the <code>DimensionKeys</code> field.</p> <ul> <li> <p>If <code>Name</code> is <code>PerformanceNavigationDuration</code>, then <code>ValueKey</code>must be <code>event_details.duration</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.performance_navigation_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>PerformanceResourceDuration</code>, then <code>ValueKey</code>must be <code>event_details.duration</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.performance_resource_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationSatisfiedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;\",2000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationToleratedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;=\",2000,\"&lt;\"8000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>NavigationFrustratedTransaction</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{ \"event_type\": [\"com.amazon.rum.performance_navigation_event\"], \"event_details\": { \"duration\": [{ \"numeric\": [\"&gt;=\",8000] }] } }</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsCumulativeLayoutShift</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.cumulative_layout_shift_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsFirstInputDelay</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.first_input_delay_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>WebVitalsLargestContentfulPaint</code>, then <code>ValueKey</code>must be <code>event_details.value</code> and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.largest_contentful_paint_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>JsErrorCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.js_error_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>HttpErrorCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.http_event\"]}</code> </p> </li> <li> <p>If <code>Name</code> is <code>SessionCount</code>, then <code>ValueKey</code>must be null and the <code>EventPattern</code> must include <code>{\"event_type\":[\"com.amazon.rum.session_start_event\"]}</code> </p> </li> </ul> </li> </ul> <p>For custom metrics, the following validation rules apply:</p> <ul> <li> <p>The namespace can't be omitted and can't be <code>AWS/RUM</code>. You can use the <code>AWS/RUM</code> namespace only for extended metrics.</p> </li> <li> <p>All dimensions listed in the <code>DimensionKeys</code> field must be present in the value of <code>EventPattern</code>.</p> </li> <li> <p>The values that you specify for <code>ValueKey</code>, <code>EventPattern</code>, and <code>DimensionKeys</code> must be fields in RUM events, so all first-level keys in these fields must be one of the keys in the list later in this section.</p> </li> <li> <p>If you set a value for <code>EventPattern</code>, it must be a JSON object.</p> </li> <li> <p>For every non-empty <code>event_details</code>, there must be a non-empty <code>event_type</code>.</p> </li> <li> <p>If <code>EventPattern</code> contains an <code>event_details</code> field, it must also contain an <code>event_type</code>. For every built-in <code>event_type</code> that you use, you must use a value for <code>event_details</code> that corresponds to that <code>event_type</code>. For information about event details that correspond to event types, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-datacollected.html#CloudWatch-RUM-datacollected-eventDetails\"> RUM event details</a>.</p> </li> <li> <p>In <code>EventPattern</code>, any JSON array must contain only one value.</p> </li> </ul> <p>Valid key values for first-level keys in the <code>ValueKey</code>, <code>EventPattern</code>, and <code>DimensionKeys</code> fields:</p> <ul> <li> <p> <code>account_id</code> </p> </li> <li> <p> <code>application_Id</code> </p> </li> <li> <p> <code>application_version</code> </p> </li> <li> <p> <code>application_name</code> </p> </li> <li> <p> <code>batch_id</code> </p> </li> <li> <p> <code>event_details</code> </p> </li> <li> <p> <code>event_id</code> </p> </li> <li> <p> <code>event_interaction</code> </p> </li> <li> <p> <code>event_timestamp</code> </p> </li> <li> <p> <code>event_type</code> </p> </li> <li> <p> <code>event_version</code> </p> </li> <li> <p> <code>log_stream</code> </p> </li> <li> <p> <code>metadata</code> </p> </li> <li> <p> <code>sessionId</code> </p> </li> <li> <p> <code>user_details</code> </p> </li> <li> <p> <code>userId</code> </p> </li> </ul>"
     },
     "MetricDefinitions":{
       "type":"list",
@@ -1219,6 +1229,12 @@
       "max":255,
       "min":1
     },
+    "Namespace":{
+      "type":"string",
+      "max":237,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-._/#:]+$"
+    },
     "Pages":{
       "type":"list",
       "member":{"shape":"Url"},
@@ -1240,11 +1256,11 @@
           "documentation":"<p>A structure that contains information about the app monitor that collected this telemetry information.</p>"
         },
         "BatchId":{
-          "shape":"String",
+          "shape":"PutRumEventsRequestBatchIdString",
           "documentation":"<p>A unique identifier for this batch of RUM event data.</p>"
         },
         "Id":{
-          "shape":"AppMonitorId",
+          "shape":"PutRumEventsRequestIdString",
           "documentation":"<p>The ID of the app monitor that is sending this data.</p>",
           "location":"uri",
           "locationName":"Id"
@@ -1258,6 +1274,18 @@
           "documentation":"<p>A structure that contains information about the user session that this batch of events was collected from.</p>"
         }
       }
+    },
+    "PutRumEventsRequestBatchIdString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+    },
+    "PutRumEventsRequestIdString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
     },
     "PutRumEventsResponse":{
       "type":"structure",
@@ -1360,7 +1388,7 @@
           "jsonvalue":true
         },
         "id":{
-          "shape":"String",
+          "shape":"RumEventIdString",
           "documentation":"<p>A unique ID for this event.</p>"
         },
         "metadata":{
@@ -1378,6 +1406,12 @@
         }
       },
       "documentation":"<p>A structure that contains the information for one performance event that RUM collects from a user session with your application.</p>"
+    },
+    "RumEventIdString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
     },
     "RumEventList":{
       "type":"list",
@@ -1625,15 +1659,27 @@
       "type":"structure",
       "members":{
         "sessionId":{
-          "shape":"String",
+          "shape":"UserDetailsSessionIdString",
           "documentation":"<p>The session ID that the performance events are from.</p>"
         },
         "userId":{
-          "shape":"String",
+          "shape":"UserDetailsUserIdString",
           "documentation":"<p>The ID of the user for this user session. This ID is generated by RUM and does not include any personally identifiable information about the user.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about the user session that this batch of events was collected from.</p>"
+    },
+    "UserDetailsSessionIdString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+    },
+    "UserDetailsUserIdString":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
     },
     "ValidationException":{
       "type":"structure",

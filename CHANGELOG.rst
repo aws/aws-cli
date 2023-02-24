@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.10.3
+======
+
+* api-change:``opensearch``: This release lets customers configure Off-peak window and software update related properties for a new/existing domain. It enhances the capabilities of StartServiceSoftwareUpdate API; adds 2 new APIs - ListScheduledActions & UpdateScheduledAction; and allows Auto-tune to make use of Off-peak window.
+* api-change:``iotwireless``: In this release, we add additional capabilities for the FUOTA which allows user to configure the fragment size, the sending interval and the redundancy ratio of the FUOTA tasks
+* api-change:``macie2``: This release adds support for a new finding type, Policy:IAMUser/S3BucketSharedWithCloudFront, and S3 bucket metadata that indicates if a bucket is shared with an Amazon CloudFront OAI or OAC.
+* api-change:``appflow``: This release enables the customers to choose whether to use Private Link for Metadata and Authorization call when using a private Salesforce connections
+* api-change:``location``: This release adds support for using Maps APIs with an API Key in addition to AWS Cognito. This includes support for adding, listing, updating and deleting API Keys.
+* api-change:``ecs``: This release supports deleting Amazon ECS task definitions that are in the INACTIVE state.
+* api-change:``rum``: CloudWatch RUM now supports CloudWatch Custom Metrics
+* api-change:``chime-sdk-voice``: This release introduces support for Voice Connector media metrics in the Amazon Chime SDK Voice namespace
+* api-change:``wafv2``: You can now associate an AWS WAF v2 web ACL with an AWS App Runner service.
+* api-change:``ssm``: Document only update for Feb 2023
+* api-change:``guardduty``: Updated API and data types descriptions for CreateFilter, UpdateFilter, and TriggerDetails.
+* api-change:``datasync``: AWS DataSync has relaxed the minimum length constraint of AccessKey for Object Storage locations to 1.
+* api-change:``cloudfront``: CloudFront now supports block lists in origin request policies so that you can forward all headers, cookies, or query string from viewer requests to the origin *except* for those specified in the block list.
+* api-change:``grafana``: Doc-only update. Updated information on attached role policies for customer provided roles
+
+
 2.10.2
 ======
 

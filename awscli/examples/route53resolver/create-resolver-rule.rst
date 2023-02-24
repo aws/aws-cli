@@ -8,7 +8,7 @@ The following ``create-resolver-rule`` example creates a Resolver forwarding rul
         --name my-rule \
         --resolver-endpoint-id rslvr-out-d5e5920e37example \
         --rule-type FORWARD \
-        --target-ips="Ip=10.24.8.75" "Ip=10.24.8.156"
+        --target-ips "Ip=10.24.8.75" "Ip=10.24.8.156"
 
 Output::
 

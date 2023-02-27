@@ -118,7 +118,7 @@ class NuGetBaseLogin(BaseLogin):
     _SOURCE_UPDATED_MESSAGE = 'Updated source %s in the NuGet.Config\n'
     # Example line the below regex should match:
     # 1.  nuget.org [Enabled]
-    _SOURCE_REGEX = re.compile(r'^\d+\.\s+(?P<source_name>.*)\s+\[.*\]')
+    _SOURCE_REGEX = re.compile(r'^\d+\.\s(?P<source_name>.+)\s\[.*\]')
 
     def login(self, dry_run=False):
         try:
@@ -197,7 +197,7 @@ class NuGetBaseLogin(BaseLogin):
         for i in range(len(lines)):
             result = self._SOURCE_REGEX.match(lines[i].strip())
             if result:
-                source_to_url_dict[result["source_name"]] = \
+                source_to_url_dict[result["source_name"].strip()] = \
                     lines[i + 1].strip()
 
         return source_to_url_dict

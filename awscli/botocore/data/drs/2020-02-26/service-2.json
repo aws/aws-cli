@@ -946,6 +946,10 @@
         "replicatedDisks":{
           "shape":"DataReplicationInfoReplicatedDisks",
           "documentation":"<p>The disks that should be replicated.</p>"
+        },
+        "stagingAvailabilityZone":{
+          "shape":"AwsAvailabilityZone",
+          "documentation":"<p>AWS Availability zone into which data is being replicated.</p>"
         }
       },
       "documentation":"<p>Information about Data Replication</p>"
@@ -1893,6 +1897,10 @@
         "initiated":{
           "shape":"LifeCycleLastLaunchInitiated",
           "documentation":"<p>An object containing information regarding the initiation of the last launch of a Source Server.</p>"
+        },
+        "status":{
+          "shape":"LaunchStatus",
+          "documentation":"<p>Status of Source Server's last launch.</p>"
         }
       },
       "documentation":"<p>An object containing information regarding the last launch of a Source Server.</p>"
@@ -2156,9 +2164,13 @@
           "shape":"JobID",
           "documentation":"<p>The ID of the Job that created the Recovery Instance.</p>"
         },
+        "originAvailabilityZone":{
+          "shape":"AwsAvailabilityZone",
+          "documentation":"<p>AWS availability zone associated with the recovery instance.</p>"
+        },
         "originEnvironment":{
           "shape":"OriginEnvironment",
-          "documentation":"<p>Environment (On Premises / AWS) of the instance that the recovery instance originated from. </p>"
+          "documentation":"<p>Environment (On Premises / AWS) of the instance that the recovery instance originated from.</p>"
         },
         "pointInTimeSnapshotDateTime":{
           "shape":"ISO8601DatetimeString",
@@ -2223,6 +2235,10 @@
         "replicatedDisks":{
           "shape":"RecoveryInstanceDataReplicationInfoReplicatedDisks",
           "documentation":"<p>The disks that should be replicated.</p>"
+        },
+        "stagingAvailabilityZone":{
+          "shape":"AwsAvailabilityZone",
+          "documentation":"<p>AWS Availability zone into which data is being replicated.</p>"
         }
       },
       "documentation":"<p>Information about Data Replication</p>"
@@ -2620,7 +2636,7 @@
         },
         "optimizedStagingDiskType":{
           "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",
-          "documentation":"<p>When <code>stagingDiskType</code> is set to Auto, this field shows the current staging disk EBS volume type as it is constantly updated by the service. This is a read-only field.</p>"
+          "documentation":"<p>The Staging Disk EBS volume type to be used during replication when <code>stagingDiskType</code> is set to Auto. This is a read-only field.</p>"
         },
         "stagingDiskType":{
           "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",

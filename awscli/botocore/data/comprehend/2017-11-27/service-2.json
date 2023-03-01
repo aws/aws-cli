@@ -146,6 +146,25 @@
       ],
       "documentation":"<p>Analyzes input text for the presence of personally identifiable information (PII) and returns the labels of identified PII entity types such as name, address, bank account number, or phone number.</p>"
     },
+    "CreateDataset":{
+      "name":"CreateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDatasetRequest"},
+      "output":{"shape":"CreateDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a dataset to upload training or test data for a model associated with a flywheel. For more information about datasets, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
+    },
     "CreateDocumentClassifier":{
       "name":"CreateDocumentClassifier",
       "http":{
@@ -204,7 +223,29 @@
         {"shape":"KmsKeyValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an entity recognizer using submitted files. After your <code>CreateEntityRecognizer</code> request is submitted, you can check job status using the API. </p>"
+      "documentation":"<p>Creates an entity recognizer using submitted files. After your <code>CreateEntityRecognizer</code> request is submitted, you can check job status using the <code>DescribeEntityRecognizer</code> API. </p>"
+    },
+    "CreateFlywheel":{
+      "name":"CreateFlywheel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateFlywheelRequest"},
+      "output":{"shape":"CreateFlywheelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"UnsupportedLanguageException"},
+        {"shape":"KmsKeyValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceUnavailableException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>A flywheel is an AWS resource that orchestrates the ongoing training of a model for custom classification or custom entity recognition. You can create a flywheel to start with an existing trained model, or Comprehend can create and train a new model.</p> <p>When you create the flywheel, Comprehend creates a data lake in your account. The data lake holds the training data and test data for all versions of the model.</p> <p>To use a flywheel with an existing trained model, you specify the active model version. Comprehend copies the model's training data and test data into the flywheel's data lake.</p> <p>To use the flywheel with a new model, you need to provide a dataset for training data (and optional test data) when you create the flywheel.</p> <p>For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
     },
     "DeleteDocumentClassifier":{
       "name":"DeleteDocumentClassifier",
@@ -259,6 +300,24 @@
       ],
       "documentation":"<p>Deletes an entity recognizer.</p> <p>Only those recognizers that are in terminated states (IN_ERROR, TRAINED) will be deleted. If an active inference job is using the model, a <code>ResourceInUseException</code> will be returned.</p> <p>This is an asynchronous action that puts the recognizer into a DELETING state, and it is then removed by a background job. Once removed, the recognizer disappears from your account and is no longer available for use. </p>"
     },
+    "DeleteFlywheel":{
+      "name":"DeleteFlywheel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteFlywheelRequest"},
+      "output":{"shape":"DeleteFlywheelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceUnavailableException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a flywheel. When you delete the flywheel, Amazon Comprehend does not delete the data lake or the model associated with the flywheel.</p> <p>For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
+    },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
       "http":{
@@ -273,6 +332,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a resource-based policy that is attached to a custom model.</p>"
+    },
+    "DescribeDataset":{
+      "name":"DescribeDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDatasetRequest"},
+      "output":{"shape":"DescribeDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about the dataset that you specify. For more information about datasets, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
     },
     "DescribeDocumentClassificationJob":{
       "name":"DescribeDocumentClassificationJob",
@@ -385,6 +460,38 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets the status and details of an events detection job.</p>"
+    },
+    "DescribeFlywheel":{
+      "name":"DescribeFlywheel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeFlywheelRequest"},
+      "output":{"shape":"DescribeFlywheelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Provides configuration information about the flywheel. For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
+    },
+    "DescribeFlywheelIteration":{
+      "name":"DescribeFlywheelIteration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeFlywheelIterationRequest"},
+      "output":{"shape":"DescribeFlywheelIterationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve the configuration properties of a flywheel iteration. For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
     },
     "DescribeKeyPhrasesDetectionJob":{
       "name":"DescribeKeyPhrasesDetectionJob",
@@ -614,6 +721,23 @@
       ],
       "documentation":"<p>Creates a new custom model that replicates a source custom model that you import. The source model can be in your AWS account or another one.</p> <p>If the source model is in another AWS account, then it must have a resource-based policy that authorizes you to import it.</p> <p>The source model must be in the same AWS region that you're using when you import. You can't import a model that's in a different region.</p>"
     },
+    "ListDatasets":{
+      "name":"ListDatasets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDatasetsRequest"},
+      "output":{"shape":"ListDatasetsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidFilterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List the datasets that you have configured in this region. For more information about datasets, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
+    },
     "ListDocumentClassificationJobs":{
       "name":"ListDocumentClassificationJobs",
       "http":{
@@ -755,6 +879,39 @@
       ],
       "documentation":"<p>Gets a list of the events detection jobs that you have submitted.</p>"
     },
+    "ListFlywheelIterationHistory":{
+      "name":"ListFlywheelIterationHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFlywheelIterationHistoryRequest"},
+      "output":{"shape":"ListFlywheelIterationHistoryResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidFilterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Information about the history of a flywheel iteration. For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
+    },
+    "ListFlywheels":{
+      "name":"ListFlywheels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFlywheelsRequest"},
+      "output":{"shape":"ListFlywheelsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidFilterException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets a list of the flywheels that you have created.</p>"
+    },
     "ListKeyPhrasesDetectionJobs":{
       "name":"ListKeyPhrasesDetectionJobs",
       "http":{
@@ -882,7 +1039,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an asynchronous document classification job. Use the operation to track the progress of the job.</p>"
+      "documentation":"<p>Starts an asynchronous document classification job. Use the <code>DescribeDocumentClassificationJob</code> operation to track the progress of the job.</p>"
     },
     "StartDominantLanguageDetectionJob":{
       "name":"StartDominantLanguageDetectionJob",
@@ -936,6 +1093,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous event detection job for a collection of documents.</p>"
+    },
+    "StartFlywheelIteration":{
+      "name":"StartFlywheelIteration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartFlywheelIterationRequest"},
+      "output":{"shape":"StartFlywheelIterationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Start the flywheel iteration.This operation uses any new datasets to train a new model version. For more information about flywheels, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html\"> Flywheel overview</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
     },
     "StartKeyPhrasesDetectionJob":{
       "name":"StartKeyPhrasesDetectionJob",
@@ -1003,7 +1177,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an asynchronous targeted sentiment detection job for a collection of documents. Use the operation to track the status of a job.</p>"
+      "documentation":"<p>Starts an asynchronous targeted sentiment detection job for a collection of documents. Use the <code>DescribeTargetedSentimentDetectionJob</code> operation to track the status of a job.</p>"
     },
     "StartTopicsDetectionJob":{
       "name":"StartTopicsDetectionJob",
@@ -1211,6 +1385,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates information about the specified endpoint. For information about endpoints, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html\">Managing endpoints</a>.</p>"
+    },
+    "UpdateFlywheel":{
+      "name":"UpdateFlywheel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateFlywheelRequest"},
+      "output":{"shape":"UpdateFlywheelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KmsKeyValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the configuration information for an existing flywheel.</p>"
     }
   },
   "shapes":{
@@ -1804,12 +1995,17 @@
     "ComprehendArn":{
       "type":"string",
       "max":256,
-      "pattern":"arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:[a-zA-Z0-9-]{1,64}/[a-zA-Z0-9](-*[a-zA-Z0-9])*(/version/[a-zA-Z0-9](-*[a-zA-Z0-9])*)?"
+      "pattern":"arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:[a-zA-Z0-9-]{1,64}/[a-zA-Z0-9](-*[a-zA-Z0-9])*((/dataset/[a-zA-Z0-9](-*[a-zA-Z0-9])*)|(/version/[a-zA-Z0-9](-*[a-zA-Z0-9])*))?"
     },
     "ComprehendArnName":{
       "type":"string",
       "max":63,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+    },
+    "ComprehendDatasetArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:flywheel/[a-zA-Z0-9](-*[a-zA-Z0-9])*/dataset/[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
     "ComprehendEndpointArn":{
       "type":"string",
@@ -1820,6 +2016,11 @@
       "type":"string",
       "max":40,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+    },
+    "ComprehendFlywheelArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:flywheel/[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
     "ComprehendModelArn":{
       "type":"string",
@@ -1860,6 +2061,54 @@
         }
       }
     },
+    "CreateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "FlywheelArn",
+        "DatasetName",
+        "InputDataConfig"
+      ],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel of the flywheel to receive the data.</p>"
+        },
+        "DatasetName":{
+          "shape":"ComprehendArnName",
+          "documentation":"<p>Name of the dataset.</p>"
+        },
+        "DatasetType":{
+          "shape":"DatasetType",
+          "documentation":"<p>The dataset type. You can specify that the data in a dataset is for training the model or for testing the model.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Description of the dataset.</p>"
+        },
+        "InputDataConfig":{
+          "shape":"DatasetInputDataConfig",
+          "documentation":"<p>Information about the input data configuration. The type of input data varies based on the format of the input and whether the data is for a classifier model or an entity recognition model.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags for the dataset.</p>"
+        }
+      }
+    },
+    "CreateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetArn":{
+          "shape":"ComprehendDatasetArn",
+          "documentation":"<p>The ARN of the dataset.</p>"
+        }
+      }
+    },
     "CreateDocumentClassifierRequest":{
       "type":"structure",
       "required":[
@@ -1879,11 +2128,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the document classifier being created. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department. </p>"
+          "documentation":"<p>Tags to associate with the document classifier. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department. </p>"
         },
         "InputDataConfig":{
           "shape":"DocumentClassifierInputDataConfig",
@@ -1900,7 +2149,7 @@
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language of the input documents. You can specify any of the following languages supported by Amazon Comprehend: German (\"de\"), English (\"en\"), Spanish (\"es\"), French (\"fr\"), Italian (\"it\"), or Portuguese (\"pt\"). All documents must be in the same language.</p>"
+          "documentation":"<p>The language of the input documents. You can specify any of the languages supported by Amazon Comprehend. All documents must be in the same language.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -1937,7 +2186,6 @@
       "type":"structure",
       "required":[
         "EndpointName",
-        "ModelArn",
         "DesiredInferenceUnits"
       ],
       "members":{
@@ -1960,11 +2208,15 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags associated with the endpoint being created. A tag is a key-value pair that adds metadata to the endpoint. For example, a tag with \"Sales\" as the key might be added to an endpoint to indicate its use by the sales department. </p>"
+          "documentation":"<p>Tags to associate with the endpoint. A tag is a key-value pair that adds metadata to the endpoint. For example, a tag with \"Sales\" as the key might be added to an endpoint to indicate its use by the sales department. </p>"
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS identity and Access Management (IAM) role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel to which the endpoint will be attached.</p>"
         }
       }
     },
@@ -1974,6 +2226,10 @@
         "EndpointArn":{
           "shape":"ComprehendEndpointArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the endpoint being created.</p>"
+        },
+        "ModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the model to which the endpoint is attached.</p>"
         }
       }
     },
@@ -1996,11 +2252,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the entity recognizer being created. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department. </p>"
+          "documentation":"<p>Tags to associate with the entity recognizer. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department. </p>"
         },
         "InputDataConfig":{
           "shape":"EntityRecognizerInputDataConfig",
@@ -2025,7 +2281,7 @@
         },
         "ModelKmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
         },
         "ModelPolicy":{
           "shape":"Policy",
@@ -2042,6 +2298,66 @@
         }
       }
     },
+    "CreateFlywheelRequest":{
+      "type":"structure",
+      "required":[
+        "FlywheelName",
+        "DataAccessRoleArn",
+        "DataLakeS3Uri"
+      ],
+      "members":{
+        "FlywheelName":{
+          "shape":"ComprehendArnName",
+          "documentation":"<p>Name for the flywheel.</p>"
+        },
+        "ActiveModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>To associate an existing model with the flywheel, specify the Amazon Resource Number (ARN) of the model version.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend the permissions required to access the flywheel data in the data lake.</p>"
+        },
+        "TaskConfig":{
+          "shape":"TaskConfig",
+          "documentation":"<p>Configuration about the custom classifier associated with the flywheel.</p>"
+        },
+        "ModelType":{
+          "shape":"ModelType",
+          "documentation":"<p>The model type.</p>"
+        },
+        "DataLakeS3Uri":{
+          "shape":"FlywheelS3Uri",
+          "documentation":"<p>Enter the S3 location for the data lake. You can specify a new S3 bucket or a new folder of an existing S3 bucket. The flywheel creates the data lake at this location.</p>"
+        },
+        "DataSecurityConfig":{
+          "shape":"DataSecurityConfig",
+          "documentation":"<p>Data security configurations.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to associate with this flywheel.</p>"
+        }
+      }
+    },
+    "CreateFlywheelResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel.</p>"
+        },
+        "ActiveModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the active model version.</p>"
+        }
+      }
+    },
     "CustomerInputString":{
       "type":"string",
       "min":1,
@@ -2052,6 +2368,246 @@
       "member":{"shape":"CustomerInputString"},
       "min":1,
       "sensitive":true
+    },
+    "DataSecurityConfig":{
+      "type":"structure",
+      "members":{
+        "ModelKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the KMS key that Amazon Comprehend uses to encrypt the volume.</p>"
+        },
+        "DataLakeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the KMS key that Amazon Comprehend uses to encrypt the data in the data lake.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"}
+      },
+      "documentation":"<p>Data security configuration.</p>"
+    },
+    "DatasetAugmentedManifestsList":{
+      "type":"list",
+      "member":{"shape":"DatasetAugmentedManifestsListItem"}
+    },
+    "DatasetAugmentedManifestsListItem":{
+      "type":"structure",
+      "required":[
+        "AttributeNames",
+        "S3Uri"
+      ],
+      "members":{
+        "AttributeNames":{
+          "shape":"AttributeNamesList",
+          "documentation":"<p>The JSON attribute that contains the annotations for your training documents. The number of attribute names that you specify depends on whether your augmented manifest file is the output of a single labeling job or a chained labeling job.</p> <p>If your file is the output of a single labeling job, specify the LabelAttributeName key that was used when the job was created in Ground Truth.</p> <p>If your file is the output of a chained labeling job, specify the LabelAttributeName key for one or more jobs in the chain. Each LabelAttributeName key provides the annotations from an individual job.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 location of the augmented manifest file.</p>"
+        },
+        "AnnotationDataS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 prefix to the annotation files that are referred in the augmented manifest file.</p>"
+        },
+        "SourceDocumentsS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 prefix to the source files (PDFs) that are referred to in the augmented manifest file.</p>"
+        },
+        "DocumentType":{
+          "shape":"AugmentedManifestsDocumentTypeFormat",
+          "documentation":"<p>The type of augmented manifest. If you don't specify, the default is PlainTextDocument. </p> <p> <code>PLAIN_TEXT_DOCUMENT</code> A document type that represents any unicode text that is encoded in UTF-8.</p>"
+        }
+      },
+      "documentation":"<p>An augmented manifest file that provides training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p>"
+    },
+    "DatasetDataFormat":{
+      "type":"string",
+      "enum":[
+        "COMPREHEND_CSV",
+        "AUGMENTED_MANIFEST"
+      ]
+    },
+    "DatasetDocumentClassifierInputDataConfig":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI for the input data. The S3 bucket must be in the same region as the API endpoint that you are calling. The URI can point to a single input file or it can provide the prefix for a collection of input files.</p> <p>For example, if you use the URI <code>S3://bucketName/prefix</code>, if the prefix is a single file, Amazon Comprehend uses that file as input. If more than one file begins with the prefix, Amazon Comprehend uses all of them as input.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>COMPREHEND_CSV</code>.</p>"
+        },
+        "LabelDelimiter":{
+          "shape":"LabelDelimiter",
+          "documentation":"<p>Indicates the delimiter used to separate each label for training a multi-label classifier. The default delimiter between labels is a pipe (|). You can use a different character as a delimiter (if it's an allowed character) by specifying it under Delimiter for labels. If the training documents use a delimiter other than the default or the delimiter you specify, the labels on that line will be combined to make a single unique label, such as LABELLABELLABEL.</p>"
+        }
+      },
+      "documentation":"<p>Describes the dataset input data configuration for a document classifier model.</p> <p>For more information on how the input file is formatted, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html\">Preparing training data</a> in the Comprehend Developer Guide. </p>"
+    },
+    "DatasetEntityRecognizerAnnotations":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p> Specifies the Amazon S3 location where the training documents for an entity recognizer are located. The URI must be in the same region as the API endpoint that you are calling.</p>"
+        }
+      },
+      "documentation":"<p>Describes the annotations associated with a entity recognizer.</p>"
+    },
+    "DatasetEntityRecognizerDocuments":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p> Specifies the Amazon S3 location where the documents for the dataset are located. </p>"
+        },
+        "InputFormat":{
+          "shape":"InputFormat",
+          "documentation":"<p> Specifies how the text in an input file should be processed. This is optional, and the default is ONE_DOC_PER_LINE. ONE_DOC_PER_FILE - Each file is considered a separate document. Use this option when you are processing large documents, such as newspaper articles or scientific papers. ONE_DOC_PER_LINE - Each line in a file is considered a separate document. Use this option when you are processing many short documents, such as text messages.</p>"
+        }
+      },
+      "documentation":"<p>Describes the documents submitted with a dataset for an entity recognizer model.</p>"
+    },
+    "DatasetEntityRecognizerEntityList":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>Specifies the Amazon S3 location where the entity list is located.</p>"
+        }
+      },
+      "documentation":"<p>Describes the dataset entity list for an entity recognizer model.</p> <p>For more information on how the input file is formatted, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/prep-training-data-cer.html\">Preparing training data</a> in the Comprehend Developer Guide. </p>"
+    },
+    "DatasetEntityRecognizerInputDataConfig":{
+      "type":"structure",
+      "required":["Documents"],
+      "members":{
+        "Annotations":{
+          "shape":"DatasetEntityRecognizerAnnotations",
+          "documentation":"<p>The S3 location of the annotation documents for your custom entity recognizer.</p>"
+        },
+        "Documents":{
+          "shape":"DatasetEntityRecognizerDocuments",
+          "documentation":"<p>The format and location of the training documents for your custom entity recognizer.</p>"
+        },
+        "EntityList":{
+          "shape":"DatasetEntityRecognizerEntityList",
+          "documentation":"<p>The S3 location of the entity list for your custom entity recognizer.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the format and location of the input data. You must provide either the <code>Annotations</code> parameter or the <code>EntityList</code> parameter.</p>"
+    },
+    "DatasetFilter":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>Filter the datasets based on the dataset status.</p>"
+        },
+        "DatasetType":{
+          "shape":"DatasetType",
+          "documentation":"<p>Filter the datasets based on the dataset type.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the datasets to include datasets created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the datasets to include datasets created before the specified time.</p>"
+        }
+      },
+      "documentation":"<p>Filter the datasets based on creation time or dataset status.</p>"
+    },
+    "DatasetInputDataConfig":{
+      "type":"structure",
+      "members":{
+        "AugmentedManifests":{
+          "shape":"DatasetAugmentedManifestsList",
+          "documentation":"<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth. </p>"
+        },
+        "DataFormat":{
+          "shape":"DatasetDataFormat",
+          "documentation":"<p> <code>COMPREHEND_CSV</code>: The data format is a two-column CSV file, where the first column contains labels and the second column contains documents.</p> <p> <code>AUGMENTED_MANIFEST</code>: The data format </p>"
+        },
+        "DocumentClassifierInputDataConfig":{
+          "shape":"DatasetDocumentClassifierInputDataConfig",
+          "documentation":"<p>The input properties for training a document classifier model. </p> <p>For more information on how the input file is formatted, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html\">Preparing training data</a> in the Comprehend Developer Guide. </p>"
+        },
+        "EntityRecognizerInputDataConfig":{
+          "shape":"DatasetEntityRecognizerInputDataConfig",
+          "documentation":"<p>The input properties for training an entity recognizer model.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the format and location of the input data for the dataset.</p>"
+    },
+    "DatasetProperties":{
+      "type":"structure",
+      "members":{
+        "DatasetArn":{
+          "shape":"ComprehendDatasetArn",
+          "documentation":"<p>The ARN of the dataset.</p>"
+        },
+        "DatasetName":{
+          "shape":"ComprehendArnName",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "DatasetType":{
+          "shape":"DatasetType",
+          "documentation":"<p>The dataset type (training data or test data).</p>"
+        },
+        "DatasetS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI where the dataset is stored.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Description of the dataset.</p>"
+        },
+        "Status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The dataset status. While the system creates the dataset, the status is <code>CREATING</code>. When the dataset is ready to use, the status changes to <code>COMPLETED</code>. </p>"
+        },
+        "Message":{
+          "shape":"AnyLengthString",
+          "documentation":"<p>A description of the status of the dataset.</p>"
+        },
+        "NumberOfDocuments":{
+          "shape":"NumberOfDocuments",
+          "documentation":"<p>The number of documents in the dataset.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the dataset.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time when the data from the dataset becomes available in the data lake.</p>"
+        }
+      },
+      "documentation":"<p>Properties associated with the dataset.</p>"
+    },
+    "DatasetPropertiesList":{
+      "type":"list",
+      "member":{"shape":"DatasetProperties"}
+    },
+    "DatasetStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "DatasetType":{
+      "type":"string",
+      "enum":[
+        "TRAIN",
+        "TEST"
+      ]
     },
     "DeleteDocumentClassifierRequest":{
       "type":"structure",
@@ -2098,6 +2654,21 @@
       "members":{
       }
     },
+    "DeleteFlywheelRequest":{
+      "type":"structure",
+      "required":["FlywheelArn"],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel to delete.</p>"
+        }
+      }
+    },
+    "DeleteFlywheelResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -2117,13 +2688,32 @@
       "members":{
       }
     },
+    "DescribeDatasetRequest":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"ComprehendDatasetArn",
+          "documentation":"<p>The ARN of the dataset.</p>"
+        }
+      }
+    },
+    "DescribeDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetProperties":{
+          "shape":"DatasetProperties",
+          "documentation":"<p>The dataset properties.</p>"
+        }
+      }
+    },
     "DescribeDocumentClassificationJobRequest":{
       "type":"structure",
       "required":["JobId"],
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The <code>StartDocumentClassificationJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2142,7 +2732,7 @@
       "members":{
         "DocumentClassifierArn":{
           "shape":"DocumentClassifierArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the document classifier. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the document classifier. The <code>CreateDocumentClassifier</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2161,7 +2751,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The <code>StartDominantLanguageDetectionJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2199,7 +2789,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The <code>StartEntitiesDetectionJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2250,13 +2840,58 @@
         }
       }
     },
+    "DescribeFlywheelIterationRequest":{
+      "type":"structure",
+      "required":[
+        "FlywheelArn",
+        "FlywheelIterationId"
+      ],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p/>"
+        },
+        "FlywheelIterationId":{
+          "shape":"FlywheelIterationId",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "DescribeFlywheelIterationResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelIterationProperties":{
+          "shape":"FlywheelIterationProperties",
+          "documentation":"<p>The configuration properties of a flywheel iteration.</p>"
+        }
+      }
+    },
+    "DescribeFlywheelRequest":{
+      "type":"structure",
+      "required":["FlywheelArn"],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel.</p>"
+        }
+      }
+    },
+    "DescribeFlywheelResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelProperties":{
+          "shape":"FlywheelProperties",
+          "documentation":"<p>The flywheel properties.</p>"
+        }
+      }
+    },
     "DescribeKeyPhrasesDetectionJobRequest":{
       "type":"structure",
       "required":["JobId"],
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The <code>StartKeyPhrasesDetectionJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2341,7 +2976,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The operation returns this identifier in its response.</p>"
+          "documentation":"<p>The identifier that Amazon Comprehend generated for the job. The <code>StartTargetedSentimentDetectionJob</code> operation returns this identifier in its response.</p>"
         }
       }
     },
@@ -2372,6 +3007,11 @@
           "documentation":"<p>The list of properties for the requested job.</p>"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^([a-zA-Z0-9_])[\\\\a-zA-Z0-9_@#%*+=:?./!\\s-]*$"
     },
     "DetectDominantLanguageRequest":{
       "type":"structure",
@@ -2600,6 +3240,21 @@
       },
       "documentation":"<p>Specifies the class that categorizes the document being analyzed</p>"
     },
+    "DocumentClassificationConfig":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"DocumentClassifierMode",
+          "documentation":"<p>Classification mode indicates whether the documents are <code>MULTI_CLASS</code> or <code>MULTI_LABEL</code>.</p>"
+        },
+        "Labels":{
+          "shape":"LabelsList",
+          "documentation":"<p>One or more labels to associate with the custom classifier.</p>"
+        }
+      },
+      "documentation":"<p>Configuration required for a custom classification model.</p>"
+    },
     "DocumentClassificationJobFilter":{
       "type":"structure",
       "members":{
@@ -2667,7 +3322,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -2676,6 +3331,10 @@
         "VpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p> Configuration parameters for a private Virtual Private Cloud (VPC) containing the resources you are using for your document classification job. For more information, see <a href=\"https://docs.aws.amazon.com/vppc/latest/userguide/what-is-amazon-vpc.html\">Amazon VPC</a>. </p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
         }
       },
       "documentation":"<p>Provides information about a document classification job.</p>"
@@ -2725,7 +3384,7 @@
           "documentation":"<p>Filters the list of classifiers based on the time that the classifier was submitted for processing. Returns only classifiers submitted after the specified time. Classifiers are returned in descending order, newest to oldest.</p>"
         }
       },
-      "documentation":"<p>Provides information for filtering a list of document classifiers. You can only specify one filtering parameter in a request. For more information, see the operation.</p>"
+      "documentation":"<p>Provides information for filtering a list of document classifiers. You can only specify one filtering parameter in a request. For more information, see the <code>ListDocumentClassifiers</code> operation.</p>"
     },
     "DocumentClassifierInputDataConfig":{
       "type":"structure",
@@ -2770,6 +3429,10 @@
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt the output results from an analysis job. The KmsKeyId can be one of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>KMS Key Alias: <code>\"alias/ExampleAlias\"</code> </p> </li> <li> <p>ARN of a KMS Key Alias: <code>\"arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias\"</code> </p> </li> </ul>"
+        },
+        "FlywheelStatsS3Prefix":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 prefix for the data lake location of the flywheel statistics.</p>"
         }
       },
       "documentation":"<p>Provides output results configuration parameters for custom classifier jobs. </p>"
@@ -2823,7 +3486,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -2848,6 +3511,10 @@
         "SourceModelArn":{
           "shape":"DocumentClassifierArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the source model. This model was imported from a different AWS account to create the document classifier model in your AWS account.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
         }
       },
       "documentation":"<p>Provides information about a document classifier.</p>"
@@ -3062,7 +3729,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -3143,11 +3810,15 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS identity and Access Management (IAM) role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to trained custom models encrypted with a customer managed key (ModelKmsKeyId).</p>"
         },
         "DesiredDataAccessRoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>Data access role ARN to use in case the new model is encrypted with a customer KMS key.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
         }
       },
       "documentation":"<p>Specifies information about the specified endpoint. For information about endpoints, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html\">Managing endpoints</a>.</p>"
@@ -3237,7 +3908,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -3297,6 +3968,17 @@
         }
       },
       "documentation":"<p>Specifies one of the label or labels that categorize the personally identifiable information (PII) entity being analyzed.</p>"
+    },
+    "EntityRecognitionConfig":{
+      "type":"structure",
+      "required":["EntityTypes"],
+      "members":{
+        "EntityTypes":{
+          "shape":"EntityTypesList",
+          "documentation":"<p>Up to 25 entity types that the model is trained to recognize.</p>"
+        }
+      },
+      "documentation":"<p>Configuration required for an entity recognition model.</p>"
     },
     "EntityRecognizerAnnotations":{
       "type":"structure",
@@ -3362,7 +4044,7 @@
           "documentation":"<p>Specifies the Amazon S3 location where the entity list is located. The URI must be in the same region as the API endpoint that you are calling.</p>"
         }
       },
-      "documentation":"<p>Describes the entity recognizer submitted with an entity recognizer.</p>"
+      "documentation":"<p>Describes the entity list submitted with an entity recognizer.</p>"
     },
     "EntityRecognizerEvaluationMetrics":{
       "type":"structure",
@@ -3402,7 +4084,7 @@
           "documentation":"<p>Filters the list of entities based on the time that the list was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in ascending order, oldest to newest.</p>"
         }
       },
-      "documentation":"<p>Provides information for filtering a list of entity recognizers. You can only specify one filtering parameter in a request. For more information, see the operation./&gt;</p>"
+      "documentation":"<p>Provides information for filtering a list of entity recognizers. You can only specify one filtering parameter in a request. For more information, see the <code>ListEntityRecognizers</code> operation./&gt;</p>"
     },
     "EntityRecognizerInputDataConfig":{
       "type":"structure",
@@ -3480,6 +4162,16 @@
       },
       "documentation":"<p>Individual item from the list of entity types in the metadata of an entity recognizer.</p>"
     },
+    "EntityRecognizerOutputDataConfig":{
+      "type":"structure",
+      "members":{
+        "FlywheelStatsS3Prefix":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 prefix for the data lake location of the flywheel statistics.</p>"
+        }
+      },
+      "documentation":"<p>Output data configuration.</p>"
+    },
     "EntityRecognizerProperties":{
       "type":"structure",
       "members":{
@@ -3525,7 +4217,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -3537,7 +4229,7 @@
         },
         "ModelKmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats: </p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
         },
         "VersionName":{
           "shape":"VersionName",
@@ -3546,6 +4238,14 @@
         "SourceModelArn":{
           "shape":"EntityRecognizerArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the source model. This model was imported from a different AWS account to create the entity recognizer model in your AWS account.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
+        },
+        "OutputDataConfig":{
+          "shape":"EntityRecognizerOutputDataConfig",
+          "documentation":"<p>Output data configuration.</p>"
         }
       },
       "documentation":"<p>Describes information about an entity recognizer.</p>"
@@ -3727,7 +4427,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identify and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "TargetEventTypes":{
           "shape":"TargetEventTypes",
@@ -3755,6 +4455,242 @@
       "documentation":"<p>Array of the number of characters extracted from each page.</p>"
     },
     "Float":{"type":"float"},
+    "FlywheelFilter":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FlywheelStatus",
+          "documentation":"<p>Filter the flywheels based on the flywheel status.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the flywheels to include flywheels created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the flywheels to include flywheels created before the specified time.</p>"
+        }
+      },
+      "documentation":"<p>Filter the flywheels based on creation time or flywheel status.</p>"
+    },
+    "FlywheelIterationFilter":{
+      "type":"structure",
+      "members":{
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the flywheel iterations to include iterations created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter the flywheel iterations to include iterations created before the specified time.</p>"
+        }
+      },
+      "documentation":"<p>Filter the flywheel iterations based on creation time.</p>"
+    },
+    "FlywheelIterationId":{
+      "type":"string",
+      "max":63,
+      "pattern":"[0-9]{8}T[0-9]{6}Z"
+    },
+    "FlywheelIterationProperties":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p/>"
+        },
+        "FlywheelIterationId":{
+          "shape":"FlywheelIterationId",
+          "documentation":"<p/>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation start time of the flywheel iteration.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The completion time of this flywheel iteration.</p>"
+        },
+        "Status":{
+          "shape":"FlywheelIterationStatus",
+          "documentation":"<p>The status of the flywheel iteration.</p>"
+        },
+        "Message":{
+          "shape":"AnyLengthString",
+          "documentation":"<p>A description of the status of the flywheel iteration.</p>"
+        },
+        "EvaluatedModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The ARN of the evaluated model associated with this flywheel iteration.</p>"
+        },
+        "EvaluatedModelMetrics":{"shape":"FlywheelModelEvaluationMetrics"},
+        "TrainedModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The ARN of the trained model associated with this flywheel iteration.</p>"
+        },
+        "TrainedModelMetrics":{
+          "shape":"FlywheelModelEvaluationMetrics",
+          "documentation":"<p>The metrics associated with the trained model.</p>"
+        },
+        "EvaluationManifestS3Prefix":{
+          "shape":"S3Uri",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p>The configuration properties of a flywheel iteration.</p>"
+    },
+    "FlywheelIterationPropertiesList":{
+      "type":"list",
+      "member":{"shape":"FlywheelIterationProperties"}
+    },
+    "FlywheelIterationStatus":{
+      "type":"string",
+      "enum":[
+        "TRAINING",
+        "EVALUATING",
+        "COMPLETED",
+        "FAILED",
+        "STOP_REQUESTED",
+        "STOPPED"
+      ]
+    },
+    "FlywheelModelEvaluationMetrics":{
+      "type":"structure",
+      "members":{
+        "AverageF1Score":{
+          "shape":"Double",
+          "documentation":"<p>The average F1 score from the evaluation metrics.</p>"
+        },
+        "AveragePrecision":{
+          "shape":"Double",
+          "documentation":"<p>Average precision metric for the model.</p>"
+        },
+        "AverageRecall":{
+          "shape":"Double",
+          "documentation":"<p>Average recall metric for the model.</p>"
+        },
+        "AverageAccuracy":{
+          "shape":"Double",
+          "documentation":"<p>Average accuracy metric for the model.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation metrics associated with the evaluated model.</p>"
+    },
+    "FlywheelProperties":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel.</p>"
+        },
+        "ActiveModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the active model version.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend permission to access the flywheel data.</p>"
+        },
+        "TaskConfig":{
+          "shape":"TaskConfig",
+          "documentation":"<p>Configuration about the custom classifier associated with the flywheel.</p>"
+        },
+        "DataLakeS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>Amazon S3 URI of the data lake location. </p>"
+        },
+        "DataSecurityConfig":{
+          "shape":"DataSecurityConfig",
+          "documentation":"<p>Data security configuration.</p>"
+        },
+        "Status":{
+          "shape":"FlywheelStatus",
+          "documentation":"<p>The status of the flywheel.</p>"
+        },
+        "ModelType":{
+          "shape":"ModelType",
+          "documentation":"<p>Model type of the flywheel's model.</p>"
+        },
+        "Message":{
+          "shape":"AnyLengthString",
+          "documentation":"<p>A description of the status of the flywheel.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the flywheel.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time for the flywheel.</p>"
+        },
+        "LatestFlywheelIteration":{
+          "shape":"FlywheelIterationId",
+          "documentation":"<p>The most recent flywheel iteration.</p>"
+        }
+      },
+      "documentation":"<p>The flywheel properties.</p>"
+    },
+    "FlywheelS3Uri":{
+      "type":"string",
+      "max":512,
+      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+    },
+    "FlywheelStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "FlywheelSummary":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
+        },
+        "ActiveModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>ARN of the active model version for the flywheel.</p>"
+        },
+        "DataLakeS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>Amazon S3 URI of the data lake location. </p>"
+        },
+        "Status":{
+          "shape":"FlywheelStatus",
+          "documentation":"<p>The status of the flywheel.</p>"
+        },
+        "ModelType":{
+          "shape":"ModelType",
+          "documentation":"<p>Model type of the flywheel's model.</p>"
+        },
+        "Message":{
+          "shape":"AnyLengthString",
+          "documentation":"<p>A description of the status of the flywheel.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the flywheel.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time for the flywheel.</p>"
+        },
+        "LatestFlywheelIteration":{
+          "shape":"FlywheelIterationId",
+          "documentation":"<p>The most recent flywheel iteration.</p>"
+        }
+      },
+      "documentation":"<p>Flywheel summary information.</p>"
+    },
+    "FlywheelSummaryList":{
+      "type":"list",
+      "member":{"shape":"FlywheelSummary"}
+    },
     "Geometry":{
       "type":"structure",
       "members":{
@@ -3797,11 +4733,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that allows Amazon Comprehend to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend permission to use Amazon Key Management Service (KMS) to encrypt or decrypt the custom model.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the custom model that is created by this import. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the custom model that is created by this import. A tag is a key-value pair that adds as a metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -4015,7 +4951,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -4051,6 +4987,16 @@
       "min":1,
       "pattern":"^[ ~!@#$%^*\\-_+=|\\\\:;\\t>?/]$"
     },
+    "LabelListItem":{
+      "type":"string",
+      "max":5000,
+      "pattern":"^\\P{C}*$"
+    },
+    "LabelsList":{
+      "type":"list",
+      "member":{"shape":"LabelListItem"},
+      "max":1000
+    },
     "LanguageCode":{
       "type":"string",
       "enum":[
@@ -4067,6 +5013,40 @@
         "zh",
         "zh-TW"
       ]
+    },
+    "ListDatasetsRequest":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel.</p>"
+        },
+        "Filter":{
+          "shape":"DatasetFilter",
+          "documentation":"<p>Filters the datasets to be returned in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return in a response. The default is 100.</p>"
+        }
+      }
+    },
+    "ListDatasetsResponse":{
+      "type":"structure",
+      "members":{
+        "DatasetPropertiesList":{
+          "shape":"DatasetPropertiesList",
+          "documentation":"<p>The dataset properties list.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        }
+      }
     },
     "ListDocumentClassificationJobsRequest":{
       "type":"structure",
@@ -4266,7 +5246,7 @@
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>The list entity recognizer summaries.</p>"
+          "documentation":"<p>Identifies the next page of results to return.</p>"
         }
       }
     },
@@ -4323,6 +5303,71 @@
         "EventsDetectionJobPropertiesList":{
           "shape":"EventsDetectionJobPropertiesList",
           "documentation":"<p>A list containing the properties of each job that is returned.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        }
+      }
+    },
+    "ListFlywheelIterationHistoryRequest":{
+      "type":"structure",
+      "required":["FlywheelArn"],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The ARN of the flywheel.</p>"
+        },
+        "Filter":{
+          "shape":"FlywheelIterationFilter",
+          "documentation":"<p>Filter the flywheel iteration history based on creation time.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Next token</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p>Maximum number of iteration history results to return</p>"
+        }
+      }
+    },
+    "ListFlywheelIterationHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelIterationPropertiesList":{
+          "shape":"FlywheelIterationPropertiesList",
+          "documentation":"<p>List of flywheel iteration properties</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Next token</p>"
+        }
+      }
+    },
+    "ListFlywheelsRequest":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"FlywheelFilter",
+          "documentation":"<p>Filters the flywheels that are returned. You can filter flywheels on their status, or the date and time that they were submitted. You can only set one filter at a time. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsInteger",
+          "documentation":"<p>Maximum number of results to return in a response. The default is 100.</p>"
+        }
+      }
+    },
+    "ListFlywheelsResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelSummaryList":{
+          "shape":"FlywheelSummaryList",
+          "documentation":"<p>A list of flywheel properties retrieved by the service in response to the request. </p>"
         },
         "NextToken":{
           "shape":"String",
@@ -4643,6 +5688,14 @@
         "TRAINED"
       ]
     },
+    "ModelType":{
+      "type":"string",
+      "enum":[
+        "DOCUMENT_CLASSIFIER",
+        "ENTITY_RECOGNIZER"
+      ]
+    },
+    "NumberOfDocuments":{"type":"long"},
     "NumberOfTopicsInteger":{
       "type":"integer",
       "max":100,
@@ -4781,7 +5834,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "Mode":{
           "shape":"PiiEntitiesDetectionMode",
@@ -5102,7 +6155,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -5160,7 +6213,6 @@
     "StartDocumentClassificationJobRequest":{
       "type":"structure",
       "required":[
-        "DocumentClassifierArn",
         "InputDataConfig",
         "OutputDataConfig",
         "DataAccessRoleArn"
@@ -5201,7 +6253,11 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the document classification job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the document classification job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel associated with the model to use.</p>"
         }
       }
     },
@@ -5210,7 +6266,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier generated for the job. To get the status of the job, use this identifier with the operation.</p>"
+          "documentation":"<p>The identifier generated for the job. To get the status of the job, use this identifier with the <code>DescribeDocumentClassificationJob</code> operation.</p>"
         },
         "JobArn":{
           "shape":"ComprehendArn",
@@ -5218,7 +6274,11 @@
         },
         "JobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The status of the job:</p> <ul> <li> <p>SUBMITTED - The job has been received and queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. For details, use the operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>"
+          "documentation":"<p>The status of the job:</p> <ul> <li> <p>SUBMITTED - The job has been received and queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. For details, use the <code>DescribeDocumentClassificationJob</code> operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>"
+        },
+        "DocumentClassifierArn":{
+          "shape":"DocumentClassifierArn",
+          "documentation":"<p>The ARN of the custom classification model.</p>"
         }
       }
     },
@@ -5261,7 +6321,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the dominant language detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the dominant language detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5330,7 +6390,11 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel associated with the model to use.</p>"
         }
       }
     },
@@ -5348,6 +6412,10 @@
         "JobStatus":{
           "shape":"JobStatus",
           "documentation":"<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> <li> <p>STOP_REQUESTED - Amazon Comprehend has received a stop request for the job and is processing the request.</p> </li> <li> <p>STOPPED - The job was successfully stopped without completing.</p> </li> </ul>"
+        },
+        "EntityRecognizerArn":{
+          "shape":"EntityRecognizerArn",
+          "documentation":"<p>The ARN of the custom entity recognition model.</p>"
         }
       }
     },
@@ -5392,7 +6460,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the events detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the events detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5410,6 +6478,33 @@
         "JobStatus":{
           "shape":"JobStatus",
           "documentation":"<p>The status of the events detection job.</p>"
+        }
+      }
+    },
+    "StartFlywheelIterationRequest":{
+      "type":"structure",
+      "required":["FlywheelArn"],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The ARN of the flywheel.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestTokenString",
+          "documentation":"<p>A unique identifier for the request. If you don't set the client request token, Amazon Comprehend generates one.</p>"
+        }
+      }
+    },
+    "StartFlywheelIterationResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p/>"
+        },
+        "FlywheelIterationId":{
+          "shape":"FlywheelIterationId",
+          "documentation":"<p/>"
         }
       }
     },
@@ -5457,7 +6552,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the key phrases detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the key phrases detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5523,7 +6618,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the PII entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the PII entities detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5588,7 +6683,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5647,7 +6742,7 @@
         "VpcConfig":{"shape":"VpcConfig"},
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the targeted sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the targeted sentiment detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -5656,7 +6751,7 @@
       "members":{
         "JobId":{
           "shape":"JobId",
-          "documentation":"<p>The identifier generated for the job. To get the status of a job, use this identifier with the operation.</p>"
+          "documentation":"<p>The identifier generated for the job. To get the status of a job, use this identifier with the <code>DescribeTargetedSentimentDetectionJob</code> operation.</p>"
         },
         "JobArn":{
           "shape":"ComprehendArn",
@@ -5664,7 +6759,7 @@
         },
         "JobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the operation.</p> </li> </ul>"
+          "documentation":"<p>The status of the job. </p> <ul> <li> <p>SUBMITTED - The job has been received and is queued for processing.</p> </li> <li> <p>IN_PROGRESS - Amazon Comprehend is processing the job.</p> </li> <li> <p>COMPLETED - The job was successfully completed and the output is available.</p> </li> <li> <p>FAILED - The job did not complete. To get details, use the <code>DescribeTargetedSentimentDetectionJob</code> operation.</p> </li> </ul>"
         }
       }
     },
@@ -5711,7 +6806,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to be associated with the topics detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
+          "documentation":"<p>Tags to associate with the topics detection job. A tag is a key-value pair that adds metadata to a resource used by Amazon Comprehend. For example, a tag with \"Sales\" as the key might be added to a resource to indicate its use by the sales department.</p>"
         }
       }
     },
@@ -6060,7 +7155,7 @@
           "documentation":"<p>Filters the list of jobs based on the time that the job was submitted for processing. Returns only jobs submitted after the specified time. Jobs are returned in descending order, newest to oldest.</p>"
         }
       },
-      "documentation":"<p>Provides information for filtering a list of dominant language detection jobs. For more information, see the operation.</p>"
+      "documentation":"<p>Provides information for filtering a list of dominant language detection jobs. For more information, see the <code>ListTargetedSentimentDetectionJobs</code> operation.</p>"
     },
     "TargetedSentimentDetectionJobProperties":{
       "type":"structure",
@@ -6101,11 +7196,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon Comprehend read access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your input data.</p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt data on the storage volume attached to the ML compute instance(s) that process the targeted sentiment detection job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+          "documentation":"<p>ID for the KMS key that Amazon Comprehend uses to encrypt the data on the storage volume attached to the ML compute instance(s) that process the targeted sentiment detection job. The VolumeKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
         },
         "VpcConfig":{"shape":"VpcConfig"}
       },
@@ -6184,6 +7279,25 @@
         }
       },
       "documentation":"<p>Information about one mention of an entity. The mention information includes the location of the mention in the text and the sentiment of the mention.</p> <p>For more information about targeted sentiment, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-targeted-sentiment.html\">Targeted sentiment</a>.</p>"
+    },
+    "TaskConfig":{
+      "type":"structure",
+      "required":["LanguageCode"],
+      "members":{
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>Language code for the language that the model supports.</p>"
+        },
+        "DocumentClassificationConfig":{
+          "shape":"DocumentClassificationConfig",
+          "documentation":"<p>Configuration required for a classification model.</p>"
+        },
+        "EntityRecognitionConfig":{
+          "shape":"EntityRecognitionConfig",
+          "documentation":"<p>Configuration required for an entity recognition model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration about the custom classifier associated with the flywheel.</p>"
     },
     "TextSizeLimitExceededException":{
       "type":"structure",
@@ -6285,7 +7399,7 @@
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Management (IAM) role that grants Amazon Comprehend read access to your job data. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend read access to your job data. </p>"
         },
         "VolumeKmsKeyId":{
           "shape":"KmsKeyId",
@@ -6332,6 +7446,21 @@
       "members":{
       }
     },
+    "UpdateDataSecurityConfig":{
+      "type":"structure",
+      "members":{
+        "ModelKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the AWS Key Management Service (KMS) key that Amazon Comprehend uses to encrypt trained custom models. The ModelKmsKeyId can be either of the following formats:</p> <ul> <li> <p>KMS Key ID: <code>\"1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> <li> <p>Amazon Resource Name (ARN) of a KMS Key: <code>\"arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\"</code> </p> </li> </ul>"
+        },
+        "VolumeKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>ID for the KMS key that Amazon Comprehend uses to encrypt the volume.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"}
+      },
+      "documentation":"<p>Data security configuration.</p>"
+    },
     "UpdateEndpointRequest":{
       "type":"structure",
       "required":["EndpointArn"],
@@ -6351,12 +7480,51 @@
         "DesiredDataAccessRoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>Data access role ARN to use in case the new model is encrypted with a customer CMK.</p>"
+        },
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel</p>"
         }
       }
     },
     "UpdateEndpointResponse":{
       "type":"structure",
       "members":{
+        "DesiredModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the new model.</p>"
+        }
+      }
+    },
+    "UpdateFlywheelRequest":{
+      "type":"structure",
+      "required":["FlywheelArn"],
+      "members":{
+        "FlywheelArn":{
+          "shape":"ComprehendFlywheelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the flywheel to update.</p>"
+        },
+        "ActiveModelArn":{
+          "shape":"ComprehendModelArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the active model version.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that grants Amazon Comprehend permission to access the flywheel data.</p>"
+        },
+        "DataSecurityConfig":{
+          "shape":"UpdateDataSecurityConfig",
+          "documentation":"<p>Flywheel data security configuration.</p>"
+        }
+      }
+    },
+    "UpdateFlywheelResponse":{
+      "type":"structure",
+      "members":{
+        "FlywheelProperties":{
+          "shape":"FlywheelProperties",
+          "documentation":"<p>The flywheel properties.</p>"
+        }
       }
     },
     "VersionName":{

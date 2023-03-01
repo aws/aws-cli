@@ -1328,7 +1328,7 @@
         },
         "FunctionUrlAuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         }
       }
     },
@@ -1566,6 +1566,12 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "CollectionName":{
+      "type":"string",
+      "max":57,
+      "min":1,
+      "pattern":"(^(?!(system\\x2e)))(^[_a-zA-Z0-9])([^$]*)"
+    },
     "CompatibleArchitectures":{
       "type":"list",
       "member":{"shape":"Architecture"},
@@ -1766,6 +1772,10 @@
         "ScalingConfig":{
           "shape":"ScalingConfig",
           "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
+        },
+        "DocumentDBEventSourceConfig":{
+          "shape":"DocumentDBEventSourceConfig",
+          "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
         }
       }
     },
@@ -1783,7 +1793,7 @@
         },
         "Runtime":{
           "shape":"Runtime",
-          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive. </p>"
+          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "Role":{
           "shape":"RoleArn",
@@ -1831,7 +1841,7 @@
         },
         "KMSKeyArn":{
           "shape":"KMSKeyArn",
-          "documentation":"<p>The ARN of the Key Management Service (KMS) key that's used to encrypt your function's environment variables. If it's not provided, Lambda uses a default service key.</p>"
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, this key is also used to encrypt your function's snapshot. If you don't provide a customer managed key, Lambda uses a default service key.</p>"
         },
         "TracingConfig":{
           "shape":"TracingConfig",
@@ -1892,7 +1902,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         },
         "Cors":{
           "shape":"Cors",
@@ -1919,7 +1929,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         },
         "Cors":{
           "shape":"Cors",
@@ -1930,6 +1940,12 @@
           "documentation":"<p>When the function URL was created, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
         }
       }
+    },
+    "DatabaseName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[^ /\\.$\\x22]*"
     },
     "Date":{"type":"timestamp"},
     "DeadLetterConfig":{
@@ -2136,6 +2152,24 @@
         }
       },
       "documentation":"<p>A configuration object that specifies the destination of an event after Lambda processes it.</p>"
+    },
+    "DocumentDBEventSourceConfig":{
+      "type":"structure",
+      "members":{
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p> The name of the database to consume within the DocumentDB cluster. </p>"
+        },
+        "CollectionName":{
+          "shape":"CollectionName",
+          "documentation":"<p> The name of the collection to consume within the database. If you do not specify a collection, Lambda consumes all collections. </p>"
+        },
+        "FullDocument":{
+          "shape":"FullDocument",
+          "documentation":"<p> Determines what DocumentDB sends to your event stream during document update operations. If set to UpdateLookup, DocumentDB sends a delta describing the changes, along with a copy of the entire document. Otherwise, DocumentDB sends only a partial document that contains the changes. </p>"
+        }
+      },
+      "documentation":"<p> Specific configuration settings for a DocumentDB event source. </p>"
     },
     "EC2AccessDeniedException":{
       "type":"structure",
@@ -2417,6 +2451,10 @@
         "ScalingConfig":{
           "shape":"ScalingConfig",
           "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
+        },
+        "DocumentDBEventSourceConfig":{
+          "shape":"DocumentDBEventSourceConfig",
+          "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
         }
       },
       "documentation":"<p>A mapping between an Amazon Web Services resource and a Lambda function. For details, see <a>CreateEventSourceMapping</a>.</p>"
@@ -2490,6 +2528,13 @@
     "FilterList":{
       "type":"list",
       "member":{"shape":"Filter"}
+    },
+    "FullDocument":{
+      "type":"string",
+      "enum":[
+        "UpdateLookup",
+        "Default"
+      ]
     },
     "FunctionArn":{
       "type":"string",
@@ -2612,7 +2657,7 @@
         },
         "KMSKeyArn":{
           "shape":"KMSKeyArn",
-          "documentation":"<p>The KMS key that's used to encrypt the function's environment variables. This key is returned only if you've configured a customer managed key.</p>"
+          "documentation":"<p>The KMS key that's used to encrypt the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.</p>"
         },
         "TracingConfig":{
           "shape":"TracingConfigResponse",
@@ -2786,7 +2831,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         }
       },
       "documentation":"<p>Details about a Lambda function URL.</p>"
@@ -3041,7 +3086,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         },
         "Cors":{
           "shape":"Cors",
@@ -3251,7 +3296,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -3274,6 +3319,10 @@
         "RuntimeVersionArn":{
           "shape":"RuntimeVersionArn",
           "documentation":"<p>The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.</p>"
+        },
+        "FunctionArn":{
+          "shape":"NameSpacedFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
         }
       }
     },
@@ -5539,6 +5588,10 @@
         "ScalingConfig":{
           "shape":"ScalingConfig",
           "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
+        },
+        "DocumentDBEventSourceConfig":{
+          "shape":"DocumentDBEventSourceConfig",
+          "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
         }
       }
     },
@@ -5630,7 +5683,7 @@
         },
         "Runtime":{
           "shape":"Runtime",
-          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive. </p>"
+          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "DeadLetterConfig":{
           "shape":"DeadLetterConfig",
@@ -5638,7 +5691,7 @@
         },
         "KMSKeyArn":{
           "shape":"KMSKeyArn",
-          "documentation":"<p>The ARN of the Key Management Service (KMS) key that's used to encrypt your function's environment variables. If it's not provided, Lambda uses a default service key.</p>"
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, this key is also used to encrypt your function's snapshot. If you don't provide a customer managed key, Lambda uses a default service key.</p>"
         },
         "TracingConfig":{
           "shape":"TracingConfig",
@@ -5718,7 +5771,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         },
         "Cors":{
           "shape":"Cors",
@@ -5746,7 +5799,7 @@
         },
         "AuthType":{
           "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated IAM users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Security and auth model for Lambda function URLs</a>.</p>"
         },
         "Cors":{
           "shape":"Cors",

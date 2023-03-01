@@ -414,6 +414,23 @@
       ],
       "documentation":"<p>Creates one of the following domain name system (DNS) records in a domain DNS zone: Address (A), canonical name (CNAME), mail exchanger (MX), name server (NS), start of authority (SOA), service locator (SRV), or text (TXT).</p> <p>The <code>create domain entry</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>domain name</code>. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
+    "CreateGUISessionAccessDetails":{
+      "name":"CreateGUISessionAccessDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGUISessionAccessDetailsRequest"},
+      "output":{"shape":"CreateGUISessionAccessDetailsResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Creates two URLs that are used to access a virtual computer’s graphical user interface (GUI) session. The primary URL initiates a web-based NICE DCV session to the virtual computer's application. The secondary URL initiates a web-based NICE DCV session to the virtual computer's operating session. </p> <p>Use <code>StartGUISession</code> to open the session.</p>"
+    },
     "CreateInstanceSnapshot":{
       "name":"CreateInstanceSnapshot",
       "http":{
@@ -1449,6 +1466,23 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about one or more of your Amazon Lightsail container services.</p>"
+    },
+    "GetCostEstimate":{
+      "name":"GetCostEstimate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCostEstimateRequest"},
+      "output":{"shape":"GetCostEstimateResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Retrieves information about the cost estimate for a specified resource. A cost estimate will not generate for a resource that has been deleted.</p>"
     },
     "GetDisk":{
       "name":"GetDisk",
@@ -2539,6 +2573,23 @@
       ],
       "documentation":"<p>Sets the Amazon Lightsail resources that can access the specified Lightsail bucket.</p> <p>Lightsail buckets currently support setting access for Lightsail instances in the same Amazon Web Services Region.</p>"
     },
+    "StartGUISession":{
+      "name":"StartGUISession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartGUISessionRequest"},
+      "output":{"shape":"StartGUISessionResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Initiates a graphical user interface (GUI) session that’s used to access a virtual computer’s operating system and application. The session will be active for 1 hour. Use this action to resume the session after it expires. </p>"
+    },
     "StartInstance":{
       "name":"StartInstance",
       "http":{
@@ -2576,6 +2627,23 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Starts a specific database from a stopped state in Amazon Lightsail. To restart a database, use the <code>reboot relational database</code> operation.</p> <p>The <code>start relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+    },
+    "StopGUISession":{
+      "name":"StopGUISession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopGUISessionRequest"},
+      "output":{"shape":"StopGUISessionResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Terminates a web-based NICE DCV session that’s used to access a virtual computer’s operating system or application. The session will close and any unsaved data will be lost.</p>"
     },
     "StopInstance":{
       "name":"StopInstance",
@@ -3025,6 +3093,14 @@
         "nextSnapshotTimeOfDay":{
           "shape":"TimeOfDay",
           "documentation":"<p>The next daily time an automatic snapshot will be created.</p> <p>The time shown is in <code>HH:00</code> format, and in Coordinated Universal Time (UTC).</p> <p>The snapshot is automatically created between the time shown and up to 45 minutes after.</p>"
+        },
+        "threshold":{
+          "shape":"string",
+          "documentation":"<p>The trigger threshold of the action.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>"
+        },
+        "duration":{
+          "shape":"string",
+          "documentation":"<p>The amount of idle time in minutes after which your virtual computer will automatically stop.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>"
         }
       },
       "documentation":"<p>Describes an add-on that is enabled for an Amazon Lightsail resource.</p>"
@@ -3044,6 +3120,10 @@
         "autoSnapshotAddOnRequest":{
           "shape":"AutoSnapshotAddOnRequest",
           "documentation":"<p>An object that represents additional parameters when enabling or modifying the automatic snapshot add-on.</p>"
+        },
+        "stopInstanceOnIdleRequest":{
+          "shape":"StopInstanceOnIdleRequest",
+          "documentation":"<p>An object that represents additional parameters when enabling or modifying the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This object only applies to Lightsail for Research resources.</p> </important>"
         }
       },
       "documentation":"<p>Describes a request to enable, modify, or disable an add-on for an Amazon Lightsail resource.</p> <note> <p>An additional cost may be associated with enabling add-ons. For more information, see the <a href=\"https://aws.amazon.com/lightsail/pricing/\">Lightsail pricing page</a>.</p> </note>"
@@ -3054,7 +3134,10 @@
     },
     "AddOnType":{
       "type":"string",
-      "enum":["AutoSnapshot"]
+      "enum":[
+        "AutoSnapshot",
+        "StopInstanceOnIdle"
+      ]
     },
     "Alarm":{
       "type":"structure",
@@ -3173,6 +3256,14 @@
         }
       }
     },
+    "AppCategory":{
+      "type":"string",
+      "enum":["LfR"]
+    },
+    "AppCategoryList":{
+      "type":"list",
+      "member":{"shape":"AppCategory"}
+    },
     "AttachCertificateToDistributionRequest":{
       "type":"structure",
       "required":[
@@ -3218,6 +3309,10 @@
         "diskPath":{
           "shape":"NonEmptyString",
           "documentation":"<p>The disk path to expose to the instance (e.g., <code>/dev/xvdf</code>).</p>"
+        },
+        "autoMounting":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value used to determine the automatic mounting of a storage volume to a virtual computer. The default value is <code>False</code>.</p> <important> <p>This value only applies to Lightsail for Research resources.</p> </important>"
         }
       }
     },
@@ -3330,6 +3425,15 @@
       "type":"map",
       "key":{"shape":"ResourceName"},
       "value":{"shape":"DiskMapList"}
+    },
+    "AutoMountStatus":{
+      "type":"string",
+      "enum":[
+        "Failed",
+        "Pending",
+        "Mounted",
+        "NotMounted"
+      ]
     },
     "AutoSnapshotAddOnRequest":{
       "type":"structure",
@@ -3465,6 +3569,10 @@
         "platform":{
           "shape":"InstancePlatform",
           "documentation":"<p>The operating system platform (either Linux/Unix-based or Windows Server-based) of the blueprint.</p>"
+        },
+        "appCategory":{
+          "shape":"AppCategory",
+          "documentation":"<p>Virtual computer blueprints that are supported by Lightsail for Research.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>"
         }
       },
       "documentation":"<p>Describes a blueprint (a virtual private server image).</p>"
@@ -3686,6 +3794,10 @@
         "supportedPlatforms":{
           "shape":"InstancePlatformList",
           "documentation":"<p>The operating system platform (Linux/Unix-based or Windows Server-based) that the bundle supports. You can only launch a <code>WINDOWS</code> bundle on a blueprint that supports the <code>WINDOWS</code> platform. <code>LINUX_UNIX</code> blueprints require a <code>LINUX_UNIX</code> bundle.</p>"
+        },
+        "supportedAppCategories":{
+          "shape":"AppCategoryList",
+          "documentation":"<p>Virtual computer blueprints that are supported by a Lightsail for Research bundle.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>"
         }
       },
       "documentation":"<p>Describes a bundle, which is a set of specs describing your virtual private server (or <i>instance</i>).</p>"
@@ -4584,6 +4696,24 @@
         }
       }
     },
+    "CostEstimate":{
+      "type":"structure",
+      "members":{
+        "usageType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The types of usage that are included in the estimate, such as costs, usage, or data transfer.</p>"
+        },
+        "resultsByTime":{
+          "shape":"EstimatesByTime",
+          "documentation":"<p>The cost estimate result that's associated with a time period.</p>"
+        }
+      },
+      "documentation":"<p>Describes the estimated cost for resources in your Lightsail for Research account.</p>"
+    },
+    "CostEstimates":{
+      "type":"list",
+      "member":{"shape":"CostEstimate"}
+    },
     "CreateBucketAccessKeyRequest":{
       "type":"structure",
       "required":["bucketName"],
@@ -5046,6 +5176,41 @@
         }
       }
     },
+    "CreateGUISessionAccessDetailsRequest":{
+      "type":"structure",
+      "required":["resourceName"],
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        }
+      }
+    },
+    "CreateGUISessionAccessDetailsResult":{
+      "type":"structure",
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the operation.</p>"
+        },
+        "percentageComplete":{
+          "shape":"integer",
+          "documentation":"<p>The percentage of completion for the operation.</p>"
+        },
+        "failureReason":{
+          "shape":"string",
+          "documentation":"<p>The reason the operation failed.</p>"
+        },
+        "sessions":{
+          "shape":"Sessions",
+          "documentation":"<p>Returns information about the specified NICE DCV GUI session.</p>"
+        }
+      }
+    },
     "CreateInstanceSnapshotRequest":{
       "type":"structure",
       "required":[
@@ -5481,6 +5646,10 @@
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
+    },
+    "Currency":{
+      "type":"string",
+      "enum":["USD"]
     },
     "DeleteAlarmRequest":{
       "type":"structure",
@@ -6130,6 +6299,10 @@
           "shape":"integer",
           "documentation":"<p>(Deprecated) The number of GB in use by the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>",
           "deprecated":true
+        },
+        "autoMountStatus":{
+          "shape":"AutoMountStatus",
+          "documentation":"<p>The status of automatically mounting a storage disk to a virtual computer.</p> <important> <p>This parameter only applies to Lightsail for Research resources.</p> </important>"
         }
       },
       "documentation":"<p>Describes a block storage disk.</p>"
@@ -6543,6 +6716,36 @@
       "key":{"shape":"string"},
       "value":{"shape":"string"}
     },
+    "EstimateByTime":{
+      "type":"structure",
+      "members":{
+        "usageCost":{
+          "shape":"double",
+          "documentation":"<p>The amount of cost or usage that's measured for the cost estimate.</p>"
+        },
+        "pricingUnit":{
+          "shape":"PricingUnit",
+          "documentation":"<p>The unit of measurement that's used for the cost estimate.</p>"
+        },
+        "unit":{
+          "shape":"double",
+          "documentation":"<p>The number of pricing units used to calculate the total number of hours. For example, 1 unit equals 1 hour.</p>"
+        },
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the estimate in USD.</p>"
+        },
+        "timePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The period of time, in days, that an estimate covers. The period has a start date and an end date. The start date must come before the end date.</p>"
+        }
+      },
+      "documentation":"<p>An estimate that's associated with a time period. </p>"
+    },
+    "EstimatesByTime":{
+      "type":"list",
+      "member":{"shape":"EstimateByTime"}
+    },
     "ExportSnapshotRecord":{
       "type":"structure",
       "members":{
@@ -6746,6 +6949,10 @@
         "pageToken":{
           "shape":"string",
           "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBlueprints</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        },
+        "appCategory":{
+          "shape":"AppCategory",
+          "documentation":"<p>Returns a list of blueprints that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research blueprints.</p> </important>"
         }
       }
     },
@@ -6898,6 +7105,10 @@
         "pageToken":{
           "shape":"string",
           "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetBundles</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        },
+        "appCategory":{
+          "shape":"AppCategory",
+          "documentation":"<p>Returns a list of bundles that are specific to Lightsail for Research.</p> <important> <p>You must use this parameter to view Lightsail for Research bundles.</p> </important>"
         }
       }
     },
@@ -7148,6 +7359,37 @@
         "serviceName":{
           "shape":"ContainerServiceName",
           "documentation":"<p>The name of the container service for which to return information.</p> <p>When omitted, the response includes all of your container services in the Amazon Web Services Region where the request is made.</p>"
+        }
+      }
+    },
+    "GetCostEstimateRequest":{
+      "type":"structure",
+      "required":[
+        "resourceName",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        },
+        "startTime":{
+          "shape":"IsoDate",
+          "documentation":"<p>The cost estimate start time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use a start time of October 1, 2018, at 8 PM UTC, specify <code>1538424000</code> as the start time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href=\"https://www.epochconverter.com/\">Epoch converter</a>.</p>"
+        },
+        "endTime":{
+          "shape":"IsoDate",
+          "documentation":"<p>The cost estimate end time.</p> <p>Constraints:</p> <ul> <li> <p>Specified in Coordinated Universal Time (UTC).</p> </li> <li> <p>Specified in the Unix time format.</p> <p>For example, if you wish to use an end time of October 1, 2018, at 9 PM UTC, specify <code>1538427600</code> as the end time.</p> </li> </ul> <p>You can convert a human-friendly time to Unix time format using a converter like <a href=\"https://www.epochconverter.com/\">Epoch converter</a>.</p>"
+        }
+      }
+    },
+    "GetCostEstimateResult":{
+      "type":"structure",
+      "members":{
+        "resourcesBudgetEstimate":{
+          "shape":"ResourcesBudgetEstimate",
+          "documentation":"<p>Returns the estimate's forecasted cost or usage.</p>"
         }
       }
     },
@@ -9960,7 +10202,9 @@
         "UpdateBucketBundle",
         "UpdateBucket",
         "SetResourceAccessForBucket",
-        "UpdateInstanceMetadataOptions"
+        "UpdateInstanceMetadataOptions",
+        "StartGUISession",
+        "StopGUISession"
       ]
     },
     "Origin":{
@@ -10134,6 +10378,16 @@
       "enum":[
         "open",
         "closed"
+      ]
+    },
+    "PricingUnit":{
+      "type":"string",
+      "enum":[
+        "GB",
+        "Hrs",
+        "GB-Mo",
+        "Bundles",
+        "Queries"
       ]
     },
     "PrivateRegistryAccess":{
@@ -10906,6 +11160,32 @@
         "deny"
       ]
     },
+    "ResourceBudgetEstimate":{
+      "type":"structure",
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource the budget will track.</p>"
+        },
+        "costEstimates":{
+          "shape":"CostEstimates",
+          "documentation":"<p>The cost estimate for the specified budget.</p>"
+        },
+        "startTime":{
+          "shape":"IsoDate",
+          "documentation":"<p>The estimate start time.</p>"
+        },
+        "endTime":{
+          "shape":"IsoDate",
+          "documentation":"<p>The estimate end time.</p>"
+        }
+      },
+      "documentation":"<p>Describes the estimated cost or usage that a budget tracks.</p>"
+    },
     "ResourceLocation":{
       "type":"structure",
       "members":{
@@ -10985,6 +11265,10 @@
         "Bucket"
       ]
     },
+    "ResourcesBudgetEstimate":{
+      "type":"list",
+      "member":{"shape":"ResourceBudgetEstimate"}
+    },
     "RevocationReason":{"type":"string"},
     "SendContactMethodVerificationRequest":{
       "type":"structure",
@@ -11005,6 +11289,11 @@
         }
       }
     },
+    "SensitiveNonEmptyString":{
+      "type":"string",
+      "pattern":".*\\S.*",
+      "sensitive":true
+    },
     "SensitiveString":{
       "type":"string",
       "sensitive":true
@@ -11021,6 +11310,28 @@
       "documentation":"<p>A general service exception.</p>",
       "exception":true,
       "fault":true
+    },
+    "Session":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The session name.</p>"
+        },
+        "url":{
+          "shape":"SensitiveNonEmptyString",
+          "documentation":"<p>The session URL.</p>"
+        },
+        "isPrimary":{
+          "shape":"boolean",
+          "documentation":"<p>When true, this Boolean value indicates the primary session for the specified resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes a web-based, remote graphical user interface (GUI), NICE DCV session. The session is used to access a virtual computer’s operating system or application.</p>"
+    },
+    "Sessions":{
+      "type":"list",
+      "member":{"shape":"Session"}
     },
     "SetIpAddressTypeRequest":{
       "type":"structure",
@@ -11081,6 +11392,25 @@
         "operations":{
           "shape":"OperationList",
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
+        }
+      }
+    },
+    "StartGUISessionRequest":{
+      "type":"structure",
+      "required":["resourceName"],
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        }
+      }
+    },
+    "StartGUISessionResult":{
+      "type":"structure",
+      "members":{
+        "operations":{
+          "shape":"OperationList",
+          "documentation":"<p>The available API operations.</p>"
         }
       }
     },
@@ -11168,12 +11498,60 @@
       "type":"list",
       "member":{"shape":"StaticIp"}
     },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "startExpired",
+        "notStarted",
+        "started",
+        "starting",
+        "stopped",
+        "stopping",
+        "settingUpInstance",
+        "failedInstanceCreation",
+        "failedStartingGUISession",
+        "failedStoppingGUISession"
+      ]
+    },
     "StatusType":{
       "type":"string",
       "enum":[
         "Active",
         "Inactive"
       ]
+    },
+    "StopGUISessionRequest":{
+      "type":"structure",
+      "required":["resourceName"],
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The resource name.</p>"
+        }
+      }
+    },
+    "StopGUISessionResult":{
+      "type":"structure",
+      "members":{
+        "operations":{
+          "shape":"OperationList",
+          "documentation":"<p>The available API operations.</p>"
+        }
+      }
+    },
+    "StopInstanceOnIdleRequest":{
+      "type":"structure",
+      "members":{
+        "threshold":{
+          "shape":"string",
+          "documentation":"<p>The value to compare with the duration.</p>"
+        },
+        "duration":{
+          "shape":"string",
+          "documentation":"<p>The amount of idle time in minutes after which your virtual computer will automatically stop.</p>"
+        }
+      },
+      "documentation":"<p>Describes a request to create or edit the <code>StopInstanceOnIdle</code> add-on.</p> <important> <p>This add-on only applies to Lightsail for Research resources.</p> </important>"
     },
     "StopInstanceRequest":{
       "type":"structure",
@@ -11317,6 +11695,20 @@
     "TimeOfDay":{
       "type":"string",
       "pattern":"^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "TimePeriod":{
+      "type":"structure",
+      "members":{
+        "start":{
+          "shape":"IsoDate",
+          "documentation":"<p>The beginning of the time period. The start date is inclusive. For example, if <code>start</code> is <code>2017-01-01</code>, Lightsail for Research retrieves cost and usage data starting at <code>2017-01-01</code> up to the end date. The start date must be equal to or no later than the current date to avoid a validation error.</p>"
+        },
+        "end":{
+          "shape":"IsoDate",
+          "documentation":"<p>The end of the time period. The end date is exclusive. For example, if <code>end</code> is <code>2017-05-01</code>, Lightsail for Research retrieves cost and usage data from the start date up to, but not including, <code>2017-05-01</code>.</p>"
+        }
+      },
+      "documentation":"<p>Sets the start date and end date for retrieving a cost estimate. The start date is inclusive, but the end date is exclusive. For example, if <code>start</code> is <code>2017-01-01</code> and <code>end</code> is <code>2017-05-01</code>, then the cost and usage data is retrieved from <code>2017-01-01</code> up to and including <code>2017-04-30</code> but not including <code>2017-05-01</code>.</p>"
     },
     "TreatMissingData":{
       "type":"string",

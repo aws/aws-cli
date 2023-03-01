@@ -68,7 +68,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <note> <p> <code>customer_id</code> is a required field when creating a case.</p> </note>",
+      "documentation":"<p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <note> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/note&gt; </code></pre>",
       "idempotent":true
     },
     "CreateDomain":{
@@ -88,7 +88,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API.</p> </important>",
+      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> </important>",
       "idempotent":true
     },
     "CreateField":{
@@ -171,6 +171,26 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p>",
+      "idempotent":true
+    },
+    "DeleteDomain":{
+      "name":"DeleteDomain",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDomainRequest"},
+      "output":{"shape":"DeleteDomainResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a domain.</p>",
       "idempotent":true
     },
     "GetCase":{
@@ -423,7 +443,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p>"
+      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p> <note> <p>For <code>customer_id</code> you must provide the full customer profile ARN in this format: <code> arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID</code>. </p> </note>"
     },
     "SearchRelatedItems":{
       "name":"SearchRelatedItems",
@@ -1160,6 +1180,23 @@
     "CreatedTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "DeleteDomainRequest":{
+      "type":"structure",
+      "required":["domainId"],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        }
+      }
+    },
+    "DeleteDomainResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DomainArn":{
       "type":"string",
@@ -2417,7 +2454,6 @@
     "SearchCasesRequestSortsList":{
       "type":"list",
       "member":{"shape":"Sort"},
-      "documentation":"<p>/@documentation(&quot;The templateId&quot;)</p>",
       "max":2,
       "min":0
     },
@@ -2680,7 +2716,6 @@
     },
     "TemplateStatus":{
       "type":"string",
-      "documentation":"<p>Status of a template</p>",
       "enum":[
         "Active",
         "Inactive"
@@ -2689,7 +2724,6 @@
     "TemplateStatusFilters":{
       "type":"list",
       "member":{"shape":"TemplateStatus"},
-      "documentation":"<p>List of filters used on the ListTemplates result set</p>",
       "max":2,
       "min":1
     },
@@ -2932,5 +2966,5 @@
       "min":0
     }
   },
-  "documentation":"<p>Welcome to the Amazon Connect Cases API Reference. This guide provides information about the Amazon Connect Cases API, which you can use to create, update, get, and list Cases domains, fields, field options, layouts, templates, cases, related items, and tags.</p> <pre><code> &lt;p&gt;For more information about Amazon Connect Cases, see &lt;a href=&quot;https://docs.aws.amazon.com/connect/latest/adminguide/cases.html&quot;&gt;Amazon Connect Cases&lt;/a&gt; in the &lt;i&gt;Amazon Connect Administrator Guide&lt;/i&gt;. &lt;/p&gt; </code></pre>"
+  "documentation":"<p>With Amazon Connect Cases, your agents can track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center. A case represents a customer issue. It records the issue, the steps and interactions taken to resolve the issue, and the outcome. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Amazon Connect Cases</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
 }

@@ -80,6 +80,38 @@
       ],
       "documentation":"<p>Enables the standards specified by the provided <code>StandardsArn</code>. To obtain the ARN for a standard, use the <code>DescribeStandards</code> operation.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards.html\">Security Standards</a> section of the <i>Security Hub User Guide</i>.</p>"
     },
+    "BatchGetSecurityControls":{
+      "name":"BatchGetSecurityControls",
+      "http":{
+        "method":"POST",
+        "requestUri":"/securityControls/batchGet"
+      },
+      "input":{"shape":"BatchGetSecurityControlsRequest"},
+      "output":{"shape":"BatchGetSecurityControlsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p> Provides details about a batch of security controls for the current Amazon Web Services account and Amazon Web Services Region. </p>"
+    },
+    "BatchGetStandardsControlAssociations":{
+      "name":"BatchGetStandardsControlAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/associations/batchGet"
+      },
+      "input":{"shape":"BatchGetStandardsControlAssociationsRequest"},
+      "output":{"shape":"BatchGetStandardsControlAssociationsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p> For a batch of security controls and standards, identifies whether each control is currently enabled or disabled in a standard. </p>"
+    },
     "BatchImportFindings":{
       "name":"BatchImportFindings",
       "http":{
@@ -111,6 +143,22 @@
         {"shape":"InvalidAccessException"}
       ],
       "documentation":"<p>Used by Security Hub customers to update information about their investigation into a finding. Requested by administrator accounts or member accounts. Administrator accounts can update findings for their account and their member accounts. Member accounts can update findings for their account.</p> <p>Updates from <code>BatchUpdateFindings</code> do not affect the value of <code>UpdatedAt</code> for a finding.</p> <p>Administrator and member accounts can use <code>BatchUpdateFindings</code> to update the following finding fields and objects.</p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>Note</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> <li> <p> <code>UserDefinedFields</code> </p> </li> <li> <p> <code>VerificationState</code> </p> </li> <li> <p> <code>Workflow</code> </p> </li> </ul> <p>You can configure IAM policies to restrict access to fields and field values. For example, you might not want member accounts to be able to suppress findings or change the finding severity. See <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchupdatefindings.html#batchupdatefindings-configure-access\">Configuring access to BatchUpdateFindings</a> in the <i>Security Hub User Guide</i>.</p>"
+    },
+    "BatchUpdateStandardsControlAssociations":{
+      "name":"BatchUpdateStandardsControlAssociations",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/associations"
+      },
+      "input":{"shape":"BatchUpdateStandardsControlAssociationsRequest"},
+      "output":{"shape":"BatchUpdateStandardsControlAssociationsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p> For a batch of security controls and standards, this operation updates the enablement status of a control in a standard. </p>"
     },
     "CreateActionTarget":{
       "name":"CreateActionTarget",
@@ -779,6 +827,38 @@
       ],
       "documentation":"<p>Lists the Security Hub administrator accounts. Can only be called by the organization management account.</p>"
     },
+    "ListSecurityControlDefinitions":{
+      "name":"ListSecurityControlDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/securityControls/definitions"
+      },
+      "input":{"shape":"ListSecurityControlDefinitionsRequest"},
+      "output":{"shape":"ListSecurityControlDefinitionsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Lists all of the security controls that apply to a specified standard. </p>"
+    },
+    "ListStandardsControlAssociations":{
+      "name":"ListStandardsControlAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/associations"
+      },
+      "input":{"shape":"ListStandardsControlAssociationsRequest"},
+      "output":{"shape":"ListStandardsControlAssociationsResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p> Specifies whether a control is currently enabled or disabled in each enabled standard in the calling account. </p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1204,6 +1284,13 @@
     "AssociatedStandardsList":{
       "type":"list",
       "member":{"shape":"AssociatedStandard"}
+    },
+    "AssociationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "AutoEnableStandards":{
       "type":"string",
@@ -2129,7 +2216,7 @@
         },
         "SnsTopicArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>An ARN that uniquely identifies the Amazon SNS topic for a backup vault’s events. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the Amazon SNS topic for a backup vault's events. </p>"
         }
       },
       "documentation":"<p>Provides details about the Amazon SNS event notifications for the specified backup vault. </p>"
@@ -4283,7 +4370,7 @@
         },
         "OnDemandMaxPricePercentageOverLowestPrice":{
           "shape":"Integer",
-          "documentation":"<p> The price protection threshold for On-Demand Instances. This is the maximum you’ll pay for an On-Demand Instance, expressed as a percentage above the least expensive current generation M, C, or R instance type with your specified attributes. When Amazon EC2 selects instance types with your attributes, it excludes instance types priced above your threshold.</p> <p>The parameter accepts an integer, which Amazon EC2 interprets as a percentage.</p> <p>A high value, such as <code>999999</code>, turns off price protection.</p>"
+          "documentation":"<p> The price protection threshold for On-Demand Instances. This is the maximum you'll pay for an On-Demand Instance, expressed as a percentage above the least expensive current generation M, C, or R instance type with your specified attributes. When Amazon EC2 selects instance types with your attributes, it excludes instance types priced above your threshold.</p> <p>The parameter accepts an integer, which Amazon EC2 interprets as a percentage.</p> <p>A high value, such as <code>999999</code>, turns off price protection.</p>"
         },
         "RequireHibernateSupport":{
           "shape":"Boolean",
@@ -4291,7 +4378,7 @@
         },
         "SpotMaxPricePercentageOverLowestPrice":{
           "shape":"Integer",
-          "documentation":"<p> The price protection threshold for Spot Instances. This is the maximum you’ll pay for a Spot Instance, expressed as a percentage above the least expensive current generation M, C, or R instance type with your specified attributes. When Amazon EC2 selects instance types with your attributes, it excludes instance types priced above your threshold. </p> <p>The parameter accepts an integer, which Amazon EC2 interprets as a percentage.</p> <p>A high value, such as <code>999999</code>, turns off price protection.</p>"
+          "documentation":"<p> The price protection threshold for Spot Instances. This is the maximum you'll pay for a Spot Instance, expressed as a percentage above the least expensive current generation M, C, or R instance type with your specified attributes. When Amazon EC2 selects instance types with your attributes, it excludes instance types priced above your threshold. </p> <p>The parameter accepts an integer, which Amazon EC2 interprets as a percentage.</p> <p>A high value, such as <code>999999</code>, turns off price protection.</p>"
         },
         "TotalLocalStorageGB":{
           "shape":"AwsEc2LaunchTemplateDataInstanceRequirementsTotalLocalStorageGBDetails",
@@ -4403,7 +4490,7 @@
       "members":{
         "HttpEndpoint":{
           "shape":"NonEmptyString",
-          "documentation":"<p> Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is enabled, and you won’t be able to access your instance metadata. </p>"
+          "documentation":"<p> Enables or disables the HTTP metadata endpoint on your instances. If the parameter is not specified, the default state is enabled, and you won't be able to access your instance metadata. </p>"
         },
         "HttpProtocolIpv6":{
           "shape":"NonEmptyString",
@@ -10194,7 +10281,7 @@
         },
         "ManualSnapshotRetentionPeriod":{
           "shape":"Integer",
-          "documentation":"<p>The number of days that manual snapshots are retained in the destination region after they are copied from a source region.</p> <p>If the value is <code>-1</code>, then the manual snapshot is retained indefinitely.</p> <p>Valid values: Either <code>-1</code> or an integer between 1 and 3,653</p>"
+          "documentation":"<p>The number of days that manual snapshots are retained in the destination Region after they are copied from a source Region.</p> <p>If the value is <code>-1</code>, then the manual snapshot is retained indefinitely.</p> <p>Valid values: Either <code>-1</code> or an integer between 1 and 3,653</p>"
         },
         "RetentionPeriod":{
           "shape":"Integer",
@@ -10205,7 +10292,7 @@
           "documentation":"<p>The name of the snapshot copy grant.</p>"
         }
       },
-      "documentation":"<p>Information about a cross-Region snapshot copy.</p>"
+      "documentation":"<p>You can configure Amazon Redshift to copy snapshots for a cluster to another Amazon Web Services Region. This parameter provides information about a cross-Region snapshot copy.</p>"
     },
     "AwsRedshiftClusterDeferredMaintenanceWindow":{
       "type":"structure",
@@ -12876,6 +12963,54 @@
         }
       }
     },
+    "BatchGetSecurityControlsRequest":{
+      "type":"structure",
+      "required":["SecurityControlIds"],
+      "members":{
+        "SecurityControlIds":{
+          "shape":"StringList",
+          "documentation":"<p> A list of security controls (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters). The security control ID or Amazon Resource Name (ARN) is the same across standards. </p>"
+        }
+      }
+    },
+    "BatchGetSecurityControlsResponse":{
+      "type":"structure",
+      "required":["SecurityControls"],
+      "members":{
+        "SecurityControls":{
+          "shape":"SecurityControls",
+          "documentation":"<p> An array that returns the identifier, Amazon Resource Name (ARN), and other details about a security control. The same information is returned whether the request includes <code>SecurityControlId</code> or <code>SecurityControlArn</code>. </p>"
+        },
+        "UnprocessedIds":{
+          "shape":"UnprocessedSecurityControls",
+          "documentation":"<p> A security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) for which details cannot be returned. </p>"
+        }
+      }
+    },
+    "BatchGetStandardsControlAssociationsRequest":{
+      "type":"structure",
+      "required":["StandardsControlAssociationIds"],
+      "members":{
+        "StandardsControlAssociationIds":{
+          "shape":"StandardsControlAssociationIds",
+          "documentation":"<p> An array with one or more objects that includes a security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) and the Amazon Resource Name (ARN) of a standard. This field is used to query the enablement status of a control in a specified standard. The security control ID or ARN is the same across standards. </p>"
+        }
+      }
+    },
+    "BatchGetStandardsControlAssociationsResponse":{
+      "type":"structure",
+      "required":["StandardsControlAssociationDetails"],
+      "members":{
+        "StandardsControlAssociationDetails":{
+          "shape":"StandardsControlAssociationDetails",
+          "documentation":"<p>Provides the enablement status of a security control in a specified standard and other details for the control in relation to the specified standard. </p>"
+        },
+        "UnprocessedAssociations":{
+          "shape":"UnprocessedStandardsControlAssociations",
+          "documentation":"<p> A security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) whose enablement status in a specified standard cannot be returned. </p>"
+        }
+      }
+    },
     "BatchImportFindingsRequest":{
       "type":"structure",
       "required":["Findings"],
@@ -12999,6 +13134,25 @@
     "BatchUpdateFindingsUnprocessedFindingsList":{
       "type":"list",
       "member":{"shape":"BatchUpdateFindingsUnprocessedFinding"}
+    },
+    "BatchUpdateStandardsControlAssociationsRequest":{
+      "type":"structure",
+      "required":["StandardsControlAssociationUpdates"],
+      "members":{
+        "StandardsControlAssociationUpdates":{
+          "shape":"StandardsControlAssociationUpdates",
+          "documentation":"<p> Updates the enablement status of a security control in a specified standard. </p>"
+        }
+      }
+    },
+    "BatchUpdateStandardsControlAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "UnprocessedAssociationUpdates":{
+          "shape":"UnprocessedStandardsControlAssociationUpdates",
+          "documentation":"<p> A security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) whose enablement status in a specified standard couldn't be updated. </p>"
+        }
+      }
     },
     "Boolean":{"type":"boolean"},
     "BooleanFilter":{
@@ -13190,6 +13344,13 @@
       },
       "documentation":"<p>Container details related to a finding.</p>"
     },
+    "ControlFindingGenerator":{
+      "type":"string",
+      "enum":[
+        "STANDARD_CONTROL",
+        "SECURITY_CONTROL"
+      ]
+    },
     "ControlStatus":{
       "type":"string",
       "enum":[
@@ -13239,7 +13400,7 @@
       "members":{
         "ActionTargetArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ARN for the custom action target.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the custom action target.</p>"
         }
       }
     },
@@ -13483,7 +13644,7 @@
       "members":{
         "ActionTargetArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ARN of the custom action target to delete.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom action target to delete.</p>",
           "location":"uri",
           "locationName":"ActionTargetArn"
         }
@@ -13632,6 +13793,10 @@
         "AutoEnableControls":{
           "shape":"Boolean",
           "documentation":"<p>Whether to automatically enable new controls when they are added to standards that are enabled.</p> <p>If set to <code>true</code>, then new controls for enabled standards are enabled automatically. If set to <code>false</code>, then new controls are not enabled.</p>"
+        },
+        "ControlFindingGenerator":{
+          "shape":"ControlFindingGenerator",
+          "documentation":"<p>Specifies whether the calling account has consolidated control findings turned on. If the value for this field is set to <code>SECURITY_CONTROL</code>, Security Hub generates a single finding for a control check even when the check applies to multiple enabled standards.</p> <p>If the value for this field is set to <code>STANDARD_CONTROL</code>, Security Hub generates separate findings for a control check when the check applies to multiple enabled standards.</p> <p>The value for this field in a member account matches the value in the administrator account. For accounts that aren't part of an organization, the default value of this field is <code>SECURITY_CONTROL</code> if you enabled Security Hub on or after February 9, 2023.</p>"
         }
       }
     },
@@ -13901,6 +14066,10 @@
         "EnableDefaultStandards":{
           "shape":"Boolean",
           "documentation":"<p>Whether to enable the security standards that Security Hub has designated as automatically enabled. If you do not provide a value for <code>EnableDefaultStandards</code>, it is set to <code>true</code>. To not enable the automatically enabled standards, set <code>EnableDefaultStandards</code> to <code>false</code>.</p>"
+        },
+        "ControlFindingGenerator":{
+          "shape":"ControlFindingGenerator",
+          "documentation":"<p>This field, used when enabling Security Hub, specifies whether the calling account has consolidated control findings turned on. If the value for this field is set to <code>SECURITY_CONTROL</code>, Security Hub generates a single finding for a control check even when the check applies to multiple enabled standards.</p> <p>If the value for this field is set to <code>STANDARD_CONTROL</code>, Security Hub generates separate findings for a control check when the check applies to multiple enabled standards.</p> <p>The value for this field in a member account matches the value in the administrator account. For accounts that aren't part of an organization, the default value of this field is <code>SECURITY_CONTROL</code> if you enabled Security Hub on or after February 9, 2023.</p>"
         }
       }
     },
@@ -14745,6 +14914,81 @@
         }
       }
     },
+    "ListSecurityControlDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "StandardsArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the standard that you want to view controls for. </p>",
+          "location":"querystring",
+          "locationName":"StandardsArn"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> Optional pagination parameter. </p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> An optional parameter that limits the total results of the API response to the specified number. If this parameter isn't provided in the request, the results include the first 25 security controls that apply to the specified standard. The results also include a <code>NextToken</code> parameter that you can use in a subsequent API call to get the next 25 controls. This repeats until all controls for the standard are returned. </p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListSecurityControlDefinitionsResponse":{
+      "type":"structure",
+      "required":["SecurityControlDefinitions"],
+      "members":{
+        "SecurityControlDefinitions":{
+          "shape":"SecurityControlDefinitions",
+          "documentation":"<p> An array of controls that apply to the specified standard. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A pagination parameter that's included in the response only if it was included in the request. </p>"
+        }
+      }
+    },
+    "ListStandardsControlAssociationsRequest":{
+      "type":"structure",
+      "required":["SecurityControlId"],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) that you want to determine the enablement status of in each enabled standard. </p>",
+          "location":"querystring",
+          "locationName":"SecurityControlId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> Optional pagination parameter. </p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> An optional parameter that limits the total results of the API response to the specified number. If this parameter isn't provided in the request, the results include the first 25 standard and control associations. The results also include a <code>NextToken</code> parameter that you can use in a subsequent API call to get the next 25 associations. This repeats until all associations for the specified control are returned. The number of results is limited by the number of supported Security Hub standards that you've enabled in the calling account. </p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListStandardsControlAssociationsResponse":{
+      "type":"structure",
+      "required":["StandardsControlAssociationSummaries"],
+      "members":{
+        "StandardsControlAssociationSummaries":{
+          "shape":"StandardsControlAssociationSummaries",
+          "documentation":"<p> An array that provides the enablement status and other details for each security control that applies to each enabled standard. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A pagination parameter that's included in the response only if it was included in the request. </p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -15452,6 +15696,13 @@
     "Records":{
       "type":"list",
       "member":{"shape":"Record"}
+    },
+    "RegionAvailabilityStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "UNAVAILABLE"
+      ]
     },
     "RelatedFinding":{
       "type":"structure",
@@ -16245,6 +16496,95 @@
       },
       "documentation":"<p>A list of port ranges.</p>"
     },
+    "SecurityControl":{
+      "type":"structure",
+      "required":[
+        "SecurityControlId",
+        "SecurityControlArn",
+        "Title",
+        "Description",
+        "RemediationUrl",
+        "SeverityRating",
+        "SecurityControlStatus"
+      ],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number, such as APIGateway.3. </p>"
+        },
+        "SecurityControlArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) for a security control across standards, such as <code>arn:aws:securityhub:eu-central-1:123456789012:security-control/S3.1</code>. This parameter doesn't mention a specific standard. </p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The title of a security control. </p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of a security control across standards. This typically summarizes how Security Hub evaluates the control and the conditions under which it produces a failed finding. This parameter doesn't reference a specific standard. </p>"
+        },
+        "RemediationUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A link to Security Hub documentation that explains how to remediate a failed finding for a security control. </p>"
+        },
+        "SeverityRating":{
+          "shape":"SeverityRating",
+          "documentation":"<p> The severity of a security control. For more information about how Security Hub determines control severity, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/controls-findings-create-update.html#control-findings-severity\">Assigning severity to control findings</a> in the <i>Security Hub User Guide</i>. </p>"
+        },
+        "SecurityControlStatus":{
+          "shape":"ControlStatus",
+          "documentation":"<p> The status of a security control based on the compliance status of its findings. For more information about how control status is determined, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/controls-overall-status.html\">Determining the overall status of a control from its findings</a> in the <i>Security Hub User Guide</i>. </p>"
+        }
+      },
+      "documentation":"<p> A security control in Security Hub describes a security best practice related to a specific resource. </p>"
+    },
+    "SecurityControlDefinition":{
+      "type":"structure",
+      "required":[
+        "SecurityControlId",
+        "Title",
+        "Description",
+        "RemediationUrl",
+        "SeverityRating",
+        "CurrentRegionAvailability"
+      ],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number (for example, APIGateway.3). This parameter differs from <code>SecurityControlArn</code>, which is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references the security control ID (for example, arn:aws:securityhub:eu-central-1:123456789012:security-control/APIGateway.3). </p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The title of a security control. </p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of a security control across standards. This typically summarizes how Security Hub evaluates the control and the conditions under which it produces a failed finding. This parameter doesn't reference a specific standard. </p>"
+        },
+        "RemediationUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A link to Security Hub documentation that explains how to remediate a failed finding for a security control. </p>"
+        },
+        "SeverityRating":{
+          "shape":"SeverityRating",
+          "documentation":"<p> The severity of a security control. For more information about how Security Hub determines control severity, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/controls-findings-create-update.html#control-findings-severity\">Assigning severity to control findings</a> in the <i>Security Hub User Guide</i>. </p>"
+        },
+        "CurrentRegionAvailability":{
+          "shape":"RegionAvailabilityStatus",
+          "documentation":"<p> Specifies whether a security control is available in the current Amazon Web Services Region. </p>"
+        }
+      },
+      "documentation":"<p> Provides metadata for a security control, including its unique standard-agnostic identifier, title, description, severity, availability in Amazon Web Services Regions, and a link to remediation steps. </p>"
+    },
+    "SecurityControlDefinitions":{
+      "type":"list",
+      "member":{"shape":"SecurityControlDefinition"}
+    },
+    "SecurityControls":{
+      "type":"list",
+      "member":{"shape":"SecurityControl"}
+    },
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
@@ -16313,7 +16653,7 @@
           "documentation":"<p>The native severity from the finding product that generated the finding.</p>"
         }
       },
-      "documentation":"<p>The severity of the finding.</p> <p>The finding provider can provide the initial severity. The finding provider can only update the severity if it has not been updated using <code>BatchUpdateFindings</code>.</p> <p>The finding must have either <code>Label</code> or <code>Normalized</code> populated. If only one of these attributes is populated, then Security Hub automatically populates the other one. If neither attribute is populated, then the finding is invalid. <code>Label</code> is the preferred attribute.</p>"
+      "documentation":"<p>The severity of the finding.</p> <p>The finding provider can provide the initial severity. The finding provider can only update the severity if it hasn't been updated using <code>BatchUpdateFindings</code>.</p> <p>The finding must have either <code>Label</code> or <code>Normalized</code> populated. If only one of these attributes is populated, then Security Hub automatically populates the other one. If neither attribute is populated, then the finding is invalid. <code>Label</code> is the preferred attribute.</p>"
     },
     "SeverityLabel":{
       "type":"string",
@@ -16507,6 +16847,171 @@
         }
       },
       "documentation":"<p>Details for an individual security standard control.</p>"
+    },
+    "StandardsControlArnList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"}
+    },
+    "StandardsControlAssociationDetail":{
+      "type":"structure",
+      "required":[
+        "StandardsArn",
+        "SecurityControlId",
+        "SecurityControlArn",
+        "AssociationStatus"
+      ],
+      "members":{
+        "StandardsArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a security standard. </p>"
+        },
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number, such as APIGateway.3. </p>"
+        },
+        "SecurityControlArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of a security control across standards, such as <code>arn:aws:securityhub:eu-central-1:123456789012:security-control/S3.1</code>. This parameter doesn't mention a specific standard. </p>"
+        },
+        "AssociationStatus":{
+          "shape":"AssociationStatus",
+          "documentation":"<p> Specifies whether a control is enabled or disabled in a specified standard. </p>"
+        },
+        "RelatedRequirements":{
+          "shape":"RelatedRequirementsList",
+          "documentation":"<p> The requirement that underlies a control in the compliance framework related to the standard. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time at which the enablement status of the control in the specified standard was last updated. </p>"
+        },
+        "UpdatedReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The reason for updating the enablement status of a control in a specified standard. </p>"
+        },
+        "StandardsControlTitle":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The title of a control. This field may reference a specific standard. </p>"
+        },
+        "StandardsControlDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of a control. This typically summarizes how Security Hub evaluates the control and the conditions under which it produces a failed finding. This parameter may reference a specific standard. </p>"
+        },
+        "StandardsControlArns":{
+          "shape":"StandardsControlArnList",
+          "documentation":"<p> Provides the input parameter that Security Hub uses to call the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_UpdateStandardsControl.html\">UpdateStandardsControl</a> API. This API can be used to enable or disable a control in a specified standard. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about a control's enablement status in a specified standard. </p>"
+    },
+    "StandardsControlAssociationDetails":{
+      "type":"list",
+      "member":{"shape":"StandardsControlAssociationDetail"}
+    },
+    "StandardsControlAssociationId":{
+      "type":"structure",
+      "required":[
+        "SecurityControlId",
+        "StandardsArn"
+      ],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) of a security control across standards. </p>"
+        },
+        "StandardsArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of a standard. </p>"
+        }
+      },
+      "documentation":"<p> An array with one or more objects that includes a security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) and the Amazon Resource Name (ARN) of a standard. The security control ID or ARN is the same across standards. </p>"
+    },
+    "StandardsControlAssociationIds":{
+      "type":"list",
+      "member":{"shape":"StandardsControlAssociationId"}
+    },
+    "StandardsControlAssociationSummaries":{
+      "type":"list",
+      "member":{"shape":"StandardsControlAssociationSummary"}
+    },
+    "StandardsControlAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "StandardsArn",
+        "SecurityControlId",
+        "SecurityControlArn",
+        "AssociationStatus"
+      ],
+      "members":{
+        "StandardsArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a standard. </p>"
+        },
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A unique standard-agnostic identifier for a control. Values for this field typically consist of an Amazon Web Service and a number, such as APIGateway.5. This field doesn't reference a specific standard. </p>"
+        },
+        "SecurityControlArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of a control, such as <code>arn:aws:securityhub:eu-central-1:123456789012:security-control/S3.1</code>. This parameter doesn't mention a specific standard. </p>"
+        },
+        "AssociationStatus":{
+          "shape":"AssociationStatus",
+          "documentation":"<p> The enablement status of a control in a specific standard. </p>"
+        },
+        "RelatedRequirements":{
+          "shape":"RelatedRequirementsList",
+          "documentation":"<p> The requirement that underlies this control in the compliance framework related to the standard. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The last time that a control's enablement status in a specified standard was updated. </p>"
+        },
+        "UpdatedReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The reason for updating the control's enablement status in a specified standard. </p>"
+        },
+        "StandardsControlTitle":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The title of a control. </p>"
+        },
+        "StandardsControlDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of a control. This typically summarizes how Security Hub evaluates the control and the conditions under which it produces a failed finding. The parameter may reference a specific standard. </p>"
+        }
+      },
+      "documentation":"<p> An array that provides the enablement status and other details for each control that applies to each enabled standard. </p>"
+    },
+    "StandardsControlAssociationUpdate":{
+      "type":"structure",
+      "required":[
+        "StandardsArn",
+        "SecurityControlId",
+        "AssociationStatus"
+      ],
+      "members":{
+        "StandardsArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the standard in which you want to update the control's enablement status.</p>"
+        },
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for the security control whose enablement status you want to update.</p>"
+        },
+        "AssociationStatus":{
+          "shape":"AssociationStatus",
+          "documentation":"<p>The desired enablement status of the control in the standard.</p>"
+        },
+        "UpdatedReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason for updating the control's enablement status in the standard.</p>"
+        }
+      },
+      "documentation":"<p>An array of requested updates to the enablement status of controls in specified standards. The objects in the array include a security control ID, the Amazon Resource Name (ARN) of the standard, the requested enablement status, and the reason for updating the enablement status.</p>"
+    },
+    "StandardsControlAssociationUpdates":{
+      "type":"list",
+      "member":{"shape":"StandardsControlAssociationUpdate"}
     },
     "StandardsControls":{
       "type":"list",
@@ -16848,6 +17353,93 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "UnprocessedErrorCode":{
+      "type":"string",
+      "enum":[
+        "INVALID_INPUT",
+        "ACCESS_DENIED",
+        "NOT_FOUND",
+        "LIMIT_EXCEEDED"
+      ]
+    },
+    "UnprocessedSecurityControl":{
+      "type":"structure",
+      "required":[
+        "SecurityControlId",
+        "ErrorCode"
+      ],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) for which a response couldn't be returned. </p>"
+        },
+        "ErrorCode":{
+          "shape":"UnprocessedErrorCode",
+          "documentation":"<p> The error code for the unprocessed security control. </p>"
+        },
+        "ErrorReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The reason why the security control was unprocessed. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about a security control for which a response couldn't be returned. </p>"
+    },
+    "UnprocessedSecurityControls":{
+      "type":"list",
+      "member":{"shape":"UnprocessedSecurityControl"}
+    },
+    "UnprocessedStandardsControlAssociation":{
+      "type":"structure",
+      "required":[
+        "StandardsControlAssociationId",
+        "ErrorCode"
+      ],
+      "members":{
+        "StandardsControlAssociationId":{
+          "shape":"StandardsControlAssociationId",
+          "documentation":"<p> An array with one or more objects that includes a security control (identified with <code>SecurityControlId</code>, <code>SecurityControlArn</code>, or a mix of both parameters) and the Amazon Resource Name (ARN) of a standard. This parameter shows the specific controls for which the enablement status couldn't be retrieved in specified standards when calling <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\">BatchUpdateStandardsControlAssociations</a>. </p>"
+        },
+        "ErrorCode":{
+          "shape":"UnprocessedErrorCode",
+          "documentation":"<p>The error code for the unprocessed standard and control association. </p>"
+        },
+        "ErrorReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason why the standard and control association was unprocessed. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about which control's enablement status couldn't be retrieved in a specified standard when calling <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\">BatchUpdateStandardsControlAssociations</a>. This parameter also provides details about why the request was unprocessed. </p>"
+    },
+    "UnprocessedStandardsControlAssociationUpdate":{
+      "type":"structure",
+      "required":[
+        "StandardsControlAssociationUpdate",
+        "ErrorCode"
+      ],
+      "members":{
+        "StandardsControlAssociationUpdate":{
+          "shape":"StandardsControlAssociationUpdate",
+          "documentation":"<p>An array of control and standard associations for which an update failed when calling <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\">BatchUpdateStandardsControlAssociations</a>. </p>"
+        },
+        "ErrorCode":{
+          "shape":"UnprocessedErrorCode",
+          "documentation":"<p>The error code for the unprocessed update of the control's enablement status in the specified standard.</p>"
+        },
+        "ErrorReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason why a control's enablement status in the specified standard couldn't be updated. </p>"
+        }
+      },
+      "documentation":"<p>Provides details about which control's enablement status could not be updated in a specified standard when calling the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\">BatchUpdateStandardsControlAssociations</a> API. This parameter also provides details about why the request was unprocessed. </p>"
+    },
+    "UnprocessedStandardsControlAssociationUpdates":{
+      "type":"list",
+      "member":{"shape":"UnprocessedStandardsControlAssociationUpdate"}
+    },
+    "UnprocessedStandardsControlAssociations":{
+      "type":"list",
+      "member":{"shape":"UnprocessedStandardsControlAssociation"}
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -17018,6 +17610,10 @@
         "AutoEnableControls":{
           "shape":"Boolean",
           "documentation":"<p>Whether to automatically enable new controls when they are added to standards that are enabled.</p> <p>By default, this is set to <code>true</code>, and new controls are enabled automatically. To not automatically enable new controls, set this to <code>false</code>. </p>"
+        },
+        "ControlFindingGenerator":{
+          "shape":"ControlFindingGenerator",
+          "documentation":"<p>Updates whether the calling account has consolidated control findings turned on. If the value for this field is set to <code>SECURITY_CONTROL</code>, Security Hub generates a single finding for a control check even when the check applies to multiple enabled standards.</p> <p>If the value for this field is set to <code>STANDARD_CONTROL</code>, Security Hub generates separate findings for a control check when the check applies to multiple enabled standards.</p> <p>For accounts that are part of an organization, this value can only be updated in the administrator account.</p>"
         }
       }
     },
@@ -17274,5 +17870,5 @@
       "documentation":"<p>Used to update information about the investigation into the finding.</p>"
     }
   },
-  "documentation":"<p>Security Hub provides you with a comprehensive view of the security state of your Amazon Web Services environment and resources. It also provides you with the readiness status of your environment based on controls from supported security standards. Security Hub collects security data from Amazon Web Services accounts, services, and integrated third-party products and helps you analyze security trends in your environment to identify the highest priority security issues. For more information about Security Hub, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security HubUser Guide</i> </a>.</p> <p>When you use operations in the Security Hub API, the requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, execute the same command for each Region to apply the change to.</p> <p>For example, if your Region is set to <code>us-west-2</code>, when you use <code>CreateMembers</code> to add a member account to Security Hub, the association of the member account with the administrator account is created only in the <code>us-west-2</code> Region. Security Hub must be enabled for the member account in the same Region that the invitation was sent from.</p> <p>The following throttling limits apply to using Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second, <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
+  "documentation":"<p>Security Hub provides you with a comprehensive view of the security state of your Amazon Web Services environment and resources. It also provides you with the readiness status of your environment based on controls from supported security standards. Security Hub collects security data from Amazon Web Services accounts, services, and integrated third-party products and helps you analyze security trends in your environment to identify the highest priority security issues. For more information about Security Hub, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\">Security HubUser Guide</a>.</p> <p>When you use operations in the Security Hub API, the requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, run the same command for each Region in which you want to apply the change.</p> <p>For example, if your Region is set to <code>us-west-2</code>, when you use <code>CreateMembers</code> to add a member account to Security Hub, the association of the member account with the administrator account is created only in the <code>us-west-2</code> Region. Security Hub must be enabled for the member account in the same Region that the invitation was sent from.</p> <p>The following throttling limits apply to using Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
 }

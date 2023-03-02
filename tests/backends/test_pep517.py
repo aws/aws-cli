@@ -246,6 +246,7 @@ def test_get_requires_for_build_wheel(config_settings, repo_root):
         "docutils",
         "cryptography",
         "ruamel.yaml",
+        "ruamel.yaml.clib",
         "prompt-toolkit",
         "distro",
         "awscrt",

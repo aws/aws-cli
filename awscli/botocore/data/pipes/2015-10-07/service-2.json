@@ -186,7 +186,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update an existing pipe. When you call <code>UpdatePipe</code>, only the fields that are included in the request are changed, the rest are unchanged. The exception to this is if you modify any Amazon Web Services-service specific fields in the <code>SourceParameters</code>, <code>EnrichmentParameters</code>, or <code>TargetParameters</code> objects. The fields in these objects are updated atomically as one and override existing values. This is by design and means that if you don't specify an optional field in one of these Parameters objects, that field will be set to its system-default value after the update.</p> <pre><code> &lt;p&gt;For more information about pipes, see &lt;a href=&quot;https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html&quot;&gt; Amazon EventBridge Pipes&lt;/a&gt; in the Amazon EventBridge User Guide.&lt;/p&gt; </code></pre>",
+      "documentation":"<p>Update an existing pipe. When you call <code>UpdatePipe</code>, only the fields that are included in the request are changed, the rest are unchanged. The exception to this is if you modify any Amazon Web Services-service specific fields in the <code>SourceParameters</code>, <code>EnrichmentParameters</code>, or <code>TargetParameters</code> objects. The fields in these objects are updated atomically as one and override existing values. This is by design and means that if you don't specify an optional field in one of these Parameters objects, that field will be set to its system-default value after the update.</p> <p>For more information about pipes, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html\"> Amazon EventBridge Pipes</a> in the Amazon EventBridge User Guide.</p>",
       "idempotent":true
     }
   },
@@ -201,7 +201,7 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
     },
     "ArnOrUrl":{
       "type":"string",
@@ -874,7 +874,7 @@
       "type":"string",
       "max":50,
       "min":1,
-      "pattern":"^[A-Za-z0-9\\-]+[\\.][A-Za-z0-9\\-]+|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^[A-Za-z0-9\\-]+[\\.][A-Za-z0-9\\-]+$",
       "sensitive":true
     },
     "EventBridgeEventResourceList":{
@@ -887,7 +887,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)",
+      "pattern":"(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "EventPattern":{
@@ -926,7 +926,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[!#$%&'*+-.^_`|~0-9a-zA-Z]+|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"^[!#$%&'*+-.^_`|~0-9a-zA-Z]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
     },
     "HeaderParametersMap":{
       "type":"map",
@@ -937,7 +937,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "InputTemplate":{
@@ -971,7 +971,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*$"
+      "pattern":"^\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*$"
     },
     "KafkaBootstrapServers":{
       "type":"list",
@@ -1018,12 +1018,6 @@
       "type":"integer",
       "box":true,
       "max":100,
-      "min":1
-    },
-    "LimitMax1000":{
-      "type":"integer",
-      "box":true,
-      "max":1000,
       "min":1
     },
     "LimitMax10000":{
@@ -1233,7 +1227,7 @@
     },
     "PathParameter":{
       "type":"string",
-      "pattern":"^(?!\\s*$).+|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "PathParameterList":{
@@ -1374,7 +1368,7 @@
       "required":["StartingPosition"],
       "members":{
         "BatchSize":{
-          "shape":"LimitMax1000",
+          "shape":"LimitMax10000",
           "documentation":"<p>The maximum number of records to include in each batch.</p>"
         },
         "DeadLetterConfig":{
@@ -2017,7 +2011,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[^\\x00-\\x1F\\x7F]+|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"^[^\\x00-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
     },
     "QueryStringParametersMap":{
       "type":"map",
@@ -2028,7 +2022,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "ReferenceId":{
@@ -2091,7 +2085,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "SageMakerPipelineParameterValue":{
@@ -2105,20 +2099,20 @@
       "documentation":"<p>// Optional SecretManager ARN which stores the database credentials</p>",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)$"
     },
     "SecretManagerArnOrJsonPath":{
       "type":"string",
       "documentation":"<p>// For targets, can either specify an ARN or a jsonpath pointing to the ARN.</p>",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
     },
     "SecurityGroup":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^sg-[0-9a-zA-Z]*|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^sg-[0-9a-zA-Z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "SecurityGroupId":{
@@ -2331,7 +2325,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^subnet-[0-9a-z]*|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"^subnet-[0-9a-z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
     },
     "SubnetId":{
@@ -2584,7 +2578,7 @@
       "type":"structure",
       "members":{
         "BatchSize":{
-          "shape":"LimitMax1000",
+          "shape":"LimitMax10000",
           "documentation":"<p>The maximum number of records to include in each batch.</p>"
         },
         "DeadLetterConfig":{

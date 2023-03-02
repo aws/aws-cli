@@ -557,7 +557,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a schedule that regularly starts Amazon SageMaker Processing Jobs to monitor the data captured for an Amazon SageMaker Endoint.</p>"
+      "documentation":"<p>Creates a schedule that regularly starts Amazon SageMaker Processing Jobs to monitor the data captured for an Amazon SageMaker Endpoint.</p>"
     },
     "CreateNotebookInstance":{
       "name":"CreateNotebookInstance",
@@ -2105,7 +2105,7 @@
       },
       "input":{"shape":"GetSearchSuggestionsRequest"},
       "output":{"shape":"GetSearchSuggestionsResponse"},
-      "documentation":"<p>An auto-complete API for the search functionality in the Amazon SageMaker console. It returns suggestions of possible matches for the property name to use in <code>Search</code> queries. Provides suggestions for <code>HyperParameters</code>, <code>Tags</code>, and <code>Metrics</code>.</p>"
+      "documentation":"<p>An auto-complete API for the search functionality in the SageMaker console. It returns suggestions of possible matches for the property name to use in <code>Search</code> queries. Provides suggestions for <code>HyperParameters</code>, <code>Tags</code>, and <code>Metrics</code>.</p>"
     },
     "ImportHubContent":{
       "name":"ImportHubContent",
@@ -2966,7 +2966,7 @@
       },
       "input":{"shape":"SearchRequest"},
       "output":{"shape":"SearchResponse"},
-      "documentation":"<p>Finds Amazon SageMaker resources that match a search query. Matching resources are returned as a list of <code>SearchRecord</code> objects in the response. You can sort the search results by any resource property in a ascending or descending order.</p> <p>You can query against the following value types: numeric, text, Boolean, and timestamp.</p>"
+      "documentation":"<p>Finds SageMaker resources that match a search query. Matching resources are returned as a list of <code>SearchRecord</code> objects in the response. You can sort the search results by any resource property in a ascending or descending order.</p> <p>You can query against the following value types: numeric, text, Boolean, and timestamp.</p> <note> <p>The Search API may provide access to otherwise restricted data. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/api-permissions-reference.html\">Amazon SageMaker API Permissions: Actions, Permissions, and Resources Reference</a> for more information.</p> </note>"
     },
     "SendPipelineExecutionStepFailure":{
       "name":"SendPipelineExecutionStepFailure",
@@ -8354,7 +8354,7 @@
         },
         "SamplePayloadUrl":{
           "shape":"S3Uri",
-          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) path where the sample payload are stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) path where the sample payload is stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix). This archive can hold multiple files that are all equally used in the load test. Each file in the archive must satisfy the size constraints of the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax\">InvokeEndpoint</a> call.</p>"
         },
         "AdditionalInferenceSpecifications":{
           "shape":"AdditionalInferenceSpecifications",
@@ -16282,7 +16282,7 @@
           "documentation":"<p>A value used with <code>Name</code> and <code>Operator</code> to determine which resources satisfy the filter's condition. For numerical properties, <code>Value</code> must be an integer or floating-point decimal. For timestamp properties, <code>Value</code> must be an ISO 8601 date-time string of the following format: <code>YYYY-mm-dd'T'HH:MM:SS</code>.</p>"
         }
       },
-      "documentation":"<p>A conditional statement for a search expression that includes a resource property, a Boolean operator, and a value. Resources that match the statement are returned in the results from the <a>Search</a> API.</p> <p>If you specify a <code>Value</code>, but not an <code>Operator</code>, Amazon SageMaker uses the equals operator.</p> <p>In search, there are several property types:</p> <dl> <dt>Metrics</dt> <dd> <p>To define a metric filter, enter a value using the form <code>\"Metrics.&lt;name&gt;\"</code>, where <code>&lt;name&gt;</code> is a metric name. For example, the following filter searches for training jobs with an <code>\"accuracy\"</code> metric greater than <code>\"0.9\"</code>:</p> <p> <code>{</code> </p> <p> <code>\"Name\": \"Metrics.accuracy\",</code> </p> <p> <code>\"Operator\": \"GreaterThan\",</code> </p> <p> <code>\"Value\": \"0.9\"</code> </p> <p> <code>}</code> </p> </dd> <dt>HyperParameters</dt> <dd> <p>To define a hyperparameter filter, enter a value with the form <code>\"HyperParameters.&lt;name&gt;\"</code>. Decimal hyperparameter values are treated as a decimal in a comparison if the specified <code>Value</code> is also a decimal value. If the specified <code>Value</code> is an integer, the decimal hyperparameter values are treated as integers. For example, the following filter is satisfied by training jobs with a <code>\"learning_rate\"</code> hyperparameter that is less than <code>\"0.5\"</code>:</p> <p> <code> {</code> </p> <p> <code> \"Name\": \"HyperParameters.learning_rate\",</code> </p> <p> <code> \"Operator\": \"LessThan\",</code> </p> <p> <code> \"Value\": \"0.5\"</code> </p> <p> <code> }</code> </p> </dd> <dt>Tags</dt> <dd> <p>To define a tag filter, enter a value with the form <code>Tags.&lt;key&gt;</code>.</p> </dd> </dl>"
+      "documentation":"<p>A conditional statement for a search expression that includes a resource property, a Boolean operator, and a value. Resources that match the statement are returned in the results from the <a>Search</a> API.</p> <p>If you specify a <code>Value</code>, but not an <code>Operator</code>, SageMaker uses the equals operator.</p> <p>In search, there are several property types:</p> <dl> <dt>Metrics</dt> <dd> <p>To define a metric filter, enter a value using the form <code>\"Metrics.&lt;name&gt;\"</code>, where <code>&lt;name&gt;</code> is a metric name. For example, the following filter searches for training jobs with an <code>\"accuracy\"</code> metric greater than <code>\"0.9\"</code>:</p> <p> <code>{</code> </p> <p> <code>\"Name\": \"Metrics.accuracy\",</code> </p> <p> <code>\"Operator\": \"GreaterThan\",</code> </p> <p> <code>\"Value\": \"0.9\"</code> </p> <p> <code>}</code> </p> </dd> <dt>HyperParameters</dt> <dd> <p>To define a hyperparameter filter, enter a value with the form <code>\"HyperParameters.&lt;name&gt;\"</code>. Decimal hyperparameter values are treated as a decimal in a comparison if the specified <code>Value</code> is also a decimal value. If the specified <code>Value</code> is an integer, the decimal hyperparameter values are treated as integers. For example, the following filter is satisfied by training jobs with a <code>\"learning_rate\"</code> hyperparameter that is less than <code>\"0.5\"</code>:</p> <p> <code> {</code> </p> <p> <code> \"Name\": \"HyperParameters.learning_rate\",</code> </p> <p> <code> \"Operator\": \"LessThan\",</code> </p> <p> <code> \"Value\": \"0.5\"</code> </p> <p> <code> }</code> </p> </dd> <dt>Tags</dt> <dd> <p>To define a tag filter, enter a value with the form <code>Tags.&lt;key&gt;</code>.</p> </dd> </dl>"
     },
     "FilterList":{
       "type":"list",
@@ -16596,7 +16596,7 @@
       "members":{
         "Resource":{
           "shape":"ResourceType",
-          "documentation":"<p>The name of the Amazon SageMaker resource to search for.</p>"
+          "documentation":"<p>The name of the SageMaker resource to search for.</p>"
         },
         "SuggestionQuery":{
           "shape":"SuggestionQuery",
@@ -18341,7 +18341,7 @@
           "documentation":"<p>The details for a specific benchmark.</p>"
         }
       },
-      "documentation":"<p>A returned array object for the <code>Steps</code> response field in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_InferenceRecommendationsJobStep.html\">ListInferenceRecommendationsJobSteps</a> API command.</p>"
+      "documentation":"<p>A returned array object for the <code>Steps</code> response field in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListInferenceRecommendationsJobSteps.html\">ListInferenceRecommendationsJobSteps</a> API command.</p>"
     },
     "InferenceRecommendationsJobSteps":{
       "type":"list",
@@ -27784,7 +27784,7 @@
       "members":{
         "PropertyName":{
           "shape":"ResourcePropertyName",
-          "documentation":"<p>A suggested property name based on what you entered in the search textbox in the Amazon SageMaker console.</p>"
+          "documentation":"<p>A suggested property name based on what you entered in the search textbox in the SageMaker console.</p>"
         }
       },
       "documentation":"<p>A property name returned from a <code>GetSearchSuggestions</code> call that specifies a value in the <code>PropertyNameQuery</code> field.</p>"
@@ -28208,7 +28208,8 @@
         "FailureReason":{
           "shape":"RecommendationFailureReason",
           "documentation":"<p>The reason why a benchmark failed.</p>"
-        }
+        },
+        "EndpointMetrics":{"shape":"InferenceMetrics"}
       },
       "documentation":"<p>The details for a specific benchmark from an Inference Recommender job.</p>"
     },
@@ -28747,7 +28748,7 @@
         },
         "MaxRuntimeInSeconds":{
           "shape":"HyperParameterTuningMaxRuntimeInSeconds",
-          "documentation":"<p>The maximum time in seconds that a training job launched by a hyperparameter tuning job can run.</p>"
+          "documentation":"<p>The maximum time in seconds that a hyperparameter tuning job can run.</p>"
         }
       },
       "documentation":"<p>Specifies the maximum number of training jobs and parallel training jobs that a hyperparameter tuning job can launch.</p>"
@@ -29122,7 +29123,7 @@
       "members":{
         "Resource":{
           "shape":"ResourceType",
-          "documentation":"<p>The name of the Amazon SageMaker resource to search for.</p>"
+          "documentation":"<p>The name of the SageMaker resource to search for.</p>"
         },
         "SearchExpression":{
           "shape":"SearchExpression",
@@ -32824,7 +32825,7 @@
         },
         "Parameters":{
           "shape":"TrialComponentParameters",
-          "documentation":"<p>Replaces all of the component's hyperparameters with the specified hyperparameters.</p>"
+          "documentation":"<p>Replaces all of the component's hyperparameters with the specified hyperparameters or add new hyperparameters. Existing hyperparameters are replaced if the trial component is updated with an identical hyperparameter key.</p>"
         },
         "ParametersToRemove":{
           "shape":"ListTrialComponentKey256",
@@ -32832,7 +32833,7 @@
         },
         "InputArtifacts":{
           "shape":"TrialComponentArtifacts",
-          "documentation":"<p>Replaces all of the component's input artifacts with the specified artifacts.</p>"
+          "documentation":"<p>Replaces all of the component's input artifacts with the specified artifacts or adds new input artifacts. Existing input artifacts are replaced if the trial component is updated with an identical input artifact key.</p>"
         },
         "InputArtifactsToRemove":{
           "shape":"ListTrialComponentKey256",
@@ -32840,7 +32841,7 @@
         },
         "OutputArtifacts":{
           "shape":"TrialComponentArtifacts",
-          "documentation":"<p>Replaces all of the component's output artifacts with the specified artifacts.</p>"
+          "documentation":"<p>Replaces all of the component's output artifacts with the specified artifacts or adds new output artifacts. Existing output artifacts are replaced if the trial component is updated with an identical output artifact key.</p>"
         },
         "OutputArtifactsToRemove":{
           "shape":"ListTrialComponentKey256",

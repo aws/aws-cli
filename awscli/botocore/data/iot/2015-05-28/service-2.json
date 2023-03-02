@@ -353,7 +353,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request.</p> <p> <b>Note:</b> The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-256, NIST P-384, or NIST P-512 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>.</p> <p> <b>Note:</b> Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action.</p> <p>You can create multiple certificates in a batch by creating a directory, copying multiple .csr files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs.</p> <p>Assuming a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is:</p> <p>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the aws iot create-certificate-from-csr Amazon Web Services CLI command to create a certificate for the corresponding CSR.</p> <p>The aws iot create-certificate-from-csr part of the command can also be run in parallel to speed up the certificate creation process:</p> <p>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_}</p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\"</p>"
+      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action. </p> <note> <p>The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-25 or NIST P-384 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>. </p> </note> <note> <p>Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> </note> <p>You can create multiple certificates in a batch by creating a directory, copying multiple <code>.csr</code> files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs. In the following commands, we assume that a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is: </p> <p> <code>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</code> </p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the <code>aws iot create-certificate-from-csr</code> Amazon Web Services CLI command to create a certificate for the corresponding CSR. </p> <p>You can also run the <code>aws iot create-certificate-from-csr</code> part of the command in parallel to speed up the certificate creation process:</p> <p> <code>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{} </code> </p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_} </code> </p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\" </code> </p>"
     },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
@@ -6730,7 +6730,7 @@
         },
         "unit":{
           "shape":"FleetMetricUnit",
-          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>. Default to null.</p>"
+          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>. Default to null.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -6883,6 +6883,10 @@
         "jobExecutionsRetryConfig":{
           "shape":"JobExecutionsRetryConfig",
           "documentation":"<p>Allows you to create the criteria to retry a job.</p>"
+        },
+        "maintenanceWindows":{
+          "shape":"MaintenanceWindows",
+          "documentation":"<p>Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.</p>"
         }
       }
     },
@@ -7660,6 +7664,11 @@
       "type":"integer",
       "max":43200,
       "min":900
+    },
+    "CronExpression":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "CustomCodeSigning":{
       "type":"structure",
@@ -8925,7 +8934,7 @@
         },
         "unit":{
           "shape":"FleetMetricUnit",
-          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>.</p>"
+          "documentation":"<p>Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">CW metric</a>.</p>"
         },
         "version":{
           "shape":"Version",
@@ -9073,6 +9082,10 @@
         "jobExecutionsRetryConfig":{
           "shape":"JobExecutionsRetryConfig",
           "documentation":"<p>The configuration that determines how many retries are allowed for each failure type for a job.</p>"
+        },
+        "maintenanceWindows":{
+          "shape":"MaintenanceWindows",
+          "documentation":"<p>Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.</p>"
         }
       }
     },
@@ -10055,6 +10068,11 @@
         "AWS_MANAGED",
         "CUSTOMER_MANAGED"
       ]
+    },
+    "DurationInMinutes":{
+      "type":"integer",
+      "max":1430,
+      "min":30
     },
     "DurationSeconds":{"type":"integer"},
     "DynamicGroupStatus":{
@@ -11494,6 +11512,10 @@
         "schedulingConfig":{
           "shape":"SchedulingConfig",
           "documentation":"<p>The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.</p>"
+        },
+        "scheduledJobRollouts":{
+          "shape":"ScheduledJobRolloutList",
+          "documentation":"<p>Displays the next seven maintenance window occurrences and their start times.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -14474,6 +14496,28 @@
       },
       "documentation":"<p> The configuration of an ML Detect Security Profile. </p>"
     },
+    "MaintenanceWindow":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "durationInMinutes"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"CronExpression",
+          "documentation":"<p>Displays the start time of the next maintenance window.</p>"
+        },
+        "durationInMinutes":{
+          "shape":"DurationInMinutes",
+          "documentation":"<p>Displays the duration of the next maintenance window.</p>"
+        }
+      },
+      "documentation":"<p>An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.</p>"
+    },
+    "MaintenanceWindows":{
+      "type":"list",
+      "member":{"shape":"MaintenanceWindow"}
+    },
     "MalformedPolicyException":{
       "type":"structure",
       "members":{
@@ -16310,20 +16354,38 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
     },
+    "ScheduledJobRollout":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"StringDateTime",
+          "documentation":"<p>Displays the start times of the next seven maintenance window occurrences.</p>"
+        }
+      },
+      "documentation":"<p>Displays the next seven maintenance window occurrences and their start times.</p>"
+    },
+    "ScheduledJobRolloutList":{
+      "type":"list",
+      "member":{"shape":"ScheduledJobRollout"}
+    },
     "SchedulingConfig":{
       "type":"structure",
       "members":{
         "startTime":{
           "shape":"StringDateTime",
-          "documentation":"<p>The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time.</p>"
+          "documentation":"<p>The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time. The date and time format for the <code>startTime</code> is YYYY-MM-DD for the date and HH:MM for the time.</p>"
         },
         "endTime":{
           "shape":"StringDateTime",
-          "documentation":"<p>The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. </p>"
+          "documentation":"<p>The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. The date and time format for the <code>endTime</code> is YYYY-MM-DD for the date and HH:MM for the time.</p>"
         },
         "endBehavior":{
           "shape":"JobEndBehavior",
           "documentation":"<p>Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.</p>"
+        },
+        "maintenanceWindows":{
+          "shape":"MaintenanceWindows",
+          "documentation":"<p>An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.</p>"
         }
       },
       "documentation":"<p>Specifies the date and time that a job will begin the rollout of the job document to all devices in the target group. Additionally, you can specify the end behavior for each job execution when it reaches the scheduled end time.</p>"

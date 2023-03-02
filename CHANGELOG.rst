@@ -4969,6 +4969,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.83
+=======
+
+* api-change:``iot``: A recurring maintenance window is an optional configuration used for rolling out the job document to all devices in the target group observing a predetermined start time, duration, and frequency that the maintenance window occurs.
+* api-change:``migrationhubstrategy``: This release updates the File Import API to allow importing servers already discovered by customers with reduced pre-requisites.
+* api-change:``organizations``: This release introduces a new reason code, ACCOUNT_CREATION_NOT_COMPLETE, to ConstraintViolationException in CreateOrganization API.
+* api-change:``pi``: This release adds a new field PeriodAlignment to allow the customer specifying the returned timestamp of time periods to be either the start or end time.
+* api-change:``pipes``: This release fixes some input parameter range and patterns.
+* api-change:``sagemaker``: Add a new field "EndpointMetrics" in SageMaker Inference Recommender "ListInferenceRecommendationsJobSteps" API response.
+
+
+1.27.82
+=======
+
+* api-change:``codecatalyst``: Published Dev Environments StopDevEnvironmentSession API
+* api-change:``pricing``: This release adds 2 new APIs - ListPriceLists which returns a list of applicable price lists, and GetPriceListFileUrl which outputs a URL to retrieve your price lists from the generated file from ListPriceLists
+* api-change:``s3outposts``: S3 on Outposts introduces a new API ListOutpostsWithS3, with this API you can list all your Outposts with S3 capacity.
+
+
 1.27.81
 =======
 

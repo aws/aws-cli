@@ -26,7 +26,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates an endpoint and associates it with the specified Outpost.</p> <note> <p>It can take up to 5 minutes for this action to finish.</p> </note> <p/> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_DeleteEndpoint.html\">DeleteEndpoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_ListEndpoints.html\">ListEndpoints</a> </p> </li> </ul>"
     },
@@ -41,7 +42,8 @@
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an endpoint.</p> <note> <p>It can take up to 5 minutes for this action to finish.</p> </note> <p/> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_CreateEndpoint.html\">CreateEndpoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_ListEndpoints.html\">ListEndpoints</a> </p> </li> </ul>"
     },
@@ -57,9 +59,26 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists endpoints associated with the specified Outpost. </p> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_CreateEndpoint.html\">CreateEndpoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_DeleteEndpoint.html\">DeleteEndpoint</a> </p> </li> </ul>"
+    },
+    "ListOutpostsWithS3":{
+      "name":"ListOutpostsWithS3",
+      "http":{
+        "method":"GET",
+        "requestUri":"/S3Outposts/ListOutpostsWithS3"
+      },
+      "input":{"shape":"ListOutpostsWithS3Request"},
+      "output":{"shape":"ListOutpostsWithS3Result"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the Outposts with S3 on Outposts capacity for your Amazon Web Services account. Includes S3 on Outposts that you have access to as the Outposts owner, or as a shared user from Resource Access Manager (RAM). </p>"
     },
     "ListSharedEndpoints":{
       "name":"ListSharedEndpoints",
@@ -73,7 +92,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists all endpoints associated with an Outpost that has been shared by Amazon Web Services Resource Access Manager (RAM).</p> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_CreateEndpoint.html\">CreateEndpoint</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3outposts_DeleteEndpoint.html\">DeleteEndpoint</a> </p> </li> </ul>"
     }
@@ -88,6 +108,11 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AwsAccountId":{
+      "type":"string",
+      "pattern":"^\\d{12}$"
+    },
+    "CapacityInBytes":{"type":"long"},
     "CidrBlock":{"type":"string"},
     "ConflictException":{
       "type":"structure",
@@ -281,6 +306,36 @@
         }
       }
     },
+    "ListOutpostsWithS3Request":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>When you can get additional results from the <code>ListOutpostsWithS3</code> call, a <code>NextToken</code> parameter is returned in the output. You can then pass in a subsequent command to the <code>NextToken</code> parameter to continue listing additional Outposts.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of Outposts to return. The limit is 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListOutpostsWithS3Result":{
+      "type":"structure",
+      "members":{
+        "Outposts":{
+          "shape":"Outposts",
+          "documentation":"<p>Returns the list of Outposts that have the following characteristics:</p> <ul> <li> <p>outposts that have S3 provisioned</p> </li> <li> <p>outposts that are <code>Active</code> (not pending any provisioning nor decommissioned)</p> </li> <li> <p>outposts to which the the calling Amazon Web Services account has access</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListOutpostsWithS3</code> again and receive additional results, if there are any.</p>"
+        }
+      }
+    },
     "ListSharedEndpointsRequest":{
       "type":"structure",
       "required":["OutpostId"],
@@ -344,9 +399,39 @@
       "min":1,
       "pattern":"^[A-Za-z0-9\\+\\:\\/\\=\\?\\#-_]+$"
     },
+    "Outpost":{
+      "type":"structure",
+      "members":{
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>Specifies the unique Amazon Resource Name (ARN) for the outpost.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>Specifies the unique identifier for the outpost.</p>"
+        },
+        "OwnerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>Returns the Amazon Web Services account ID of the outpost owner. Useful for comparing owned versus shared outposts.</p>"
+        },
+        "CapacityInBytes":{
+          "shape":"CapacityInBytes",
+          "documentation":"<p>The Amazon S3 capacity of the outpost in bytes.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for the Outpost object.</p>"
+    },
+    "OutpostArn":{
+      "type":"string",
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):outposts:[a-z\\-0-9]*:[0-9]{12}:outpost/(op-[a-f0-9]{17}|ec2)$"
+    },
     "OutpostId":{
       "type":"string",
       "pattern":"^(op-[a-f0-9]{17}|\\d{12}|ec2)$"
+    },
+    "Outposts":{
+      "type":"list",
+      "member":{"shape":"Outpost"}
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -364,6 +449,15 @@
     "SubnetId":{
       "type":"string",
       "pattern":"^subnet-([0-9a-f]{8}|[0-9a-f]{17})$"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
     },
     "ValidationException":{
       "type":"structure",

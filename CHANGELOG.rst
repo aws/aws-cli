@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.84
+=======
+
+* api-change:``dynamodb``: Documentation updates for DynamoDB.
+* api-change:``ec2``: This release adds support for a new boot mode for EC2 instances called 'UEFI Preferred'.
+* api-change:``macie2``: Documentation updates for Amazon Macie
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has improved handling for different input and output color space combinations.
+* api-change:``medialive``: AWS Elemental MediaLive adds support for Nielsen watermark timezones.
+* api-change:``transcribe``: Amazon Transcribe now supports role access for these API operations: CreateVocabulary, UpdateVocabulary, CreateVocabularyFilter, and UpdateVocabularyFilter.
+
+
 1.27.83
 =======
 

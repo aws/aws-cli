@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.11.0
+======
+
+* api-change:``codecatalyst``: Published Dev Environments StopDevEnvironmentSession API
+* api-change:``pipes``: This release fixes some input parameter range and patterns.
+* api-change:``migrationhubstrategy``: This release updates the File Import API to allow importing servers already discovered by customers with reduced pre-requisites.
+* api-change:``iot``: A recurring maintenance window is an optional configuration used for rolling out the job document to all devices in the target group observing a predetermined start time, duration, and frequency that the maintenance window occurs.
+* api-change:``sagemaker``: Add a new field "EndpointMetrics" in SageMaker Inference Recommender "ListInferenceRecommendationsJobSteps" API response.
+* enhancement:dependency: Add Python 3.11 support for source distribution
+* api-change:``pricing``: This release adds 2 new APIs - ListPriceLists which returns a list of applicable price lists, and GetPriceListFileUrl which outputs a URL to retrieve your price lists from the generated file from ListPriceLists
+* api-change:``pi``: This release adds a new field PeriodAlignment to allow the customer specifying the returned timestamp of time periods to be either the start or end time.
+* feature:Python: Upgrade the embedded Python version to 3.11.
+* api-change:``s3outposts``: S3 on Outposts introduces a new API ListOutpostsWithS3, with this API you can list all your Outposts with S3 capacity.
+* api-change:``organizations``: This release introduces a new reason code, ACCOUNT_CREATION_NOT_COMPLETE, to ConstraintViolationException in CreateOrganization API.
+
+
 2.10.4
 ======
 

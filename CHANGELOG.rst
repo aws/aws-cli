@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.85
+=======
+
+* api-change:``account``: AWS Account alternate contact email addresses can now have a length of 254 characters and contain the character "|".
+* api-change:``ivs``: Updated text description in DeleteChannel, Stream, and StreamSummary.
+
+
 1.27.84
 =======
 

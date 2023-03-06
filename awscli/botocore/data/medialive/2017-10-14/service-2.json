@@ -3615,7 +3615,7 @@
         "AvailSettings": {
           "shape": "AvailSettings",
           "locationName": "availSettings",
-          "documentation": "Ad avail settings."
+          "documentation": "Controls how SCTE-35 messages create cues. Splice Insert mode treats all segmentation signals traditionally. With Time Signal APOS mode only Time Signal Placement Opportunity and Break messages create segment breaks. With ESAM mode, signals are forwarded to an ESAM server for possible update."
         }
       },
       "documentation": "Avail Configuration"
@@ -4431,7 +4431,7 @@
           "documentation": "Caption selector settings."
         }
       },
-      "documentation": "Output groups for this Live Event. Output groups contain information about where streams should be distributed.",
+      "documentation": "Caption Selector",
       "required": [
         "Name"
       ]
@@ -8541,7 +8541,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -8577,7 +8577,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -9008,7 +9008,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -9220,7 +9220,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -12570,6 +12570,11 @@
           "shape": "__doubleMin1Max65535",
           "locationName": "sid",
           "documentation": "Enter the Nielsen Source ID (SID) to include in the watermark"
+        },
+        "Timezone": {
+          "shape": "NielsenWatermarkTimezones",
+          "locationName": "timezone",
+          "documentation": "Choose the timezone for the time stamps in the watermark. If not provided,\nthe timestamps will be in Coordinated Universal Time (UTC)"
         }
       },
       "documentation": "Nielsen Naes Ii Nw",
@@ -12584,6 +12589,22 @@
       "enum": [
         "DISABLED",
         "ENABLED"
+      ]
+    },
+    "NielsenWatermarkTimezones": {
+      "type": "string",
+      "documentation": "Nielsen Watermark Timezones",
+      "enum": [
+        "AMERICA_PUERTO_RICO",
+        "US_ALASKA",
+        "US_ARIZONA",
+        "US_CENTRAL",
+        "US_EASTERN",
+        "US_HAWAII",
+        "US_MOUNTAIN",
+        "US_PACIFIC",
+        "US_SAMOA",
+        "UTC"
       ]
     },
     "NielsenWatermarksCbetStepaside": {
@@ -14030,7 +14051,7 @@
           "documentation": "When set to ignore, Segment Descriptors with webDeliveryAllowedFlag set to 0 will no longer trigger blackouts or Ad Avail slates"
         }
       },
-      "documentation": "Scte35 Splice Insert"
+      "documentation": "Typical configuration that applies breaks on splice inserts in addition to time signal placement opportunities, breaks, and advertisements."
     },
     "Scte35SpliceInsertNoRegionalBlackoutBehavior": {
       "type": "string",
@@ -14086,7 +14107,7 @@
           "documentation": "When set to ignore, Segment Descriptors with webDeliveryAllowedFlag set to 0 will no longer trigger blackouts or Ad Avail slates"
         }
       },
-      "documentation": "Scte35 Time Signal Apos"
+      "documentation": "Atypical configuration that applies segment breaks only on SCTE-35 time signal placement opportunities and breaks."
     },
     "Scte35TimeSignalScheduleActionSettings": {
       "type": "structure",

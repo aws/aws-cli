@@ -179,7 +179,9 @@ class TestEKSClient(unittest.TestCase):
                             "eks",
                             "get-token",
                             "--cluster-name",
-                            "ExampleCluster"
+                            "ExampleCluster",
+                            "--output",
+                            "json",
                         ]),
                     ("command", "aws")
                 ]))
@@ -198,7 +200,9 @@ class TestEKSClient(unittest.TestCase):
                             "eks",
                             "get-token",
                             "--cluster-id",
-                            "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+                            "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                            "--output",
+                            "json",
                         ]),
                     ("command", "aws")
                 ]))

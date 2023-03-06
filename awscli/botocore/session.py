@@ -367,7 +367,7 @@ class Session(object):
         if self._config is None:
             try:
                 config_file = self.get_config_variable('config_file')
-                self._config = botocore.configloader.load_config(config_file)
+                self._config = botocore.configloader.multi_file_load_config(config_file, "/etc/aws/config")
             except ConfigNotFound:
                 self._config = {'profiles': {}}
             try:

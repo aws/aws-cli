@@ -315,6 +315,8 @@ class EKSClient(object):
                             "get-token",
                             cluster_identification_parameter,
                             cluster_identification_value,
+                            "--output",
+                            "json",
                         ]),
                     ("command", "aws"),
                 ]))

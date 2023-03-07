@@ -4985,6 +4985,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.85
+=======
+
+* api-change:``account``: AWS Account alternate contact email addresses can now have a length of 254 characters and contain the character "|".
+* api-change:``ivs``: Updated text description in DeleteChannel, Stream, and StreamSummary.
+
+
+1.27.84
+=======
+
+* api-change:``dynamodb``: Documentation updates for DynamoDB.
+* api-change:``ec2``: This release adds support for a new boot mode for EC2 instances called 'UEFI Preferred'.
+* api-change:``macie2``: Documentation updates for Amazon Macie
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has improved handling for different input and output color space combinations.
+* api-change:``medialive``: AWS Elemental MediaLive adds support for Nielsen watermark timezones.
+* api-change:``transcribe``: Amazon Transcribe now supports role access for these API operations: CreateVocabulary, UpdateVocabulary, CreateVocabularyFilter, and UpdateVocabularyFilter.
+
+
 1.27.83
 =======
 

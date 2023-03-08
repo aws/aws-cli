@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.11.1
+======
+
+* enhancement:dependency: Update cryptography requirement from <38.0.5,>=3.3.2 to >=3.3.2,<39.0.3
+* api-change:``medialive``: AWS Elemental MediaLive adds support for Nielsen watermark timezones.
+* api-change:``account``: AWS Account alternate contact email addresses can now have a length of 254 characters and contain the character "|".
+* api-change:``transcribe``: Amazon Transcribe now supports role access for these API operations: CreateVocabulary, UpdateVocabulary, CreateVocabularyFilter, and UpdateVocabularyFilter.
+* api-change:``location``: Documentation update for the release of 3 additional map styles for use with Open Data Maps: Open Data Standard Dark, Open Data Visualization Light & Open Data Visualization Dark.
+* api-change:``dynamodb``: Documentation updates for DynamoDB.
+* bugfix:eks: Output JSON only for user entry in kubeconfig fixes `#7719 <https://github.com/aws/aws-cli/issues/7719>`__, fixes `#7723 <https://github.com/aws/aws-cli/issues/7723>`__, fixes `#7724 <https://github.com/aws/aws-cli/issues/7724>`__
+* api-change:``macie2``: Documentation updates for Amazon Macie
+* api-change:``mediaconvert``: The AWS Elemental MediaConvert SDK has improved handling for different input and output color space combinations.
+* api-change:``dms``: This release adds DMS Fleet Advisor Target Recommendation APIs and exposes functionality for DMS Fleet Advisor. It adds functionality to start Target Recommendation calculation.
+* api-change:``ec2``: This release adds support for a new boot mode for EC2 instances called 'UEFI Preferred'.
+* api-change:``ivs``: Updated text description in DeleteChannel, Stream, and StreamSummary.
+
+
 2.11.0
 ======
 

@@ -23,7 +23,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>Adds metadata tags to an DMS resource, including replication instance, endpoint, security group, and migration task. These tags can also be used with cost allocation reporting to track cost associated with DMS resources, or used in a Condition statement in an IAM policy for DMS. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
+      "documentation":"<p>Adds metadata tags to an DMS resource, including replication instance, endpoint, subnet group, and migration task. These tags can also be used with cost allocation reporting to track cost associated with DMS resources, or used in a Condition statement in an IAM policy for DMS. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
     "ApplyPendingMaintenanceAction":{
       "name":"ApplyPendingMaintenanceAction",
@@ -37,6 +37,21 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Applies a pending maintenance action to a resource (for example, to a replication instance).</p>"
+    },
+    "BatchStartRecommendations":{
+      "name":"BatchStartRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchStartRecommendationsRequest"},
+      "output":{"shape":"BatchStartRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"},
+        {"shape":"ResourceNotFoundFault"}
+      ],
+      "documentation":"<p>Starts the analysis of up to 20 source databases to recommend target engines for each source database. This is a batch version of <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_StartRecommendations.html\">StartRecommendations</a>.</p> <p>The result of analysis of each source database is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of <code>200</code>.</p>"
     },
     "CancelReplicationTaskAssessmentRun":{
       "name":"CancelReplicationTaskAssessmentRun",
@@ -515,6 +530,34 @@
       ],
       "documentation":"<p>For internal use only</p>"
     },
+    "DescribeRecommendationLimitations":{
+      "name":"DescribeRecommendationLimitations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRecommendationLimitationsRequest"},
+      "output":{"shape":"DescribeRecommendationLimitationsResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Returns a paginated list of limitations for recommendations of target Amazon Web Services engines.</p>"
+    },
+    "DescribeRecommendations":{
+      "name":"DescribeRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRecommendationsRequest"},
+      "output":{"shape":"DescribeRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Returns a paginated list of target engine recommendations for your source databases.</p>"
+    },
     "DescribeRefreshSchemasStatus":{
       "name":"DescribeRefreshSchemasStatus",
       "http":{
@@ -675,7 +718,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>Lists all metadata tags attached to an DMS resource, including replication instance, endpoint, security group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
+      "documentation":"<p>Lists all metadata tags attached to an DMS resource, including replication instance, endpoint, subnet group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
     "ModifyEndpoint":{
       "name":"ModifyEndpoint",
@@ -840,7 +883,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>Removes metadata tags from an DMS resource, including replication instance, endpoint, security group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
+      "documentation":"<p>Removes metadata tags from an DMS resource, including replication instance, endpoint, subnet group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
     "RunFleetAdvisorLsaAnalysis":{
       "name":"RunFleetAdvisorLsaAnalysis",
@@ -854,6 +897,20 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Runs large-scale assessment (LSA) analysis on every Fleet Advisor collector in your account.</p>"
+    },
+    "StartRecommendations":{
+      "name":"StartRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartRecommendationsRequest"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"},
+        {"shape":"ResourceNotFoundFault"}
+      ],
+      "documentation":"<p>Starts the analysis of your source database to provide recommendations of target engines.</p> <p>You can create recommendations for multiple source databases using <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_BatchStartRecommendations.html\">BatchStartRecommendations</a>.</p>"
     },
     "StartReplicationTask":{
       "name":"StartReplicationTask",
@@ -1077,6 +1134,46 @@
     "AvailabilityZonesList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "BatchStartRecommendationsErrorEntry":{
+      "type":"structure",
+      "members":{
+        "DatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source database.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The information about the error.</p>"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The code of an error that occurred during the analysis of the source database.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the errors that occurred during the analysis of the source database.</p>"
+    },
+    "BatchStartRecommendationsErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"BatchStartRecommendationsErrorEntry"}
+    },
+    "BatchStartRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "Data":{
+          "shape":"StartRecommendationsRequestEntryList",
+          "documentation":"<p>Provides information about source databases to analyze. After this analysis, Fleet Advisor recommends target engines for each source database.</p>"
+        }
+      }
+    },
+    "BatchStartRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "ErrorEntries":{
+          "shape":"BatchStartRecommendationsErrorEntryList",
+          "documentation":"<p>A list with error details about the analysis of each source database.</p>"
+        }
+      }
     },
     "Boolean":{"type":"boolean"},
     "BooleanOptional":{"type":"boolean"},
@@ -1620,7 +1717,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the replication instance during the maintenance window. This parameter defaults to <code>true</code>.</p> <p>Default: <code>true</code> </p>"
+          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the replication instance during the maintenance window. This parameter defaults to <code>true</code>.</p> <p>Default: <code>true</code> </p> <p>When <code>AutoMinorVersionUpgrade</code> is enabled, DMS uses the current default engine version when you create a replication instance. For example, if you set <code>EngineVersion</code> to a lower version number than the current default version, DMS uses the default version.</p> <p>If <code>AutoMinorVersionUpgrade</code> <i>isn’t</i> enabled when you create a replication instance, DMS uses the engine version specified by the <code>EngineVersion</code> parameter. </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -1745,7 +1842,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12 “</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2641,6 +2738,66 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeRecommendationLimitationsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the limitations described in the form of key-value pairs.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, Fleet Advisor includes a pagination token in the response so that you can retrieve the remaining results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of results. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p> <p>If <code>NextToken</code> is returned by a previous response, there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.</p>"
+        }
+      }
+    },
+    "DescribeRecommendationLimitationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The unique pagination token returned for you to pass to a subsequent request. Fleet Advisor returns this token when the number of records in the response is greater than the <code>MaxRecords</code> value. To retrieve the next page, make the call again using the returned token and keeping all other arguments unchanged.</p>"
+        },
+        "Limitations":{
+          "shape":"LimitationList",
+          "documentation":"<p>The list of limitations for recommendations of target Amazon Web Services engines.</p>"
+        }
+      }
+    },
+    "DescribeRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the target engine recommendations described in the form of key-value pairs.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, Fleet Advisor includes a pagination token in the response so that you can retrieve the remaining results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of results. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p> <p>If <code>NextToken</code> is returned by a previous response, there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.</p>"
+        }
+      }
+    },
+    "DescribeRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The unique pagination token returned for you to pass to a subsequent request. Fleet Advisor returns this token when the number of records in the response is greater than the <code>MaxRecords</code> value. To retrieve the next page, make the call again using the returned token and keeping all other arguments unchanged.</p>"
+        },
+        "Recommendations":{
+          "shape":"RecommendationList",
+          "documentation":"<p>The list of recommendations of target engines that Fleet Advisor created for the source database.</p>"
+        }
+      }
+    },
     "DescribeRefreshSchemasStatusMessage":{
       "type":"structure",
       "required":["EndpointArn"],
@@ -3497,7 +3654,7 @@
         },
         "CleanSourceMetadataOnMismatch":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Adjusts the behavior of DMS when migrating from an SQL Server source database that is hosted as part of an Always On availability group cluster. If you need DMS to poll all the nodes in the Always On cluster for transaction backups, set this attribute to <code>false</code>. </p>"
+          "documentation":"<p>Cleans and recreates table metadata information on the replication instance when a mismatch occurs. For example, in a situation where running an alter DDL on the table could result in different information about the table cached in the replication instance. </p>"
         },
         "DatabaseName":{
           "shape":"String",
@@ -3525,11 +3682,11 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p/>"
+          "documentation":"<p>Endpoint TCP port.</p>"
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p>Endpoint TCP port.</p>"
+          "documentation":"<p>The MySQL host name.</p>"
         },
         "ServerTimezone":{
           "shape":"String",
@@ -3900,6 +4057,40 @@
       },
       "documentation":"<p>Provides information that describes an Amazon Kinesis Data Stream endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
     },
+    "Limitation":{
+      "type":"structure",
+      "members":{
+        "DatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source database.</p>"
+        },
+        "EngineName":{
+          "shape":"String",
+          "documentation":"<p>The name of the target engine that Fleet Advisor should use in the target engine recommendation. Valid values include <code>\"rds-aurora-mysql\"</code>, <code>\"rds-aurora-postgresql\"</code>, <code>\"rds-mysql\"</code>, <code>\"rds-oracle\"</code>, <code>\"rds-sql-server\"</code>, and <code>\"rds-postgresql\"</code>.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the limitation. Describes unsupported database features, migration action items, and other limitations.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the limitation. Provides additional information about the limitation, and includes recommended actions that you can take to address or avoid this limitation.</p>"
+        },
+        "Impact":{
+          "shape":"String",
+          "documentation":"<p>The impact of the limitation. You can use this parameter to prioritize limitations that you want to address. Valid values include <code>\"Blocker\"</code>, <code>\"High\"</code>, <code>\"Medium\"</code>, and <code>\"Low\"</code>.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the limitation, such as action required, upgrade required, and limited feature.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the limitations of target Amazon Web Services engines.</p> <p>Your source database might include features that the target Amazon Web Services engine doesn't support. Fleet Advisor lists these features as limitations. You should consider these limitations during database migration. For each limitation, Fleet Advisor recommends an action that you can take to address or avoid this limitation.</p>"
+    },
+    "LimitationList":{
+      "type":"list",
+      "member":{"shape":"Limitation"}
+    },
     "ListTagsForResourceMessage":{
       "type":"structure",
       "members":{
@@ -3970,7 +4161,7 @@
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p>Fully qualified domain name of the endpoint.</p>"
+          "documentation":"<p>Fully qualified domain name of the endpoint. For an Amazon RDS SQL Server instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html\">DescribeDBInstances</a>, in the <code> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Endpoint.html\">Endpoint</a>.Address</code> field.</p>"
         },
         "Username":{
           "shape":"String",
@@ -4232,7 +4423,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates that minor version upgrades are applied automatically to the replication instance during the maintenance window. Changing this parameter doesn't result in an outage, except in the case described following. The change is asynchronously applied as soon as possible. </p> <p>An outage does result if these factors apply: </p> <ul> <li> <p>This parameter is set to <code>true</code> during the maintenance window.</p> </li> <li> <p>A newer minor version is available. </p> </li> <li> <p>DMS has enabled automatic patching for the given engine version. </p> </li> </ul>"
+          "documentation":"<p>A value that indicates that minor version upgrades are applied automatically to the replication instance during the maintenance window. Changing this parameter doesn't result in an outage, except in the case described following. The change is asynchronously applied as soon as possible. </p> <p>An outage does result if these factors apply: </p> <ul> <li> <p>This parameter is set to <code>true</code> during the maintenance window.</p> </li> <li> <p>A newer minor version is available. </p> </li> <li> <p>DMS has enabled automatic patching for the given engine version. </p> </li> </ul> <p>When <code>AutoMinorVersionUpgrade</code> is enabled, DMS uses the current default engine version when you modify a replication instance. For example, if you set <code>EngineVersion</code> to a lower version number than the current default version, DMS uses the default version.</p> <p>If <code>AutoMinorVersionUpgrade</code> <i>isn’t</i> enabled when you modify a replication instance, DMS uses the engine version specified by the <code>EngineVersion</code> parameter.</p>"
         },
         "ReplicationInstanceIdentifier":{
           "shape":"String",
@@ -4321,7 +4512,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12 “</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
         },
         "TaskData":{
           "shape":"String",
@@ -4439,7 +4630,7 @@
         },
         "CleanSourceMetadataOnMismatch":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Adjusts the behavior of DMS when migrating from an SQL Server source database that is hosted as part of an Always On availability group cluster. If you need DMS to poll all the nodes in the Always On cluster for transaction backups, set this attribute to <code>false</code>.</p>"
+          "documentation":"<p>Cleans and recreates table metadata information on the replication instance when a mismatch occurs. For example, in a situation where running an alter DDL on the table could result in different information about the table cached in the replication instance. </p>"
         },
         "DatabaseName":{
           "shape":"String",
@@ -4471,7 +4662,7 @@
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p>Fully qualified domain name of the endpoint.</p>"
+          "documentation":"<p>The host name of the endpoint database. </p> <p>For an Amazon RDS MySQL instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html\">DescribeDBInstances</a>, in the <code> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Endpoint.html\">Endpoint</a>.Address</code> field.</p> <p>For an Aurora MySQL instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBClusters.html\">DescribeDBClusters</a>, in the <code>Endpoint</code> field.</p>"
         },
         "ServerTimezone":{
           "shape":"String",
@@ -4658,7 +4849,7 @@
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p>Fully qualified domain name of the endpoint.</p>"
+          "documentation":"<p>Fully qualified domain name of the endpoint.</p> <p>For an Amazon RDS Oracle instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html\">DescribeDBInstances</a>, in the <code> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Endpoint.html\">Endpoint</a>.Address</code> field.</p>"
         },
         "SpatialDataOptionToGeoJsonFunctionName":{
           "shape":"String",
@@ -4859,7 +5050,7 @@
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p>Fully qualified domain name of the endpoint.</p>"
+          "documentation":"<p>The host name of the endpoint database. </p> <p>For an Amazon RDS PostgreSQL instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html\">DescribeDBInstances</a>, in the <code> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Endpoint.html\">Endpoint</a>.Address</code> field.</p> <p>For an Aurora PostgreSQL instance, this is the output of <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBClusters.html\">DescribeDBClusters</a>, in the <code>Endpoint</code> field.</p>"
         },
         "Username":{
           "shape":"String",
@@ -4888,6 +5079,88 @@
       },
       "documentation":"<p>Provides information that defines a PostgreSQL endpoint.</p>"
     },
+    "RdsConfiguration":{
+      "type":"structure",
+      "members":{
+        "EngineEdition":{
+          "shape":"String",
+          "documentation":"<p>Describes the recommended target Amazon RDS engine edition.</p>"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>Describes the recommended target Amazon RDS instance type.</p>"
+        },
+        "InstanceVcpu":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>Describes the number of virtual CPUs (vCPU) on the recommended Amazon RDS DB instance that meets your requirements.</p>"
+        },
+        "InstanceMemory":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>Describes the memory on the recommended Amazon RDS DB instance that meets your requirements.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>Describes the storage type of the recommended Amazon RDS DB instance that meets your requirements.</p> <p>Amazon RDS provides three storage types: General Purpose SSD (also known as gp2 and gp3), Provisioned IOPS SSD (also known as io1), and magnetic (also known as standard).</p>"
+        },
+        "StorageSize":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Describes the storage size of the recommended Amazon RDS DB instance that meets your requirements.</p>"
+        },
+        "StorageIops":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Describes the number of I/O operations completed each second (IOPS) on the recommended Amazon RDS DB instance that meets your requirements.</p>"
+        },
+        "DeploymentOption":{
+          "shape":"String",
+          "documentation":"<p>Describes the deployment option for the recommended Amazon RDS DB instance. The deployment options include Multi-AZ and Single-AZ deployments. Valid values include <code>\"MULTI_AZ\"</code> and <code>\"SINGLE_AZ\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes the configuration of the recommended target engine on Amazon RDS.</p>"
+    },
+    "RdsRecommendation":{
+      "type":"structure",
+      "members":{
+        "RequirementsToTarget":{
+          "shape":"RdsRequirements",
+          "documentation":"<p>Supplemental information about the requirements to the recommended target database on Amazon RDS.</p>"
+        },
+        "TargetConfiguration":{
+          "shape":"RdsConfiguration",
+          "documentation":"<p>Supplemental information about the configuration of the recommended target database on Amazon RDS.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes a recommendation of a target engine on Amazon RDS.</p>"
+    },
+    "RdsRequirements":{
+      "type":"structure",
+      "members":{
+        "EngineEdition":{
+          "shape":"String",
+          "documentation":"<p>The required target Amazon RDS engine edition.</p>"
+        },
+        "InstanceVcpu":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The required number of virtual CPUs (vCPU) on the Amazon RDS DB instance.</p>"
+        },
+        "InstanceMemory":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The required memory on the Amazon RDS DB instance.</p>"
+        },
+        "StorageSize":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The required Amazon RDS DB instance storage size.</p>"
+        },
+        "StorageIops":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The required number of I/O operations completed each second (IOPS) on your Amazon RDS DB instance.</p>"
+        },
+        "DeploymentOption":{
+          "shape":"String",
+          "documentation":"<p>The required deployment option for the Amazon RDS DB instance. Valid values include <code>\"MULTI_AZ\"</code> for Multi-AZ deployments and <code>\"SINGLE_AZ\"</code> for Single-AZ deployments.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes the requirements to the target engine on Amazon RDS.</p>"
+    },
     "RebootReplicationInstanceMessage":{
       "type":"structure",
       "required":["ReplicationInstanceArn"],
@@ -4914,6 +5187,72 @@
           "documentation":"<p>The replication instance that is being rebooted. </p>"
         }
       }
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "DatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source database for which Fleet Advisor provided this recommendation.</p>"
+        },
+        "EngineName":{
+          "shape":"String",
+          "documentation":"<p>The name of the target engine. Valid values include <code>\"rds-aurora-mysql\"</code>, <code>\"rds-aurora-postgresql\"</code>, <code>\"rds-mysql\"</code>, <code>\"rds-oracle\"</code>, <code>\"rds-sql-server\"</code>, and <code>\"rds-postgresql\"</code>.</p>"
+        },
+        "CreatedDate":{
+          "shape":"String",
+          "documentation":"<p>The date when Fleet Advisor created the target engine recommendation.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the target engine recommendation. Valid values include <code>\"alternate\"</code>, <code>\"in-progress\"</code>, <code>\"not-viable\"</code>, and <code>\"recommended\"</code>.</p>"
+        },
+        "Preferred":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates that this target is the rightsized migration destination.</p>"
+        },
+        "Settings":{
+          "shape":"RecommendationSettings",
+          "documentation":"<p>The settings in JSON format for the preferred target engine parameters. These parameters include capacity, resource utilization, and the usage type (production, development, or testing).</p>"
+        },
+        "Data":{
+          "shape":"RecommendationData",
+          "documentation":"<p>The recommendation of a target engine for the specified source database.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes a recommendation of a target engine.</p> <p>A <i>recommendation</i> is a set of possible Amazon Web Services target engines that you can choose to migrate your source on-premises database. In this set, Fleet Advisor suggests a single target engine as the right sized migration destination. To determine this rightsized migration destination, Fleet Advisor uses the inventory metadata and metrics from data collector. You can use recommendations before the start of migration to save costs and reduce risks.</p> <p>With recommendations, you can explore different target options and compare metrics, so you can make an informed decision when you choose the migration target.</p>"
+    },
+    "RecommendationData":{
+      "type":"structure",
+      "members":{
+        "RdsEngine":{
+          "shape":"RdsRecommendation",
+          "documentation":"<p>The recommendation of a target Amazon RDS database engine.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the target engine for the specified source database.</p>"
+    },
+    "RecommendationList":{
+      "type":"list",
+      "member":{"shape":"Recommendation"}
+    },
+    "RecommendationSettings":{
+      "type":"structure",
+      "required":[
+        "InstanceSizingType",
+        "WorkloadType"
+      ],
+      "members":{
+        "InstanceSizingType":{
+          "shape":"String",
+          "documentation":"<p>The size of your target instance. Fleet Advisor calculates this value based on your data collection type, such as total capacity and resource utilization. Valid values include <code>\"total-capacity\"</code> and <code>\"utilization\"</code>.</p>"
+        },
+        "WorkloadType":{
+          "shape":"String",
+          "documentation":"<p>The deployment option for your target engine. For production databases, Fleet Advisor chooses Multi-AZ deployment. For development or test databases, Fleet Advisor chooses Single-AZ deployment. Valid values include <code>\"development\"</code> and <code>\"production\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the required target engine settings.</p>"
     },
     "RedisAuthTypeValue":{
       "type":"string",
@@ -5151,7 +5490,10 @@
     },
     "ReleaseStatusValues":{
       "type":"string",
-      "enum":["beta"]
+      "enum":[
+        "beta",
+        "prod"
+      ]
     },
     "ReloadOptionValue":{
       "type":"string",
@@ -5495,7 +5837,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12 “</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
         },
         "RecoveryCheckpoint":{
           "shape":"String",
@@ -6094,6 +6436,45 @@
         "ssl-encryption"
       ]
     },
+    "StartRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseId",
+        "Settings"
+      ],
+      "members":{
+        "DatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source database to analyze and provide recommendations for.</p>"
+        },
+        "Settings":{
+          "shape":"RecommendationSettings",
+          "documentation":"<p>The settings in JSON format that Fleet Advisor uses to determine target engine recommendations. These parameters include target instance sizing and availability and durability settings. For target instance sizing, Fleet Advisor supports the following two options: total capacity and resource utilization. For availability and durability, Fleet Advisor supports the following two options: production (Multi-AZ deployments) and Dev/Test (Single-AZ deployments).</p>"
+        }
+      }
+    },
+    "StartRecommendationsRequestEntry":{
+      "type":"structure",
+      "required":[
+        "DatabaseId",
+        "Settings"
+      ],
+      "members":{
+        "DatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source database.</p>"
+        },
+        "Settings":{
+          "shape":"RecommendationSettings",
+          "documentation":"<p>The required target engine settings.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the source database to analyze and provide target recommendations according to the specified requirements.</p>"
+    },
+    "StartRecommendationsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"StartRecommendationsRequestEntry"}
+    },
     "StartReplicationTaskAssessmentMessage":{
       "type":"structure",
       "required":["ReplicationTaskArn"],
@@ -6186,7 +6567,7 @@
         },
         "StartReplicationTaskType":{
           "shape":"StartReplicationTaskTypeValue",
-          "documentation":"<p>The type of replication task to start.</p> <p>When the migration type is <code>full-load</code> or <code>full-load-and-cdc</code>, the only valid value for the first run of the task is <code>start-replication</code>. You use <code>reload-target</code> to restart the task and <code>resume-processing</code> to resume the task.</p> <p>When the migration type is <code>cdc</code>, you use <code>start-replication</code> to start or restart the task, and <code>resume-processing</code> to resume the task. <code>reload-target</code> is not a valid value for a task with migration type of <code>cdc</code>.</p>"
+          "documentation":"<p>The type of replication task to start.</p> <p>When the migration type is <code>full-load</code> or <code>full-load-and-cdc</code>, the only valid value for the first run of the task is <code>start-replication</code>. This option will start the migration.</p> <p>You can also use <a>ReloadTables</a> to reload specific tables that failed during migration instead of restarting the task.</p> <p>The <code>resume-processing</code> option isn't applicable for a full-load task, because you can't resume partially loaded tables during the full load phase.</p> <p>For a <code>full-load-and-cdc</code> task, DMS migrates table data, and then applies data changes that occur on the source. To load all the tables again, and start capturing source changes, use <code>reload-target</code>. Otherwise use <code>resume-processing</code>, to replicate the changes from the last stop position.</p>"
         },
         "CdcStartTime":{
           "shape":"TStamp",
@@ -6198,7 +6579,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12 “</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
         }
       },
       "documentation":"<p/>"

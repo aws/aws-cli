@@ -143,7 +143,9 @@ class GetTokenCommand(BasicCommand):
             },
         }
 
-        output = self._session.get_config_variable('output')
+        output = parsed_globals.output
+        if output is None:
+            output = self._session.get_config_variable('output')
         formatter = get_formatter(output, parsed_globals)
         formatter.query = parsed_globals.query
 

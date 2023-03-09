@@ -13,7 +13,7 @@ from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir, update_metadata, save_to_zip
+from utils import run, tmp_dir, update_metadata, save_to_zip, remove_dist_info
 from install_deps import install_packages
 
 
@@ -50,6 +50,7 @@ def do_make_exe(workdir, exe_zipfile, ac_index):
                     distribution_source=DISTRIBUTION_SOURCE)
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
     copy_directory_contents_into(ASSETS_DIR, exe_dir)
+    remove_dist_info(workdir)
     save_to_zip(workdir, exe_zipfile)
 
 

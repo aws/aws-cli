@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import shlex
+import glob
 import json
 import shutil
 import subprocess
@@ -225,6 +226,10 @@ class Utils:
 
     def rmtree(self, path: str) -> None:
         shutil.rmtree(path)
+
+    def glob(self, pattern: str, root: str, recursive=True):
+        with cd(root):
+            return glob.glob(pattern, recursive=recursive)
 
     def run(self, args: List[str], **kwargs: Dict[str, Any]):
         return subprocess.run(args, **kwargs)

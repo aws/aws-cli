@@ -88,6 +88,13 @@ class BaseArtifactTest:
             "dist",
             "install",
         }
+        dist_dir = aws_dir / "dist"
+        dist_info_files = set(
+            f for f in os.listdir(dist_dir)
+            if '.dist-info' in f
+        )
+        assert dist_info_files == set(), \
+            f"Expected no dist-info files, found: {dist_info_files}"
 
         aws_exe = aws_dir / "dist" / "aws"
         self.assert_version_string_is_correct(aws_exe, "exe")

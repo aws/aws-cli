@@ -7,6 +7,7 @@ import sys
 import subprocess
 import tempfile
 import zipfile
+import glob
 
 class BadRCError(Exception):
     pass
@@ -90,6 +91,13 @@ def update_metadata(dirname, **kwargs):
         metadata[key] = value
     with open(metadata_file, 'w') as f:
         json.dump(metadata, f)
+
+
+def remove_dist_info(dirname):
+    with cd(dirname):
+        for distinfo in glob.glob("**/*.dist-info", recursive=True):
+            path = os.path.join(dirname, distinfo)
+            shutil.rmtree(path)
 
 
 def save_to_zip(dirname, zipfile_name):

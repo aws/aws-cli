@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.27.88
+=======
+
+* api-change:``codeartifact``: This release introduces the generic package format, a mechanism for storing arbitrary binary assets. It also adds a new API, PublishPackageVersion, to allow for publishing generic packages.
+* api-change:``connect``: This release adds a new API, GetMetricDataV2, which returns metric data for Amazon Connect.
+* api-change:``evidently``: Updated entity override documentation
+* api-change:``networkmanager``: This update provides example usage for TransitGatewayRouteTableArn.
+* api-change:``quicksight``: This release has two changes: add state persistence feature for embedded dashboard and console in GenerateEmbedUrlForRegisteredUser API; add properties for hidden collapsed row dimensions in PivotTableOptions.
+* api-change:``redshift-data``: Added support for Redshift Serverless workgroup-arn wherever the WorkgroupName parameter is available.
+* api-change:``sagemaker``: Amazon SageMaker Inference now allows SSM access to customer's model container by setting the "EnableSSMAccess" parameter for a ProductionVariant in CreateEndpointConfig API.
+* api-change:``servicediscovery``: Updated all AWS Cloud Map APIs to provide consistent throttling exception (RequestLimitExceeded)
+* api-change:``sesv2``: This release introduces a new recommendation in Virtual Deliverability Manager Advisor, which detects missing or misconfigured Brand Indicator for Message Identification (BIMI) DNS records for customer sending identities.
+
+
 1.27.87
 =======
 

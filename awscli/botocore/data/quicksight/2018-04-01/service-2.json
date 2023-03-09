@@ -685,7 +685,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the Amazon QuickSight user that is associated with the identity of the Identity and Access Management (IAM) user or role that's making the call. The IAM user isn't deleted as a result of this call. </p>"
+      "documentation":"<p>Deletes the Amazon QuickSight user that is associated with the identity of the IAM user or role that's making the call. The IAM user isn't deleted as a result of this call. </p>"
     },
     "DeleteUserByPrincipalId":{
       "name":"DeleteUserByPrincipalId",
@@ -2388,7 +2388,7 @@
           "documentation":"<p>The Amazon Web Services request ID for this request.</p>"
         }
       },
-      "documentation":"<p>You don't have access to this item. The provided credentials couldn't be validated. You might not be authorized to carry out the request. Make sure that your account is authorized to use the Amazon QuickSight service, that your policies have the correct permissions, and that you are using the correct access keys.</p>",
+      "documentation":"<p>You don't have access to this item. The provided credentials couldn't be validated. You might not be authorized to carry out the request. Make sure that your account is authorized to use the Amazon QuickSight service, that your policies have the correct permissions, and that you are using the correct credentials.</p>",
       "error":{"httpStatusCode":401},
       "exception":true
     },
@@ -2678,7 +2678,7 @@
         },
         "ViolatedEntities":{
           "shape":"EntityList",
-          "documentation":"<p/>"
+          "documentation":"<p>Lists the violated entities that caused the analysis error</p>"
         }
       },
       "documentation":"<p>Analysis error.</p>"
@@ -12562,7 +12562,7 @@
         },
         "UserArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon QuickSight user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any type of Amazon QuickSight users in your account (readers, authors, or admins). They need to be authenticated as one of the following:</p> <ol> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>Identity and Access Management (IAM) users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation</p> </li> </ol> <p>Omit this parameter for users in the third group, IAM users and IAM role-based sessions.</p>",
+          "documentation":"<p>The Amazon QuickSight user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any type of Amazon QuickSight users in your account (readers, authors, or admins). They need to be authenticated as one of the following:</p> <ol> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>IAM users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation</p> </li> </ol> <p>Omit this parameter for users in the third group, IAM users and IAM role-based sessions.</p>",
           "location":"querystring",
           "locationName":"user-arn"
         }
@@ -17431,6 +17431,10 @@
         "RowAlternateColorOptions":{
           "shape":"RowAlternateColorOptions",
           "documentation":"<p>The row alternate color options (widget status, row alternate colors).</p>"
+        },
+        "CollapsedRowDimensionsVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility setting of a pivot table's collapsed row dimension fields. If the value of this structure is <code>HIDDEN</code>, all collapsed columns in a pivot table are automatically hidden. The default value is <code>VISIBLE</code>.</p>"
         }
       },
       "documentation":"<p>The table options for a pivot table visual.</p>"
@@ -18276,6 +18280,16 @@
         }
       }
     },
+    "RegisteredUserConsoleFeatureConfigurations":{
+      "type":"structure",
+      "members":{
+        "StatePersistence":{
+          "shape":"StatePersistenceConfigurations",
+          "documentation":"<p>The state persistence configurations of an embedded Amazon QuickSight console.</p>"
+        }
+      },
+      "documentation":"<p>The feature configurations of an embedded Amazon QuickSight console.</p>"
+    },
     "RegisteredUserDashboardEmbeddingConfiguration":{
       "type":"structure",
       "required":["InitialDashboardId"],
@@ -18283,9 +18297,23 @@
         "InitialDashboardId":{
           "shape":"ShortRestrictiveResourceId",
           "documentation":"<p>The dashboard ID for the dashboard that you want the user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders this dashboard if the user has permissions to view it.</p> <p>If the user does not have permission to view this dashboard, they see a permissions error message.</p>"
+        },
+        "FeatureConfigurations":{
+          "shape":"RegisteredUserDashboardFeatureConfigurations",
+          "documentation":"<p>The feature configurations of an embbedded Amazon QuickSight dashboard.</p>"
         }
       },
       "documentation":"<p>Information about the dashboard you want to embed.</p>"
+    },
+    "RegisteredUserDashboardFeatureConfigurations":{
+      "type":"structure",
+      "members":{
+        "StatePersistence":{
+          "shape":"StatePersistenceConfigurations",
+          "documentation":"<p>The state persistence settings of an embedded dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
     },
     "RegisteredUserDashboardVisualEmbeddingConfiguration":{
       "type":"structure",
@@ -18336,6 +18364,10 @@
         "InitialPath":{
           "shape":"EntryPath",
           "documentation":"<p>The initial URL path for the Amazon QuickSight console. <code>InitialPath</code> is required.</p> <p>The entry point URL is constrained to the following paths:</p> <ul> <li> <p> <code>/start</code> </p> </li> <li> <p> <code>/start/analyses</code> </p> </li> <li> <p> <code>/start/dashboards</code> </p> </li> <li> <p> <code>/start/favorites</code> </p> </li> <li> <p> <code>/dashboards/DashboardId</code>. <i>DashboardId</i> is the actual ID key from the Amazon QuickSight console URL of the dashboard.</p> </li> <li> <p> <code>/analyses/AnalysisId</code>. <i>AnalysisId</i> is the actual ID key from the Amazon QuickSight console URL of the analysis.</p> </li> </ul>"
+        },
+        "FeatureConfigurations":{
+          "shape":"RegisteredUserConsoleFeatureConfigurations",
+          "documentation":"<p>The embedding configuration of an embedded Amazon QuickSight console.</p>"
         }
       },
       "documentation":"<p>Information about the Amazon QuickSight console that you want to embed.</p>"
@@ -20232,6 +20264,17 @@
         }
       },
       "documentation":"<p>Secure Socket Layer (SSL) properties that apply when Amazon QuickSight connects to your underlying data source.</p>"
+    },
+    "StatePersistenceConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if a Amazon QuickSight dashboard's state persistence settings are turned on or off.</p>"
+        }
+      },
+      "documentation":"<p>The state perssitence configuration of an embedded dashboard.</p>"
     },
     "Status":{
       "type":"string",
@@ -22517,7 +22560,7 @@
         },
         "DefaultNamespace":{
           "shape":"Namespace",
-          "documentation":"<p>The default namespace for this Amazon Web Services account. Currently, the default is <code>default</code>. Identity and Access Management (IAM) users that register for the first time with Amazon QuickSight provide an email address that becomes associated with the default namespace. </p>"
+          "documentation":"<p>The default namespace for this Amazon Web Services account. Currently, the default is <code>default</code>. IAM users that register for the first time with Amazon QuickSight provide an email address that becomes associated with the default namespace. </p>"
         },
         "NotificationEmail":{
           "shape":"String",
@@ -23903,7 +23946,7 @@
         },
         "Active":{
           "shape":"Boolean",
-          "documentation":"<p>The active status of user. When you create an Amazon QuickSight user that’s not an IAM user or an Active Directory user, that user is inactive until they sign in and provide a password.</p>"
+          "documentation":"<p>The active status of user. When you create an Amazon QuickSight user that's not an IAM user or an Active Directory user, that user is inactive until they sign in and provide a password.</p>"
         },
         "PrincipalId":{
           "shape":"String",

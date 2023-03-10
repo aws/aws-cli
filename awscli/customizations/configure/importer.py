@@ -160,9 +160,6 @@ class CSVCredentialParser(object):
             raise CredentialParserError(self._EMPTY_CSV)
 
         lines = csv.splitlines()
-        # Remove the BOM if it exists
-        if lines[0].startswith(u'\ufeff'):
-            lines[0] = lines[0][1:]
         parsed_headers = self._parse_csv_headers(lines[0])
         header_indices = self._extract_expected_header_indices(parsed_headers)
         return self._parse_csv_rows(lines[1:], header_indices)

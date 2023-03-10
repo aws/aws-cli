@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.11.2
+======
+
+* api-change:``evidently``: Updated entity override documentation
+* api-change:``quicksight``: This release has two changes: add state persistence feature for embedded dashboard and console in GenerateEmbedUrlForRegisteredUser API; add properties for hidden collapsed row dimensions in PivotTableOptions.
+* api-change:``athena``: A new field SubstatementType is added to GetQueryExecution API, so customers have an error free way to detect the query type and interpret the result.
+* api-change:``mediapackage-vod``: This release provides the date and time VOD resources were created.
+* api-change:``connect``: This release adds a new API, GetMetricDataV2, which returns metric data for Amazon Connect.
+* api-change:``route53resolver``: Add dual-stack and IPv6 support for Route 53 Resolver Endpoint,Add IPv6 target IP in Route 53 Resolver Forwarding Rule
+* api-change:``sesv2``: This release introduces a new recommendation in Virtual Deliverability Manager Advisor, which detects missing or misconfigured Brand Indicator for Message Identification (BIMI) DNS records for customer sending identities.
+* api-change:``redshift-data``: Added support for Redshift Serverless workgroup-arn wherever the WorkgroupName parameter is available.
+* api-change:``networkmanager``: This update provides example usage for TransitGatewayRouteTableArn.
+* api-change:``ec2``: Introducing Amazon EC2 C7g, M7g and R7g instances, powered by the latest generation AWS Graviton3 processors and deliver up to 25% better performance over Graviton2-based instances.
+* api-change:``lakeformation``: This release adds two new API support "GetDataCellsFiler" and "UpdateDataCellsFilter", and also updates the corresponding documentation.
+* api-change:``codeartifact``: This release introduces the generic package format, a mechanism for storing arbitrary binary assets. It also adds a new API, PublishPackageVersion, to allow for publishing generic packages.
+* api-change:``dynamodb``: Adds deletion protection support to DynamoDB tables. Tables with deletion protection enabled cannot be deleted. Deletion protection is disabled by default, can be enabled via the CreateTable or UpdateTable APIs, and is visible in TableDescription. This setting is not replicated for Global Tables.
+* api-change:``sagemaker``: Amazon SageMaker Inference now allows SSM access to customer's model container by setting the "EnableSSMAccess" parameter for a ProductionVariant in CreateEndpointConfig API.
+* api-change:``mediapackage``: This release provides the date and time live resources were created.
+* api-change:``sagemaker``: There needs to be a user identity to specify the SageMaker user who perform each action regarding the entity. However, these is a not a unified concept of user identity across SageMaker service that could be used today.
+* api-change:``servicediscovery``: Updated all AWS Cloud Map APIs to provide consistent throttling exception (RequestLimitExceeded)
+
+
 2.11.1
 ======
 

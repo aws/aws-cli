@@ -470,9 +470,10 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
+      "documentation":"<p>Retrieves the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
     },
     "GetResolverDnssecConfig":{
       "name":"GetResolverDnssecConfig",
@@ -604,7 +605,8 @@
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"UnknownResourceException"},
-        {"shape":"InternalServiceErrorException"}
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about the Resolver rule policy for a specified rule. A Resolver rule policy includes the rule that you want to share with another account, the account that you want to share the rule with, and the Resolver operations that you want to allow the account to use. </p>"
     },
@@ -739,9 +741,10 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the Resolver configurations that you have defined. Route 53 Resolver uses the configurations to manage DNS resolution behavior for your VPCs.</p>"
+      "documentation":"<p>Retrieves the Resolver configurations that you have defined. Route 53 Resolver uses the configurations to manage DNS resolution behavior for your VPCs.</p>"
     },
     "ListResolverDnssecConfigs":{
       "name":"ListResolverDnssecConfigs",
@@ -930,7 +933,8 @@
         {"shape":"InvalidPolicyDocument"},
         {"shape":"InvalidParameterException"},
         {"shape":"UnknownResourceException"},
-        {"shape":"InternalServiceErrorException"}
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Specifies an Amazon Web Services rule that you want to share with another account, the account that you want to share the rule with, and the operations that you want the account to be able to perform on the rule.</p>"
     },
@@ -1058,9 +1062,10 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
+      "documentation":"<p>Updates the behavior configuration of Route 53 Resolver behavior for a single VPC from Amazon Virtual Private Cloud.</p>"
     },
     "UpdateResolverDnssecConfig":{
       "name":"UpdateResolverDnssecConfig",
@@ -1095,7 +1100,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the name of an inbound or an outbound Resolver endpoint. </p>"
+      "documentation":"<p>Updates the name, or enpoint type for an inbound or an outbound Resolver endpoint. You can only update between IPV4 and DUALSTACK, IPV6 endpoint type can't be updated to other type. </p>"
     },
     "UpdateResolverRule":{
       "name":"UpdateResolverRule",
@@ -1282,7 +1287,8 @@
       "type":"string",
       "enum":[
         "ENABLE",
-        "DISABLE"
+        "DISABLE",
+        "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
     "BlockOverrideDnsType":{
@@ -1313,7 +1319,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The requested state transition isn't valid. For example, you can't delete a firewall domain list if it is in the process of being deleted, or you can't import domains into a domain list that is in the process of being deleted.</p>",
       "exception":true
     },
     "Count":{"type":"integer"},
@@ -1481,6 +1487,11 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tag keys and values that you want to associate with the endpoint.</p>",
+          "box":true
+        },
+        "ResolverEndpointType":{
+          "shape":"ResolverEndpointType",
+          "documentation":"<p> For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This endpoint type is applied to all IP addresses. </p>",
           "box":true
         }
       }
@@ -1989,7 +2000,8 @@
       "type":"string",
       "enum":[
         "ENABLED",
-        "DISABLED"
+        "DISABLED",
+        "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
     "FirewallRule":{
@@ -2326,7 +2338,7 @@
       "members":{
         "ResolverConfig":{
           "shape":"ResolverConfig",
-          "documentation":"<p>Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the <code>GetResolverConfig</code> request.</p>"
+          "documentation":"<p>Information about the behavior configuration of Route 53 Resolver behavior for the VPC you specified in the <code>GetResolverConfig</code> request.</p>"
         }
       }
     },
@@ -2517,7 +2529,7 @@
         },
         "Status":{
           "shape":"FirewallDomainListStatus",
-          "documentation":"<p> </p>"
+          "documentation":"<p>Status of the import request.</p>"
         },
         "StatusMessage":{
           "shape":"StatusMessage",
@@ -2594,7 +2606,12 @@
         },
         "Ip":{
           "shape":"Ip",
-          "documentation":"<p>The IP address that you want to use for DNS queries.</p>",
+          "documentation":"<p>The IPv4 address that you want to use for DNS queries.</p>",
+          "box":true
+        },
+        "Ipv6":{
+          "shape":"Ipv6",
+          "documentation":"<p> The IPv6 address that you want to use for DNS queries. </p>",
           "box":true
         }
       },
@@ -2613,7 +2630,11 @@
         },
         "Ip":{
           "shape":"Ip",
-          "documentation":"<p>One IP address that the Resolver endpoint uses for DNS queries.</p>"
+          "documentation":"<p>One IPv4 address that the Resolver endpoint uses for DNS queries.</p>"
+        },
+        "Ipv6":{
+          "shape":"Ipv6",
+          "documentation":"<p> One IPv6 address that the Resolver endpoint uses for DNS queries. </p>"
         },
         "Status":{
           "shape":"IpAddressStatus",
@@ -2646,7 +2667,8 @@
         "DETACHING",
         "FAILED_RESOURCE_GONE",
         "DELETING",
-        "DELETE_FAILED_FAS_EXPIRED"
+        "DELETE_FAILED_FAS_EXPIRED",
+        "UPDATING"
       ]
     },
     "IpAddressUpdate":{
@@ -2664,7 +2686,12 @@
         },
         "Ip":{
           "shape":"Ip",
-          "documentation":"<p>The new IP address.</p>",
+          "documentation":"<p>The new IPv4 address.</p>",
+          "box":true
+        },
+        "Ipv6":{
+          "shape":"Ipv6",
+          "documentation":"<p> The new IPv6 address. </p>",
           "box":true
         }
       },
@@ -2673,12 +2700,17 @@
     "IpAddressesRequest":{
       "type":"list",
       "member":{"shape":"IpAddressRequest"},
-      "max":10,
+      "max":20,
       "min":1
     },
     "IpAddressesResponse":{
       "type":"list",
       "member":{"shape":"IpAddressResponse"}
+    },
+    "Ipv6":{
+      "type":"string",
+      "max":39,
+      "min":7
     },
     "LimitExceededException":{
       "type":"structure",
@@ -2935,7 +2967,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <code>ListResolverConfigs</code> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>"
+          "documentation":"<p>If a response includes the last of the Resolver configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <code>ListResolverConfigs</code> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>"
         },
         "ResolverConfigs":{
           "shape":"ResolverConfigList",
@@ -3362,7 +3394,9 @@
         "ENABLING",
         "ENABLED",
         "DISABLING",
-        "DISABLED"
+        "DISABLED",
+        "UPDATING_TO_USE_LOCAL_RESOURCE_SETTING",
+        "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
     "ResolverConfig":{
@@ -3382,7 +3416,7 @@
         },
         "AutodefinedReverse":{
           "shape":"ResolverAutodefinedReverseStatus",
-          "documentation":"<p> The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:</p> <p> Status of the rules generated by VPCs based on CIDR/Region for reverse DNS resolution. The status can be one of following:</p> <ul> <li> <p> <b>ENABLING:</b> Autodefined rules for reverse DNS lookups are being enabled but are not complete.</p> </li> <li> <p> <b>ENABLED:</b> Autodefined rules for reverse DNS lookups are enabled.</p> </li> <li> <p> <b>DISABLING:</b> Autodefined rules for reverse DNS lookups are being disabled but are not complete.</p> </li> <li> <p> <b>DISABLED:</b> Autodefined rules for reverse DNS lookups are disabled.</p> </li> </ul>"
+          "documentation":"<p> The status of whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. The status can be one of following:</p> <ul> <li> <p> <b>ENABLING:</b> Autodefined rules for reverse DNS lookups are being enabled but are not complete.</p> </li> <li> <p> <b>ENABLED:</b> Autodefined rules for reverse DNS lookups are enabled.</p> </li> <li> <p> <b>DISABLING:</b> Autodefined rules for reverse DNS lookups are being disabled but are not complete.</p> </li> <li> <p> <b>DISABLED:</b> Autodefined rules for reverse DNS lookups are disabled.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A complex type that contains information about a Resolver configuration for a VPC.</p>"
@@ -3397,7 +3431,9 @@
         "ENABLING",
         "ENABLED",
         "DISABLING",
-        "DISABLED"
+        "DISABLED",
+        "UPDATING_TO_USE_LOCAL_RESOURCE_SETTING",
+        "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
     "ResolverDnssecConfig":{
@@ -3476,9 +3512,13 @@
         "ModificationTime":{
           "shape":"Rfc3339TimeString",
           "documentation":"<p>The date and time that the endpoint was last modified, in Unix time format and Coordinated Universal Time (UTC).</p>"
+        },
+        "ResolverEndpointType":{
+          "shape":"ResolverEndpointType",
+          "documentation":"<p> The Resolver endpoint IP address type. </p>"
         }
       },
-      "documentation":"<p>In the response to a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html\">CreateResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html\">DeleteResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html\">ListResolverEndpoints</a>, or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a> request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.</p>"
+      "documentation":"<p>In the response to a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html\">CreateResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html\">DeleteResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>, Updates the name, or ResolverEndpointType for an endpoint, or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a> request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.</p>"
     },
     "ResolverEndpointDirection":{
       "type":"string",
@@ -3496,6 +3536,14 @@
         "AUTO_RECOVERING",
         "ACTION_NEEDED",
         "DELETING"
+      ]
+    },
+    "ResolverEndpointType":{
+      "type":"string",
+      "enum":[
+        "IPV6",
+        "IPV4",
+        "DUALSTACK"
       ]
     },
     "ResolverEndpoints":{
@@ -3755,7 +3803,7 @@
     },
     "ResolverRulePolicy":{
       "type":"string",
-      "max":5000
+      "max":30000
     },
     "ResolverRuleStatus":{
       "type":"string",
@@ -3937,15 +3985,20 @@
     },
     "TargetAddress":{
       "type":"structure",
-      "required":["Ip"],
       "members":{
         "Ip":{
           "shape":"Ip",
-          "documentation":"<p>One IP address that you want to forward DNS queries to. You can specify only IPv4 addresses.</p>"
+          "documentation":"<p>One IPv4 address that you want to forward DNS queries to.</p>",
+          "box":true
         },
         "Port":{
           "shape":"Port",
           "documentation":"<p>The port at <code>Ip</code> that you want to forward DNS queries to.</p>",
+          "box":true
+        },
+        "Ipv6":{
+          "shape":"Ipv6",
+          "documentation":"<p> One IPv6 address that you want to forward DNS queries to. </p>",
           "box":true
         }
       },
@@ -4039,7 +4092,7 @@
         },
         "Domains":{
           "shape":"FirewallDomains",
-          "documentation":"<p>A list of domains to use in the update operation.</p> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>"
+          "documentation":"<p>A list of domains to use in the update operation.</p> <important> <p>There is a limit of 1000 domains per request.</p> </important> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>"
         }
       }
     },
@@ -4056,7 +4109,7 @@
         },
         "Status":{
           "shape":"FirewallDomainListStatus",
-          "documentation":"<p> </p>"
+          "documentation":"<p>Status of the <code>UpdateFirewallDomains</code> request.</p>"
         },
         "StatusMessage":{
           "shape":"StatusMessage",
@@ -4159,6 +4212,30 @@
         }
       }
     },
+    "UpdateIpAddress":{
+      "type":"structure",
+      "required":[
+        "IpId",
+        "Ipv6"
+      ],
+      "members":{
+        "IpId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID of the IP address, specified by the <code>ResolverEndpointId</code>. </p>"
+        },
+        "Ipv6":{
+          "shape":"Ipv6",
+          "documentation":"<p> The IPv6 address that you want to use for DNS queries. </p>"
+        }
+      },
+      "documentation":"<p> Provides information about the IP address type in response to <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a>. </p>"
+    },
+    "UpdateIpAddresses":{
+      "type":"list",
+      "member":{"shape":"UpdateIpAddress"},
+      "max":50,
+      "min":0
+    },
     "UpdateResolverConfigRequest":{
       "type":"structure",
       "required":[
@@ -4172,7 +4249,7 @@
         },
         "AutodefinedReverseFlag":{
           "shape":"AutodefinedReverseFlag",
-          "documentation":"<p>Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 guide</i>.</p> <note> <p>It can take some time for the status change to be completed.</p> </note> <p/>"
+          "documentation":"<p>Indicates whether or not the Resolver will create autodefined rules for reverse DNS lookups. This is enabled by default. Disabling this option will also affect EC2-Classic instances using ClassicLink. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html\">ClassicLink</a> in the <i>Amazon EC2 guide</i>.</p> <important> <p>We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 guide</i> and the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>.</p> </important> <note> <p>It can take some time for the status change to be completed.</p> </note> <p/>"
         }
       }
     },
@@ -4223,6 +4300,16 @@
           "shape":"Name",
           "documentation":"<p>The name of the Resolver endpoint that you want to update.</p>",
           "box":true
+        },
+        "ResolverEndpointType":{
+          "shape":"ResolverEndpointType",
+          "documentation":"<p> Specifies the endpoint type for what type of IP address the endpoint uses to forward DNS queries. </p>",
+          "box":true
+        },
+        "UpdateIpAddresses":{
+          "shape":"UpdateIpAddresses",
+          "documentation":"<p> Updates the Resolver endpoint type to IpV4, Ipv6, or dual-stack. </p>",
+          "box":true
         }
       }
     },
@@ -4265,7 +4352,8 @@
       "type":"string",
       "enum":[
         "ENABLE",
-        "DISABLE"
+        "DISABLE",
+        "USE_LOCAL_RESOURCE_SETTING"
       ]
     },
     "ValidationException":{
@@ -4273,7 +4361,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>You have provided an invalid command. Supported values are <code>ADD</code>, <code>REMOVE</code>, or <code>REPLACE</code> a domain.</p>",
       "exception":true
     }
   },

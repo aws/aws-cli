@@ -2915,7 +2915,7 @@
         },
         "MatchingEventTypes":{
           "shape":"EventTypes",
-          "documentation":"<p>The types of events that Amazon SES sends to the specified event destinations.</p>"
+          "documentation":"<p>The types of events that Amazon SES sends to the specified event destinations.</p> <ul> <li> <p> <code>SEND</code> - The send request was successful and SES will attempt to deliver the message to the recipient’s mail server. (If account-level or global suppression is being used, SES will still count it as a send, but delivery is suppressed.)</p> </li> <li> <p> <code>REJECT</code> - SES accepted the email, but determined that it contained a virus and didn’t attempt to deliver it to the recipient’s mail server.</p> </li> <li> <p> <code>BOUNCE</code> - (<i>Hard bounce</i>) The recipient's mail server permanently rejected the email. (<i>Soft bounces</i> are only included when SES fails to deliver the email after retrying for a period of time.)</p> </li> <li> <p> <code>COMPLAINT</code> - The email was successfully delivered to the recipient’s mail server, but the recipient marked it as spam.</p> </li> <li> <p> <code>DELIVERY</code> - SES successfully delivered the email to the recipient's mail server.</p> </li> <li> <p> <code>OPEN</code> - The recipient received the message and opened it in their email client.</p> </li> <li> <p> <code>CLICK</code> - The recipient clicked one or more links in the email.</p> </li> <li> <p> <code>RENDERING_FAILURE</code> - The email wasn't sent because of a template rendering issue. This event type can occur when template data is missing, or when there is a mismatch between template parameters and data. (This event type only occurs when you send email using the <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_SendTemplatedEmail.html\"> <code>SendTemplatedEmail</code> </a> or <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_SendBulkTemplatedEmail.html\"> <code>SendBulkTemplatedEmail</code> </a> API operations.) </p> </li> <li> <p> <code>DELIVERY_DELAY</code> - The email couldn't be delivered to the recipient’s mail server because a temporary issue occurred. Delivery delays can occur, for example, when the recipient's inbox is full, or when the receiving email server experiences a transient issue.</p> </li> <li> <p> <code>SUBSCRIPTION</code> - The email was successfully delivered, but the recipient updated their subscription preferences by clicking on an <i>unsubscribe</i> link as part of your <a href=\"https://docs.aws.amazon.com/ses/latest/dg/sending-email-subscription-management.html\">subscription management</a>.</p> </li> </ul>"
         },
         "KinesisFirehoseDestination":{
           "shape":"KinesisFirehoseDestination",
@@ -4375,7 +4375,7 @@
     },
     "ListRecommendationsFilterKey":{
       "type":"string",
-      "documentation":"<p>The <code>ListRecommendations</code> filter type. This can be one of the following:</p> <ul> <li> <p> <code>TYPE</code> – The recommendation type, with values like <code>DKIM</code>, <code>SPF</code> or <code>DMARC</code>.</p> </li> <li> <p> <code>IMPACT</code> – The recommendation impact, with values like <code>HIGH</code> or <code>LOW</code>.</p> </li> <li> <p> <code>STATUS</code> – The recommendation status, with values like <code>OPEN</code> or <code>FIXED</code>.</p> </li> <li> <p> <code>RESOURCE_ARN</code> – The resource affected by the recommendation, with values like <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> </li> </ul>",
+      "documentation":"<p>The <code>ListRecommendations</code> filter type. This can be one of the following:</p> <ul> <li> <p> <code>TYPE</code> – The recommendation type, with values like <code>DKIM</code>, <code>SPF</code>, <code>DMARC</code> or <code>BIMI</code>.</p> </li> <li> <p> <code>IMPACT</code> – The recommendation impact, with values like <code>HIGH</code> or <code>LOW</code>.</p> </li> <li> <p> <code>STATUS</code> – The recommendation status, with values like <code>OPEN</code> or <code>FIXED</code>.</p> </li> <li> <p> <code>RESOURCE_ARN</code> – The resource affected by the recommendation, with values like <code>arn:aws:ses:us-east-1:123456789012:identity/example.com</code>.</p> </li> </ul>",
       "enum":[
         "TYPE",
         "IMPACT",
@@ -5298,7 +5298,7 @@
         },
         "Type":{
           "shape":"RecommendationType",
-          "documentation":"<p>The recommendation type, with values like <code>DKIM</code>, <code>SPF</code> or <code>DMARC</code>.</p>"
+          "documentation":"<p>The recommendation type, with values like <code>DKIM</code>, <code>SPF</code>, <code>DMARC</code> or <code>BIMI</code>.</p>"
         },
         "Description":{
           "shape":"RecommendationDescription",
@@ -5343,7 +5343,8 @@
       "enum":[
         "DKIM",
         "DMARC",
-        "SPF"
+        "SPF",
+        "BIMI"
       ]
     },
     "RecommendationsList":{

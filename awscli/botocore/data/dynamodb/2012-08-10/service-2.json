@@ -1161,7 +1161,7 @@
           "documentation":"<p>The amount of time, in seconds, after a scale out activity completes before another scale out activity can start. While the cooldown period is in effect, the capacity that has been added by the previous scale out event that initiated the cooldown is calculated as part of the desired capacity for the next scale out. You should continuously (but not excessively) scale out.</p>"
         },
         "TargetValue":{
-          "shape":"Double",
+          "shape":"DoubleObject",
           "documentation":"<p>The target value for the metric. The range is 8.515920e-109 to 1.174271e+108 (Base 10) or 2e-360 to 2e360 (Base 2).</p>"
         }
       },
@@ -1184,7 +1184,7 @@
           "documentation":"<p>The amount of time, in seconds, after a scale out activity completes before another scale out activity can start. While the cooldown period is in effect, the capacity that has been added by the previous scale out event that initiated the cooldown is calculated as part of the desired capacity for the next scale out. You should continuously (but not excessively) scale out.</p>"
         },
         "TargetValue":{
-          "shape":"Double",
+          "shape":"DoubleObject",
           "documentation":"<p>The target value for the metric. The range is 8.515920e-109 to 1.174271e+108 (Base 10) or 2e-360 to 2e360 (Base 2).</p>"
         }
       },
@@ -1997,6 +1997,10 @@
         "TableClass":{
           "shape":"TableClass",
           "documentation":"<p>The table class of the new table. Valid values are <code>STANDARD</code> and <code>STANDARD_INFREQUENT_ACCESS</code>.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Indicates whether deletion protection is to be enabled (true) or disabled (false) on the table.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateTable</code> operation.</p>"
@@ -2227,6 +2231,7 @@
       },
       "documentation":"<p>Represents the output of a <code>DeleteTable</code> operation.</p>"
     },
+    "DeletionProtectionEnabled":{"type":"boolean"},
     "DescribeBackupInput":{
       "type":"structure",
       "required":["BackupArn"],
@@ -2524,7 +2529,7 @@
         "ENABLE_FAILED"
       ]
     },
-    "Double":{"type":"double"},
+    "DoubleObject":{"type":"double"},
     "DuplicateItemException":{
       "type":"structure",
       "members":{
@@ -3041,11 +3046,11 @@
           "documentation":"<p>Represents the provisioned throughput settings for the specified global secondary index.</p> <p>For current minimum and maximum provisioned throughput values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html\">Service, Account, and Table Quotas</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
         },
         "IndexSizeBytes":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The total size of the specified index, in bytes. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "ItemCount":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The number of items in the specified index. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "IndexArn":{
@@ -3355,7 +3360,7 @@
           "documentation":"<p> The time at which the creation of the table associated with this import task completed. </p>"
         },
         "ProcessedSizeBytes":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p> The total size of data processed from the source file, in Bytes. </p>"
         },
         "ProcessedItemCount":{
@@ -4002,11 +4007,11 @@
           "documentation":"<p>Represents attributes that are copied (projected) from the table into the global secondary index. These are in addition to the primary key attributes and index key attributes, which are automatically projected. </p>"
         },
         "IndexSizeBytes":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The total size of the specified index, in bytes. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "ItemCount":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The number of items in the specified index. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "IndexArn":{
@@ -4047,6 +4052,7 @@
       "member":{"shape":"LocalSecondaryIndexInfo"}
     },
     "Long":{"type":"long"},
+    "LongObject":{"type":"long"},
     "MapAttributeValue":{
       "type":"map",
       "key":{"shape":"AttributeName"},
@@ -5308,7 +5314,7 @@
           "documentation":"<p>ARN of the table for which backup was created. </p>"
         },
         "TableSizeBytes":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>Size of the table in bytes. Note that this is an approximate value.</p>"
         },
         "KeySchema":{
@@ -5506,11 +5512,11 @@
           "documentation":"<p>The provisioned throughput settings for the table, consisting of read and write capacity units, along with data about increases and decreases.</p>"
         },
         "TableSizeBytes":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The total size of the specified table, in bytes. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "ItemCount":{
-          "shape":"Long",
+          "shape":"LongObject",
           "documentation":"<p>The number of items in the specified table. DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
         },
         "TableArn":{
@@ -5568,6 +5574,10 @@
         "TableClassSummary":{
           "shape":"TableClassSummary",
           "documentation":"<p>Contains details of the table class.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Indicates whether deletion protection is enabled (true) or disabled (false) on the table.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -6196,6 +6206,10 @@
         "TableClass":{
           "shape":"TableClass",
           "documentation":"<p>The table class of the table to be updated. Valid values are <code>STANDARD</code> and <code>STANDARD_INFREQUENT_ACCESS</code>.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Indicates whether deletion protection is to be enabled (true) or disabled (false) on the table.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateTable</code> operation.</p>"

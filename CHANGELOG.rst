@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.90
+=======
+
+* bugfix:``codeartifact login``: Prevent AWS CodeArtifact login command from hanging unexpectedly.
+* api-change:``appintegrations``: Adds FileConfiguration to Amazon AppIntegrations CreateDataIntegration supporting scheduled downloading of third party files into Amazon Connect from sources such as Microsoft SharePoint.
+* api-change:``lakeformation``: This release updates the documentation regarding Get/Update DataCellsFilter
+* api-change:``s3control``: Added support for cross-account Multi-Region Access Points. Added support for S3 Replication for S3 on Outposts.
+* api-change:``tnb``: This release adds tagging support to the following Network Instance APIs : Instantiate, Update, Terminate.
+* api-change:``wisdom``: This release extends Wisdom CreateKnowledgeBase API to support SharePoint connector type by removing the @required trait for objectField
+
+
 1.27.89
 =======
 

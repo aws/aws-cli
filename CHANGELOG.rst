@@ -5024,6 +5024,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.91
+=======
+
+* api-change:``application-autoscaling``: Application Auto Scaling customers can now use mathematical functions to customize the metric used with Target Tracking policies within the policy configuration itself, saving the cost and effort of publishing the customizations as a separate metric.
+* api-change:``dataexchange``: This release enables data providers to license direct access to S3 objects encrypted with Customer Managed Keys (CMK) in AWS KMS through AWS Data Exchange. Subscribers can use these keys to decrypt, then use the encrypted S3 objects shared with them, without creating or managing copies.
+* api-change:``directconnect``: describe-direct-connect-gateway-associations includes a new status, updating, indicating that the association is currently in-process of updating.
+* api-change:``ec2``: This release adds a new DnsOptions key (PrivateDnsOnlyForInboundResolverEndpoint) to CreateVpcEndpoint and ModifyVpcEndpoint APIs.
+* api-change:``iam``: Documentation only updates to correct customer-reported issues
+* api-change:``keyspaces``: Adding support for client-side timestamps
+
+
+1.27.90
+=======
+
+* bugfix:``codeartifact login``: Prevent AWS CodeArtifact login command from hanging unexpectedly.
+* api-change:``appintegrations``: Adds FileConfiguration to Amazon AppIntegrations CreateDataIntegration supporting scheduled downloading of third party files into Amazon Connect from sources such as Microsoft SharePoint.
+* api-change:``lakeformation``: This release updates the documentation regarding Get/Update DataCellsFilter
+* api-change:``s3control``: Added support for cross-account Multi-Region Access Points. Added support for S3 Replication for S3 on Outposts.
+* api-change:``tnb``: This release adds tagging support to the following Network Instance APIs : Instantiate, Update, Terminate.
+* api-change:``wisdom``: This release extends Wisdom CreateKnowledgeBase API to support SharePoint connector type by removing the @required trait for objectField
+
+
 1.27.89
 =======
 

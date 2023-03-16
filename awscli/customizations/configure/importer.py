@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
+import codecs
 
-from awscli.compat import compat_open
 from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
@@ -115,6 +115,9 @@ class CSVCredentialParser(object):
         self.strict = strict
 
     def _format_header(self, header):
+        # Remove leading UTF BOM character if present
+        if header.startswith(codecs.BOM_UTF8.decode()):
+            header = header[1:]
         return header.lower().strip()
 
     def _parse_csv_headers(self, header):

@@ -161,7 +161,7 @@
         {"shape":"AccountNotFoundException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Notifies the subscriber when new data is written to the data lake for the sources that the subscriber consumes in Security Lake.</p>"
+      "documentation":"<p>Notifies the subscriber when new data is written to the data lake for the sources that the subscriber consumes in Security Lake. You can create only one subscriber notification per subscriber.</p>"
     },
     "DeleteAwsLogSource":{
       "name":"DeleteAwsLogSource",
@@ -237,7 +237,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"AccountNotFoundException"}
       ],
-      "documentation":"<p>Automatically deletes Amazon Security Lake to stop collecting security data. When you delete Amazon Security Lake from your account, Security Lake is disabled in all Regions. Also, this API automatically takes steps to remove the account from Security Lake . </p> <p>This operation disables security data collection from sources, deletes data stored, and stops making data accessible to subscribers. Security Lake also deletes all the existing settings and resources that it stores or maintains for your Amazon Web Services account in the current Region, including security log and event data. The <code>DeleteDatalake</code> operation does not delete the Amazon S3 bucket, which is owned by your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/disable-security-lake.html\">Amazon Security Lake User Guide</a>.</p>"
+      "documentation":"<p> <code>DeleteDatalakeAutoEnable</code> removes automatic enablement of configuration settings for new member accounts (but keeps settings for the delegated administrator) from Amazon Security Lake. You must run this API using credentials of the delegated administrator. When you run this API, new member accounts that are added after the organization enables Security Lake won't contribute to the data lake.</p>"
     },
     "DeleteDatalakeDelegatedAdmin":{
       "name":"DeleteDatalakeDelegatedAdmin",
@@ -566,7 +566,7 @@
         {"shape":"AccountNotFoundException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Creates a new subscription notification or adds the existing subscription notification setting for the specified subscription ID.</p>"
+      "documentation":"<p>Updates an existing notification method for the subscription (SQS or HTTPs endpoint) or switches the notification subscription endpoint for a subscriber.</p>"
     }
   },
   "shapes":{
@@ -574,6 +574,10 @@
       "type":"structure",
       "required":["message"],
       "members":{
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>A coded string to provide more information about the access denied exception. You can use the error code to check the exception type.</p>"
+        },
         "message":{"shape":"String"}
       },
       "documentation":"<p>You do not have sufficient access to perform this action. Access denied errors appear when Amazon Security Lake explicitly or implicitly denies an authorization request. An explicit denial occurs when a policy contains a Deny statement for the specific Amazon Web Services action. An implicit denial occurs when there is no applicable Deny statement and also no applicable Allow statement.</p>",
@@ -985,9 +989,17 @@
       "type":"structure",
       "required":["subscriptionId"],
       "members":{
+        "resourceShareArn":{
+          "shape":"ResourceShareArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) which uniquely defines the AWS RAM resource share. Before accepting the RAM resource share invitation, you can view details related to the RAM resource share.</p>"
+        },
+        "resourceShareName":{
+          "shape":"ResourceShareName",
+          "documentation":"<p>The name of the resource share.</p>"
+        },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) created by you to provide to the subscriber. For more information about ARNs and how to use them in policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM identifiers in the Identity and Access Management (IAM) User Guide</a>. .</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) created by you to provide to the subscriber. For more information about ARNs and how to use them in policies, see <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-management.html\">Amazon Security Lake User Guide</a>.</p>"
         },
         "s3BucketArn":{
           "shape":"S3BucketArn",
@@ -1025,7 +1037,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the EventBridge API destinations IAM role that you created.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the EventBridge API destinations IAM role that you created. For more information about ARNs and how to use them in policies, see <a href=\"https://docs.aws.amazon.com//security-lake/latest/userguide/subscriber-data-access.html\">Managing data access</a> and <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/security-iam-awsmanpol.html\">Amazon Web Services Managed Policies</a> in the Amazon Security Lake User Guide.</p>"
         },
         "subscriptionEndpoint":{
           "shape":"CreateSubscriptionNotificationConfigurationRequestSubscriptionEndpointString",
@@ -1033,7 +1045,7 @@
         },
         "subscriptionId":{
           "shape":"UUID",
-          "documentation":"<p>The subscription ID for the notification subscription/</p>",
+          "documentation":"<p>The subscription ID for the notification subscription.</p>",
           "location":"uri",
           "locationName":"subscriptionId"
         }
@@ -1119,7 +1131,7 @@
       "members":{
         "removeFromConfigurationForNewAccounts":{
           "shape":"AutoEnableNewRegionConfigurationList",
-          "documentation":"<p>Delete Amazon Security Lake with the specified configuration settings to stop ingesting security data for new accounts in Security Lake. </p>"
+          "documentation":"<p>Remove automatic enablement of configuration settings for new member accounts in Security Lake. </p>"
         }
       }
     },
@@ -1504,6 +1516,10 @@
         "tagsMap":{
           "shape":"TagsMap",
           "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value, both of which you define.</p>"
+        },
+        "updateStatus":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The status of the last <code>UpdateDatalake </code>or <code>DeleteDatalake</code> API request. </p>"
         }
       },
       "documentation":"<p>Provides details of Amazon Security Lake lake configuration object.</p>"
@@ -1512,6 +1528,20 @@
       "type":"map",
       "key":{"shape":"Region"},
       "value":{"shape":"LakeConfigurationResponse"}
+    },
+    "LastUpdateFailure":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The reason code for the failure of the last <code>UpdateDatalake</code> or <code>DeleteDatalake</code> API request.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the failure of the last <code>UpdateDatalake</code>or <code>DeleteDatalake</code> API request.</p>"
+        }
+      },
+      "documentation":"<p>The details of the last <code>UpdateDatalake</code> or <code>DeleteDatalake</code> API request which failed.</p>"
     },
     "ListDatalakeExceptionsRequest":{
       "type":"structure",
@@ -1741,6 +1771,11 @@
       },
       "exception":true
     },
+    "ResourceShareArn":{"type":"string"},
+    "ResourceShareName":{
+      "type":"string",
+      "pattern":"^LakeFormation(?:-V[0-9]+)-([a-zA-Z0-9]+)-([\\\\\\w\\-_:/.@=+]*)$"
+    },
     "RetentionSetting":{
       "type":"structure",
       "members":{
@@ -1889,6 +1924,14 @@
         "externalId":{
           "shape":"SafeString",
           "documentation":"<p>The external ID of the subscriber. The external ID lets the user that is assuming the role assert the circumstances in which they are operating. It also provides a way for the account owner to permit the role to be assumed only under specific circumstances.</p>"
+        },
+        "resourceShareArn":{
+          "shape":"ResourceShareArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) which uniquely defines the AWS RAM resource share. Before accepting the RAM resource share invitation, you can view details related to the RAM resource share.</p> <p>This field is available only for Lake Formation subscribers created after March 8, 2023.</p>"
+        },
+        "resourceShareName":{
+          "shape":"ResourceShareName",
+          "documentation":"<p>The name of the resource share.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -2063,6 +2106,24 @@
       "members":{
       }
     },
+    "UpdateStatus":{
+      "type":"structure",
+      "members":{
+        "lastUpdateFailure":{
+          "shape":"LastUpdateFailure",
+          "documentation":"<p>The details of the last <code>UpdateDatalake</code>or <code>DeleteDatalake</code> API request which failed.</p>"
+        },
+        "lastUpdateRequestId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID for the <code>UpdateDatalake</code> or <code>DeleteDatalake</code> API request.</p>"
+        },
+        "lastUpdateStatus":{
+          "shape":"settingsStatus",
+          "documentation":"<p>The status of the last <code>UpdateDatalake</code> or <code>DeleteDatalake</code> API request that was requested.</p>"
+        }
+      },
+      "documentation":"<p>The status of the last <code>UpdateDatalake</code> or <code>DeleteDatalake</code> API request. This is set to Completed after the configuration is updated, or removed if deletion of the data lake is successful.</p>"
+    },
     "UpdateSubscriberRequest":{
       "type":"structure",
       "required":[
@@ -2131,7 +2192,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) specifying the role of the subscriber. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) specifying the role of the subscriber. For more information about ARNs and how to use them in policies, see, see the <a href=\"https://docs.aws.amazon.com//security-lake/latest/userguide/subscriber-data-access.html\">Managing data access</a> and <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/security-iam-awsmanpol.html\">Amazon Web Services Managed Policies</a>in the Amazon Security Lake User Guide.</p>"
         },
         "subscriptionEndpoint":{
           "shape":"UpdateSubscriptionNotificationConfigurationRequestSubscriptionEndpointString",

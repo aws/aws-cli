@@ -87,7 +87,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates a filter using the specified finding criteria.</p>"
+      "documentation":"<p>Creates a filter using the specified finding criteria. The maximum number of saved filters per Amazon Web Services account per Region is 100. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_limits.html\">Quotas for GuardDuty</a>.</p>"
     },
     "CreateIPSet":{
       "name":"CreateIPSet",
@@ -1140,7 +1140,14 @@
         "DataSources":{
           "shape":"DataSourcesFreeTrial",
           "documentation":"<p>Describes the data source enabled for the GuardDuty member account.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"FreeTrialFeatureConfigurationsResults",
+          "documentation":"<p>A list of features enabled for the GuardDuty account.</p>",
+          "locationName":"features"
         }
       },
       "documentation":"<p>Provides details of the GuardDuty member account that uses a free trial service.</p>"
@@ -1203,6 +1210,11 @@
           "shape":"KubernetesApiCallAction",
           "documentation":"<p>Information about the Kubernetes API call action described in this finding.</p>",
           "locationName":"kubernetesApiCallAction"
+        },
+        "RdsLoginAttemptAction":{
+          "shape":"RdsLoginAttemptAction",
+          "documentation":"<p>Information about <code>RDS_LOGIN_ATTEMPT</code> action described in this finding.</p>",
+          "locationName":"rdsLoginAttemptAction"
         }
       },
       "documentation":"<p>Contains information about actions.</p>"
@@ -1616,12 +1628,19 @@
         "DataSources":{
           "shape":"DataSourceConfigurations",
           "documentation":"<p>Describes which data sources will be enabled for the detector.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
         },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags to be added to a new detector resource.</p>",
           "locationName":"tags"
+        },
+        "Features":{
+          "shape":"DetectorFeatureConfigurations",
+          "documentation":"<p>A list of features that will be configured for the detector.</p>",
+          "locationName":"features"
         }
       }
     },
@@ -1661,7 +1680,7 @@
         },
         "Description":{
           "shape":"FilterDescription",
-          "documentation":"<p>The description of the filter. Valid characters include alphanumeric characters, and special characters such as <code>-</code>, <code>.</code>, <code>:</code>, <code>{ }</code>, <code>[ ]</code>, <code>( )</code>, <code>/</code>, <code>\\t</code>, <code>\\n</code>, <code>\\x0B</code>, <code>\\f</code>, <code>\\r</code>, <code>_</code>, and whitespace.</p>",
+          "documentation":"<p>The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses (<code>{ }</code>, <code>[ ]</code>, and <code>( )</code>), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.</p>",
           "locationName":"description"
         },
         "Action":{
@@ -2350,6 +2369,18 @@
           "documentation":"<p>The ID of the detector to retrieve information about the delegated administrator from.</p>",
           "location":"uri",
           "locationName":"detectorId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>You can use this parameter to indicate the maximum number of items that you want in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill <code>nextToken</code> in the request with the value of <code>NextToken</code> from the previous response to continue listing data.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
         }
       }
     },
@@ -2373,7 +2404,19 @@
         "DataSources":{
           "shape":"OrganizationDataSourceConfigurationsResult",
           "documentation":"<p>Describes which data sources are enabled automatically for member accounts.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"OrganizationFeaturesConfigurationsResults",
+          "documentation":"<p>A list of features that are configured for this organization.</p>",
+          "locationName":"features"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -2486,6 +2529,72 @@
     "Destinations":{
       "type":"list",
       "member":{"shape":"Destination"}
+    },
+    "DetectorFeature":{
+      "type":"string",
+      "enum":[
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS"
+      ]
+    },
+    "DetectorFeatureConfiguration":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DetectorFeature",
+          "documentation":"<p>The name of the feature.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The status of the feature.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Contains information about a GuardDuty feature.</p>"
+    },
+    "DetectorFeatureConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DetectorFeatureResult",
+          "documentation":"<p>Indicates the name of the feature that can be enabled for the detector.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Indicates the status of the feature that is enabled for the detector.</p>",
+          "locationName":"status"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the feature object was updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>Contains information about a GuardDuty feature.</p>"
+    },
+    "DetectorFeatureConfigurations":{
+      "type":"list",
+      "member":{"shape":"DetectorFeatureConfiguration"}
+    },
+    "DetectorFeatureConfigurationsResults":{
+      "type":"list",
+      "member":{"shape":"DetectorFeatureConfigurationResult"}
+    },
+    "DetectorFeatureResult":{
+      "type":"string",
+      "enum":[
+        "FLOW_LOGS",
+        "CLOUD_TRAIL",
+        "DNS_LOGS",
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS"
+      ]
     },
     "DetectorId":{
       "type":"string",
@@ -2878,6 +2987,13 @@
       },
       "documentation":"<p>Contains information about the reason that the finding was generated.</p>"
     },
+    "FeatureStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Feedback":{
       "type":"string",
       "enum":[
@@ -3144,6 +3260,38 @@
       },
       "documentation":"<p>Contains information on the status of VPC flow logs as a data source.</p>"
     },
+    "FreeTrialFeatureConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"FreeTrialFeatureResult",
+          "documentation":"<p>The name of the feature for which the free trial is configured.</p>",
+          "locationName":"name"
+        },
+        "FreeTrialDaysRemaining":{
+          "shape":"Integer",
+          "documentation":"<p>The number of the remaining free trial days for the feature.</p>",
+          "locationName":"freeTrialDaysRemaining"
+        }
+      },
+      "documentation":"<p>Contains information about the free trial period for a feature.</p>"
+    },
+    "FreeTrialFeatureConfigurationsResults":{
+      "type":"list",
+      "member":{"shape":"FreeTrialFeatureConfigurationResult"}
+    },
+    "FreeTrialFeatureResult":{
+      "type":"string",
+      "enum":[
+        "FLOW_LOGS",
+        "CLOUD_TRAIL",
+        "DNS_LOGS",
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS"
+      ]
+    },
     "GeoLocation":{
       "type":"structure",
       "members":{
@@ -3230,12 +3378,19 @@
         "DataSources":{
           "shape":"DataSourceConfigurationsResult",
           "documentation":"<p>Describes which data sources are enabled for the detector.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
         },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the detector resource.</p>",
           "locationName":"tags"
+        },
+        "Features":{
+          "shape":"DetectorFeatureConfigurationsResults",
+          "documentation":"<p>Describes the features that have been enabled for the detector.</p>",
+          "locationName":"features"
         }
       }
     },
@@ -4567,6 +4722,36 @@
       "max":300,
       "min":1
     },
+    "LoginAttribute":{
+      "type":"structure",
+      "members":{
+        "User":{
+          "shape":"String",
+          "documentation":"<p>Indicates the user name which attempted to log in.</p>",
+          "locationName":"user"
+        },
+        "Application":{
+          "shape":"String",
+          "documentation":"<p>Indicates the application name used to attempt log in.</p>",
+          "locationName":"application"
+        },
+        "FailedLoginAttempts":{
+          "shape":"Integer",
+          "documentation":"<p>Represents the sum of failed (unsuccessful) login attempts made to establish a connection to the database instance.</p>",
+          "locationName":"failedLoginAttempts"
+        },
+        "SuccessfulLoginAttempts":{
+          "shape":"Integer",
+          "documentation":"<p>Represents the sum of successful connections (a correct combination of login attributes) made to the database instance by the actor.</p>",
+          "locationName":"successfulLoginAttempts"
+        }
+      },
+      "documentation":"<p>Information about the login attempts.</p>"
+    },
+    "LoginAttributes":{
+      "type":"list",
+      "member":{"shape":"LoginAttribute"}
+    },
     "Long":{"type":"long"},
     "LongValue":{"type":"long"},
     "MalwareProtectionConfiguration":{
@@ -4697,10 +4882,7 @@
     },
     "MemberDataSourceConfiguration":{
       "type":"structure",
-      "required":[
-        "AccountId",
-        "DataSources"
-      ],
+      "required":["AccountId"],
       "members":{
         "AccountId":{
           "shape":"AccountId",
@@ -4710,7 +4892,14 @@
         "DataSources":{
           "shape":"DataSourceConfigurationsResult",
           "documentation":"<p>Contains information on the status of data sources for the account.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"MemberFeaturesConfigurationsResults",
+          "documentation":"<p>Contains information about the status of the features for the member account.</p>",
+          "locationName":"features"
         }
       },
       "documentation":"<p>Contains information on which data sources are enabled for a member account.</p>"
@@ -4720,6 +4909,51 @@
       "member":{"shape":"MemberDataSourceConfiguration"},
       "max":50,
       "min":1
+    },
+    "MemberFeaturesConfiguration":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeature",
+          "documentation":"<p>The name of the feature.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The status of the feature.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Contains information about the features for the member account.</p>"
+    },
+    "MemberFeaturesConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeature",
+          "documentation":"<p>Indicates the name of the feature that is enabled for the detector.</p>",
+          "locationName":"name"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Indicates the status of the feature that is enabled for the detector.</p>",
+          "locationName":"status"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the feature object was updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>Contains information about the features for the member account.</p>"
+    },
+    "MemberFeaturesConfigurations":{
+      "type":"list",
+      "member":{"shape":"MemberFeaturesConfiguration"}
+    },
+    "MemberFeaturesConfigurationsResults":{
+      "type":"list",
+      "member":{"shape":"MemberFeaturesConfigurationResult"}
     },
     "Members":{
       "type":"list",
@@ -4853,6 +5087,22 @@
         "DESC"
       ]
     },
+    "OrgFeature":{
+      "type":"string",
+      "enum":[
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS"
+      ]
+    },
+    "OrgFeatureStatus":{
+      "type":"string",
+      "enum":[
+        "NEW",
+        "NONE"
+      ]
+    },
     "Organization":{
       "type":"structure",
       "members":{
@@ -4943,6 +5193,46 @@
         }
       },
       "documentation":"<p>An object that contains information on the status of whether EBS volumes scanning will be enabled as a data source for an organization.</p>"
+    },
+    "OrganizationFeatureConfiguration":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeature",
+          "documentation":"<p>The name of the feature that will be configured for the organization.</p>",
+          "locationName":"name"
+        },
+        "AutoEnable":{
+          "shape":"OrgFeatureStatus",
+          "documentation":"<p>The status of the feature that will be configured for the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>A list of features which will be configured for the organization.</p>"
+    },
+    "OrganizationFeatureConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeature",
+          "documentation":"<p>The name of the feature that is configured for the member accounts within the organization.</p>",
+          "locationName":"name"
+        },
+        "AutoEnable":{
+          "shape":"OrgFeatureStatus",
+          "documentation":"<p>Describes how The status of the feature that are configured for the member accounts within the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NEW</code>, a feature will be configured for only the new accounts when they join the organization.</p> <p>If you set <code>AutoEnable</code> to <code>NONE</code>, no feature will be configured for the accounts when they join the organization.</p>",
+          "locationName":"autoEnable"
+        }
+      },
+      "documentation":"<p>A list of features which will be configured for the organization.</p>"
+    },
+    "OrganizationFeaturesConfigurations":{
+      "type":"list",
+      "member":{"shape":"OrganizationFeatureConfiguration"}
+    },
+    "OrganizationFeaturesConfigurationsResults":{
+      "type":"list",
+      "member":{"shape":"OrganizationFeatureConfigurationResult"}
     },
     "OrganizationKubernetesAuditLogsConfiguration":{
       "type":"structure",
@@ -5199,6 +5489,87 @@
       "max":300,
       "min":1
     },
+    "RdsDbInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "DbInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier associated to the database instance that was involved in the finding.</p>",
+          "locationName":"dbInstanceIdentifier"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine of the database instance involved in the finding.</p>",
+          "locationName":"engine"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the database engine that was involved in the finding.</p>",
+          "locationName":"engineVersion"
+        },
+        "DbClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the database cluster that contains the database instance ID involved in the finding.</p>",
+          "locationName":"dbClusterIdentifier"
+        },
+        "DbInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the database instance involved in the finding.</p>",
+          "locationName":"dbInstanceArn"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Instance tag key-value pairs associated with the database instance ID.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>Contains information about the resource type <code>RDSDBInstance</code> involved in a GuardDuty finding.</p>"
+    },
+    "RdsDbUserDetails":{
+      "type":"structure",
+      "members":{
+        "User":{
+          "shape":"String",
+          "documentation":"<p>The user name used in the anomalous login attempt.</p>",
+          "locationName":"user"
+        },
+        "Application":{
+          "shape":"String",
+          "documentation":"<p>The application name used in the anomalous login attempt.</p>",
+          "locationName":"application"
+        },
+        "Database":{
+          "shape":"String",
+          "documentation":"<p>The name of the database instance involved in the anomalous login attempt.</p>",
+          "locationName":"database"
+        },
+        "Ssl":{
+          "shape":"String",
+          "documentation":"<p>The version of the Secure Socket Layer (SSL) used for the network.</p>",
+          "locationName":"ssl"
+        },
+        "AuthMethod":{
+          "shape":"String",
+          "documentation":"<p>The authentication method used by the user involved in the finding.</p>",
+          "locationName":"authMethod"
+        }
+      },
+      "documentation":"<p>Contains information about the user and authentication details for a database instance involved in the finding.</p>"
+    },
+    "RdsLoginAttemptAction":{
+      "type":"structure",
+      "members":{
+        "RemoteIpDetails":{
+          "shape":"RemoteIpDetails",
+          "locationName":"remoteIpDetails"
+        },
+        "LoginAttributes":{
+          "shape":"LoginAttributes",
+          "documentation":"<p>Indicates the login attributes used in the login attempt.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that a login attempt was made to the potentially compromised database from a remote IP address.</p>"
+    },
     "RemoteAccountDetails":{
       "type":"structure",
       "members":{
@@ -5308,6 +5679,16 @@
         "ContainerDetails":{
           "shape":"Container",
           "locationName":"containerDetails"
+        },
+        "RdsDbInstanceDetails":{
+          "shape":"RdsDbInstanceDetails",
+          "documentation":"<p>Contains information about the database instance to which an anomalous login attempt was made.</p>",
+          "locationName":"rdsDbInstanceDetails"
+        },
+        "RdsDbUserDetails":{
+          "shape":"RdsDbUserDetails",
+          "documentation":"<p>Contains information about the user details through which anomalous login attempt was made.</p>",
+          "locationName":"rdsDbUserDetails"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
@@ -6198,7 +6579,14 @@
         "DataSources":{
           "shape":"DataSourceConfigurations",
           "documentation":"<p>Describes which data sources will be updated.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"DetectorFeatureConfigurations",
+          "documentation":"<p>Provides the features that will be updated for the detector.</p>",
+          "locationName":"features"
         }
       }
     },
@@ -6384,7 +6772,14 @@
         "DataSources":{
           "shape":"DataSourceConfigurations",
           "documentation":"<p>Describes which data sources will be updated.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"MemberFeaturesConfigurations",
+          "documentation":"<p>A list of features that will be updated for the specified member accounts.</p>",
+          "locationName":"features"
         }
       }
     },
@@ -6420,7 +6815,14 @@
         "DataSources":{
           "shape":"OrganizationDataSourceConfigurations",
           "documentation":"<p>Describes which data sources will be updated.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
+        },
+        "Features":{
+          "shape":"OrganizationFeaturesConfigurations",
+          "documentation":"<p>A list of features that will be configured for the organization.</p>",
+          "locationName":"features"
         }
       }
     },
@@ -6523,7 +6925,6 @@
     },
     "UsageCriteria":{
       "type":"structure",
-      "required":["DataSources"],
       "members":{
         "AccountIds":{
           "shape":"AccountIds",
@@ -6533,12 +6934,19 @@
         "DataSources":{
           "shape":"DataSourceList",
           "documentation":"<p>The data sources to aggregate usage statistics from.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, use Features instead",
           "locationName":"dataSources"
         },
         "Resources":{
           "shape":"ResourceList",
           "documentation":"<p>The resources to aggregate usage statistics from. Only accepts exact resource names.</p>",
           "locationName":"resources"
+        },
+        "Features":{
+          "shape":"UsageFeatureList",
+          "documentation":"<p>The features to aggregate usage statistics from.</p>",
+          "locationName":"features"
         }
       },
       "documentation":"<p>Contains information about the criteria used to query usage statistics.</p>"
@@ -6562,6 +6970,43 @@
     "UsageDataSourceResultList":{
       "type":"list",
       "member":{"shape":"UsageDataSourceResult"}
+    },
+    "UsageFeature":{
+      "type":"string",
+      "enum":[
+        "FLOW_LOGS",
+        "CLOUD_TRAIL",
+        "DNS_LOGS",
+        "S3_DATA_EVENTS",
+        "EKS_AUDIT_LOGS",
+        "EBS_MALWARE_PROTECTION",
+        "RDS_LOGIN_EVENTS",
+        "LAMBDA_NETWORK_LOGS",
+        "EKS_RUNTIME_MONITORING"
+      ]
+    },
+    "UsageFeatureList":{
+      "type":"list",
+      "member":{"shape":"UsageFeature"}
+    },
+    "UsageFeatureResult":{
+      "type":"structure",
+      "members":{
+        "Feature":{
+          "shape":"UsageFeature",
+          "documentation":"<p>The feature that generated the usage cost.</p>",
+          "locationName":"feature"
+        },
+        "Total":{
+          "shape":"Total",
+          "locationName":"total"
+        }
+      },
+      "documentation":"<p>Contains information about the result of the total usage based on the feature.</p>"
+    },
+    "UsageFeatureResultList":{
+      "type":"list",
+      "member":{"shape":"UsageFeatureResult"}
     },
     "UsageResourceResult":{
       "type":"structure",
@@ -6589,7 +7034,8 @@
         "SUM_BY_ACCOUNT",
         "SUM_BY_DATA_SOURCE",
         "SUM_BY_RESOURCE",
-        "TOP_RESOURCES"
+        "TOP_RESOURCES",
+        "SUM_BY_FEATURES"
       ]
     },
     "UsageStatistics":{
@@ -6614,6 +7060,11 @@
           "shape":"UsageResourceResultList",
           "documentation":"<p>Lists the top 50 resources that have generated the most GuardDuty usage, in order from most to least expensive.</p>",
           "locationName":"topResources"
+        },
+        "SumByFeature":{
+          "shape":"UsageFeatureResultList",
+          "documentation":"<p>The usage statistic sum organized by feature.</p>",
+          "locationName":"sumByFeature"
         }
       },
       "documentation":"<p>Contains the result of GuardDuty usage. If a UsageStatisticType is provided the result for other types will be null. </p>"

@@ -89,6 +89,9 @@ pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# Natural language of docs.
+language = 'en'
+
 
 # -- Options for HTML output ---------------------------------------------------
 

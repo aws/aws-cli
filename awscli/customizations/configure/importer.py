@@ -12,11 +12,44 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
+import botocore
 
 from awscli.compat import compat_open
 from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
+
+
+class UserFetcher:
+    """This class is used to fetch a username if one is not present in the CSV.
+
+    An sts client is created and used to call get-caller-identity with the
+    provided credentials. The resulting arn can potentially tell us the
+    username associated with these credentials.
+    """
+    def __init__(self, session_cls=None):
+        if session_cls is None:
+            session_cls = botocore.session.Session
+        self._session_cls = session_cls
+        self._session = None
+
+    def _get_session(self):
+        if self._session is None:
+            self._session = self._session_cls()
+        return self._session
+
+    def fetch_user_for_credentials(self, akid, sak):
+        session = self._get_session()
+        session.set_credentials(akid, sak)
+        sts = session.create_client('sts')
+        identity = sts.get_caller_identity()
+        return self._parse_username_from_arn(identity['Arn'])
+
+    def _parse_username_from_arn(self, arn):
+        user_index = arn.find(':user/')
+        if user_index == -1:
+            raise CredentialParserError('Credentials must belong to a user')
+        return arn[user_index + 6:]
 
 
 class ConfigureImportCommand(BasicCommand):
@@ -104,7 +137,7 @@ class CSVCredentialParser(object):
     _USERNAME_HEADER = 'User Name'
     _AKID_HEADER = 'Access Key ID'
     _SAK_HEADER = 'Secret Access key'
-    _EXPECTED_HEADERS = [_USERNAME_HEADER, _AKID_HEADER, _SAK_HEADER]
+    _EXPECTED_HEADERS = [_AKID_HEADER, _SAK_HEADER]
 
     _EMPTY_CSV = 'Provided CSV contains no contents'
     _HEADER_NOT_FOUND = 'Expected header "%s" not found'
@@ -113,6 +146,7 @@ class CSVCredentialParser(object):
 
     def __init__(self, strict=True):
         self.strict = strict
+        self._username_fetcher = UserFetcher()
 
     def _format_header(self, header):
         return header.lower().strip()
@@ -167,9 +201,14 @@ class CSVCredentialParser(object):
     def _convert_rows_to_credentials(self, parsed_rows):
         credentials = []
         for row in parsed_rows:
-            username = row.get(self._USERNAME_HEADER)
             akid = row.get(self._AKID_HEADER)
             sak = row.get(self._SAK_HEADER)
+            username = row.get(self._USERNAME_HEADER)
+            if username is None:
+                username = self._username_fetcher.fetch_user_for_credentials(
+                    akid,
+                    sak,
+                )
             credentials.append((username, akid, sak))
         return credentials
 

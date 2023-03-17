@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.94
+=======
+
+* api-change:``billingconductor``: This release adds a new filter to ListAccountAssociations API and a new filter to ListBillingGroups API.
+* api-change:``config``: This release adds resourceType enums for types released from October 2022 through February 2023.
+* api-change:``dms``: S3 setting to create AWS Glue Data Catalog. Oracle setting to control conversion of timestamp column. Support for Kafka SASL Plain authentication. Setting to map boolean from PostgreSQL to Redshift. SQL Server settings to force lob lookup on inline LOBs and to control access of database logs.
+
+
 1.27.93
 =======
 

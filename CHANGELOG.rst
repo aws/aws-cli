@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.11.4
+======
+
+* api-change:``migrationhubstrategy``: This release adds the binary analysis that analyzes IIS application DLLs on Windows and Java applications on Linux to provide anti-pattern report without configuring access to the source code.
+* enhancement:configure: Add support for importing CSV credential files that have leading UTF-8 BOM. Fixes `#7721 <https://github.com/aws/aws-cli/issues/7721>`__.
+* api-change:``securitylake``: Make Create/Get/ListSubscribers APIs return resource share ARN and name so they can be used to validate the RAM resource share to accept. GetDatalake can be used to track status of UpdateDatalake and DeleteDatalake requests.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``guardduty``: Updated 9 APIs for feature enablement to reflect expansion of GuardDuty to features. Added new APIs and updated existing APIs to support RDS Protection GA.
+* api-change:``resource-explorer-2``: Documentation updates for APIs.
+* api-change:``s3control``: Added support for S3 Object Lambda aliases.
+
+
 2.11.3
 ======
 

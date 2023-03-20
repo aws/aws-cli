@@ -1,84 +1,6 @@
 {
     "testCases": [
         {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor-fips.cn-north-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseDualStack": true,
-                "UseFIPS": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor-fips.cn-north-1.amazonaws.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseDualStack": false,
-                "UseFIPS": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor.cn-north-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseDualStack": true,
-                "UseFIPS": false
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor.cn-north-1.amazonaws.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseDualStack": false,
-                "UseFIPS": false
-            }
-        },
-        {
-            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor-fips.us-iso-east-1.c2s.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-iso-east-1",
-                "UseDualStack": false,
-                "UseFIPS": true
-            }
-        },
-        {
-            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://billingconductor.us-iso-east-1.c2s.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "us-iso-east-1",
-                "UseDualStack": false,
-                "UseFIPS": false
-            }
-        },
-        {
             "documentation": "For region aws-global with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -162,6 +84,58 @@
             }
         },
         {
+            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor-fips.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseDualStack": true,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor-fips.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
             "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
@@ -214,6 +188,32 @@
             }
         },
         {
+            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseDualStack": false,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://billingconductor.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseDualStack": false,
+                "UseFIPS": false
+            }
+        },
+        {
             "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -240,7 +240,7 @@
             }
         },
         {
-            "documentation": "For custom endpoint with fips disabled and dualstack disabled",
+            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
             "expect": {
                 "endpoint": {
                     "url": "https://example.com"
@@ -248,6 +248,19 @@
             },
             "params": {
                 "Region": "us-east-1",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "params": {
                 "UseDualStack": false,
                 "UseFIPS": false,
                 "Endpoint": "https://example.com"

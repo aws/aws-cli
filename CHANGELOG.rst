@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.95
+=======
+
+* api-change:``application-autoscaling``: With this release customers can now tag their Application Auto Scaling registered targets with key-value pairs and manage IAM permissions for all the tagged resources centrally.
+* api-change:``neptune``: This release makes following few changes. db-cluster-identifier is now a required parameter of create-db-instance. describe-db-cluster will now return PendingModifiedValues and GlobalClusterIdentifier fields in the response.
+* api-change:``s3outposts``: S3 On Outposts added support for endpoint status, and a failed endpoint reason, if any
+* api-change:``workdocs``: This release adds a new API, SearchResources, which enable users to search through metadata and content of folders, documents, document versions and comments in a WorkDocs site.
+
+
 1.27.94
 =======
 

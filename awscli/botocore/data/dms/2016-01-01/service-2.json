@@ -3920,6 +3920,13 @@
       "documentation":"<p>This request triggered KMS request throttling.</p>",
       "exception":true
     },
+    "KafkaSaslMechanism":{
+      "type":"string",
+      "enum":[
+        "scram-sha-512",
+        "plain"
+      ]
+    },
     "KafkaSecurityProtocol":{
       "type":"string",
       "enum":[
@@ -4003,6 +4010,10 @@
         "NoHexPrefix":{
           "shape":"BooleanOptional",
           "documentation":"<p>Set this optional parameter to <code>true</code> to avoid adding a '0x' prefix to raw data in hexadecimal format. For example, by default, DMS adds a '0x' prefix to the LOB column type in hexadecimal format moving from an Oracle source to a Kafka target. Use the <code>NoHexPrefix</code> endpoint setting to enable migration of RAW data type columns without adding the '0x' prefix.</p>"
+        },
+        "SaslMechanism":{
+          "shape":"KafkaSaslMechanism",
+          "documentation":"<p>For SASL/SSL authentication, DMS supports the <code>SCRAM-SHA-512</code> mechanism by default. DMS versions 3.5.0 and later also support the <code>PLAIN</code> mechanism. To use the <code>PLAIN</code> mechanism, set this parameter to <code>PLAIN.</code> </p>"
         }
       },
       "documentation":"<p>Provides information that describes an Apache Kafka endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
@@ -4186,6 +4197,14 @@
         "TrimSpaceInChar":{
           "shape":"BooleanOptional",
           "documentation":"<p>Use the <code>TrimSpaceInChar</code> source endpoint setting to trim data on CHAR and NCHAR data types during migration. The default value is <code>true</code>.</p>"
+        },
+        "TlogAccessMode":{
+          "shape":"TlogAccessMode",
+          "documentation":"<p>Indicates the mode used to fetch CDC data.</p>"
+        },
+        "ForceLobLookup":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Forces LOB lookup on inline LOB.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a Microsoft SQL Server endpoint.</p>"
@@ -4894,6 +4913,10 @@
         "TrimSpaceInChar":{
           "shape":"BooleanOptional",
           "documentation":"<p>Use the <code>TrimSpaceInChar</code> source endpoint setting to trim data on CHAR and NCHAR data types during migration. The default value is <code>true</code>.</p>"
+        },
+        "ConvertTimestampWithZoneToUTC":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>When true, converts timestamps with the <code>timezone</code> datatype to their UTC value.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Oracle endpoint.</p>"
@@ -5075,6 +5098,10 @@
         "TrimSpaceInChar":{
           "shape":"BooleanOptional",
           "documentation":"<p>Use the <code>TrimSpaceInChar</code> source endpoint setting to trim data on CHAR and NCHAR data types during migration. The default value is <code>true</code>.</p>"
+        },
+        "MapBooleanAsBoolean":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>When true, lets PostgreSQL migrate the boolean type as boolean. By default, PostgreSQL migrates booleans as <code>varchar(5)</code>.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a PostgreSQL endpoint.</p>"
@@ -5422,6 +5449,10 @@
         "SecretsManagerSecretId":{
           "shape":"String",
           "documentation":"<p>The full ARN, partial ARN, or friendly name of the <code>SecretsManagerSecret</code> that contains the Amazon Redshift endpoint connection details.</p>"
+        },
+        "MapBooleanAsBoolean":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>When true, lets Redshift migrate the boolean type as boolean. By default, Redshift migrates booleans as <code>varchar(1)</code>.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Amazon Redshift endpoint.</p>"
@@ -6296,6 +6327,10 @@
         "ExpectedBucketOwner":{
           "shape":"String",
           "documentation":"<p>To specify a bucket owner and prevent sniping, you can use the <code>ExpectedBucketOwner</code> endpoint setting. </p> <p>Example: <code>--s3-settings='{\"ExpectedBucketOwner\": \"<i>AWS_Account_ID</i>\"}'</code> </p> <p>When you make a request to test a connection or perform a migration, S3 checks the account ID of the bucket owner against the specified parameter.</p>"
+        },
+        "GlueCatalogGeneration":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>When true, allows Glue to catalog your S3 bucket. Creating an Glue catalog lets you use Athena to query your data.</p>"
         }
       },
       "documentation":"<p>Settings for exporting data to Amazon S3. </p>"
@@ -6921,6 +6956,15 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "TlogAccessMode":{
+      "type":"string",
+      "enum":[
+        "BackupOnly",
+        "PreferBackup",
+        "PreferTlog",
+        "TlogOnly"
+      ]
     },
     "UpdateSubscriptionsToEventBridgeMessage":{
       "type":"structure",

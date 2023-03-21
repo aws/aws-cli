@@ -403,7 +403,7 @@
       "errors":[
         {"shape":"NoSuchConfigurationRecorderException"}
       ],
-      "documentation":"<p>Returns the current status of the specified configuration recorder. If a configuration recorder is not specified, this action returns the status of all configuration recorders associated with the account.</p> <note> <p>Currently, you can specify only one configuration recorder per region in your account.</p> </note>"
+      "documentation":"<p>Returns the current status of the specified configuration recorder as well as the status of the last recording event for the recorder. If a configuration recorder is not specified, this action returns the status of all configuration recorders associated with the account.</p> <note> <p>Currently, you can specify only one configuration recorder per region in your account. For a detailed status of recording events over time, add your Config events to Amazon CloudWatch metrics and use CloudWatch metrics.</p> </note>"
     },
     "DescribeConfigurationRecorders":{
       "name":"DescribeConfigurationRecorders",
@@ -890,7 +890,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a summary of resource evaluation for the specified resource evaluation ID from the proactive rules that were run. The results indicate which evaluation context was used to evaluate the rules, which resource details were evaluated, the evaluation mode that was run, and whether the resource details comply with the configuration of the proactive rules. </p>"
+      "documentation":"<p>Returns a summary of resource evaluation for the specified resource evaluation ID from the proactive rules that were run. The results indicate which evaluation context was used to evaluate the rules, which resource details were evaluated, the evaluation mode that was run, and whether the resource details comply with the configuration of the proactive rules. </p> <note> <p>To see additional information about the evaluation result, such as which rule flagged a resource as NON_COMPLIANT, use the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_GetComplianceDetailsByResource.html\">GetComplianceDetailsByResource</a> API. For more information, see the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_GetResourceEvaluationSummary.html#API_GetResourceEvaluationSummary_Examples\">Examples</a> section.</p> </note>"
     },
     "GetStoredQuery":{
       "name":"GetStoredQuery",
@@ -1009,7 +1009,7 @@
       "errors":[
         {"shape":"InvalidParameterValueException"}
       ],
-      "documentation":"<p>Authorizes the aggregator account and region to collect data from the source account and region. </p>"
+      "documentation":"<p>Authorizes the aggregator account and region to collect data from the source account and region. </p> <note> <p> <code>PutAggregationAuthorization</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>"
     },
     "PutConfigRule":{
       "name":"PutConfigRule",
@@ -1025,7 +1025,7 @@
         {"shape":"InsufficientPermissionsException"},
         {"shape":"NoAvailableConfigurationRecorderException"}
       ],
-      "documentation":"<p>Adds or updates an Config rule to evaluate if your Amazon Web Services resources comply with your desired configurations. For information on how many Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p>There are two types of rules: Config Custom Rules and Config Managed Rules. You can use <code>PutConfigRule</code> to create both Config custom rules and Config managed rules.</p> <p>Custom rules are rules that you can create using either Guard or Lambda functions. Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>) is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. Lambda uses custom code that you upload to evaluate a custom rule. If you are adding a new Custom Lambda rule, you first need to create an Lambda function that the rule invokes to evaluate your resources. When you use <code>PutConfigRule</code> to add a Custom Lambda rule to Config, you must specify the Amazon Resource Name (ARN) that Lambda assigns to the function. You specify the ARN in the <code>SourceIdentifier</code> key. This key is part of the <code>Source</code> object, which is part of the <code>ConfigRule</code> object. </p> <p>Managed rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>. If you are adding an Config managed rule, you must specify the rule's identifier for the <code>SourceIdentifier</code> key.</p> <p>For any new rule that you add, specify the <code>ConfigRuleName</code> in the <code>ConfigRule</code> object. Do not specify the <code>ConfigRuleArn</code> or the <code>ConfigRuleId</code>. These values are generated by Config for new rules.</p> <p>If you are updating a rule that you added previously, you can specify the rule by <code>ConfigRuleName</code>, <code>ConfigRuleId</code>, or <code>ConfigRuleArn</code> in the <code>ConfigRule</code> data type that you use in this request.</p> <p>For more information about developing and using Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html\">Evaluating Amazon Web Services resource Configurations with Config</a> in the <i>Config Developer Guide</i>.</p>"
+      "documentation":"<p>Adds or updates an Config rule to evaluate if your Amazon Web Services resources comply with your desired configurations. For information on how many Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p>There are two types of rules: <i>Config Managed Rules</i> and <i>Config Custom Rules</i>. You can use <code>PutConfigRule</code> to create both Config Managed Rules and Config Custom Rules.</p> <p>Config Managed Rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>. If you are adding an Config managed rule, you must specify the rule's identifier for the <code>SourceIdentifier</code> key.</p> <p>Config Custom Rules are rules that you create from scratch. There are two ways to create Config custom rules: with Lambda functions (<a href=\"https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function\"> Lambda Developer Guide</a>) and with Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>), a policy-as-code language. Config custom rules created with Lambda are called <i>Config Custom Lambda Rules</i> and Config custom rules created with Guard are called <i>Config Custom Policy Rules</i>.</p> <p>If you are adding a new Config Custom Lambda rule, you first need to create an Lambda function that the rule invokes to evaluate your resources. When you use <code>PutConfigRule</code> to add a Custom Lambda rule to Config, you must specify the Amazon Resource Name (ARN) that Lambda assigns to the function. You specify the ARN in the <code>SourceIdentifier</code> key. This key is part of the <code>Source</code> object, which is part of the <code>ConfigRule</code> object. </p> <p>For any new Config rule that you add, specify the <code>ConfigRuleName</code> in the <code>ConfigRule</code> object. Do not specify the <code>ConfigRuleArn</code> or the <code>ConfigRuleId</code>. These values are generated by Config for new rules.</p> <p>If you are updating a rule that you added previously, you can specify the rule by <code>ConfigRuleName</code>, <code>ConfigRuleId</code>, or <code>ConfigRuleArn</code> in the <code>ConfigRule</code> data type that you use in this request.</p> <p>For more information about developing and using Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html\">Evaluating Resources with Config Rules</a> in the <i>Config Developer Guide</i>.</p> <note> <p> <code>PutConfigRule</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>"
     },
     "PutConfigurationAggregator":{
       "name":"PutConfigurationAggregator",
@@ -1043,7 +1043,7 @@
         {"shape":"NoAvailableOrganizationException"},
         {"shape":"OrganizationAllFeaturesNotEnabledException"}
       ],
-      "documentation":"<p>Creates and updates the configuration aggregator with the selected source accounts and regions. The source account can be individual account(s) or an organization.</p> <p> <code>accountIds</code> that are passed will be replaced with existing accounts. If you want to add additional accounts into the aggregator, call <code>DescribeConfigurationAggregators</code> to get the previous accounts and then append new ones.</p> <note> <p>Config should be enabled in source accounts and regions you want to aggregate.</p> <p>If your source type is an organization, you must be signed in to the management account or a registered delegated administrator and all the features must be enabled in your organization. If the caller is a management account, Config calls <code>EnableAwsServiceAccess</code> API to enable integration between Config and Organizations. If the caller is a registered delegated administrator, Config calls <code>ListDelegatedAdministrators</code> API to verify whether the caller is a valid delegated administrator.</p> <p>To register a delegated administrator, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/set-up-aggregator-cli.html#register-a-delegated-administrator-cli\">Register a Delegated Administrator</a> in the <i>Config developer guide</i>. </p> </note>"
+      "documentation":"<p>Creates and updates the configuration aggregator with the selected source accounts and regions. The source account can be individual account(s) or an organization.</p> <p> <code>accountIds</code> that are passed will be replaced with existing accounts. If you want to add additional accounts into the aggregator, call <code>DescribeConfigurationAggregators</code> to get the previous accounts and then append new ones.</p> <note> <p>Config should be enabled in source accounts and regions you want to aggregate.</p> <p>If your source type is an organization, you must be signed in to the management account or a registered delegated administrator and all the features must be enabled in your organization. If the caller is a management account, Config calls <code>EnableAwsServiceAccess</code> API to enable integration between Config and Organizations. If the caller is a registered delegated administrator, Config calls <code>ListDelegatedAdministrators</code> API to verify whether the caller is a valid delegated administrator.</p> <p>To register a delegated administrator, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/set-up-aggregator-cli.html#register-a-delegated-administrator-cli\">Register a Delegated Administrator</a> in the <i>Config developer guide</i>. </p> </note> <note> <p> <code>PutConfigurationAggregator</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>"
     },
     "PutConfigurationRecorder":{
       "name":"PutConfigurationRecorder",
@@ -1143,7 +1143,7 @@
         {"shape":"OrganizationAllFeaturesNotEnabledException"},
         {"shape":"InsufficientPermissionsException"}
       ],
-      "documentation":"<p>Adds or updates an Config rule for your entire organization to evaluate if your Amazon Web Services resources comply with your desired configurations. For information on how many organization Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p> Only a management account and a delegated administrator can create or update an organization Config rule. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added. An organization can have up to 3 delegated administrators.</p> <p>This API enables organization service access through the <code>EnableAWSServiceAccess</code> action and creates a service-linked role <code>AWSServiceRoleForConfigMultiAccountSetup</code> in the management or delegated administrator account of your organization. The service-linked role is created only when the role does not exist in the caller account. Config verifies the existence of role with <code>GetRole</code> action.</p> <p>To use this API with delegated administrator, register a delegated administrator by calling Amazon Web Services Organization <code>register-delegated-administrator</code> for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p>There are two types of rules: Config Custom Rules and Config Managed Rules. You can use <code>PutOrganizationConfigRule</code> to create both Config custom rules and Config managed rules.</p> <p>Custom rules are rules that you can create using either Guard or Lambda functions. Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>) is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. Lambda uses custom code that you upload to evaluate a custom rule. If you are adding a new Custom Lambda rule, you first need to create an Lambda function in the management account or a delegated administrator that the rule invokes to evaluate your resources. You also need to create an IAM role in the managed account that can be assumed by the Lambda function. When you use <code>PutOrganizationConfigRule</code> to add a Custom Lambda rule to Config, you must specify the Amazon Resource Name (ARN) that Lambda assigns to the function.</p> <p>Managed rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>. If you are adding an Config managed rule, you must specify the rule's identifier for the <code>RuleIdentifier</code> key.</p> <note> <p>Prerequisite: Ensure you call <code>EnableAllFeatures</code> API to enable all features in an organization.</p> <p>Make sure to specify one of either <code>OrganizationCustomPolicyRuleMetadata</code> for Custom Policy rules, <code>OrganizationCustomRuleMetadata</code> for Custom Lambda rules, or <code>OrganizationManagedRuleMetadata</code> for managed rules.</p> </note>"
+      "documentation":"<p>Adds or updates an Config rule for your entire organization to evaluate if your Amazon Web Services resources comply with your desired configurations. For information on how many organization Config rules you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <p> Only a management account and a delegated administrator can create or update an organization Config rule. When calling this API with a delegated administrator, you must ensure Organizations <code>ListDelegatedAdministrator</code> permissions are added. An organization can have up to 3 delegated administrators.</p> <p>This API enables organization service access through the <code>EnableAWSServiceAccess</code> action and creates a service-linked role <code>AWSServiceRoleForConfigMultiAccountSetup</code> in the management or delegated administrator account of your organization. The service-linked role is created only when the role does not exist in the caller account. Config verifies the existence of role with <code>GetRole</code> action.</p> <p>To use this API with delegated administrator, register a delegated administrator by calling Amazon Web Services Organization <code>register-delegated-administrator</code> for <code>config-multiaccountsetup.amazonaws.com</code>. </p> <p>There are two types of rules: <i>Config Managed Rules</i> and <i>Config Custom Rules</i>. You can use <code>PutOrganizationConfigRule</code> to create both Config Managed Rules and Config Custom Rules.</p> <p>Config Managed Rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>. If you are adding an Config managed rule, you must specify the rule's identifier for the <code>RuleIdentifier</code> key.</p> <p>Config Custom Rules are rules that you create from scratch. There are two ways to create Config custom rules: with Lambda functions (<a href=\"https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function\"> Lambda Developer Guide</a>) and with Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>), a policy-as-code language. Config custom rules created with Lambda are called <i>Config Custom Lambda Rules</i> and Config custom rules created with Guard are called <i>Config Custom Policy Rules</i>.</p> <p>If you are adding a new Config Custom Lambda rule, you first need to create an Lambda function in the management account or a delegated administrator that the rule invokes to evaluate your resources. You also need to create an IAM role in the managed account that can be assumed by the Lambda function. When you use <code>PutOrganizationConfigRule</code> to add a Custom Lambda rule to Config, you must specify the Amazon Resource Name (ARN) that Lambda assigns to the function.</p> <note> <p>Prerequisite: Ensure you call <code>EnableAllFeatures</code> API to enable all features in an organization.</p> <p>Make sure to specify one of either <code>OrganizationCustomPolicyRuleMetadata</code> for Custom Policy rules, <code>OrganizationCustomRuleMetadata</code> for Custom Lambda rules, or <code>OrganizationManagedRuleMetadata</code> for managed rules.</p> </note>"
     },
     "PutOrganizationConformancePack":{
       "name":"PutOrganizationConformancePack",
@@ -1191,7 +1191,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InsufficientPermissionsException"}
       ],
-      "documentation":"<p>A remediation exception is when a specific resource is no longer considered for auto-remediation. This API adds a new exception or updates an existing exception for a specific resource with a specific Config rule. </p> <note> <p>Config generates a remediation exception when a problem occurs executing a remediation action to a specific resource. Remediation exceptions blocks auto-remediation until the exception is cleared.</p> </note> <note> <p>To place an exception on an Amazon Web Services resource, ensure remediation is set as manual remediation.</p> </note>"
+      "documentation":"<p>A remediation exception is when a specified resource is no longer considered for auto-remediation. This API adds a new exception or updates an existing exception for a specified resource with a specified Config rule. </p> <note> <p>Config generates a remediation exception when a problem occurs running a remediation action for a specified resource. Remediation exceptions blocks auto-remediation until the exception is cleared.</p> </note> <note> <p>When placing an exception on an Amazon Web Services resource, it is recommended that remediation is set as manual remediation until the given Config rule for the specified resource evaluates the resource as <code>NON_COMPLIANT</code>. Once the resource has been evaluated as <code>NON_COMPLIANT</code>, you can add remediation exceptions and change the remediation type back from Manual to Auto if you want to use auto-remediation. Otherwise, using auto-remediation before a <code>NON_COMPLIANT</code> evaluation result can delete resources before the exception is applied.</p> </note> <note> <p>Placing an exception can only be performed on resources that are <code>NON_COMPLIANT</code>. If you use this API for <code>COMPLIANT</code> resources or resources that are <code>NOT_APPLICABLE</code>, a remediation exception will not be generated. For more information on the conditions that initiate the possible Config evaluation results, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/config-concepts.html#aws-config-rules\">Concepts | Config Rules</a> in the Config Developer Guide.</p> </note>"
     },
     "PutResourceConfig":{
       "name":"PutResourceConfig",
@@ -1235,7 +1235,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"ResourceConcurrentModificationException"}
       ],
-      "documentation":"<p>Saves a new query or updates an existing saved query. The <code>QueryName</code> must be unique for a single Amazon Web Services account and a single Amazon Web Services Region. You can create upto 300 queries in a single Amazon Web Services account and a single Amazon Web Services Region.</p>"
+      "documentation":"<p>Saves a new query or updates an existing saved query. The <code>QueryName</code> must be unique for a single Amazon Web Services account and a single Amazon Web Services Region. You can create upto 300 queries in a single Amazon Web Services account and a single Amazon Web Services Region.</p> <note> <p> <code>PutStoredQuery</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>"
     },
     "SelectAggregateResourceConfig":{
       "name":"SelectAggregateResourceConfig",
@@ -1324,7 +1324,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"IdempotentParameterMismatch"}
       ],
-      "documentation":"<p>Runs an on-demand evaluation for the specified resource to determine whether the resource details will comply with configured Config rules. You can also use it for evaluation purposes. Config recommends using an evaluation context. It runs an execution against the resource details with all of the Config rules in your account that match with the specified proactive mode and resource type.</p> <note> <p>Ensure you have the <code>cloudformation:DescribeType</code> role setup to validate the resource type schema. </p> </note>"
+      "documentation":"<p>Runs an on-demand evaluation for the specified resource to determine whether the resource details will comply with configured Config rules. You can also use it for evaluation purposes. Config recommends using an evaluation context. It runs an execution against the resource details with all of the Config rules in your account that match with the specified proactive mode and resource type.</p> <note> <p>Ensure you have the <code>cloudformation:DescribeType</code> role setup to validate the resource type schema.</p> <p>You can find the <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html\">Resource type schema</a> in \"<i>Amazon Web Services public extensions</i>\" within the CloudFormation registry or with the following CLI commmand: <code>aws cloudformation describe-type --type-name \"AWS::S3::Bucket\" --type RESOURCE</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view\">Managing extensions through the CloudFormation registry</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services resource and property types reference</a> in the CloudFormation User Guide.</p> </note>"
     },
     "StopConfigurationRecorder":{
       "name":"StopConfigurationRecorder",
@@ -1350,7 +1350,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Associates the specified tags to a resource with the specified resourceArn. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are deleted as well.</p>"
+      "documentation":"<p>Associates the specified tags to a resource with the specified resourceArn. If existing tags on a resource are not specified in the request parameters, they are not changed. If existing tags are specified, however, then their values will be updated. When a resource is deleted, the tags associated with that resource are deleted as well.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -2104,7 +2104,7 @@
           "documentation":"<p>The modes the Config rule can be evaluated in. The valid values are distinct objects. By default, the value is Detective evaluation mode only.</p>"
         }
       },
-      "documentation":"<p>Config rules evaluate the configuration settings of your Amazon Web Services resources. A rule can run when Config detects a configuration change to an Amazon Web Services resource or at a periodic frequency that you choose (for example, every 24 hours). There are two types of rules: Config Managed Rules and Config Custom Rules. Managed rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>.</p> <p>Custom rules are rules that you can create using either Guard or Lambda functions. Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>) is a policy-as-code language that allows you to write policies that are enforced by Config Custom Policy rules. Lambda uses custom code that you upload to evaluate a custom rule. It is invoked by events that are published to it by an event source, which Config invokes when the custom rule is initiated.</p> <p>For more information about developing and using Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html\">Evaluating Amazon Web Services resource Configurations with Config</a> in the <i>Config Developer Guide</i>.</p> <note> <p>You can use the Amazon Web Services CLI and Amazon Web Services SDKs if you want to create a rule that triggers evaluations for your resources when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> </note>"
+      "documentation":"<p>Config rules evaluate the configuration settings of your Amazon Web Services resources. A rule can run when Config detects a configuration change to an Amazon Web Services resource or at a periodic frequency that you choose (for example, every 24 hours). There are two types of rules: <i>Config Managed Rules</i> and <i>Config Custom Rules</i>.</p> <p>Config Managed Rules are predefined, customizable rules created by Config. For a list of managed rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html\">List of Config Managed Rules</a>.</p> <p>Config Custom Rules are rules that you create from scratch. There are two ways to create Config custom rules: with Lambda functions (<a href=\"https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function\"> Lambda Developer Guide</a>) and with Guard (<a href=\"https://github.com/aws-cloudformation/cloudformation-guard\">Guard GitHub Repository</a>), a policy-as-code language. Config custom rules created with Lambda are called <i>Config Custom Lambda Rules</i> and Config custom rules created with Guard are called <i>Config Custom Policy Rules</i>.</p> <p>For more information about developing and using Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html\">Evaluating Resource with Config Rules</a> in the <i>Config Developer Guide</i>.</p> <note> <p>You can use the Amazon Web Services CLI and Amazon Web Services SDKs if you want to create a rule that triggers evaluations for your resources when Config delivers the configuration snapshot. For more information, see <a>ConfigSnapshotDeliveryProperties</a>.</p> </note>"
     },
     "ConfigRuleComplianceFilters":{
       "type":"structure",
@@ -2472,22 +2472,22 @@
         },
         "lastStatus":{
           "shape":"RecorderStatus",
-          "documentation":"<p>The last (previous) status of the recorder.</p>"
+          "documentation":"<p>The status of the latest recording event processed by the recorder.</p>"
         },
         "lastErrorCode":{
           "shape":"String",
-          "documentation":"<p>The error code indicating that the recording failed.</p>"
+          "documentation":"<p>The latest error code from when the recorder last failed.</p>"
         },
         "lastErrorMessage":{
           "shape":"String",
-          "documentation":"<p>The message indicating that the recording failed due to an error.</p>"
+          "documentation":"<p>The latest error message from when the recorder last failed.</p>"
         },
         "lastStatusChangeTime":{
           "shape":"Date",
-          "documentation":"<p>The time when the status was last changed.</p>"
+          "documentation":"<p>The time of the latest change in status of an recording event processed by the recorder.</p>"
         }
       },
-      "documentation":"<p>The current status of the configuration recorder.</p>"
+      "documentation":"<p>The current status of the configuration recorder.</p> <note> <p>For a detailed status of recording events over time, add your Config events to CloudWatch metrics and use CloudWatch metrics.</p> </note>"
     },
     "ConfigurationRecorderStatusList":{
       "type":"list",
@@ -2565,7 +2565,7 @@
         },
         "ConformancePackComplianceStatus":{
           "shape":"ConformancePackComplianceType",
-          "documentation":"<p>The status of the conformance pack. The allowed values are <code>COMPLIANT</code>, <code>NON_COMPLIANT</code> and <code>INSUFFICIENT_DATA</code>.</p>"
+          "documentation":"<p>The status of the conformance pack.</p>"
         }
       },
       "documentation":"<p>Summary includes the name and status of the conformance pack.</p>"
@@ -2756,7 +2756,7 @@
         },
         "ComplianceType":{
           "shape":"ConformancePackComplianceType",
-          "documentation":"<p>Compliance of the Config rule.</p> <p>The allowed values are <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>INSUFFICIENT_DATA</code>.</p>"
+          "documentation":"<p>Compliance of the Config rule.</p>"
         },
         "Controls":{
           "shape":"ControlsList",
@@ -2848,7 +2848,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>You have specified a template that is invalid or supported.</p>",
+      "documentation":"<p>You have specified a template that is not valid or supported.</p>",
       "exception":true
     },
     "ControlsList":{
@@ -3310,7 +3310,7 @@
         },
         "ComplianceTypes":{
           "shape":"ComplianceTypes",
-          "documentation":"<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code> and <code>NON_COMPLIANT</code>.</p>"
+          "documentation":"<p>Filters the results by compliance.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -3346,7 +3346,7 @@
         },
         "ComplianceTypes":{
           "shape":"ComplianceTypes",
-          "documentation":"<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>INSUFFICIENT_DATA</code>.</p>"
+          "documentation":"<p>Filters the results by compliance.</p>"
         },
         "Limit":{
           "shape":"Limit",
@@ -3413,7 +3413,7 @@
           "documentation":"<p>The mode of an evaluation. The valid values are Detective or Proactive.</p>"
         }
       },
-      "documentation":"<p>Returns a filtered list of Detective or Proactive Config rules. By default, if the filter is not defined, this API returns an unfiltered list.</p>"
+      "documentation":"<p>Returns a filtered list of Detective or Proactive Config rules. By default, if the filter is not defined, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html\"> <b>Evaluation Mode</b> </a> in the Config Developer Guide.</p>"
     },
     "DescribeConfigRulesRequest":{
       "type":"structure",
@@ -3428,7 +3428,7 @@
         },
         "Filters":{
           "shape":"DescribeConfigRulesFilters",
-          "documentation":"<p>Returns a list of Detecive or Proactive Config rules. By default, this API returns an unfiltered list.</p>"
+          "documentation":"<p>Returns a list of Detective or Proactive Config rules. By default, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html\"> <b>Evaluation Mode</b> </a> in the Config Developer Guide.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4493,7 +4493,7 @@
         },
         "ComplianceTypes":{
           "shape":"ComplianceTypes",
-          "documentation":"<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code>.</p>"
+          "documentation":"<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>"
         },
         "Limit":{
           "shape":"Limit",
@@ -4533,7 +4533,7 @@
         },
         "ComplianceTypes":{
           "shape":"ComplianceTypes",
-          "documentation":"<p>Filters the results by compliance.</p> <p>The allowed values are <code>COMPLIANT</code>, <code>NON_COMPLIANT</code>, and <code>NOT_APPLICABLE</code>.</p>"
+          "documentation":"<p>Filters the results by compliance.</p> <p> <code>INSUFFICIENT_DATA</code> is a valid <code>ComplianceType</code> that is returned when an Config rule cannot be evaluated. However, <code>INSUFFICIENT_DATA</code> cannot be used as a <code>ComplianceType</code> for filtering results.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -4983,7 +4983,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified delivery channel name is invalid.</p>",
+      "documentation":"<p>The specified delivery channel name is not valid.</p>",
       "exception":true
     },
     "InvalidExpressionException":{
@@ -5004,28 +5004,28 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified next token is invalid. Specify the <code>nextToken</code> string that was returned in the previous response to get the next page of results.</p>",
+      "documentation":"<p>The specified next token is not valid. Specify the <code>nextToken</code> string that was returned in the previous response to get the next page of results.</p>",
       "exception":true
     },
     "InvalidParameterValueException":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>One or more of the specified parameters are invalid. Verify that your parameters are valid and try again.</p>",
+      "documentation":"<p>One or more of the specified parameters are not valid. Verify that your parameters are valid and try again.</p>",
       "exception":true
     },
     "InvalidRecordingGroupException":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Config throws an exception if the recording group does not contain a valid list of resource types. Invalid values might also be incorrectly formatted.</p>",
+      "documentation":"<p>Config throws an exception if the recording group does not contain a valid list of resource types. Values that are not valid might also be incorrectly formatted.</p>",
       "exception":true
     },
     "InvalidResultTokenException":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified <code>ResultToken</code> is invalid.</p>",
+      "documentation":"<p>The specified <code>ResultToken</code> is not valid.</p>",
       "exception":true
     },
     "InvalidRoleException":{
@@ -5039,14 +5039,14 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified Amazon S3 key prefix is invalid.</p>",
+      "documentation":"<p>The specified Amazon S3 key prefix is not valid.</p>",
       "exception":true
     },
     "InvalidS3KmsKeyArnException":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified Amazon KMS Key ARN is invalid.</p>",
+      "documentation":"<p>The specified Amazon KMS Key ARN is not valid.</p>",
       "exception":true
     },
     "InvalidSNSTopicARNException":{
@@ -5060,7 +5060,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The specified time range is invalid. The earlier time is not chronologically before the later time.</p>",
+      "documentation":"<p>The specified time range is not valid. The earlier time is not chronologically before the later time.</p>",
       "exception":true
     },
     "LastDeliveryChannelDeleteFailedException":{
@@ -5147,7 +5147,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The <code>nextToken</code> string in a prior request that you can use to get the paginated response for next set of conformance pack compliance scores.</p>"
+          "documentation":"<p>The <code>nextToken</code> string in a prior request that you can use to get the paginated response for the next set of conformance pack compliance scores.</p>"
         }
       }
     },
@@ -5175,7 +5175,7 @@
         },
         "resourceIds":{
           "shape":"ResourceIdList",
-          "documentation":"<p>The IDs of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered.</p>"
+          "documentation":"<p>The IDs of only those resources that you want Config to list in the response. If you do not specify this parameter, Config lists all resources of the specified type that it has discovered. You can list a minimum of 1 resourceID and a maximum of 20 resourceIds.</p>"
         },
         "resourceName":{
           "shape":"ResourceName",
@@ -5470,7 +5470,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The Config rule in the request is invalid. Verify that the rule is an Config Custom Policy rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.</p>",
+      "documentation":"<p>The Config rule in the request is not valid. Verify that the rule is an Config Process Check rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.</p>",
       "exception":true
     },
     "NoSuchConfigRuleInConformancePackException":{
@@ -5512,7 +5512,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The Config rule in the request is invalid. Verify that the rule is an organization Config Custom Policy rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.</p>",
+      "documentation":"<p>The Config rule in the request is not valid. Verify that the rule is an organization Config Process Check rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.</p>",
       "exception":true
     },
     "NoSuchOrganizationConformancePackException":{
@@ -5820,7 +5820,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>You have specified a template that is invalid or supported.</p>",
+      "documentation":"<p>You have specified a template that is not valid or supported.</p>",
       "exception":true
     },
     "OrganizationConformancePacks":{
@@ -6598,7 +6598,7 @@
         },
         "resourceTypes":{
           "shape":"ResourceTypeList",
-          "documentation":"<p>A comma-separated list that specifies the types of Amazon Web Services resources for which Config records configuration changes (for example, <code>AWS::EC2::Instance</code> or <code>AWS::CloudTrail::Trail</code>).</p> <p>To record all configuration changes, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set this option to <code>false</code>, when Config adds support for a new type of resource, it will not record resources of that type unless you manually add that type to your recording group.</p> <p>For a list of valid <code>resourceTypes</code> values, see the <b>resourceType Value</b> column in <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Amazon Web Services resource Types</a>.</p>"
+          "documentation":"<p>A comma-separated list that specifies the types of Amazon Web Services resources for which Config records configuration changes (for example, <code>AWS::EC2::Instance</code> or <code>AWS::CloudTrail::Trail</code>).</p> <p>To record all configuration changes, you must set the <code>allSupported</code> option to <code>true</code>.</p> <p>If you set the <code>AllSupported</code> option to false and populate the <code>ResourceTypes</code> option with values, when Config adds support for a new type of resource, it will not record resources of that type unless you manually add that type to your recording group.</p> <p>For a list of valid <code>resourceTypes</code> values, see the <b>resourceType Value</b> column in <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Amazon Web Services resource Types</a>.</p>"
         }
       },
       "documentation":"<p>Specifies which Amazon Web Services resource types Config records for configuration changes. In the recording group, you specify whether you want to record all supported resource types or only specific types of resources.</p> <p>By default, Config records the configuration changes for all supported types of <i>regional resources</i> that Config discovers in the region in which it is running. Regional resources are tied to a region and can be used only in that region. Examples of regional resources are EC2 instances and EBS volumes.</p> <p>You can also have Config record supported types of <i>global resources</i>. Global resources are not tied to a specific region and can be used in all regions. The global resource types that Config supports include IAM users, groups, roles, and customer managed policies.</p> <important> <p>Global resource types onboarded to Config recording after February 2022 will only be recorded in the service's home region for the commercial partition and Amazon Web Services GovCloud (US) West for the GovCloud partition. You can view the Configuration Items for these new global resource types only in their home region and Amazon Web Services GovCloud (US) West.</p> <p>Supported global resource types onboarded before February 2022 such as <code>AWS::IAM::Group</code>, <code>AWS::IAM::Policy</code>, <code>AWS::IAM::Role</code>, <code>AWS::IAM::User</code> remain unchanged, and they will continue to deliver Configuration Items in all supported regions in Config. The change will only affect new global resource types onboarded after February 2022.</p> <p>To record global resource types onboarded after February 2022, enable All Supported Resource Types in the home region of the global resource type you want to record.</p> </important> <p>If you don't want Config to record all resources, you can specify which types of resources it will record with the <code>resourceTypes</code> parameter.</p> <p>For a list of supported resource types, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources\">Supported Resource Types</a>.</p> <p>For more information and a table of the Home Regions for Global Resource Types Onboarded after February 2022, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html\">Selecting Which Resources Config Records</a>.</p>"
@@ -6954,10 +6954,10 @@
         },
         "ResourceConfigurationSchemaType":{
           "shape":"ResourceConfigurationSchemaType",
-          "documentation":"<p>The schema type of the resource configuration.</p>"
+          "documentation":"<p>The schema type of the resource configuration.</p> <note> <p>You can find the <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html\">Resource type schema</a>, or <code>CFN_RESOURCE_SCHEMA</code>, in \"<i>Amazon Web Services public extensions</i>\" within the CloudFormation registry or with the following CLI commmand: <code>aws cloudformation describe-type --type-name \"AWS::S3::Bucket\" --type RESOURCE</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view\">Managing extensions through the CloudFormation registry</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services resource and property types reference</a> in the CloudFormation User Guide.</p> </note>"
         }
       },
-      "documentation":"<p>Returns information about the resource being evaluated. </p>"
+      "documentation":"<p>Returns information about the resource being evaluated.</p>"
     },
     "ResourceEvaluation":{
       "type":"structure",
@@ -7287,7 +7287,94 @@
         "AWS::ServiceDiscovery::PublicDnsNamespace",
         "AWS::SES::ContactList",
         "AWS::SES::ConfigurationSet",
-        "AWS::Route53::HostedZone"
+        "AWS::Route53::HostedZone",
+        "AWS::IoTEvents::Input",
+        "AWS::IoTEvents::DetectorModel",
+        "AWS::IoTEvents::AlarmModel",
+        "AWS::ServiceDiscovery::HttpNamespace",
+        "AWS::Events::EventBus",
+        "AWS::ImageBuilder::ContainerRecipe",
+        "AWS::ImageBuilder::DistributionConfiguration",
+        "AWS::ImageBuilder::InfrastructureConfiguration",
+        "AWS::DataSync::LocationObjectStorage",
+        "AWS::DataSync::LocationHDFS",
+        "AWS::Glue::Classifier",
+        "AWS::Route53RecoveryReadiness::Cell",
+        "AWS::Route53RecoveryReadiness::ReadinessCheck",
+        "AWS::ECR::RegistryPolicy",
+        "AWS::Backup::ReportPlan",
+        "AWS::Lightsail::Certificate",
+        "AWS::RUM::AppMonitor",
+        "AWS::Events::Endpoint",
+        "AWS::SES::ReceiptRuleSet",
+        "AWS::Events::Archive",
+        "AWS::Events::ApiDestination",
+        "AWS::Lightsail::Disk",
+        "AWS::FIS::ExperimentTemplate",
+        "AWS::DataSync::LocationFSxWindows",
+        "AWS::SES::ReceiptFilter",
+        "AWS::GuardDuty::Filter",
+        "AWS::SES::Template",
+        "AWS::AmazonMQ::Broker",
+        "AWS::AppConfig::Environment",
+        "AWS::AppConfig::ConfigurationProfile",
+        "AWS::Cloud9::EnvironmentEC2",
+        "AWS::EventSchemas::Registry",
+        "AWS::EventSchemas::RegistryPolicy",
+        "AWS::EventSchemas::Discoverer",
+        "AWS::FraudDetector::Label",
+        "AWS::FraudDetector::EntityType",
+        "AWS::FraudDetector::Variable",
+        "AWS::FraudDetector::Outcome",
+        "AWS::IoT::Authorizer",
+        "AWS::IoT::SecurityProfile",
+        "AWS::IoT::RoleAlias",
+        "AWS::IoT::Dimension",
+        "AWS::IoTAnalytics::Datastore",
+        "AWS::Lightsail::Bucket",
+        "AWS::Lightsail::StaticIp",
+        "AWS::MediaPackage::PackagingGroup",
+        "AWS::Route53RecoveryReadiness::RecoveryGroup",
+        "AWS::ResilienceHub::ResiliencyPolicy",
+        "AWS::Transfer::Workflow",
+        "AWS::EKS::IdentityProviderConfig",
+        "AWS::EKS::Addon",
+        "AWS::Glue::MLTransform",
+        "AWS::IoT::Policy",
+        "AWS::IoT::MitigationAction",
+        "AWS::IoTTwinMaker::Workspace",
+        "AWS::IoTTwinMaker::Entity",
+        "AWS::IoTAnalytics::Dataset",
+        "AWS::IoTAnalytics::Pipeline",
+        "AWS::IoTAnalytics::Channel",
+        "AWS::IoTSiteWise::Dashboard",
+        "AWS::IoTSiteWise::Project",
+        "AWS::IoTSiteWise::Portal",
+        "AWS::IoTSiteWise::AssetModel",
+        "AWS::IVS::Channel",
+        "AWS::IVS::RecordingConfiguration",
+        "AWS::IVS::PlaybackKeyPair",
+        "AWS::KinesisAnalyticsV2::Application",
+        "AWS::RDS::GlobalCluster",
+        "AWS::S3::MultiRegionAccessPoint",
+        "AWS::DeviceFarm::TestGridProject",
+        "AWS::Budgets::BudgetsAction",
+        "AWS::Lex::Bot",
+        "AWS::CodeGuruReviewer::RepositoryAssociation",
+        "AWS::IoT::CustomMetric",
+        "AWS::Route53Resolver::FirewallDomainList",
+        "AWS::RoboMaker::RobotApplicationVersion",
+        "AWS::EC2::TrafficMirrorSession",
+        "AWS::IoTSiteWise::Gateway",
+        "AWS::Lex::BotAlias",
+        "AWS::LookoutMetrics::Alert",
+        "AWS::IoT::AccountAuditConfiguration",
+        "AWS::EC2::TrafficMirrorTarget",
+        "AWS::S3::StorageLens",
+        "AWS::IoT::ScheduledAudit",
+        "AWS::Events::Connection",
+        "AWS::EventSchemas::Schema",
+        "AWS::MediaPackage::PackagingConfiguration"
       ]
     },
     "ResourceTypeList":{
@@ -7639,7 +7726,7 @@
         },
         "EvaluationMode":{
           "shape":"EvaluationMode",
-          "documentation":"<p>The mode of an evaluation. The valid value for this API is <code>Proactive</code>.</p>"
+          "documentation":"<p>The mode of an evaluation. The valid values for this API are <code>DETECTIVE</code> and <code>PROACTIVE</code>.</p>"
         },
         "EvaluationTimeout":{
           "shape":"EvaluationTimeout",
@@ -7943,7 +8030,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The requested action is invalid.</p> <p>For PutStoredQuery, you will see this exception if there are missing required fields or if the input value fails the validation, or if you are trying to create more than 300 queries.</p> <p>For GetStoredQuery, ListStoredQuery, and DeleteStoredQuery you will see this exception if there are missing required fields or if the input value fails the validation.</p>",
+      "documentation":"<p>The requested action is not valid.</p> <p>For PutStoredQuery, you will see this exception if there are missing required fields or if the input value fails the validation, or if you are trying to create more than 300 queries.</p> <p>For GetStoredQuery, ListStoredQuery, and DeleteStoredQuery you will see this exception if there are missing required fields or if the input value fails the validation.</p>",
       "exception":true
     },
     "Value":{"type":"string"},

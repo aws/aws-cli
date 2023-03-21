@@ -1443,6 +1443,40 @@
       },
       "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.</p> <p>The <code>EnableLogTypes</code> and <code>DisableLogTypes</code> arrays determine which logs will be exported (or not exported) to CloudWatch Logs.</p>"
     },
+    "ClusterPendingModifiedValues":{
+      "type":"structure",
+      "members":{
+        "PendingCloudwatchLogsExports":{
+          "shape":"PendingCloudwatchLogsExports",
+          "documentation":"<p>This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.</p>"
+        },
+        "DBClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The DBClusterIdentifier value for the DB cluster.</p>"
+        },
+        "IAMDatabaseAuthenticationEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The database engine version.</p>"
+        },
+        "BackupRetentionPeriod":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of days for which automatic DB snapshots are retained.</p>"
+        },
+        "AllocatedStorage":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The allocated storage size in gibibytes (GiB) for database engines. For Neptune, <code>AllocatedStorage</code> always returns 1, because Neptune DB cluster storage size isn't fixed, but instead automatically adjusts as needed.</p>"
+        },
+        "Iops":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        }
+      },
+      "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
+    },
     "CopyDBClusterParameterGroupMessage":{
       "type":"structure",
       "required":[
@@ -1810,7 +1844,8 @@
       "required":[
         "DBInstanceIdentifier",
         "DBInstanceClass",
-        "Engine"
+        "Engine",
+        "DBClusterIdentifier"
       ],
       "members":{
         "DBName":{
@@ -2288,6 +2323,10 @@
           "shape":"LogTypeList",
           "documentation":"<p>A list of log types that this DB cluster is configured to export to CloudWatch Logs.</p>"
         },
+        "PendingModifiedValues":{
+          "shape":"ClusterPendingModifiedValues",
+          "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
+        },
         "DeletionProtection":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether or not the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled.</p>"
@@ -2300,7 +2339,11 @@
           "shape":"TStamp",
           "documentation":"<p>Time at which the DB cluster will be automatically restarted.</p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfigurationInfo"}
+        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfigurationInfo"},
+        "GlobalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.</p>"
+        }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a> action.</p>",
       "wrapper":true

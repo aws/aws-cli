@@ -661,6 +661,12 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AccountIdFilterList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":30,
+      "min":1
+    },
     "AccountIdList":{
       "type":"list",
       "member":{"shape":"AccountId"},
@@ -955,6 +961,12 @@
         "ACTIVE",
         "PRIMARY_ACCOUNT_MISSING"
       ]
+    },
+    "BillingGroupStatusList":{
+      "type":"list",
+      "member":{"shape":"BillingGroupStatus"},
+      "max":2,
+      "min":1
     },
     "BillingGroupStatusReason":{"type":"string"},
     "BillingPeriod":{
@@ -1495,6 +1507,14 @@
         "EndBillingPeriod":{
           "shape":"BillingPeriod",
           "documentation":"<p>The end billing period of the custom line item version.</p>"
+        },
+        "Arn":{
+          "shape":"CustomLineItemArn",
+          "documentation":"<p> A list of custom line item Amazon Resource Names (ARNs) to retrieve information. </p>"
+        },
+        "StartTime":{
+          "shape":"Instant",
+          "documentation":"<p> The inclusive start time. </p>"
         }
       },
       "documentation":"<p>A representation of a custom line item version.</p>"
@@ -1685,6 +1705,10 @@
         "AccountId":{
           "shape":"AccountId",
           "documentation":"<p> The Amazon Web Services account ID to filter on. </p>"
+        },
+        "AccountIds":{
+          "shape":"AccountIdFilterList",
+          "documentation":"<p> The list of Amazon Web Services IDs to retrieve their associated billing group for a given time range. </p>"
         }
       },
       "documentation":"<p>The filter on the account ID of the linked account, or any of the following:</p> <p> <code>MONITORED</code>: linked accounts that are associated to billing groups.</p> <p> <code>UNMONITORED</code>: linked accounts that are not associated to billing groups.</p> <p> <code>Billing Group Arn</code>: linked accounts that are associated to the provided Billing Group Arn. </p>"
@@ -1773,6 +1797,10 @@
         "PricingPlan":{
           "shape":"PricingPlanFullArn",
           "documentation":"<p>The pricing plan Amazon Resource Names (ARNs) to retrieve information. </p>"
+        },
+        "Statuses":{
+          "shape":"BillingGroupStatusList",
+          "documentation":"<p> A list of billing groups to retrieve their current status for a specific time range </p>"
         }
       },
       "documentation":"<p>The filter that specifies the billing groups and pricing plans to retrieve billing group information. </p>"
@@ -2437,6 +2465,14 @@
         "Tiering":{
           "shape":"Tiering",
           "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
+        },
+        "UsageType":{
+          "shape":"UsageType",
+          "documentation":"<p> Usage type is the unit that each service uses to measure the usage of a specific type of resource.</p> <p>If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which usage type the <code>PricingRule</code> is modifying. For example, <code>USW2-BoxUsage:m2.2xlarge</code> describes an<code> M2 High Memory Double Extra Large</code> instance in the US West (Oregon) Region. <pre><code>&lt;/p&gt; </code></pre>"
+        },
+        "Operation":{
+          "shape":"Operation",
+          "documentation":"<p> Operation is the specific Amazon Web Services action covered by this line item. This describes the specific usage of the line item.</p> <p> If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which operation the <code>PricingRule</code> is modifying. For example, a value of <code>RunInstances:0202</code> indicates the operation of running an Amazon EC2 instance.</p>"
         }
       },
       "documentation":"<p> A representation of a pricing rule. </p>"
@@ -2453,7 +2489,8 @@
       "enum":[
         "GLOBAL",
         "SERVICE",
-        "BILLING_ENTITY"
+        "BILLING_ENTITY",
+        "SKU"
       ]
     },
     "PricingRuleType":{
@@ -3054,7 +3091,11 @@
         "ILLEGAL_MODIFIER_PERCENTAGE",
         "ILLEGAL_TYPE",
         "ILLEGAL_ENDED_BILLINGGROUP",
-        "ILLEGAL_TIERING_INPUT"
+        "ILLEGAL_TIERING_INPUT",
+        "ILLEGAL_OPERATION",
+        "ILLEGAL_USAGE_TYPE",
+        "INVALID_SKU_COMBO",
+        "INVALID_FILTER"
       ]
     }
   },

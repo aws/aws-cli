@@ -692,7 +692,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"DraftUploadOutOfSyncException"},
         {"shape":"ResourceAlreadyCheckedOutException"},
-        {"shape":"InvalidPasswordException"}
+        {"shape":"InvalidPasswordException"},
+        {"shape":"InvalidArgumentException"}
       ],
       "documentation":"<p>Creates a new document object and version object.</p> <p>The client specifies the parent folder ID and name of the document to upload. The ID is optionally specified when creating a new version of an existing document. This is the first step to upload a document. Next, upload the document to the URL returned from the call, and then call <a>UpdateDocumentVersion</a>.</p> <p>To cancel the document upload, call <a>AbortDocumentVersionUpload</a>.</p>"
     },
@@ -747,6 +748,23 @@
         {"shape":"UnauthorizedOperationException"}
       ],
       "documentation":"<p>Recovers a deleted version of an Amazon WorkDocs document.</p>"
+    },
+    "SearchResources":{
+      "name":"SearchResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/v1/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchResourcesRequest"},
+      "output":{"shape":"SearchResourcesResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"UnauthorizedResourceAccessException"},
+        {"shape":"UnauthorizedOperationException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Searches metadata and the content of folders, documents, document versions, and comments.</p>"
     },
     "UpdateDocument":{
       "name":"UpdateDocument",
@@ -1014,6 +1032,14 @@
         }
       }
     },
+    "AdditionalResponseFieldType":{
+      "type":"string",
+      "enum":["WEBURL"]
+    },
+    "AdditionalResponseFieldsList":{
+      "type":"list",
+      "member":{"shape":"AdditionalResponseFieldType"}
+    },
     "AuthenticationHeaderType":{
       "type":"string",
       "max":8199,
@@ -1103,6 +1129,10 @@
         "RecipientId":{
           "shape":"IdType",
           "documentation":"<p>The ID of the user being replied to.</p>"
+        },
+        "ContributorId":{
+          "shape":"IdType",
+          "documentation":"<p>The ID of the user who made the comment.</p>"
         }
       },
       "documentation":"<p>Describes the metadata of a comment.</p>"
@@ -1145,6 +1175,20 @@
       "documentation":"<p>Another operation is in progress on the resource that conflicts with the current operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ContentCategoryType":{
+      "type":"string",
+      "enum":[
+        "IMAGE",
+        "DOCUMENT",
+        "PDF",
+        "SPREADSHEET",
+        "PRESENTATION",
+        "AUDIO",
+        "VIDEO",
+        "SOURCE_CODE",
+        "OTHER"
+      ]
     },
     "CreateCommentRequest":{
       "type":"structure",
@@ -1426,6 +1470,20 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z0-9._+-/=][a-zA-Z0-9 ._+-/=]*"
+    },
+    "DateRangeType":{
+      "type":"structure",
+      "members":{
+        "StartValue":{
+          "shape":"TimestampType",
+          "documentation":"<p>Timestamp range start value (in epochs)</p>"
+        },
+        "EndValue":{
+          "shape":"TimestampType",
+          "documentation":"<p>Timestamp range end value (in epochs).</p>"
+        }
+      },
+      "documentation":"<p>Filters results based on timestamp range (in epochs).</p>"
     },
     "DeactivateUserRequest":{
       "type":"structure",
@@ -2419,6 +2477,52 @@
       "min":1,
       "pattern":"[\\w,]+"
     },
+    "Filters":{
+      "type":"structure",
+      "members":{
+        "TextLocales":{
+          "shape":"TextLocaleTypeList",
+          "documentation":"<p>Filters by the locale of the content or comment.</p>"
+        },
+        "ContentCategories":{
+          "shape":"SearchContentCategoryTypeList",
+          "documentation":"<p>Filters by content category.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"SearchResourceTypeList",
+          "documentation":"<p>Filters based on entity type.</p>"
+        },
+        "Labels":{
+          "shape":"SearchLabelList",
+          "documentation":"<p>Filter by labels using exact match.</p>"
+        },
+        "Principals":{
+          "shape":"SearchPrincipalTypeList",
+          "documentation":"<p>Filter based on UserIds or GroupIds.</p>"
+        },
+        "AncestorIds":{
+          "shape":"SearchAncestorIdList",
+          "documentation":"<p>Filter based on resource’s path.</p>"
+        },
+        "SearchCollectionTypes":{
+          "shape":"SearchCollectionTypeList",
+          "documentation":"<p>Filter based on file groupings.</p>"
+        },
+        "SizeRange":{
+          "shape":"LongRangeType",
+          "documentation":"<p>Filter based on size (in bytes).</p>"
+        },
+        "CreatedRange":{
+          "shape":"DateRangeType",
+          "documentation":"<p>Filter based on resource’s creation timestamp.</p>"
+        },
+        "ModifiedRange":{
+          "shape":"DateRangeType",
+          "documentation":"<p>Filter based on resource’s modified timestamp.</p>"
+        }
+      },
+      "documentation":"<p>Filters results based on entity metadata.</p>"
+    },
     "FolderContentType":{
       "type":"string",
       "enum":[
@@ -2909,6 +3013,42 @@
       "error":{"httpStatusCode":401},
       "exception":true
     },
+    "LanguageCodeType":{
+      "type":"string",
+      "enum":[
+        "AR",
+        "BG",
+        "BN",
+        "DA",
+        "DE",
+        "CS",
+        "EL",
+        "EN",
+        "ES",
+        "FA",
+        "FI",
+        "FR",
+        "HI",
+        "HU",
+        "ID",
+        "IT",
+        "JA",
+        "KO",
+        "LT",
+        "LV",
+        "NL",
+        "NO",
+        "PT",
+        "RO",
+        "RU",
+        "SV",
+        "SW",
+        "TH",
+        "TR",
+        "ZH",
+        "DEFAULT"
+      ]
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -2939,6 +3079,21 @@
         "default"
       ]
     },
+    "LongRangeType":{
+      "type":"structure",
+      "members":{
+        "StartValue":{
+          "shape":"LongType",
+          "documentation":"<p>The size start range (in bytes).</p>"
+        },
+        "EndValue":{
+          "shape":"LongType",
+          "documentation":"<p>The size end range (in bytes).</p>"
+        }
+      },
+      "documentation":"<p>Filter based on size (in bytes).</p>"
+    },
+    "LongType":{"type":"long"},
     "MarkerType":{
       "type":"string",
       "max":2048,
@@ -2950,6 +3105,12 @@
       "max":2048,
       "min":0,
       "sensitive":true
+    },
+    "NextMarkerType":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[\\d]+"
     },
     "NotificationOptions":{
       "type":"structure",
@@ -2964,6 +3125,16 @@
         }
       },
       "documentation":"<p>Set of options which defines notification preferences of given action.</p>"
+    },
+    "OrderByFieldType":{
+      "type":"string",
+      "enum":[
+        "RELEVANCE",
+        "NAME",
+        "SIZE",
+        "CREATED_TIMESTAMP",
+        "MODIFIED_TIMESTAMP"
+      ]
     },
     "OrderType":{
       "type":"string",
@@ -3049,6 +3220,15 @@
     "PrincipalList":{
       "type":"list",
       "member":{"shape":"Principal"}
+    },
+    "PrincipalRoleType":{
+      "type":"string",
+      "enum":[
+        "VIEWER",
+        "CONTRIBUTOR",
+        "OWNER",
+        "COOWNER"
+      ]
     },
     "PrincipalType":{
       "type":"string",
@@ -3186,7 +3366,8 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[\\u0020-\\u202D\\u202F-\\uFFFF]+"
+      "pattern":"[\\u0020-\\u202D\\u202F-\\uFFFF]+",
+      "sensitive":true
     },
     "ResourcePath":{
       "type":"structure",
@@ -3239,6 +3420,57 @@
         "DOCUMENT"
       ]
     },
+    "ResponseItem":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ResponseItemType",
+          "documentation":"<p>The type of item being returned.</p>"
+        },
+        "WebUrl":{
+          "shape":"ResponseItemWebUrl",
+          "documentation":"<p>The webUrl of the item being returned.</p>"
+        },
+        "DocumentMetadata":{
+          "shape":"DocumentMetadata",
+          "documentation":"<p>The document that matches the query.</p>"
+        },
+        "FolderMetadata":{
+          "shape":"FolderMetadata",
+          "documentation":"<p>The folder that matches the query.</p>"
+        },
+        "CommentMetadata":{
+          "shape":"CommentMetadata",
+          "documentation":"<p>The comment that matches the query.</p>"
+        },
+        "DocumentVersionMetadata":{
+          "shape":"DocumentVersionMetadata",
+          "documentation":"<p>The document version that matches the metadata.</p>"
+        }
+      },
+      "documentation":"<p>List of Documents, Folders, Comments, and Document Versions matching the query.</p>"
+    },
+    "ResponseItemType":{
+      "type":"string",
+      "enum":[
+        "DOCUMENT",
+        "FOLDER",
+        "COMMENT",
+        "DOCUMENT_VERSION"
+      ]
+    },
+    "ResponseItemWebUrl":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\u0020-\\uFFFF]+",
+      "sensitive":true
+    },
+    "ResponseItemsList":{
+      "type":"list",
+      "member":{"shape":"ResponseItem"},
+      "max":100
+    },
     "RestoreDocumentVersionsRequest":{
       "type":"structure",
       "required":["DocumentId"],
@@ -3273,11 +3505,85 @@
         "COOWNER"
       ]
     },
+    "SearchAncestorId":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchAncestorIdList":{
+      "type":"list",
+      "member":{"shape":"SearchAncestorId"},
+      "max":10
+    },
+    "SearchCollectionType":{
+      "type":"string",
+      "enum":[
+        "OWNED",
+        "SHARED_WITH_ME"
+      ]
+    },
+    "SearchCollectionTypeList":{
+      "type":"list",
+      "member":{"shape":"SearchCollectionType"},
+      "max":2
+    },
+    "SearchContentCategoryTypeList":{
+      "type":"list",
+      "member":{"shape":"ContentCategoryType"},
+      "max":9
+    },
+    "SearchLabel":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchLabelList":{
+      "type":"list",
+      "member":{"shape":"SearchLabel"},
+      "max":10
+    },
     "SearchMarkerType":{
       "type":"string",
       "max":12288,
       "min":1,
       "pattern":"[\\u0000-\\u00FF]+"
+    },
+    "SearchPrincipalRoleList":{
+      "type":"list",
+      "member":{"shape":"PrincipalRoleType"},
+      "max":4
+    },
+    "SearchPrincipalType":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"IdType",
+          "documentation":"<p>UserIds or GroupIds.</p>"
+        },
+        "Roles":{
+          "shape":"SearchPrincipalRoleList",
+          "documentation":"<p>The Role of a User or Group.</p>"
+        }
+      },
+      "documentation":"<p>Filter based on UserIds or GroupIds.</p>"
+    },
+    "SearchPrincipalTypeList":{
+      "type":"list",
+      "member":{"shape":"SearchPrincipalType"},
+      "max":10
+    },
+    "SearchQueryScopeType":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "CONTENT"
+      ]
+    },
+    "SearchQueryScopeTypeList":{
+      "type":"list",
+      "member":{"shape":"SearchQueryScopeType"},
+      "max":2
     },
     "SearchQueryType":{
       "type":"string",
@@ -3285,6 +3591,100 @@
       "min":1,
       "pattern":"[\\u0020-\\uFFFF]+",
       "sensitive":true
+    },
+    "SearchResourceType":{
+      "type":"string",
+      "enum":[
+        "FOLDER",
+        "DOCUMENT",
+        "COMMENT",
+        "DOCUMENT_VERSION"
+      ]
+    },
+    "SearchResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"SearchResourceType"},
+      "max":4
+    },
+    "SearchResourcesRequest":{
+      "type":"structure",
+      "members":{
+        "AuthenticationToken":{
+          "shape":"AuthenticationHeaderType",
+          "documentation":"<p>Amazon WorkDocs authentication token. Not required when using Amazon Web Services administrator credentials to access the API.</p>",
+          "location":"header",
+          "locationName":"Authentication"
+        },
+        "QueryText":{
+          "shape":"SearchQueryType",
+          "documentation":"<p>The String to search for. Searches across different text fields based on request parameters. Use double quotes around the query string for exact phrase matches.</p>"
+        },
+        "QueryScopes":{
+          "shape":"SearchQueryScopeTypeList",
+          "documentation":"<p>Filter based on the text field type. A Folder has only a name and no content. A Comment has only content and no name. A Document or Document Version has a name and content</p>"
+        },
+        "OrganizationId":{
+          "shape":"IdType",
+          "documentation":"<p>Filters based on the resource owner OrgId. This is a mandatory parameter when using Admin SigV4 credentials.</p>"
+        },
+        "AdditionalResponseFields":{
+          "shape":"AdditionalResponseFieldsList",
+          "documentation":"<p>A list of attributes to include in the response. Used to request fields that are not normally returned in a standard response.</p>"
+        },
+        "Filters":{
+          "shape":"Filters",
+          "documentation":"<p>Filters results based on entity metadata.</p>"
+        },
+        "OrderBy":{
+          "shape":"SearchResultSortList",
+          "documentation":"<p>Order by results in one or more categories.</p>"
+        },
+        "Limit":{
+          "shape":"SearchResultsLimitType",
+          "documentation":"<p>Max results count per page.</p>"
+        },
+        "Marker":{
+          "shape":"NextMarkerType",
+          "documentation":"<p>The marker for the next set of results.</p>"
+        }
+      }
+    },
+    "SearchResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ResponseItemsList",
+          "documentation":"<p>List of Documents, Folders, Comments, and Document Versions matching the query.</p>"
+        },
+        "Marker":{
+          "shape":"NextMarkerType",
+          "documentation":"<p>The marker to use when requesting the next set of results. If there are no additional results, the string is empty.</p>"
+        }
+      }
+    },
+    "SearchResultSortList":{
+      "type":"list",
+      "member":{"shape":"SearchSortResult"},
+      "max":1
+    },
+    "SearchResultsLimitType":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "SearchSortResult":{
+      "type":"structure",
+      "members":{
+        "Field":{
+          "shape":"OrderByFieldType",
+          "documentation":"<p>Sort search results based on this field name.</p>"
+        },
+        "Order":{
+          "shape":"SortOrder",
+          "documentation":"<p>Sort direction.</p>"
+        }
+      },
+      "documentation":"<p>The result of the sort operation.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -3381,6 +3781,13 @@
       "value":{"shape":"HeaderValueType"}
     },
     "SizeType":{"type":"long"},
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
     "StorageLimitExceededException":{
       "type":"structure",
       "members":{
@@ -3458,6 +3865,11 @@
     "SubscriptionType":{
       "type":"string",
       "enum":["ALL"]
+    },
+    "TextLocaleTypeList":{
+      "type":"list",
+      "member":{"shape":"LanguageCodeType"},
+      "max":1
     },
     "TimeZoneIdType":{
       "type":"string",
@@ -3739,7 +4151,8 @@
     "UserAttributeValueType":{
       "type":"string",
       "max":64,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "UserFilterType":{
       "type":"string",
@@ -3830,7 +4243,8 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\w\\-+.]+(@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]+)?"
+      "pattern":"[\\w\\-+.]+(@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]+)?",
+      "sensitive":true
     }
   },
   "documentation":"<p>The Amazon WorkDocs API is designed for the following use cases:</p> <ul> <li> <p>File Migration: File migration applications are supported for users who want to migrate their files from an on-premises or off-premises file system or service. Users can insert files into a user directory structure, as well as allow for basic metadata changes, such as modifications to the permissions of files.</p> </li> <li> <p>Security: Support security applications are supported for users who have additional security needs, such as antivirus or data loss prevention. The API actions, along with CloudTrail, allow these applications to detect when changes occur in Amazon WorkDocs. Then, the application can take the necessary actions and replace the target file. If the target file violates the policy, the application can also choose to email the user.</p> </li> <li> <p>eDiscovery/Analytics: General administrative applications are supported, such as eDiscovery and analytics. These applications can choose to mimic or record the actions in an Amazon WorkDocs site, along with CloudTrail, to replicate data for eDiscovery, backup, or analytical applications.</p> </li> </ul> <p>All Amazon WorkDocs API actions are Amazon authenticated and certificate-signed. They not only require the use of the Amazon Web Services SDK, but also allow for the exclusive use of IAM users and roles to help facilitate access, trust, and permission policies. By creating a role and allowing an IAM user to access the Amazon WorkDocs site, the IAM user gains full administrative visibility into the entire Amazon WorkDocs site (or as set in the IAM policy). This includes, but is not limited to, the ability to modify file permissions and upload any file to any user. This allows developers to perform the three use cases above, as well as give users the ability to grant access on a selective basis using the IAM model.</p> <note> <p>The pricing for Amazon WorkDocs APIs varies depending on the API call type for these actions:</p> <ul> <li> <p> <code>READ (Get*)</code> </p> </li> <li> <p> <code>WRITE (Activate*, Add*, Create*, Deactivate*, Initiate*, Update*)</code> </p> </li> <li> <p> <code>LIST (Describe*)</code> </p> </li> <li> <p> <code>DELETE*, CANCEL</code> </p> </li> </ul> <p>For information about Amazon WorkDocs API pricing, see <a href=\"https://aws.amazon.com/workdocs/pricing/\">Amazon WorkDocs Pricing</a>.</p> </note>"

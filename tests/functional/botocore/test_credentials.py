@@ -19,7 +19,7 @@ import time
 import mock
 import tempfile
 import shutil
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import sys
 
 import pytest
@@ -47,8 +47,8 @@ from botocore.stub import Stubber
 from botocore.tokens import SSOTokenProvider
 from botocore.utils import datetime2timestamp
 
-TIME_IN_ONE_HOUR = datetime.utcnow() + timedelta(hours=1)
-TIME_IN_SIX_MONTHS = datetime.utcnow() + timedelta(hours=4320)
+TIME_IN_ONE_HOUR = datetime.now(tz=timezone.utc) + timedelta(hours=1)
+TIME_IN_SIX_MONTHS = datetime.now(tz=timezone.utc) + timedelta(hours=4320)
 
 
 class TestCredentialRefreshRaces(unittest.TestCase):

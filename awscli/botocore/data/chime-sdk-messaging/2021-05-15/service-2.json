@@ -288,6 +288,23 @@
       ],
       "documentation":"<p>Deletes a channel moderator.</p> <note> <p>The <code>x-amz-chime-bearer</code> request header is mandatory. Use the <code>AppInstanceUserArn</code> of the user that makes the API call as the value in the header.</p> </note>"
     },
+    "DeleteMessagingStreamingConfigurations":{
+      "name":"DeleteMessagingStreamingConfigurations",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instances/{appInstanceArn}/streaming-configurations",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMessagingStreamingConfigurationsRequest"},
+      "errors":[
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes the streaming configurations for an <code>AppInstance</code>. For more information, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/streaming-export.html\">Streaming messaging data</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p>"
+    },
     "DescribeChannel":{
       "name":"DescribeChannel",
       "http":{
@@ -520,6 +537,26 @@
       ],
       "documentation":"<p>The details of the endpoint for the messaging session.</p>"
     },
+    "GetMessagingStreamingConfigurations":{
+      "name":"GetMessagingStreamingConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instances/{appInstanceArn}/streaming-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMessagingStreamingConfigurationsRequest"},
+      "output":{"shape":"GetMessagingStreamingConfigurationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves the data streaming configuration for an <code>AppInstance</code>. For more information, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/streaming-export.html\">Streaming messaging data</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p>"
+    },
     "ListChannelBans":{
       "name":"ListChannelBans",
       "http":{
@@ -748,6 +785,27 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Sets the membership preferences of an <code>AppInstanceUser</code> for the specified channel. The <code>AppInstanceUser</code> must be a member of the channel. Only the <code>AppInstanceUser</code> who owns the membership can set preferences. Users in the <code>AppInstanceAdmin</code> and channel moderator roles can't set preferences for other users. Banned users can't set membership preferences for the channel from which they are banned.</p>"
+    },
+    "PutMessagingStreamingConfigurations":{
+      "name":"PutMessagingStreamingConfigurations",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instances/{appInstanceArn}/streaming-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"PutMessagingStreamingConfigurationsRequest"},
+      "output":{"shape":"PutMessagingStreamingConfigurationsResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Sets the data streaming configuration for an <code>AppInstance</code>. For more information, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/streaming-export.html\">Streaming messaging data</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p>"
     },
     "RedactChannelMessage":{
       "name":"RedactChannelMessage",
@@ -2118,6 +2176,18 @@
         }
       }
     },
+    "DeleteMessagingStreamingConfigurationsRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the streaming configurations being deleted.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
     "DescribeChannelBanRequest":{
       "type":"structure",
       "required":[
@@ -2596,6 +2666,27 @@
         "Endpoint":{
           "shape":"MessagingSessionEndpoint",
           "documentation":"<p>The endpoint returned in the response.</p>"
+        }
+      }
+    },
+    "GetMessagingStreamingConfigurationsRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the streaming configurations.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "GetMessagingStreamingConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "StreamingConfigurations":{
+          "shape":"StreamingConfigurationList",
+          "documentation":"<p>The streaming settings.</p>"
         }
       }
     },
@@ -3223,6 +3314,13 @@
       "min":1,
       "pattern":"[-_a-zA-Z0-9]*"
     },
+    "MessagingDataType":{
+      "type":"string",
+      "enum":[
+        "Channel",
+        "ChannelMessage"
+      ]
+    },
     "MessagingSessionEndpoint":{
       "type":"structure",
       "members":{
@@ -3422,6 +3520,34 @@
         "Preferences":{
           "shape":"ChannelMembershipPreferences",
           "documentation":"<p>The ARN and metadata of the member being added.</p>"
+        }
+      }
+    },
+    "PutMessagingStreamingConfigurationsRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceArn",
+        "StreamingConfigurations"
+      ],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the streaming configuration.</p>",
+          "location":"uri",
+          "locationName":"appInstanceArn"
+        },
+        "StreamingConfigurations":{
+          "shape":"StreamingConfigurationList",
+          "documentation":"<p>The streaming configurations.</p>"
+        }
+      }
+    },
+    "PutMessagingStreamingConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "StreamingConfigurations":{
+          "shape":"StreamingConfigurationList",
+          "documentation":"<p>The requested streaming configurations.</p>"
         }
       }
     },
@@ -3697,6 +3823,30 @@
       "max":256,
       "min":0,
       "pattern":"[\\s\\S]*"
+    },
+    "StreamingConfiguration":{
+      "type":"structure",
+      "required":[
+        "DataType",
+        "ResourceArn"
+      ],
+      "members":{
+        "DataType":{
+          "shape":"MessagingDataType",
+          "documentation":"<p>The data type of the configuration.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the resource in the configuration. </p>"
+        }
+      },
+      "documentation":"<p>The configuration for connecting a messaging stream to Amazon Kinesis.</p>"
+    },
+    "StreamingConfigurationList":{
+      "type":"list",
+      "member":{"shape":"StreamingConfiguration"},
+      "max":2,
+      "min":1
     },
     "String":{"type":"string"},
     "SubChannelId":{

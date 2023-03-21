@@ -120,7 +120,7 @@
       },
       "input":{"shape":"AllocateIpamPoolCidrRequest"},
       "output":{"shape":"AllocateIpamPoolCidrResult"},
-      "documentation":"<p>Allocate a CIDR from an IPAM pool. In IPAM, an allocation is a CIDR assignment from an IPAM pool to another IPAM pool or to a resource. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/allocate-cidrs-ipam.html\">Allocate CIDRs</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+      "documentation":"<p>Allocate a CIDR from an IPAM pool. In IPAM, an allocation is a CIDR assignment from an IPAM pool to another IPAM pool or to a resource. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/allocate-cidrs-ipam.html\">Allocate CIDRs</a> in the <i>Amazon VPC IPAM User Guide</i>.</p> <note> <p>This action creates an allocation with strong consistency. The returned CIDR will not overlap with any other allocations from the same pool.</p> </note>"
     },
     "ApplySecurityGroupsToClientVpnTargetNetwork":{
       "name":"ApplySecurityGroupsToClientVpnTargetNetwork",
@@ -905,7 +905,7 @@
       },
       "input":{"shape":"CreateNetworkInsightsPathRequest"},
       "output":{"shape":"CreateNetworkInsightsPathResult"},
-      "documentation":"<p>Creates a path to analyze for reachability.</p> <p>Reachability Analyzer enables you to analyze and debug network reachability between two resources in your virtual private cloud (VPC). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/reachability/\">What is Reachability Analyzer</a>.</p>"
+      "documentation":"<p>Creates a path to analyze for reachability.</p> <p>Reachability Analyzer enables you to analyze and debug network reachability between two resources in your virtual private cloud (VPC). For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/reachability/\">Reachability Analyzer Guide</a>.</p>"
     },
     "CreateNetworkInterface":{
       "name":"CreateNetworkInterface",
@@ -1015,7 +1015,7 @@
       },
       "input":{"shape":"CreateSnapshotRequest"},
       "output":{"shape":"Snapshot"},
-      "documentation":"<p>Creates a snapshot of an EBS volume and stores it in Amazon S3. You can use snapshots for backups, to make copies of EBS volumes, and to save data before shutting down an instance.</p> <p>You can create snapshots of volumes in a Region and volumes on an Outpost. If you create a snapshot of a volume in a Region, the snapshot must be stored in the same Region as the volume. If you create a snapshot of a volume on an Outpost, the snapshot can be stored on the same Outpost as the volume, or in the Region for that Outpost.</p> <p>When a snapshot is created, any Amazon Web Services Marketplace product codes that are associated with the source volume are propagated to the snapshot.</p> <p>You can take a snapshot of an attached volume that is in use. However, snapshots only capture data that has been written to your Amazon EBS volume at the time the snapshot command is issued; this might exclude any data that has been cached by any applications or the operating system. If you can pause any file systems on the volume long enough to take a snapshot, your snapshot should be complete. However, if you cannot pause all file writes to the volume, you should unmount the volume from within the instance, issue the snapshot command, and then remount the volume to ensure a consistent and complete snapshot. You may remount and use your volume while the snapshot status is <code>pending</code>.</p> <p>To create a snapshot for Amazon EBS volumes that serve as root devices, you should stop the instance before taking the snapshot.</p> <p>Snapshots that are taken from encrypted volumes are automatically encrypted. Volumes that are created from encrypted snapshots are also automatically encrypted. Your encrypted volumes and any associated snapshots always remain protected.</p> <p>You can tag your snapshots during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html\">Amazon Elastic Block Store</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html\">Amazon EBS encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates a snapshot of an EBS volume and stores it in Amazon S3. You can use snapshots for backups, to make copies of EBS volumes, and to save data before shutting down an instance.</p> <p>You can create snapshots of volumes in a Region and volumes on an Outpost. If you create a snapshot of a volume in a Region, the snapshot must be stored in the same Region as the volume. If you create a snapshot of a volume on an Outpost, the snapshot can be stored on the same Outpost as the volume, or in the Region for that Outpost.</p> <p>When a snapshot is created, any Amazon Web Services Marketplace product codes that are associated with the source volume are propagated to the snapshot.</p> <p>You can take a snapshot of an attached volume that is in use. However, snapshots only capture data that has been written to your Amazon EBS volume at the time the snapshot command is issued; this might exclude any data that has been cached by any applications or the operating system. If you can pause any file systems on the volume long enough to take a snapshot, your snapshot should be complete. However, if you cannot pause all file writes to the volume, you should unmount the volume from within the instance, issue the snapshot command, and then remount the volume to ensure a consistent and complete snapshot. You may remount and use your volume while the snapshot status is <code>pending</code>.</p> <p>When you create a snapshot for an EBS volume that serves as a root device, we recommend that you stop the instance before taking the snapshot.</p> <p>Snapshots that are taken from encrypted volumes are automatically encrypted. Volumes that are created from encrypted snapshots are also automatically encrypted. Your encrypted volumes and any associated snapshots always remain protected.</p> <p>You can tag your snapshots during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html\">Amazon Elastic Block Store</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html\">Amazon EBS encryption</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "CreateSnapshots":{
       "name":"CreateSnapshots",
@@ -4254,7 +4254,7 @@
       },
       "input":{"shape":"GetIpamPoolAllocationsRequest"},
       "output":{"shape":"GetIpamPoolAllocationsResult"},
-      "documentation":"<p>Get a list of all the CIDR allocations in an IPAM pool.</p>"
+      "documentation":"<p>Get a list of all the CIDR allocations in an IPAM pool.</p> <note> <p>If you use this action after <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AllocateIpamPoolCidr.html\">AllocateIpamPoolCidr</a> or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ReleaseIpamPoolAllocation.html\">ReleaseIpamPoolAllocation</a>, note that all EC2 API actions follow an <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/query-api-troubleshooting.html#eventual-consistency\">eventual consistency</a> model.</p> </note>"
     },
     "GetIpamPoolCidrs":{
       "name":"GetIpamPoolCidrs",
@@ -5413,7 +5413,7 @@
       },
       "input":{"shape":"ReleaseIpamPoolAllocationRequest"},
       "output":{"shape":"ReleaseIpamPoolAllocationResult"},
-      "documentation":"<p>Release an allocation within an IPAM pool. You can only use this action to release manual allocations. To remove an allocation for a resource without deleting the resource, set its monitored state to false using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyIpamResourceCidr.html\">ModifyIpamResourceCidr</a>. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/release-pool-alloc-ipam.html\">Release an allocation</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+      "documentation":"<p>Release an allocation within an IPAM pool. You can only use this action to release manual allocations. To remove an allocation for a resource without deleting the resource, set its monitored state to false using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyIpamResourceCidr.html\">ModifyIpamResourceCidr</a>. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/release-pool-alloc-ipam.html\">Release an allocation</a> in the <i>Amazon VPC IPAM User Guide</i>. </p> <note> <p>All EC2 API actions follow an <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/query-api-troubleshooting.html#eventual-consistency\">eventual consistency</a> model.</p> </note>"
     },
     "ReplaceIamInstanceProfileAssociation":{
       "name":"ReplaceIamInstanceProfileAssociation",
@@ -6417,16 +6417,46 @@
       "members":{
         "AdditionalDetailType":{
           "shape":"String",
-          "documentation":"<p>The information type.</p>",
+          "documentation":"<p>The additional detail code.</p>",
           "locationName":"additionalDetailType"
         },
         "Component":{
           "shape":"AnalysisComponent",
           "documentation":"<p>The path component.</p>",
           "locationName":"component"
+        },
+        "VpcEndpointService":{
+          "shape":"AnalysisComponent",
+          "documentation":"<p>The VPC endpoint service.</p>",
+          "locationName":"vpcEndpointService"
+        },
+        "RuleOptions":{
+          "shape":"RuleOptionList",
+          "documentation":"<p>The rule options.</p>",
+          "locationName":"ruleOptionSet"
+        },
+        "RuleGroupTypePairs":{
+          "shape":"RuleGroupTypePairList",
+          "documentation":"<p>The rule group type.</p>",
+          "locationName":"ruleGroupTypePairSet"
+        },
+        "RuleGroupRuleOptionsPairs":{
+          "shape":"RuleGroupRuleOptionsPairList",
+          "documentation":"<p>The rule options.</p>",
+          "locationName":"ruleGroupRuleOptionsPairSet"
+        },
+        "ServiceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the VPC endpoint service.</p>",
+          "locationName":"serviceName"
+        },
+        "LoadBalancers":{
+          "shape":"AnalysisComponentList",
+          "documentation":"<p>The load balancers.</p>",
+          "locationName":"loadBalancerSet"
         }
       },
-      "documentation":"<p>Describes an additional detail for a path analysis.</p>"
+      "documentation":"<p>Describes an additional detail for a path analysis. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/reachability/additional-detail-codes.html\">Reachability Analyzer additional detail codes</a>.</p>"
     },
     "AdditionalDetailList":{
       "type":"list",
@@ -7162,6 +7192,21 @@
           "shape":"String",
           "documentation":"<p>The state. The following are the possible values:</p> <ul> <li> <p>active</p> </li> <li> <p>blackhole</p> </li> </ul>",
           "locationName":"state"
+        },
+        "CarrierGatewayId":{
+          "shape":"String",
+          "documentation":"<p>The ID of a carrier gateway.</p>",
+          "locationName":"carrierGatewayId"
+        },
+        "CoreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a core network.</p>",
+          "locationName":"coreNetworkArn"
+        },
+        "LocalGatewayId":{
+          "shape":"String",
+          "documentation":"<p>The ID of a local gateway.</p>",
+          "locationName":"localGatewayId"
         }
       },
       "documentation":"<p>Describes a route table route.</p>"
@@ -13144,26 +13189,25 @@
       "type":"structure",
       "required":[
         "Source",
-        "Destination",
         "Protocol",
         "ClientToken"
       ],
       "members":{
         "SourceIp":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the Amazon Web Services resource that is the source of the path.</p>"
+          "documentation":"<p>The IP address of the source.</p>"
         },
         "DestinationIp":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the Amazon Web Services resource that is the destination of the path.</p>"
+          "documentation":"<p>The IP address of the destination.</p>"
         },
         "Source":{
           "shape":"NetworkInsightsResourceId",
-          "documentation":"<p>The Amazon Web Services resource that is the source of the path.</p>"
+          "documentation":"<p>The ID or ARN of the source. If the resource is in another account, you must specify an ARN.</p>"
         },
         "Destination":{
           "shape":"NetworkInsightsResourceId",
-          "documentation":"<p>The Amazon Web Services resource that is the destination of the path.</p>"
+          "documentation":"<p>The ID or ARN of the destination. If the resource is in another account, you must specify an ARN.</p>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -13186,6 +13230,14 @@
           "shape":"String",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "FilterAtSource":{
+          "shape":"PathRequestFilter",
+          "documentation":"<p>Scopes the analysis to network paths that match specific filters at the source. If you specify this parameter, you can't specify the parameters for the source IP address or the destination port.</p>"
+        },
+        "FilterAtDestination":{
+          "shape":"PathRequestFilter",
+          "documentation":"<p>Scopes the analysis to network paths that match specific filters at the destination. If you specify this parameter, you can't specify the parameter for the destination IP address.</p>"
         }
       }
     },
@@ -13664,7 +13716,7 @@
       "members":{
         "Description":{
           "shape":"String",
-          "documentation":"<p>A description for the security group. This is informational only.</p> <p>Constraints: Up to 255 characters in length</p> <p>Constraints for EC2-Classic: ASCII characters</p> <p>Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&amp;;{}!$*</p>",
+          "documentation":"<p>A description for the security group.</p> <p>Constraints: Up to 255 characters in length</p> <p>Constraints for EC2-Classic: ASCII characters</p> <p>Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&amp;;{}!$*</p>",
           "locationName":"GroupDescription"
         },
         "GroupName":{
@@ -21179,7 +21231,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters. The following are the possible values:</p> <ul> <li> <p>destination - The ID of the resource.</p> </li> <li> <p>destination-port - The destination port.</p> </li> <li> <p>protocol - The protocol.</p> </li> <li> <p>source - The ID of the resource.</p> </li> </ul>",
+          "documentation":"<p>The filters. The following are the possible values:</p> <ul> <li> <p>destination - The ID of the resource.</p> </li> <li> <p>filter-at-source.source-address - The source IPv4 address at the source.</p> </li> <li> <p>filter-at-source.source-port-range - The source port range at the source.</p> </li> <li> <p>filter-at-source.destination-address - The destination IPv4 address at the source.</p> </li> <li> <p>filter-at-source.destination-port-range - The destination port range at the source.</p> </li> <li> <p>filter-at-destination.source-address - The source IPv4 address at the destination.</p> </li> <li> <p>filter-at-destination.source-port-range - The source port range at the destination.</p> </li> <li> <p>filter-at-destination.destination-address - The destination IPv4 address at the destination.</p> </li> <li> <p>filter-at-destination.destination-port-range - The destination port range at the destination.</p> </li> <li> <p>protocol - The protocol.</p> </li> <li> <p>source - The ID of the resource.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -25518,7 +25570,7 @@
           "locationName":"format"
         },
         "ImportManifestUrl":{
-          "shape":"String",
+          "shape":"ImportManifestUrl",
           "documentation":"<p>A presigned URL for the import manifest stored in Amazon S3 and presented here as an Amazon S3 presigned URL. For information about creating a presigned URL for an Amazon S3 object, read the \"Query String Request Authentication Alternative\" section of the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html\">Authenticating REST Requests</a> topic in the <i>Amazon Simple Storage Service Developer Guide</i>.</p> <p>For information about the import manifest referenced by this API action, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/manifest.html\">VM Import Manifest</a>.</p>",
           "locationName":"importManifestUrl"
         }
@@ -27104,6 +27156,16 @@
           "shape":"ComponentRegion",
           "documentation":"<p>The Region for the component.</p>",
           "locationName":"componentRegion"
+        },
+        "FirewallStatelessRule":{
+          "shape":"FirewallStatelessRule",
+          "documentation":"<p>The Network Firewall stateless rule.</p>",
+          "locationName":"firewallStatelessRule"
+        },
+        "FirewallStatefulRule":{
+          "shape":"FirewallStatefulRule",
+          "documentation":"<p>The Network Firewall stateful rule.</p>",
+          "locationName":"firewallStatefulRule"
         }
       },
       "documentation":"<p>Describes an explanation code for an unreachable path. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/reachability/explanation-codes.html\">Reachability Analyzer explanation codes</a>.</p>"
@@ -27712,6 +27774,22 @@
         "locationName":"Filter"
       }
     },
+    "FilterPortRange":{
+      "type":"structure",
+      "members":{
+        "FromPort":{
+          "shape":"Port",
+          "documentation":"<p>The first port in the range.</p>",
+          "locationName":"fromPort"
+        },
+        "ToPort":{
+          "shape":"Port",
+          "documentation":"<p>The last port in the range.</p>",
+          "locationName":"toPort"
+        }
+      },
+      "documentation":"<p>Describes a port range.</p>"
+    },
     "FindingsFound":{
       "type":"string",
       "enum":[
@@ -27719,6 +27797,98 @@
         "false",
         "unknown"
       ]
+    },
+    "FirewallStatefulRule":{
+      "type":"structure",
+      "members":{
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the stateful rule group.</p>",
+          "locationName":"ruleGroupArn"
+        },
+        "Sources":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source IP addresses, in CIDR notation.</p>",
+          "locationName":"sourceSet"
+        },
+        "Destinations":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination IP addresses, in CIDR notation.</p>",
+          "locationName":"destinationSet"
+        },
+        "SourcePorts":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The source ports.</p>",
+          "locationName":"sourcePortSet"
+        },
+        "DestinationPorts":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The destination ports.</p>",
+          "locationName":"destinationPortSet"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol.</p>",
+          "locationName":"protocol"
+        },
+        "RuleAction":{
+          "shape":"String",
+          "documentation":"<p>The rule action. The possible values are <code>pass</code>, <code>drop</code>, and <code>alert</code>.</p>",
+          "locationName":"ruleAction"
+        },
+        "Direction":{
+          "shape":"String",
+          "documentation":"<p>The direction. The possible values are <code>FORWARD</code> and <code>ANY</code>.</p>",
+          "locationName":"direction"
+        }
+      },
+      "documentation":"<p>Describes a stateful rule.</p>"
+    },
+    "FirewallStatelessRule":{
+      "type":"structure",
+      "members":{
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the stateless rule group.</p>",
+          "locationName":"ruleGroupArn"
+        },
+        "Sources":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The source IP addresses, in CIDR notation.</p>",
+          "locationName":"sourceSet"
+        },
+        "Destinations":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The destination IP addresses, in CIDR notation.</p>",
+          "locationName":"destinationSet"
+        },
+        "SourcePorts":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The source ports.</p>",
+          "locationName":"sourcePortSet"
+        },
+        "DestinationPorts":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The destination ports.</p>",
+          "locationName":"destinationPortSet"
+        },
+        "Protocols":{
+          "shape":"ProtocolIntList",
+          "documentation":"<p>The protocols.</p>",
+          "locationName":"protocolSet"
+        },
+        "RuleAction":{
+          "shape":"String",
+          "documentation":"<p>The rule action. The possible values are <code>pass</code>, <code>drop</code>, and <code>forward_to_site</code>.</p>",
+          "locationName":"ruleAction"
+        },
+        "Priority":{
+          "shape":"Priority",
+          "documentation":"<p>The rule priority.</p>",
+          "locationName":"priority"
+        }
+      },
+      "documentation":"<p>Describes a stateless rule.</p>"
     },
     "FleetActivityStatus":{
       "type":"string",
@@ -31912,6 +32082,10 @@
           "locationName":"tagSet"
         }
       }
+    },
+    "ImportManifestUrl":{
+      "type":"string",
+      "sensitive":true
     },
     "ImportSnapshotRequest":{
       "type":"structure",
@@ -42365,7 +42539,7 @@
         },
         "FilterInArns":{
           "shape":"ArnList",
-          "documentation":"<p>The Amazon Resource Names (ARN) of the Amazon Web Services resources that the path must traverse.</p>",
+          "documentation":"<p>The Amazon Resource Names (ARN) of the resources that the path must traverse.</p>",
           "locationName":"filterInArnSet"
         },
         "StartDate":{
@@ -42466,12 +42640,12 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services resource that is the source of the path.</p>",
+          "documentation":"<p>The ID of the source.</p>",
           "locationName":"source"
         },
         "Destination":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services resource that is the destination of the path.</p>",
+          "documentation":"<p>The ID of the destination.</p>",
           "locationName":"destination"
         },
         "SourceArn":{
@@ -42486,12 +42660,12 @@
         },
         "SourceIp":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the Amazon Web Services resource that is the source of the path.</p>",
+          "documentation":"<p>The IP address of the source.</p>",
           "locationName":"sourceIp"
         },
         "DestinationIp":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the Amazon Web Services resource that is the destination of the path.</p>",
+          "documentation":"<p>The IP address of the destination.</p>",
           "locationName":"destinationIp"
         },
         "Protocol":{
@@ -42508,6 +42682,16 @@
           "shape":"TagList",
           "documentation":"<p>The tags associated with the path.</p>",
           "locationName":"tagSet"
+        },
+        "FilterAtSource":{
+          "shape":"PathFilter",
+          "documentation":"<p>Scopes the analysis to network paths that match specific filters at the source.</p>",
+          "locationName":"filterAtSource"
+        },
+        "FilterAtDestination":{
+          "shape":"PathFilter",
+          "documentation":"<p>Scopes the analysis to network paths that match specific filters at the destination.</p>",
+          "locationName":"filterAtDestination"
         }
       },
       "documentation":"<p>Describes a path.</p>"
@@ -43370,6 +43554,21 @@
           "shape":"AnalysisComponent",
           "documentation":"<p>The load balancer listener.</p>",
           "locationName":"elasticLoadBalancerListener"
+        },
+        "FirewallStatelessRule":{
+          "shape":"FirewallStatelessRule",
+          "documentation":"<p>The Network Firewall stateless rule.</p>",
+          "locationName":"firewallStatelessRule"
+        },
+        "FirewallStatefulRule":{
+          "shape":"FirewallStatefulRule",
+          "documentation":"<p>The Network Firewall stateful rule.</p>",
+          "locationName":"firewallStatefulRule"
+        },
+        "ServiceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the VPC endpoint service.</p>",
+          "locationName":"serviceName"
         }
       },
       "documentation":"<p>Describes a path component.</p>"
@@ -43380,6 +43579,54 @@
         "shape":"PathComponent",
         "locationName":"item"
       }
+    },
+    "PathFilter":{
+      "type":"structure",
+      "members":{
+        "SourceAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The source IPv4 address.</p>",
+          "locationName":"sourceAddress"
+        },
+        "SourcePortRange":{
+          "shape":"FilterPortRange",
+          "documentation":"<p>The source port range.</p>",
+          "locationName":"sourcePortRange"
+        },
+        "DestinationAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The destination IPv4 address.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationPortRange":{
+          "shape":"FilterPortRange",
+          "documentation":"<p>The destination port range.</p>",
+          "locationName":"destinationPortRange"
+        }
+      },
+      "documentation":"<p>Describes a set of filters for a path analysis. Use path filters to scope the analysis when there can be multiple resulting paths.</p>"
+    },
+    "PathRequestFilter":{
+      "type":"structure",
+      "members":{
+        "SourceAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The source IPv4 address.</p>"
+        },
+        "SourcePortRange":{
+          "shape":"RequestFilterPortRange",
+          "documentation":"<p>The source port range.</p>"
+        },
+        "DestinationAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The destination IPv4 address.</p>"
+        },
+        "DestinationPortRange":{
+          "shape":"RequestFilterPortRange",
+          "documentation":"<p>The destination port range.</p>"
+        }
+      },
+      "documentation":"<p>Describes a set of filters for a path analysis. Use path filters to scope the analysis when there can be multiple resulting paths.</p>"
     },
     "PathStatement":{
       "type":"structure",
@@ -44233,6 +44480,11 @@
         "Role"
       ]
     },
+    "Priority":{
+      "type":"integer",
+      "max":65535,
+      "min":-1
+    },
     "PrivateDnsDetails":{
       "type":"structure",
       "members":{
@@ -44461,6 +44713,18 @@
         "tcp",
         "udp"
       ]
+    },
+    "ProtocolInt":{
+      "type":"integer",
+      "max":255,
+      "min":0
+    },
+    "ProtocolIntList":{
+      "type":"list",
+      "member":{
+        "shape":"ProtocolInt",
+        "locationName":"item"
+      }
     },
     "ProtocolList":{
       "type":"list",
@@ -45999,6 +46263,20 @@
         "ok",
         "impaired"
       ]
+    },
+    "RequestFilterPortRange":{
+      "type":"structure",
+      "members":{
+        "FromPort":{
+          "shape":"Port",
+          "documentation":"<p>The first port in the range.</p>"
+        },
+        "ToPort":{
+          "shape":"Port",
+          "documentation":"<p>The last port in the range.</p>"
+        }
+      },
+      "documentation":"<p>Describes a port range.</p>"
     },
     "RequestHostIdList":{
       "type":"list",
@@ -48120,6 +48398,75 @@
         "allow",
         "deny"
       ]
+    },
+    "RuleGroupRuleOptionsPair":{
+      "type":"structure",
+      "members":{
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the rule group.</p>",
+          "locationName":"ruleGroupArn"
+        },
+        "RuleOptions":{
+          "shape":"RuleOptionList",
+          "documentation":"<p>The rule options.</p>",
+          "locationName":"ruleOptionSet"
+        }
+      },
+      "documentation":"<p>Describes the rule options for a stateful rule group.</p>"
+    },
+    "RuleGroupRuleOptionsPairList":{
+      "type":"list",
+      "member":{
+        "shape":"RuleGroupRuleOptionsPair",
+        "locationName":"item"
+      }
+    },
+    "RuleGroupTypePair":{
+      "type":"structure",
+      "members":{
+        "RuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the rule group.</p>",
+          "locationName":"ruleGroupArn"
+        },
+        "RuleGroupType":{
+          "shape":"String",
+          "documentation":"<p>The rule group type. The possible values are <code>Domain List</code> and <code>Suricata</code>.</p>",
+          "locationName":"ruleGroupType"
+        }
+      },
+      "documentation":"<p>Describes the type of a stateful rule group.</p>"
+    },
+    "RuleGroupTypePairList":{
+      "type":"list",
+      "member":{
+        "shape":"RuleGroupTypePair",
+        "locationName":"item"
+      }
+    },
+    "RuleOption":{
+      "type":"structure",
+      "members":{
+        "Keyword":{
+          "shape":"String",
+          "documentation":"<p>The Suricata keyword.</p>",
+          "locationName":"keyword"
+        },
+        "Settings":{
+          "shape":"StringList",
+          "documentation":"<p>The settings for the keyword.</p>",
+          "locationName":"settingSet"
+        }
+      },
+      "documentation":"<p>Describes additional settings for a stateful rule.</p>"
+    },
+    "RuleOptionList":{
+      "type":"list",
+      "member":{
+        "shape":"RuleOption",
+        "locationName":"item"
+      }
     },
     "RunInstancesMonitoringEnabled":{
       "type":"structure",

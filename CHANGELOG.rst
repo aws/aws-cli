@@ -5055,6 +5055,16 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.96
+=======
+
+* api-change:``chime-sdk-messaging``: Amazon Chime SDK messaging customers can now manage streaming configuration for messaging data for archival and analysis.
+* api-change:``cleanrooms``: GA Release of AWS Clean Rooms, Added Tagging Functionality
+* api-change:``ec2``: This release adds support for AWS Network Firewall, AWS PrivateLink, and Gateway Load Balancers to Amazon VPC Reachability Analyzer, and it makes the path destination optional as long as a destination address in the filter at source is provided.
+* api-change:``iotsitewise``: Provide support for tagging of data streams and enabling tag based authorization for property alias
+* api-change:``mgn``: This release introduces the Import and export feature and expansion of the post-launch actions
+
+
 1.27.95
 =======
 

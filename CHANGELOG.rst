@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.97
+=======
+
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``iottwinmaker``: This release adds support of adding metadata when creating a new scene or updating an existing scene.
+* api-change:``networkmanager``: This release includes an update to create-transit-gateway-route-table-attachment, showing example usage for TransitGatewayRouteTableArn.
+* api-change:``pipes``: This release improves validation on the ARNs in the API model
+* api-change:``resiliencehub``: This release provides customers with the ability to import resources from within an EKS cluster and assess the resiliency of EKS cluster workloads.
+* api-change:``ssm``: This Patch Manager release supports creating, updating, and deleting Patch Baselines for AmazonLinux2023, AlmaLinux.
+
+
 1.27.96
 =======
 

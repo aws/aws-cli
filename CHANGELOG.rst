@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.11.5
+======
+
+* api-change:``workdocs``: This release adds a new API, SearchResources, which enable users to search through metadata and content of folders, documents, document versions and comments in a WorkDocs site.
+* api-change:``iotsitewise``: Provide support for tagging of data streams and enabling tag based authorization for property alias
+* api-change:``config``: This release adds resourceType enums for types released from October 2022 through February 2023.
+* api-change:``mgn``: This release introduces the Import and export feature and expansion of the post-launch actions
+* api-change:``ec2``: This release adds support for AWS Network Firewall, AWS PrivateLink, and Gateway Load Balancers to Amazon VPC Reachability Analyzer, and it makes the path destination optional as long as a destination address in the filter at source is provided.
+* api-change:``billingconductor``: This release adds a new filter to ListAccountAssociations API and a new filter to ListBillingGroups API.
+* api-change:``dms``: S3 setting to create AWS Glue Data Catalog. Oracle setting to control conversion of timestamp column. Support for Kafka SASL Plain authentication. Setting to map boolean from PostgreSQL to Redshift. SQL Server settings to force lob lookup on inline LOBs and to control access of database logs.
+* api-change:``chime-sdk-messaging``: Amazon Chime SDK messaging customers can now manage streaming configuration for messaging data for archival and analysis.
+* api-change:``neptune``: This release makes following few changes. db-cluster-identifier is now a required parameter of create-db-instance. describe-db-cluster will now return PendingModifiedValues and GlobalClusterIdentifier fields in the response.
+* api-change:``s3outposts``: S3 On Outposts added support for endpoint status, and a failed endpoint reason, if any
+* api-change:``cleanrooms``: GA Release of AWS Clean Rooms, Added Tagging Functionality
+* api-change:``application-autoscaling``: With this release customers can now tag their Application Auto Scaling registered targets with key-value pairs and manage IAM permissions for all the tagged resources centrally.
+
+
 2.11.4
 ======
 

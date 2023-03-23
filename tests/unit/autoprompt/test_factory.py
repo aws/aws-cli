@@ -24,6 +24,11 @@ from awscli.autoprompt.history import HistoryCompleter
 from awscli.testutils import unittest
 
 
+class FakeCLIPromptBuffer(CLIPromptBuffer):
+    def start_completion(self):
+        pass
+
+
 class TestPromptToolkitFactory(unittest.TestCase):
     def setUp(self):
         self.factory = PromptToolkitFactory(completer=DummyCompleter())
@@ -84,7 +89,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
 
 class TestCLIPromptBuffer(unittest.TestCase):
     def setUp(self):
-        self.buffer = CLIPromptBuffer()
+        self.buffer = FakeCLIPromptBuffer()
 
     def test_history_mode_switching(self):
         self.buffer.switch_history_mode()

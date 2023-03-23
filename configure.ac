@@ -45,7 +45,7 @@ AC_ARG_WITH(download_deps,
 [with_download_deps=no]
 )
 if test "$with_download_deps" = no; then
-     ${PYTHON} ${srcdir}/backends/build_system validate-env --artifact $with_install_type || AC_MSG_ERROR("Python dependencies not met.")
+     PYTHONDONTWRITEBYTECODE=1 ${PYTHON} ${srcdir}/backends/build_system validate-env --artifact $with_install_type || AC_MSG_ERROR("Python dependencies not met.")
      DOWNLOAD_DEPS_FLAG=""
 else
      DOWNLOAD_DEPS_FLAG=--download-deps

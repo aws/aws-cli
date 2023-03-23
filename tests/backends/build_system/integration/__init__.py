@@ -63,6 +63,20 @@ class BaseArtifactTest:
         assert f"Python/{self.expected_python_version()}" in version_string
         assert f"source-{dist_type}" in version_string
 
+    def assert_no_pycache(self, directory: Path):
+        failures = []
+        for root, dirs, files in os.walk(directory):
+            # Do not check the build directory since that is expected to have
+            # __pycache__ folders generated inside it.
+            if 'build' in dirs:
+                dirs.remove('build')
+            # If we are not in a build directory there should not be
+            # any pycache directories.
+            if '__pycache__' in dirs:
+                failures.append(os.path.join(root, '__pycache__'))
+
+        assert failures == [], f"Expected no __pycache__ directories, found {failures}"
+
     def assert_built_venv_is_correct(self, venv_dir):
         self.assert_venv_is_correct(venv_dir)
         files = os.listdir(venv_dir)
@@ -124,7 +138,12 @@ class VEnvWorkspace:
         shutil.copytree(
             ROOT,
             self.cli_path,
-            ignore=shutil.ignore_patterns(".git", "build", ".tox"),
+            ignore=shutil.ignore_patterns(
+                ".git",
+                "build",
+                ".tox",
+                "__pycache__",
+            ),
         )
 
     def _init_venv_directory(self):

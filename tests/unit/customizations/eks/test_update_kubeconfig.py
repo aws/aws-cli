@@ -307,3 +307,20 @@ class TestEKSClient(unittest.TestCase):
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
+
+    def test_create_user_with_alias(self):
+        self._correct_user_entry["name"] = "alias"
+        self.assertEqual(self._client.get_user_entry(user_alias="alias"),
+                         self._correct_user_entry)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
+
+    def test_create_user_without_alias(self):
+        self.assertEqual(self._client.get_user_entry(),
+                         self._correct_user_entry)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")

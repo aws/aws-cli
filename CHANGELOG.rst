@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.27.98
+=======
+
+* enhancement:eks: Add user-alias argument to update-kubeconfig command. Implements `#5164 <https://github.com/aws/aws-cli/issues/5164>`__
+* api-change:``batch``: This feature allows Batch to support configuration of ephemeral storage size for jobs running on FARGATE
+* api-change:``chime-sdk-identity``: AppInstanceBots can be used to add a bot powered by Amazon Lex to chat channels.  ExpirationSettings provides automatic resource deletion for AppInstanceUsers.
+* api-change:``chime-sdk-media-pipelines``: This release adds Amazon Chime SDK call analytics. Call analytics include voice analytics, which provides speaker search and voice tone analysis. These capabilities can be used with Amazon Transcribe and Transcribe Call Analytics to generate machine-learning-powered insights from real-time audio.
+* api-change:``chime-sdk-messaging``: ExpirationSettings provides automatic resource deletion for Channels.
+* api-change:``chime-sdk-voice``: This release adds Amazon Chime SDK call analytics. Call analytics include voice analytics, which provides speaker search and voice tone analysis. These capabilities can be used with Amazon Transcribe and Transcribe Call Analytics to generate machine-learning-powered insights from real-time audio.
+* api-change:``codeartifact``: Repository CreationTime is added to the CreateRepository and ListRepositories API responses.
+* api-change:``guardduty``: Adds AutoEnableOrganizationMembers attribute to DescribeOrganizationConfiguration and UpdateOrganizationConfiguration APIs.
+* api-change:``ivs-realtime``: Initial release of the Amazon Interactive Video Service RealTime API.
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK now supports passthrough of ID3v2 tags for audio inputs to audio-only HLS outputs.
+* api-change:``sagemaker``: Amazon SageMaker Autopilot adds two new APIs - CreateAutoMLJobV2 and DescribeAutoMLJobV2. Amazon SageMaker Notebook Instances now supports the ml.geospatial.interactive instance type.
+* api-change:``servicediscovery``: Reverted the throttling exception RequestLimitExceeded for AWS Cloud Map APIs introduced in SDK version 1.12.424 2023-03-09 to previous exception specified in the ErrorCode.
+* api-change:``textract``: The AnalyzeDocument - Tables feature adds support for new elements in the API: table titles, footers, section titles, summary cells/tables, and table type.
+
+
 1.27.97
 =======
 

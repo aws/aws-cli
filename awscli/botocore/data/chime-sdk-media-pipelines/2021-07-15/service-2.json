@@ -51,6 +51,48 @@
       ],
       "documentation":"<p>Creates a media concatenation pipeline.</p>"
     },
+    "CreateMediaInsightsPipeline":{
+      "name":"CreateMediaInsightsPipeline",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipelines",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateMediaInsightsPipelineRequest"},
+      "output":{"shape":"CreateMediaInsightsPipelineResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a media insights pipeline.</p>"
+    },
+    "CreateMediaInsightsPipelineConfiguration":{
+      "name":"CreateMediaInsightsPipelineConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipeline-configurations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateMediaInsightsPipelineConfigurationRequest"},
+      "output":{"shape":"CreateMediaInsightsPipelineConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>A structure that contains the static configurations for a media insights pipeline.</p>"
+    },
     "CreateMediaLiveConnectorPipeline":{
       "name":"CreateMediaLiveConnectorPipeline",
       "http":{
@@ -69,7 +111,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Creates a streaming media pipeline in an Amazon Chime SDK meeting.</p>"
+      "documentation":"<p>Creates a media live connector pipeline in an Amazon Chime SDK meeting.</p>"
     },
     "DeleteMediaCapturePipeline":{
       "name":"DeleteMediaCapturePipeline",
@@ -89,6 +131,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Deletes the media pipeline.</p>"
+    },
+    "DeleteMediaInsightsPipelineConfiguration":{
+      "name":"DeleteMediaInsightsPipelineConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/media-insights-pipeline-configurations/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMediaInsightsPipelineConfigurationRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes the specified configuration settings.</p>"
     },
     "DeleteMediaPipeline":{
       "name":"DeleteMediaPipeline",
@@ -129,6 +191,26 @@
       ],
       "documentation":"<p>Gets an existing media pipeline.</p>"
     },
+    "GetMediaInsightsPipelineConfiguration":{
+      "name":"GetMediaInsightsPipelineConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/media-insights-pipeline-configurations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMediaInsightsPipelineConfigurationRequest"},
+      "output":{"shape":"GetMediaInsightsPipelineConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets the configuration settings for a media insights pipeline.</p>"
+    },
     "GetMediaPipeline":{
       "name":"GetMediaPipeline",
       "http":{
@@ -168,6 +250,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Returns a list of media pipelines.</p>"
+    },
+    "ListMediaInsightsPipelineConfigurations":{
+      "name":"ListMediaInsightsPipelineConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/media-insights-pipeline-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMediaInsightsPipelineConfigurationsRequest"},
+      "output":{"shape":"ListMediaInsightsPipelineConfigurationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists the available media insights pipeline configurations.</p>"
     },
     "ListMediaPipelines":{
       "name":"ListMediaPipelines",
@@ -227,7 +329,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>The ARN of the media pipeline that you want to tag. Consists of he pipeline's endpoint region, resource ID, and pipeline ID.</p>"
+      "documentation":"<p>The ARN of the media pipeline that you want to tag. Consists of the pipeline's endpoint region, resource ID, and pipeline ID.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -248,6 +350,47 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Removes any tags from a media pipeline.</p>"
+    },
+    "UpdateMediaInsightsPipelineConfiguration":{
+      "name":"UpdateMediaInsightsPipelineConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/media-insights-pipeline-configurations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMediaInsightsPipelineConfigurationRequest"},
+      "output":{"shape":"UpdateMediaInsightsPipelineConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates the media insights pipeline's configuration settings.</p>"
+    },
+    "UpdateMediaInsightsPipelineStatus":{
+      "name":"UpdateMediaInsightsPipelineStatus",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/media-insights-pipeline-status/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMediaInsightsPipelineStatusRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates the status of a media insights pipeline.</p>"
     }
   },
   "shapes":{
@@ -256,6 +399,120 @@
       "max":1011,
       "min":1,
       "pattern":"^arn[\\/\\:\\-\\_\\.a-zA-Z0-9]+$"
+    },
+    "AmazonTranscribeCallAnalyticsProcessorConfiguration":{
+      "type":"structure",
+      "required":["LanguageCode"],
+      "members":{
+        "LanguageCode":{
+          "shape":"CallAnalyticsLanguageCode",
+          "documentation":"<p>The language code in the configuration.</p>"
+        },
+        "VocabularyName":{
+          "shape":"VocabularyName",
+          "documentation":"<p>Specifies the name of the custom vocabulary to use when processing a transcription. Note that vocabulary names are case sensitive.</p> <p>If the language of the specified custom vocabulary doesn't match the language identified in your media, the custom vocabulary is not applied to your transcription.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html\">Custom vocabularies</a> in the <i>Amazon Transcribe Developer Guide</i>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 200. </p>"
+        },
+        "VocabularyFilterName":{
+          "shape":"VocabularyFilterName",
+          "documentation":"<p>Specifies the name of the custom vocabulary filter to use when processing a transcription. Note that vocabulary filter names are case sensitive.</p> <p>If the language of the specified custom vocabulary filter doesn't match the language identified in your media, the vocabulary filter is not applied to your transcription.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted words</a> in the <i>Amazon Transcribe Developer Guide</i>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 200. </p>"
+        },
+        "VocabularyFilterMethod":{
+          "shape":"VocabularyFilterMethod",
+          "documentation":"<p>Specifies how to apply a vocabulary filter to a transcript.</p> <p>To replace words with <b>***</b>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>. </p>"
+        },
+        "LanguageModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>Specifies the name of the custom language model to use when processing a transcription. Note that language model names are case sensitive.</p> <p>The language of the specified language model must match the language code specified in the transcription request. If the languages don't match, the custom language model isn't applied. Language mismatches don't generate errors or warnings.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "EnablePartialResultsStabilization":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables partial result stabilization for your transcription. Partial result stabilization can reduce latency in your output, but may impact accuracy. For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result stabilization</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "PartialResultsStability":{
+          "shape":"PartialResultsStability",
+          "documentation":"<p>Specifies the level of stability to use when you enable partial results stabilization (<code>EnablePartialResultsStabilization</code>).</p> <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly lower accuracy.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result stabilization</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "ContentIdentificationType":{
+          "shape":"ContentType",
+          "documentation":"<p>Labels all personally identifiable information (PII) identified in your transcript.</p> <p>Content identification is performed at the segment level; PII specified in <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code> in the same request. If you do, your request returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable information</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "ContentRedactionType":{
+          "shape":"ContentType",
+          "documentation":"<p>Redacts all personally identifiable information (PII) identified in your transcript.</p> <p>Content redaction is performed at the segment level; PII specified in <code>PiiEntityTypes</code> is redacted upon complete transcription of an audio segment.</p> <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code> in the same request. If you do, your request returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable information</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "PiiEntityTypes":{
+          "shape":"PiiEntityTypes",
+          "documentation":"<p>Specifies the types of personally identifiable information (PII) to redact from a transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>To include <code>PiiEntityTypes</code> in your Call Analytics request, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>, but you can't include both. </p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 300.</p>"
+        },
+        "FilterPartialResults":{
+          "shape":"Boolean",
+          "documentation":"<p>If true, <code>UtteranceEvents</code> with <code>IsPartial: true</code> are filtered out of the insights target.</p>"
+        },
+        "PostCallAnalyticsSettings":{
+          "shape":"PostCallAnalyticsSettings",
+          "documentation":"<p>The settings for a post-call analysis task in an analytics configuration.</p>"
+        },
+        "CallAnalyticsStreamCategories":{
+          "shape":"CategoryNameList",
+          "documentation":"<p>By default, all <code>CategoryEvents</code> will be sent to the insights target. If this parameter is specified, only included categories will be sent to the insights target. </p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe call analytics processor.</p>"
+    },
+    "AmazonTranscribeProcessorConfiguration":{
+      "type":"structure",
+      "required":["LanguageCode"],
+      "members":{
+        "LanguageCode":{
+          "shape":"CallAnalyticsLanguageCode",
+          "documentation":"<p>The language code that represents the language spoken in your audio.</p> <p>If you're unsure of the language spoken in your audio, consider using <code>IdentifyLanguage</code> to enable automatic language identification.</p> <p>For a list of languages that real-time Call Analytics supports, see the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages table</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "VocabularyName":{
+          "shape":"VocabularyName",
+          "documentation":"<p>The name of the custom vocabulary that you specified in your Call Analytics request.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 200.</p>"
+        },
+        "VocabularyFilterName":{
+          "shape":"VocabularyFilterName",
+          "documentation":"<p>The name of the custom vocabulary filter that you specified in your Call Analytics request.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 200.</p>"
+        },
+        "VocabularyFilterMethod":{
+          "shape":"VocabularyFilterMethod",
+          "documentation":"<p>The vocabulary filtering method used in your Call Analytics transcription.</p>"
+        },
+        "ShowSpeakerLabel":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "EnablePartialResultsStabilization":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables partial result stabilization for your transcription. Partial result stabilization can reduce latency in your output, but may impact accuracy.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result stabilization</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "PartialResultsStability":{
+          "shape":"PartialResultsStability",
+          "documentation":"<p>The level of stability to use when you enable partial results stabilization (<code>EnablePartialResultsStabilization</code>).</p> <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly lower accuracy.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result stabilization</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "ContentIdentificationType":{
+          "shape":"ContentType",
+          "documentation":"<p>Labels all personally identifiable information (PII) identified in your transcript.</p> <p>Content identification is performed at the segment level; PII specified in <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code> in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable information</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "ContentRedactionType":{
+          "shape":"ContentType",
+          "documentation":"<p>Redacts all personally identifiable information (PII) identified in your transcript.</p> <p>Content redaction is performed at the segment level; PII specified in PiiEntityTypes is redacted upon complete transcription of an audio segment.</p> <p>You can’t set ContentRedactionType and ContentIdentificationType in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable information</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "PiiEntityTypes":{
+          "shape":"PiiEntityTypes",
+          "documentation":"<p>The types of personally identifiable information (PII) to redact from a transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>To include <code>PiiEntityTypes</code> in your Call Analytics request, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>, but you can't include both.</p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 300.</p>"
+        },
+        "LanguageModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the custom language model that you want to use when processing your transcription. Note that language model names are case sensitive.</p> <p>The language of the specified language model must match the language code you specify in your transcription request. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "FilterPartialResults":{
+          "shape":"Boolean",
+          "documentation":"<p>If true, <code>TranscriptEvents</code> with <code>IsPartial: true</code> are filtered out of the insights target.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p>"
     },
     "Arn":{
       "type":"string",
@@ -381,7 +638,7 @@
       "members":{
         "State":{
           "shape":"AudioArtifactsConcatenationState",
-          "documentation":"<p>Enables the <i>name</i> object, where <i>name</i> is the name of the configuration object, such as <code>AudioConcatenation</code>.</p>"
+          "documentation":"<p>Enables or disables the configuration object.</p>"
         }
       },
       "documentation":"<p>The audio artifact concatenation configuration object.</p>"
@@ -405,12 +662,65 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The input parameters don't match the service's restrictions.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Boolean":{"type":"boolean"},
+    "CallAnalyticsLanguageCode":{
+      "type":"string",
+      "enum":[
+        "en-US",
+        "en-GB",
+        "es-US",
+        "fr-CA",
+        "fr-FR",
+        "en-AU",
+        "it-IT",
+        "de-DE",
+        "pt-BR"
+      ]
+    },
+    "CategoryName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "CategoryNameList":{
+      "type":"list",
+      "member":{"shape":"CategoryName"},
+      "max":20,
+      "min":1
+    },
+    "ChannelDefinition":{
+      "type":"structure",
+      "required":["ChannelId"],
+      "members":{
+        "ChannelId":{
+          "shape":"ChannelId",
+          "documentation":"<p>The channel ID.</p>"
+        },
+        "ParticipantRole":{
+          "shape":"ParticipantRole",
+          "documentation":"<p>Specifies whether the audio in a channel belongs to the <code>AGENT</code> or <code>CUSTOMER</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines an audio channel in a Kinesis video stream.</p>"
+    },
+    "ChannelDefinitions":{
+      "type":"list",
+      "member":{"shape":"ChannelDefinition"},
+      "max":2,
+      "min":1
+    },
+    "ChannelId":{
+      "type":"integer",
+      "max":1,
+      "min":0
     },
     "ChimeSdkMeetingConcatenationConfiguration":{
       "type":"structure",
@@ -428,7 +738,7 @@
       "members":{
         "SourceConfiguration":{
           "shape":"SourceConfiguration",
-          "documentation":"<p>The source configuration for a specified media pipline.</p>"
+          "documentation":"<p>The source configuration for a specified media pipeline.</p>"
         },
         "ArtifactsConfiguration":{
           "shape":"ArtifactsConfiguration",
@@ -487,7 +797,7 @@
           "documentation":"<p>The <code>GridView</code> configuration setting.</p>"
         }
       },
-      "documentation":"<p>Describes the configuration for the composited video artifacts.</p>"
+      "documentation":"<p>Specifies the configuration for compositing video artifacts.</p>"
     },
     "CompositedVideoConcatenationConfiguration":{
       "type":"structure",
@@ -556,6 +866,20 @@
       "type":"string",
       "enum":["MediaCapturePipeline"]
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
+        }
+      },
+      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "ContentArtifactsConfiguration":{
       "type":"structure",
       "required":["State"],
@@ -586,6 +910,13 @@
       "type":"string",
       "enum":["ContentOnly"]
     },
+    "ContentRedactionOutput":{
+      "type":"string",
+      "enum":[
+        "redacted",
+        "redacted_and_unredacted"
+      ]
+    },
     "ContentShareLayoutOption":{
       "type":"string",
       "enum":[
@@ -593,6 +924,10 @@
         "Horizontal",
         "Vertical"
       ]
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":["PII"]
     },
     "CreateMediaCapturePipelineRequest":{
       "type":"structure",
@@ -678,6 +1013,95 @@
         }
       }
     },
+    "CreateMediaInsightsPipelineConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "MediaInsightsPipelineConfigurationName",
+        "ResourceAccessRoleArn",
+        "Elements"
+      ],
+      "members":{
+        "MediaInsightsPipelineConfigurationName":{
+          "shape":"MediaInsightsPipelineConfigurationNameString",
+          "documentation":"<p>The name of the media insights pipeline configuration.</p>"
+        },
+        "ResourceAccessRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the role used by the service to access Amazon Web Services resources, including <code>Transcribe</code> and <code>Transcribe Call Analytics</code>, on the caller’s behalf.</p>"
+        },
+        "RealTimeAlertConfiguration":{
+          "shape":"RealTimeAlertConfiguration",
+          "documentation":"<p>The configuration settings for the real-time alerts in a media insights pipeline configuration.</p>"
+        },
+        "Elements":{
+          "shape":"MediaInsightsPipelineConfigurationElements",
+          "documentation":"<p>The elements in the request, such as a processor for Amazon Transcribe or a sink for a Kinesis Data Stream.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the media insights pipeline configuration.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique identifier for the media insights pipeline configuration request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateMediaInsightsPipelineConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfiguration":{
+          "shape":"MediaInsightsPipelineConfiguration",
+          "documentation":"<p>The configuration settings for the media insights pipeline.</p>"
+        }
+      }
+    },
+    "CreateMediaInsightsPipelineRequest":{
+      "type":"structure",
+      "required":["MediaInsightsPipelineConfigurationArn"],
+      "members":{
+        "MediaInsightsPipelineConfigurationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the pipeline's configuration.</p>"
+        },
+        "KinesisVideoStreamSourceRuntimeConfiguration":{
+          "shape":"KinesisVideoStreamSourceRuntimeConfiguration",
+          "documentation":"<p>The runtime configuration for the Kinesis video stream source of the media insights pipeline.</p>"
+        },
+        "MediaInsightsRuntimeMetadata":{
+          "shape":"MediaInsightsRuntimeMetadata",
+          "documentation":"<p>The runtime metadata for the media insights pipeline. Consists of a key-value map of strings.</p>"
+        },
+        "KinesisVideoStreamRecordingSourceRuntimeConfiguration":{
+          "shape":"KinesisVideoStreamRecordingSourceRuntimeConfiguration",
+          "documentation":"<p>The runtime configuration for the Kinesis video recording stream source.</p>"
+        },
+        "S3RecordingSinkRuntimeConfiguration":{
+          "shape":"S3RecordingSinkRuntimeConfiguration",
+          "documentation":"<p>The runtime configuration for the S3 recording sink.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the media insights pipeline.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique identifier for the media insights pipeline request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateMediaInsightsPipelineResponse":{
+      "type":"structure",
+      "required":["MediaInsightsPipeline"],
+      "members":{
+        "MediaInsightsPipeline":{
+          "shape":"MediaInsightsPipeline",
+          "documentation":"<p>The media insights pipeline object.</p>"
+        }
+      }
+    },
     "CreateMediaLiveConnectorPipelineRequest":{
       "type":"structure",
       "required":[
@@ -687,11 +1111,11 @@
       "members":{
         "Sources":{
           "shape":"LiveConnectorSourceList",
-          "documentation":"<p>The media pipeline's data sources.</p>"
+          "documentation":"<p>The media live connector pipeline's data sources.</p>"
         },
         "Sinks":{
           "shape":"LiveConnectorSinkList",
-          "documentation":"<p>The media pipeline's data sinks.</p>"
+          "documentation":"<p>The media live connector pipeline's data sinks.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -700,7 +1124,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags associated with the media pipeline.</p>"
+          "documentation":"<p>The tags associated with the media live connector pipeline.</p>"
         }
       }
     },
@@ -709,7 +1133,7 @@
       "members":{
         "MediaLiveConnectorPipeline":{
           "shape":"MediaLiveConnectorPipeline",
-          "documentation":"<p>The new media pipeline.</p>"
+          "documentation":"<p>The new media live connector pipeline.</p>"
         }
       }
     },
@@ -733,6 +1157,18 @@
           "documentation":"<p>The ID of the media pipeline being deleted. </p>",
           "location":"uri",
           "locationName":"mediaPipelineId"
+        }
+      }
+    },
+    "DeleteMediaInsightsPipelineConfigurationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be deleted. Valid values include the name and ARN of the media insights pipeline configuration.</p>",
+          "location":"uri",
+          "locationName":"identifier"
         }
       }
     },
@@ -785,6 +1221,37 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "FragmentNumberString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[0-9]+$"
+    },
+    "FragmentSelector":{
+      "type":"structure",
+      "required":[
+        "FragmentSelectorType",
+        "TimestampRange"
+      ],
+      "members":{
+        "FragmentSelectorType":{
+          "shape":"FragmentSelectorType",
+          "documentation":"<p>The origin of the timestamps to use, <code>Server</code> or <code>Producer</code>. For more information, see <a href=\"kinesisvideostreams/latest/dg/API_dataplane_StartSelector.html#KinesisVideo-Type-dataplane_StartSelector-StartSelectorType\">StartSelectorType</a> in the <i>Amazon Kinesis Video Streams Developer Guide</i>.</p>"
+        },
+        "TimestampRange":{
+          "shape":"TimestampRange",
+          "documentation":"<p>The range of timestamps to return.</p>"
+        }
+      },
+      "documentation":"<p>Describes the timestamp range and timestamp origin of a range of fragments.</p> <p>Only fragments with a start timestamp greater than or equal to the given start time and less than or equal to the end time are returned. For example, say a stream contains fragments with the following start timestamps:</p> <ul> <li> <p>00:00:00</p> </li> <li> <p>00:00:02</p> </li> <li> <p>00:00:04</p> </li> <li> <p>00:00:06</p> </li> </ul> <p>A fragment selector range with a start time of 00:00:01 and end time of 00:00:04 would return the fragments with start times of 00:00:02 and 00:00:04.</p>"
+    },
+    "FragmentSelectorType":{
+      "type":"string",
+      "enum":[
+        "ProducerTimestamp",
+        "ServerTimestamp"
+      ]
+    },
     "GetMediaCapturePipelineRequest":{
       "type":"structure",
       "required":["MediaPipelineId"],
@@ -803,6 +1270,27 @@
         "MediaCapturePipeline":{
           "shape":"MediaCapturePipeline",
           "documentation":"<p>The media pipeline object.</p>"
+        }
+      }
+    },
+    "GetMediaInsightsPipelineConfigurationRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media insights pipeline configuration.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetMediaInsightsPipelineConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfiguration":{
+          "shape":"MediaInsightsPipelineConfiguration",
+          "documentation":"<p>The requested media insights pipeline configuration.</p>"
         }
       }
     },
@@ -852,6 +1340,118 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "IssueDetectionConfiguration":{
+      "type":"structure",
+      "required":["RuleName"],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the issue detection rule.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for an issue detection task.</p>"
+    },
+    "Keyword":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[\\s0-9a-zA-Z'-]+"
+    },
+    "KeywordMatchConfiguration":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "Keywords"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the keyword match rule.</p>"
+        },
+        "Keywords":{
+          "shape":"KeywordMatchWordList",
+          "documentation":"<p>The keywords or phrases that you want to match.</p>"
+        },
+        "Negate":{
+          "shape":"Boolean",
+          "documentation":"<p>Matches keywords or phrases on their presence or absence. If set to <code>TRUE</code>, the rule matches when all the specified keywords or phrases are absent. Default: <code>FALSE</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the settings for a keyword match task.</p>"
+    },
+    "KeywordMatchWordList":{
+      "type":"list",
+      "member":{"shape":"Keyword"},
+      "max":10,
+      "min":1
+    },
+    "KinesisDataStreamSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "InsightsTarget":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for a Kinesis Data Stream sink.</p>"
+    },
+    "KinesisVideoStreamArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"arn:[a-z\\d-]+:kinesisvideo:[a-z0-9-]+:[0-9]+:[a-z]+/[a-zA-Z0-9_.-]+/[0-9]+"
+    },
+    "KinesisVideoStreamRecordingSourceRuntimeConfiguration":{
+      "type":"structure",
+      "required":[
+        "Streams",
+        "FragmentSelector"
+      ],
+      "members":{
+        "Streams":{
+          "shape":"RecordingStreamList",
+          "documentation":"<p>The stream or streams to be recorded.</p>"
+        },
+        "FragmentSelector":{
+          "shape":"FragmentSelector",
+          "documentation":"<p>Describes the timestamp range and timestamp origin of a range of fragments in the Kinesis video stream.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the runtime settings for recording a Kinesis video stream.</p>"
+    },
+    "KinesisVideoStreamSourceRuntimeConfiguration":{
+      "type":"structure",
+      "required":[
+        "Streams",
+        "MediaEncoding",
+        "MediaSampleRate"
+      ],
+      "members":{
+        "Streams":{
+          "shape":"Streams",
+          "documentation":"<p>The streams in the source runtime configuration of a Kinesis video stream.</p>"
+        },
+        "MediaEncoding":{
+          "shape":"MediaEncoding",
+          "documentation":"<p>Specifies the encoding of your input audio. Supported format: PCM (only signed 16-bit little-endian audio formats, which does not include WAV)</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio\">Media formats</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "MediaSampleRate":{
+          "shape":"MediaSampleRateHertz",
+          "documentation":"<p>The sample rate of the input audio (in hertz). Low-quality audio, such as telephone audio, is typically around 8,000 Hz. High-quality audio typically ranges from 16,000 Hz to 48,000 Hz. Note that the sample rate you specify must match that of your audio.</p> <p>Valid Range: Minimum value of 8000. Maximum value of 48000.</p>"
+        }
+      },
+      "documentation":"<p>The runtime configuration settings for the Kinesis video stream source.</p>"
+    },
+    "LambdaFunctionSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "InsightsTarget":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for an AWS Lambda function's data sink.</p>"
+    },
     "LayoutOption":{
       "type":"string",
       "enum":["GridView"]
@@ -883,6 +1483,36 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token used to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListMediaInsightsPipelineConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to return the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"ResultMax",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListMediaInsightsPipelineConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfigurations":{
+          "shape":"MediaInsightsPipelineConfigurationSummaryList",
+          "documentation":"<p>The requested list of media insights pipeline configurations.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token used to return the next page of results. </p>"
         }
       }
     },
@@ -976,7 +1606,7 @@
         },
         "RTMPConfiguration":{
           "shape":"LiveConnectorRTMPConfiguration",
-          "documentation":"<p>The sink configuration's RTMP configuration setttings.</p>"
+          "documentation":"<p>The sink configuration's RTMP configuration settings.</p>"
         }
       },
       "documentation":"<p>The media pipeline's sink configuration settings.</p>"
@@ -1114,7 +1744,7 @@
         },
         "Sources":{
           "shape":"ConcatenationSourceList",
-          "documentation":"<p>The data sources being concatnated.</p>"
+          "documentation":"<p>The data sources being concatenated.</p>"
         },
         "Sinks":{
           "shape":"ConcatenationSinkList",
@@ -1134,6 +1764,184 @@
         }
       },
       "documentation":"<p>Concatenates audio and video data from one or more data streams.</p>"
+    },
+    "MediaEncoding":{
+      "type":"string",
+      "enum":["pcm"]
+    },
+    "MediaInsightsPipeline":{
+      "type":"structure",
+      "members":{
+        "MediaPipelineId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of a media insights pipeline.</p>"
+        },
+        "MediaPipelineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of a media insights pipeline.</p>"
+        },
+        "MediaInsightsPipelineConfigurationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of a media insight pipeline's configuration settings.</p>"
+        },
+        "Status":{
+          "shape":"MediaPipelineStatus",
+          "documentation":"<p>The status of a media insights pipeline.</p>"
+        },
+        "KinesisVideoStreamSourceRuntimeConfiguration":{
+          "shape":"KinesisVideoStreamSourceRuntimeConfiguration",
+          "documentation":"<p>The configuration settings for a Kinesis runtime video stream in a media insights pipeline.</p>"
+        },
+        "MediaInsightsRuntimeMetadata":{
+          "shape":"MediaInsightsRuntimeMetadata",
+          "documentation":"<p>The runtime metadata of a media insights pipeline.</p>"
+        },
+        "KinesisVideoStreamRecordingSourceRuntimeConfiguration":{
+          "shape":"KinesisVideoStreamRecordingSourceRuntimeConfiguration",
+          "documentation":"<p>The runtime configuration settings for a Kinesis recording video stream in a media insights pipeline.</p>"
+        },
+        "S3RecordingSinkRuntimeConfiguration":{
+          "shape":"S3RecordingSinkRuntimeConfiguration",
+          "documentation":"<p>The runtime configuration of the Amazon S3 bucket that stores recordings in a media insights pipeline.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the media insights pipeline was created.</p>"
+        }
+      },
+      "documentation":"<p>A media pipeline that streams call analytics data.</p>"
+    },
+    "MediaInsightsPipelineConfiguration":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfigurationName":{
+          "shape":"MediaInsightsPipelineConfigurationNameString",
+          "documentation":"<p>The name of the configuration.</p>"
+        },
+        "MediaInsightsPipelineConfigurationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the configuration.</p>"
+        },
+        "ResourceAccessRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the role used by the service to access Amazon Web Services resources.</p>"
+        },
+        "RealTimeAlertConfiguration":{
+          "shape":"RealTimeAlertConfiguration",
+          "documentation":"<p>Lists the rules that trigger a real-time alert.</p>"
+        },
+        "Elements":{
+          "shape":"MediaInsightsPipelineConfigurationElements",
+          "documentation":"<p>The elements in the configuration.</p>"
+        },
+        "MediaInsightsPipelineConfigurationId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the configuration was created.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which the configuration was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for a media insights pipeline.</p>"
+    },
+    "MediaInsightsPipelineConfigurationElement":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"MediaInsightsPipelineConfigurationElementType",
+          "documentation":"<p>The element type.</p>"
+        },
+        "AmazonTranscribeCallAnalyticsProcessorConfiguration":{
+          "shape":"AmazonTranscribeCallAnalyticsProcessorConfiguration",
+          "documentation":"<p>The analytics configuration settings for transcribing audio in a media insights pipeline configuration element.</p>"
+        },
+        "AmazonTranscribeProcessorConfiguration":{
+          "shape":"AmazonTranscribeProcessorConfiguration",
+          "documentation":"<p>The transcription processor configuration settings in a media insights pipeline configuration element.</p>"
+        },
+        "KinesisDataStreamSinkConfiguration":{
+          "shape":"KinesisDataStreamSinkConfiguration",
+          "documentation":"<p>The configuration settings for the Kinesis Data Stream Sink in a media insights pipeline configuration element.</p>"
+        },
+        "S3RecordingSinkConfiguration":{
+          "shape":"S3RecordingSinkConfiguration",
+          "documentation":"<p>The configuration settings for the Amazon S3 recording bucket in a media insights pipeline configuration element.</p>"
+        },
+        "VoiceAnalyticsProcessorConfiguration":{
+          "shape":"VoiceAnalyticsProcessorConfiguration",
+          "documentation":"<p>The voice analytics configuration settings in a media insights pipeline configuration element.</p>"
+        },
+        "LambdaFunctionSinkConfiguration":{
+          "shape":"LambdaFunctionSinkConfiguration",
+          "documentation":"<p>The configuration settings for the Amazon Web Services Lambda sink in a media insights pipeline configuration element.</p>"
+        },
+        "SqsQueueSinkConfiguration":{
+          "shape":"SqsQueueSinkConfiguration",
+          "documentation":"<p>The configuration settings for an SQS queue sink in a media insights pipeline configuration element.</p>"
+        },
+        "SnsTopicSinkConfiguration":{
+          "shape":"SnsTopicSinkConfiguration",
+          "documentation":"<p>The configuration settings for an SNS topic sink in a media insights pipeline configuration element.</p>"
+        }
+      },
+      "documentation":"<p>An element in a media insights pipeline configuration.</p>"
+    },
+    "MediaInsightsPipelineConfigurationElementType":{
+      "type":"string",
+      "enum":[
+        "AmazonTranscribeCallAnalyticsProcessor",
+        "VoiceAnalyticsProcessor",
+        "AmazonTranscribeProcessor",
+        "KinesisDataStreamSink",
+        "LambdaFunctionSink",
+        "SqsQueueSink",
+        "SnsTopicSink",
+        "S3RecordingSink"
+      ]
+    },
+    "MediaInsightsPipelineConfigurationElements":{
+      "type":"list",
+      "member":{"shape":"MediaInsightsPipelineConfigurationElement"}
+    },
+    "MediaInsightsPipelineConfigurationNameString":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "MediaInsightsPipelineConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfigurationName":{
+          "shape":"MediaInsightsPipelineConfigurationNameString",
+          "documentation":"<p>The name of the media insights pipeline configuration.</p>"
+        },
+        "MediaInsightsPipelineConfigurationId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the media insights pipeline configuration.</p>"
+        },
+        "MediaInsightsPipelineConfigurationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the media insights pipeline configuration.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the media insights pipeline configuration.</p>"
+    },
+    "MediaInsightsPipelineConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"MediaInsightsPipelineConfigurationSummary"}
+    },
+    "MediaInsightsRuntimeMetadata":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString"},
+      "value":{"shape":"String"},
+      "sensitive":true
     },
     "MediaLiveConnectorPipeline":{
       "type":"structure",
@@ -1160,7 +1968,7 @@
         },
         "CreatedTimestamp":{
           "shape":"Iso8601Timestamp",
-          "documentation":"<p>Thetime at which the connector pipeline was created.</p>"
+          "documentation":"<p>The time at which the connector pipeline was created.</p>"
         },
         "UpdatedTimestamp":{
           "shape":"Iso8601Timestamp",
@@ -1183,6 +1991,10 @@
         "MediaConcatenationPipeline":{
           "shape":"MediaConcatenationPipeline",
           "documentation":"<p>The media concatenation pipeline in a media pipeline.</p>"
+        },
+        "MediaInsightsPipeline":{
+          "shape":"MediaInsightsPipeline",
+          "documentation":"<p>The media insights pipeline of a media pipeline.</p>"
         }
       },
       "documentation":"<p>A pipeline consisting of a media capture, media concatenation, or live-streaming pipeline.</p>"
@@ -1206,7 +2018,15 @@
         "InProgress",
         "Failed",
         "Stopping",
-        "Stopped"
+        "Stopped",
+        "Paused"
+      ]
+    },
+    "MediaPipelineStatusUpdate":{
+      "type":"string",
+      "enum":[
+        "Pause",
+        "Resume"
       ]
     },
     "MediaPipelineSummary":{
@@ -1223,6 +2043,11 @@
       },
       "documentation":"<p>The summary of the media pipeline.</p>"
     },
+    "MediaSampleRateHertz":{
+      "type":"integer",
+      "max":48000,
+      "min":8000
+    },
     "MeetingEventsConcatenationConfiguration":{
       "type":"structure",
       "required":["State"],
@@ -1234,6 +2059,17 @@
       },
       "documentation":"<p>The configuration object for an event concatenation pipeline.</p>"
     },
+    "ModelName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "NonEmptyString":{
+      "type":"string",
+      "max":1024,
+      "pattern":".*\\S.*"
+    },
     "NotFoundException":{
       "type":"structure",
       "members":{
@@ -1241,12 +2077,64 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>One or more of the resources in the request does not exist in the system.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "NumberOfChannels":{
+      "type":"integer",
+      "max":2,
+      "min":1
+    },
+    "PartialResultsStability":{
+      "type":"string",
+      "enum":[
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "ParticipantRole":{
+      "type":"string",
+      "enum":[
+        "AGENT",
+        "CUSTOMER"
+      ]
+    },
+    "PiiEntityTypes":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"^[A-Z_, ]+"
+    },
+    "PostCallAnalyticsSettings":{
+      "type":"structure",
+      "required":[
+        "OutputLocation",
+        "DataAccessRoleArn"
+      ],
+      "members":{
+        "OutputLocation":{
+          "shape":"String",
+          "documentation":"<p>The URL of the Amazon S3 bucket that contains the post-call data.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used by Amazon Web Services Transcribe to upload your post call analysis. For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html\">Post-call analytics with real-time transcriptions</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
+        },
+        "ContentRedactionOutput":{
+          "shape":"ContentRedactionOutput",
+          "documentation":"<p>The content redaction output settings for a post-call analysis task.</p>"
+        },
+        "OutputEncryptionKMSKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the KMS (Key Management System) key used to encrypt the output.</p>"
+        }
+      },
+      "documentation":"<p>The settings for a post-call voice analytics task.</p>"
     },
     "PresenterOnlyConfiguration":{
       "type":"structure",
@@ -1267,6 +2155,80 @@
         "BottomRight"
       ]
     },
+    "RealTimeAlertConfiguration":{
+      "type":"structure",
+      "members":{
+        "Disabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Turns off real-time alerts.</p>"
+        },
+        "Rules":{
+          "shape":"RealTimeAlertRuleList",
+          "documentation":"<p>The rules in the alert. Rules specify the words or phrases that you want to be notified about.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for real-time alerts.</p>"
+    },
+    "RealTimeAlertRule":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"RealTimeAlertRuleType",
+          "documentation":"<p>The type of alert rule.</p>"
+        },
+        "KeywordMatchConfiguration":{
+          "shape":"KeywordMatchConfiguration",
+          "documentation":"<p>Specifies the settings for matching the keywords in a real-time alert rule.</p>"
+        },
+        "SentimentConfiguration":{
+          "shape":"SentimentConfiguration",
+          "documentation":"<p>Specifies the settings for predicting sentiment in a real-time alert rule.</p>"
+        },
+        "IssueDetectionConfiguration":{
+          "shape":"IssueDetectionConfiguration",
+          "documentation":"<p>Specifies the issue detection settings for a real-time alert rule.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the words or phrases that trigger an alert.</p>"
+    },
+    "RealTimeAlertRuleList":{
+      "type":"list",
+      "member":{"shape":"RealTimeAlertRule"},
+      "max":3,
+      "min":1
+    },
+    "RealTimeAlertRuleType":{
+      "type":"string",
+      "enum":[
+        "KeywordMatch",
+        "Sentiment",
+        "IssueDetection"
+      ]
+    },
+    "RecordingFileFormat":{
+      "type":"string",
+      "enum":[
+        "Wav",
+        "Opus"
+      ]
+    },
+    "RecordingStreamConfiguration":{
+      "type":"structure",
+      "members":{
+        "StreamArn":{
+          "shape":"KinesisVideoStreamArn",
+          "documentation":"<p>The ARN of the recording stream.</p>"
+        }
+      },
+      "documentation":"<p>A structure the holds the settings for recording audio and video.</p>"
+    },
+    "RecordingStreamList":{
+      "type":"list",
+      "member":{"shape":"RecordingStreamConfiguration"},
+      "max":2,
+      "min":2
+    },
     "ResolutionOption":{
       "type":"string",
       "enum":[
@@ -1281,7 +2243,7 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The request exceeds the resource limit.</p>",
@@ -1293,6 +2255,12 @@
       "max":100,
       "min":1
     },
+    "RuleName":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
     "S3BucketSinkConfiguration":{
       "type":"structure",
       "required":["Destination"],
@@ -1303,6 +2271,34 @@
         }
       },
       "documentation":"<p>The configuration settings for the S3 bucket.</p>"
+    },
+    "S3RecordingSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "Destination":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the Amazon S3 bucket used as the recording sink.</p>"
+        }
+      },
+      "documentation":"<p>The structure that holds the settings for transmitting audio and video to the Amazon S3 bucket.</p>"
+    },
+    "S3RecordingSinkRuntimeConfiguration":{
+      "type":"structure",
+      "required":[
+        "Destination",
+        "RecordingFileFormat"
+      ],
+      "members":{
+        "Destination":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the S3 bucket used as the runtime sink.</p>"
+        },
+        "RecordingFileFormat":{
+          "shape":"RecordingFileFormat",
+          "documentation":"<p>The file formats for the audio and video files sent to the Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>A structure that holds the settings for transmitting audio and video recordings to the runtime Amazon S3 bucket.</p>"
     },
     "SelectedVideoStreams":{
       "type":"structure",
@@ -1324,6 +2320,38 @@
       "min":1,
       "sensitive":true
     },
+    "SentimentConfiguration":{
+      "type":"structure",
+      "required":[
+        "RuleName",
+        "SentimentType",
+        "TimePeriod"
+      ],
+      "members":{
+        "RuleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule in the sentiment configuration.</p>"
+        },
+        "SentimentType":{
+          "shape":"SentimentType",
+          "documentation":"<p>The type of sentiment, <code>POSITIVE</code>, <code>NEGATIVE</code>, or <code>NEUTRAL</code>.</p>"
+        },
+        "TimePeriod":{
+          "shape":"SentimentTimePeriodInSeconds",
+          "documentation":"<p>Specifies the analysis interval.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration settings for a sentiment analysis task.</p>"
+    },
+    "SentimentTimePeriodInSeconds":{
+      "type":"integer",
+      "max":1800,
+      "min":60
+    },
+    "SentimentType":{
+      "type":"string",
+      "enum":["NEGATIVE"]
+    },
     "ServiceFailureException":{
       "type":"structure",
       "members":{
@@ -1331,7 +2359,7 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The service encountered an unexpected error.</p>",
@@ -1346,13 +2374,23 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The service is currently unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "SnsTopicSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "InsightsTarget":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the SNS sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the SNS topic sink.</p>"
     },
     "SourceConfiguration":{
       "type":"structure",
@@ -1363,6 +2401,59 @@
         }
       },
       "documentation":"<p>Source configuration for a specified media pipeline.</p>"
+    },
+    "SqsQueueSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "InsightsTarget":{
+          "shape":"Arn",
+          "documentation":"<p>The URL of the SQS sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+        }
+      },
+      "documentation":"<p>The URL of the SQS sink.</p>"
+    },
+    "StreamChannelDefinition":{
+      "type":"structure",
+      "required":["NumberOfChannels"],
+      "members":{
+        "NumberOfChannels":{
+          "shape":"NumberOfChannels",
+          "documentation":"<p>The number of channels in a streaming channel.</p>"
+        },
+        "ChannelDefinitions":{
+          "shape":"ChannelDefinitions",
+          "documentation":"<p>The definitions of the channels in a streaming channel.</p>"
+        }
+      },
+      "documentation":"<p>Defines a streaming channel.</p>"
+    },
+    "StreamConfiguration":{
+      "type":"structure",
+      "required":[
+        "StreamArn",
+        "StreamChannelDefinition"
+      ],
+      "members":{
+        "StreamArn":{
+          "shape":"KinesisVideoStreamArn",
+          "documentation":"<p>The ARN of the stream.</p>"
+        },
+        "FragmentNumber":{
+          "shape":"FragmentNumberString",
+          "documentation":"<p>The unique identifier of the fragment to begin processing.</p>"
+        },
+        "StreamChannelDefinition":{
+          "shape":"StreamChannelDefinition",
+          "documentation":"<p>The streaming channel definition in the stream configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for a stream.</p>"
+    },
+    "Streams":{
+      "type":"list",
+      "member":{"shape":"StreamConfiguration"},
+      "max":2,
+      "min":1
     },
     "String":{
       "type":"string",
@@ -1395,13 +2486,13 @@
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"},
-      "max":50,
+      "max":200,
       "min":1
     },
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"},
-      "max":50,
+      "max":200,
       "min":1
     },
     "TagResourceRequest":{
@@ -1438,12 +2529,31 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The client exceeded its request rate limit.</p>",
       "error":{"httpStatusCode":429},
       "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "TimestampRange":{
+      "type":"structure",
+      "required":[
+        "StartTimestamp",
+        "EndTimestamp"
+      ],
+      "members":{
+        "StartTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The starting timestamp for the specified range.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ending timestamp for the specified range.</p>"
+        }
+      },
+      "documentation":"<p>The range of timestamps to return.</p>"
     },
     "TranscriptionMessagesConcatenationConfiguration":{
       "type":"structure",
@@ -1463,7 +2573,7 @@
         "Message":{"shape":"String"},
         "RequestId":{
           "shape":"String",
-          "documentation":"<p>The request id associated with the call responsible for the exception.</p>"
+          "documentation":"<p>The request ID associated with the call responsible for the exception.</p>"
         }
       },
       "documentation":"<p>The client is not currently authorized to make the request.</p>",
@@ -1492,6 +2602,62 @@
       "members":{
       }
     },
+    "UpdateMediaInsightsPipelineConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "ResourceAccessRoleArn",
+        "Elements"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for the resource to be updated. Valid values include the name and ARN of the media insights pipeline configuration.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "ResourceAccessRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the role used by the service to access Amazon Web Services resources.</p>"
+        },
+        "RealTimeAlertConfiguration":{
+          "shape":"RealTimeAlertConfiguration",
+          "documentation":"<p>The configuration settings for real-time alerts for the media insights pipeline.</p>"
+        },
+        "Elements":{
+          "shape":"MediaInsightsPipelineConfigurationElements",
+          "documentation":"<p>The elements in the request, such as a processor for Amazon Transcribe or a sink for a Kinesis Data Stream..</p>"
+        }
+      }
+    },
+    "UpdateMediaInsightsPipelineConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "MediaInsightsPipelineConfiguration":{
+          "shape":"MediaInsightsPipelineConfiguration",
+          "documentation":"<p>The updated configuration settings.</p>"
+        }
+      }
+    },
+    "UpdateMediaInsightsPipelineStatusRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "UpdateStatus"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "UpdateStatus":{
+          "shape":"MediaPipelineStatusUpdate",
+          "documentation":"<p>The requested status of the media insights pipeline.</p>"
+        }
+      }
+    },
     "VideoArtifactsConfiguration":{
       "type":"structure",
       "required":["State"],
@@ -1516,12 +2682,53 @@
           "documentation":"<p>Enables or disables the configuration object.</p>"
         }
       },
-      "documentation":"<p>The configuration object of a video contacatentation pipeline.</p>"
+      "documentation":"<p>The configuration object of a video concatenation pipeline.</p>"
     },
     "VideoMuxType":{
       "type":"string",
       "enum":["VideoOnly"]
+    },
+    "VocabularyFilterMethod":{
+      "type":"string",
+      "enum":[
+        "remove",
+        "mask",
+        "tag"
+      ]
+    },
+    "VocabularyFilterName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "VocabularyName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "VoiceAnalyticsConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "VoiceAnalyticsProcessorConfiguration":{
+      "type":"structure",
+      "members":{
+        "SpeakerSearchStatus":{
+          "shape":"VoiceAnalyticsConfigurationStatus",
+          "documentation":"<p>The status of the speaker search task.</p>"
+        },
+        "VoiceToneAnalysisStatus":{
+          "shape":"VoiceAnalyticsConfigurationStatus",
+          "documentation":"<p>The status of the voice tone analysis task.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for a voice analytics processor.</p>"
     }
   },
-  "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines that capture, concatenate, or stream your Amazon Chime SDK meetings. For more information about media pipleines, see <a href=\"http://amazonaws.com/chime/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amazon Chime SDK media pipelines</a>. </p>"
+  "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines that capture, concatenate, or stream your Amazon Chime SDK meetings. For more information about media pipelines, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amazon Chime SDK media pipelines</a>. </p>"
 }

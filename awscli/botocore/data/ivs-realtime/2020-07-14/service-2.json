@@ -1,0 +1,751 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2020-07-14",
+    "endpointPrefix":"ivsrealtime",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceAbbreviation":"ivsrealtime",
+    "serviceFullName":"Amazon Interactive Video Service RealTime",
+    "serviceId":"IVS RealTime",
+    "signatureVersion":"v4",
+    "signingName":"ivs",
+    "uid":"ivs-realtime-2020-07-14"
+  },
+  "operations":{
+    "CreateParticipantToken":{
+      "name":"CreateParticipantToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateParticipantToken",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateParticipantTokenRequest"},
+      "output":{"shape":"CreateParticipantTokenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Creates an additional token for a specified stage. This can be done after stage creation or when tokens expire. Tokens always are scoped to the stage for which they are created.</p> <p>Encryption keys are owned by Amazon IVS and never used directly by your application.</p>"
+    },
+    "CreateStage":{
+      "name":"CreateStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateStage",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateStageRequest"},
+      "output":{"shape":"CreateStageResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Creates a new stage (and optionally participant tokens).</p>"
+    },
+    "DeleteStage":{
+      "name":"DeleteStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteStage",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteStageRequest"},
+      "output":{"shape":"DeleteStageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Shuts down and deletes the specified stage (disconnecting all participants).</p>"
+    },
+    "DisconnectParticipant":{
+      "name":"DisconnectParticipant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DisconnectParticipant",
+        "responseCode":200
+      },
+      "input":{"shape":"DisconnectParticipantRequest"},
+      "output":{"shape":"DisconnectParticipantResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Disconnects a specified participant and revokes the participant permanently from a specified stage.</p>"
+    },
+    "GetStage":{
+      "name":"GetStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetStage",
+        "responseCode":200
+      },
+      "input":{"shape":"GetStageRequest"},
+      "output":{"shape":"GetStageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets information for the specified stage.</p>"
+    },
+    "ListStages":{
+      "name":"ListStages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListStages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListStagesRequest"},
+      "output":{"shape":"ListStagesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Gets summary information about all stages in your account, in the AWS region where the API request is processed.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about AWS tags for the specified ARN.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds or updates tags for the AWS resource with the specified ARN.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes tags from the resource with the specified ARN.</p>",
+      "idempotent":true
+    },
+    "UpdateStage":{
+      "name":"UpdateStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateStage",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateStageRequest"},
+      "output":{"shape":"UpdateStageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Updates a stage’s configuration.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>User does not have sufficient access to perform this action.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateParticipantTokenRequest":{
+      "type":"structure",
+      "required":["stageArn"],
+      "members":{
+        "attributes":{
+          "shape":"ParticipantTokenAttributes",
+          "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "capabilities":{
+          "shape":"ParticipantTokenCapabilities",
+          "documentation":"<p>Set of capabilities that the user is allowed to perform in the stage. Default: <code>PUBLISH, SUBSCRIBE</code>.</p>"
+        },
+        "duration":{
+          "shape":"ParticipantTokenDurationMinutes",
+          "documentation":"<p>Duration (in minutes), after which the token expires. Default: 60 (1 hour).</p>"
+        },
+        "stageArn":{
+          "shape":"StageArn",
+          "documentation":"<p>ARN of the stage to which this token is scoped.</p>"
+        },
+        "userId":{
+          "shape":"ParticipantTokenUserId",
+          "documentation":"<p>Name that can be specified to help identify the token. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        }
+      }
+    },
+    "CreateParticipantTokenResponse":{
+      "type":"structure",
+      "members":{
+        "participantToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The participant token that was created.</p>"
+        }
+      }
+    },
+    "CreateStageRequest":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"StageName",
+          "documentation":"<p>Optional name that can be specified for the stage being created.</p>"
+        },
+        "participantTokenConfigurations":{
+          "shape":"ParticipantTokenConfigurations",
+          "documentation":"<p>Array of participant token configuration objects to attach to the new stage.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there. </p>"
+        }
+      }
+    },
+    "CreateStageResponse":{
+      "type":"structure",
+      "members":{
+        "participantTokens":{
+          "shape":"ParticipantTokenList",
+          "documentation":"<p>Participant tokens attached to the stage. These correspond to the <code>participants</code> in the request.</p>"
+        },
+        "stage":{
+          "shape":"Stage",
+          "documentation":"<p>The stage that was created.</p>"
+        }
+      }
+    },
+    "DeleteStageRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"StageArn",
+          "documentation":"<p>ARN of the stage to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteStageResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisconnectParticipantReason":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "DisconnectParticipantRequest":{
+      "type":"structure",
+      "required":[
+        "participantId",
+        "stageArn"
+      ],
+      "members":{
+        "participantId":{
+          "shape":"ParticipantTokenId",
+          "documentation":"<p>Identifier of the participant to be disconnected. This is returned by <a>CreateParticipantToken</a>.</p>"
+        },
+        "reason":{
+          "shape":"DisconnectParticipantReason",
+          "documentation":"<p>Description of why this participant is being disconnected.</p>"
+        },
+        "stageArn":{
+          "shape":"StageArn",
+          "documentation":"<p>ARN of the stage to which the participant is attached.</p>"
+        }
+      }
+    },
+    "DisconnectParticipantResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetStageRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"StageArn",
+          "documentation":"<p>ARN of the stage for which the information is to be retrieved.</p>"
+        }
+      }
+    },
+    "GetStageResponse":{
+      "type":"structure",
+      "members":{
+        "stage":{
+          "shape":"Stage",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>Unexpected error during processing of request.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ListStagesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxStageResults",
+          "documentation":"<p>Maximum number of results to return. Default: 50.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first stage to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        }
+      }
+    },
+    "ListStagesResponse":{
+      "type":"structure",
+      "required":["stages"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more rooms than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "stages":{
+          "shape":"StageSummaryList",
+          "documentation":"<p>List of the matching stages (summary information only).</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource to be retrieved. The ARN must be URL-encoded.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "required":["tags"],
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
+        }
+      }
+    },
+    "MaxStageResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9+/=_-]*$"
+    },
+    "ParticipantToken":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"ParticipantTokenAttributes",
+          "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "capabilities":{
+          "shape":"ParticipantTokenCapabilities",
+          "documentation":"<p>Set of capabilities that the user is allowed to perform in the stage.</p>"
+        },
+        "duration":{
+          "shape":"ParticipantTokenDurationMinutes",
+          "documentation":"<p>Duration (in minutes), after which the participant token expires. Default: 60 (1 hour).</p>"
+        },
+        "expirationTime":{
+          "shape":"ParticipantTokenExpirationTime",
+          "documentation":"<p>ISO 8601 timestamp (returned as a string) for when this token expires.</p>"
+        },
+        "participantId":{
+          "shape":"ParticipantTokenId",
+          "documentation":"<p>Unique identifier for this participant token, assigned by IVS.</p>"
+        },
+        "token":{
+          "shape":"ParticipantTokenString",
+          "documentation":"<p>The issued client token, encrypted.</p>"
+        },
+        "userId":{
+          "shape":"ParticipantTokenUserId",
+          "documentation":"<p>Name to help identify the token. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        }
+      },
+      "documentation":"<p>Object specifying a participant token in a stage.</p>"
+    },
+    "ParticipantTokenAttributes":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ParticipantTokenCapabilities":{
+      "type":"list",
+      "member":{"shape":"ParticipantTokenCapability"},
+      "max":2,
+      "min":0
+    },
+    "ParticipantTokenCapability":{
+      "type":"string",
+      "enum":[
+        "PUBLISH",
+        "SUBSCRIBE"
+      ]
+    },
+    "ParticipantTokenConfiguration":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"ParticipantTokenAttributes",
+          "documentation":"<p>Application-provided attributes to encode into the corresponding participant token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "capabilities":{
+          "shape":"ParticipantTokenCapabilities",
+          "documentation":"<p>Set of capabilities that the user is allowed to perform in the stage.</p>"
+        },
+        "duration":{
+          "shape":"ParticipantTokenDurationMinutes",
+          "documentation":"<p>Duration (in minutes), after which the corresponding participant token expires. Default: 60 (1 hour).</p>"
+        },
+        "userId":{
+          "shape":"ParticipantTokenUserId",
+          "documentation":"<p>Name that can be specified to help identify the corresponding participant token. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        }
+      },
+      "documentation":"<p>Object specifying a participant token configuration in a stage.</p>"
+    },
+    "ParticipantTokenConfigurations":{
+      "type":"list",
+      "member":{"shape":"ParticipantTokenConfiguration"},
+      "max":12,
+      "min":0
+    },
+    "ParticipantTokenDurationMinutes":{
+      "type":"integer",
+      "max":20160,
+      "min":1
+    },
+    "ParticipantTokenExpirationTime":{"type":"timestamp"},
+    "ParticipantTokenId":{"type":"string"},
+    "ParticipantTokenList":{
+      "type":"list",
+      "member":{"shape":"ParticipantToken"}
+    },
+    "ParticipantTokenString":{"type":"string"},
+    "ParticipantTokenUserId":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "PendingVerification":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p> Your account is pending verification. </p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^arn:aws:[is]vs:[a-z0-9-]+:[0-9]+:[a-z-]/[a-zA-Z0-9-]+$"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>Request references a resource which does not exist.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>Request would cause a service quota to be exceeded.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Stage":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "activeSessionId":{
+          "shape":"StageSessionId",
+          "documentation":"<p>ID of the active session within the stage.</p>"
+        },
+        "arn":{
+          "shape":"StageArn",
+          "documentation":"<p>Stage ARN.</p>"
+        },
+        "name":{
+          "shape":"StageName",
+          "documentation":"<p>Stage name.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying a stage.</p>"
+    },
+    "StageArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:stage/[a-zA-Z0-9-]+$"
+    },
+    "StageName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9-_]*$"
+    },
+    "StageSessionId":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"^st-[a-zA-Z0-9]+$"
+    },
+    "StageSummary":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "activeSessionId":{
+          "shape":"StageSessionId",
+          "documentation":"<p>ID of the active session within the stage.</p>"
+        },
+        "arn":{
+          "shape":"StageArn",
+          "documentation":"<p>Stage ARN.</p>"
+        },
+        "name":{
+          "shape":"StageName",
+          "documentation":"<p>Stage name.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a stage.</p>"
+    },
+    "StageSummaryList":{
+      "type":"list",
+      "member":{"shape":"StageSummary"}
+    },
+    "String":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource to be tagged. The ARN must be URL-encoded.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Array of tags to be added or updated. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints beyond what is documented there.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource to be untagged. The ARN must be URL-encoded.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>Array of tags to be removed. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints beyond what is documented there.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateStageRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"StageArn",
+          "documentation":"<p>ARN of the stage to be updated.</p>"
+        },
+        "name":{
+          "shape":"StageName",
+          "documentation":"<p>Name of the stage to be updated.</p>"
+        }
+      }
+    },
+    "UpdateStageResponse":{
+      "type":"structure",
+      "members":{
+        "stage":{
+          "shape":"Stage",
+          "documentation":"<p>The updated stage. </p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "exceptionMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        }
+      },
+      "documentation":"<p/>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "errorMessage":{"type":"string"}
+  },
+  "documentation":"<p> <b>Introduction</b> </p> <p>The Amazon Interactive Video Service (IVS) stage API is REST compatible, using a standard HTTP API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, including errors. </p> <p>Terminology: The IVS stage API sometimes is referred to as the IVS RealTime API.</p> <p> <b>Resources</b> </p> <p>The following resources contain information about your IVS live stream (see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/getting-started.html\">Getting Started with Amazon IVS</a>):</p> <ul> <li> <p> <b>Stage</b> — A stage is a virtual space where multiple participants can exchange audio and video in real time.</p> </li> </ul> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS stage API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p> <p>At most 50 tags can be applied to a resource.</p> <p> <b>Stages Endpoints</b> </p> <ul> <li> <p> <a>CreateParticipantToken</a> — Creates an additional token for a specified stage. This can be done after stage creation or when tokens expire.</p> </li> <li> <p> <a>CreateStage</a> — Creates a new stage (and optionally participant tokens).</p> </li> <li> <p> <a>DeleteStage</a> — Shuts down and deletes the specified stage (disconnecting all participants).</p> </li> <li> <p> <a>DisconnectParticipant</a> — Disconnects a specified participant and revokes the participant permanently from a specified stage.</p> </li> <li> <p> <a>GetStage</a> — Gets information for the specified stage.</p> </li> <li> <p> <a>ListStages</a> — Gets summary information about all stages in your account, in the AWS region where the API request is processed.</p> </li> <li> <p> <a>UpdateStage</a> — Updates a stage’s configuration.</p> </li> </ul> <p> <b>Tags Endpoints</b> </p> <ul> <li> <p> <a>ListTagsForResource</a> — Gets information about AWS tags for the specified ARN.</p> </li> <li> <p> <a>TagResource</a> — Adds or updates tags for the AWS resource with the specified ARN.</p> </li> <li> <p> <a>UntagResource</a> — Removes tags from the resource with the specified ARN.</p> </li> </ul>"
+}

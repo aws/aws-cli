@@ -51,7 +51,28 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Promotes an <code>AppInstanceUser</code> to an <code>AppInstanceAdmin</code>. The promoted user can perform the following actions. </p> <ul> <li> <p> <code>ChannelModerator</code> actions across all channels in the <code>AppInstance</code>.</p> </li> <li> <p> <code>DeleteChannelMessage</code> actions.</p> </li> </ul> <p>Only an <code>AppInstanceUser</code> can be promoted to an <code>AppInstanceAdmin</code> role.</p>"
+      "documentation":"<p>Promotes an <code>AppInstanceUser</code> or <code>AppInstanceBot</code> to an <code>AppInstanceAdmin</code>. The promoted entity can perform the following actions. </p> <ul> <li> <p> <code>ChannelModerator</code> actions across all channels in the <code>AppInstance</code>.</p> </li> <li> <p> <code>DeleteChannelMessage</code> actions.</p> </li> </ul> <p>Only an <code>AppInstanceUser</code> and <code>AppInstanceBot</code> can be promoted to an <code>AppInstanceAdmin</code> role.</p>"
+    },
+    "CreateAppInstanceBot":{
+      "name":"CreateAppInstanceBot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app-instance-bots",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAppInstanceBotRequest"},
+      "output":{"shape":"CreateAppInstanceBotResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Creates a bot under an Amazon Chime <code>AppInstance</code>. The request consists of a unique <code>Configuration</code> and <code>Name</code> for that bot.</p>"
     },
     "CreateAppInstanceUser":{
       "name":"CreateAppInstanceUser",
@@ -111,7 +132,27 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Demotes an <code>AppInstanceAdmin</code> to an <code>AppInstanceUser</code>. This action does not delete the user.</p>"
+      "documentation":"<p>Demotes an <code>AppInstanceAdmin</code> to an <code>AppInstanceUser</code> or <code>AppInstanceBot</code>. This action does not delete the user.</p>"
+    },
+    "DeleteAppInstanceBot":{
+      "name":"DeleteAppInstanceBot",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/app-instance-bots/{appInstanceBotArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAppInstanceBotRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes an <code>AppInstanceBot</code>.</p>"
     },
     "DeleteAppInstanceUser":{
       "name":"DeleteAppInstanceUser",
@@ -188,6 +229,25 @@
       ],
       "documentation":"<p>Returns the full details of an <code>AppInstanceAdmin</code>.</p>"
     },
+    "DescribeAppInstanceBot":{
+      "name":"DescribeAppInstanceBot",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-bots/{appInstanceBotArn}"
+      },
+      "input":{"shape":"DescribeAppInstanceBotRequest"},
+      "output":{"shape":"DescribeAppInstanceBotResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>The <code>AppInstanceBot's</code> information.</p>"
+    },
     "DescribeAppInstanceUser":{
       "name":"DescribeAppInstanceUser",
       "http":{
@@ -263,6 +323,25 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Returns a list of the administrators in the <code>AppInstance</code>.</p>"
+    },
+    "ListAppInstanceBots":{
+      "name":"ListAppInstanceBots",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app-instance-bots"
+      },
+      "input":{"shape":"ListAppInstanceBotsRequest"},
+      "output":{"shape":"ListAppInstanceBotsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Lists all <code>AppInstanceBots</code> created under a single <code>AppInstance</code>.</p>"
     },
     "ListAppInstanceUserEndpoints":{
       "name":"ListAppInstanceUserEndpoints",
@@ -357,6 +436,26 @@
       ],
       "documentation":"<p>Sets the amount of time in days that a given <code>AppInstance</code> retains data.</p>"
     },
+    "PutAppInstanceUserExpirationSettings":{
+      "name":"PutAppInstanceUserExpirationSettings",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instance-users/{appInstanceUserArn}/expiration-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAppInstanceUserExpirationSettingsRequest"},
+      "output":{"shape":"PutAppInstanceUserExpirationSettingsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Sets the number of days before the <code>AppInstanceUser</code> is automatically deleted.</p> <note> <p>A background process deletes expired <code>AppInstanceUsers</code> within 6 hours of expiration. Actual deletion times may vary.</p> <p>Expired <code>AppInstanceUsers</code> that have not yet been deleted appear as active, and you can update their expiration settings. The system honors the new settings.</p> </note>"
+    },
     "RegisterAppInstanceUserEndpoint":{
       "name":"RegisterAppInstanceUserEndpoint",
       "http":{
@@ -434,6 +533,27 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Updates <code>AppInstance</code> metadata.</p>"
+    },
+    "UpdateAppInstanceBot":{
+      "name":"UpdateAppInstanceBot",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/app-instance-bots/{appInstanceBotArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppInstanceBotRequest"},
+      "output":{"shape":"UpdateAppInstanceBotResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Updates the name and metadata of an <code>AppInstanceBot</code>.</p>"
     },
     "UpdateAppInstanceUser":{
       "name":"UpdateAppInstanceUser",
@@ -527,7 +647,7 @@
           "documentation":"<p>The time at which an administrator was created.</p>"
         }
       },
-      "documentation":"<p>The details of an <code>AppInstanceAdmin</code>.</p>"
+      "documentation":"<p>The name and ARN of the admin for the <code>AppInstance</code>.</p>"
     },
     "AppInstanceAdminList":{
       "type":"list",
@@ -542,6 +662,58 @@
         }
       },
       "documentation":"<p>Summary of the details of an <code>AppInstanceAdmin</code>.</p>"
+    },
+    "AppInstanceBot":{
+      "type":"structure",
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the AppInstanceBot.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the AppInstanceBot.</p>"
+        },
+        "Configuration":{
+          "shape":"Configuration",
+          "documentation":"<p>The data processing instructions for an AppInstanceBot.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the <code>AppInstanceBot</code> was created.</p>"
+        },
+        "LastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the <code>AppInstanceBot</code> was last updated.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata for an AppInstanceBot.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon Lex V2 chat bot created under an <code>AppInstance</code>.</p>"
+    },
+    "AppInstanceBotList":{
+      "type":"list",
+      "member":{"shape":"AppInstanceBotSummary"}
+    },
+    "AppInstanceBotSummary":{
+      "type":"structure",
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the AppInstanceBot.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the AppInstanceBox.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the AppInstanceBot.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about an AppInstanceBot.</p>"
     },
     "AppInstanceList":{
       "type":"list",
@@ -597,6 +769,10 @@
         "LastUpdatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the <code>AppInstanceUser</code> was last updated.</p>"
+        },
+        "ExpirationSettings":{
+          "shape":"ExpirationSettings",
+          "documentation":"<p>The interval after which an <code>AppInstanceUser</code> is automatically deleted.</p>"
         }
       },
       "documentation":"<p>The details of an <code>AppInstanceUser</code>.</p>"
@@ -621,7 +797,7 @@
           "documentation":"<p>The type of the <code>AppInstanceUserEndpoint</code>.</p>"
         },
         "ResourceArn":{
-          "shape":"SensitiveChimeArn",
+          "shape":"ChimeArn",
           "documentation":"<p>The ARN of the resource to which the endpoint belongs.</p>"
         },
         "EndpointAttributes":{
@@ -741,8 +917,18 @@
       "type":"string",
       "max":64,
       "min":2,
-      "pattern":"[-_a-zA-Z0-9]*",
-      "sensitive":true
+      "pattern":"[-_a-zA-Z0-9]*"
+    },
+    "Configuration":{
+      "type":"structure",
+      "required":["Lex"],
+      "members":{
+        "Lex":{
+          "shape":"LexConfiguration",
+          "documentation":"<p>The configuration for an Amazon Lex V2 bot.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains configuration data.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -778,11 +964,55 @@
       "members":{
         "AppInstanceAdmin":{
           "shape":"Identity",
-          "documentation":"<p>The name and ARN of the admin for the <code>AppInstance</code>.</p>"
+          "documentation":"<p>The ARN and name of the administrator, the ARN of the <code>AppInstance</code>, and the created and last-updated timestamps. All timestamps use epoch milliseconds.</p>"
         },
         "AppInstanceArn":{
           "shape":"ChimeArn",
           "documentation":"<p>The ARN of the of the admin for the <code>AppInstance</code>.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceBotRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceArn",
+        "ClientRequestToken",
+        "Configuration"
+      ],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code> request.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The user's name.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The request metadata. Limited to a 1KB string in UTF-8.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique ID for the client making the request. Use different tokens for different <code>AppInstanceBots</code>.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the <code>AppInstanceBot</code>.</p>"
+        },
+        "Configuration":{
+          "shape":"Configuration",
+          "documentation":"<p>Configuration information about the Amazon Lex V2 V2 bot.</p>"
+        }
+      }
+    },
+    "CreateAppInstanceBotResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppinstanceBot</code>.</p>"
         }
       }
     },
@@ -803,12 +1033,12 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>The <code>ClientRequestToken</code> of the <code>AppInstance</code>.</p>",
+          "documentation":"<p>The unique ID of the request. Use different tokens to create different <code>AppInstances</code>.</p>",
           "idempotencyToken":true
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags assigned to the <code>AppInstanceUser</code>.</p>"
+          "documentation":"<p>Tags assigned to the <code>AppInstance</code>.</p>"
         }
       }
     },
@@ -848,12 +1078,16 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>The token assigned to the user requesting an <code>AppInstance</code>.</p>",
+          "documentation":"<p>The unique ID of the request. Use different tokens to request additional <code>AppInstances</code>.</p>",
           "idempotencyToken":true
         },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags assigned to the <code>AppInstanceUser</code>.</p>"
+        },
+        "ExpirationSettings":{
+          "shape":"ExpirationSettings",
+          "documentation":"<p>Settings that control the interval after which the <code>AppInstanceUser</code> is automatically deleted.</p>"
         }
       }
     },
@@ -884,6 +1118,18 @@
           "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
           "location":"uri",
           "locationName":"appInstanceArn"
+        }
+      }
+    },
+    "DeleteAppInstanceBotRequest":{
+      "type":"structure",
+      "required":["AppInstanceBotArn"],
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceBot</code> being deleted.</p>",
+          "location":"uri",
+          "locationName":"appInstanceBotArn"
         }
       }
     },
@@ -959,6 +1205,27 @@
         "AppInstanceAdmin":{
           "shape":"AppInstanceAdmin",
           "documentation":"<p>The ARN and name of the <code>AppInstanceUser</code>, the ARN of the <code>AppInstance</code>, and the created and last-updated timestamps. All timestamps use epoch milliseconds.</p>"
+        }
+      }
+    },
+    "DescribeAppInstanceBotRequest":{
+      "type":"structure",
+      "required":["AppInstanceBotArn"],
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceBot</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceBotArn"
+        }
+      }
+    },
+    "DescribeAppInstanceBotResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceBot":{
+          "shape":"AppInstanceBot",
+          "documentation":"<p>The detials of the <code>AppInstanceBot</code>.</p>"
         }
       }
     },
@@ -1098,6 +1365,33 @@
         "PhoneNumberAssociationsExist"
       ]
     },
+    "ExpirationCriterion":{
+      "type":"string",
+      "enum":["CREATED_TIMESTAMP"]
+    },
+    "ExpirationDays":{
+      "type":"integer",
+      "max":5475,
+      "min":1
+    },
+    "ExpirationSettings":{
+      "type":"structure",
+      "required":[
+        "ExpirationDays",
+        "ExpirationCriterion"
+      ],
+      "members":{
+        "ExpirationDays":{
+          "shape":"ExpirationDays",
+          "documentation":"<p>The period in days after which an <code>AppInstanceUser</code> will be automatically deleted.</p>"
+        },
+        "ExpirationCriterion":{
+          "shape":"ExpirationCriterion",
+          "documentation":"<p>Specifies the conditions under which an <code>AppInstanceUser</code> will expire.</p>"
+        }
+      },
+      "documentation":"<p>Determines the interval after which an <code>AppInstanceUser</code> is automatically deleted.</p>"
+    },
     "ForbiddenException":{
       "type":"structure",
       "members":{
@@ -1145,7 +1439,46 @@
           "documentation":"<p>The name in an Identity.</p>"
         }
       },
-      "documentation":"<p>The details of a user.</p>"
+      "documentation":"<p>The details of a user or bot.</p>"
+    },
+    "LexBotAliasArn":{
+      "type":"string",
+      "max":2048,
+      "min":15,
+      "pattern":"arn:aws:lex:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:bot-alias/[A-Z0-9]{10}/[A-Z0-9]{10}"
+    },
+    "LexConfiguration":{
+      "type":"structure",
+      "required":[
+        "RespondsTo",
+        "LexBotAliasArn",
+        "LocaleId"
+      ],
+      "members":{
+        "RespondsTo":{
+          "shape":"RespondsTo",
+          "documentation":"<p>Determines whether the Amazon Lex V2 bot responds to all standard messages. Control messages are not supported.</p>"
+        },
+        "LexBotAliasArn":{
+          "shape":"LexBotAliasArn",
+          "documentation":"<p>The ARN of the Amazon Lex V2 bot's alias. The ARN uses this format: <code>arn:aws:lex:REGION:ACCOUNT:bot-alias/MYBOTID/MYBOTALIAS</code> </p>"
+        },
+        "LocaleId":{
+          "shape":"String",
+          "documentation":"<p>Identifies the Amazon Lex V2 bot's language and locale. The string must match one of the supported locales in Amazon Lex V2. All of the intents, slot types, and slots used in the bot must have the same locale. For more information, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/how-languages.html\">Supported languages</a> in the <i>Amazon Lex V2 Developer Guide</i>.</p>"
+        },
+        "WelcomeIntent":{
+          "shape":"LexIntentName",
+          "documentation":"<p>The name of the welcome intent configured in the Amazon Lex V2 bot.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon Lex V2 bot.</p>"
+    },
+    "LexIntentName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^([A-Za-z]_?)+$"
     },
     "ListAppInstanceAdminsRequest":{
       "type":"structure",
@@ -1185,6 +1518,47 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token returned from previous API requests until the number of administrators is reached.</p>"
+        }
+      }
+    },
+    "ListAppInstanceBotsRequest":{
+      "type":"structure",
+      "required":["AppInstanceArn"],
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstance</code>.</p>",
+          "location":"querystring",
+          "locationName":"app-instance-arn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of requests to return.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested bots are returned.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppInstanceBotsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the AppInstance.</p>"
+        },
+        "AppInstanceBots":{
+          "shape":"AppInstanceBotList",
+          "documentation":"<p>The information for each requested <code>AppInstanceBot</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token passed by previous API calls until all requested bots are returned.</p>"
         }
       }
     },
@@ -1350,6 +1724,16 @@
       "pattern":".*",
       "sensitive":true
     },
+    "NotFoundException":{
+      "type":"structure",
+      "members":{
+        "Code":{"shape":"ErrorCode"},
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>One or more of the resources in the request does not exist in the system.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
     "PutAppInstanceRetentionSettingsRequest":{
       "type":"structure",
       "required":[
@@ -1382,6 +1766,35 @@
         }
       }
     },
+    "PutAppInstanceUserExpirationSettingsRequest":{
+      "type":"structure",
+      "required":["AppInstanceUserArn"],
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceUserArn"
+        },
+        "ExpirationSettings":{
+          "shape":"ExpirationSettings",
+          "documentation":"<p>Settings that control the interval after which an <code>AppInstanceUser</code> is automatically deleted.</p>"
+        }
+      }
+    },
+    "PutAppInstanceUserExpirationSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceUserArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceUser</code>.</p>"
+        },
+        "ExpirationSettings":{
+          "shape":"ExpirationSettings",
+          "documentation":"<p>Settings that control the interval after which an <code>AppInstanceUser</code> is automatically deleted.</p>"
+        }
+      }
+    },
     "RegisterAppInstanceUserEndpointRequest":{
       "type":"structure",
       "required":[
@@ -1407,7 +1820,7 @@
           "documentation":"<p>The type of the <code>AppInstanceUserEndpoint</code>. Supported types:</p> <ul> <li> <p> <code>APNS</code>: The mobile notification service for an Apple device.</p> </li> <li> <p> <code>APNS_SANDBOX</code>: The sandbox environment of the mobile notification service for an Apple device.</p> </li> <li> <p> <code>GCM</code>: The mobile notification service for an Android device.</p> </li> </ul> <p>Populate the <code>ResourceArn</code> value of each type as <code>PinpointAppArn</code>.</p>"
         },
         "ResourceArn":{
-          "shape":"SensitiveChimeArn",
+          "shape":"ChimeArn",
           "documentation":"<p>The ARN of the resource to which the endpoint belongs.</p>"
         },
         "EndpointAttributes":{
@@ -1416,7 +1829,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>The idempotency token for each client request. </p>",
+          "documentation":"<p>The unique ID assigned to the request. Use different tokens to register other endpoints.</p>",
           "idempotencyToken":true
         },
         "AllowMessages":{
@@ -1454,6 +1867,10 @@
       "min":0,
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u0085\\u00A0-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFFF]*",
       "sensitive":true
+    },
+    "RespondsTo":{
+      "type":"string",
+      "enum":["STANDARD_MESSAGES"]
     },
     "RetentionDays":{
       "type":"integer",
@@ -1598,6 +2015,39 @@
         "TagKeys":{
           "shape":"TagKeyList",
           "documentation":"<p>The tag keys.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceBotRequest":{
+      "type":"structure",
+      "required":[
+        "AppInstanceBotArn",
+        "Name",
+        "Metadata"
+      ],
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceBot</code>.</p>",
+          "location":"uri",
+          "locationName":"appInstanceBotArn"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the <code>AppInstanceBot</code>.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata of the <code>AppInstanceBot</code>.</p>"
+        }
+      }
+    },
+    "UpdateAppInstanceBotResponse":{
+      "type":"structure",
+      "members":{
+        "AppInstanceBotArn":{
+          "shape":"ChimeArn",
+          "documentation":"<p>The ARN of the <code>AppInstanceBot</code>.</p>"
         }
       }
     },

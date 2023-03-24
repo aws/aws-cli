@@ -585,7 +585,7 @@
         {"shape":"UnmodifiableEntityException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Deletes the permissions boundary for the specified IAM role. </p> <important> <p>Deleting the permissions boundary for a role might increase its permissions. For example, it might allow anyone who assumes the role to perform all the actions granted in its permissions policies. </p> </important>"
+      "documentation":"<p>Deletes the permissions boundary for the specified IAM role. </p> <p>You cannot set the boundary for a service-linked role.</p> <important> <p>Deleting the permissions boundary for a role might increase its permissions. For example, it might allow anyone who assumes the role to perform all the actions granted in its permissions policies.</p> </important>"
     },
     "DeleteRolePolicy":{
       "name":"DeleteRolePolicy",
@@ -1884,7 +1884,7 @@
         {"shape":"PolicyNotAttachableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Adds or updates the policy that is specified as the IAM role's permissions boundary. You can use an Amazon Web Services managed policy or a customer managed policy to set the boundary for a role. Use the boundary to control the maximum permissions that the role can have. Setting a permissions boundary is an advanced feature that can affect the permissions for the role.</p> <p>You cannot set the boundary for a service-linked role. </p> <important> <p>Policies used as permissions boundaries do not provide permissions. You must also attach a permissions policy to the role. To learn how the effective permissions for a role are evaluated, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html\">IAM JSON policy evaluation logic</a> in the IAM User Guide. </p> </important>"
+      "documentation":"<p>Adds or updates the policy that is specified as the IAM role's permissions boundary. You can use an Amazon Web Services managed policy or a customer managed policy to set the boundary for a role. Use the boundary to control the maximum permissions that the role can have. Setting a permissions boundary is an advanced feature that can affect the permissions for the role.</p> <p>You cannot set the boundary for a service-linked role.</p> <important> <p>Policies used as permissions boundaries do not provide permissions. You must also attach a permissions policy to the role. To learn how the effective permissions for a role are evaluated, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html\">IAM JSON policy evaluation logic</a> in the IAM User Guide. </p> </important>"
     },
     "PutRolePolicy":{
       "name":"PutRolePolicy",
@@ -7882,7 +7882,7 @@
       "members":{
         "message":{"shape":"unmodifiableEntityMessage"}
       },
-      "documentation":"<p>The request was rejected because only the service that depends on the service-linked role can modify or delete the role on your behalf. The error message includes the name of the service that depends on this service-linked role. You must request the change through that service.</p>",
+      "documentation":"<p>The request was rejected because service-linked roles are protected Amazon Web Services resources. Only the service that depends on the service-linked role can modify or delete the role on your behalf. The error message includes the name of the service that depends on this service-linked role. You must request the change through that service.</p>",
       "error":{
         "code":"UnmodifiableEntity",
         "httpStatusCode":400,

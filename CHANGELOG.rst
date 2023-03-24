@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.99
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehend``: This release adds a new field (FlywheelArn) to the EntitiesDetectionJobProperties object. The FlywheelArn field is returned in the DescribeEntitiesDetectionJob and ListEntitiesDetectionJobs responses when the EntitiesDetection job is started with a FlywheelArn instead of an EntityRecognizerArn .
+* api-change:``rds``: Added error code CreateCustomDBEngineVersionFault for when the create custom engine version for Custom engines fails.
+
+
 1.27.98
 =======
 

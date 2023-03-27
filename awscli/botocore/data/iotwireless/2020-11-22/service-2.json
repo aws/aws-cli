@@ -497,6 +497,25 @@
       ],
       "documentation":"<p>Deletes a wireless device.</p>"
     },
+    "DeleteWirelessDeviceImportTask":{
+      "name":"DeleteWirelessDeviceImportTask",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/wireless_device_import_task/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"DeleteWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete an import task.</p>"
+    },
     "DeleteWirelessGateway":{
       "name":"DeleteWirelessGateway",
       "http":{
@@ -550,6 +569,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a wireless gateway task definition. Deleting this task definition does not affect tasks that are currently in progress.</p>"
+    },
+    "DeregisterWirelessDevice":{
+      "name":"DeregisterWirelessDevice",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/wireless-devices/{Identifier}/deregister"
+      },
+      "input":{"shape":"DeregisterWirelessDeviceRequest"},
+      "output":{"shape":"DeregisterWirelessDeviceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deregister a wireless device from AWS IoT Wireless.</p>"
     },
     "DisassociateAwsAccountFromPartnerAccount":{
       "name":"DisassociateAwsAccountFromPartnerAccount",
@@ -989,6 +1024,24 @@
       ],
       "documentation":"<p>Gets information about a wireless device.</p>"
     },
+    "GetWirelessDeviceImportTask":{
+      "name":"GetWirelessDeviceImportTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/wireless_device_import_task/{Id}"
+      },
+      "input":{"shape":"GetWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"GetWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get information about an import task and count of device onboarding summary information for the import task.</p>"
+    },
     "GetWirelessDeviceStatistics":{
       "name":"GetWirelessDeviceStatistics",
       "http":{
@@ -1141,6 +1194,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the device profiles registered to your AWS account.</p>"
+    },
+    "ListDevicesForWirelessDeviceImportTask":{
+      "name":"ListDevicesForWirelessDeviceImportTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/wireless_device_import_task"
+      },
+      "input":{"shape":"ListDevicesForWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"ListDevicesForWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List the Sidewalk devices in an import task and their onboarding status.</p>"
     },
     "ListEventConfigurations":{
       "name":"ListEventConfigurations",
@@ -1307,6 +1378,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the tags (metadata) you have assigned to the resource.</p>"
+    },
+    "ListWirelessDeviceImportTasks":{
+      "name":"ListWirelessDeviceImportTasks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/wireless_device_import_tasks"
+      },
+      "input":{"shape":"ListWirelessDeviceImportTasksRequest"},
+      "output":{"shape":"ListWirelessDeviceImportTasksResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List wireless devices that have been added to an import task.</p>"
     },
     "ListWirelessDevices":{
       "name":"ListWirelessDevices",
@@ -1539,6 +1628,44 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Starts a multicast group session.</p>"
+    },
+    "StartSingleWirelessDeviceImportTask":{
+      "name":"StartSingleWirelessDeviceImportTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/wireless_single_device_import_task",
+        "responseCode":201
+      },
+      "input":{"shape":"StartSingleWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"StartSingleWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Start import task for a single wireless device.</p>"
+    },
+    "StartWirelessDeviceImportTask":{
+      "name":"StartWirelessDeviceImportTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/wireless_device_import_task",
+        "responseCode":201
+      },
+      "input":{"shape":"StartWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"StartWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Start import task for provisioning Sidewalk devices in bulk using an S3 CSV file.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1796,6 +1923,25 @@
       ],
       "documentation":"<p>Updates properties of a wireless device.</p>"
     },
+    "UpdateWirelessDeviceImportTask":{
+      "name":"UpdateWirelessDeviceImportTask",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/wireless_device_import_task/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateWirelessDeviceImportTaskRequest"},
+      "output":{"shape":"UpdateWirelessDeviceImportTaskResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update an import task to add more devices to the task.</p>"
+    },
     "UpdateWirelessGateway":{
       "name":"UpdateWirelessGateway",
       "http":{
@@ -1892,6 +2038,10 @@
       "max":1011,
       "min":1
     },
+    "ApId":{
+      "type":"string",
+      "max":256
+    },
     "AppEui":{
       "type":"string",
       "pattern":"[a-fA-F0-9]{16}"
@@ -1929,6 +2079,13 @@
     "ApplicationConfigType":{
       "type":"string",
       "enum":["SemtechGeolocation"]
+    },
+    "ApplicationServerPublicKey":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[a-fA-F0-9]{64}",
+      "sensitive":true
     },
     "Applications":{
       "type":"list",
@@ -2506,6 +2663,10 @@
           "shape":"ClientRequestToken",
           "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
           "idempotencyToken":true
+        },
+        "Sidewalk":{
+          "shape":"SidewalkCreateDeviceProfile",
+          "documentation":"<p>The Sidewalk-related information for creating the Sidewalk device profile.</p>"
         }
       }
     },
@@ -2682,6 +2843,10 @@
         "Positioning":{
           "shape":"PositioningConfigStatus",
           "documentation":"<p>FPort values for the GNSS, stream, and ClockSync functions of the positioning information.</p>"
+        },
+        "Sidewalk":{
+          "shape":"SidewalkCreateWirelessDevice",
+          "documentation":"<p>The device configuration information to use to create the Sidewalk device.</p>"
         }
       }
     },
@@ -2815,6 +2980,45 @@
       "documentation":"<p>Created at timestamp for the resource.</p>"
     },
     "CreationDate":{"type":"timestamp"},
+    "CreationTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DakCertificateId":{
+      "type":"string",
+      "max":256
+    },
+    "DakCertificateMetadata":{
+      "type":"structure",
+      "required":["CertificateId"],
+      "members":{
+        "CertificateId":{
+          "shape":"DakCertificateId",
+          "documentation":"<p>The certificate ID for the DAK.</p>"
+        },
+        "MaxAllowedSignature":{
+          "shape":"MaxAllowedSignature",
+          "documentation":"<p>The maximum number of signatures that the DAK can sign. A value of <code>-1</code> indicates that there's no device limit.</p>"
+        },
+        "FactorySupport":{
+          "shape":"FactorySupport",
+          "documentation":"<p>Whether factory support has been enabled.</p>"
+        },
+        "ApId":{
+          "shape":"ApId",
+          "documentation":"<p>The advertised product ID (APID) that's used for pre-production and production applications.</p>"
+        },
+        "DeviceTypeId":{
+          "shape":"DeviceTypeId",
+          "documentation":"<p>The device type ID that's used for prototyping applications.</p>"
+        }
+      },
+      "documentation":"<p>The device attestation key (DAK) information.</p>"
+    },
+    "DakCertificateMetadataList":{
+      "type":"list",
+      "member":{"shape":"DakCertificateMetadata"}
+    },
     "DeleteDestinationRequest":{
       "type":"structure",
       "required":["Name"],
@@ -2946,6 +3150,23 @@
       "members":{
       }
     },
+    "DeleteWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The unique identifier of the import task to be deleted.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "DeleteWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteWirelessDeviceRequest":{
       "type":"structure",
       "required":["Id"],
@@ -3014,6 +3235,29 @@
       "members":{
       }
     },
+    "DeregisterWirelessDeviceRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The identifier of the wireless device to deregister from AWS IoT Wireless.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "WirelessDeviceType":{
+          "shape":"WirelessDeviceType",
+          "documentation":"<p>The type of wireless device to deregister from AWS IoT Wireless, which can be <code>LoRaWAN</code> or <code>Sidewalk</code>.</p>",
+          "location":"querystring",
+          "locationName":"WirelessDeviceType"
+        }
+      }
+    },
+    "DeregisterWirelessDeviceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Description":{
       "type":"string",
       "documentation":"<p>The description of the new resource.</p>",
@@ -3077,6 +3321,15 @@
       "member":{"shape":"CertificateList"},
       "documentation":"<p>List of device certificate chain.</p>"
     },
+    "DeviceCreationFile":{
+      "type":"string",
+      "max":1024
+    },
+    "DeviceCreationFileList":{
+      "type":"list",
+      "member":{"shape":"DeviceCreationFile"}
+    },
+    "DeviceName":{"type":"string"},
     "DeviceProfile":{
       "type":"structure",
       "members":{
@@ -3107,6 +3360,13 @@
     "DeviceProfileName":{
       "type":"string",
       "max":256
+    },
+    "DeviceProfileType":{
+      "type":"string",
+      "enum":[
+        "Sidewalk",
+        "LoRaWAN"
+      ]
     },
     "DeviceRegistrationStateEventConfiguration":{
       "type":"structure",
@@ -3141,6 +3401,10 @@
         "RegisteredReachable",
         "RegisteredUnreachable"
       ]
+    },
+    "DeviceTypeId":{
+      "type":"string",
+      "max":2048
     },
     "DisassociateAwsAccountFromPartnerAccountRequest":{
       "type":"structure",
@@ -3527,6 +3791,7 @@
       "max":20,
       "min":0
     },
+    "FactorySupport":{"type":"boolean"},
     "Fingerprint":{
       "type":"string",
       "max":64,
@@ -3721,6 +3986,10 @@
         "LoRaWAN":{
           "shape":"LoRaWANDeviceProfile",
           "documentation":"<p>Information about the device profile.</p>"
+        },
+        "Sidewalk":{
+          "shape":"SidewalkGetDeviceProfile",
+          "documentation":"<p>Information about the Sidewalk parameters in the device profile.</p>"
         }
       }
     },
@@ -4194,6 +4463,67 @@
         "LoRaWAN":{
           "shape":"LoRaWANGetServiceProfileInfo",
           "documentation":"<p>Information about the service profile.</p>"
+        }
+      }
+    },
+    "GetWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The identifier of the import task for which information is requested.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The identifier of the import task for which information is retrieved.</p>"
+        },
+        "Arn":{
+          "shape":"ImportTaskArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the import task.</p>"
+        },
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the destination that's assigned to the wireless devices in the import task.</p>"
+        },
+        "Sidewalk":{
+          "shape":"SidewalkGetStartImportInfo",
+          "documentation":"<p>The Sidewalk-related information about an import task.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time at which the import task was created.</p>"
+        },
+        "Status":{
+          "shape":"ImportTaskStatus",
+          "documentation":"<p>The import task status.</p>"
+        },
+        "StatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the provided status information, such as a validation error that causes the import task to fail.</p>"
+        },
+        "InitializedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The number of devices in the import task that are waiting for the control log to start processing.</p>"
+        },
+        "PendingImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The number of devices in the import task that are waiting in the import task queue to be onboarded.</p>"
+        },
+        "OnboardedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The number of devices in the import task that have been onboarded to the import task.</p>"
+        },
+        "FailedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The number of devices in the import task that failed to onboard to the import task.</p>"
         }
       }
     },
@@ -4681,6 +5011,62 @@
         "WirelessGatewayId"
       ]
     },
+    "ImportTaskArn":{
+      "type":"string",
+      "max":128
+    },
+    "ImportTaskId":{
+      "type":"string",
+      "max":256
+    },
+    "ImportTaskStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "INITIALIZED",
+        "PENDING",
+        "COMPLETE",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "ImportedSidewalkDevice":{
+      "type":"structure",
+      "members":{
+        "SidewalkManufacturingSn":{
+          "shape":"SidewalkManufacturingSn",
+          "documentation":"<p>The Sidewalk manufacturing serial number (SMSN) of the Sidewalk device.</p>"
+        },
+        "OnboardingStatus":{
+          "shape":"OnboardStatus",
+          "documentation":"<p>The onboarding status of the Sidewalk device in the import task.</p>"
+        },
+        "OnboardingStatusReason":{
+          "shape":"OnboardStatusReason",
+          "documentation":"<p>The reason for the onboarding status information for the Sidewalk device.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"LastUpdateTime",
+          "documentation":"<p>The time at which the status information was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Information about a Sidewalk device that has been added to an import task.</p>"
+    },
+    "ImportedWirelessDevice":{
+      "type":"structure",
+      "members":{
+        "Sidewalk":{
+          "shape":"ImportedSidewalkDevice",
+          "documentation":"<p>The Sidewalk-related information about a device that has been added to an import task.</p>"
+        }
+      },
+      "documentation":"<p>Information about a wireless device that has been added to an import task.</p>"
+    },
+    "ImportedWirelessDeviceCount":{"type":"long"},
+    "ImportedWirelessDeviceList":{
+      "type":"list",
+      "member":{"shape":"ImportedWirelessDevice"}
+    },
     "Integer":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
@@ -4754,6 +5140,10 @@
       "max":65535,
       "min":1
     },
+    "LastUpdateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "ListDestinationsRequest":{
       "type":"structure",
       "members":{
@@ -4798,6 +5188,12 @@
           "documentation":"<p>The maximum number of results to return in this operation.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "DeviceProfileType":{
+          "shape":"DeviceProfileType",
+          "documentation":"<p>A filter to list only device profiles that use this type, which can be <code>LoRaWAN</code> or <code>Sidewalk</code>.</p>",
+          "location":"querystring",
+          "locationName":"deviceProfileType"
         }
       }
     },
@@ -4811,6 +5207,52 @@
         "DeviceProfileList":{
           "shape":"DeviceProfileList",
           "documentation":"<p>The list of device profiles.</p>"
+        }
+      }
+    },
+    "ListDevicesForWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The identifier of the import task for which wireless devices are listed.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Status":{
+          "shape":"OnboardStatus",
+          "documentation":"<p>The status of the devices in the import task.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListDevicesForWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        },
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the Sidewalk destination that describes the IoT rule to route messages received from devices in an import task that are onboarded to AWS IoT Wireless.</p>"
+        },
+        "ImportedWirelessDeviceList":{
+          "shape":"ImportedWirelessDeviceList",
+          "documentation":"<p>List of wireless devices in an import task and their onboarding status.</p>"
         }
       }
     },
@@ -5123,6 +5565,35 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to attach to the specified resource. Tags are metadata that you can use to manage a resource.</p>"
+        }
+      }
+    },
+    "ListWirelessDeviceImportTasksRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListWirelessDeviceImportTasksResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        },
+        "WirelessDeviceImportTaskList":{
+          "shape":"WirelessDeviceImportTaskList",
+          "documentation":"<p>List of import tasks and summary information of onboarding status of devices in each import task.</p>"
         }
       }
     },
@@ -5900,6 +6371,7 @@
       "type":"string",
       "max":64
     },
+    "MaxAllowedSignature":{"type":"integer"},
     "MaxDutyCycle":{
       "type":"integer",
       "max":100,
@@ -6096,6 +6568,16 @@
       "type":"string",
       "pattern":"[a-fA-F0-9]{32}"
     },
+    "OnboardStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZED",
+        "PENDING",
+        "ONBOARDED",
+        "FAILED"
+      ]
+    },
+    "OnboardStatusReason":{"type":"string"},
     "OtaaV1_0_x":{
       "type":"structure",
       "members":{
@@ -6326,6 +6808,10 @@
       "max":16700000,
       "min":1000000
     },
+    "PrivateKeysList":{
+      "type":"list",
+      "member":{"shape":"CertificateList"}
+    },
     "ProximityEventConfiguration":{
       "type":"structure",
       "members":{
@@ -6415,6 +6901,7 @@
       "members":{
       }
     },
+    "QualificationStatus":{"type":"boolean"},
     "QueryString":{
       "type":"string",
       "documentation":"<p>Query string used to search for wireless devices as part of the bulk associate and disassociate process.</p>",
@@ -6525,6 +7012,10 @@
       "type":"string",
       "documentation":"<p>The frequency band (RFRegion) value.</p>",
       "max":64
+    },
+    "Role":{
+      "type":"string",
+      "max":2048
     },
     "RoleArn":{
       "type":"string",
@@ -6776,6 +7267,22 @@
       "type":"list",
       "member":{"shape":"SidewalkAccountInfoWithFingerprint"}
     },
+    "SidewalkCreateDeviceProfile":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Sidewalk object for creating a device profile.</p>"
+    },
+    "SidewalkCreateWirelessDevice":{
+      "type":"structure",
+      "members":{
+        "DeviceProfileId":{
+          "shape":"DeviceProfileId",
+          "documentation":"<p>The ID of the Sidewalk device profile.</p>"
+        }
+      },
+      "documentation":"<p>Sidewalk object for creating a wireless device.</p>"
+    },
     "SidewalkDevice":{
       "type":"structure",
       "members":{
@@ -6791,6 +7298,22 @@
         "DeviceCertificates":{
           "shape":"DeviceCertificateList",
           "documentation":"<p>The sidewalk device certificates for Ed25519 and P256r1.</p>"
+        },
+        "PrivateKeys":{
+          "shape":"PrivateKeysList",
+          "documentation":"<p>The Sidewalk device private keys that will be used for onboarding the device.</p>"
+        },
+        "DeviceProfileId":{
+          "shape":"DeviceProfileId",
+          "documentation":"<p>The ID of the Sidewalk device profile.</p>"
+        },
+        "CertificateId":{
+          "shape":"DakCertificateId",
+          "documentation":"<p>The ID of the Sidewalk device profile.</p>"
+        },
+        "Status":{
+          "shape":"WirelessDeviceSidewalkStatus",
+          "documentation":"<p>The Sidewalk device status, such as provisioned or registered.</p>"
         }
       },
       "documentation":"<p>Sidewalk device object.</p>"
@@ -6827,6 +7350,38 @@
       },
       "documentation":"<p> <code>SidewalkEventNotificationConfigurations</code> object, which is the event configuration object for Sidewalk-related event topics.</p>"
     },
+    "SidewalkGetDeviceProfile":{
+      "type":"structure",
+      "members":{
+        "ApplicationServerPublicKey":{
+          "shape":"ApplicationServerPublicKey",
+          "documentation":"<p>The Sidewalk application server public key.</p>"
+        },
+        "QualificationStatus":{
+          "shape":"QualificationStatus",
+          "documentation":"<p>Gets information about the certification status of a Sidewalk device profile.</p>"
+        },
+        "DakCertificateMetadata":{
+          "shape":"DakCertificateMetadataList",
+          "documentation":"<p>The DAK certificate information of the Sidewalk device profile.</p>"
+        }
+      },
+      "documentation":"<p>Gets information about a Sidewalk device profile.</p>"
+    },
+    "SidewalkGetStartImportInfo":{
+      "type":"structure",
+      "members":{
+        "DeviceCreationFileList":{
+          "shape":"DeviceCreationFileList",
+          "documentation":"<p>List of Sidewalk devices that are added to the import task.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Sidewalk-related information for devices in an import task that are being onboarded.</p>"
+    },
     "SidewalkId":{
       "type":"string",
       "documentation":"<p>The sidewalk device identification.</p>",
@@ -6850,6 +7405,14 @@
         "DeviceCertificates":{
           "shape":"DeviceCertificateList",
           "documentation":"<p>The sidewalk device certificates for Ed25519 and P256r1.</p>"
+        },
+        "DeviceProfileId":{
+          "shape":"DeviceProfileId",
+          "documentation":"<p>Sidewalk object used by list functions.</p>"
+        },
+        "Status":{
+          "shape":"WirelessDeviceSidewalkStatus",
+          "documentation":"<p>The status of the Sidewalk devices, such as provisioned or registered.</p>"
         }
       },
       "documentation":"<p>Sidewalk object used by list functions.</p>"
@@ -6883,6 +7446,30 @@
       },
       "documentation":"<p>Information about a Sidewalk router.</p>"
     },
+    "SidewalkSingleStartImportInfo":{
+      "type":"structure",
+      "members":{
+        "SidewalkManufacturingSn":{
+          "shape":"SidewalkManufacturingSn",
+          "documentation":"<p>The Sidewalk manufacturing serial number (SMSN) of the device added to the import task.</p>"
+        }
+      },
+      "documentation":"<p>Information about an import task created for an individual Sidewalk device.</p>"
+    },
+    "SidewalkStartImportInfo":{
+      "type":"structure",
+      "members":{
+        "DeviceCreationFile":{
+          "shape":"DeviceCreationFile",
+          "documentation":"<p>The CSV file contained in an S3 bucket that's used for adding devices to an import task.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role that allows AWS IoT Wireless to access the CSV file in the S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Information about an import task created for bulk provisioning.</p>"
+    },
     "SidewalkUpdateAccount":{
       "type":"structure",
       "members":{
@@ -6892,6 +7479,16 @@
         }
       },
       "documentation":"<p>Sidewalk update.</p>"
+    },
+    "SidewalkUpdateImportInfo":{
+      "type":"structure",
+      "members":{
+        "DeviceCreationFile":{
+          "shape":"DeviceCreationFile",
+          "documentation":"<p>The CSV file contained in an S3 bucket that's used for appending devices to an existing import task.</p>"
+        }
+      },
+      "documentation":"<p>Sidewalk object information for updating an import task.</p>"
     },
     "SigningAlg":{
       "type":"string",
@@ -6974,16 +7571,91 @@
       "members":{
       }
     },
+    "StartSingleWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationName",
+        "Sidewalk"
+      ],
+      "members":{
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the Sidewalk destination that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "DeviceName":{
+          "shape":"DeviceName",
+          "documentation":"<p>The name of the wireless device for which an import task is being started.</p>"
+        },
+        "Tags":{"shape":"TagList"},
+        "Sidewalk":{
+          "shape":"SidewalkSingleStartImportInfo",
+          "documentation":"<p>The Sidewalk-related parameters for importing a single wireless device.</p>"
+        }
+      }
+    },
+    "StartSingleWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The import task ID.</p>"
+        },
+        "Arn":{
+          "shape":"ImportTaskArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the import task.</p>"
+        }
+      }
+    },
     "StartTime":{
       "type":"timestamp",
       "documentation":"<p>Start time of a FUOTA task.</p>",
       "timestampFormat":"iso8601"
+    },
+    "StartWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationName",
+        "Sidewalk"
+      ],
+      "members":{
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the Sidewalk destination that describes the IoT rule to route messages from the devices in the import task that are onboarded to AWS IoT Wireless.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "Tags":{"shape":"TagList"},
+        "Sidewalk":{
+          "shape":"SidewalkStartImportInfo",
+          "documentation":"<p>The Sidewalk-related parameters for importing wireless devices that need to be provisioned in bulk.</p>"
+        }
+      }
+    },
+    "StartWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The import task ID.</p>"
+        },
+        "Arn":{
+          "shape":"ImportTaskArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the import task.</p>"
+        }
+      }
     },
     "Station":{
       "type":"string",
       "max":4096,
       "min":1
     },
+    "StatusReason":{"type":"string"},
     "SubBand":{
       "type":"integer",
       "documentation":"<p>A subset of supported frequency channels in a certain RFRegion.</p>",
@@ -7004,7 +7676,16 @@
         "EU868",
         "US915",
         "AU915",
-        "AS923-1"
+        "AS923-1",
+        "AS923-2",
+        "AS923-3",
+        "AS923-4",
+        "EU433",
+        "CN470",
+        "CN779",
+        "RU864",
+        "KR920",
+        "IN865"
       ]
     },
     "Supports32BitFCnt":{"type":"boolean"},
@@ -7662,6 +8343,30 @@
       "max":4096,
       "min":1
     },
+    "UpdateWirelessDeviceImportTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Sidewalk"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The identifier of the import task to be updated.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "Sidewalk":{
+          "shape":"SidewalkUpdateImportInfo",
+          "documentation":"<p>The Sidewalk-related parameters of the import task to be updated.</p>"
+        }
+      }
+    },
+    "UpdateWirelessDeviceImportTaskResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateWirelessDeviceRequest":{
       "type":"structure",
       "required":["Id"],
@@ -7898,7 +8603,7 @@
         },
         "Rss":{
           "shape":"RSS",
-          "documentation":"<p>Recived signal strength of the WLAN measurement data.</p>"
+          "documentation":"<p>Received signal strength (dBm) of the WLAN measurement data.</p>"
         }
       },
       "documentation":"<p>Wi-Fi access point.</p>"
@@ -7958,6 +8663,60 @@
         "SidewalkManufacturingSn"
       ]
     },
+    "WirelessDeviceImportTask":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ImportTaskId",
+          "documentation":"<p>The ID of the wireless device import task.</p>"
+        },
+        "Arn":{
+          "shape":"ImportTaskArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the wireless device import task.</p>"
+        },
+        "DestinationName":{
+          "shape":"DestinationName",
+          "documentation":"<p>The name of the Sidewalk destination that that describes the IoT rule to route messages from the device in the import task that will be onboarded to AWS IoT Wireless</p>"
+        },
+        "Sidewalk":{
+          "shape":"SidewalkGetStartImportInfo",
+          "documentation":"<p>The Sidewalk-related information of the wireless device import task.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time at which the import task was created.</p>"
+        },
+        "Status":{
+          "shape":"ImportTaskStatus",
+          "documentation":"<p>The status information of the wireless device import task.</p>"
+        },
+        "StatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason that provides additional information about the import task status.</p>"
+        },
+        "InitializedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The summary information of count of wireless devices that are waiting for the control log to be added to an import task.</p>"
+        },
+        "PendingImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The summary information of count of wireless devices in an import task that are waiting in the queue to be onboarded.</p>"
+        },
+        "OnboardedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The summary information of count of wireless devices in an import task that have been onboarded to the import task.</p>"
+        },
+        "FailedImportedDeviceCount":{
+          "shape":"ImportedWirelessDeviceCount",
+          "documentation":"<p>The summary information of count of wireless devices in an import task that failed to onboarded to the import task.</p>"
+        }
+      },
+      "documentation":"<p>Information about an import task for wireless devices.</p>"
+    },
+    "WirelessDeviceImportTaskList":{
+      "type":"list",
+      "member":{"shape":"WirelessDeviceImportTask"}
+    },
     "WirelessDeviceList":{
       "type":"list",
       "member":{"shape":"WirelessDeviceId"},
@@ -7988,6 +8747,15 @@
     "WirelessDeviceName":{
       "type":"string",
       "max":256
+    },
+    "WirelessDeviceSidewalkStatus":{
+      "type":"string",
+      "enum":[
+        "PROVISIONED",
+        "REGISTERED",
+        "ACTIVATED",
+        "UNKNOWN"
+      ]
     },
     "WirelessDeviceStatistics":{
       "type":"structure",

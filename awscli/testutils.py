@@ -34,6 +34,7 @@ import math
 from pprint import pformat
 from subprocess import Popen, PIPE
 import unittest
+import re
 
 from awscli.compat import StringIO
 
@@ -58,6 +59,7 @@ from botocore.awsrequest import AWSResponse
 import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
+from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 
 
 _LOADER = botocore.loaders.Loader()
@@ -1012,3 +1014,8 @@ class ConsistencyWaiter(object):
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
         return 'Failed after %s attempts, only had %s successes' % format_args
+
+
+def yaml_dump_without_header(dict_to_dump):
+    dumped_yaml = yaml_dump(dict_to_dump)
+    return re.sub('%YAML 1.1\n---(\n| )', '', dumped_yaml)

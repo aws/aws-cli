@@ -69,7 +69,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a custom timeline event on the incident details page of an incident record. Timeline events are automatically created by Incident Manager, marking key moment during an incident. You can create custom timeline events to mark important events that are automatically detected by Incident Manager.</p>",
+      "documentation":"<p>Creates a custom timeline event on the incident details page of an incident record. Incident Manager automatically creates timeline events that mark key moments during an incident. You can create custom timeline events to mark important events that Incident Manager can detect automatically.</p>",
       "idempotent":true
     },
     "DeleteIncidentRecord":{
@@ -805,7 +805,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the action is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that a client calls the action only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "eventData":{
@@ -814,7 +814,7 @@
         },
         "eventReferences":{
           "shape":"EventReferenceList",
-          "documentation":"<p>Adds one or more references to the <code>TimelineEvent</code>. A reference can be an Amazon Web Services resource involved in the incident or in some way associated with it. When you specify a reference, you enter the Amazon Resource Name (ARN) of the resource. You can also specify a related item. As an example, you could specify the ARN of an Amazon DynamoDB (DynamoDB) table. The table for this example is the resource. You could also specify a Amazon CloudWatch metric for that table. The metric is the related item.</p>"
+          "documentation":"<p>Adds one or more references to the <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with a resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use the table's ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.</p>"
         },
         "eventTime":{
           "shape":"Timestamp",
@@ -822,11 +822,11 @@
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of the event. You can create timeline events of type <code>Custom Event</code>.</p>"
+          "documentation":"<p>The type of event. You can create timeline events of type <code>Custom Event</code>.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record to which the event will be added.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record that the action adds the incident to.</p>"
         }
       }
     },
@@ -941,7 +941,7 @@
       "members":{
         "eventId":{
           "shape":"UUID",
-          "documentation":"<p>The ID of the event you are updating. You can find this by using <code>ListTimelineEvents</code>.</p>"
+          "documentation":"<p>The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -1424,7 +1424,7 @@
     },
     "IncidentSummary":{
       "type":"string",
-      "max":4000,
+      "max":8000,
       "min":0
     },
     "IncidentTemplate":{
@@ -1564,7 +1564,7 @@
       "members":{
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters the list of incident records through which you are searching. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all incident records.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns incident records that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns incident records that match any of the values provided.</p> </li> </ul>"
+          "documentation":"<p>Filters the list of incident records you want to search through. You can filter on the following keys:</p> <ul> <li> <p> <code>creationTime</code> </p> </li> <li> <p> <code>impact</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>createdBy</code> </p> </li> </ul> <p>Note the following when when you use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all incident records.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns incident records that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns incident records that match any of the values provided.</p> </li> </ul>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -1704,7 +1704,7 @@
       "members":{
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events using the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>"
+          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -1720,7 +1720,7 @@
         },
         "sortBy":{
           "shape":"TimelineEventSort",
-          "documentation":"<p>Sort by the specified key value pair.</p>"
+          "documentation":"<p>Sort timeline events by the specified key value pair.</p>"
         },
         "sortOrder":{
           "shape":"SortOrder",
@@ -1892,7 +1892,7 @@
     },
     "RawData":{
       "type":"string",
-      "max":4000,
+      "max":10000,
       "min":0
     },
     "RegionInfo":{
@@ -2321,7 +2321,7 @@
         },
         "relatedItems":{
           "shape":"RelatedItemList",
-          "documentation":"<p>Add related items to the incident for other responders to use. Related items are AWS resources, external links, or files uploaded to an Amazon S3 bucket. </p>"
+          "documentation":"<p>Add related items to the incident for other responders to use. Related items are Amazon Web Services resources, external links, or files uploaded to an Amazon S3 bucket. </p>"
         },
         "responsePlanArn":{
           "shape":"Arn",
@@ -2590,20 +2590,20 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token that ensures that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that a client calls the operation only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>Defines the impact of the incident to customers and applications. Providing an impact overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
+          "documentation":"<p>Defines the impact of the incident to customers and applications. If you provide an impact for an incident, it overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
-          "documentation":"<p>The Amazon SNS targets that are notified when updates are made to an incident.</p> <p>Using multiple SNS topics creates redundancy in the event that a Region is down during the incident.</p>"
+          "documentation":"<p>The Amazon SNS targets that Incident Manager notifies when a client updates an incident.</p> <p>Using multiple SNS topics creates redundancy in the event that a Region is down during the incident.</p>"
         },
         "status":{
           "shape":"IncidentRecordStatus",
-          "documentation":"<p>The status of the incident. An incident can be <code>Open</code> or <code>Resolved</code>.</p>"
+          "documentation":"<p>The status of the incident. Possible statuses are <code>Open</code> or <code>Resolved</code>.</p>"
         },
         "summary":{
           "shape":"IncidentSummary",
@@ -2629,16 +2629,16 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that a client calls the operation only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "incidentRecordArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record containing the related items you are updating.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident record that contains the related items that you update.</p>"
         },
         "relatedItemsUpdate":{
           "shape":"RelatedItemsUpdate",
-          "documentation":"<p>Details about the item you are adding or deleting.</p>"
+          "documentation":"<p>Details about the item that you are add to, or delete from, an incident.</p>"
         }
       }
     },
@@ -2768,7 +2768,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A token ensuring that the operation is called only once with the specified details.</p>",
+          "documentation":"<p>A token that ensures that a client calls the operation only once with the specified details.</p>",
           "idempotencyToken":true
         },
         "eventData":{
@@ -2777,11 +2777,11 @@
         },
         "eventId":{
           "shape":"UUID",
-          "documentation":"<p>The ID of the event you are updating. You can find this by using <code>ListTimelineEvents</code>.</p>"
+          "documentation":"<p>The ID of the event to update. You can use <code>ListTimelineEvents</code> to find an event's ID.</p>"
         },
         "eventReferences":{
           "shape":"EventReferenceList",
-          "documentation":"<p>Updates all existing references in a <code>TimelineEvent</code>. A reference can be an Amazon Web Services resource involved in the incident or in some way associated with it. When you specify a reference, you enter the Amazon Resource Name (ARN) of the resource. You can also specify a related item. As an example, you could specify the ARN of an Amazon DynamoDB (DynamoDB) table. The table for this example is the resource. You could also specify a Amazon CloudWatch metric for that table. The metric is the related item.</p> <important> <p>This update action overrides all existing references. If you want to keep existing references, you must specify them in the call. If you don't, this action removes them and enters only new references.</p> </important>"
+          "documentation":"<p>Updates all existing references in a <code>TimelineEvent</code>. A reference is an Amazon Web Services resource involved or associated with the incident. To specify a reference, enter its Amazon Resource Name (ARN). You can also specify a related item associated with that resource. For example, to specify an Amazon DynamoDB (DynamoDB) table as a resource, use its ARN. You can also specify an Amazon CloudWatch metric associated with the DynamoDB table as a related item.</p> <important> <p>This update action overrides all existing references. If you want to keep existing references, you must specify them in the call. If you don't, this action removes any existing references and enters only new references.</p> </important>"
         },
         "eventTime":{
           "shape":"Timestamp",
@@ -2789,7 +2789,7 @@
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of the event. You can update events of type <code>Custom Event</code>.</p>"
+          "documentation":"<p>The type of event. You can update events of type <code>Custom Event</code>.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",

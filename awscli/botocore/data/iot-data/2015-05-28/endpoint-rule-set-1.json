@@ -32,13 +32,12 @@
         {
             "conditions": [
                 {
-                    "fn": "aws.partition",
+                    "fn": "isSet",
                     "argv": [
                         {
-                            "ref": "Region"
+                            "ref": "Endpoint"
                         }
-                    ],
-                    "assign": "PartitionResult"
+                    ]
                 }
             ],
             "type": "tree",
@@ -46,23 +45,20 @@
                 {
                     "conditions": [
                         {
-                            "fn": "isSet",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
-                        },
-                        {
-                            "fn": "parseURL",
-                            "argv": [
-                                {
-                                    "ref": "Endpoint"
-                                }
-                            ],
-                            "assign": "url"
                         }
                     ],
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                    "type": "error"
+                },
+                {
+                    "conditions": [],
                     "type": "tree",
                     "rules": [
                         {
@@ -71,19 +67,334 @@
                                     "fn": "booleanEquals",
                                     "argv": [
                                         {
-                                            "ref": "UseFIPS"
+                                            "ref": "UseDualStack"
                                         },
                                         true
                                     ]
                                 }
                             ],
-                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
                             "type": "error"
                         },
                         {
                             "conditions": [],
+                            "endpoint": {
+                                "url": {
+                                    "ref": "Endpoint"
+                                },
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "conditions": [],
+            "type": "tree",
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        }
+                    ],
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.partition",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ],
+                                    "assign": "PartitionResult"
+                                }
+                            ],
                             "type": "tree",
                             "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "tree",
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "type": "tree",
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://data-ats.iot-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                            "type": "error"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "tree",
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "type": "tree",
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "ca-central-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.ca-central-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-east-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-east-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-east-2"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-east-2.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-west-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-west-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-west-2"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-west-2.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-east-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-gov-east-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-west-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://data.iot-fips.us-gov-west-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://data-ats.iot-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                            "type": "error"
+                                        }
+                                    ]
+                                },
                                 {
                                     "conditions": [
                                         {
@@ -96,134 +407,52 @@
                                             ]
                                         }
                                     ],
-                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": {
-                                            "ref": "Endpoint"
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        true,
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "tree",
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "type": "tree",
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://data-ats.iot.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
                                         },
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        },
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
                                         {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
+                                            "conditions": [],
+                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                            "type": "error"
                                         }
                                     ]
                                 },
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://data-ats.iot-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
                                 {
                                     "conditions": [],
                                     "type": "tree",
@@ -236,12 +465,12 @@
                                                         {
                                                             "ref": "Region"
                                                         },
-                                                        "us-east-1"
+                                                        "cn-north-1"
                                                     ]
                                                 }
                                             ],
                                             "endpoint": {
-                                                "url": "https://data.iot-fips.us-east-1.amazonaws.com",
+                                                "url": "https://data.ats.iot.cn-north-1.amazonaws.com.cn",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -252,15 +481,21 @@
                                                 {
                                                     "fn": "stringEquals",
                                                     "argv": [
+                                                        "aws",
                                                         {
-                                                            "ref": "Region"
-                                                        },
-                                                        "us-east-2"
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "name"
+                                                            ]
+                                                        }
                                                     ]
                                                 }
                                             ],
                                             "endpoint": {
-                                                "url": "https://data.iot-fips.us-east-2.amazonaws.com",
+                                                "url": "https://data-ats.iot.{Region}.amazonaws.com",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -271,15 +506,21 @@
                                                 {
                                                     "fn": "stringEquals",
                                                     "argv": [
+                                                        "aws-cn",
                                                         {
-                                                            "ref": "Region"
-                                                        },
-                                                        "ca-central-1"
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "name"
+                                                            ]
+                                                        }
                                                     ]
                                                 }
                                             ],
                                             "endpoint": {
-                                                "url": "https://data.iot-fips.ca-central-1.amazonaws.com",
+                                                "url": "https://data-ats.iot.{Region}.amazonaws.com.cn",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -290,72 +531,21 @@
                                                 {
                                                     "fn": "stringEquals",
                                                     "argv": [
+                                                        "aws-us-gov",
                                                         {
-                                                            "ref": "Region"
-                                                        },
-                                                        "us-west-1"
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "name"
+                                                            ]
+                                                        }
                                                     ]
                                                 }
                                             ],
                                             "endpoint": {
-                                                "url": "https://data.iot-fips.us-west-1.amazonaws.com",
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        },
-                                                        "us-west-2"
-                                                    ]
-                                                }
-                                            ],
-                                            "endpoint": {
-                                                "url": "https://data.iot-fips.us-west-2.amazonaws.com",
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        },
-                                                        "us-gov-west-1"
-                                                    ]
-                                                }
-                                            ],
-                                            "endpoint": {
-                                                "url": "https://data.iot-fips.us-gov-west-1.amazonaws.com",
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        },
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        },
-                                                        "us-gov-east-1"
-                                                    ]
-                                                }
-                                            ],
-                                            "endpoint": {
-                                                "url": "https://data.iot-fips.us-gov-east-1.amazonaws.com",
+                                                "url": "https://data-ats.iot.{Region}.amazonaws.com",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -364,7 +554,7 @@
                                         {
                                             "conditions": [],
                                             "endpoint": {
-                                                "url": "https://data-ats.iot-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                "url": "https://data-ats.iot.{Region}.{PartitionResult#dnsSuffix}",
                                                 "properties": {},
                                                 "headers": {}
                                             },
@@ -373,74 +563,13 @@
                                     ]
                                 }
                             ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "FIPS is enabled but this partition does not support FIPS",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://data-ats.iot.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "DualStack is enabled but this partition does not support DualStack",
-                            "type": "error"
                         }
                     ]
                 },
                 {
                     "conditions": [],
-                    "endpoint": {
-                        "url": "https://data-ats.iot.{Region}.{PartitionResult#dnsSuffix}",
-                        "properties": {},
-                        "headers": {}
-                    },
-                    "type": "endpoint"
+                    "error": "Invalid Configuration: Missing Region",
+                    "type": "error"
                 }
             ]
         }

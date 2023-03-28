@@ -5097,6 +5097,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.100
+========
+
+* api-change:``athena``: Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries.
+* api-change:``chime-sdk-voice``: Documentation updates for Amazon Chime SDK Voice.
+* api-change:``connect``: This release introduces support for RelatedContactId in the StartChatContact API. Interactive message and interactive message response have been added to the list of supported message content types for this API as well.
+* api-change:``connectparticipant``: This release provides an update to the SendMessage API to handle interactive message response content-types.
+* api-change:``iotwireless``: Introducing new APIs that enable Sidewalk devices to communicate with AWS IoT Core through Sidewalk gateways. This will empower AWS customers to connect Sidewalk devices with other AWS IoT Services, creating  possibilities for seamless integration and advanced device management.
+* api-change:``medialive``: AWS Elemental MediaLive now supports ID3 tag insertion for audio only HLS output groups. AWS Elemental Link devices now support tagging.
+* api-change:``sagemaker``: Fixed some improperly rendered links in SDK documentation.
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsEksCluster, AWSS3Bucket, AwsEc2RouteTable and AwsEC2Instance.
+* api-change:``servicecatalog-appregistry``: In this release, we started supporting ARN in applicationSpecifier and attributeGroupSpecifier. GetAttributeGroup, ListAttributeGroups and ListAttributeGroupsForApplication APIs will now have CreatedBy field in the response.
+* api-change:``voice-id``: Amazon Connect Voice ID now supports multiple fraudster watchlists. Every domain has a default watchlist where all existing fraudsters are placed by default. Custom watchlists may now be created, managed, and evaluated against for known fraudster detection.
+
+
+1.27.99
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehend``: This release adds a new field (FlywheelArn) to the EntitiesDetectionJobProperties object. The FlywheelArn field is returned in the DescribeEntitiesDetectionJob and ListEntitiesDetectionJobs responses when the EntitiesDetection job is started with a FlywheelArn instead of an EntityRecognizerArn .
+* api-change:``rds``: Added error code CreateCustomDBEngineVersionFault for when the create custom engine version for Custom engines fails.
+
+
 1.27.98
 =======
 

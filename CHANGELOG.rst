@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.11.7
+======
+
+* api-change:``voice-id``: Amazon Connect Voice ID now supports multiple fraudster watchlists. Every domain has a default watchlist where all existing fraudsters are placed by default. Custom watchlists may now be created, managed, and evaluated against for known fraudster detection.
+* api-change:``comprehend``: This release adds a new field (FlywheelArn) to the EntitiesDetectionJobProperties object. The FlywheelArn field is returned in the DescribeEntitiesDetectionJob and ListEntitiesDetectionJobs responses when the EntitiesDetection job is started with a FlywheelArn instead of an EntityRecognizerArn .
+* api-change:``iotwireless``: Introducing new APIs that enable Sidewalk devices to communicate with AWS IoT Core through Sidewalk gateways. This will empower AWS customers to connect Sidewalk devices with other AWS IoT Services, creating  possibilities for seamless integration and advanced device management.
+* api-change:``connect``: This release introduces support for RelatedContactId in the StartChatContact API. Interactive message and interactive message response have been added to the list of supported message content types for this API as well.
+* api-change:``sagemaker``: Fixed some improperly rendered links in SDK documentation.
+* api-change:``athena``: Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries.
+* api-change:``servicecatalog-appregistry``: In this release, we started supporting ARN in applicationSpecifier and attributeGroupSpecifier. GetAttributeGroup, ListAttributeGroups and ListAttributeGroupsForApplication APIs will now have CreatedBy field in the response.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``ssm-incidents``: Increased maximum length of "TriggerDetails.rawData" to 10K characters and "IncidentSummary" to 8K characters.
+* api-change:``rds``: Added error code CreateCustomDBEngineVersionFault for when the create custom engine version for Custom engines fails.
+* enhancement:dependency: Update cryptography requirement from <39.0.3,>=3.3.2 to >=3.3.2,<40.0.2
+* api-change:``chime-sdk-voice``: Documentation updates for Amazon Chime SDK Voice.
+* api-change:``ssm-contacts``: This release adds 12 new APIs as part of Oncall Schedule feature release, adds support for a new contact type: ONCALL_SCHEDULE. Check public documentation for AWS ssm-contacts for more information
+* api-change:``medialive``: AWS Elemental MediaLive now supports ID3 tag insertion for audio only HLS output groups. AWS Elemental Link devices now support tagging.
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsEksCluster, AWSS3Bucket, AwsEc2RouteTable and AwsEC2Instance.
+* api-change:``connectparticipant``: This release provides an update to the SendMessage API to handle interactive message response content-types.
+* api-change:``iot-data``: Add endpoint ruleset support for cn-north-1.
+
+
 2.11.6
 ======
 

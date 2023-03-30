@@ -62,8 +62,7 @@ class Kubeconfig(object):
         Return true if this kubeconfig contains an entry
         For the passed cluster name.
         """
-        if 'clusters' not in self.content or \
-                self.content['clusters'] is None:
+        if self.content.get('clusters') is None:
             return False
         return name in [cluster['name']
                         for cluster in self.content['clusters'] if 'name' in cluster]
@@ -189,7 +188,7 @@ class KubeconfigWriter(object):
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise KubeconfigInaccessableError(
-                        "Can't create directory for writing: {0}".format(e))
+                    "Can't create directory for writing: {0}".format(e))
         try:
             with os.fdopen(
                     os.open(
@@ -206,34 +205,28 @@ class KubeconfigWriter(object):
 class KubeconfigAppender(object):
     def insert_entry(self, config, key, entry):
         """
-        Insert entry into the array at content[key]
+        Insert entry into the entries list at content[key]
         Overwrite an existing entry if they share the same name
 
         :param config: The kubeconfig to insert an entry into
         :type config: Kubeconfig
         """
-        if key not in config.content or \
-                config.content[key] is None:
-            config.content[key] = []
-        array = config.content[key]
-        if not isinstance(array, list):
-            raise KubeconfigError("Tried to insert into {0},"
-                                  "which is a {1} "
-                                  "not a {2}".format(key,
-                                                     type(array),
-                                                     list))
+        config.content[key] = config.content.get(key) or []
+        entries = config.content[key]
+        if not isinstance(entries, list):
+            raise KubeconfigError(f"Tried to insert into {key}, "
+                                  f"which is a {type(entries)} "
+                                  f"not a {list}")
         found = False
-        for counter, existing_entry in enumerate(array):
-            if "name" in existing_entry and\
-               "name" in entry and\
-               existing_entry["name"] == entry["name"]:
-                array[counter] = entry
+        for i, existing_entry in enumerate(entries):
+            if "name" in existing_entry and "name" in entry \
+                    and existing_entry["name"] == entry["name"]:
+                entries[i] = entry
                 found = True
 
         if not found:
-            array.append(entry)
+            entries.append(entry)
 
-        config.content[key] = array
         return config
 
     def _make_context(self, cluster, user, alias=None):

@@ -907,7 +907,10 @@
           "shape":"FargatePlatformConfiguration",
           "documentation":"<p>The platform configuration for jobs that are running on Fargate resources. Jobs that are running on EC2 resources must not specify this parameter.</p>"
         },
-        "ephemeralStorage":{"shape":"EphemeralStorage"}
+        "ephemeralStorage":{
+          "shape":"EphemeralStorage",
+          "documentation":"<p>The amount of ephemeral storage allocated for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate.</p>"
+        }
       },
       "documentation":"<p>An object that represents the details of a container that's part of a job.</p>"
     },
@@ -1832,8 +1835,12 @@
     "EksMetadata":{
       "type":"structure",
       "members":{
-        "labels":{"shape":"EksLabelsMap"}
-      }
+        "labels":{
+          "shape":"EksLabelsMap",
+          "documentation":"<p>Key-value pairs used to identify, sort, and organize cube resources. Can contain up to 63 uppercase letters, lowercase letters, numbers, hyphens (-), and underscores (_). Labels can be added or modified at any time. Each resource can have multiple labels, but each key must be unique for a given object.</p>"
+        }
+      },
+      "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\">Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
     },
     "EksPodProperties":{
       "type":"structure",
@@ -1858,7 +1865,10 @@
           "shape":"EksVolumes",
           "documentation":"<p>Specifies the volumes for a job definition that uses Amazon EKS resources.</p>"
         },
-        "metadata":{"shape":"EksMetadata"}
+        "metadata":{
+          "shape":"EksMetadata",
+          "documentation":"<p>Metadata about the Kubernetes pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\">Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+        }
       },
       "documentation":"<p>The properties for the pod.</p>"
     },
@@ -1892,7 +1902,8 @@
         "nodeName":{
           "shape":"String",
           "documentation":"<p>The name of the node for this job.</p>"
-        }
+        },
+        "metadata":{"shape":"EksMetadata"}
       },
       "documentation":"<p>The details for the pod.</p>"
     },
@@ -1903,7 +1914,10 @@
           "shape":"EksContainerOverrideList",
           "documentation":"<p>The overrides for the container that's used on the Amazon EKS pod.</p>"
         },
-        "metadata":{"shape":"EksMetadata"}
+        "metadata":{
+          "shape":"EksMetadata",
+          "documentation":"<p>Metadata about the overrides for the container that's used on the Amazon EKS pod.</p>"
+        }
       },
       "documentation":"<p>An object that contains overrides for the Kubernetes pod properties of a job.</p>"
     },

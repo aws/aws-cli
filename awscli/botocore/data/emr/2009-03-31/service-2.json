@@ -1349,6 +1349,10 @@
         "Timeline":{
           "shape":"ClusterTimeline",
           "documentation":"<p>A timeline that represents the status of a cluster over the lifetime of the cluster.</p>"
+        },
+        "ErrorDetails":{
+          "shape":"ErrorDetailList",
+          "documentation":"<p>A list of tuples that provide information about the errors that caused a cluster termination. This structure may have up to 10 different <code>ErrorDetail</code> tuples.</p>"
         }
       },
       "documentation":"<p>The detailed status of the cluster.</p>"
@@ -2018,6 +2022,32 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "ErrorData":{
+      "type":"list",
+      "member":{"shape":"StringMap"}
+    },
+    "ErrorDetail":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The name or code that's associated with the error.</p>"
+        },
+        "ErrorData":{
+          "shape":"ErrorData",
+          "documentation":"<p>A list of key value pairs that provide contextual information to explain why the error may have occured.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error that occured.</p>"
+        }
+      },
+      "documentation":"<p>A tuple that provides information about an error that caused a cluster to terminate.</p>"
+    },
+    "ErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"ErrorDetail"}
     },
     "ErrorMessage":{"type":"string"},
     "ExecutionEngineConfig":{

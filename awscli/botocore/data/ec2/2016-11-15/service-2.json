@@ -4486,6 +4486,16 @@
       "output":{"shape":"GetVpnConnectionDeviceTypesResult"},
       "documentation":"<p>Obtain a list of customer gateway devices for which sample configuration files can be provided. The request has no additional parameters. You can also see the list of device types with sample configuration files available under <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html\">Your customer gateway device</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p>"
     },
+    "GetVpnTunnelReplacementStatus":{
+      "name":"GetVpnTunnelReplacementStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetVpnTunnelReplacementStatusRequest"},
+      "output":{"shape":"GetVpnTunnelReplacementStatusResult"},
+      "documentation":"<p>Get details of available tunnel endpoint maintenance.</p>"
+    },
     "ImportClientVpnClientCertificateRevocationList":{
       "name":"ImportClientVpnClientCertificateRevocationList",
       "http":{
@@ -5472,6 +5482,16 @@
       "input":{"shape":"ReplaceTransitGatewayRouteRequest"},
       "output":{"shape":"ReplaceTransitGatewayRouteResult"},
       "documentation":"<p>Replaces the specified route in the specified transit gateway route table.</p>"
+    },
+    "ReplaceVpnTunnel":{
+      "name":"ReplaceVpnTunnel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReplaceVpnTunnelRequest"},
+      "output":{"shape":"ReplaceVpnTunnelResult"},
+      "documentation":"<p>Trigger replacement of specified VPN tunnel.</p>"
     },
     "ReportInstanceStatus":{
       "name":"ReportInstanceStatus",
@@ -8828,6 +8848,7 @@
         "locationName":"item"
       }
     },
+    "AvailabilityZoneName":{"type":"string"},
     "AvailabilityZoneOptInStatus":{
       "type":"string",
       "enum":[
@@ -15071,7 +15092,7 @@
       "required":["AvailabilityZone"],
       "members":{
         "AvailabilityZone":{
-          "shape":"String",
+          "shape":"AvailabilityZoneName",
           "documentation":"<p>The Availability Zone in which to create the volume.</p>"
         },
         "Encrypted":{
@@ -30455,6 +30476,62 @@
         }
       }
     },
+    "GetVpnTunnelReplacementStatusRequest":{
+      "type":"structure",
+      "required":[
+        "VpnConnectionId",
+        "VpnTunnelOutsideIpAddress"
+      ],
+      "members":{
+        "VpnConnectionId":{
+          "shape":"VpnConnectionId",
+          "documentation":"<p>The ID of the Site-to-Site VPN connection. </p>"
+        },
+        "VpnTunnelOutsideIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The external IP address of the VPN tunnel.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetVpnTunnelReplacementStatusResult":{
+      "type":"structure",
+      "members":{
+        "VpnConnectionId":{
+          "shape":"VpnConnectionId",
+          "documentation":"<p>The ID of the Site-to-Site VPN connection. </p>",
+          "locationName":"vpnConnectionId"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway associated with the VPN connection.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "CustomerGatewayId":{
+          "shape":"CustomerGatewayId",
+          "documentation":"<p>The ID of the customer gateway.</p>",
+          "locationName":"customerGatewayId"
+        },
+        "VpnGatewayId":{
+          "shape":"VpnGatewayId",
+          "documentation":"<p>The ID of the virtual private gateway.</p>",
+          "locationName":"vpnGatewayId"
+        },
+        "VpnTunnelOutsideIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The external IP address of the VPN tunnel.</p>",
+          "locationName":"vpnTunnelOutsideIpAddress"
+        },
+        "MaintenanceDetails":{
+          "shape":"MaintenanceDetails",
+          "documentation":"<p>Get details of pending tunnel endpoint maintenance.</p>",
+          "locationName":"maintenanceDetails"
+        }
+      }
+    },
     "GpuDeviceCount":{"type":"integer"},
     "GpuDeviceInfo":{
       "type":"structure",
@@ -38787,6 +38864,27 @@
       ]
     },
     "Long":{"type":"long"},
+    "MaintenanceDetails":{
+      "type":"structure",
+      "members":{
+        "PendingMaintenance":{
+          "shape":"String",
+          "documentation":"<p>Verify existence of a pending maintenance.</p>",
+          "locationName":"pendingMaintenance"
+        },
+        "MaintenanceAutoAppliedAfter":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The timestamp after which Amazon Web Services will automatically apply maintenance.</p>",
+          "locationName":"maintenanceAutoAppliedAfter"
+        },
+        "LastMaintenanceApplied":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Timestamp of last applied maintenance.</p>",
+          "locationName":"lastMaintenanceApplied"
+        }
+      },
+      "documentation":"<p>Details for Site-to-Site VPN tunnel endpoint maintenance events.</p>"
+    },
     "ManagedPrefixList":{
       "type":"structure",
       "members":{
@@ -41695,6 +41793,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "SkipTunnelReplacement":{
+          "shape":"Boolean",
+          "documentation":"<p>Choose whether or not to trigger immediate tunnel replacement.</p> <p>Valid values: <code>True</code> | <code>False</code> </p>"
         }
       }
     },
@@ -41793,6 +41895,10 @@
         "LogOptions":{
           "shape":"VpnTunnelLogOptionsSpecification",
           "documentation":"<p>Options for logging VPN tunnel activity.</p>"
+        },
+        "EnableTunnelLifecycleControl":{
+          "shape":"Boolean",
+          "documentation":"<p>Turn on or off tunnel endpoint lifecycle control feature.</p>"
         }
       },
       "documentation":"<p>The Amazon Web Services Site-to-Site VPN tunnel options to modify.</p>"
@@ -46188,6 +46294,41 @@
           "shape":"TransitGatewayRoute",
           "documentation":"<p>Information about the modified route.</p>",
           "locationName":"route"
+        }
+      }
+    },
+    "ReplaceVpnTunnelRequest":{
+      "type":"structure",
+      "required":[
+        "VpnConnectionId",
+        "VpnTunnelOutsideIpAddress"
+      ],
+      "members":{
+        "VpnConnectionId":{
+          "shape":"VpnConnectionId",
+          "documentation":"<p>The ID of the Site-to-Site VPN connection. </p>"
+        },
+        "VpnTunnelOutsideIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The external IP address of the VPN tunnel.</p>"
+        },
+        "ApplyPendingMaintenance":{
+          "shape":"Boolean",
+          "documentation":"<p>Trigger pending tunnel endpoint maintenance.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ReplaceVpnTunnelResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Confirmation of replace tunnel operation.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -54669,6 +54810,11 @@
           "shape":"VpnTunnelLogOptions",
           "documentation":"<p>Options for logging VPN tunnel activity.</p>",
           "locationName":"logOptions"
+        },
+        "EnableTunnelLifecycleControl":{
+          "shape":"Boolean",
+          "documentation":"<p>Status of tunnel endpoint lifecycle control feature.</p>",
+          "locationName":"enableTunnelLifecycleControl"
         }
       },
       "documentation":"<p>The VPN tunnel options.</p>"
@@ -57507,6 +57653,10 @@
         "LogOptions":{
           "shape":"VpnTunnelLogOptionsSpecification",
           "documentation":"<p>Options for logging VPN tunnel activity.</p>"
+        },
+        "EnableTunnelLifecycleControl":{
+          "shape":"Boolean",
+          "documentation":"<p>Turn on or off tunnel endpoint lifecycle control feature.</p>"
         }
       },
       "documentation":"<p>The tunnel options for a single VPN tunnel.</p>"

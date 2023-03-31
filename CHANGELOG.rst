@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.104
+========
+
+* api-change:``ec2``: Documentation updates for EC2 On Demand Capacity Reservations
+* api-change:``internetmonitor``: This release adds a new feature for Amazon CloudWatch Internet Monitor that enables customers to deliver internet measurements to Amazon S3 buckets as well as CloudWatch Logs.
+* api-change:``resiliencehub``: Adding EKS related documentation for appTemplateBody
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``sagemaker-featurestore-runtime``: In this release, you can now chose between soft delete and hard delete when calling the DeleteRecord API, so you have more flexibility when it comes to managing online store data.
+* api-change:``sms``: Deprecating AWS Server Migration Service.
+
+
 1.27.103
 ========
 

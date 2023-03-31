@@ -39,10 +39,10 @@ def clear_loggers():
 
 @pytest.fixture
 def ptk_app_session():
-    pipe_input = create_pipe_input()
-    output = DummyOutput()
-    try:
-        with create_app_session(input=pipe_input, output=output) as session:
-            yield session
-    finally:
-        pipe_input.close()
+    with create_pipe_input() as pipe_input:
+        output = DummyOutput()
+        try:
+            with create_app_session(input=pipe_input, output=output) as session:
+                yield session
+        finally:
+            pipe_input.close()

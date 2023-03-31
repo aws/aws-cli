@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+2.11.8
+======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``wellarchitected``: AWS Well-Architected SDK now supports getting consolidated report metrics and generating a consolidated report PDF.
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling now supports Elastic Load Balancing traffic sources with the AttachTrafficSources, DetachTrafficSources, and DescribeTrafficSources APIs. This release also introduces a new activity status, "WaitingForConnectionDraining", for VPC Lattice to the DescribeScalingActivities API.
+* api-change:``ivs``: Amazon Interactive Video Service (IVS) now offers customers the ability to configure IVS channels to allow insecure RTMP ingest.
+* api-change:``opensearchserverless``: This release includes two new exception types "ServiceQuotaExceededException" and "OcuLimitExceededException".
+* bugfix:cloudformation: Fixes `#3991 <https://github.com/aws/aws-cli/issues/3991>`__. Use YAML 1.1 spec in alignment with CloudFormation YAML support.
+* api-change:``kendra``: AWS Kendra now supports featured results for a query.
+* api-change:``guardduty``: Added EKS Runtime Monitoring feature support to existing detector, finding APIs and introducing new Coverage APIs
+* api-change:``compute-optimizer``: This release adds support for HDD EBS volume types and io2 Block Express. We are also adding support for 61 new instance types and instances that have non consecutive runtime.
+* bugfix:argument parsing: Fixes issue reported in `#303 <https://github.com/aws/aws-cli/issues/303>`__ involving -h/--help output
+* api-change:``athena``: Make DefaultExecutorDpuSize and CoordinatorDpuSize  fields optional  in StartSession
+* api-change:``imagebuilder``: Adds support for new image workflow details and image vulnerability detection.
+* enhancement:dependency: Bump upper bound of prompt-toolkit to <3.0.39
+* api-change:``glue``: This release adds support for AWS Glue Data Quality, which helps you evaluate and monitor the quality of your data and includes the API for creating, deleting, or updating data quality rulesets, runs and evaluations.
+* api-change:``vpc-lattice``: General Availability (GA) release of Amazon VPC Lattice
+* api-change:``sagemaker-geospatial``: Amazon SageMaker geospatial capabilities now supports server-side encryption with customer managed KMS key and SageMaker notebooks with a SageMaker geospatial image in a Amazon SageMaker Domain with VPC only mode.
+* api-change:``batch``: This feature allows Batch on EKS to support configuration of Pod Labels through Metadata for Batch on EKS Jobs.
+* api-change:``ec2``: This release adds support for Tunnel Endpoint Lifecycle control, a new feature that provides Site-to-Site VPN customers with better visibility and control of their VPN tunnel maintenance updates.
+* api-change:``drs``: Adding a field to the replication configuration APIs to support the auto replicate new disks feature. We also deprecated RetryDataReplication.
+* api-change:``network-firewall``: AWS Network Firewall added TLS inspection configurations to allow TLS traffic inspection.
+* api-change:``rds``: Add support for creating a read replica DB instance from a Multi-AZ DB cluster.
+
+
 2.11.7
 ======
 

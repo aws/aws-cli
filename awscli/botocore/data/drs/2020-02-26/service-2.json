@@ -405,7 +405,9 @@
         {"shape":"ValidationException"},
         {"shape":"UninitializedAccountException"}
       ],
-      "documentation":"<p>Causes the data replication initiation sequence to begin immediately upon next Handshake for the specified Source Server ID, regardless of when the previous initiation started. This command will work only if the Source Server is stalled or is in a DISCONNECTED or STOPPED state.</p>"
+      "documentation":"<p>WARNING: RetryDataReplication is deprecated. Causes the data replication initiation sequence to begin immediately upon next Handshake for the specified Source Server ID, regardless of when the previous initiation started. This command will work only if the Source Server is stalled or is in a DISCONNECTED or STOPPED state. </p>",
+      "deprecated":true,
+      "deprecatedMessage":"WARNING: RetryDataReplication is deprecated"
     },
     "ReverseReplication":{
       "name":"ReverseReplication",
@@ -754,8 +756,8 @@
     },
     "ConversionMap":{
       "type":"map",
-      "key":{"shape":"ebsSnapshot"},
-      "value":{"shape":"ebsSnapshot"}
+      "key":{"shape":"EbsSnapshot"},
+      "value":{"shape":"EbsSnapshot"}
     },
     "ConversionProperties":{
       "type":"structure",
@@ -832,6 +834,10 @@
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Whether to associate the default Elastic Disaster Recovery Security group with the Replication Configuration Template.</p>"
+        },
+        "autoReplicateNewDisks":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to allow the AWS replication agent to automatically replicate newly added disks.</p>"
         },
         "bandwidthThrottling":{
           "shape":"PositiveInteger",
@@ -1451,9 +1457,13 @@
       "max":255,
       "min":0
     },
+    "EbsSnapshot":{
+      "type":"string",
+      "pattern":"^snap-[0-9a-zA-Z]{17}$"
+    },
     "EbsSnapshotsList":{
       "type":"list",
-      "member":{"shape":"ebsSnapshot"}
+      "member":{"shape":"EbsSnapshot"}
     },
     "EbsVolumeID":{
       "type":"string",
@@ -2534,6 +2544,10 @@
           "shape":"Boolean",
           "documentation":"<p>Whether to associate the default Elastic Disaster Recovery Security group with the Replication Configuration.</p>"
         },
+        "autoReplicateNewDisks":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to allow the AWS replication agent to automatically replicate newly added disks.</p>"
+        },
         "bandwidthThrottling":{
           "shape":"PositiveInteger",
           "documentation":"<p>Configure bandwidth throttling for the outbound data transfer rate of the Source Server in Mbps.</p>"
@@ -2679,6 +2693,10 @@
           "shape":"Boolean",
           "documentation":"<p>Whether to associate the default Elastic Disaster Recovery Security group with the Replication Configuration Template.</p>"
         },
+        "autoReplicateNewDisks":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to allow the AWS replication agent to automatically replicate newly added disks.</p>"
+        },
         "bandwidthThrottling":{
           "shape":"PositiveInteger",
           "documentation":"<p>Configure bandwidth throttling for the outbound data transfer rate of the Source Server in Mbps.</p>"
@@ -2796,7 +2814,9 @@
           "shape":"SourceServerID",
           "documentation":"<p>The ID of the Source Server whose data replication should be retried.</p>"
         }
-      }
+      },
+      "deprecated":true,
+      "deprecatedMessage":"WARNING: RetryDataReplication is deprecated"
     },
     "ReverseReplicationRequest":{
       "type":"structure",
@@ -3356,6 +3376,10 @@
           "shape":"Boolean",
           "documentation":"<p>Whether to associate the default Elastic Disaster Recovery Security group with the Replication Configuration.</p>"
         },
+        "autoReplicateNewDisks":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to allow the AWS replication agent to automatically replicate newly added disks.</p>"
+        },
         "bandwidthThrottling":{
           "shape":"PositiveInteger",
           "documentation":"<p>Configure bandwidth throttling for the outbound data transfer rate of the Source Server in Mbps.</p>"
@@ -3429,6 +3453,10 @@
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Whether to associate the default Elastic Disaster Recovery Security group with the Replication Configuration Template.</p>"
+        },
+        "autoReplicateNewDisks":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to allow the AWS replication agent to automatically replicate newly added disks.</p>"
         },
         "bandwidthThrottling":{
           "shape":"PositiveInteger",
@@ -3541,10 +3569,6 @@
       "type":"map",
       "key":{"shape":"LargeBoundedString"},
       "value":{"shape":"PositiveInteger"}
-    },
-    "ebsSnapshot":{
-      "type":"string",
-      "pattern":"^snap-[0-9a-zA-Z]{17}$"
     }
   },
   "documentation":"<p>AWS Elastic Disaster Recovery Service.</p>"

@@ -52,7 +52,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a data access policy for OpenSearch Serverless. Access policies limit access to collections and the resources within them, and allow a user to access that data irrespective of the access mechanism or network source. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-data-access.html\">Data access control for Amazon OpenSearch Serverless</a>.</p>",
       "idempotent":true
@@ -66,9 +67,11 @@
       "input":{"shape":"CreateCollectionRequest"},
       "output":{"shape":"CreateCollectionResponse"},
       "errors":[
+        {"shape":"OcuLimitExceededException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a new OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
       "idempotent":true
@@ -84,7 +87,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Specifies a security configuration for OpenSearch Serverless. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-saml.html\">SAML authentication for Amazon OpenSearch Serverless</a>. </p>",
       "idempotent":true
@@ -100,7 +104,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a security policy to be used by one or more OpenSearch Serverless collections. Security policies provide access to a collection and its OpenSearch Dashboards endpoint from public networks or specific VPC endpoints. They also allow you to secure a collection with a KMS encryption key. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-network.html\">Network access for Amazon OpenSearch Serverless</a> and <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-encryption.html\">Encryption at rest for Amazon OpenSearch Serverless</a>.</p>",
       "idempotent":true
@@ -116,7 +121,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates an OpenSearch Serverless-managed interface VPC endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-vpc.html\">Access Amazon OpenSearch Serverless using an interface endpoint</a>.</p>",
       "idempotent":true
@@ -375,7 +381,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Associates tags with an OpenSearch Serverless resource. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/tag-collection.html\">Tagging Amazon OpenSearch Serverless collections</a>.</p>"
     },
@@ -424,7 +431,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Update the OpenSearch Serverless settings for the current Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html#serverless-scaling\">Autoscaling</a>.</p>"
+      "documentation":"<p>Update the OpenSearch Serverless settings for the current Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html\">Managing capacity limits for Amazon OpenSearch Serverless</a>.</p>"
     },
     "UpdateCollection":{
       "name":"UpdateCollection",
@@ -471,7 +478,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates an OpenSearch Serverless security policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-network.html\">Network access for Amazon OpenSearch Serverless</a> and <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-encryption.html\">Encryption at rest for Amazon OpenSearch Serverless</a>.</p>",
       "idempotent":true
@@ -649,7 +657,7 @@
           "documentation":"<p>The maximum search capacity for collections.</p>"
         }
       },
-      "documentation":"<p>The maximum capacity limits for all OpenSearch Serverless collections, in OpenSearch Compute Units (OCUs). These limits are used to scale your collections based on the current workload. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html#serverless-scaling\">Autoscaling</a>.</p>"
+      "documentation":"<p>The maximum capacity limits for all OpenSearch Serverless collections, in OpenSearch Compute Units (OCUs). These limits are used to scale your collections based on the current workload. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html\">Managing capacity limits for Amazon OpenSearch Serverless</a>.</p>"
     },
     "ClientToken":{
       "type":"string",
@@ -832,7 +840,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>When creating a collection, thrown when a collection with the same name already exists or is being created. When deleting a collection, thrown when the collection is not in the ACTIVE or FAILED state.</p>",
+      "documentation":"<p>When creating a resource, thrown when a resource with the same name already exists or is being created. When deleting a resource, thrown when the resource is not in the ACTIVE or FAILED state.</p>",
       "exception":true
     },
     "CreateAccessPolicyRequest":{
@@ -980,7 +988,7 @@
         },
         "samlOptions":{
           "shape":"SamlConfigOptions",
-          "documentation":"<p>Describes SAML options in in the form of a key-value map.</p>"
+          "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>saml</code> for the <code>type</code> parameter.</p>"
         },
         "type":{
           "shape":"SecurityConfigType",
@@ -1398,7 +1406,7 @@
         },
         "resource":{
           "shape":"ListAccessPoliciesRequestResourceList",
-          "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to.</p>"
+          "documentation":"<p>Resource filters (can be collections or indexes) that policies can apply to.</p>"
         },
         "type":{
           "shape":"AccessPolicyType",
@@ -1610,10 +1618,22 @@
       "type":"long",
       "box":true
     },
+    "OcuLimitExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
+      },
+      "documentation":"<p>OCU Limit Exceeded for service limits</p>",
+      "exception":true
+    },
     "PolicyDescription":{
       "type":"string",
       "max":1000,
-      "min":1
+      "min":0
     },
     "PolicyDocument":{
       "type":"string",
@@ -1656,7 +1676,7 @@
         },
         "sessionTimeout":{
           "shape":"SamlConfigOptionsSessionTimeoutInteger",
-          "documentation":"<p>The session timeout, in minutes. Minimum is 15 minutes and maximum is 1440 minutes (24 hours or 1 day). Default is 60 minutes.</p>"
+          "documentation":"<p>The session timeout, in minutes. Default is 60 minutes (12 hours).</p>"
         },
         "userAttribute":{
           "shape":"samlUserAttribute",
@@ -1863,6 +1883,37 @@
         "encryption",
         "network"
       ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "serviceCode"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>Service Quotas requirement to identify originating quota.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>Identifier of the resource affected.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>Type of the resource affected.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>Service Quotas requirement to identify originating service.</p>"
+        }
+      },
+      "documentation":"<p>Thrown when you attempt to create more resources than the service allows based on service quotas.</p>",
+      "exception":true
     },
     "String":{"type":"string"},
     "SubnetId":{
@@ -2281,7 +2332,7 @@
         },
         "vpcId":{
           "shape":"VpcId",
-          "documentation":"<p>The ID of the VPC from which you access OpenSearch Serverless</p>"
+          "documentation":"<p>The ID of the VPC from which you access OpenSearch Serverless.</p>"
         }
       },
       "documentation":"<p>Details about an OpenSearch Serverless-managed interface endpoint.</p>"

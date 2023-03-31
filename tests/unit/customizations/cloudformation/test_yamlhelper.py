@@ -20,6 +20,7 @@ from botocore.compat import OrderedDict
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
 from tests.unit.customizations.cloudformation import BaseYAMLTest
+from awscli.testutils import yaml_dump_without_header
 
 
 class TestYaml(BaseYAMLTest):
@@ -145,7 +146,7 @@ class TestYaml(BaseYAMLTest):
         ])
         self.assertEqual(expected_dict, output_dict)
 
-        output_template = yaml_dump(output_dict)
+        output_template = yaml_dump_without_header(output_dict)
         self.assertEqual(input_template, output_template)
 
     def test_yaml_merge_tag(self):
@@ -182,7 +183,7 @@ class TestYaml(BaseYAMLTest):
             '      Foo: bar\n'
             '      Spam: eggs\n'
         )
-        actual = yaml_dump(template)
+        actual = yaml_dump_without_header(template)
         self.assertEqual(actual, expected)
 
     def test_yaml_dump_quotes_boolean_strings(self):
@@ -193,4 +194,26 @@ class TestYaml(BaseYAMLTest):
         ]
         for bool_as_string in bools_as_strings:
             self.assertEqual(
-                yaml_dump(bool_as_string), "'%s'\n" % bool_as_string)
+                yaml_dump_without_header(bool_as_string),
+                "'%s'\n" % bool_as_string)
+
+    def test_yaml_dump_quotes_octal_strings(self):
+        octals_as_strings = [
+            '01111111', '02222222', '03333333',
+            '04444444', '05555555', '06666666',
+            '07777777', '08888888', '09999999'
+        ]
+        for octal_as_string in octals_as_strings:
+            self.assertEqual(
+                yaml_dump_without_header(octal_as_string),
+                "'%s'\n" % octal_as_string)
+
+    def test_yaml_dump_include_1_1_header(self):
+        template = {"Resources": {"Foo": "Bar"}}
+        expected = (
+            '%YAML 1.1\n---\n'
+            'Resources:\n'
+            '  Foo: Bar\n'
+        )
+        actual = yaml_dump(template)
+        self.assertEqual(actual, expected)

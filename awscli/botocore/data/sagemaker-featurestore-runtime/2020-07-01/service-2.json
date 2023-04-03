@@ -41,7 +41,7 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"AccessForbidden"}
       ],
-      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code>. When the <code>DeleteRecord</code> API is called a new record will be added to the <code>OfflineStore</code> and the <code>Record</code> will be removed from the <code>OnlineStore</code>. This record will have a value of <code>True</code> in the <code>is_deleted</code> column.</p>"
+      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the <code>OnlineStore</code>. Feature Store supports both <code>SOFT_DELETE</code> and <code>HARD_DELETE</code>. For <code>SOFT_DELETE</code> (default), feature columns are set to <code>null</code> and the record is no longer retrievable by <code>GetRecord</code> or <code>BatchGetRecord</code>. For<code> HARD_DELETE</code>, the complete <code>Record</code> is removed from the <code>OnlineStore</code>. In both cases, Feature Store appends the deleted record marker to the <code>OfflineStore</code> with feature values set to <code>null</code>, <code>is_deleted</code> value set to <code>True</code>, and <code>EventTime</code> set to the delete input <code>EventTime</code>.</p> <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of the existing record in the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p> <ul> <li> <p>For <code>SOFT_DELETE</code>, the existing (undeleted) record remains in the <code>OnlineStore</code>, though the delete record marker is still written to the <code>OfflineStore</code>.</p> </li> <li> <p> <code>HARD_DELETE</code> returns <code>EventTime</code>: <code>400 ValidationException</code> to indicate that the delete operation failed. No delete record marker is written to the <code>OfflineStore</code>.</p> </li> </ul>"
     },
     "GetRecord":{
       "name":"GetRecord",
@@ -106,11 +106,11 @@
         },
         "ErrorCode":{
           "shape":"ValueAsString",
-          "documentation":"<p>The error code of an error that has occured when attempting to retrieve a batch of Records. For more information on errors, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors\">Errors</a>.</p>"
+          "documentation":"<p>The error code of an error that has occurred when attempting to retrieve a batch of Records. For more information on errors, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors\">Errors</a>.</p>"
         },
         "ErrorMessage":{
           "shape":"Message",
-          "documentation":"<p>The error message of an error that has occured when attempting to retrieve a record in the batch.</p>"
+          "documentation":"<p>The error message of an error that has occurred when attempting to retrieve a record in the batch.</p>"
         }
       },
       "documentation":"<p>The error that has occurred when attempting to retrieve a batch of Records.</p>"
@@ -194,7 +194,7 @@
         },
         "RecordIdentifierValueAsString":{
           "shape":"ValueAsString",
-          "documentation":"<p>The value of the record identifer in string format.</p>"
+          "documentation":"<p>The value of the record identifier in string format.</p>"
         },
         "Record":{
           "shape":"Record",
@@ -239,14 +239,27 @@
           "documentation":"<p>A list of stores from which you're deleting the record. By default, Feature Store deletes the record from all of the stores that you're using for the <code>FeatureGroup</code>.</p>",
           "location":"querystring",
           "locationName":"TargetStores"
+        },
+        "DeletionMode":{
+          "shape":"DeletionMode",
+          "documentation":"<p>The name of the deletion mode for deleting the record. By default, the deletion mode is set to <code>SoftDelete</code>.</p>",
+          "location":"querystring",
+          "locationName":"DeletionMode"
         }
       }
+    },
+    "DeletionMode":{
+      "type":"string",
+      "enum":[
+        "SoftDelete",
+        "HardDelete"
+      ]
     },
     "FeatureGroupName":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+      "pattern":"^[a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63}"
     },
     "FeatureName":{
       "type":"string",

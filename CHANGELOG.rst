@@ -5145,6 +5145,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.105
+========
+
+* api-change:``glue``: Add support for database-level federation
+* api-change:``lakeformation``: Add support for database-level federation
+* api-change:``license-manager``: This release adds grant override options to the CreateGrantVersion API. These options can be used to specify grant replacement behavior during grant activation.
+* api-change:``mwaa``: This Amazon MWAA release adds the ability to customize the Apache Airflow environment by launching a shell script at startup. This shell script is hosted in your environment's Amazon S3 bucket. Amazon MWAA runs the script before installing requirements and initializing the Apache Airflow process.
+* api-change:``servicecatalog``: This release introduces Service Catalog support for Terraform open source. It enables 1. The notify* APIs to Service Catalog. These APIs are used by the terraform engine to notify the result of the provisioning engine execution. 2. Adds a new TERRAFORM_OPEN_SOURCE product type in CreateProduct API.
+* api-change:``wafv2``: For web ACLs that protect CloudFront protections, the default request body inspection size is now 16 KB, and you can use the new association configuration to increase the inspection size further, up to 64 KB. Sizes over 16 KB can incur additional costs.
+
+
+1.27.104
+========
+
+* api-change:``ec2``: Documentation updates for EC2 On Demand Capacity Reservations
+* api-change:``internetmonitor``: This release adds a new feature for Amazon CloudWatch Internet Monitor that enables customers to deliver internet measurements to Amazon S3 buckets as well as CloudWatch Logs.
+* api-change:``resiliencehub``: Adding EKS related documentation for appTemplateBody
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``sagemaker-featurestore-runtime``: In this release, you can now chose between soft delete and hard delete when calling the DeleteRecord API, so you have more flexibility when it comes to managing online store data.
+* api-change:``sms``: Deprecating AWS Server Migration Service.
+
+
 1.27.103
 ========
 

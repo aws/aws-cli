@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.27.106
+========
+
+* api-change:``amplifyuibuilder``: Support StorageField and custom displays for data-bound options in form builder. Support non-string operands for predicates in collections. Support choosing client to get token from.
+* api-change:``autoscaling``: Documentation updates for Amazon EC2 Auto Scaling
+* api-change:``dataexchange``: This release updates the value of MaxResults.
+* api-change:``ec2``: C6in, M6in, M6idn, R6in and R6idn bare metal instances are powered by 3rd Generation Intel Xeon Scalable processors and offer up to 200 Gbps of network bandwidth.
+* api-change:``elastic-inference``: Updated public documentation for the Describe and Tagging APIs.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``sagemaker``: Amazon SageMaker Asynchronous Inference now allows customer's to receive failure model responses in S3 and receive success/failure model responses in SNS notifications.
+* api-change:``wafv2``: This release rolls back association config feature for webACLs that protect CloudFront protections.
+
+
 1.27.105
 ========
 

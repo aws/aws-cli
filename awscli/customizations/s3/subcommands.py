@@ -29,7 +29,7 @@ from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
-    find_dest_path_comp_key, human_readable_size, \
+    FileAppendFilter, find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
@@ -115,6 +115,12 @@ EXCLUDE = {'name': 'exclude', 'action': AppendFilter, 'nargs': 1,
                "Exclude all files or objects from the command that matches "
                "the specified pattern.")}
 
+EXCLUDE_FILE = {'name': 'exclude-file', 'action': FileAppendFilter, 'nargs': 1,
+                'dest': 'filters',
+                'help_text': (
+                    'Exclude all files or objects from the command that match '
+                    'patterns from the specified file.')}
+
 
 INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
            'dest': 'filters',
@@ -124,6 +130,16 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
                'See <a href="http://docs.aws.amazon.com/cli/latest/reference'
                '/s3/index.html#use-of-exclude-and-include-filters">Use of '
                'Exclude and Include Filters</a> for details.')}
+
+INCLUDE_FILE = {'name': 'include-file', 'action': FileAppendFilter, 'nargs': 1,
+                'dest': 'filters',
+                'help_text': (
+                    'Include all files or objects from the command that match '
+                    'the patterns in the specified file.  '
+                    'The file contains one pattern per line.  '
+                    'Any empty lines are ignored, and leading and trailing '
+                    'whitespace are stripped. Each pattern is treated as if'
+                    'it wer passed to ``--include``')}
 
 
 ACL = {'name': 'acl',
@@ -429,7 +445,7 @@ REQUEST_PAYER = {
     )
 }
 
-TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
+TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, INCLUDE_FILE, EXCLUDE_FILE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
                  SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
@@ -748,7 +764,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, REQUEST_PAYER,
-                 INCLUDE, EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
+                 INCLUDE, INCLUDE_FILE, EXCLUDE, EXCLUDE_FILE, ONLY_SHOW_ERRORS, PAGE_SIZE]
 
 
 class SyncCommand(S3TransferCommand):

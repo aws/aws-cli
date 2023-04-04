@@ -100,6 +100,35 @@ class AppendFilterTest(unittest.TestCase):
                                             ['--exclude', 'b']])
 
 
+class FileAppendFilter(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.include_file = os.path.join(self.tempdir, 'include.txt')
+        with open(self.include_file, 'w') as f:
+            f.write('include\na\n')
+        self.exclude_file = os.path.join(self.tempdir, 'exclude.txt')
+        with open(self.exclude_file, 'w') as f:
+            f.write('exclude\nb\n')
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def test_call(self):
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--include-file', action=FileAppendFilter, nargs=1,
+                            dest='path')
+        parser.add_argument('--exclude-file', action=FileAppendFilter, nargs=1,
+                            dest='path')
+        parsed_args = parser.parse_args(['--include-file', self.include_file,
+                                         '--exclude-file', self.exclude_file])
+        self.assertEqual(parsed_args.path, [['--include', 'include'],
+                                            ['--include', 'a'],
+                                            ['--exclude', 'exclude'],
+                                            ['--exclude', 'b']])
+
+
+
 class TestFindBucketKey(unittest.TestCase):
     def test_unicode(self):
         s3_path = '\u1234' + u'/' + '\u5678'

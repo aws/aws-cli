@@ -293,7 +293,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Stores the metadata information about a feature on a form or view.</p>"
+      "documentation":"<p>Stores the metadata information about a feature on a form.</p>"
     },
     "RefreshToken":{
       "name":"RefreshToken",
@@ -365,34 +365,6 @@
     "ActionParameters":{
       "type":"structure",
       "members":{
-        "anchor":{
-          "shape":"ComponentProperty",
-          "documentation":"<p>The HTML anchor link to the location to open. Specify this value for a navigation action.</p>"
-        },
-        "fields":{
-          "shape":"ComponentProperties",
-          "documentation":"<p>A dictionary of key-value pairs mapping Amplify Studio properties to fields in a data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
-        },
-        "global":{
-          "shape":"ComponentProperty",
-          "documentation":"<p>Specifies whether the user should be signed out globally. Specify this value for an auth sign out action.</p>"
-        },
-        "id":{
-          "shape":"ComponentProperty",
-          "documentation":"<p>The unique ID of the component that the <code>ActionParameters</code> apply to.</p>"
-        },
-        "model":{
-          "shape":"String",
-          "documentation":"<p>The name of the data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
-        },
-        "state":{
-          "shape":"MutationActionSetStateParameter",
-          "documentation":"<p>A key-value pair that specifies the state property name and its initial value.</p>"
-        },
-        "target":{
-          "shape":"ComponentProperty",
-          "documentation":"<p>The element within the same component to modify when the action occurs.</p>"
-        },
         "type":{
           "shape":"ComponentProperty",
           "documentation":"<p>The type of navigation action. Valid values are <code>url</code> and <code>anchor</code>. This value is required for a navigation action.</p>"
@@ -400,6 +372,34 @@
         "url":{
           "shape":"ComponentProperty",
           "documentation":"<p>The URL to the location to open. Specify this value for a navigation action.</p>"
+        },
+        "anchor":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The HTML anchor link to the location to open. Specify this value for a navigation action.</p>"
+        },
+        "target":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The element within the same component to modify when the action occurs.</p>"
+        },
+        "global":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>Specifies whether the user should be signed out globally. Specify this value for an auth sign out action.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>The name of the data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
+        },
+        "id":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The unique ID of the component that the <code>ActionParameters</code> apply to.</p>"
+        },
+        "fields":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>A dictionary of key-value pairs mapping Amplify Studio properties to fields in a data model. Use when the action performs an operation on an Amplify DataStore model.</p>"
+        },
+        "state":{
+          "shape":"MutationActionSetStateParameter",
+          "documentation":"<p>A key-value pair that specifies the state property name and its initial value.</p>"
         }
       },
       "documentation":"<p>Represents the event action configuration for an element of a <code>Component</code> or <code>ComponentChild</code>. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. <code>ActionParameters</code> defines the action that is performed when an event occurs on the component.</p>"
@@ -412,84 +412,84 @@
       "type":"structure",
       "required":[
         "appId",
-        "bindingProperties",
-        "componentType",
-        "createdAt",
         "environmentName",
         "id",
         "name",
-        "overrides",
+        "componentType",
         "properties",
-        "variants"
+        "variants",
+        "overrides",
+        "bindingProperties",
+        "createdAt"
       ],
       "members":{
         "appId":{
           "shape":"String",
           "documentation":"<p>The unique ID of the Amplify app associated with the component.</p>"
         },
-        "bindingProperties":{
-          "shape":"ComponentBindingProperties",
-          "documentation":"<p>The information to connect a component's properties to data at runtime. You can't specify <code>tags</code> as a valid property for <code>bindingProperties</code>.</p> <p/>"
-        },
-        "children":{
-          "shape":"ComponentChildList",
-          "documentation":"<p>A list of the component's <code>ComponentChild</code> instances.</p>"
-        },
-        "collectionProperties":{
-          "shape":"ComponentCollectionProperties",
-          "documentation":"<p>The data binding configuration for the component's properties. Use this for a collection component. You can't specify <code>tags</code> as a valid property for <code>collectionProperties</code>.</p>"
-        },
-        "componentType":{
-          "shape":"ComponentType",
-          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
-        },
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The time that the component was created.</p>"
-        },
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
-        },
-        "events":{
-          "shape":"ComponentEvents",
-          "documentation":"<p>Describes the events that can be raised on the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
-        },
-        "id":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique ID of the component.</p>"
-        },
-        "modifiedAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The time that the component was modified.</p>"
-        },
-        "name":{
-          "shape":"ComponentName",
-          "documentation":"<p>The name of the component.</p>"
-        },
-        "overrides":{
-          "shape":"ComponentOverrides",
-          "documentation":"<p>Describes the component's properties that can be overriden in a customized instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
-        },
-        "properties":{
-          "shape":"ComponentProperties",
-          "documentation":"<p>Describes the component's properties. You can't specify <code>tags</code> as a valid property for <code>properties</code>.</p>"
-        },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the component when it was imported.</p>"
         },
         "sourceId":{
           "shape":"String",
           "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>One or more key-value pairs to use when tagging the component.</p>"
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the component.</p>"
+        },
+        "name":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the component's properties. You can't specify <code>tags</code> as a valid property for <code>properties</code>.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>A list of the component's <code>ComponentChild</code> instances.</p>"
         },
         "variants":{
           "shape":"ComponentVariants",
           "documentation":"<p>A list of the component's variants. A variant is a unique style configuration of a main component.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the component's properties that can be overriden in a customized instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
+        },
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The information to connect a component's properties to data at runtime. You can't specify <code>tags</code> as a valid property for <code>bindingProperties</code>.</p> <p/>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The data binding configuration for the component's properties. Use this for a collection component. You can't specify <code>tags</code> as a valid property for <code>collectionProperties</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the component was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the component was modified.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the component.</p>"
+        },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>Describes the events that can be raised on the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         }
       },
       "documentation":"<p>Contains the configuration settings for a user interface (UI) element for an Amplify app. A component is configured as a primary, stand-alone UI element. Use <code>ComponentChild</code> to configure an instance of a <code>Component</code>. A <code>ComponentChild</code> instance inherits the configuration of the main <code>Component</code>.</p>"
@@ -502,6 +502,10 @@
     "ComponentBindingPropertiesValue":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The property type.</p>"
+        },
         "bindingProperties":{
           "shape":"ComponentBindingPropertiesValueProperties",
           "documentation":"<p>Describes the properties to customize with data at runtime.</p>"
@@ -509,10 +513,6 @@
         "defaultValue":{
           "shape":"String",
           "documentation":"<p>The default value of the property.</p>"
-        },
-        "type":{
-          "shape":"String",
-          "documentation":"<p>The property type.</p>"
         }
       },
       "documentation":"<p>Represents the data binding configuration for a component at runtime. You can use <code>ComponentBindingPropertiesValue</code> to add exposed properties to a component to allow different values to be entered when a component is reused in different places in an app.</p>"
@@ -520,37 +520,37 @@
     "ComponentBindingPropertiesValueProperties":{
       "type":"structure",
       "members":{
-        "bucket":{
+        "model":{
           "shape":"String",
-          "documentation":"<p>An Amazon S3 bucket.</p>"
-        },
-        "defaultValue":{
-          "shape":"String",
-          "documentation":"<p>The default value to assign to the property.</p>"
+          "documentation":"<p>An Amplify DataStore model.</p>"
         },
         "field":{
           "shape":"String",
           "documentation":"<p>The field to bind the data to.</p>"
         },
-        "key":{
-          "shape":"String",
-          "documentation":"<p>The storage key for an Amazon S3 bucket.</p>"
-        },
-        "model":{
-          "shape":"String",
-          "documentation":"<p>An Amplify DataStore model.</p>"
-        },
         "predicates":{
           "shape":"PredicateList",
           "documentation":"<p>A list of predicates for binding a component's properties to data.</p>"
         },
-        "slotName":{
-          "shape":"String",
-          "documentation":"<p>The name of a component slot.</p>"
-        },
         "userAttribute":{
           "shape":"String",
           "documentation":"<p>An authenticated user attribute.</p>"
+        },
+        "bucket":{
+          "shape":"String",
+          "documentation":"<p>An Amazon S3 bucket.</p>"
+        },
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The storage key for an Amazon S3 bucket.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value to assign to the property.</p>"
+        },
+        "slotName":{
+          "shape":"String",
+          "documentation":"<p>The name of a component slot.</p>"
         }
       },
       "documentation":"<p>Represents the data binding configuration for a specific property using data stored in Amazon Web Services. For Amazon Web Services connected properties, you can bind a property to data stored in an Amazon S3 bucket, an Amplify DataStore model or an authenticated user attribute.</p>"
@@ -563,17 +563,9 @@
         "properties"
       ],
       "members":{
-        "children":{
-          "shape":"ComponentChildList",
-          "documentation":"<p>The list of <code>ComponentChild</code> instances for this component.</p>"
-        },
         "componentType":{
           "shape":"String",
           "documentation":"<p>The type of the child component. </p>"
-        },
-        "events":{
-          "shape":"ComponentEvents",
-          "documentation":"<p>Describes the events that can be raised on the child component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
         },
         "name":{
           "shape":"String",
@@ -582,6 +574,14 @@
         "properties":{
           "shape":"ComponentProperties",
           "documentation":"<p>Describes the properties of the child component. You can't specify <code>tags</code> as a valid property for <code>properties</code>.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>The list of <code>ComponentChild</code> instances for this component.</p>"
+        },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>Describes the events that can be raised on the child component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
         },
         "sourceId":{
           "shape":"String",
@@ -602,33 +602,33 @@
     "ComponentConditionProperty":{
       "type":"structure",
       "members":{
-        "else":{
-          "shape":"ComponentProperty",
-          "documentation":"<p>The value to assign to the property if the condition is not met.</p>"
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The name of the conditional property.</p>"
         },
         "field":{
           "shape":"String",
           "documentation":"<p>The name of a field. Specify this when the property is a data model.</p>"
         },
-        "operand":{
-          "shape":"String",
-          "documentation":"<p>The value of the property to evaluate.</p>"
-        },
-        "operandType":{
-          "shape":"String",
-          "documentation":"<p>The type of the property to evaluate.</p>"
-        },
         "operator":{
           "shape":"String",
           "documentation":"<p>The operator to use to perform the evaluation, such as <code>eq</code> to represent equals.</p>"
         },
-        "property":{
+        "operand":{
           "shape":"String",
-          "documentation":"<p>The name of the conditional property.</p>"
+          "documentation":"<p>The value of the property to evaluate.</p>"
         },
         "then":{
           "shape":"ComponentProperty",
           "documentation":"<p>The value to assign to the property if the condition is met.</p>"
+        },
+        "else":{
+          "shape":"ComponentProperty",
+          "documentation":"<p>The value to assign to the property if the condition is not met.</p>"
+        },
+        "operandType":{
+          "shape":"String",
+          "documentation":"<p>The type of the property to evaluate.</p>"
         }
       },
       "documentation":"<p>Represents a conditional expression to set a component property. Use <code>ComponentConditionProperty</code> to set a property to different values conditionally, based on the value of another property.</p>"
@@ -637,21 +637,21 @@
       "type":"structure",
       "required":["model"],
       "members":{
-        "identifiers":{
-          "shape":"IdentifierList",
-          "documentation":"<p>A list of IDs to use to bind data to a component. Use this property to bind specifically chosen data, rather than data retrieved from a query.</p>"
-        },
         "model":{
           "shape":"String",
           "documentation":"<p>The name of the data model to use to bind data to a component.</p>"
+        },
+        "sort":{
+          "shape":"SortPropertyList",
+          "documentation":"<p>Describes how to sort the component's properties.</p>"
         },
         "predicate":{
           "shape":"Predicate",
           "documentation":"<p>Represents the conditional logic to use when binding data to a component. Use this property to retrieve only a subset of the data in a collection.</p>"
         },
-        "sort":{
-          "shape":"SortPropertyList",
-          "documentation":"<p>Describes how to sort the component's properties.</p>"
+        "identifiers":{
+          "shape":"IdentifierList",
+          "documentation":"<p>A list of IDs to use to bind data to a component. Use this property to bind specifically chosen data, rather than data retrieved from a query.</p>"
         }
       },
       "documentation":"<p>Describes the configuration for binding a component's properties to data.</p>"
@@ -663,13 +663,13 @@
           "shape":"String",
           "documentation":"<p>The action to perform when a specific event is raised.</p>"
         },
-        "bindingEvent":{
-          "shape":"String",
-          "documentation":"<p>Binds an event to an action on a component. When you specify a <code>bindingEvent</code>, the event is called when the action is performed.</p>"
-        },
         "parameters":{
           "shape":"ActionParameters",
           "documentation":"<p>Describes information about the action.</p>"
+        },
+        "bindingEvent":{
+          "shape":"String",
+          "documentation":"<p>Binds an event to an action on a component. When you specify a <code>bindingEvent</code>, the event is called when the action is performed.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of an event. You can bind an event and a corresponding action to a <code>Component</code> or a <code>ComponentChild</code>. A button click is an example of an event. </p>"
@@ -706,21 +706,37 @@
     "ComponentProperty":{
       "type":"structure",
       "members":{
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value to assign to the component property.</p>"
+        },
         "bindingProperties":{
           "shape":"ComponentPropertyBindingProperties",
           "documentation":"<p>The information to bind the component property to data at runtime.</p>"
-        },
-        "bindings":{
-          "shape":"FormBindings",
-          "documentation":"<p>The information to bind the component property to form data.</p>"
         },
         "collectionBindingProperties":{
           "shape":"ComponentPropertyBindingProperties",
           "documentation":"<p>The information to bind the component property to data at runtime. Use this for collection components.</p>"
         },
-        "componentName":{
+        "defaultValue":{
           "shape":"String",
-          "documentation":"<p>The name of the component that is affected by an event.</p>"
+          "documentation":"<p>The default value to assign to the component property.</p>"
+        },
+        "model":{
+          "shape":"String",
+          "documentation":"<p>The data model to use to assign a value to the component property.</p>"
+        },
+        "bindings":{
+          "shape":"FormBindings",
+          "documentation":"<p>The information to bind the component property to form data.</p>"
+        },
+        "event":{
+          "shape":"String",
+          "documentation":"<p>An event that occurs in your app. Use this for workflow data binding.</p>"
+        },
+        "userAttribute":{
+          "shape":"String",
+          "documentation":"<p>An authenticated user attribute to use to assign a value to the component property.</p>"
         },
         "concat":{
           "shape":"ComponentPropertyList",
@@ -734,37 +750,21 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the user configured the property in Amplify Studio after importing it.</p>"
         },
-        "defaultValue":{
+        "type":{
           "shape":"String",
-          "documentation":"<p>The default value to assign to the component property.</p>"
-        },
-        "event":{
-          "shape":"String",
-          "documentation":"<p>An event that occurs in your app. Use this for workflow data binding.</p>"
+          "documentation":"<p>The component type.</p>"
         },
         "importedValue":{
           "shape":"String",
           "documentation":"<p>The default value assigned to the property when the component is imported into an app.</p>"
         },
-        "model":{
+        "componentName":{
           "shape":"String",
-          "documentation":"<p>The data model to use to assign a value to the component property.</p>"
+          "documentation":"<p>The name of the component that is affected by an event.</p>"
         },
         "property":{
           "shape":"String",
           "documentation":"<p>The name of the component's property that is affected by an event.</p>"
-        },
-        "type":{
-          "shape":"String",
-          "documentation":"<p>The component type.</p>"
-        },
-        "userAttribute":{
-          "shape":"String",
-          "documentation":"<p>An authenticated user attribute to use to assign a value to the component property.</p>"
-        },
-        "value":{
-          "shape":"String",
-          "documentation":"<p>The value to assign to the component property.</p>"
         }
       },
       "documentation":"<p>Describes the configuration for all of a component's properties. Use <code>ComponentProperty</code> to specify the values to render or bind by default.</p>"
@@ -773,13 +773,13 @@
       "type":"structure",
       "required":["property"],
       "members":{
-        "field":{
-          "shape":"String",
-          "documentation":"<p>The data field to bind the property to.</p>"
-        },
         "property":{
           "shape":"String",
           "documentation":"<p>The component property to bind to the data field.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The data field to bind the property to.</p>"
         }
       },
       "documentation":"<p>Associates a component property to a binding property. This enables exposed properties on the top level component to propagate data to the component's property values.</p>"
@@ -792,19 +792,15 @@
       "type":"structure",
       "required":[
         "appId",
-        "componentType",
         "environmentName",
         "id",
-        "name"
+        "name",
+        "componentType"
       ],
       "members":{
         "appId":{
           "shape":"String",
           "documentation":"<p>The unique ID of the Amplify app associated with the component.</p>"
-        },
-        "componentType":{
-          "shape":"ComponentType",
-          "documentation":"<p>The component type.</p>"
         },
         "environmentName":{
           "shape":"String",
@@ -817,6 +813,10 @@
         "name":{
           "shape":"ComponentName",
           "documentation":"<p>The name of the component.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The component type.</p>"
         }
       },
       "documentation":"<p>Contains a summary of a component. This is a read-only data type that is returned by <code>ListComponents</code>.</p>"
@@ -833,13 +833,13 @@
     "ComponentVariant":{
       "type":"structure",
       "members":{
-        "overrides":{
-          "shape":"ComponentOverrides",
-          "documentation":"<p>The properties of the component variant that can be overriden when customizing an instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
-        },
         "variantValues":{
           "shape":"ComponentVariantValues",
           "documentation":"<p>The combination of variants that comprise this variant. You can't specify <code>tags</code> as a valid property for <code>variantValues</code>.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>The properties of the component variant that can be overriden when customizing an instance of the component. You can't specify <code>tags</code> as a valid property for <code>overrides</code>.</p>"
         }
       },
       "documentation":"<p>Describes the style configuration of a unique variation of a main component.</p>"
@@ -856,61 +856,61 @@
     "CreateComponentData":{
       "type":"structure",
       "required":[
-        "bindingProperties",
-        "componentType",
         "name",
-        "overrides",
+        "componentType",
         "properties",
-        "variants"
+        "variants",
+        "overrides",
+        "bindingProperties"
       ],
       "members":{
-        "bindingProperties":{
-          "shape":"ComponentBindingProperties",
-          "documentation":"<p>The data binding information for the component's properties.</p>"
-        },
-        "children":{
-          "shape":"ComponentChildList",
-          "documentation":"<p>A list of child components that are instances of the main component.</p>"
-        },
-        "collectionProperties":{
-          "shape":"ComponentCollectionProperties",
-          "documentation":"<p>The data binding configuration for customizing a component's properties. Use this for a collection component.</p>"
-        },
-        "componentType":{
-          "shape":"ComponentType",
-          "documentation":"<p>The component type. This can be an Amplify custom UI component or another custom component.</p>"
-        },
-        "events":{
-          "shape":"ComponentEvents",
-          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
-        },
         "name":{
           "shape":"ComponentName",
           "documentation":"<p>The name of the component</p>"
-        },
-        "overrides":{
-          "shape":"ComponentOverrides",
-          "documentation":"<p>Describes the component properties that can be overriden to customize an instance of the component.</p>"
-        },
-        "properties":{
-          "shape":"ComponentProperties",
-          "documentation":"<p>Describes the component's properties.</p>"
-        },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the component when it was imported.</p>"
         },
         "sourceId":{
           "shape":"String",
           "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>One or more key-value pairs to use when tagging the component data.</p>"
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The component type. This can be an Amplify custom UI component or another custom component.</p>"
+        },
+        "properties":{
+          "shape":"ComponentProperties",
+          "documentation":"<p>Describes the component's properties.</p>"
+        },
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>A list of child components that are instances of the main component.</p>"
         },
         "variants":{
           "shape":"ComponentVariants",
           "documentation":"<p>A list of the unique variants of this component.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the component properties that can be overriden to customize an instance of the component.</p>"
+        },
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The data binding information for the component's properties.</p>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The data binding configuration for customizing a component's properties. Use this for a collection component.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the component data.</p>"
+        },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         }
       },
       "documentation":"<p>Represents all of the information that is required to create a component.</p>"
@@ -919,8 +919,8 @@
       "type":"structure",
       "required":[
         "appId",
-        "componentToCreate",
-        "environmentName"
+        "environmentName",
+        "componentToCreate"
       ],
       "members":{
         "appId":{
@@ -928,6 +928,12 @@
           "documentation":"<p>The unique ID of the Amplify app to associate with the component.</p>",
           "location":"uri",
           "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
         },
         "clientToken":{
           "shape":"String",
@@ -939,12 +945,6 @@
         "componentToCreate":{
           "shape":"CreateComponentData",
           "documentation":"<p>Represents the configuration of the component to create.</p>"
-        },
-        "environmentName":{
-          "shape":"String",
-          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
-          "location":"uri",
-          "locationName":"environmentName"
         }
       },
       "payload":"componentToCreate"
@@ -962,50 +962,54 @@
     "CreateFormData":{
       "type":"structure",
       "required":[
-        "dataType",
-        "fields",
-        "formActionType",
         "name",
-        "schemaVersion",
+        "dataType",
+        "formActionType",
+        "fields",
+        "style",
         "sectionalElements",
-        "style"
+        "schemaVersion"
       ],
       "members":{
-        "cta":{
-          "shape":"FormCTA",
-          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
         },
         "dataType":{
           "shape":"FormDataTypeConfig",
           "documentation":"<p>The type of data source to use to create the form.</p>"
         },
-        "fields":{
-          "shape":"FieldsMap",
-          "documentation":"<p>The configuration information for the form's fields.</p>"
-        },
         "formActionType":{
           "shape":"FormActionType",
           "documentation":"<p>Specifies whether to perform a create or update action on the form.</p>"
         },
-        "name":{
-          "shape":"FormName",
-          "documentation":"<p>The name of the form.</p>"
-        },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the form.</p>"
-        },
-        "sectionalElements":{
-          "shape":"SectionalElementMap",
-          "documentation":"<p>The configuration information for the visual helper elements for the form. These elements are not associated with any data.</p>"
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>The configuration information for the form's fields.</p>"
         },
         "style":{
           "shape":"FormStyle",
           "documentation":"<p>The configuration for the form's style.</p>"
         },
+        "sectionalElements":{
+          "shape":"SectionalElementMap",
+          "documentation":"<p>The configuration information for the visual helper elements for the form. These elements are not associated with any data.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form.</p>"
+        },
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>One or more key-value pairs to use when tagging the form data.</p>"
+        },
+        "labelDecorator":{
+          "shape":"LabelDecorator",
+          "documentation":"<p>Specifies an icon or decoration to display on the form.</p>"
         }
       },
       "documentation":"<p>Represents all of the information that is required to create a form.</p>"
@@ -1024,18 +1028,18 @@
           "location":"uri",
           "locationName":"appId"
         },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>The unique client token.</p>",
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
-        },
-        "environmentName":{
-          "shape":"String",
-          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
-          "location":"uri",
-          "locationName":"environmentName"
         },
         "formToCreate":{
           "shape":"CreateFormData",
@@ -1065,6 +1069,10 @@
           "shape":"ThemeName",
           "documentation":"<p>The name of the theme.</p>"
         },
+        "values":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that deﬁnes the properties of the theme.</p>"
+        },
         "overrides":{
           "shape":"ThemeValuesList",
           "documentation":"<p>Describes the properties that can be overriden to customize an instance of the theme.</p>"
@@ -1072,10 +1080,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>One or more key-value pairs to use when tagging the theme data.</p>"
-        },
-        "values":{
-          "shape":"ThemeValuesList",
-          "documentation":"<p>A list of key-value pairs that deﬁnes the properties of the theme.</p>"
         }
       },
       "documentation":"<p>Represents all of the information that is required to create a theme.</p>"
@@ -1094,18 +1098,18 @@
           "location":"uri",
           "locationName":"appId"
         },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>The unique client token.</p>",
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
-        },
-        "environmentName":{
-          "shape":"String",
-          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
-          "location":"uri",
-          "locationName":"environmentName"
         },
         "themeToCreate":{
           "shape":"CreateThemeData",
@@ -1242,6 +1246,10 @@
         "redirectUri":{
           "shape":"String",
           "documentation":"<p>The location of the application that will receive the access code.</p>"
+        },
+        "clientId":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The ID of the client to request the token from.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of a request to exchange an access code for a token.</p>"
@@ -1399,14 +1407,6 @@
     "FieldConfig":{
       "type":"structure",
       "members":{
-        "excluded":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies whether to hide a field.</p>"
-        },
-        "inputType":{
-          "shape":"FieldInputConfig",
-          "documentation":"<p>Describes the configuration for the default input value to display for a field.</p>"
-        },
         "label":{
           "shape":"String",
           "documentation":"<p>The label for the field.</p>"
@@ -1414,6 +1414,14 @@
         "position":{
           "shape":"FieldPosition",
           "documentation":"<p>Specifies the field position.</p>"
+        },
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to hide a field.</p>"
+        },
+        "inputType":{
+          "shape":"FieldInputConfig",
+          "documentation":"<p>Describes the configuration for the default input value to display for a field.</p>"
         },
         "validations":{
           "shape":"ValidationsList",
@@ -1426,13 +1434,21 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "defaultChecked":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies whether a field has a default value.</p>"
-        },
-        "defaultCountryCode":{
+        "type":{
           "shape":"String",
-          "documentation":"<p>The default country code for a phone number.</p>"
+          "documentation":"<p>The input type for the field. </p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies a field that requires input.</p>"
+        },
+        "readOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies a read only field.</p>"
+        },
+        "placeholder":{
+          "shape":"String",
+          "documentation":"<p>The text to display as a placeholder for the field.</p>"
         },
         "defaultValue":{
           "shape":"String",
@@ -1442,49 +1458,45 @@
           "shape":"String",
           "documentation":"<p>The text to display to describe the field.</p>"
         },
-        "isArray":{
+        "defaultChecked":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether to render the field as an array. This property is ignored if the <code>dataSourceType</code> for the form is a Data Store.</p>"
+          "documentation":"<p>Specifies whether a field has a default value.</p>"
         },
-        "maxValue":{
-          "shape":"Float",
-          "documentation":"<p>The maximum value to display for the field.</p>"
+        "defaultCountryCode":{
+          "shape":"String",
+          "documentation":"<p>The default country code for a phone number.</p>"
         },
-        "minValue":{
-          "shape":"Float",
-          "documentation":"<p>The minimum value to display for the field.</p>"
+        "valueMappings":{
+          "shape":"ValueMappings",
+          "documentation":"<p>The information to use to customize the input fields with data at runtime.</p>"
         },
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the field.</p>"
         },
-        "placeholder":{
-          "shape":"String",
-          "documentation":"<p>The text to display as a placeholder for the field.</p>"
+        "minValue":{
+          "shape":"Float",
+          "documentation":"<p>The minimum value to display for the field.</p>"
         },
-        "readOnly":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies a read only field.</p>"
-        },
-        "required":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies a field that requires input.</p>"
+        "maxValue":{
+          "shape":"Float",
+          "documentation":"<p>The maximum value to display for the field.</p>"
         },
         "step":{
           "shape":"Float",
           "documentation":"<p>The stepping increment for a numeric value in a field.</p>"
         },
-        "type":{
-          "shape":"String",
-          "documentation":"<p>The input type for the field. </p>"
-        },
         "value":{
           "shape":"String",
           "documentation":"<p>The value for the field.</p>"
         },
-        "valueMappings":{
-          "shape":"ValueMappings",
-          "documentation":"<p>The information to use to customize the input fields with data at runtime.</p>"
+        "isArray":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to render the field as an array. This property is ignored if the <code>dataSourceType</code> for the form is a Data Store.</p>"
+        },
+        "fileUploaderConfig":{
+          "shape":"FileUploaderFieldConfig",
+          "documentation":"<p>The configuration for the file uploader field.</p>"
         }
       },
       "documentation":"<p>Describes the configuration for the default input values to display for a field.</p>"
@@ -1492,10 +1504,6 @@
     "FieldPosition":{
       "type":"structure",
       "members":{
-        "below":{
-          "shape":"String",
-          "documentation":"<p>The field position is below the field specified by the string.</p>"
-        },
         "fixed":{
           "shape":"FixedPosition",
           "documentation":"<p>The field position is fixed and doesn't change in relation to other fields.</p>"
@@ -1503,6 +1511,10 @@
         "rightOf":{
           "shape":"String",
           "documentation":"<p>The field position is to the right of the field specified by the string.</p>"
+        },
+        "below":{
+          "shape":"String",
+          "documentation":"<p>The field position is below the field specified by the string.</p>"
         }
       },
       "documentation":"<p>Describes the field position.</p>",
@@ -1512,17 +1524,17 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "numValues":{
-          "shape":"NumValues",
-          "documentation":"<p>The validation to perform on a number value.</p>"
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The validation to perform on an object type.<code/> </p>"
         },
         "strValues":{
           "shape":"StrValues",
           "documentation":"<p>The validation to perform on a string value.</p>"
         },
-        "type":{
-          "shape":"String",
-          "documentation":"<p>The validation to perform on an object type.<code/> </p>"
+        "numValues":{
+          "shape":"NumValues",
+          "documentation":"<p>The validation to perform on a number value.</p>"
         },
         "validationMessage":{
           "shape":"String",
@@ -1536,6 +1548,40 @@
       "key":{"shape":"String"},
       "value":{"shape":"FieldConfig"}
     },
+    "FileUploaderFieldConfig":{
+      "type":"structure",
+      "required":[
+        "accessLevel",
+        "acceptedFileTypes"
+      ],
+      "members":{
+        "accessLevel":{
+          "shape":"StorageAccessLevel",
+          "documentation":"<p>The access level to assign to the uploaded files in the Amazon S3 bucket where they are stored. The valid values for this property are <code>private</code>, <code>protected</code>, or <code>public</code>. For detailed information about the permissions associated with each access level, see <a href=\"https://docs.amplify.aws/lib/storage/configureaccess/q/platform/js/\">File access levels</a> in the <i>Amplify documentation</i>.</p>"
+        },
+        "acceptedFileTypes":{
+          "shape":"StrValues",
+          "documentation":"<p>The file types that are allowed to be uploaded by the file uploader. Provide this information in an array of strings specifying the valid file extensions.</p>"
+        },
+        "showThumbnails":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to display or hide the image preview after selecting a file for upload. The default value is <code>true</code> to display the image preview.</p>"
+        },
+        "isResumable":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows the file upload operation to be paused and resumed. The default value is <code>false</code>.</p> <p>When <code>isResumable</code> is set to <code>true</code>, the file uploader uses a multipart upload to break the files into chunks before upload. The progress of the upload isn't continuous, because the file uploader uploads a chunk at a time.</p>"
+        },
+        "maxFileCount":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the maximum number of files that can be selected to upload. The default value is an unlimited number of files.</p>"
+        },
+        "maxSize":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum file size in bytes that the file uploader will accept. The default value is an unlimited file size.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for the file uploader field.</p>"
+    },
     "FixedPosition":{
       "type":"string",
       "enum":["first"]
@@ -1548,40 +1594,24 @@
       "type":"structure",
       "required":[
         "appId",
-        "dataType",
         "environmentName",
-        "fields",
-        "formActionType",
         "id",
         "name",
-        "schemaVersion",
+        "formActionType",
+        "style",
+        "dataType",
+        "fields",
         "sectionalElements",
-        "style"
+        "schemaVersion"
       ],
       "members":{
         "appId":{
           "shape":"String",
           "documentation":"<p>The unique ID of the Amplify app associated with the form.</p>"
         },
-        "cta":{
-          "shape":"FormCTA",
-          "documentation":"<p>Stores the call to action configuration for the form.</p>"
-        },
-        "dataType":{
-          "shape":"FormDataTypeConfig",
-          "documentation":"<p>The type of data source to use to create the form.</p>"
-        },
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>"
-        },
-        "fields":{
-          "shape":"FieldsMap",
-          "documentation":"<p>Stores the information about the form's fields.</p>"
-        },
-        "formActionType":{
-          "shape":"FormActionType",
-          "documentation":"<p>The operation to perform on the specified form.</p>"
         },
         "id":{
           "shape":"Uuid",
@@ -1591,21 +1621,41 @@
           "shape":"FormName",
           "documentation":"<p>The name of the form.</p>"
         },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the form when it was imported.</p>"
-        },
-        "sectionalElements":{
-          "shape":"SectionalElementMap",
-          "documentation":"<p>Stores the visual helper elements for the form that are not associated with any data.</p>"
+        "formActionType":{
+          "shape":"FormActionType",
+          "documentation":"<p>The operation to perform on the specified form.</p>"
         },
         "style":{
           "shape":"FormStyle",
           "documentation":"<p>Stores the configuration for the form's style.</p>"
         },
+        "dataType":{
+          "shape":"FormDataTypeConfig",
+          "documentation":"<p>The type of data source to use to create the form.</p>"
+        },
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>Stores the information about the form's fields.</p>"
+        },
+        "sectionalElements":{
+          "shape":"SectionalElementMap",
+          "documentation":"<p>Stores the visual helper elements for the form that are not associated with any data.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form when it was imported.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>One or more key-value pairs to use when tagging the form.</p>"
+        },
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>Stores the call to action configuration for the form.</p>"
+        },
+        "labelDecorator":{
+          "shape":"LabelDecorator",
+          "documentation":"<p>Specifies an icon or decoration to display on the form.</p>"
         }
       },
       "documentation":"<p>Contains the configuration settings for a <code>Form</code> user interface (UI) element for an Amplify app. A form is a component you can add to your project by specifying a data source as the default configuration for the form.</p>"
@@ -1643,13 +1693,13 @@
     "FormButton":{
       "type":"structure",
       "members":{
-        "children":{
-          "shape":"String",
-          "documentation":"<p>Describes the button's properties.</p>"
-        },
         "excluded":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the button is visible on the form.</p>"
+        },
+        "children":{
+          "shape":"String",
+          "documentation":"<p>Describes the button's properties.</p>"
         },
         "position":{
           "shape":"FieldPosition",
@@ -1669,17 +1719,17 @@
     "FormCTA":{
       "type":"structure",
       "members":{
-        "cancel":{
-          "shape":"FormButton",
-          "documentation":"<p>Displays a cancel button.</p>"
+        "position":{
+          "shape":"FormButtonsPosition",
+          "documentation":"<p>The position of the button.</p>"
         },
         "clear":{
           "shape":"FormButton",
           "documentation":"<p>Displays a clear button.</p>"
         },
-        "position":{
-          "shape":"FormButtonsPosition",
-          "documentation":"<p>The position of the button.</p>"
+        "cancel":{
+          "shape":"FormButton",
+          "documentation":"<p>Displays a cancel button.</p>"
         },
         "submit":{
           "shape":"FormButton",
@@ -1713,15 +1763,71 @@
       },
       "documentation":"<p>Describes the data type configuration for the data source associated with a form.</p>"
     },
+    "FormInputBindingProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"FormInputBindingPropertiesValue"}
+    },
+    "FormInputBindingPropertiesValue":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The property type.</p>"
+        },
+        "bindingProperties":{
+          "shape":"FormInputBindingPropertiesValueProperties",
+          "documentation":"<p>Describes the properties to customize with data at runtime.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data binding configuration for a form's input fields at runtime.You can use <code>FormInputBindingPropertiesValue</code> to add exposed properties to a form to allow different values to be entered when a form is reused in different places in an app.</p>"
+    },
+    "FormInputBindingPropertiesValueProperties":{
+      "type":"structure",
+      "members":{
+        "model":{
+          "shape":"String",
+          "documentation":"<p>An Amplify DataStore model.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data binding configuration for a specific property using data stored in Amazon Web Services. For Amazon Web Services connected properties, you can bind a property to data stored in an Amplify DataStore model.</p>"
+    },
     "FormInputValueProperty":{
       "type":"structure",
       "members":{
         "value":{
           "shape":"String",
           "documentation":"<p>The value to assign to the input field.</p>"
+        },
+        "bindingProperties":{
+          "shape":"FormInputValuePropertyBindingProperties",
+          "documentation":"<p>The information to bind fields to data at runtime.</p>"
+        },
+        "concat":{
+          "shape":"FormInputValuePropertyList",
+          "documentation":"<p>A list of form properties to concatenate to create the value to assign to this field property.</p>"
         }
       },
       "documentation":"<p>Describes the configuration for an input field on a form. Use <code>FormInputValueProperty</code> to specify the values to render or bind by default.</p>"
+    },
+    "FormInputValuePropertyBindingProperties":{
+      "type":"structure",
+      "required":["property"],
+      "members":{
+        "property":{
+          "shape":"String",
+          "documentation":"<p>The form property to bind to the data field.</p>"
+        },
+        "field":{
+          "shape":"String",
+          "documentation":"<p>The data field to bind the property to.</p>"
+        }
+      },
+      "documentation":"<p>Associates a form property to a binding property. This enables exposed properties on the top level form to propagate data to the form's property values.</p>"
+    },
+    "FormInputValuePropertyList":{
+      "type":"list",
+      "member":{"shape":"FormInputValueProperty"}
     },
     "FormList":{
       "type":"list",
@@ -1739,13 +1845,13 @@
           "shape":"FormStyleConfig",
           "documentation":"<p>The spacing for the horizontal gap.</p>"
         },
-        "outerPadding":{
-          "shape":"FormStyleConfig",
-          "documentation":"<p>The size of the outer padding for the form.</p>"
-        },
         "verticalGap":{
           "shape":"FormStyleConfig",
           "documentation":"<p>The spacing for the vertical gap.</p>"
+        },
+        "outerPadding":{
+          "shape":"FormStyleConfig",
+          "documentation":"<p>The size of the outer padding for the form.</p>"
         }
       },
       "documentation":"<p>Describes the configuration for the form's style.</p>"
@@ -1982,6 +2088,14 @@
       },
       "exception":true
     },
+    "LabelDecorator":{
+      "type":"string",
+      "enum":[
+        "required",
+        "optional",
+        "none"
+      ]
+    },
     "ListComponentsLimit":{
       "type":"integer",
       "max":100,
@@ -2006,17 +2120,17 @@
           "location":"uri",
           "locationName":"environmentName"
         },
-        "maxResults":{
-          "shape":"ListComponentsLimit",
-          "documentation":"<p>The maximum number of components to retrieve.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The token to request the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListComponentsLimit",
+          "documentation":"<p>The maximum number of components to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -2058,17 +2172,17 @@
           "location":"uri",
           "locationName":"environmentName"
         },
-        "maxResults":{
-          "shape":"ListFormsLimit",
-          "documentation":"<p>The maximum number of forms to retrieve.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The token to request the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListFormsLimit",
+          "documentation":"<p>The maximum number of forms to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -2110,17 +2224,17 @@
           "location":"uri",
           "locationName":"environmentName"
         },
-        "maxResults":{
-          "shape":"ListThemesLimit",
-          "documentation":"<p>The maximum number of theme results to return in the response.</p>",
-          "location":"querystring",
-          "locationName":"maxResults"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The token to request the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListThemesLimit",
+          "documentation":"<p>The maximum number of theme results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -2165,9 +2279,17 @@
       "type":"list",
       "member":{"shape":"Integer"}
     },
+    "OperandType":{
+      "type":"string",
+      "pattern":"boolean|string|number"
+    },
     "Predicate":{
       "type":"structure",
       "members":{
+        "or":{
+          "shape":"PredicateList",
+          "documentation":"<p>A list of predicates to combine logically.</p>"
+        },
         "and":{
           "shape":"PredicateList",
           "documentation":"<p>A list of predicates to combine logically.</p>"
@@ -2176,17 +2298,17 @@
           "shape":"String",
           "documentation":"<p>The field to query.</p>"
         },
-        "operand":{
-          "shape":"String",
-          "documentation":"<p>The value to use when performing the evaluation.</p>"
-        },
         "operator":{
           "shape":"String",
           "documentation":"<p>The operator to use to perform the evaluation.</p>"
         },
-        "or":{
-          "shape":"PredicateList",
-          "documentation":"<p>A list of predicates to combine logically.</p>"
+        "operand":{
+          "shape":"String",
+          "documentation":"<p>The value to use when performing the evaluation.</p>"
+        },
+        "operandType":{
+          "shape":"OperandType",
+          "documentation":"<p>The type of value to use when performing the evaluation.</p>"
         }
       },
       "documentation":"<p>Stores information for generating Amplify DataStore queries. Use a <code>Predicate</code> to retrieve a subset of the data in a collection.</p>"
@@ -2204,15 +2326,15 @@
           "documentation":"<p>The new information to store.</p>"
         }
       },
-      "documentation":"<p>Stores the metadata information about a feature on a form or view.</p>"
+      "documentation":"<p>Stores the metadata information about a feature on a form.</p>"
     },
     "PutMetadataFlagRequest":{
       "type":"structure",
       "required":[
         "appId",
-        "body",
         "environmentName",
-        "featureName"
+        "featureName",
+        "body"
       ],
       "members":{
         "appId":{
@@ -2220,10 +2342,6 @@
           "documentation":"<p>The unique ID for the Amplify app.</p>",
           "location":"uri",
           "locationName":"appId"
-        },
-        "body":{
-          "shape":"PutMetadataFlagBody",
-          "documentation":"<p>The metadata information to store.</p>"
         },
         "environmentName":{
           "shape":"String",
@@ -2236,6 +2354,10 @@
           "documentation":"<p>The name of the feature associated with the metadata.</p>",
           "location":"uri",
           "locationName":"featureName"
+        },
+        "body":{
+          "shape":"PutMetadataFlagBody",
+          "documentation":"<p>The metadata information to store.</p>"
         }
       },
       "payload":"body"
@@ -2267,6 +2389,10 @@
         "token":{
           "shape":"SensitiveString",
           "documentation":"<p>The token to use to refresh a previously issued access token that might have expired.</p>"
+        },
+        "clientId":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The ID of the client to request the token from.</p>"
         }
       },
       "documentation":"<p>Describes a refresh token.</p>"
@@ -2316,13 +2442,9 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "level":{
-          "shape":"Integer",
-          "documentation":"<p>Specifies the size of the font for a <code>Heading</code> sectional element. Valid values are <code>1 | 2 | 3 | 4 | 5 | 6</code>.</p>"
-        },
-        "orientation":{
+        "type":{
           "shape":"String",
-          "documentation":"<p>Specifies the orientation for a <code>Divider</code> sectional element. Valid values are <code>horizontal</code> or <code>vertical</code>.</p>"
+          "documentation":"<p>The type of sectional element. Valid values are <code>Heading</code>, <code>Text</code>, and <code>Divider</code>.</p>"
         },
         "position":{
           "shape":"FieldPosition",
@@ -2332,9 +2454,17 @@
           "shape":"String",
           "documentation":"<p>The text for a <code>Text</code> sectional element.</p>"
         },
-        "type":{
+        "level":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the size of the font for a <code>Heading</code> sectional element. Valid values are <code>1 | 2 | 3 | 4 | 5 | 6</code>.</p>"
+        },
+        "orientation":{
           "shape":"String",
-          "documentation":"<p>The type of sectional element. Valid values are <code>Heading</code>, <code>Text</code>, and <code>Divider</code>.</p>"
+          "documentation":"<p>Specifies the orientation for a <code>Divider</code> sectional element. Valid values are <code>horizontal</code> or <code>vertical</code>.</p>"
+        },
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Excludes a sectional element that was generated by default for a specified data model.</p>"
         }
       },
       "documentation":"<p>Stores the configuration information for a visual helper element for a form. A sectional element can be a header, a text block, or a divider. These elements are static and not associated with any data.</p>"
@@ -2370,17 +2500,17 @@
     "SortProperty":{
       "type":"structure",
       "required":[
-        "direction",
-        "field"
+        "field",
+        "direction"
       ],
       "members":{
-        "direction":{
-          "shape":"SortDirection",
-          "documentation":"<p>The direction of the sort, either ascending or descending.</p>"
-        },
         "field":{
           "shape":"String",
           "documentation":"<p>The field to perform the sort on.</p>"
+        },
+        "direction":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction of the sort, either ascending or descending.</p>"
         }
       },
       "documentation":"<p>Describes how to sort the data that you bind to a component.</p>"
@@ -2388,6 +2518,14 @@
     "SortPropertyList":{
       "type":"list",
       "member":{"shape":"SortProperty"}
+    },
+    "StorageAccessLevel":{
+      "type":"string",
+      "enum":[
+        "public",
+        "protected",
+        "private"
+      ]
     },
     "StrValues":{
       "type":"list",
@@ -2402,7 +2540,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+      "pattern":"(?!aws:)[a-zA-Z+-=._:/]+"
     },
     "TagValue":{
       "type":"string",
@@ -2418,20 +2556,16 @@
       "type":"structure",
       "required":[
         "appId",
-        "createdAt",
         "environmentName",
         "id",
         "name",
+        "createdAt",
         "values"
       ],
       "members":{
         "appId":{
           "shape":"String",
           "documentation":"<p>The unique ID for the Amplify app associated with the theme.</p>"
-        },
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The time that the theme was created.</p>"
         },
         "environmentName":{
           "shape":"String",
@@ -2441,13 +2575,21 @@
           "shape":"Uuid",
           "documentation":"<p>The ID for the theme.</p>"
         },
+        "name":{
+          "shape":"ThemeName",
+          "documentation":"<p>The name of the theme.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the theme was created.</p>"
+        },
         "modifiedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time that the theme was modified.</p>"
         },
-        "name":{
-          "shape":"ThemeName",
-          "documentation":"<p>The name of the theme.</p>"
+        "values":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that defines the properties of the theme.</p>"
         },
         "overrides":{
           "shape":"ThemeValuesList",
@@ -2456,10 +2598,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>One or more key-value pairs to use when tagging the theme.</p>"
-        },
-        "values":{
-          "shape":"ThemeValuesList",
-          "documentation":"<p>A list of key-value pairs that defines the properties of the theme.</p>"
         }
       },
       "documentation":"<p>A theme is a collection of style settings that apply globally to the components associated with an Amplify application.</p>"
@@ -2508,13 +2646,13 @@
     "ThemeValue":{
       "type":"structure",
       "members":{
-        "children":{
-          "shape":"ThemeValuesList",
-          "documentation":"<p>A list of key-value pairs that define the theme's properties.</p>"
-        },
         "value":{
           "shape":"String",
           "documentation":"<p>The value of a theme property.</p>"
+        },
+        "children":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>A list of key-value pairs that define the theme's properties.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of a theme's properties.</p>"
@@ -2556,26 +2694,6 @@
     "UpdateComponentData":{
       "type":"structure",
       "members":{
-        "bindingProperties":{
-          "shape":"ComponentBindingProperties",
-          "documentation":"<p>The data binding information for the component's properties.</p>"
-        },
-        "children":{
-          "shape":"ComponentChildList",
-          "documentation":"<p>The components that are instances of the main component.</p>"
-        },
-        "collectionProperties":{
-          "shape":"ComponentCollectionProperties",
-          "documentation":"<p>The configuration for binding a component's properties to a data model. Use this for a collection component.</p>"
-        },
-        "componentType":{
-          "shape":"ComponentType",
-          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
-        },
-        "events":{
-          "shape":"ComponentEvents",
-          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
-        },
         "id":{
           "shape":"Uuid",
           "documentation":"<p>The unique ID of the component to update.</p>"
@@ -2584,25 +2702,45 @@
           "shape":"ComponentName",
           "documentation":"<p>The name of the component to update.</p>"
         },
-        "overrides":{
-          "shape":"ComponentOverrides",
-          "documentation":"<p>Describes the properties that can be overriden to customize the component.</p>"
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
+        },
+        "componentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>The type of the component. This can be an Amplify custom UI component or another custom component.</p>"
         },
         "properties":{
           "shape":"ComponentProperties",
           "documentation":"<p>Describes the component's properties.</p>"
         },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the component when it was imported.</p>"
-        },
-        "sourceId":{
-          "shape":"String",
-          "documentation":"<p>The unique ID of the component in its original source system, such as Figma.</p>"
+        "children":{
+          "shape":"ComponentChildList",
+          "documentation":"<p>The components that are instances of the main component.</p>"
         },
         "variants":{
           "shape":"ComponentVariants",
           "documentation":"<p>A list of the unique variants of the main component being updated.</p>"
+        },
+        "overrides":{
+          "shape":"ComponentOverrides",
+          "documentation":"<p>Describes the properties that can be overriden to customize the component.</p>"
+        },
+        "bindingProperties":{
+          "shape":"ComponentBindingProperties",
+          "documentation":"<p>The data binding information for the component's properties.</p>"
+        },
+        "collectionProperties":{
+          "shape":"ComponentCollectionProperties",
+          "documentation":"<p>The configuration for binding a component's properties to a data model. Use this for a collection component.</p>"
+        },
+        "events":{
+          "shape":"ComponentEvents",
+          "documentation":"<p>The event configuration for the component. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components.</p>"
+        },
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the component when it was imported.</p>"
         }
       },
       "documentation":"<p>Updates and saves all of the information about a component, based on component ID.</p>"
@@ -2622,13 +2760,6 @@
           "location":"uri",
           "locationName":"appId"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>The unique client token.</p>",
-          "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"clientToken"
-        },
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
@@ -2640,6 +2771,13 @@
           "documentation":"<p>The unique ID for the component.</p>",
           "location":"uri",
           "locationName":"id"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
         },
         "updatedComponent":{
           "shape":"UpdateComponentData",
@@ -2661,37 +2799,41 @@
     "UpdateFormData":{
       "type":"structure",
       "members":{
-        "cta":{
-          "shape":"FormCTA",
-          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        "name":{
+          "shape":"FormName",
+          "documentation":"<p>The name of the form.</p>"
         },
         "dataType":{
           "shape":"FormDataTypeConfig",
           "documentation":"<p>The type of data source to use to create the form.</p>"
         },
-        "fields":{
-          "shape":"FieldsMap",
-          "documentation":"<p>The configuration information for the form's fields.</p>"
-        },
         "formActionType":{
           "shape":"FormActionType",
           "documentation":"<p>Specifies whether to perform a create or update action on the form.</p>"
         },
-        "name":{
-          "shape":"FormName",
-          "documentation":"<p>The name of the form.</p>"
+        "fields":{
+          "shape":"FieldsMap",
+          "documentation":"<p>The configuration information for the form's fields.</p>"
         },
-        "schemaVersion":{
-          "shape":"String",
-          "documentation":"<p>The schema version of the form.</p>"
+        "style":{
+          "shape":"FormStyle",
+          "documentation":"<p>The configuration for the form's style.</p>"
         },
         "sectionalElements":{
           "shape":"SectionalElementMap",
           "documentation":"<p>The configuration information for the visual helper elements for the form. These elements are not associated with any data.</p>"
         },
-        "style":{
-          "shape":"FormStyle",
-          "documentation":"<p>The configuration for the form's style.</p>"
+        "schemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The schema version of the form.</p>"
+        },
+        "cta":{
+          "shape":"FormCTA",
+          "documentation":"<p>The <code>FormCTA</code> object that stores the call to action configuration for the form.</p>"
+        },
+        "labelDecorator":{
+          "shape":"LabelDecorator",
+          "documentation":"<p>Specifies an icon or decoration to display on the form.</p>"
         }
       },
       "documentation":"<p>Updates and saves all of the information about a form, based on form ID.</p>"
@@ -2711,13 +2853,6 @@
           "location":"uri",
           "locationName":"appId"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>The unique client token.</p>",
-          "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"clientToken"
-        },
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
@@ -2729,6 +2864,13 @@
           "documentation":"<p>The unique ID for the form.</p>",
           "location":"uri",
           "locationName":"id"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
         },
         "updatedForm":{
           "shape":"UpdateFormData",
@@ -2759,13 +2901,13 @@
           "shape":"ThemeName",
           "documentation":"<p>The name of the theme to update.</p>"
         },
-        "overrides":{
-          "shape":"ThemeValuesList",
-          "documentation":"<p>Describes the properties that can be overriden to customize the theme.</p>"
-        },
         "values":{
           "shape":"ThemeValuesList",
           "documentation":"<p>A list of key-value pairs that define the theme's properties.</p>"
+        },
+        "overrides":{
+          "shape":"ThemeValuesList",
+          "documentation":"<p>Describes the properties that can be overriden to customize the theme.</p>"
         }
       },
       "documentation":"<p>Saves the data binding information for a theme.</p>"
@@ -2785,13 +2927,6 @@
           "location":"uri",
           "locationName":"appId"
         },
-        "clientToken":{
-          "shape":"String",
-          "documentation":"<p>The unique client token.</p>",
-          "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"clientToken"
-        },
         "environmentName":{
           "shape":"String",
           "documentation":"<p>The name of the backend environment that is part of the Amplify app.</p>",
@@ -2803,6 +2938,13 @@
           "documentation":"<p>The unique ID for the theme.</p>",
           "location":"uri",
           "locationName":"id"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The unique client token.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
         },
         "updatedTheme":{
           "shape":"UpdateThemeData",
@@ -2852,6 +2994,10 @@
         "values":{
           "shape":"ValueMappingList",
           "documentation":"<p>The value and display value pairs.</p>"
+        },
+        "bindingProperties":{
+          "shape":"FormInputBindingProperties",
+          "documentation":"<p>The information to bind fields to data at runtime.</p>"
         }
       },
       "documentation":"<p>Represents the data binding configuration for a value map.</p>"

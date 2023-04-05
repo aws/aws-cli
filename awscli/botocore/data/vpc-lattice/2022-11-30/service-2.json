@@ -174,7 +174,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates a VPC with a service network. When you associate a VPC with the service network, it enables all the resources within that VPC to be clients and communicate with other services in the service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-vpc-associations\">Manage VPC associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if there is a disassociation in progress. If the association fails, retry by deleting the association and recreating it.</p> <p>As a result of this operation, the association gets created in the service network account and the VPC owner account.</p> <p>Once a security group is added to the VPC association it cannot be removed. You can add or update the security groups being used for the VPC association once a security group is attached. To remove all security groups you must reassociate the VPC.</p>",
+      "documentation":"<p>Associates a VPC with a service network. When you associate a VPC with the service network, it enables all the resources within that VPC to be clients and communicate with other services in the service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-vpc-associations\">Manage VPC associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if there is a disassociation in progress. If the association fails, retry by deleting the association and recreating it.</p> <p>As a result of this operation, the association gets created in the service network account and the VPC owner account.</p> <p>If you add a security group to the service network and VPC association, the association must continue to always have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and recreate it without security groups.</p>",
       "idempotent":true
     },
     "CreateTargetGroup":{
@@ -233,7 +233,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the specified auth policy. If an auth is set to <code>Amazon Web Services_IAM</code> and the auth policy is deleted, all requests will be denied by default. If you are trying to remove the auth policy completely, you must set the auth_type to <code>NONE</code>. If auth is enabled on the resource, but no auth policy is set, all requests will be denied.</p>",
+      "documentation":"<p>Deletes the specified auth policy. If an auth is set to <code>AWS_IAM</code> and the auth policy is deleted, all requests will be denied by default. If you are trying to remove the auth policy completely, you must set the auth_type to <code>NONE</code>. If auth is enabled on the resource, but no auth policy is set, all requests will be denied.</p>",
       "idempotent":true
     },
     "DeleteListener":{
@@ -484,7 +484,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the resource policy. The resource policy is an IAM policy created by AWS RAM on behalf of the resource owner when they share a resource.</p>"
+      "documentation":"<p>Retrieves information about the resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>"
     },
     "GetRule":{
       "name":"GetRule",
@@ -780,7 +780,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates or updates the auth policy.</p>"
+      "documentation":"<p>Creates or updates the auth policy. The policy string in JSON must not contain newlines or blank lines.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -972,7 +972,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the service network and VPC association. Once you add a security group, it cannot be removed.</p>",
+      "documentation":"<p>Updates the service network and VPC association. If you add a security group to the service network and VPC association, the association must continue to always have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and recreate it without security groups.</p>",
       "idempotent":true
     },
     "UpdateTargetGroup":{
@@ -2101,7 +2101,7 @@
         },
         "state":{
           "shape":"AuthPolicyState",
-          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>Amazon Web Services_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the auth type is <code>NONE</code>, then any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>AWS_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the auth type is <code>NONE</code>, then any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
         }
       }
     },
@@ -2177,7 +2177,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>An IAM policy.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network or service.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -2188,7 +2188,7 @@
       "members":{
         "policy":{
           "shape":"PolicyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service network or service.</p>"
+          "documentation":"<p>An IAM policy.</p>"
         }
       }
     },
@@ -3335,7 +3335,7 @@
       "members":{
         "policy":{
           "shape":"AuthPolicyString",
-          "documentation":"<p>The auth policy.</p>"
+          "documentation":"<p>The auth policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
@@ -3350,11 +3350,11 @@
       "members":{
         "policy":{
           "shape":"AuthPolicyString",
-          "documentation":"<p>The auth policy.</p>"
+          "documentation":"<p>The auth policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "state":{
           "shape":"AuthPolicyState",
-          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>Amazon Web Services_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the Auth type is <code>NONE</code>, then, any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>AWS_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the Auth type is <code>NONE</code>, then, any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
         }
       }
     },
@@ -3367,7 +3367,7 @@
       "members":{
         "policy":{
           "shape":"PolicyString",
-          "documentation":"<p>An IAM policy.</p>"
+          "documentation":"<p>An IAM policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "resourceArn":{
           "shape":"ResourceArn",
@@ -4599,7 +4599,7 @@
       "members":{
         "securityGroupIds":{
           "shape":"UpdateServiceNetworkVpcAssociationRequestSecurityGroupIdsList",
-          "documentation":"<p>The IDs of the security groups. Once you add a security group, it cannot be removed.</p>"
+          "documentation":"<p>The IDs of the security groups. </p>"
         },
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",

@@ -69,7 +69,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new user within the specified identity store.</p>"
+      "documentation":"<p>Creates a user within the specified identity store.</p>"
     },
     "DeleteGroup":{
       "name":"DeleteGroup",
@@ -423,7 +423,7 @@
           "documentation":"<p>An entity attribute that's unique to a specific entity.</p>"
         }
       },
-      "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>",
+      "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute.</p>",
       "union":true
     },
     "AttributeOperation":{
@@ -532,7 +532,7 @@
         },
         "DisplayName":{
           "shape":"GroupDisplayName",
-          "documentation":"<p>A string containing the name of the group. This value is commonly displayed when the group is referenced.</p>"
+          "documentation":"<p>A string containing the name of the group. This value is commonly displayed when the group is referenced. \"Administrator\" and \"AWSAdministrators\" are reserved names and can't be used for users or groups.</p>"
         },
         "Description":{
           "shape":"SensitiveStringType",
@@ -567,15 +567,15 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store.</p>"
+          "documentation":"<p>A unique string used to identify the user. The length limit is 128 characters. This value can consist of letters, accented characters, symbols, numbers, and punctuation. This value is specified at the time the user is created and stored as an attribute of the user object in the identity store. \"Administrator\" and \"AWSAdministrators\" are reserved names and can't be used for users or groups.</p>"
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>An object containing the user's name.</p>"
+          "documentation":"<p>An object containing the name of the user.</p>"
         },
         "DisplayName":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's name. This value is typically formatted for display when the user is referenced. For example, \"John Doe.\"</p>"
+          "documentation":"<p>A string containing the name of the user. This value is typically formatted for display when the user is referenced. For example, \"John Doe.\" </p>"
         },
         "NickName":{
           "shape":"SensitiveStringType",
@@ -583,7 +583,7 @@
         },
         "ProfileUrl":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing a URL that may be associated with the user.</p>"
+          "documentation":"<p>A string containing a URL that might be associated with the user.</p>"
         },
         "Emails":{
           "shape":"Emails",
@@ -599,11 +599,11 @@
         },
         "UserType":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string indicating the user's type. Possible values depend on each customer's specific needs, so they are left unspecified.</p>"
+          "documentation":"<p>A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.</p>"
         },
         "Title":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's title. Possible values are left unspecified given that they depend on each customer's specific needs.</p>"
+          "documentation":"<p>A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.</p>"
         },
         "PreferredLanguage":{
           "shape":"SensitiveStringType",
@@ -611,11 +611,11 @@
         },
         "Locale":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's geographical region or location.</p>"
+          "documentation":"<p>A string containing the geographical region or location of the user.</p>"
         },
         "Timezone":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's time zone.</p>"
+          "documentation":"<p>A string containing the time zone of the user.</p>"
         }
       }
     },
@@ -831,7 +831,7 @@
         },
         "DisplayName":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>The user's name value for display.</p>"
+          "documentation":"<p>The display name of the user.</p>"
         },
         "NickName":{
           "shape":"SensitiveStringType",
@@ -843,11 +843,11 @@
         },
         "Emails":{
           "shape":"Emails",
-          "documentation":"<p>The user's email value.</p>"
+          "documentation":"<p>The email address of the user.</p>"
         },
         "Addresses":{
           "shape":"Addresses",
-          "documentation":"<p>The user's physical address.</p>"
+          "documentation":"<p>The physical address of the user.</p>"
         },
         "PhoneNumbers":{
           "shape":"PhoneNumbers",
@@ -855,11 +855,11 @@
         },
         "UserType":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string indicating the user's type.</p>"
+          "documentation":"<p>A string indicating the type of user.</p>"
         },
         "Title":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's title.</p>"
+          "documentation":"<p>A string containing the title of the user.</p>"
         },
         "PreferredLanguage":{
           "shape":"SensitiveStringType",
@@ -867,7 +867,7 @@
         },
         "Locale":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's geographical region or location.</p>"
+          "documentation":"<p>A string containing the geographical region or location of the user.</p>"
         },
         "Timezone":{
           "shape":"SensitiveStringType",
@@ -979,7 +979,7 @@
         },
         "AlternateIdentifier":{
           "shape":"AlternateIdentifier",
-          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>GroupDisplayName</code>.</p>"
+          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid path is <code>displayName</code>.</p>"
         }
       }
     },
@@ -1052,7 +1052,7 @@
         },
         "AlternateIdentifier":{
           "shape":"AlternateIdentifier",
-          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For example, a unique <code>UserDisplayName</code>.</p>"
+          "documentation":"<p>A unique identifier for a user or group that is not the primary identifier. This value can be an identifier from an external identity provider (IdP) that is associated with the user, the group, or a unique attribute. For the unique attribute, the only valid paths are <code>userName</code> and <code>emails.value</code>.</p>"
         }
       }
     },
@@ -1086,7 +1086,7 @@
         },
         "DisplayName":{
           "shape":"GroupDisplayName",
-          "documentation":"<p>The group’s display name value. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.</p>"
+          "documentation":"<p>The display name value for the group. The length limit is 1,024 characters. This value can consist of letters, accented characters, symbols, numbers, punctuation, tab, new line, carriage return, space, and nonbreaking space in this attribute. This value is specified at the time the group is created and stored as an attribute of the group object in the identity store.</p>"
         },
         "ExternalIds":{
           "shape":"ExternalIds",
@@ -1101,7 +1101,7 @@
           "documentation":"<p>The globally unique identifier for the identity store.</p>"
         }
       },
-      "documentation":"<p>A group object that contains a specified group’s metadata and attributes.</p>"
+      "documentation":"<p>A group object that contains the metadata and attributes for a specified group.</p>"
     },
     "GroupDisplayName":{
       "type":"string",
@@ -1185,7 +1185,7 @@
         },
         "RetryAfterSeconds":{
           "shape":"RetryAfterSeconds",
-          "documentation":"<p>The number of seconds that you would like to wait before retrying the next request.</p>"
+          "documentation":"<p>The number of seconds to wait before retrying the next request.</p>"
         }
       },
       "documentation":"<p>The request processing has failed because of an unknown error, exception or failure with an internal server.</p>",
@@ -1531,7 +1531,7 @@
         },
         "RetryAfterSeconds":{
           "shape":"RetryAfterSeconds",
-          "documentation":"<p>The number of seconds that you would like to wait before retrying the next request.</p>"
+          "documentation":"<p>The number of seconds to wait before retrying the next request.</p>"
         }
       },
       "documentation":"<p>Indicates that the principal has crossed the throttling limits of the API operations.</p>",
@@ -1631,11 +1631,11 @@
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>An object containing the user's name.</p>"
+          "documentation":"<p>An object containing the name of the user.</p>"
         },
         "DisplayName":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's name that's formatted for display when the user is referenced. For example, \"John Doe.\"</p>"
+          "documentation":"<p>A string containing the name of the user that is formatted for display when the user is referenced. For example, \"John Doe.\"</p>"
         },
         "NickName":{
           "shape":"SensitiveStringType",
@@ -1643,7 +1643,7 @@
         },
         "ProfileUrl":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing a URL that may be associated with the user.</p>"
+          "documentation":"<p>A string containing a URL that might be associated with the user.</p>"
         },
         "Emails":{
           "shape":"Emails",
@@ -1659,11 +1659,11 @@
         },
         "UserType":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string indicating the user's type. Possible values depend on each customer's specific needs, so they are left unspecified.</p>"
+          "documentation":"<p>A string indicating the type of user. Possible values are left unspecified. The value can vary based on your specific use case.</p>"
         },
         "Title":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's title. Possible values depend on each customer's specific needs, so they are left unspecified.</p>"
+          "documentation":"<p>A string containing the title of the user. Possible values are left unspecified. The value can vary based on your specific use case.</p>"
         },
         "PreferredLanguage":{
           "shape":"SensitiveStringType",
@@ -1671,18 +1671,18 @@
         },
         "Locale":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's geographical region or location.</p>"
+          "documentation":"<p>A string containing the geographical region or location of the user.</p>"
         },
         "Timezone":{
           "shape":"SensitiveStringType",
-          "documentation":"<p>A string containing the user's time zone.</p>"
+          "documentation":"<p>A string containing the time zone of the user.</p>"
         },
         "IdentityStoreId":{
           "shape":"IdentityStoreId",
           "documentation":"<p>The globally unique identifier for the identity store.</p>"
         }
       },
-      "documentation":"<p>A user object that contains a specified user’s metadata and attributes.</p>"
+      "documentation":"<p>A user object that contains the metadata and attributes for a specified user.</p>"
     },
     "UserName":{
       "type":"string",
@@ -1708,5 +1708,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The Identity Store service used by AWS IAM Identity Center (successor to AWS Single Sign-On) provides a single place to retrieve all of your identities (users and groups). For more information, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <pre><code> &lt;note&gt; &lt;p&gt;Although AWS Single Sign-On was renamed, the &lt;code&gt;sso&lt;/code&gt; and &lt;code&gt;identitystore&lt;/code&gt; API namespaces will continue to retain their original name for backward compatibility purposes. For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html#renamed&quot;&gt;IAM Identity Center rename&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; &lt;p&gt;This reference guide describes the identity store operations that you can call programatically and includes detailed information on data types and errors.&lt;/p&gt; </code></pre>"
+  "documentation":"<p>The Identity Store service used by AWS IAM Identity Center (successor to AWS Single Sign-On) provides a single place to retrieve all of your identities (users and groups). For more information, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <pre><code> &lt;note&gt; &lt;p&gt;Although AWS Single Sign-On was renamed, the &lt;code&gt;sso&lt;/code&gt; and &lt;code&gt;identitystore&lt;/code&gt; API namespaces will continue to retain their original name for backward compatibility purposes. For more information, see &lt;a href=&quot;https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html#renamed&quot;&gt;IAM Identity Center rename&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; &lt;p&gt;This reference guide describes the identity store operations that you can call programatically and includes detailed information about data types and errors.&lt;/p&gt; </code></pre>"
 }

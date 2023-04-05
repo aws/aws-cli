@@ -63,17 +63,21 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
-def _str_representer(dumper, data):
-    # ruamel removes quotes from values that are unambiguously strings.
-    # Values like 0888888 can only be a string because integers can't
-    # have leading 0s and octals can't have the digits 8 and 9.
-    # However, CloudFormation treats these nonoctal values as integers
-    # and removes the leading 0s. This logic ensures that nonoctal
-    # values are quoted when dumped.
-    style = None
-    if re.match('^0[0-9]*[89][0-9]*$', data):
-        style = "'"
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style=style)
+def _add_yaml_1_1_boolean_resolvers(resolver_cls):
+    # CloudFormation treats unquoted values that are YAML 1.1 native
+    # booleans as booleans, rather than strings. In YAML 1.2, the only
+    # boolean values are "true" and "false" so values such as "yes" and "no"
+    # when loaded as strings are not quoted when dumped. This logic ensures
+    # that we dump these values with quotes so that CloudFormation treats
+    # these values as strings and not booleans.
+    boolean_regex = re.compile(
+        '^(?:yes|Yes|YES|no|No|NO'
+        '|true|True|TRUE|false|False|FALSE'
+        '|on|On|ON|off|Off|OFF)$'
+    )
+    boolean_first_chars = list(u'yYnNtTfFoO')
+    resolver_cls.add_implicit_resolver(
+        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
 
 
 def yaml_dump(dict_to_dump):
@@ -84,11 +88,10 @@ def yaml_dump(dict_to_dump):
     """
 
     yaml = ruamel.yaml.YAML(typ="safe", pure=True)
-    yaml.version = (1, 1)
     yaml.default_flow_style = False
     yaml.Representer = FlattenAliasRepresenter
+    _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
     yaml.Representer.add_representer(OrderedDict, _dict_representer)
-    yaml.Representer.add_representer(str, _str_representer)
 
     return dump_yaml_to_str(yaml, dict_to_dump)
 
@@ -108,12 +111,12 @@ def yaml_parse(yamlstr):
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
         yaml = ruamel.yaml.YAML(typ="safe", pure=True)
-        yaml.version = (1, 1)
         yaml.Constructor.add_constructor(
             ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
             _dict_constructor)
         yaml.Constructor.add_multi_constructor(
             "!", intrinsics_multi_constructor)
+        _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
 
         return yaml.load(yamlstr)
 

@@ -23,7 +23,7 @@ from unittest import TestCase
 from awscli.customizations.cloudformation.artifact_exporter import make_zip
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 from awscli.customizations.cloudformation.artifact_exporter import Template
-from awscli.testutils import yaml_dump_without_header, skip_if_windows
+from awscli.testutils import skip_if_windows
 
 
 class TestPackageZipFiles(TestCase):
@@ -87,7 +87,7 @@ def _generate_template_cases():
 def test_known_templates(input_template, output_template):
     template = Template(input_template, os.getcwd(), None)
     exported = template.export()
-    result = yaml_dump_without_header(exported)
+    result = yaml_dump(exported)
     expected = open(output_template, 'r').read()
 
     assert result == expected, (

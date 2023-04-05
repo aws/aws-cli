@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.27.107
+========
+
+* bugfix:eks: Fix eks kubeconfig validations closes `#6564 <https://github.com/aws/aws-cli/issues/6564>`__, fixes `#4843 <https://github.com/aws/aws-cli/issues/4843>`__, fixes `#5532 <https://github.com/aws/aws-cli/issues/5532>`__
+* api-change:``apprunner``: App Runner adds support for seven new vCPU and memory configurations.
+* api-change:``config``: This release adds resourceType enums for types released in March 2023.
+* api-change:``ecs``: This is a document only updated to add information about Amazon Elastic Inference (EI).
+* api-change:``identitystore``: Documentation updates for Identity Store CLI command reference.
+* api-change:``ivs-realtime``: Fix ParticipantToken ExpirationTime format
+* api-change:``network-firewall``: AWS Network Firewall now supports IPv6-only subnets.
+* api-change:``servicecatalog``: removed incorrect product type value
+* api-change:``vpc-lattice``: This release removes the entities in the API doc model package for auth policies.
+
+
 1.27.106
 ========
 

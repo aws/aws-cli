@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.11.10
+=======
+
+* api-change:``sagemaker``: Amazon SageMaker Asynchronous Inference now allows customer's to receive failure model responses in S3 and receive success/failure model responses in SNS notifications.
+* api-change:``servicecatalog``: removed incorrect product type value
+* bugfix:cloudformation: Reverts aws/aws-cli`#7787 <https://github.com/aws/aws-cli/issues/7787>`__ and the associated regression aws/aws-cli`#7805 <https://github.com/aws/aws-cli/issues/7805>`__
+* api-change:``vpc-lattice``: This release removes the entities in the API doc model package for auth policies.
+* api-change:``network-firewall``: AWS Network Firewall now supports IPv6-only subnets.
+* api-change:``autoscaling``: Documentation updates for Amazon EC2 Auto Scaling
+* api-change:``apprunner``: App Runner adds support for seven new vCPU and memory configurations.
+* api-change:``ivs-realtime``: Fix ParticipantToken ExpirationTime format
+* api-change:``config``: This release adds resourceType enums for types released in March 2023.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``identitystore``: Documentation updates for Identity Store CLI command reference.
+* api-change:``dataexchange``: This release updates the value of MaxResults.
+* api-change:``ec2``: C6in, M6in, M6idn, R6in and R6idn bare metal instances are powered by 3rd Generation Intel Xeon Scalable processors and offer up to 200 Gbps of network bandwidth.
+* api-change:``elastic-inference``: Updated public documentation for the Describe and Tagging APIs.
+* bugfix:eks: Fix eks kubeconfig validations closes `#6564 <https://github.com/aws/aws-cli/issues/6564>`__, fixes `#4843 <https://github.com/aws/aws-cli/issues/4843>`__, fixes `#5532 <https://github.com/aws/aws-cli/issues/5532>`__
+* api-change:``amplifyuibuilder``: Support StorageField and custom displays for data-bound options in form builder. Support non-string operands for predicates in collections. Support choosing client to get token from.
+* api-change:``ecs``: This is a document only updated to add information about Amazon Elastic Inference (EI).
+* api-change:``wafv2``: This release rolls back association config feature for webACLs that protect CloudFront protections.
+
+
 2.11.9
 ======
 

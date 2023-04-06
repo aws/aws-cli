@@ -241,6 +241,44 @@
       "documentation":"<p>Create an Proton service. An Proton service is an instantiation of a service template and often includes several service instances and pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-services.html\">Services</a> in the <i>Proton User Guide</i>.</p>",
       "idempotent":true
     },
+    "CreateServiceInstance":{
+      "name":"CreateServiceInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateServiceInstanceInput"},
+      "output":{"shape":"CreateServiceInstanceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a service instance.</p>",
+      "idempotent":true
+    },
+    "CreateServiceSyncConfig":{
+      "name":"CreateServiceSyncConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateServiceSyncConfigInput"},
+      "output":{"shape":"CreateServiceSyncConfigOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create the Proton Ops configuration file.</p>",
+      "idempotent":true
+    },
     "CreateServiceTemplate":{
       "name":"CreateServiceTemplate",
       "http":{
@@ -430,6 +468,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Delete a service, with its instances and pipeline.</p> <note> <p>You can't delete a service if it has any service instances that have components attached to them.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p> </note>",
+      "idempotent":true
+    },
+    "DeleteServiceSyncConfig":{
+      "name":"DeleteServiceSyncConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteServiceSyncConfigInput"},
+      "output":{"shape":"DeleteServiceSyncConfigOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete the Proton Ops file.</p>",
       "idempotent":true
     },
     "DeleteServiceTemplate":{
@@ -639,7 +696,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get counts of Proton resources.</p> <p>For infrastructure-provisioning resources (environments, services, service instances, pipelines), the action returns staleness counts. A resource is stale when it's behind the recommended version of the Proton template that it uses and it needs an update to become current.</p> <p>The action returns staleness counts (counts of resources that are up-to-date, behind a template major version, or behind a template minor version), the total number of resources, and the number of resources that are in a failed state, grouped by resource type. Components, environments, and service templates are exceptions—see the <code>components</code>, <code>environments</code>, and <code>serviceTemplates</code> field descriptions.</p> <p>For context, the action also returns the total number of each type of Proton template in the Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/monitoring-dashboard.html\">Proton dashboard</a> in the <i>Proton User Guide</i>.</p>"
+      "documentation":"<p>Get counts of Proton resources.</p> <p>For infrastructure-provisioning resources (environments, services, service instances, pipelines), the action returns staleness counts. A resource is stale when it's behind the recommended version of the Proton template that it uses and it needs an update to become current.</p> <p>The action returns staleness counts (counts of resources that are up-to-date, behind a template major version, or behind a template minor version), the total number of resources, and the number of resources that are in a failed state, grouped by resource type. Components, environments, and service templates return less information - see the <code>components</code>, <code>environments</code>, and <code>serviceTemplates</code> field descriptions.</p> <p>For context, the action also returns the total number of each type of Proton template in the Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/monitoring-dashboard.html\">Proton dashboard</a> in the <i>Proton User Guide</i>.</p>"
     },
     "GetService":{
       "name":"GetService",
@@ -674,6 +731,57 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Get detailed data for a service instance. A service instance is an instantiation of service template and it runs in a specific environment.</p>"
+    },
+    "GetServiceInstanceSyncStatus":{
+      "name":"GetServiceInstanceSyncStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceInstanceSyncStatusInput"},
+      "output":{"shape":"GetServiceInstanceSyncStatusOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get the status of the synced service instance.</p>"
+    },
+    "GetServiceSyncBlockerSummary":{
+      "name":"GetServiceSyncBlockerSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceSyncBlockerSummaryInput"},
+      "output":{"shape":"GetServiceSyncBlockerSummaryOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detailed data for the service sync blocker summary.</p>"
+    },
+    "GetServiceSyncConfig":{
+      "name":"GetServiceSyncConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceSyncConfigInput"},
+      "output":{"shape":"GetServiceSyncConfigOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detailed information for the service sync configuration.</p>"
     },
     "GetServiceTemplate":{
       "name":"GetServiceTemplate",
@@ -1317,6 +1425,42 @@
       ],
       "documentation":"<p>Update the service pipeline.</p> <p>There are four modes for updating a service pipeline. The <code>deploymentType</code> field defines the mode.</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this <code>deployment-type</code>.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service pipeline is deployed and updated with the published, recommended (latest) major and minor version of the current template by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
     },
+    "UpdateServiceSyncBlocker":{
+      "name":"UpdateServiceSyncBlocker",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceSyncBlockerInput"},
+      "output":{"shape":"UpdateServiceSyncBlockerOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the service sync blocker by resolving it.</p>"
+    },
+    "UpdateServiceSyncConfig":{
+      "name":"UpdateServiceSyncConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceSyncConfigInput"},
+      "output":{"shape":"UpdateServiceSyncConfigOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the Proton Ops config file.</p>"
+    },
     "UpdateServiceTemplate":{
       "name":"UpdateServiceTemplate",
       "http":{
@@ -1429,6 +1573,17 @@
     "AwsAccountId":{
       "type":"string",
       "pattern":"^\\d{12}$"
+    },
+    "BlockerStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "RESOLVED"
+      ]
+    },
+    "BlockerType":{
+      "type":"string",
+      "enum":["AUTOMATED"]
     },
     "Boolean":{
       "type":"boolean",
@@ -1608,6 +1763,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the Proton environment that this component is associated with.</p>"
         },
+        "lastClientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>The last token the client requested.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the component was last attempted.</p>"
@@ -1727,7 +1886,7 @@
         },
         "environmentTemplates":{
           "shape":"ResourceCountsSummary",
-          "documentation":"<p>The total number of environment templates in the Amazon Web Services account.</p>"
+          "documentation":"<p>The total number of environment templates in the Amazon Web Services account. The <code>environmentTemplates</code> object will only contain <code>total</code> members.</p>"
         },
         "environments":{
           "shape":"ResourceCountsSummary",
@@ -1760,6 +1919,11 @@
         "templateFile"
       ],
       "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token for the created component.</p>",
+          "idempotencyToken":true
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>An optional customer-provided description of the component.</p>"
@@ -2100,6 +2264,55 @@
         }
       }
     },
+    "CreateServiceInstanceInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "serviceName",
+        "spec"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token of the service instance to create.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance to create.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service the service instance is added to.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The spec for the service instance you want to create.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An optional list of metadata items that you can associate with the Proton service instance. A tag is a key-value pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton resources and tagging</a> in the <i>Proton User Guide</i>.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To create a new major and minor version of the service template, <i>exclude</i> <code>major Version</code>.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>To create a new minor version of the service template, include a <code>major Version</code>.</p>"
+        }
+      }
+    },
+    "CreateServiceInstanceOutput":{
+      "type":"structure",
+      "required":["serviceInstance"],
+      "members":{
+        "serviceInstance":{
+          "shape":"ServiceInstance",
+          "documentation":"<p>The detailed data of the service instance being created.</p>"
+        }
+      }
+    },
     "CreateServiceOutput":{
       "type":"structure",
       "required":["service"],
@@ -2107,6 +2320,47 @@
         "service":{
           "shape":"Service",
           "documentation":"<p>The service detail data that's returned by Proton.</p>"
+        }
+      }
+    },
+    "CreateServiceSyncConfigInput":{
+      "type":"structure",
+      "required":[
+        "branch",
+        "filePath",
+        "repositoryName",
+        "repositoryProvider",
+        "serviceName"
+      ],
+      "members":{
+        "branch":{
+          "shape":"GitBranchName",
+          "documentation":"<p>The repository branch for your Proton Ops file.</p>"
+        },
+        "filePath":{
+          "shape":"OpsFilePath",
+          "documentation":"<p>The path to the Proton Ops file.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The repository name.</p>"
+        },
+        "repositoryProvider":{
+          "shape":"RepositoryProvider",
+          "documentation":"<p>The provider type for your repository.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service the Proton Ops file is for.</p>"
+        }
+      }
+    },
+    "CreateServiceSyncConfigOutput":{
+      "type":"structure",
+      "members":{
+        "serviceSyncConfig":{
+          "shape":"ServiceSyncConfig",
+          "documentation":"<p>The detailed data of the Proton Ops file.</p>"
         }
       }
     },
@@ -2400,6 +2654,25 @@
         }
       }
     },
+    "DeleteServiceSyncConfigInput":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that you want to delete the service sync configuration for.</p>"
+        }
+      }
+    },
+    "DeleteServiceSyncConfigOutput":{
+      "type":"structure",
+      "members":{
+        "serviceSyncConfig":{
+          "shape":"ServiceSyncConfig",
+          "documentation":"<p>The detailed data for the service sync config.</p>"
+        }
+      }
+    },
     "DeleteServiceTemplateInput":{
       "type":"structure",
       "required":["name"],
@@ -2591,7 +2864,7 @@
         },
         "provisioningRepository":{
           "shape":"RepositoryBranch",
-          "documentation":"<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a>CreateRepository</a>.</p>"
+          "documentation":"<p>The linked repository that you use to host your rendered infrastructure templates for self-managed provisioning. A linked repository is a repository that has been registered with Proton. For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/APIReference/API_CreateRepository.html\">CreateRepository</a>.</p>"
         },
         "spec":{
           "shape":"SpecContents",
@@ -3318,7 +3591,7 @@
         },
         "serviceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+          "documentation":"<p>The name of the service that you want the service instance input for.</p>"
         }
       }
     },
@@ -3332,12 +3605,88 @@
         }
       }
     },
+    "GetServiceInstanceSyncStatusInput":{
+      "type":"structure",
+      "required":[
+        "serviceInstanceName",
+        "serviceName"
+      ],
+      "members":{
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that you want the sync status input for.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance belongs to.</p>"
+        }
+      }
+    },
+    "GetServiceInstanceSyncStatusOutput":{
+      "type":"structure",
+      "members":{
+        "desiredState":{
+          "shape":"Revision",
+          "documentation":"<p>The service instance sync desired state that's returned by Proton</p>"
+        },
+        "latestSuccessfulSync":{
+          "shape":"ResourceSyncAttempt",
+          "documentation":"<p>The detailed data of the latest successful sync with the service instance.</p>"
+        },
+        "latestSync":{
+          "shape":"ResourceSyncAttempt",
+          "documentation":"<p>The detailed data of the latest sync with the service instance.</p>"
+        }
+      }
+    },
     "GetServiceOutput":{
       "type":"structure",
       "members":{
         "service":{
           "shape":"Service",
           "documentation":"<p>The detailed data of the requested service.</p>"
+        }
+      }
+    },
+    "GetServiceSyncBlockerSummaryInput":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that you want to get the service sync blocker summary for. If given bothe the instance name and the service name, only the instance is blocked.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that you want to get the service sync blocker summary for. If given only the service name, all instances are blocked.</p>"
+        }
+      }
+    },
+    "GetServiceSyncBlockerSummaryOutput":{
+      "type":"structure",
+      "members":{
+        "serviceSyncBlockerSummary":{
+          "shape":"ServiceSyncBlockerSummary",
+          "documentation":"<p>The detailed data of the requested service sync blocker summary.</p>"
+        }
+      }
+    },
+    "GetServiceSyncConfigInput":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that you want to get the service sync configuration for.</p>"
+        }
+      }
+    },
+    "GetServiceSyncConfigOutput":{
+      "type":"structure",
+      "members":{
+        "serviceSyncConfig":{
+          "shape":"ServiceSyncConfig",
+          "documentation":"<p>The detailed data of the requested service sync configuration.</p>"
         }
       }
     },
@@ -3477,6 +3826,10 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "LatestSyncBlockers":{
+      "type":"list",
+      "member":{"shape":"SyncBlocker"}
     },
     "ListComponentOutputsInput":{
       "type":"structure",
@@ -4220,6 +4573,11 @@
       "members":{
       }
     },
+    "OpsFilePath":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
     "Output":{
       "type":"structure",
       "members":{
@@ -4420,6 +4778,7 @@
       "type":"structure",
       "required":[
         "arn",
+        "connectionArn",
         "name",
         "provider"
       ],
@@ -4427,6 +4786,10 @@
         "arn":{
           "shape":"RepositoryArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the linked repository.</p>"
+        },
+        "connectionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the of your connection that connects Proton to your repository.</p>"
         },
         "name":{
           "shape":"RepositoryName",
@@ -4857,6 +5220,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the environment that the service instance was deployed into.</p>"
         },
+        "lastClientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>The last client request token received.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the service instance was last attempted.</p>"
@@ -5097,6 +5464,58 @@
     "ServiceSummaryList":{
       "type":"list",
       "member":{"shape":"ServiceSummary"}
+    },
+    "ServiceSyncBlockerSummary":{
+      "type":"structure",
+      "required":["serviceName"],
+      "members":{
+        "latestBlockers":{
+          "shape":"LatestSyncBlockers",
+          "documentation":"<p>The latest active blockers for the synced service.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service instance that you want sync your service configuration with.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service that you want to get the sync blocker summary for. If given a service instance name and a service name, it will return the blockers only applying to the instance that is blocked.</p> <p>If given only a service name, it will return the blockers that apply to all of the instances. In order to get the blockers for a single instance, you will need to make two distinct calls, one to get the sync blocker summary for the service and the other to get the sync blocker for the service instance.</p>"
+        }
+      },
+      "documentation":"<p>If a service instance is manually updated, Proton wants to prevent accidentally overriding a manual change.</p> <p>A blocker is created because of the manual update or deletion of a service instance. The summary describes the blocker as being active or resolved.</p>"
+    },
+    "ServiceSyncConfig":{
+      "type":"structure",
+      "required":[
+        "branch",
+        "filePath",
+        "repositoryName",
+        "repositoryProvider",
+        "serviceName"
+      ],
+      "members":{
+        "branch":{
+          "shape":"GitBranchName",
+          "documentation":"<p>The name of the code repository branch that holds the service code Proton will sync with.</p>"
+        },
+        "filePath":{
+          "shape":"OpsFilePath",
+          "documentation":"<p>The file path to the service sync configuration file.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the code repository that holds the service code Proton will sync with.</p>"
+        },
+        "repositoryProvider":{
+          "shape":"RepositoryProvider",
+          "documentation":"<p>The name of the repository provider that holds the repository Proton will sync with.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that the service instance is added to.</p>"
+        }
+      },
+      "documentation":"<p>Detailed data of the service sync configuration.</p>"
     },
     "ServiceTemplate":{
       "type":"structure",
@@ -5354,9 +5773,79 @@
       "max":4096,
       "min":1
     },
+    "SyncBlocker":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "createdReason",
+        "id",
+        "status",
+        "type"
+      ],
+      "members":{
+        "contexts":{
+          "shape":"SyncBlockerContexts",
+          "documentation":"<p>The contexts for the sync blocker.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the sync blocker was created.</p>"
+        },
+        "createdReason":{
+          "shape":"String",
+          "documentation":"<p>The reason why the sync blocker was created.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the sync blocker.</p>"
+        },
+        "resolvedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the sync blocker was resolved.</p>"
+        },
+        "resolvedReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the sync blocker was resolved.</p>"
+        },
+        "status":{
+          "shape":"BlockerStatus",
+          "documentation":"<p>The status of the sync blocker.</p>"
+        },
+        "type":{
+          "shape":"BlockerType",
+          "documentation":"<p>The type of the sync blocker.</p>"
+        }
+      },
+      "documentation":"<p>Detailed data of the sync blocker.</p>"
+    },
+    "SyncBlockerContext":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key for the sync blocker context.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the sync blocker context.</p>"
+        }
+      },
+      "documentation":"<p>Detailed data of the context of the sync blocker.</p>"
+    },
+    "SyncBlockerContexts":{
+      "type":"list",
+      "member":{"shape":"SyncBlockerContext"}
+    },
     "SyncType":{
       "type":"string",
-      "enum":["TEMPLATE_SYNC"]
+      "enum":[
+        "TEMPLATE_SYNC",
+        "SERVICE_SYNC"
+      ]
     },
     "Tag":{
       "type":"structure",
@@ -5579,6 +6068,11 @@
         "name"
       ],
       "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token for the updated component.</p>",
+          "idempotencyToken":true
+        },
         "deploymentType":{
           "shape":"ComponentDeploymentUpdateType",
           "documentation":"<p>The deployment type. It defines the mode for updating a component, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated. You can only specify <code>description</code> in this mode.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the component is deployed and updated with the new <code>serviceSpec</code>, <code>templateSource</code>, and/or <code>type</code> that you provide. Only requested parameters are updated.</p> </dd> </dl>"
@@ -5808,6 +6302,11 @@
         "serviceName"
       ],
       "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token of the service instance to update.</p>",
+          "idempotencyToken":true
+        },
         "deploymentType":{
           "shape":"DeploymentUpdateType",
           "documentation":"<p>The deployment type. It defines the mode for updating a service instance, as follows:</p> <dl> <dt/> <dd> <p> <code>NONE</code> </p> <p>In this mode, a deployment <i>doesn't</i> occur. Only the requested metadata parameters are updated.</p> </dd> <dt/> <dd> <p> <code>CURRENT_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the new spec that you provide. Only requested parameters are updated. <i>Don’t</i> include major or minor version parameters when you use this deployment type.</p> </dd> <dt/> <dd> <p> <code>MINOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) minor version of the current major version in use, by default. You can also specify a different minor version of the current major version in use.</p> </dd> <dt/> <dd> <p> <code>MAJOR_VERSION</code> </p> <p>In this mode, the service instance is deployed and updated with the published, recommended (latest) major and minor version of the current template, by default. You can specify a different major version that's higher than the major version in use and a minor version.</p> </dd> </dl>"
@@ -5891,6 +6390,85 @@
         "pipeline":{
           "shape":"ServicePipeline",
           "documentation":"<p>The pipeline details that are returned by Proton.</p>"
+        }
+      }
+    },
+    "UpdateServiceSyncBlockerInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resolvedReason"
+      ],
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service sync blocker.</p>"
+        },
+        "resolvedReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the service sync blocker was resolved.</p>"
+        }
+      }
+    },
+    "UpdateServiceSyncBlockerOutput":{
+      "type":"structure",
+      "required":[
+        "serviceName",
+        "serviceSyncBlocker"
+      ],
+      "members":{
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance that you want to update the service sync blocker for.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service that you want to update the service sync blocker for.</p>"
+        },
+        "serviceSyncBlocker":{
+          "shape":"SyncBlocker",
+          "documentation":"<p>The detailed data on the service sync blocker that was updated.</p>"
+        }
+      }
+    },
+    "UpdateServiceSyncConfigInput":{
+      "type":"structure",
+      "required":[
+        "branch",
+        "filePath",
+        "repositoryName",
+        "repositoryProvider",
+        "serviceName"
+      ],
+      "members":{
+        "branch":{
+          "shape":"GitBranchName",
+          "documentation":"<p>The name of the code repository branch where the Proton Ops file is found.</p>"
+        },
+        "filePath":{
+          "shape":"OpsFilePath",
+          "documentation":"<p>The path to the Proton Ops file.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository where the Proton Ops file is found.</p>"
+        },
+        "repositoryProvider":{
+          "shape":"RepositoryProvider",
+          "documentation":"<p>The name of the repository provider where the Proton Ops file is found.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service the Proton Ops file is for.</p>"
+        }
+      }
+    },
+    "UpdateServiceSyncConfigOutput":{
+      "type":"structure",
+      "members":{
+        "serviceSyncConfig":{
+          "shape":"ServiceSyncConfig",
+          "documentation":"<p>The detailed data of the Proton Ops file.</p>"
         }
       }
     },

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.108
+========
+
+* api-change:``cloudformation``: Including UPDATE_COMPLETE as a failed status for DeleteStack waiter.
+* api-change:``greengrassv2``: Add support for SUCCEEDED value in coreDeviceExecutionStatus field. Documentation updates for Greengrass V2.
+* api-change:``proton``: This release adds support for the AWS Proton service sync feature. Service sync enables managing an AWS Proton service (creating and updating instances) and all of it's corresponding service instances from a Git repository.
+* api-change:``rds``: Adds and updates the SDK examples
+
+
 1.27.107
 ========
 

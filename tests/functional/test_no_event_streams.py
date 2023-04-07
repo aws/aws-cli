@@ -15,6 +15,7 @@ from botocore.model import OperationModel
 from awscli.clidriver import create_clidriver
 
 
+# Excluded commands must be registered in awscli/customizations/removals.py
 _ALLOWED_COMMANDS = [
     's3api select-object-content'
 ]

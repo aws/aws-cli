@@ -44,6 +44,9 @@ def register_removals(event_handler):
                        remove_commands=['subscribe-to-shard'])
     cmd_remover.remove(on_event='building-command-table.lexv2-runtime',
                          remove_commands=['start-conversation'])
+    cmd_remover.remove(on_event='building-command-table.lambda',
+                         remove_commands=['invoke-with-response-stream'])
+
 
 class CommandRemover(object):
     def __init__(self, events):

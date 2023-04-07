@@ -4,17 +4,31 @@
 # binary package not from the CWD.
 
 import os
+from contextlib import contextmanager
 from subprocess import check_call
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-os.chdir(os.path.join(REPO_ROOT, 'tests'))
+
+
+@contextmanager
+def cd(path):
+    """Change directory while inside context manager."""
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 def run(command):
-    return check_call(command, shell=True)
+    env = os.environ.copy()
+    env['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
+    return check_call(command, shell=True, env=env)
 
 
-run('nosetests --with-xunit --cover-erase --with-coverage '
-    '--cover-package awscli --cover-xml -v integration')
+if __name__ == "__main__":
+    with cd(os.path.join(REPO_ROOT, "tests")):
+        run(f"{REPO_ROOT}/scripts/ci/run-tests --with-cov integration")

@@ -134,7 +134,7 @@ class BasicCommand(CLICommand):
         event = 'before-building-argument-table-parser.%s' % \
             ".".join(self.lineage_names)
         self._session.emit(event, argument_table=self._arg_table, args=args,
-                           session=self._session)
+                           session=self._session, parsed_globals=parsed_globals)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
@@ -370,7 +370,6 @@ class BasicDocHandler(OperationDocumentEventHandler):
         self.doc.style.h2('Description')
         self.doc.write(help_command.description)
         self.doc.style.new_paragraph()
-        self._add_top_level_args_reference(help_command)
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if not help_command.synopsis:
@@ -411,11 +410,15 @@ class BasicDocHandler(OperationDocumentEventHandler):
             pass
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        if not help_command.synopsis:
+        if not help_command.synopsis and not help_command.command_table:
             super(BasicDocHandler, self).doc_synopsis_end(
                 help_command=help_command, **kwargs)
         else:
             self.doc.style.end_codeblock()
+
+    def doc_global_option(self, help_command, **kwargs):
+        if not help_command.command_table:
+            super().doc_global_option(help_command, **kwargs)
 
     def doc_examples(self, help_command, **kwargs):
         if help_command.examples:
@@ -438,6 +441,3 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_output(self, help_command, event_name, **kwargs):
         pass
-
-    def doc_options_end(self, help_command, **kwargs):
-        self._add_top_level_args_reference(help_command)

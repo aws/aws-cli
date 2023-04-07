@@ -59,14 +59,17 @@ ARGUMENT_RENAMES = {
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
     'pinpoint.delete-email-template.version': 'template-version',
+    'pinpoint.delete-in-app-template.version': 'template-version',
     'pinpoint.delete-push-template.version': 'template-version',
     'pinpoint.delete-sms-template.version': 'template-version',
     'pinpoint.delete-voice-template.version': 'template-version',
     'pinpoint.get-email-template.version': 'template-version',
+    'pinpoint.get-in-app-template.version': 'template-version',
     'pinpoint.get-push-template.version': 'template-version',
     'pinpoint.get-sms-template.version': 'template-version',
     'pinpoint.get-voice-template.version': 'template-version',
     'pinpoint.update-email-template.version': 'template-version',
+    'pinpoint.update-in-app-template.version': 'template-version',
     'pinpoint.update-push-template.version': 'template-version',
     'pinpoint.update-sms-template.version': 'template-version',
     'pinpoint.update-voice-template.version': 'template-version',
@@ -97,6 +100,8 @@ ARGUMENT_RENAMES = {
     'schemas.*.version': 'schema-version',
     'sagemaker.delete-image-version.version': 'version-number',
     'sagemaker.describe-image-version.version': 'version-number',
+    'sagemaker.list-aliases.version': 'version-number',
+    'sagemaker.update-image-version.version': 'version-number',
     'iotwireless.*.lo-ra-wan': 'lorawan',
     'codepipeline.get-action-type.version': 'action-version',
     'ecs.*.no-enable-execute-command': 'disable-execute-command',
@@ -104,7 +109,7 @@ ARGUMENT_RENAMES = {
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,
-# an alias is created to the original arugment and marked as undocumented.
+# an alias is created to the original argument and marked as undocumented.
 # This is useful when you need to change the name of an argument but you
 # still need to support the old argument.
 HIDDEN_ALIASES = {

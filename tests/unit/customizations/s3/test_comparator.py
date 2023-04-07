@@ -13,7 +13,7 @@
 import datetime
 import unittest
 
-from mock import Mock
+from awscli.testutils import mock
 
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.filegenerator import FileStat
@@ -21,9 +21,9 @@ from awscli.customizations.s3.filegenerator import FileStat
 
 class ComparatorTest(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = Mock()
-        self.not_at_src_sync_strategy = Mock()
-        self.not_at_dest_sync_strategy = Mock()
+        self.sync_strategy = mock.Mock()
+        self.not_at_src_sync_strategy = mock.Mock()
+        self.not_at_dest_sync_strategy = mock.Mock()
         self.comparator = Comparator(self.sync_strategy,
                                      self.not_at_dest_sync_strategy,
                                      self.not_at_src_sync_strategy)
@@ -117,7 +117,7 @@ class ComparatorTest(unittest.TestCase):
 
         # Try when the sync strategy says to sync the file.
         self.not_at_src_sync_strategy.determine_should_sync.return_value = True
-        
+
         src_files = []
         dest_files = []
         ref_list = []

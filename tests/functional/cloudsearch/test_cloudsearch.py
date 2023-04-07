@@ -41,12 +41,14 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --type int'
         cmdline += ' --default-value 10'
         cmdline += ' --search-enabled false'
+        cmdline += ' --source-field fieldname123'
         result = {
             'DomainName': 'abc123',
             'IndexField': {'IndexFieldName': 'foo',
                            'IndexFieldType': 'int',
                            'IntOptions': {'DefaultValue': 10,
-                                          'SearchEnabled': False}}}
+                                          'SearchEnabled': False,
+                                          'SourceField': 'fieldname123'}}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_latlon(self):
@@ -56,11 +58,12 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --type latlon'
         cmdline += ' --default-value 10'
         cmdline += ' --search-enabled false'
+        cmdline += ' --source-field fieldname123'
         result = {
             'DomainName': 'abc123',
             'IndexField': {
                 'IndexFieldName': 'foo',
                 'IndexFieldType': 'latlon',
                 'LatLonOptions': {
-                    'DefaultValue': '10', 'SearchEnabled': False}}}
+                    'DefaultValue': '10', 'SearchEnabled': False, 'SourceField': 'fieldname123'}}}
         self.assert_params_for_cmd(cmdline, result)

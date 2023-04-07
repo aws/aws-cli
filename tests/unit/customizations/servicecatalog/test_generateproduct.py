@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
-from mock import patch
 
 from awscli.customizations.servicecatalog import exceptions
 from awscli.customizations.servicecatalog.generateproduct \
@@ -59,7 +58,7 @@ class TestCreateProductCommand(unittest.TestCase):
         self.global_args.endpoint_url = None
         self.global_args.verify_ssl = None
 
-    @patch('os.path.getsize', return_value=1)
+    @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path(self, getsize_patch):
         # Arrange
         actual_product_view_detail = self.get_product_view_detail()
@@ -107,9 +106,9 @@ class TestCreateProductCommand(unittest.TestCase):
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue()
                          )
-        self.assertEquals(0, result)
+        self.assertEqual(0, result)
 
-    @patch('os.path.getsize', return_value=1)
+    @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
         self.args.product_name = u'\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
@@ -160,15 +159,15 @@ class TestCreateProductCommand(unittest.TestCase):
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue()
                          )
-        self.assertEquals(0, result)
+        self.assertEqual(0, result)
 
     def test_region_not_supported(self):
         self.global_args.region = 'not-supported-region'
-        with self.assertRaisesRegexp(exceptions.InvalidParametersException,
+        with self.assertRaisesRegex(exceptions.InvalidParametersException,
                                      "not supported"):
             self.cmd._run_main(self.args, self.global_args)
 
-    @patch('os.path.getsize', return_value=1)
+    @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_omitting_optional_parameters(self, getsize_patch):
         # Arrange
         self.args.support_description = None
@@ -212,7 +211,7 @@ class TestCreateProductCommand(unittest.TestCase):
 
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue())
-        self.assertEquals(0, result)
+        self.assertEqual(0, result)
 
     def get_product_view_detail(self):
         return {

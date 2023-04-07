@@ -13,9 +13,8 @@
 
 import copy
 import json
-import mock
 
-from awscli.testutils import BaseAWSCommandParamsTest, unittest
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants \
     import TRUST_POLICY_STATEMENT_FORMAT, \
@@ -34,22 +33,34 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
     role_name = 'myrole'
     account_id = '123456789012'
     oidc_provider = 'oidc-provider/id/test'
+    aws_partition = 'aws'
+    aws_cn_partition = 'aws-cn'
 
     base36_encoded_role_name = Base36().encode(role_name)
     expected_statement = TRUST_POLICY_STATEMENT_FORMAT % {
         "AWS_ACCOUNT_ID": account_id,
         "OIDC_PROVIDER": oidc_provider,
         "NAMESPACE": namespace,
-        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name
+        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+        "AWS_PARTITION": aws_partition
     }
 
-    command = 'emr-containers update-role-trust-policy --cluster-name=%s ' \
-              '--namespace=%s --role-name=%s' % (cluster_name, namespace,
-                                                 role_name)
+    expected_statement_cn = TRUST_POLICY_STATEMENT_FORMAT % {
+        "AWS_ACCOUNT_ID": account_id,
+        "OIDC_PROVIDER": oidc_provider,
+        "NAMESPACE": namespace,
+        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+        "AWS_PARTITION": aws_cn_partition
+    }
 
     def setUp(self):
         super(TestUpdateAssumeRolePolicy, self).setUp()
 
+        self.command = (
+            'emr-containers update-role-trust-policy --cluster-name=%s '
+            '--namespace=%s --role-name=%s' % (
+                self.cluster_name, self.namespace, self.role_name)
+        )
         self.policy_document = {
             "Version": "2012-10-17",
             "Statement": [
@@ -67,8 +78,16 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         self.expected_policy_document.get("Statement").append(
             json.loads(self.expected_statement))
 
+        self.expected_policy_document_cn = copy.deepcopy(self.policy_document)
+        self.expected_policy_document_cn.get("Statement").append(
+            json.loads(self.expected_statement_cn))
+
     # Assert the call to update trust policy of the role
-    def assert_trust_policy_updated(self, cmd_output):
+    def assert_trust_policy_updated(self, cmd_output,
+                                    expected_policy_document=None):
+        if expected_policy_document is None:
+            expected_policy_document = self.expected_policy_document
+
         self.assertTrue(TRUST_POLICY_UPDATE_SUCCESSFUL % self.role_name
                         in cmd_output)
 
@@ -81,7 +100,7 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
 
         self.assertTrue(json_matches(json.loads(
             self.operations_called[0][1]['PolicyDocument']),
-            self.expected_policy_document))
+            expected_policy_document))
 
     # Use case: Expected trust policy does not exist
     # Expected results: Operation is performed by client
@@ -228,6 +247,28 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 0)
         self.assertTrue(TRUST_POLICY_STATEMENT_ALREADY_EXISTS % self.role_name
                         in output[0])
+
+    # Use case: Expected trust policy does not exist in cn-north-1
+    # Expected results: Operation is performed by client in cn-north-1
+    # to update the trust policy in expected format
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'iam.IAM.get_assume_role_policy')
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'eks.EKS.get_oidc_issuer_id')
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'eks.EKS.get_account_id')
+    def test_trust_policy_does_not_exist_in_cn(self,
+                                               get_account_id_patch,
+                                               get_oidc_issuer_id_patch,
+                                               get_assume_role_policy_patch):
+        get_assume_role_policy_patch.return_value = self.policy_document
+        get_oidc_issuer_id_patch.return_value = self.oidc_provider
+        get_account_id_patch.return_value = self.account_id
+        self.command += ' --region cn-north-1'
+
+        output = self.run_cmd(self.command, expected_rc=0)
+        self.assert_trust_policy_updated(output[0],
+                                         self.expected_policy_document_cn)
 
 
 if __name__ == "__main__":

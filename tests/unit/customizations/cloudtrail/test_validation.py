@@ -19,7 +19,6 @@ from datetime import datetime, timedelta
 from dateutil import parser, tz
 
 import rsa
-from mock import Mock, call
 from argparse import Namespace
 
 from awscli.compat import six
@@ -31,7 +30,7 @@ from awscli.customizations.cloudtrail.validation import DigestError, \
     parse_date, assert_cloudtrail_arn_is_valid, DigestSignatureError, \
     InvalidDigestFormat, S3ClientProvider
 from botocore.exceptions import ClientError
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.schema import ParameterRequiredError
 
 
@@ -56,7 +55,7 @@ def create_mock_key_provider(key_list):
     for k in key_list:
         public_keys[k] = {'Fingerprint': k,
                           'Value': 'ffaa00'}
-    key_provider = Mock()
+    key_provider = mock.Mock()
     key_provider.get_public_keys.return_value = public_keys
     return key_provider
 
@@ -74,7 +73,7 @@ def create_scenario(actions, logs=None):
     keys = [str(i) for i in range(len(actions))]
     key_provider = create_mock_key_provider(keys)
     digest_provider = MockDigestProvider(actions, logs)
-    digest_validator = Mock()
+    digest_validator = mock.Mock()
 
     def validate(bucket, key, public_key, digest_data, digest_str):
         if '_invalid' in digest_data:
@@ -218,10 +217,10 @@ class TestValidation(unittest.TestCase):
         self.assertEqual('20150816T230550Z', extract_digest_key_date(arn))
 
     def test_creates_traverser(self):
-        mock_s3_provider = Mock()
+        mock_s3_provider = mock.Mock()
         traverser = create_digest_traverser(
-            trail_arn=TEST_TRAIL_ARN, cloudtrail_client=Mock(),
-            organization_client=Mock(),
+            trail_arn=TEST_TRAIL_ARN, cloudtrail_client=mock.Mock(),
+            organization_client=mock.Mock(),
             trail_source_region='us-east-1',
             s3_client_provider=mock_s3_provider,
             bucket='bucket', prefix='prefix')
@@ -232,10 +231,10 @@ class TestValidation(unittest.TestCase):
         self.assertEqual('foo', digest_provider.trail_name)
 
     def test_creates_traverser_account_id(self):
-        mock_s3_provider = Mock()
+        mock_s3_provider = mock.Mock()
         traverser = create_digest_traverser(
-            trail_arn=TEST_TRAIL_ARN, cloudtrail_client=Mock(),
-            organization_client=Mock(),
+            trail_arn=TEST_TRAIL_ARN, cloudtrail_client=mock.Mock(),
+            organization_client=mock.Mock(),
             trail_source_region='us-east-1',
             s3_client_provider=mock_s3_provider,
             bucket='bucket', prefix='prefix',
@@ -249,7 +248,7 @@ class TestValidation(unittest.TestCase):
             TEST_ORGANIZATION_ACCOUNT_ID, digest_provider.account_id)
 
     def test_creates_traverser_and_gets_trail_by_arn(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [
             {'TrailARN': TEST_TRAIL_ARN,
              'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
@@ -258,8 +257,8 @@ class TestValidation(unittest.TestCase):
         traverser = create_digest_traverser(
             trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
             cloudtrail_client=cloudtrail_client,
-            organization_client=Mock(),
-            s3_client_provider=Mock())
+            organization_client=mock.Mock(),
+            s3_client_provider=mock.Mock())
         self.assertEqual('bucket', traverser.starting_bucket)
         self.assertEqual('prefix', traverser.starting_prefix)
         digest_provider = traverser.digest_provider
@@ -268,7 +267,7 @@ class TestValidation(unittest.TestCase):
         self.assertEqual(TEST_ACCOUNT_ID, digest_provider.account_id)
 
     def test_create_traverser_organizational_trail_not_launched(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [
             {'TrailARN': TEST_TRAIL_ARN,
              'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix'}
@@ -276,8 +275,8 @@ class TestValidation(unittest.TestCase):
         traverser = create_digest_traverser(
             trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
             cloudtrail_client=cloudtrail_client,
-            organization_client=Mock(),
-            s3_client_provider=Mock())
+            organization_client=mock.Mock(),
+            s3_client_provider=mock.Mock())
         self.assertEqual('bucket', traverser.starting_bucket)
         self.assertEqual('prefix', traverser.starting_prefix)
         digest_provider = traverser.digest_provider
@@ -286,12 +285,12 @@ class TestValidation(unittest.TestCase):
         self.assertEqual(TEST_ACCOUNT_ID, digest_provider.account_id)
 
     def test_creates_traverser_and_gets_trail_by_arn_s3_bucket_specified(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         traverser = create_digest_traverser(
             trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
             cloudtrail_client=cloudtrail_client,
-            organization_client=Mock(),
-            s3_client_provider=Mock(),
+            organization_client=mock.Mock(),
+            s3_client_provider=mock.Mock(),
             bucket="bucket")
         self.assertEqual('bucket', traverser.starting_bucket)
         digest_provider = traverser.digest_provider
@@ -300,13 +299,13 @@ class TestValidation(unittest.TestCase):
         self.assertEqual(TEST_ACCOUNT_ID, digest_provider.account_id)
 
     def test_creates_traverser_and_gets_organization_id(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [
             {'TrailARN': TEST_TRAIL_ARN,
              'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
              'IsOrganizationTrail': True}
         ]}
-        organization_client = Mock()
+        organization_client = mock.Mock()
         organization_client.describe_organization.return_value = {
             "Organization": {
                 "MasterAccountId": TEST_ACCOUNT_ID,
@@ -317,7 +316,7 @@ class TestValidation(unittest.TestCase):
             trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
             cloudtrail_client=cloudtrail_client,
             organization_client=organization_client,
-            s3_client_provider=Mock(), account_id=TEST_ACCOUNT_ID)
+            s3_client_provider=mock.Mock(), account_id=TEST_ACCOUNT_ID)
         self.assertEqual('bucket', traverser.starting_bucket)
         self.assertEqual('prefix', traverser.starting_prefix)
         digest_provider = traverser.digest_provider
@@ -326,13 +325,13 @@ class TestValidation(unittest.TestCase):
         self.assertEqual(TEST_ORGANIZATION_ID, digest_provider.organization_id)
 
     def test_creates_traverser_organization_trail_missing_account_id(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [
             {'TrailARN': TEST_TRAIL_ARN,
              'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
              'IsOrganizationTrail': True}
         ]}
-        organization_client = Mock()
+        organization_client = mock.Mock()
         organization_client.describe_organization.return_value = {
             "Organization": {
                 "MasterAccountId": TEST_ACCOUNT_ID,
@@ -344,12 +343,12 @@ class TestValidation(unittest.TestCase):
                 trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
                 cloudtrail_client=cloudtrail_client,
                 organization_client=organization_client,
-                s3_client_provider=Mock())
+                s3_client_provider=mock.Mock())
 
 
 class TestPublicKeyProvider(unittest.TestCase):
     def test_returns_public_key_in_range(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.list_public_keys.return_value = {'PublicKeyList': [
             {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
             {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
@@ -359,13 +358,13 @@ class TestPublicKeyProvider(unittest.TestCase):
         start_date = START_DATE
         end_date = start_date + timedelta(days=2)
         keys = provider.get_public_keys(start_date, end_date)
-        self.assertEquals({
+        self.assertEqual({
             'a': {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
             'b': {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
             'c': {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
         }, keys)
         cloudtrail_client.list_public_keys.assert_has_calls(
-            [call(EndTime=end_date, StartTime=start_date)])
+            [mock.call(EndTime=end_date, StartTime=start_date)])
 
 
 class TestSha256RSADigestValidator(unittest.TestCase):
@@ -441,13 +440,13 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
                                                    day=parsed.day)
 
     def _get_mock_provider(self, s3_client):
-        mock_s3_client_provider = Mock()
+        mock_s3_client_provider = mock.Mock()
         mock_s3_client_provider.get_client.return_value = s3_client
         return DigestProvider(
             mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1')
 
     def test_initializes_public_properties(self):
-        client = Mock()
+        client = mock.Mock()
         provider = DigestProvider(client, TEST_ACCOUNT_ID, 'foo', 'us-east-1')
         self.assertEqual(TEST_ACCOUNT_ID, provider.account_id)
         self.assertEqual('foo', provider.trail_name)
@@ -491,7 +490,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         self.assertEqual(keys[4], digests[3])
 
     def test_calls_list_objects_correctly(self):
-        s3_client = Mock()
+        s3_client = mock.Mock()
         mock_paginate = s3_client.get_paginator.return_value.paginate
         mock_search = mock_paginate.return_value.search
         mock_search.return_value = []
@@ -506,8 +505,8 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
             Marker=marker.format(account=TEST_ACCOUNT_ID))
 
     def test_calls_list_objects_correctly_org_trails(self):
-        s3_client = Mock()
-        mock_s3_client_provider = Mock()
+        s3_client = mock.Mock()
+        mock_s3_client_provider = mock.Mock()
         mock_paginate = s3_client.get_paginator.return_value.paginate
         mock_search = mock_paginate.return_value.search
         mock_search.return_value = []
@@ -538,7 +537,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         f.write('{"foo":"bar"}'.encode())
         f.close()
         gzipped_data = out.getvalue()
-        s3_client = Mock()
+        s3_client = mock.Mock()
         s3_client.get_object.return_value = {
             'Body': six.BytesIO(gzipped_data),
             'Metadata': {}}
@@ -547,7 +546,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
             provider.fetch_digest('bucket', 'key')
 
     def test_ensures_digest_can_be_gzip_inflated(self):
-        s3_client = Mock()
+        s3_client = mock.Mock()
         s3_client.get_object.return_value = {
             'Body': six.BytesIO('foo'.encode()),
             'Metadata': {}}
@@ -562,7 +561,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         f.write(json_str.encode())
         f.close()
         gzipped_data = out.getvalue()
-        s3_client = Mock()
+        s3_client = mock.Mock()
         s3_client.get_object.return_value = {
             'Body': six.BytesIO(gzipped_data),
             'Metadata': {'signature': 'abc', 'signature-algorithm': 'SHA256'}}
@@ -577,7 +576,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         f.write(json_str.encode())
         f.close()
         gzipped_data = out.getvalue()
-        s3_client = Mock()
+        s3_client = mock.Mock()
         s3_client.get_object.return_value = {
             'Body': six.BytesIO(gzipped_data),
             'Metadata': {'signature': 'abc', 'signature-algorithm': 'SHA256'}}
@@ -590,10 +589,10 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
 
 class TestDigestTraverser(unittest.TestCase):
     def test_initializes_with_default_validator(self):
-        provider = Mock()
+        provider = mock.Mock()
         traverser = DigestTraverser(
             digest_provider=provider, starting_bucket='1',
-            starting_prefix='baz', public_key_provider=Mock())
+            starting_prefix='baz', public_key_provider=mock.Mock())
         self.assertEqual('1', traverser.starting_bucket)
         self.assertEqual('baz', traverser.starting_prefix)
         self.assertEqual(provider, traverser.digest_provider)
@@ -601,8 +600,8 @@ class TestDigestTraverser(unittest.TestCase):
     def test_ensures_public_keys_are_loaded(self):
         start_date = START_DATE
         end_date = END_DATE
-        digest_provider = Mock()
-        key_provider = Mock()
+        digest_provider = mock.Mock()
+        key_provider = mock.Mock()
         key_provider.get_public_keys.return_value = []
         traverser = DigestTraverser(
             digest_provider=digest_provider, starting_bucket='1',
@@ -618,7 +617,7 @@ class TestDigestTraverser(unittest.TestCase):
         end_date = END_DATE
         key_name = end_date.strftime(DATE_FORMAT) + '.json.gz'
         region = 'us-west-2'
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.trail_home_region = region
         digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (
@@ -631,7 +630,7 @@ class TestDigestTraverser(unittest.TestCase):
              'previousDigestSignature': 'xyz'},
             'abc'
         )
-        key_provider = Mock()
+        key_provider = mock.Mock()
         key_provider.get_public_keys.return_value = [{'Fingerprint': 'a'}]
         on_invalid, calls = collecting_callback()
         traverser = DigestTraverser(
@@ -658,14 +657,14 @@ class TestDigestTraverser(unittest.TestCase):
                   'digestStartTime': (end_date - timedelta(hours=1)).strftime(
                       DATE_FORMAT),
                   'digestEndTime': end_date.strftime(DATE_FORMAT)}
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = [
             key_name]
         digest_provider.fetch_digest.return_value = (digest, key_name)
-        key_provider = Mock()
+        key_provider = mock.Mock()
         public_keys = {'a': {'Fingerprint': 'a', 'Value': 'a'}}
         key_provider.get_public_keys.return_value = public_keys
-        digest_validator = Mock()
+        digest_validator = mock.Mock()
         traverser = DigestTraverser(
             digest_provider=digest_provider, starting_bucket='1',
             starting_prefix='baz', public_key_provider=key_provider,
@@ -684,11 +683,11 @@ class TestDigestTraverser(unittest.TestCase):
                   'digestS3Bucket': 'not_same',
                   'digestS3Object': key_name,
                   'digestEndTime': end_date.strftime(DATE_FORMAT)}
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (digest, key_name)
-        key_provider = Mock()
-        digest_validator = Mock()
+        key_provider = mock.Mock()
+        digest_validator = mock.Mock()
         traverser = DigestTraverser(
             digest_provider=digest_provider, starting_bucket='1',
             starting_prefix='baz', public_key_provider=key_provider,
@@ -714,7 +713,7 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertEqual(
             1, len(digest_provider.calls['load_digest_keys_in_range']))
         self.assertEqual(4, len(digest_provider.calls['fetch_digest']))
-        self.assertEquals(4, len(collected))
+        self.assertEqual(4, len(collected))
 
     def test_invokes_cb_and_continues_when_missing(self):
         start_date = START_DATE
@@ -727,9 +726,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_missing=on_missing)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEquals(3, len(collected))
+        self.assertEqual(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEquals(1, len(missing_calls))
+        self.assertEqual(1, len(missing_calls))
         # Ensure the keys were provided in the correct order.
         self.assertIn('bucket', missing_calls[0])
         self.assertIn('next_end_date', missing_calls[0])
@@ -755,9 +754,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_invalid=on_invalid)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEquals(3, len(collected))
+        self.assertEqual(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEquals(2, len(invalid_calls))
+        self.assertEqual(2, len(invalid_calls))
         # Ensure it was invoked with all the kwargs we expected.
         self.assertIn('bucket', invalid_calls[0])
         self.assertIn('next_end_date', invalid_calls[0])
@@ -787,9 +786,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_gap=on_gap)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEquals(4, len(collected))
+        self.assertEqual(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEquals(2, len(gap_calls))
+        self.assertEqual(2, len(gap_calls))
         # Ensure it was invoked with all the kwargs we expected.
         self.assertIn('bucket', gap_calls[0])
         self.assertIn('next_key', gap_calls[0])
@@ -817,14 +816,14 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEquals(4, len(collected))
+        self.assertEqual(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         # Ensure the provider was called correctly
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(
             2, len(digest_provider.calls['load_digest_keys_in_range']))
-        self.assertEquals(['1', '1', '2', '2'],
-                          [c['digestS3Bucket'] for c in collected])
+        self.assertEqual(['1', '1', '2', '2'],
+                         [c['digestS3Bucket'] for c in collected])
 
     def test_does_not_hard_fail_on_invalid_signature(self):
         start_date = START_DATE
@@ -838,11 +837,11 @@ class TestDigestTraverser(unittest.TestCase):
                       DATE_FORMAT),
                   'digestEndTime': end_timestamp,
                   '_signature': '123'}
-        digest_provider = Mock()
+        digest_provider = mock.Mock()
         digest_provider.load_digest_keys_in_range.return_value = [
             end_timestamp]
         digest_provider.fetch_digest.return_value = (digest, end_timestamp)
-        key_provider = Mock()
+        key_provider = mock.Mock()
         public_keys = {'a': {'Fingerprint': 'a', 'Value': 'a'}}
         key_provider.get_public_keys.return_value = public_keys
         digest_validator = Sha256RSADigestValidator()
@@ -860,39 +859,39 @@ class TestDigestTraverser(unittest.TestCase):
 
 class TestCloudTrailCommand(BaseAWSCommandParamsTest):
     def test_s3_client_created_lazily(self):
-        session = Mock()
+        session = mock.Mock()
         command = CloudTrailValidateLogs(session)
-        parsed_globals = Mock(region=None, verify_ssl=None, endpoint_url=None)
+        parsed_globals = mock.Mock(region=None, verify_ssl=None, endpoint_url=None)
         command.setup_services(parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,
             [
-                call('organizations', verify=None, region_name=None),
-                call('cloudtrail', verify=None, region_name=None)
+                mock.call('organizations', verify=None, region_name=None),
+                mock.call('cloudtrail', verify=None, region_name=None)
             ]
         )
 
     def test_endpoint_url_is_used_for_cloudtrail(self):
         endpoint_url = 'https://mycloudtrail.aws.amazon.com/'
-        session = Mock()
+        session = mock.Mock()
         command = CloudTrailValidateLogs(session)
-        parsed_globals = Mock(region='foo', verify_ssl=None,
+        parsed_globals = mock.Mock(region='foo', verify_ssl=None,
                               endpoint_url=endpoint_url)
         command.setup_services(parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,
             [
-                call('organizations', verify=None, region_name='foo'),
+                mock.call('organizations', verify=None, region_name='foo'),
                 # Here we should inject the endpoint_url only for cloudtrail.
-                call('cloudtrail', verify=None, region_name='foo',
+                mock.call('cloudtrail', verify=None, region_name='foo',
                      endpoint_url=endpoint_url)
             ]
         )
 
     def test_initializes_args(self):
-        session = Mock()
+        session = mock.Mock()
         command = CloudTrailValidateLogs(session)
         start_date = START_DATE.strftime(DATE_FORMAT)
         args = Namespace(trail_arn='abc', verbose=True,
@@ -910,20 +909,20 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
 
 class TestS3ClientProvider(BaseAWSCommandParamsTest):
     def test_creates_clients_for_buckets_in_us_east_1(self):
-        session = Mock()
-        s3_client = Mock()
+        session = mock.Mock()
+        s3_client = mock.Mock()
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)
         created_client = provider.get_client('foo')
         self.assertEqual(s3_client, created_client)
         create_client_calls = session.create_client.call_args_list
-        self.assertEqual(create_client_calls, [call('s3', 'us-east-1')])
+        self.assertEqual(create_client_calls, [mock.call('s3', 'us-east-1')])
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 
     def test_creates_clients_for_buckets_outside_us_east_1(self):
-        session = Mock()
-        s3_client = Mock()
+        session = mock.Mock()
+        s3_client = mock.Mock()
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {
             'LocationConstraint': 'us-west-2'}
@@ -932,14 +931,14 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         self.assertEqual(s3_client, created_client)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(create_client_calls, [
-            call('s3', 'us-west-1'),
-            call('s3', 'us-west-2')
+            mock.call('s3', 'us-west-1'),
+            mock.call('s3', 'us-west-2')
         ])
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 
     def test_caches_previously_loaded_bucket_regions(self):
-        session = Mock()
-        s3_client = Mock()
+        session = mock.Mock()
+        s3_client = mock.Mock()
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)
@@ -953,8 +952,8 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         self.assertEqual(2, s3_client.get_bucket_location.call_count)
 
     def test_caches_previously_loaded_clients(self):
-        session = Mock()
-        s3_client = Mock()
+        session = mock.Mock()
+        s3_client = mock.Mock()
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)
@@ -966,8 +965,8 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
     def test_removes_cli_error_events(self):
         # We should also remove the error handler for S3.
         # This can be removed once the client switchover is done.
-        session = Mock()
-        s3_client = Mock()
+        session = mock.Mock()
+        s3_client = mock.Mock()
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)

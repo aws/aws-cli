@@ -1,23 +1,21 @@
-**To list environments for an AppConfig application**
+**To list the available environments**
 
-This ``list-environments`` example lists the environments that exist for an application. ::
+The following ``list-environments`` example lists the available environments in your AWS account for the specified application. ::
 
     aws appconfig list-environments \
-        --application-id abc1234
+        --application-id 339ohji
 
 Output::
 
     {
         "Items": [
             {
-                "Description": "My AppConfig environment",
-                "Id": "2d4e6f8",
-                "State": "ReadyForDeployment",
-                "ApplicationId": "abc1234",
-                "Monitors": [],
-                "Name": "TestEnvironment"
+                "ApplicationId": "339ohji",
+                "Id": "54j1r29",
+                "Name": "Example-Environment",
+                "State": "ReadyForDeployment"
             }
         ]
     }
 
-For more information, see `Create an Environment  <https://docs.aws.amazon.com/systems-manager/latest/userguide/appconfig-creating-environment.html>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Step 2: Creating an environment <https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-environment.html>`__ in the *AWS AppConfig User Guide*.

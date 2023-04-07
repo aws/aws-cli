@@ -194,6 +194,21 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             # Make sure the temporary file is removed.
             self.assertFalse(os.path.exists(tempfile_path))
 
+    def test_upload_build_when_server_sdk_version_is_provided(self):
+        server_sdk_version = '4.0.2'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--server-sdk-version', server_sdk_version
+        ]
+        self.cmd(self.args, self.global_args)
+
+        # Ensure the GameLift client was called correctly.
+        self.gamelift_client.create_build.assert_called_once_with(
+            Name=self.build_name, Version=self.build_version,
+            ServerSdkVersion=server_sdk_version)
+
 
 class TestZipDirectory(unittest.TestCase):
     def setUp(self):

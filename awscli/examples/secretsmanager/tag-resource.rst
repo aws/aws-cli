@@ -1,8 +1,23 @@
-**To add tags to a secret**
+**Example 1: To add a tag to a secret**
 
-The following example shows how to attach two tags each with a Key and Value to a secret. ::
+The following example shows how to attach a tag with shorthand syntax. ::
 
-	aws secretsmanager tag-resource --secret-id MyTestDatabaseSecret \
-	  --tags '[{"Key": "FirstTag", "Value": "SomeValue"}, {"Key": "SecondTag", "Value": "AnotherValue"}]'
+    aws secretsmanager tag-resource \
+        --secret-id MyTestSecret \
+        --tags Key=FirstTag,Value=FirstValue
 
-There is no output from this API. To see the result, use the describe-secret operation.
+This command produces no output.
+
+For more information, see `Tag your secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets_tagging.html>`__ in the *Secrets Manager User Guide*.
+
+**Example 2: To add multiple tags to a secret**
+
+The following ``tag-resource`` example attaches two key-value tags to a secret. ::
+
+    aws secretsmanager tag-resource \
+        --secret-id MyTestSecret \
+        --tags '[{"Key": "FirstTag", "Value": "FirstValue"}, {"Key": "SecondTag", "Value": "SecondValue"}]'
+
+This command produces no output.
+
+For more information, see `Tag secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets_tagging.html>`__ in the *Secrets Manager User Guide*.

@@ -10,10 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 from argparse import Namespace
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.compat import six
 from awscli.customizations.configure.list import ConfigureListCommand
 
@@ -27,15 +26,15 @@ class TestConfigureListCommand(unittest.TestCase):
         session = FakeSession(
             all_variables={'config_file': '/config/location'})
         session.full_config = {
-            'profiles': {'default': {'region': 'AWS_REGION'}}}
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
         stream = six.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegexpMatches(rendered, 'profile\s+<not set>')
-        self.assertRegexpMatches(rendered, 'access_key\s+<not set>')
-        self.assertRegexpMatches(rendered, 'secret_key\s+<not set>')
-        self.assertRegexpMatches(rendered, 'region\s+<not set>')
+        self.assertRegex(rendered, r'profile\s+<not set>')
+        self.assertRegex(rendered, r'access_key\s+<not set>')
+        self.assertRegex(rendered, r'secret_key\s+<not set>')
+        self.assertRegex(rendered, r'region\s+<not set>')
 
     def test_configure_from_env(self):
         env_vars = {
@@ -46,13 +45,13 @@ class TestConfigureListCommand(unittest.TestCase):
             environment_vars=env_vars)
         session.session_var_map = {'profile': (None, "PROFILE_ENV_VAR")}
         session.full_config = {
-            'profiles': {'default': {'region': 'AWS_REGION'}}}
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
         stream = six.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegexpMatches(
-            rendered, 'profile\s+myprofilename\s+env\s+PROFILE_ENV_VAR')
+        self.assertRegex(
+            rendered, r'profile\s+myprofilename\s+env\s+PROFILE_ENV_VAR')
 
     def test_configure_from_config_file(self):
         config_file_vars = {
@@ -61,15 +60,15 @@ class TestConfigureListCommand(unittest.TestCase):
         session = FakeSession(
             all_variables={'config_file': '/config/location'},
             config_file_vars=config_file_vars)
-        session.session_var_map = {'region': ('region', "AWS_REGION")}
+        session.session_var_map = {'region': ('region', "AWS_DEFAULT_REGION")}
         session.full_config = {
-            'profiles': {'default': {'region': 'AWS_REGION'}}}
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
         stream = six.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegexpMatches(
-            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
+        self.assertRegex(
+            rendered, r'region\s+us-west-2\s+config-file\s+/config/location')
 
     def test_configure_from_multiple_sources(self):
         # Here the profile is from an env var, the
@@ -91,26 +90,26 @@ class TestConfigureListCommand(unittest.TestCase):
             config_file_vars=config_file_vars,
             credentials=credentials)
         session.session_var_map = {
-            'region': ('region', 'AWS_REGION'),
+            'region': ('region', 'AWS_DEFAULT_REGION'),
             'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
         session.full_config = {
-            'profiles': {'default': {'region': 'AWS_REGION'}}}
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
         stream = six.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
         # The profile came from an env var.
-        self.assertRegexpMatches(
-            rendered, 'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
+        self.assertRegex(
+            rendered, r'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
         # The region came from the config file.
-        self.assertRegexpMatches(
-            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
+        self.assertRegex(
+            rendered, r'region\s+us-west-2\s+config-file\s+/config/location')
         # The credentials came from an IAM role.  Note how we're
         # also checking that the access_key/secret_key are masked
         # with '*' chars except for the last 4 chars.
-        self.assertRegexpMatches(
+        self.assertRegex(
             rendered, r'access_key\s+\*+_key\s+iam-role')
-        self.assertRegexpMatches(
+        self.assertRegex(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
 
     def test_configure_from_args(self):
@@ -128,5 +127,5 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=parsed_globals)
         rendered = stream.getvalue()
-        self.assertRegexpMatches(
-            rendered, 'profile\s+foo\s+manual\s+--profile')
+        self.assertRegex(
+            rendered, r'profile\s+foo\s+manual\s+--profile')

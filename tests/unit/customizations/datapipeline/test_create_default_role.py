@@ -1,4 +1,5 @@
-import mock
+import pytest
+
 import awscli.customizations.datapipeline.createdefaultroles \
     as createdefaultroles
 from awscli.customizations.datapipeline.constants\
@@ -8,11 +9,12 @@ from awscli.customizations.datapipeline.constants\
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY
 
 from awscli.testutils import BaseAWSCommandParamsTest,\
-    unittest
+    mock, unittest
 from awscli.customizations.datapipeline.translator import dict_to_string
 from botocore.compat import json
 
 
+@pytest.mark.filterwarnings('ignore::UserWarning')
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     prefix = 'datapipeline create-default-roles'
 
@@ -168,7 +170,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         result = self.run_cmd(self.prefix, 0)
         expected_output = json.dumps(self.CONSTRUCTED_RESULT_OUTPUT,
                                      indent=4) + '\n'
-        self.assertEquals(result[0], expected_output)
+        self.assertEqual(result[0], expected_output)
 
     def toggle_for_check_if_exists(self, *args):
         if args[0] == DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME:

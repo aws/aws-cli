@@ -54,7 +54,7 @@ class UnknownArgumentError(Exception):
 
 
 def create_argument_model_from_schema(schema):
-    # Given a JSON schems (described in schema.py), convert it
+    # Given a JSON schema (described in schema.py), convert it
     # to a shape object from `botocore.model.Shape` that can be
     # used as the argument_model for the Argument classes below.
     transformer = SchemaTransformer()
@@ -234,7 +234,7 @@ class CustomArgument(BaseCLIArgument):
         self.argument_model = argument_model
 
         # If the top level element is a list then set nargs to
-        # accept multiple values seperated by a space.
+        # accept multiple values separated by a space.
         if self.argument_model is not None and \
                 self.argument_model.type_name == 'list':
             self._nargs = '+'
@@ -494,7 +494,7 @@ class BooleanArgument(CLIArgument):
 
         aws foo bar --enabled
 
-    For cases wher the boolean parameter is required we need to add
+    For cases where the boolean parameter is required we need to add
     two parameters::
 
         aws foo bar --enabled

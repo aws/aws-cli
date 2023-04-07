@@ -89,3 +89,32 @@ The following ``describe-snapshots`` example uses JMESPath expressions to descri
         --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
 
 For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
+
+**Example 5: To view only archived snapshots**
+
+The following ``describe-snapshots`` example lists only snapshots that are stored in the archive tier. ::
+
+    aws ec2 describe-snapshots \
+        --filters "Name=storage-tier,Values=archive"
+
+Output::
+
+    {
+        "Snapshots": [
+            {
+                "Description": "Snap A",
+                "Encrypted": false,
+                "VolumeId": "vol-01234567890aaaaaa",
+                "State": "completed",
+                "VolumeSize": 8,
+                "StartTime": "2021-09-07T21:00:00.000Z",
+                "Progress": "100%",
+                "OwnerId": "123456789012",
+                "SnapshotId": "snap-01234567890aaaaaa",
+                "StorageTier": "archive",
+                "Tags": []
+            },
+        ]
+    }
+
+For more information, see `View archived snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-snapshot-archiving.html#view-archived-snapshot>`__ in the *Amazon Elastic Compute Cloud User Guide*.

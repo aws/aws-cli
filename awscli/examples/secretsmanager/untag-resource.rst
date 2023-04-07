@@ -1,8 +1,11 @@
 **To remove tags from a secret**
 
-The following example shows how to remove two tags from a secret's metadata. For each tag, both the key and its associated value are removed. ::
+The following ``untag-resource`` example removes two tags from a secret. For each tag, both  key and value are removed. ::
 
-	aws secretsmanager untag-resource --secret-id MyTestDatabaseSecret \
-	  --tag-keys '[ "FirstTag", "SecondTag"]'
+    aws secretsmanager untag-resource \
+        --secret-id MyTestSecret \
+        --tag-keys '[ "FirstTag", "SecondTag"]'
 
-There is no output from this API. To see the result, use the describe-secret operation.
+This command produces no output.
+
+For more information, see `Tag secrets <https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets_tagging.html>`__ in the *Secrets Manager User Guide*.

@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import botocore.session
 import json
 import errno
 
-import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.ecs import executecommand
 
 
@@ -107,7 +106,7 @@ class TestExecuteCommand(unittest.TestCase):
     def test_when_calls_fails_from_ecs(self, mock_check_call):
         self.client.execute_command.side_effect = Exception('some exception')
         mock_check_call.return_value = 0
-        with self.assertRaisesRegexp(Exception, 'some exception'):
+        with self.assertRaisesRegex(Exception, 'some exception'):
             self.caller.invoke('ecs', 'ExecuteCommand', {}, mock.Mock())
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
@@ -128,7 +127,7 @@ class TestExecuteCommand(unittest.TestCase):
         rc = self.caller.invoke('ecs', 'ExecuteCommand',
                                 self.execute_command_params, mock.Mock())
 
-        self.assertEquals(rc, 0)
+        self.assertEqual(rc, 0)
         self.client.execute_command.\
             assert_called_with(**self.execute_command_params)
 
@@ -155,10 +154,10 @@ class TestExecuteCommand(unittest.TestCase):
         self.client.describe_tasks.side_effect = \
             Exception("Some Server Exception")
 
-        with self.assertRaisesRegexp(Exception, 'Some Server Exception'):
+        with self.assertRaisesRegex(Exception, 'Some Server Exception'):
             rc = self.caller.invoke('ecs', 'ExecuteCommand',
                                     self.execute_command_params, mock.Mock())
-            self.assertEquals(rc, 0)
+            self.assertEqual(rc, 0)
             self.client.execute_command. \
                 assert_called_with(**self.execute_command_params)
 
@@ -174,7 +173,7 @@ class TestExecuteCommand(unittest.TestCase):
         with self.assertRaises(Exception):
             rc = self.caller.invoke('ecs', 'ExecuteCommand',
                                     self.execute_command_params, mock.Mock())
-            self.assertEquals(rc, 0)
+            self.assertEqual(rc, 0)
             self.client.execute_command. \
                 assert_called_with(**self.execute_command_params)
 

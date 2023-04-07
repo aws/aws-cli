@@ -2,7 +2,7 @@
 
 The following ``accept-transit-gateway-vpc-attachment`` example accepts the request forte specified attachment. ::
 
-    accept-transit-gateway-vpc-attachment \
+    aws ec2 accept-transit-gateway-vpc-attachment \
         --transit-gateway-attachment-id tgw-attach-0a34fe6b4fEXAMPLE
 
 Output::
@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Transit Gateway Attachments to a VPC<https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Transit Gateway Attachments to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html>`__ in the *Transit Gateways Guide*.

@@ -22,7 +22,7 @@ from awscli.compat import six
 def intrinsics_multi_constructor(loader, tag_prefix, node):
     """
     YAML constructor to parse CloudFormation intrinsics.
-    This will return a dictionary with key being the instrinsic name
+    This will return a dictionary with key being the intrinsic name
     """
 
     # Get the actual tag name excluding the first exclamation

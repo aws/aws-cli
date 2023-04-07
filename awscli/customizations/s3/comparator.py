@@ -24,7 +24,7 @@ class Comparator(object):
     def __init__(self, file_at_src_and_dest_sync_strategy,
                  file_not_at_dest_sync_strategy,
                  file_not_at_src_sync_strategy):
-        
+
         self._sync_strategy = file_at_src_and_dest_sync_strategy
         self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
         self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
@@ -44,7 +44,7 @@ class Comparator(object):
         the ``S3Handler``.
 
         :param src_files: The generated FileInfo objects from the source.
-        :param dest_files: The genereated FileInfo objects from the dest.
+        :param dest_files: The generated FileInfo objects from the dest.
 
         :returns: Yields the FilInfo objects of the files that need to be
             operated on
@@ -61,7 +61,7 @@ class Comparator(object):
             but not the source file.  If the source list is empty delete the
             rest of the files in the dest list from the destination.  If the
             dest list is empty add the rest of the file in source list to
-            the destionation.
+            the destination.
         """
         # :var src_done: True if there are no more files from the source left.
         src_done = False
@@ -110,7 +110,7 @@ class Comparator(object):
                     src_take = False
                     dest_take = True
                     should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                    if should_sync:                        
+                    if should_sync:
                         yield dest_file
 
             elif (not src_done) and dest_done:
@@ -122,7 +122,7 @@ class Comparator(object):
             elif src_done and (not dest_done):
                 dest_take = True
                 should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                if should_sync:                        
+                if should_sync:
                     yield dest_file
             else:
                 break

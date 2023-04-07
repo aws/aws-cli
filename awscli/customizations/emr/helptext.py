@@ -48,13 +48,17 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations.\n'
-    '\nQuick start:\n'
-    '\naws emr create-cluster --release-label <release-label>'
-    ' --instance-type <instance-type> --instance-count <instance-count>\n'
-    '\nValues for the following can be set in the AWS CLI'
-    ' config file using the "aws configure set" command: --service-role, --log-uri,'
-    ' and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    'Creates an Amazon EMR cluster with the specified configurations.')
+
+DESCRIBE_CLUSTER_DESCRIPTION = (
+    'Provides  cluster-level details including status, hardware '
+    'and software configuration, VPC settings, bootstrap '
+    'actions, instance groups and so on. '
+    'Permissions needed for describe-cluster include '
+    'elasticmapreduce:ListBootstrapActions, '
+    'elasticmapreduce:ListInstanceFleets, '
+    'elasticmapreduce:DescribeCluster, '
+    'and elasticmapreduce:ListInstanceGroups.')
 
 CLUSTER_NAME = (
     '<p>The name of the cluster. If not provided, the default is "Development Cluster".</p>')
@@ -112,6 +116,11 @@ RELEASE_LABEL = (
     '<p>Use <code>--release-label</code> only for Amazon EMR release version 4.0'
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')
+
+OS_RELEASE_LABEL = (
+    '<p>Specifies a particular Amazon Linux release for all nodes in a cluster'
+    ' launch request. If a release is not specified, EMR uses the latest validated' 
+    ' Amazon Linux release for cluster launch.</p>')
 
 CONFIGURATIONS = (
     '<p>Specifies a JSON file that contains configuration classifications,'
@@ -183,8 +192,10 @@ INSTANCE_FLEETS = (
     ' type with the Spot purchasing option launches.</li>'
     '<li><code>[LaunchSpecifications]</code> - When <code>TargetSpotCapacity</code> is specified,'
     ' specifies the block duration and timeout action for Spot Instances.'
-    '<li><code>InstanceTypeConfigs</code> - Specifies up to five EC2 instance types to'
-    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.</li>')
+    '<li><code>InstanceTypeConfigs</code> - Specify up to five EC2 instance types to'
+    ' use in the instance fleet, including details such as Spot price and Amazon EBS configuration.'
+    ' When you use an On-Demand or Spot Instance allocation strategy,'
+    ' you can specify up to 30 instance types per instance fleet.</li>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
@@ -203,16 +214,29 @@ INSTANCE_COUNT = (
     ' are used for the core node type.</p>')
 
 ADDITIONAL_INFO = (
-    '<p>Specifies additional information during cluster creation.</p>')
+    '<p>Specifies additional information during cluster creation. To set development mode when starting your EMR cluster,'
+    ' set this parameter to <code>{"clusterType":"development"}</code>.</p>')
 
 EC2_ATTRIBUTES = (
     '<p>Configures cluster and Amazon EC2 instance configurations. Accepts'
     ' the following arguments:</p>'
     '<li><code>KeyName</code> - Specifies the name of the AWS EC2 key pair that will be used for'
     ' SSH connections to the master node and other instances on the cluster.</li>'
-    '<li><code>AvailabilityZone</code> - Specifies the availability zone in which to launch'
-    ' the cluster. For example, <code>us-west-1b</code>.</li>'
-    '<li><code>SubnetId</code> - Specifies the VPC subnet in which to create the cluster.</li>'
+    '<li><code>AvailabilityZone</code> - Applies to clusters that use the uniform instance group configuration.'
+    ' Specifies the availability zone in which to launch the cluster.'
+    ' For example, <code>us-west-1b</code>. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>AvailabilityZones</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances' 
+    ' in the optimal Availability Zone. <code>AvailabilityZone</code> is used for uniform instance groups,'
+    ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetId</code> - Applies to clusters that use the uniform instance group configuration.' 
+    ' Specify the VPC subnet in which to create the cluster. <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
+    '<li><code>SubnetIds</code> - Applies to clusters that use the instance fleet configuration.'
+    ' When multiple EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.'
+    ' <code>SubnetId</code> is used for uniform instance groups,'
+    ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
     '<li><code>InstanceProfile</code> - An IAM role that allows EC2 instances to'
     ' access other AWS services, such as Amazon S3, that'
     ' are required for operations.</li>'
@@ -246,21 +270,21 @@ SCALE_DOWN_BEHAVIOR = (
     ' terminate EC2 instances at the instance-hour boundary, regardless of when'
     ' the request to terminate was submitted.</li>'
 )
+
 VISIBILITY = (
-    '<p>Specifies whether the cluster is visible to all IAM users of'
-    ' the AWS account associated with the cluster. If set to'
-    ' <code>--visible-to-all-users</code>, all IAM users of that AWS account'
-    ' can view it. If they have the proper policy permissions set, they can '
-    ' also manage the cluster. If it is set to <code>--no-visible-to-all-users</code>,'
-    ' only the IAM user that created the cluster can view and manage it. '
-    ' Clusters are visible by default.</p>')
+    '<p>Specifies whether the cluster is visible to all IAM users'
+    ' of the AWS account associated with the cluster. If a user'
+    ' has the proper policy permissions set, they can also manage the cluster.</p>'
+    '<p>Visibility is on by default. The <code>--no-visible-to-all-users</code> option'
+    ' is no longer supported. To restrict cluster visibility, use an IAM policy.</p>')
 
 DEBUGGING = (
     '<p>Specifies that the debugging tool is enabled for the cluster,'
     ' which allows you to browse log files using the Amazon EMR console.'
     ' Turning debugging on requires that you specify <code>--log-uri</code>'
     ' because log files must be stored in Amazon S3 so that'
-    ' Amazon EMR can index them for viewing in the console.</p>')
+    ' Amazon EMR can index them for viewing in the console.'
+    ' Effective January 23, 2023, Amazon EMR will discontinue the debugging tool for all versions.</p>')
 
 TAGS = (
     '<p>A list of tags to associate with a cluster, which apply to'
@@ -386,7 +410,7 @@ KERBEROS_ATTRIBUTES = (
      ' with a KDC in a different realm. This is the cross-realm principal password,'
      ' which must be identical across realms.</li>'
      ' <li><code>ADDomainJoinUser</code> - Required when establishing trust with an Active Directory'
-     ' domain. This is the User logon name of an AD account with sufficient privileges to join resouces to the domain.</li>'
+     ' domain. This is the User logon name of an AD account with sufficient privileges to join resources to the domain.</li>'
      ' <li><code>ADDomainJoinPassword</code> - The AD password for <code>ADDomainJoinUser</code>.</li>')
 
 # end create-cluster options help descriptions
@@ -470,4 +494,16 @@ PLACEMENT_GROUP_CONFIGS = (
     'role with <code>SPREAD</code> strategy by default. You can opt-in by '
     'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
     'during cluster creation.</p>'
+)
+
+AUTO_TERMINATION_POLICY = (
+    '<p>Auto termination policy for an Amazon EMR cluster. '
+    'The configuration specifies the termination idle timeout'
+    'threshold for an cluster.</p> '
+)
+
+EXECUTION_ROLE_ARN = (
+    '<p>You must grant the execution role the permissions needed '
+    'to access the same IAM resources that the step can access. '
+    'The execution role can be a cross-account IAM Role.</p> '
 )

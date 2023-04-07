@@ -69,10 +69,10 @@ class LockFileBuilder:
         except FileNotFoundError:
             pass
 
-    def _pip_compile_args(self, sources: List[str], lock_path: Path):
+    def _pip_compile_args(self, sources: List[Path], lock_path: Path):
         args = [f"--output-file={lock_path}"]
         for source in sources:
-            args.append(self.source_directory / source)
+            args.append(str(self.source_directory / source))
         return args
 
     def _pip_compile(self, args: List[str], allow_unsafe: bool = False):
@@ -103,6 +103,11 @@ class LockFileBuilder:
             f.write(content)
 
 
+def show_diff(directory: Path):
+    output = run(['git', 'diff', '--stat'], cwd=directory)
+    print(output)
+
+
 def main(build_directory: Path):
     builder = LockFileBuilder(
         source_directory=ROOT,
@@ -126,6 +131,7 @@ def main(build_directory: Path):
         sources=["pyproject.toml"],
         output=Path("requirements/download-deps/system-sandbox"),
     )
+    show_diff(build_directory)
 
 
 if __name__ == "__main__":

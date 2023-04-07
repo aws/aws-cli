@@ -1,0 +1,62 @@
+# Dependabot commits are in the format:
+#
+# commit 2aad5324df996b0e2f2756dbc0831106aec81718 (HEAD -> update-lockfiles-action, origin/update-lockfiles-action)
+# Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+# Date:   Wed Mar 29 21:25:07 2023 +0000
+#
+#     Bump pyinstaller from 5.7.0 to 5.9.0
+#
+#     Bumps [pyinstaller](https://github.com/pyinstaller/pyinstaller) from 5.7.0 to 5.9.0.
+#     - [Release notes](https://github.com/pyinstaller/pyinstaller/releases)
+#     - [Changelog](https://github.com/pyinstaller/pyinstaller/blob/develop/doc/CHANGES.rst)
+#     - [Commits](https://github.com/pyinstaller/pyinstaller/compare/v5.7.0...v5.9.0)
+#
+#     ---
+#     updated-dependencies:
+#     - dependency-name: pyinstaller
+#       dependency-type: direct:production
+#       update-type: version-update:semver-minor
+#     ...
+#
+#     Signed-off-by: dependabot[bot] <support@github.com>
+#
+#
+# This workflow extracts the top line "Bump pyinstaller from 5.7.0 to 5.9.0" and generates
+# a changelog entry from it, then commits and pushes the commit up to the branch.
+
+name: Generate changelog from dependabot
+
+on:
+  pull_request:
+    branches: [ v2 ]
+
+  add-dependabot-changelog:
+    runs-on: Ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: Generate changelog message
+      run: |
+        echo "MSG=$(git log --author='dependabot' -1 | grep Bump | head -1 | awk '{$1=$1;print}')" | tee $GITHUB_ENV
+    - name: Create changelog
+      if: ${{ env.MSG }}
+      run: |
+        python scripts/new-change -t enhancement -c dependency -d "${{ env.MSG }}"
+    - name: Commit and push changelog entry
+      if: ${{ env.MSG }}
+      env:
+        CI_COMMIT_AUTHOR: Github Actions
+      run: |
+        git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+        git config --global user.email "<>"
+        git fetch
+        git add .changes
+        git commit -m "Add changelog entry"
+        git pull --rebase
+        git push

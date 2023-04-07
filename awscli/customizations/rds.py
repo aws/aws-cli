@@ -96,8 +96,10 @@ class GenerateDBAuthTokenCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         rds = self._session.create_client(
-            'rds', parsed_globals.region, parsed_globals.endpoint_url,
-            parsed_globals.verify_ssl
+            'rds',
+            region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl
         )
         token = rds.generate_db_auth_token(
             DBHostname=parsed_args.hostname,

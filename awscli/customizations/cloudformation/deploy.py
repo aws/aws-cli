@@ -170,6 +170,30 @@ class DeployCommand(BasicCommand):
             )
         },
         {
+            'name': 'disable-rollback',
+            'required': False,
+            'action': 'store_true',
+            'group_name': 'disable-rollback',
+            'dest': 'disable_rollback',
+            'default': False,
+            'help_text': (
+                'Preserve the state of previously provisioned resources when '
+                'the execute-change-set operation fails.'
+            )
+        },
+        {
+            'name': 'no-disable-rollback',
+            'required': False,
+            'action': 'store_false',
+            'group_name': 'disable-rollback',
+            'dest': 'disable_rollback',
+            'default': True,
+            'help_text': (
+                'Roll back all resource changes when the execute-change-set '
+                'operation fails.'
+            )
+        },
+        {
             'name': 'role-arn',
             'required': False,
             'help_text': (
@@ -291,13 +315,13 @@ class DeployCommand(BasicCommand):
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
-                           tags,
-                           parsed_args.fail_on_empty_changeset)
+                           tags, parsed_args.fail_on_empty_changeset,
+                           parsed_args.disable_rollback)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns, s3_uploader, tags,
-               fail_on_empty_changeset=True):
+               fail_on_empty_changeset=True, disable_rollback=False):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
@@ -316,7 +340,8 @@ class DeployCommand(BasicCommand):
             return 0
 
         if execute_changeset:
-            deployer.execute_changeset(result.changeset_id, stack_name)
+            deployer.execute_changeset(result.changeset_id, stack_name,
+                                       disable_rollback)
             deployer.wait_for_execute(stack_name, result.changeset_type)
             sys.stdout.write(self.MSG_EXECUTE_SUCCESS.format(
                     stack_name=stack_name))

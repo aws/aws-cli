@@ -11,6 +11,7 @@ Output::
         "Members": [ 
             { 
                 "AccountId": "123456789111",
+                "AdministratorId": "123456789012",
                 "InvitedAt": 2020-06-01T20:15:15.289000+00:00,
                 "MasterId": "123456789012",
                 "MemberStatus": "ASSOCIATED",
@@ -18,6 +19,7 @@ Output::
             },
             { 
                 "AccountId": "123456789222",
+                "AdministratorId": "123456789012",
                 "InvitedAt": 2020-06-01T20:15:15.289000+00:00,
                 "MasterId": "123456789012",
                 "MemberStatus": "ASSOCIATED",
@@ -27,4 +29,4 @@ Output::
         "UnprocessedAccounts": [ ]
     }
 
-For more information, see `Master and member accounts <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Managing administrator and member accounts <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts.html>`__ in the *AWS Security Hub User Guide*.

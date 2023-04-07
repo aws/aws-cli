@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
 import os
 import copy
-import mock
 
+
+from awscli.testutils import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 
@@ -239,6 +239,27 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_streaming_step_with_default_fields(self):
         cmd = self.prefix + 'Type=Streaming,' + self.STREAMING_ARGS
         expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {'Name': 'Streaming program',
+                 'ActionOnFailure': 'CONTINUE',
+                 'HadoopJarStep': self.STREAMING_HADOOP_SCRIPT_RUNNER_STEP
+                 }
+            ]
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = \
+            self.STREAMING_HADOOP_COMMAND_RUNNER_STEP
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd, expected_result=expected_result,
+            expected_result_release=expected_result_release)
+
+    def test_step_with_execution_role_arn(self):
+        cmd = self.prefix + 'Type=Streaming,' + self.STREAMING_ARGS
+        cmd += ' --execution-role-arn arn:aws:iam::123456789010:role/sample '
+        expected_result = {
+            'ExecutionRoleArn': 'arn:aws:iam::123456789010:role/sample',
             'JobFlowId': 'j-ABC',
             'Steps': [
                 {'Name': 'Streaming program',
@@ -630,11 +651,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         if expected_error_msg:
             grl_patch.return_value = None
             result = self.run_cmd(cmd, 255)
-            self.assertEquals(expected_error_msg, result[1])
+            self.assertEqual(expected_error_msg, result[1])
         if expected_result_release:
             grl_patch.return_value = 'emr-4.0'
             result = self.run_cmd(cmd, 255)
-            self.assertEquals(expected_result_release, result[1])
+            self.assertEqual(expected_result_release, result[1])
 
 if __name__ == "__main__":
     unittest.main()

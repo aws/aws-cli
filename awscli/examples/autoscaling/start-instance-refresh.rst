@@ -12,7 +12,7 @@ Output::
         "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b"
     }
 
-For more information, see `Replacing Auto Scaling Instances Based on an Instance Refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Replacing Auto Scaling instances based on an instance refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 2: To start an instance refresh using a JSON file**
 
@@ -37,4 +37,4 @@ Output::
         "InstanceRefreshId": "08b91cf7-8fa6-48af-b6a6-d227f40f1b9b"
     }
 
-For more information, see `Replacing Auto Scaling Instances Based on an Instance Refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Replacing Auto Scaling instances based on an instance refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

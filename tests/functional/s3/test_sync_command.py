@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from mock import patch
 import os
 
 from awscli.compat import six
+from awscli.testutils import mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -144,7 +144,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # timestamp was loaded. It is impossible to set an invalid timestamp
         # on all OSes so it has to be patched.
         # TODO: find another method to test this behavior without patching.
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 return_value=(None, None)
         ):
@@ -189,7 +189,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise ValueError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):
@@ -212,7 +212,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise OSError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):

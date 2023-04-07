@@ -1,12 +1,16 @@
 import errno
 import os
+import signal
+import subprocess
 
 from datetime import datetime
 from dateutil.tz import tzlocal, tzutc
 from dateutil.relativedelta import relativedelta
 
-from awscli.testutils import unittest, mock, FileCreator
-from awscli.compat import urlparse, RawConfigParser, StringIO
+from awscli.testutils import (
+    unittest, mock, skip_if_windows, FileCreator
+)
+from awscli.compat import urlparse, RawConfigParser
 from awscli.customizations.codeartifact.login import (
     BaseLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin, TwineLogin,
     get_relative_expiration_time
@@ -52,7 +56,7 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOENT, 'not found error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, '%s was not found.' % tool):
             self.test_subject._run_commands(tool, ['echo', tool])
 
@@ -61,8 +65,12 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOSYS, 'unhandled error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegexp(OSError, 'unhandled error'):
+        with self.assertRaisesRegex(OSError, 'unhandled error'):
             self.test_subject._run_commands(tool, ['echo', tool])
+
+
+def handle_timeout(signum, frame, test_name):
+    raise TimeoutError(f"{test_name} timed out!!")
 
 
 class TestNuGetLogin(unittest.TestCase):
@@ -73,6 +81,8 @@ Registered Sources:
      https://source1.com/index.json
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
+
+    _NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING = b'1.' + b' ' * 10000 + b'a'
 
     _NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE = b"""\
                 Registered Sources:
@@ -227,10 +237,25 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'nuget was not found. Please verify installation.'):
             self.test_subject.login()
+
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    def test_login_nuget_sources_listed_with_backtracking(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM, 
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
 
 
 class TestDotNetLogin(unittest.TestCase):
@@ -241,6 +266,21 @@ Registered Sources:
      https://source1.com/index.json
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
+
+    _NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING = b'1.' + b' ' * 10000 + b'a'
+
+    _NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT = b"""\
+Welcome to dotnet 2.0!
+
+Registered Sources:
+  1. Source Name 1 [Enabled]
+     https://source1.com/index.json
+  2. ati-nugetserver [Disabled]
+     http://atinugetserver-env.elasticbeanstalk.com/nuget
+warn : You are running the 'list source' operation with an 'HTTP' source,
+'ati-nugetserver' [http://atinugetserver-env..elasticbeanstalk.com/nuget]'.
+Non-HTTPS access will be removed in a future version. Consider migrating
+to an 'HTTPS' source."""
 
     def setUp(self):
         self.domain = 'domain'
@@ -337,6 +377,68 @@ Registered Sources:
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
+    def test_login_sources_listed_with_extra_non_list_text(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command_non_windows,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_login_sources_listed_with_extra_non_list_text_on_windows(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command_windows,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_sources_listed_with_extra_non_list_text_dry_run(self):
+        self.subprocess_utils.check_output.return_value = \
+                self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+        self.test_subject.login(dry_run=True)
+        self.subprocess_utils.check_output.assert_called_once_with(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
+    def test_login_dotnet_sources_listed_with_backtracking(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM,
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
+
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_login_dotnet_sources_listed_with_backtracking_windows(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM,
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login_source_name_already_exists(self):
         list_response = 'Registered Sources:\n' \
                         '  1.  ' + self.source_name + ' [ENABLED]\n' \
@@ -385,7 +487,7 @@ Registered Sources:
         self.subprocess_utils.check_output.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError,
                 'dotnet was not found. Please verify installation.'):
             self.test_subject.login()
@@ -449,6 +551,40 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils.check_call.assert_has_calls(
             expected_calls, any_order=True
         )
+
+    def test_login_always_auth_error_ignored(self):
+        """Test login ignores error for always-auth.
+
+        This test is for NPM version >= 9 where the support of 'always-auth'
+        has been dropped. Running the command to set config gives a non-zero
+        exit code. This is to make sure that login ignores that error and all
+        other commands executes successfully.
+        """
+        def side_effect(command, stdout, stderr):
+            """Set side_effect for always-auth config setting command"""
+            if any('always-auth' in arg for arg in command):
+                raise subprocess.CalledProcessError(
+                    returncode=1,
+                    cmd=command
+                )
+
+            return mock.DEFAULT
+
+        self.subprocess_utils.check_call.side_effect = side_effect
+        expected_calls = []
+
+        for command in self.commands:
+            expected_calls.append(mock.call(
+                    command,
+                    stdout=self.subprocess_utils.PIPE,
+                    stderr=self.subprocess_utils.PIPE,
+                )
+            )
+        self.test_subject.login()
+
+        self.subprocess_utils.check_call.assert_has_calls(
+                expected_calls, any_order=True
+            )
 
     def test_get_scope(self):
         expected_value = '@{}'.format(self.namespace)
@@ -590,7 +726,7 @@ class TestTwineLogin(unittest.TestCase):
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
-        pypi_rc.readfp(StringIO(pypi_rc_str))
+        pypi_rc.read_string(pypi_rc_str)
 
         self.assertIn('distutils', pypi_rc.sections())
         self.assertIn('index-servers', pypi_rc.options('distutils'))

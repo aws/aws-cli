@@ -6,7 +6,7 @@ The following ``create-data-catalog`` example creates the ``dynamo_db_catalog`` 
         --name dynamo_db_catalog \
         --type LAMBDA \
         --description "DynamoDB Catalog" \
-        --function=arn:aws:lambda:us-west-2:111122223333:function:dynamo_db_lambda
+        --parameters function=arn:aws:lambda:us-west-2:111122223333:function:dynamo_db_lambda
 
 This command produces no output. To see the result, use ``aws athena get-data-catalog --name dynamo_db_catalog``.
 

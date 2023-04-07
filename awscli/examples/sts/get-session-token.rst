@@ -11,7 +11,7 @@ Output::
 
     {
         "Credentials": {
-            "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
+            "AccessKeyId": "ASIAIOSFODNN7EXAMPLE",
             "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY",
             "SessionToken": "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
             "Expiration": "2020-05-19T18:06:10+00:00"

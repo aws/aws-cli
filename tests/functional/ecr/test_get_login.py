@@ -33,7 +33,7 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
         stdout = self.run_cmd("ecr get-login")[0]
         self.assertIn(
             'docker login -u foo -p bar -e none 1235.ecr.us-east-1.io', stdout)
-        self.assertEquals(1, len(self.operations_called))
+        self.assertEqual(1, len(self.operations_called))
         self.assertNotIn('registryIds', self.operations_called[0][1])
 
     def test_prints_login_command_with_no_email(self):
@@ -68,6 +68,6 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
         self.assertIn(
             'docker login -u abc -p 123 -e none 4567.ecr.us-east-1.io\n',
             stdout)
-        self.assertEquals(1, len(self.operations_called))
-        self.assertEquals([u'1234', u'5678'],
+        self.assertEqual(1, len(self.operations_called))
+        self.assertEqual([u'1234', u'5678'],
                           self.operations_called[0][1]['registryIds'])

@@ -62,10 +62,10 @@ class Kubeconfig(object):
         Return true if this kubeconfig contains an entry
         For the passed cluster name.
         """
-        if 'clusters' not in self.content:
+        if self.content.get('clusters') is None:
             return False
         return name in [cluster['name']
-                        for cluster in self.content['clusters']]
+                        for cluster in self.content['clusters'] if 'name' in cluster]
 
 
 class KubeconfigValidator(object):
@@ -83,7 +83,7 @@ class KubeconfigValidator(object):
         """
         if not isinstance(config, Kubeconfig):
             raise KubeconfigCorruptedError("Internal error: "
-                                           "Not a Kubeconfig object.")
+                                           f"Not a {Kubeconfig}.")
         self._validate_config_types(config)
         self._validate_list_entry_types(config)
 
@@ -96,18 +96,14 @@ class KubeconfigValidator(object):
         :type config: Kubeconfig
         """
         if not isinstance(config.content, dict):
-            raise KubeconfigCorruptedError("Content not a dictionary.")
+            raise KubeconfigCorruptedError(f"Content not a {dict}.")
         for key, value in self._validation_content.items():
             if (key in config.content and
                     config.content[key] is not None and
                     not isinstance(config.content[key], type(value))):
                 raise KubeconfigCorruptedError(
-                    "{0} is wrong type:{1} "
-                    "(Should be {2})".format(
-                        key,
-                        type(config.content[key]),
-                        type(value)
-                    )
+                    f"{key} is wrong type: {type(config.content[key])} "
+                    f"(Should be {type(value)})"
                 )
 
     def _validate_list_entry_types(self, config):
@@ -124,14 +120,14 @@ class KubeconfigValidator(object):
                 for element in config.content[key]:
                     if not isinstance(element, OrderedDict):
                         raise KubeconfigCorruptedError(
-                            "Entry in {0} not a dictionary.".format(key))
+                            f"Entry in {key} not a {dict}. ")
 
 
 class KubeconfigLoader(object):
-    def __init__(self, validator=None):
+    def __init__(self, validator = None):
         if validator is None:
-            validator = KubeconfigValidator()
-        self._validator = validator
+            validator=KubeconfigValidator()
+        self._validator=validator
 
     def load_kubeconfig(self, path):
         """
@@ -152,18 +148,18 @@ class KubeconfigLoader(object):
         """
         try:
             with open(path, "r") as stream:
-                loaded_content = ordered_yaml_load(stream)
+                loaded_content=ordered_yaml_load(stream)
         except IOError as e:
             if e.errno == errno.ENOENT:
-                loaded_content = None
+                loaded_content=None
             else:
                 raise KubeconfigInaccessableError(
-                    "Can't open kubeconfig for reading: {0}".format(e))
+                    f"Can't open kubeconfig for reading: {e}")
         except yaml.YAMLError as e:
             raise KubeconfigCorruptedError(
-                "YamlError while loading kubeconfig: {0}".format(e))
+                f"YamlError while loading kubeconfig: {e}")
 
-        loaded_config = Kubeconfig(path, loaded_content)
+        loaded_config=Kubeconfig(path, loaded_content)
         self._validator.validate_config(loaded_config)
 
         return loaded_config
@@ -181,14 +177,14 @@ class KubeconfigWriter(object):
         :raises KubeconfigInaccessableError: if the kubeconfig
         can't be opened for writing
         """
-        directory = os.path.dirname(config.path)
+        directory=os.path.dirname(config.path)
 
         try:
             os.makedirs(directory)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise KubeconfigInaccessableError(
-                        "Can't create directory for writing: {0}".format(e))
+                    f"Can't create directory for writing: {e}")
         try:
             with os.fdopen(
                     os.open(
@@ -199,42 +195,44 @@ class KubeconfigWriter(object):
                 ordered_yaml_dump(config.content, stream)
         except (IOError, OSError) as e:
             raise KubeconfigInaccessableError(
-                "Can't open kubeconfig for writing: {0}".format(e))
+                f"Can't open kubeconfig for writing: {e}")
 
 
 class KubeconfigAppender(object):
-    def insert_entry(self, config, key, entry):
+    def insert_entry(self, config, key, new_entry):
         """
-        Insert entry into the array at content[key]
+        Insert entry into the entries list at content[key]
         Overwrite an existing entry if they share the same name
 
         :param config: The kubeconfig to insert an entry into
         :type config: Kubeconfig
         """
-        if key not in config.content:
-            config.content[key] = []
-        array = config.content[key]
-        if not isinstance(array, list):
-            raise KubeconfigError("Tried to insert into {0},"
-                                  "which is a {1} "
-                                  "not a {2}".format(key,
-                                                     type(array),
-                                                     list))
-        found = False
-        for counter, existing_entry in enumerate(array):
-            if "name" in existing_entry and\
-               "name" in entry and\
-               existing_entry["name"] == entry["name"]:
-                array[counter] = entry
-                found = True
-
-        if not found:
-            array.append(entry)
-
-        config.content[key] = array
+        entries=self._setdefault_existing_entries(config, key)
+        same_name_index=self._index_same_name(entries, new_entry)
+        if same_name_index is None:
+            entries.append(new_entry)
+        else:
+            entries[same_name_index]=new_entry
         return config
 
-    def _make_context(self, cluster, user, alias=None):
+    def _setdefault_existing_entries(self, config, key):
+        config.content[key]=config.content.get(key) or []
+        entries=config.content[key]
+        if not isinstance(entries, list):
+            raise KubeconfigError(f"Tried to insert into {key}, "
+                                  f"which is a {type(entries)} "
+                                  f"not a {list}")
+        return entries
+
+    def _index_same_name(self, entries, new_entry):
+        if "name" in new_entry:
+            name_to_search=new_entry["name"]
+            for i, entry in enumerate(entries):
+                if "name" in entry and entry["name"] == name_to_search:
+                    return i
+        return None
+
+    def _make_context(self, cluster, user, alias = None):
         """ Generate a context to associate cluster and user with a given alias."""
         return OrderedDict([
             ("context", OrderedDict([
@@ -244,7 +242,7 @@ class KubeconfigAppender(object):
             ("name", alias or user["name"])
         ])
 
-    def insert_cluster_user_pair(self, config, cluster, user, alias=None):
+    def insert_cluster_user_pair(self, config, cluster, user, alias = None):
         """
         Insert the passed cluster entry and user entry,
         then make a context to associate them
@@ -266,11 +264,11 @@ class KubeconfigAppender(object):
         :return: The generated context
         :rtype: OrderedDict
         """
-        context = self._make_context(cluster, user, alias=alias)
+        context=self._make_context(cluster, user, alias = alias)
         self.insert_entry(config, "clusters", cluster)
         self.insert_entry(config, "users", user)
         self.insert_entry(config, "contexts", context)
 
-        config.content["current-context"] = context["name"]
+        config.content["current-context"]=context["name"]
 
         return context

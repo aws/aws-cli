@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, temporary_file
+from awscli.testutils import mock, unittest, temporary_file
 import argparse
 import errno
 import os
@@ -20,9 +20,8 @@ import ntpath
 import time
 import datetime
 
-import mock
+import pytest
 from dateutil.tz import tzlocal
-from nose.tools import assert_equal
 from s3transfer.futures import TransferMeta, TransferFuture
 from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
@@ -32,7 +31,7 @@ from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path,
+    guess_content_type, relative_path, block_unsupported_resources,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
@@ -47,47 +46,45 @@ from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
 
 
-def test_human_readable_size():
-    yield _test_human_size_matches, 1, '1 Byte'
-    yield _test_human_size_matches, 10, '10 Bytes'
-    yield _test_human_size_matches, 1000, '1000 Bytes'
-    yield _test_human_size_matches, 1024, '1.0 KiB'
-    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
-    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
-    yield _test_human_size_matches, 1024 ** 3, '1.0 GiB'
-    yield _test_human_size_matches, 1024 ** 4, '1.0 TiB'
-    yield _test_human_size_matches, 1024 ** 5, '1.0 PiB'
-    yield _test_human_size_matches, 1024 ** 6, '1.0 EiB'
-
-    # Round to the nearest block.
-    yield _test_human_size_matches, 1024 ** 2 - 1, '1.0 MiB'
-    yield _test_human_size_matches, 1024 ** 3 - 1, '1.0 GiB'
-
-
-def _test_human_size_matches(bytes_int, expected):
-    assert_equal(human_readable_size(bytes_int), expected)
-
-
-def test_convert_human_readable_to_bytes():
-    yield _test_convert_human_readable_to_bytes, "1", 1
-    yield _test_convert_human_readable_to_bytes, "1024", 1024
-    yield _test_convert_human_readable_to_bytes, "1KB", 1024
-    yield _test_convert_human_readable_to_bytes, "1kb", 1024
-    yield _test_convert_human_readable_to_bytes, "1MB", 1024 ** 2
-    yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
-    yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
-
-    # Also because of the "ls" output for s3, we support
-    # the IEC "mebibyte" format (MiB).
-    yield _test_convert_human_readable_to_bytes, "1KiB", 1024
-    yield _test_convert_human_readable_to_bytes, "1kib", 1024
-    yield _test_convert_human_readable_to_bytes, "1MiB", 1024 ** 2
-    yield _test_convert_human_readable_to_bytes, "1GiB", 1024 ** 3
-    yield _test_convert_human_readable_to_bytes, "1TiB", 1024 ** 4
+@pytest.mark.parametrize(
+    'bytes_int, expected',
+    (
+        (1, '1 Byte'),
+        (10, '10 Bytes'),
+        (1000, '1000 Bytes'),
+        (1024, '1.0 KiB'),
+        (1024 ** 2, '1.0 MiB'),
+        (1024 ** 3, '1.0 GiB'),
+        (1024 ** 4, '1.0 TiB'),
+        (1024 ** 5, '1.0 PiB'),
+        (1024 ** 6, '1.0 EiB'),
+        (1024 ** 2 - 1, '1.0 MiB'),
+        (1024 ** 3 - 1, '1.0 GiB'),
+    )
+)
+def test_human_readable_size(bytes_int, expected):
+    assert human_readable_size(bytes_int) == expected
 
 
-def _test_convert_human_readable_to_bytes(size_str, expected):
-    assert_equal(human_readable_to_bytes(size_str), expected)
+@pytest.mark.parametrize(
+    'size_str, expected',
+    (
+        ("1", 1),
+        ("1024", 1024),
+        ("1KB", 1024),
+        ("1kb", 1024),
+        ("1MB", 1024 ** 2),
+        ("1GB", 1024 ** 3),
+        ("1TB", 1024 ** 4),
+        ("1KiB", 1024),
+        ("1kib", 1024),
+        ("1MiB", 1024 ** 2),
+        ("1GiB", 1024 ** 3),
+        ("1TiB", 1024 ** 4),
+    )
+)
+def test_convert_human_readable_to_bytes(size_str, expected):
+    assert human_readable_to_bytes(size_str) == expected
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -299,6 +296,38 @@ class TestFindBucketKey(unittest.TestCase):
         self.assertEqual(key, 'prefix/key:name')
 
 
+class TestBlockUnsupportedResources(unittest.TestCase):
+    def test_object_lambda_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegex(
+                ValueError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                'accesspoint:my-accesspoint'
+            )
+
+    def test_object_lambda_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegex(
+                ValueError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                 'accesspoint/my-accesspoint'
+            )
+
+    def test_outpost_bucket_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegex(
+                ValueError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-outposts:us-west-2:123456789012:'
+                'outpost/op-0a12345678abcdefg:bucket/bucket-foo'
+            )
+
+    def test_outpost_bucket_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegex(
+                ValueError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-outposts:us-west-2:123456789012:'
+                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
+            )
 
 
 class TestCreateWarning(unittest.TestCase):
@@ -470,7 +499,7 @@ class TestGetFileStat(unittest.TestCase):
 
     def test_error_message(self):
         with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
-            with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
+            with self.assertRaisesRegex(ValueError, r'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
     def assert_handles_fromtimestamp_error(self, error):
@@ -818,18 +847,18 @@ class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
         # The directory should still exist
         self.assertTrue(os.path.exists(self.directory_to_create))
 
-    def test_on_queued_failure_propogates_create_directory_error(self):
+    def test_on_queued_failure_propagates_create_directory_error(self):
         # If makedirs() raises an OSError of exception, we should
-        # propogate the exception with a better worded CreateDirectoryError.
+        # propagate the exception with a better worded CreateDirectoryError.
         with mock.patch('os.makedirs') as makedirs_patch:
             makedirs_patch.side_effect = OSError()
             with self.assertRaises(CreateDirectoryError):
                 self.subscriber.on_queued(self.future)
         self.assertFalse(os.path.exists(self.directory_to_create))
 
-    def test_on_queued_failure_propogates_clear_error_message(self):
+    def test_on_queued_failure_propagates_clear_error_message(self):
         # If makedirs() raises an OSError of exception, we should
-        # propogate the exception.
+        # propagate the exception.
         with mock.patch('os.makedirs') as makedirs_patch:
             os_error = OSError()
             os_error.errno = errno.EEXIST

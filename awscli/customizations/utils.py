@@ -114,7 +114,7 @@ def validate_mutually_exclusive_handler(*groups):
 
 
 def validate_mutually_exclusive(parsed_args, *groups):
-    """Validate mututally exclusive groups in the parsed args."""
+    """Validate mutually exclusive groups in the parsed args."""
     args_dict = vars(parsed_args)
     all_args = set(arg for group in groups for arg in group)
     if not any(k in all_args for k in args_dict if args_dict[k] is not None):

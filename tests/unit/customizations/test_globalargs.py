@@ -14,10 +14,8 @@ from botocore.session import get_session
 from botocore.handlers import disable_signing
 import os
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.compat import six
-import mock
-
 from awscli.customizations import globalargs
 
 
@@ -86,43 +84,6 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertFalse(parsed_args.verify_ssl)
 
-    def test_os_environ_overrides_cert_bundle(self):
-        environ = {
-            'AWS_CA_BUNDLE': '/path/to/bundle.pem',
-        }
-        with mock.patch('os.environ', environ):
-            parsed_args = FakeParsedArgs(verify_ssl=True, ca_bundle=None)
-            session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
-            session = FakeSession(session_vars=session_var_map)
-            globalargs.resolve_verify_ssl(parsed_args, session)
-            self.assertEqual(parsed_args.verify_ssl, '/path/to/bundle.pem')
-
-    def test_config_overrides_cert_bundle(self):
-        environ = {}
-        with mock.patch('os.environ', environ):
-            parsed_args = FakeParsedArgs(verify_ssl=True, ca_bundle=None)
-            config_file_vars = {'ca_bundle': '/path/to/bundle.pem'}
-            session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
-            session = FakeSession(
-                session_vars=session_var_map,
-                config_file_vars=config_file_vars)
-            globalargs.resolve_verify_ssl(parsed_args, session)
-            self.assertEqual(parsed_args.verify_ssl, '/path/to/bundle.pem')
-
-    def test_os_environ_overrides_config_cert_bundle(self):
-        environ = {
-            'AWS_CA_BUNDLE': '/path/to/env_bundle.pem',
-        }
-        with mock.patch('os.environ', environ):
-            parsed_args = FakeParsedArgs(verify_ssl=True, ca_bundle=None)
-            config_file_vars = {'ca_bundle': '/path/to/confg_bundle.pem'}
-            session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
-            session = FakeSession(
-                session_vars=session_var_map,
-                config_file_vars=config_file_vars)
-            globalargs.resolve_verify_ssl(parsed_args, session)
-            self.assertEqual(parsed_args.verify_ssl, '/path/to/env_bundle.pem')
-
     def test_cli_overrides_cert_bundle(self):
         environ = {}
         with mock.patch('os.environ', environ):
@@ -174,7 +135,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         session = mock.Mock()
 
         globalargs.no_sign_request(args, session)
-        session.register.assert_called_with(
+        emitter = session.get_component('event_emitter')
+        emitter.register_first.assert_called_with(
             'choose-signer', disable_signing, unique_id='disable-signing')
 
     def test_request_signed_by_default(self):

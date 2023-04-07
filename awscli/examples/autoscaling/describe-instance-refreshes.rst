@@ -1,6 +1,6 @@
 **To list instance refreshes**
 
-The following ``describe-instance-refreshes`` example returns a description of all instance refresh requests for the specified Auto Scaling group, including the status messsage and (if available) the status reason. ::
+The following ``describe-instance-refreshes`` example returns a description of all instance refresh requests for the specified Auto Scaling group, including the status message and (if available) the status reason. ::
 
     aws autoscaling describe-instance-refreshes \
         --auto-scaling-group-name my-asg 
@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `Replacing Auto Scaling Instances Based on an Instance Refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Replacing Auto Scaling instances based on an instance refresh <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

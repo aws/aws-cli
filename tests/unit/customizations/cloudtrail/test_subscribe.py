@@ -8,11 +8,10 @@
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# ANY KIND, either express or implied. See the License for the specific
+# mock.ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
 
-from mock import ANY, Mock, call, patch
 from botocore.client import ClientError
 from botocore.session import Session
 
@@ -20,7 +19,7 @@ from tests.unit.test_clidriver import FakeSession
 from awscli.compat import six
 from awscli.customizations.cloudtrail.subscribe import CloudTrailError, CloudTrailSubscribe
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import unittest, temporary_file
+from awscli.testutils import mock, unittest, temporary_file
 
 
 class TestCreateSubscription(BaseAWSCommandParamsTest):
@@ -32,9 +31,9 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
         # sure it says log delivery is happening.
         self.assertIn('Logs will be delivered to foo', stdout)
 
-    @patch.object(Session, 'create_client')
+    @mock.patch.object(Session, 'create_client')
     def test_policy_from_paramfile(self, create_client_mock):
-        client = Mock()
+        client = mock.Mock()
         # S3 mock calls
         client.get_caller_identity.return_value = {'Account': ''}
         client.head_bucket.side_effect = ClientError(
@@ -65,57 +64,57 @@ class TestCloudTrailCommand(unittest.TestCase):
         self.subscribe = CloudTrailSubscribe(self.session)
         self.subscribe.region_name = 'us-east-1'
 
-        self.subscribe.sts = Mock()
-        self.subscribe.sts.get_caller_identity = Mock(
+        self.subscribe.sts = mock.Mock()
+        self.subscribe.sts.get_caller_identity = mock.Mock(
             return_value={'Account': '123456'})
 
-        self.subscribe.s3 = Mock()
+        self.subscribe.s3 = mock.Mock()
         self.subscribe.s3.meta.region_name = 'us-east-1'
         policy_template = six.BytesIO(six.b(u'{"Statement": []}'))
-        self.subscribe.s3.get_object = Mock(
+        self.subscribe.s3.get_object = mock.Mock(
             return_value={'Body': policy_template})
         self.subscribe.s3.head_bucket.return_value = {}
 
-        self.subscribe.sns = Mock()
+        self.subscribe.sns = mock.Mock()
         self.subscribe.sns.meta.region_name = 'us-east-1'
-        self.subscribe.sns.list_topics = Mock(
+        self.subscribe.sns.list_topics = mock.Mock(
             return_value={'Topics': [{'TopicArn': ':test2'}]})
-        self.subscribe.sns.create_topic = Mock(
+        self.subscribe.sns.create_topic = mock.Mock(
             return_value={'TopicArn': 'foo'})
-        self.subscribe.sns.get_topic_attributes = Mock(
+        self.subscribe.sns.get_topic_attributes = mock.Mock(
             return_value={'Attributes': {'Policy': '{"Statement": []}'}})
 
     def test_clients_all_from_same_session(self):
-        session = Mock()
+        session = mock.Mock()
         subscribe_command = CloudTrailSubscribe(session)
-        parsed_globals = Mock(region=None, verify_ssl=None,
+        parsed_globals = mock.Mock(region=None, verify_ssl=None,
                               endpoint_url=None)
         subscribe_command.setup_services(None, parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls, [
-                call('sts', verify=None, region_name=None),
-                call('s3', verify=None, region_name=None),
-                call('sns', verify=None, region_name=None),
-                call('cloudtrail', verify=None, region_name=None),
+                mock.call('sts', verify=None, region_name=None),
+                mock.call('s3', verify=None, region_name=None),
+                mock.call('sns', verify=None, region_name=None),
+                mock.call('cloudtrail', verify=None, region_name=None),
             ]
         )
 
     def test_endpoint_url_is_only_used_for_cloudtrail(self):
         endpoint_url = 'https://mycloudtrail.awsamazon.com/'
-        session = Mock()
+        session = mock.Mock()
         subscribe_command = CloudTrailSubscribe(session)
-        parsed_globals = Mock(region=None, verify_ssl=None,
+        parsed_globals = mock.Mock(region=None, verify_ssl=None,
                               endpoint_url=endpoint_url)
         subscribe_command.setup_services(None, parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls, [
-                call('sts', verify=None, region_name=None),
-                call('s3', verify=None, region_name=None),
-                call('sns', verify=None, region_name=None),
+                mock.call('sts', verify=None, region_name=None),
+                mock.call('s3', verify=None, region_name=None),
+                mock.call('sns', verify=None, region_name=None),
                 # Here we should inject the endpoint_url only for cloudtrail.
-                call('cloudtrail', verify=None, region_name=None,
+                mock.call('cloudtrail', verify=None, region_name=None,
                      endpoint_url=endpoint_url),
             ]
         )
@@ -152,7 +151,7 @@ class TestCloudTrailCommand(unittest.TestCase):
         self.subscribe.setup_new_bucket('test', 'logs')
 
         s3.get_object.assert_called_with(
-            Bucket='awscloudtrail-policy-us-east-1', Key=ANY)
+            Bucket='awscloudtrail-policy-us-east-1', Key=mock.ANY)
 
     def test_s3_create_non_us_east_1(self):
         # Because this is outside of us-east-1, it should create
@@ -188,13 +187,13 @@ class TestCloudTrailCommand(unittest.TestCase):
     def test_s3_create_set_policy_fail(self):
         s3 = self.subscribe.s3
         orig = s3.put_bucket_policy
-        s3.put_bucket_policy = Mock(side_effect=Exception('Error!'))
+        s3.put_bucket_policy = mock.Mock(side_effect=Exception('Error!'))
 
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test', 'logs')
 
     def test_s3_get_policy_fail(self):
-        self.subscribe.s3.get_object = Mock(side_effect=Exception('Foo!'))
+        self.subscribe.s3.get_object = mock.Mock(side_effect=Exception('Foo!'))
 
         with self.assertRaises(CloudTrailError) as cm:
             self.subscribe.setup_new_bucket('test', 'logs')
@@ -206,7 +205,7 @@ class TestCloudTrailCommand(unittest.TestCase):
 
     def test_get_policy_read_timeout(self):
         response = {
-            'Body': Mock()
+            'Body': mock.Mock()
         }
         response['Body'].read.side_effect = Exception('Error!')
         self.subscribe.s3.get_object.return_value = response
@@ -215,7 +214,7 @@ class TestCloudTrailCommand(unittest.TestCase):
             self.subscribe.setup_new_bucket('test', 'logs')
 
     def test_sns_get_policy_fail(self):
-        self.subscribe.s3.get_object = Mock(side_effect=Exception('Error!'))
+        self.subscribe.s3.get_object = mock.Mock(side_effect=Exception('Error!'))
 
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test', 'logs')
@@ -246,7 +245,7 @@ class TestCloudTrailCommand(unittest.TestCase):
         self.subscribe.setup_new_topic('test')
 
         s3.get_object.assert_called_with(
-            Bucket='awscloudtrail-policy-us-east-1', Key=ANY)
+            Bucket='awscloudtrail-policy-us-east-1', Key=mock.ANY)
 
     def test_sns_custom_policy(self):
         s3 = self.subscribe.s3
@@ -263,16 +262,16 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         s3.get_object.assert_not_called()
         sns.set_topic_attributes.assert_called_with(
-          TopicArn=ANY, AttributeName='Policy', AttributeValue=policy)
+          TopicArn=mock.ANY, AttributeName='Policy', AttributeValue=policy)
 
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_topic('test2')
 
     def test_cloudtrail_new_call_format(self):
-        self.subscribe.cloudtrail = Mock()
-        self.subscribe.cloudtrail.create_trail = Mock(return_value={})
-        self.subscribe.cloudtrail.describe_trail = Mock(return_value={})
+        self.subscribe.cloudtrail = mock.Mock()
+        self.subscribe.cloudtrail.create_trail = mock.Mock(return_value={})
+        self.subscribe.cloudtrail.describe_trail = mock.Mock(return_value={})
 
         self.subscribe.upsert_cloudtrail_config('test', 'bucket', 'prefix',
                                                 'topic', True)

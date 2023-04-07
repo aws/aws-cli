@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `Create a Transit Gateway Route Table <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#create-tgw-route-table>`__ in the *AWS Transit Gateways Guide*.
+For more information, see `Create a transit gateway route table <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#create-tgw-route-table>`__ in the *Transit Gateways Guide*.

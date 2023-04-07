@@ -2,7 +2,7 @@ users:
 - name: arn:aws:eks:us-west-2:111222333444:cluster/Existing
   user:
     exec:
-      apiVersion: client.authentication.k8s.io/v1alpha1
+      apiVersion: client.authentication.k8s.io/v1beta1
       args:
       - --region
       - us-west-2
@@ -10,11 +10,13 @@ users:
       - get-token
       - --cluster-name
       - Existing
+      - --output
+      - json
       command: aws
 - name: arn:aws:eks:region:111222333444:cluster/ExampleCluster
   user:
     exec:
-      apiVersion: client.authentication.k8s.io/v1alpha1
+      apiVersion: client.authentication.k8s.io/v1beta1
       args:
       - --region
       - region
@@ -22,6 +24,8 @@ users:
       - get-token
       - --cluster-name
       - ExampleCluster
+      - --output
+      - json
       command: aws
 clusters:
 - cluster:

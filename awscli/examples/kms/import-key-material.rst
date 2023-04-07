@@ -1,10 +1,10 @@
-**To import key material into a KMS customer master key**
+**To import key material into a KMS key**
 
-The following ``import-key-material`` example uploads key material into a CMK that was created with no key material. The key state of the CMK must be ``PendingImport``.
+The following ``import-key-material`` example uploads key material into a KMS key that was created with no key material. The key state of the KMS key must be ``PendingImport``.
 
 This command uses key material that you encrypted with the public key that the ``get-parameters-for-import`` command returned. It also uses the import token from the same ``get-parameters-for-import`` command. 
 
-The ``expiration-model`` parameter indicates that the key material automatically expires on the date and time specified by the ``valid-to`` parameter. When the key material expires, AWS KMS deletes the key material, the key state of the CMK changes to ``Pending import`` and the CMK becomes unusable. To restore the CMK, you must reimport the same key material. To use different key material, you must create a new CMK.
+The ``expiration-model`` parameter indicates that the key material automatically expires on the date and time specified by the ``valid-to`` parameter. When the key material expires, AWS KMS deletes the key material, the key state of the KMS key changes to ``Pending import`` and the KMS key becomes unusable. To restore the KMS key, you must reimport the same key material. To use different key material, you must create a new KMS key.
 
 Before running this command, replace the example key ID with a valid key ID or key ARN from your AWS account. ::
 

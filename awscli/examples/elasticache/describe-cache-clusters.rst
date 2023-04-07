@@ -1,15 +1,14 @@
 **To describe a cache cluster**
 
-The following ``describe-cache-clusters`` example returns information about the specific cache cluster. ::
+The following ``describe-cache-clusters`` example describes a cache cluster. ::
 
-    aws elasticache describe-cache-clusters \
-        --cache-cluster-id "my-cluster-003"
+    aws elasticache describe-cache-clusters
 
 Output::
 
     {
         "CacheClusters": [
-            {
+        {
                 "CacheClusterId": "my-cluster-003",
                 "ClientDownloadLandingPage": "https://console.aws.amazon.com/elasticache/home#client-download:",
                 "CacheNodeType": "cache.r5.large",
@@ -44,11 +43,24 @@ Output::
                 "SnapshotWindow": "06:30-07:30",
                 "AuthTokenEnabled": false,
                 "TransitEncryptionEnabled": false,
-                "AtRestEncryptionEnabled": false
+                "AtRestEncryptionEnabled": false,
+                "ARN": "arn:aws:elasticache:us-west-2:xxxxxxxxxxx152:cluster:my-cache-cluster",
+                "ReplicationGroupLogDeliveryEnabled": false,
+                "LogDeliveryConfigurations": [
+                    {
+                        "LogType": "slow-log",
+                        "DestinationType": "cloudwatch-logs",
+                        "DestinationDetails": {
+                            "CloudWatchLogsDetails": {
+                                "LogGroup": "test-log"
+                            }
+                        },
+                        "LogFormat": "text",
+                        "Status": "active"
+                    }
+                ]
             }
         ]
     }
 
-For more information, see `Viewing a Cluster's Details <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.ViewDetails.html>`__ in the *Elasticache User Guide*.
-   
-  
+For more information, see `Managing Clusters <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.html>`__ in the *Elasticache User Guide*.

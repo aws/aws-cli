@@ -48,7 +48,7 @@ Output::
 The following ``describe-capacity-reservations`` example displays details about the specified capacity reservation. ::
 
     aws ec2 describe-capacity-reservations \
-        --capacity-reserveration-id cr-1234abcd56EXAMPLE
+        --capacity-reservation-id cr-1234abcd56EXAMPLE
 
 Output::
 

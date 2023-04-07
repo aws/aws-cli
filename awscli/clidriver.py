@@ -21,6 +21,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.exceptions import ProfileNotFound
 from botocore.history import get_global_history_recorder
 
 from awscli import EnvironmentVariables, __version__
@@ -142,7 +143,6 @@ class CLIDriver(object):
         return commands
 
     def _add_aliases(self, command_table, parser):
-        parser = self._create_parser(command_table)
         injector = AliasCommandInjector(
             self.session, self.alias_loader)
         injector.inject_aliases(command_table, parser)
@@ -342,8 +342,11 @@ class ServiceCommand(CLICommand):
 
     def _get_service_model(self):
         if self._service_model is None:
-            api_version = self.session.get_config_variable('api_versions').get(
-                self._service_name, None)
+            try:
+                api_version = self.session.get_config_variable(
+                    'api_versions').get(self._service_name, None)
+            except ProfileNotFound:
+                api_version = None
             self._service_model = self.session.get_service_model(
                 self._service_name, api_version=api_version)
         return self._service_model
@@ -481,7 +484,7 @@ class ServiceOperation(object):
         event = 'before-building-argument-table-parser.%s.%s' % \
             (self._parent_name, self._name)
         self._emit(event, argument_table=self.arg_table, args=args,
-                   session=self._session)
+                   session=self._session, parsed_globals=parsed_globals)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)

@@ -10,13 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import errno
 import json
 import botocore.session
 
 from awscli.customizations import sessionmanager
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestSessionManager(unittest.TestCase):
@@ -36,7 +35,7 @@ class TestSessionManager(unittest.TestCase):
     def test_start_session_when_non_custom_start_session_fails(self):
         self.client.start_session.side_effect = Exception('some exception')
         params = {}
-        with self.assertRaisesRegexp(Exception, 'some exception'):
+        with self.assertRaisesRegex(Exception, 'some exception'):
             self.caller.invoke('ssm', 'StartSession', params, mock.Mock())
 
     @mock.patch('awscli.customizations.sessionmanager.check_call')
@@ -57,7 +56,7 @@ class TestSessionManager(unittest.TestCase):
 
         rc = self.caller.invoke('ssm', 'StartSession',
                                 start_session_params, mock.Mock())
-        self.assertEquals(rc, 0)
+        self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
         mock_check_call_list = mock_check_call.call_args[0][0]
         mock_check_call_list[1] = json.loads(mock_check_call_list[1])
@@ -133,7 +132,7 @@ class TestSessionManager(unittest.TestCase):
 
         rc = self.caller.invoke('ssm', 'StartSession',
                                 start_session_params, mock.Mock())
-        self.assertEquals(rc, 0)
+        self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
         mock_check_call_list = mock_check_call.call_args[0][0]
-        self.assertEquals(mock_check_call_list[4], '')
+        self.assertEqual(mock_check_call_list[4], '')

@@ -44,8 +44,10 @@ class ConfigureListCommand(BasicCommand):
         '\n'
     )
 
-    def __init__(self, session, stream=sys.stdout):
+    def __init__(self, session, stream=None):
         super(ConfigureListCommand, self).__init__(session)
+        if stream is None:
+            stream = sys.stdout
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
@@ -54,9 +56,8 @@ class ConfigureListCommand(BasicCommand):
         self._display_config_value(ConfigValue('-----', '----', '--------'),
                                    '----')
 
-        if self._session.profile is not None:
-            profile = ConfigValue(self._session.profile, 'manual',
-                                  '--profile')
+        if parsed_globals and parsed_globals.profile is not None:
+            profile = ConfigValue(self._session.profile, 'manual', '--profile')
         else:
             profile = self._lookup_config('profile')
         self._display_config_value(profile, 'profile')
@@ -67,6 +68,7 @@ class ConfigureListCommand(BasicCommand):
 
         region = self._lookup_config('region')
         self._display_config_value(region, 'region')
+        return 0
 
     def _display_config_value(self, config_value, config_name):
         self._stream.write('%10s %24s %16s    %s\n' % (

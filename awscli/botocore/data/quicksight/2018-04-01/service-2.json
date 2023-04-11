@@ -292,6 +292,26 @@
       ],
       "documentation":"<p>(Enterprise edition only) Creates a new namespace for you to use with Amazon QuickSight.</p> <p>A namespace allows you to isolate the Amazon QuickSight users and groups that are registered for that namespace. Users that access the namespace can share assets only with other users or groups in the same namespace. They can't see users and groups in other namespaces. You can create a namespace after your Amazon Web Services account is subscribed to Amazon QuickSight. The namespace must be unique within the Amazon Web Services account. By default, there is a limit of 100 namespaces per Amazon Web Services account. To increase your limit, create a ticket with Amazon Web Services Support. </p>"
     },
+    "CreateRefreshSchedule":{
+      "name":"CreateRefreshSchedule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules"
+      },
+      "input":{"shape":"CreateRefreshScheduleRequest"},
+      "output":{"shape":"CreateRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a refresh schedule for a dataset. You can create up to 5 different schedules for a single dataset.</p>"
+    },
     "CreateTemplate":{
       "name":"CreateTemplate",
       "http":{
@@ -464,6 +484,25 @@
       ],
       "documentation":"<p>Deletes a dataset.</p>"
     },
+    "DeleteDataSetRefreshProperties":{
+      "name":"DeleteDataSetRefreshProperties",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties"
+      },
+      "input":{"shape":"DeleteDataSetRefreshPropertiesRequest"},
+      "output":{"shape":"DeleteDataSetRefreshPropertiesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes the dataset refresh properties of the dataset.</p>"
+    },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
       "http":{
@@ -594,6 +633,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Deletes a namespace and the users and groups that are associated with the namespace. This is an asynchronous process. Assets including dashboards, analyses, datasets and data sources are not deleted. To delete these assets, you use the API operations for the relevant asset. </p>"
+    },
+    "DeleteRefreshSchedule":{
+      "name":"DeleteRefreshSchedule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}"
+      },
+      "input":{"shape":"DeleteRefreshScheduleRequest"},
+      "output":{"shape":"DeleteRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a refresh schedule from a dataset.</p>"
     },
     "DeleteTemplate":{
       "name":"DeleteTemplate",
@@ -904,6 +961,25 @@
       ],
       "documentation":"<p>Describes the permissions on a dataset.</p> <p>The permissions resource is <code>arn:aws:quicksight:region:aws-account-id:dataset/data-set-id</code>.</p>"
     },
+    "DescribeDataSetRefreshProperties":{
+      "name":"DescribeDataSetRefreshProperties",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties"
+      },
+      "input":{"shape":"DescribeDataSetRefreshPropertiesRequest"},
+      "output":{"shape":"DescribeDataSetRefreshPropertiesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the refresh properties of a dataset.</p>"
+    },
     "DescribeDataSource":{
       "name":"DescribeDataSource",
       "http":{
@@ -1100,6 +1176,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Describes the current namespace.</p>"
+    },
+    "DescribeRefreshSchedule":{
+      "name":"DescribeRefreshSchedule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}"
+      },
+      "input":{"shape":"DescribeRefreshScheduleRequest"},
+      "output":{"shape":"DescribeRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Provides a summary of a refresh schedule.</p>"
     },
     "DescribeTemplate":{
       "name":"DescribeTemplate",
@@ -1573,6 +1667,24 @@
       ],
       "documentation":"<p>Lists the namespaces for the specified Amazon Web Services account. This operation doesn't list deleted namespaces.</p>"
     },
+    "ListRefreshSchedules":{
+      "name":"ListRefreshSchedules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules"
+      },
+      "input":{"shape":"ListRefreshSchedulesRequest"},
+      "output":{"shape":"ListRefreshSchedulesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the refresh schedules of a dataset. Each dataset can have up to 5 schedules. </p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1738,6 +1850,26 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Returns a list of all of the Amazon QuickSight users belonging to this account. </p>"
+    },
+    "PutDataSetRefreshProperties":{
+      "name":"PutDataSetRefreshProperties",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties"
+      },
+      "input":{"shape":"PutDataSetRefreshPropertiesRequest"},
+      "output":{"shape":"PutDataSetRefreshPropertiesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates or updates the dataset refresh properties for the dataset.</p>"
     },
     "RegisterUser":{
       "name":"RegisterUser",
@@ -2242,6 +2374,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Use the <code>UpdatePublicSharingSettings</code> operation to turn on or turn off the public sharing settings of an Amazon QuickSight dashboard.</p> <p>To use this operation, turn on session capacity pricing for your Amazon QuickSight account.</p> <p>Before you can turn on public sharing on your account, make sure to give public sharing permissions to an administrative user in the Identity and Access Management (IAM) console. For more information on using IAM with Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/security_iam_service-with-iam.html\">Using Amazon QuickSight with IAM</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+    },
+    "UpdateRefreshSchedule":{
+      "name":"UpdateRefreshSchedule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules"
+      },
+      "input":{"shape":"UpdateRefreshScheduleRequest"},
+      "output":{"shape":"UpdateRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a refresh schedule for a dataset.</p>"
     },
     "UpdateTemplate":{
       "name":"UpdateTemplate",
@@ -5727,6 +5878,54 @@
         }
       }
     },
+    "CreateRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "DataSetId",
+        "AwsAccountId",
+        "Schedule"
+      ],
+      "members":{
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Schedule":{
+          "shape":"RefreshSchedule",
+          "documentation":"<p>The refresh schedule.</p>"
+        }
+      }
+    },
+    "CreateRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the refresh schedule.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
+        }
+      }
+    },
     "CreateTemplateAliasRequest":{
       "type":"structure",
       "required":[
@@ -7175,6 +7374,17 @@
       "member":{"shape":"DataSetReference"},
       "min":1
     },
+    "DataSetRefreshProperties":{
+      "type":"structure",
+      "required":["RefreshConfiguration"],
+      "members":{
+        "RefreshConfiguration":{
+          "shape":"RefreshConfiguration",
+          "documentation":"<p>The refresh configuration for a dataset.</p>"
+        }
+      },
+      "documentation":"<p>The refresh properties of a dataset.</p>"
+    },
     "DataSetSchema":{
       "type":"structure",
       "members":{
@@ -7827,6 +8037,24 @@
       },
       "documentation":"<p>The configuration that defines the default value of a <code>DateTime</code> parameter when a value has not been set.</p>"
     },
+    "DayOfMonth":{
+      "type":"string",
+      "max":17,
+      "min":1,
+      "pattern":"^(?:LAST_DAY_OF_MONTH|1[0-9]|2[0-8]|[12]|[3-9])$"
+    },
+    "DayOfWeek":{
+      "type":"string",
+      "enum":[
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    },
     "DecimalDefaultValueList":{
       "type":"list",
       "member":{"shape":"SensitiveDoubleObject"},
@@ -8164,6 +8392,41 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DeleteDataSetRefreshPropertiesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DataSetId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        }
+      }
+    },
+    "DeleteDataSetRefreshPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -8513,6 +8776,56 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DeleteRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "DataSetId",
+        "AwsAccountId",
+        "ScheduleId"
+      ],
+      "members":{
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the refresh schedule.</p>",
+          "location":"uri",
+          "locationName":"ScheduleId"
+        }
+      }
+    },
+    "DeleteRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the refresh schedule.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
         }
       }
     },
@@ -9295,6 +9608,45 @@
         }
       }
     },
+    "DescribeDataSetRefreshPropertiesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DataSetId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        }
+      }
+    },
+    "DescribeDataSetRefreshPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "DataSetRefreshProperties":{
+          "shape":"DataSetRefreshProperties",
+          "documentation":"<p>The dataset refresh properties.</p>"
+        }
+      }
+    },
     "DescribeDataSetRequest":{
       "type":"structure",
       "required":[
@@ -9815,6 +10167,56 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DescribeRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DataSetId",
+        "ScheduleId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the refresh schedule.</p>",
+          "location":"uri",
+          "locationName":"ScheduleId"
+        }
+      }
+    },
+    "DescribeRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "RefreshSchedule":{
+          "shape":"RefreshSchedule",
+          "documentation":"<p>The refresh schedule.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
         }
       }
     },
@@ -13306,6 +13708,17 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "IncrementalRefresh":{
+      "type":"structure",
+      "required":["LookbackWindow"],
+      "members":{
+        "LookbackWindow":{
+          "shape":"LookbackWindow",
+          "documentation":"<p>The lookback window setup for an incremental refresh configuration.</p>"
+        }
+      },
+      "documentation":"<p>The incremental refresh configuration for a dataset.</p>"
+    },
     "Ingestion":{
       "type":"structure",
       "required":[
@@ -13403,7 +13816,8 @@
         "REFRESH_SUPPRESSED_BY_EDIT",
         "PERMISSION_NOT_FOUND",
         "ELASTICSEARCH_CURSOR_NOT_ENABLED",
-        "CURSOR_NOT_ENABLED"
+        "CURSOR_NOT_ENABLED",
+        "DUPLICATE_COLUMN_NAMES_FOUND"
       ]
     },
     "IngestionId":{
@@ -15101,6 +15515,45 @@
         }
       }
     },
+    "ListRefreshSchedulesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DataSetId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        }
+      }
+    },
+    "ListRefreshSchedulesResponse":{
+      "type":"structure",
+      "members":{
+        "RefreshSchedules":{
+          "shape":"RefreshSchedules",
+          "documentation":"<p>The list of refresh schedules for the dataset.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -15682,6 +16135,37 @@
       "type":"double",
       "max":1800,
       "min":-1800
+    },
+    "LookbackWindow":{
+      "type":"structure",
+      "required":[
+        "ColumnName",
+        "Size",
+        "SizeUnit"
+      ],
+      "members":{
+        "ColumnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the lookback window column.</p>"
+        },
+        "Size":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The lookback window column size.</p>"
+        },
+        "SizeUnit":{
+          "shape":"LookbackWindowSizeUnit",
+          "documentation":"<p>The size unit that is used for the lookback window column. Valid values for this structure are <code>HOUR</code>, <code>DAY</code>, and <code>WEEK</code>.</p>"
+        }
+      },
+      "documentation":"<p>The lookback window setup of an incremental refresh configuration.</p>"
+    },
+    "LookbackWindowSizeUnit":{
+      "type":"string",
+      "enum":[
+        "HOUR",
+        "DAY",
+        "WEEK"
+      ]
     },
     "ManifestFileLocation":{
       "type":"structure",
@@ -17589,6 +18073,10 @@
       "type":"integer",
       "min":1
     },
+    "PositiveLong":{
+      "type":"long",
+      "min":1
+    },
     "PostgreSqlParameters":{
       "type":"structure",
       "required":[
@@ -17732,6 +18220,46 @@
       "member":{"shape":"String"},
       "max":2000,
       "min":1
+    },
+    "PutDataSetRefreshPropertiesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DataSetId",
+        "DataSetRefreshProperties"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "DataSetRefreshProperties":{
+          "shape":"DataSetRefreshProperties",
+          "documentation":"<p>The dataset refresh properties.</p>"
+        }
+      }
+    },
+    "PutDataSetRefreshPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "Query":{
       "type":"string",
@@ -18193,6 +18721,89 @@
         "BEFORE_CUSTOM_LABEL",
         "AFTER_CUSTOM_LABEL"
       ]
+    },
+    "RefreshConfiguration":{
+      "type":"structure",
+      "required":["IncrementalRefresh"],
+      "members":{
+        "IncrementalRefresh":{
+          "shape":"IncrementalRefresh",
+          "documentation":"<p>The incremental refresh for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>The refresh configuration of a dataset.</p>"
+    },
+    "RefreshFrequency":{
+      "type":"structure",
+      "required":["Interval"],
+      "members":{
+        "Interval":{
+          "shape":"RefreshInterval",
+          "documentation":"<p>The interval between scheduled refreshes. Valid values are as follows:</p> <ul> <li> <p> <code>MINUTE15</code>: The dataset refreshes every 15 minutes. This value is only supported for incremental refreshes. This interval can only be used for one schedule per dataset.</p> </li> <li> <p> <code>MINUTE30</code>:The dataset refreshes every 30 minutes. This value is only supported for incremental refreshes. This interval can only be used for one schedule per dataset.</p> </li> <li> <p> <code>HOURLY</code>: The dataset refreshes every hour. This interval can only be used for one schedule per dataset.</p> </li> <li> <p> <code>DAILY</code>: The dataset refreshes every day.</p> </li> <li> <p> <code>WEEKLY</code>: The dataset refreshes every week.</p> </li> <li> <p> <code>MONTHLY</code>: The dataset refreshes every month.</p> </li> </ul>"
+        },
+        "RefreshOnDay":{
+          "shape":"ScheduleRefreshOnEntity",
+          "documentation":"<p>The day of the week that you want to schedule the refresh on. This value is required for weekly and monthly refresh intervals.</p>"
+        },
+        "Timezone":{
+          "shape":"String",
+          "documentation":"<p>The timezone that you want the refresh schedule to use. The timezone ID must match a corresponding ID found on <code>java.util.time.getAvailableIDs()</code>.</p>"
+        },
+        "TimeOfTheDay":{
+          "shape":"String",
+          "documentation":"<p>The time of day that you want the datset to refresh. This value is expressed in HH:MM format. This field is not required for schedules that refresh hourly.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the interval between each scheduled refresh of a dataset.</p>"
+    },
+    "RefreshInterval":{
+      "type":"string",
+      "enum":[
+        "MINUTE15",
+        "MINUTE30",
+        "HOURLY",
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY"
+      ]
+    },
+    "RefreshSchedule":{
+      "type":"structure",
+      "required":[
+        "ScheduleId",
+        "ScheduleFrequency",
+        "RefreshType"
+      ],
+      "members":{
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>An identifier for the refresh schedule.</p>"
+        },
+        "ScheduleFrequency":{
+          "shape":"RefreshFrequency",
+          "documentation":"<p>The frequency for the refresh schedule.</p>"
+        },
+        "StartAfterDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time after which the refresh schedule can be started, expressed in <code>YYYY-MM-DDTHH:MM:SS</code> format.</p>"
+        },
+        "RefreshType":{
+          "shape":"IngestionType",
+          "documentation":"<p>The type of refresh that a datset undergoes. Valid values are as follows:</p> <ul> <li> <p> <code>FULL_REFRESH</code>: A complete refresh of a dataset.</p> </li> <li> <p> <code>INCREMENTAL_REFRESH</code>: A partial refresh of some rows of a dataset, based on the time window specified.</p> </li> </ul> <p>For more information on full and incremental refreshes, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/refreshing-imported-data.html\">Refreshing SPICE data</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
+        }
+      },
+      "documentation":"<p>The refresh schedule of a dataset.</p>"
+    },
+    "RefreshSchedules":{
+      "type":"list",
+      "member":{
+        "shape":"RefreshSchedule",
+        "documentation":"<p>A list of <code>RefreshSchedule</code> objects.</p>"
+      }
     },
     "RegisterUserRequest":{
       "type":"structure",
@@ -18799,6 +19410,10 @@
         "TagRules":{
           "shape":"RowLevelPermissionTagRuleList",
           "documentation":"<p>A set of rules associated with row-level security, such as the tag names and columns that they are assigned to.</p>"
+        },
+        "TagRuleConfigurations":{
+          "shape":"RowLevelPermissionTagRuleConfigurationList",
+          "documentation":"<p>A list of tag configuration rules to apply to a dataset. All tag configurations have the OR condition. Tags within each tile will be joined (AND). At least one rule in this structure must have all tag values assigned to it to apply Row-level security (RLS) to the dataset.</p>"
         }
       },
       "documentation":"<p>The configuration of tags on a dataset to set row-level security. </p>"
@@ -18832,6 +19447,18 @@
         }
       },
       "documentation":"<p>A set of rules associated with a tag.</p>"
+    },
+    "RowLevelPermissionTagRuleConfiguration":{
+      "type":"list",
+      "member":{"shape":"SessionTagKey"},
+      "max":50,
+      "min":1
+    },
+    "RowLevelPermissionTagRuleConfigurationList":{
+      "type":"list",
+      "member":{"shape":"RowLevelPermissionTagRuleConfiguration"},
+      "max":50,
+      "min":1
     },
     "RowLevelPermissionTagRuleList":{
       "type":"list",
@@ -19122,6 +19749,20 @@
         }
       },
       "documentation":"<p>A scatter plot.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html\">Using scatter plots</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+    },
+    "ScheduleRefreshOnEntity":{
+      "type":"structure",
+      "members":{
+        "DayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week that you want to schedule a refresh on.</p>"
+        },
+        "DayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month that you want to schedule refresh on.</p>"
+        }
+      },
+      "documentation":"<p>The refresh on entity for weekly or monthly schedules.</p>"
     },
     "ScrollBarOptions":{
       "type":"structure",
@@ -23462,6 +24103,54 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "UpdateRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "DataSetId",
+        "AwsAccountId",
+        "Schedule"
+      ],
+      "members":{
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Schedule":{
+          "shape":"RefreshSchedule",
+          "documentation":"<p>The refresh schedule.</p>"
+        }
+      }
+    },
+    "UpdateRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the refresh schedule.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
         }
       }
     },

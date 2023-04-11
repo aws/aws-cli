@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.111
+========
+
+* api-change:``ecr-public``: This release will allow using registry alias as registryId in BatchDeleteImage request.
+* api-change:``emr-serverless``: This release extends GetJobRun API to return job run timeout (executionTimeoutMinutes) specified during StartJobRun call (or default timeout of 720 minutes if none was specified).
+* api-change:``events``: Update events command to latest version
+* api-change:``iot-data``: This release adds support for MQTT5 user properties when calling the AWS IoT GetRetainedMessage API
+* api-change:``wafv2``: For web ACLs that protect CloudFront protections, the default request body inspection size is now 16 KB, and you can use the new association configuration to increase the inspection size further, up to 64 KB. Sizes over 16 KB can incur additional costs.
+
+
 1.27.110
 ========
 

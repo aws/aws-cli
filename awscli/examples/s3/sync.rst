@@ -1,4 +1,4 @@
-The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
+The following ``sync`` command syncs objects from a local diretory to the specified prefix and bucket by
 uploading the local files to s3.  A local file will require uploading if the size of the local file is different than
 the size of the s3 object, the last modified time of the local file is newer than the last modified time of the s3
 object, or the local file does not exist under the specified bucket and prefix.  In this example, the user syncs the

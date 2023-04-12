@@ -31,6 +31,23 @@
       ],
       "documentation":"<p>Used to cancel an open change request. Must be sent before the status of the request changes to <code>APPLYING</code>, the final stage of completing your change request. You can describe a change during the 60-day request history retention period for API calls.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/DeleteResourcePolicy"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a resource-based policy on an Entity that is identified by its resource ARN.</p>"
+    },
     "DescribeChangeSet":{
       "name":"DescribeChangeSet",
       "http":{
@@ -65,6 +82,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the metadata and content of the entity.</p>"
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/GetResourcePolicy"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets a resource-based policy of an Entity that is identified by its resource ARN.</p>"
     },
     "ListChangeSets":{
       "name":"ListChangeSets",
@@ -116,6 +150,23 @@
       ],
       "documentation":"<p>Lists all tags that have been added to a resource (either an <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#catalog-api-entities\">entity</a> or <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#working-with-change-sets\">change set</a>).</p>"
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PutResourcePolicy"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches a resource-based policy to an Entity. Examples of an entity include: <code>AmiProduct</code> and <code>ContainerProduct</code>.</p>"
+    },
     "StartChangeSet":{
       "name":"StartChangeSet",
       "http":{
@@ -133,7 +184,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Allows you to request changes for your entities. Within a single <code>ChangeSet</code>, you can't start the same change type against the same entity multiple times. Additionally, when a <code>ChangeSet</code> is running, all the entities targeted by the different changes are locked until the change set has completed (either succeeded, cancelled, or failed). If you try to start a change set containing a change against an entity that is already locked, you will receive a <code>ResourceInUseException</code> error.</p> <p>For example, you can't start the <code>ChangeSet</code> described in the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_StartChangeSet.html#API_StartChangeSet_Examples\">example</a> later in this topic because it contains two changes to run the same change type (<code>AddRevisions</code>) against the same entity (<code>entity-id@1</code>).</p> <p>For more information about working with change sets, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#working-with-change-sets\"> Working with change sets</a>.</p>"
+      "documentation":"<p>Allows you to request changes for your entities. Within a single <code>ChangeSet</code>, you can't start the same change type against the same entity multiple times. Additionally, when a <code>ChangeSet</code> is running, all the entities targeted by the different changes are locked until the change set has completed (either succeeded, cancelled, or failed). If you try to start a change set containing a change against an entity that is already locked, you will receive a <code>ResourceInUseException</code> error.</p> <p>For example, you can't start the <code>ChangeSet</code> described in the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_StartChangeSet.html#API_StartChangeSet_Examples\">example</a> later in this topic because it contains two changes to run the same change type (<code>AddRevisions</code>) against the same entity (<code>entity-id@1</code>).</p> <p>For more information about working with change sets, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#working-with-change-sets\"> Working with change sets</a>. For information on change types for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Als, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -182,7 +233,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessageContent"}
       },
-      "documentation":"<p>Access is denied.</p>",
+      "documentation":"<p>Access is denied.</p> <p>HTTP status code: 403</p>",
       "error":{"httpStatusCode":403},
       "exception":true,
       "synthetic":true
@@ -237,7 +288,7 @@
       "members":{
         "ChangeType":{
           "shape":"ChangeType",
-          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope.</p>"
+          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
         },
         "Entity":{
           "shape":"Entity",
@@ -249,7 +300,7 @@
         },
         "Details":{
           "shape":"Json",
-          "documentation":"<p>This object contains details specific to the change type of the requested change.</p>"
+          "documentation":"<p>This object contains details specific to the change type of the requested change. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
         },
         "ChangeName":{
           "shape":"ChangeName",
@@ -369,6 +420,23 @@
       "max":20,
       "min":20,
       "pattern":"^([\\d]{4})\\-(1[0-2]|0[1-9])\\-(3[01]|0[1-9]|[12][\\d])T(2[0-3]|[01][\\d]):([0-5][\\d]):([0-5][\\d])Z$"
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource that is associated with the resource policy.</p>",
+          "location":"querystring",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DescribeChangeSetRequest":{
       "type":"structure",
@@ -608,6 +676,27 @@
       "min":1,
       "pattern":"^(.)+$"
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource that is associated with the resource policy.</p>",
+          "location":"querystring",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicyJson",
+          "documentation":"<p>The policy document to set; formatted in JSON.</p>"
+        }
+      }
+    },
     "Identifier":{
       "type":"string",
       "max":255,
@@ -619,7 +708,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessageContent"}
       },
-      "documentation":"<p>There was an internal service exception.</p>",
+      "documentation":"<p>There was an internal service exception.</p> <p>HTTP status code: 500</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "synthetic":true
@@ -629,6 +718,12 @@
       "max":16384,
       "min":2,
       "pattern":"^[\\s]*\\{[\\s\\S]*\\}[\\s]*$"
+    },
+    "ListChangeSetsMaxResultInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
     },
     "ListChangeSetsRequest":{
       "type":"structure",
@@ -647,7 +742,7 @@
           "documentation":"<p>An object that contains two attributes, <code>SortBy</code> and <code>SortOrder</code>.</p>"
         },
         "MaxResults":{
-          "shape":"MaxResultInteger",
+          "shape":"ListChangeSetsMaxResultInteger",
           "documentation":"<p>The maximum number of results returned by a single call. This value must be provided in the next call to retrieve the next set of results. By default, this value is 20.</p>"
         },
         "NextToken":{
@@ -668,6 +763,12 @@
           "documentation":"<p>The value of the next token, if it exists. Null if there are no more results.</p>"
         }
       }
+    },
+    "ListEntitiesMaxResultInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
     },
     "ListEntitiesRequest":{
       "type":"structure",
@@ -697,9 +798,10 @@
           "documentation":"<p>The value of the next token, if it exists. Null if there are no more results.</p>"
         },
         "MaxResults":{
-          "shape":"MaxResultInteger",
+          "shape":"ListEntitiesMaxResultInteger",
           "documentation":"<p>Specifies the upper limit of the elements on a single page. If a value isn't provided, the default value is 20.</p>"
-        }
+        },
+        "OwnershipType":{"shape":"OwnershipType"}
       }
     },
     "ListEntitiesResponse":{
@@ -738,17 +840,40 @@
         }
       }
     },
-    "MaxResultInteger":{
-      "type":"integer",
-      "box":true,
-      "max":20,
-      "min":1
-    },
     "NextToken":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"^[\\w+=.:@\\-\\/]$"
+    },
+    "OwnershipType":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "SHARED"
+      ]
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource you want to associate with a resource policy. </p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicyJson",
+          "documentation":"<p>The policy document to set; formatted in JSON.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "RequestedChangeList":{
       "type":"list",
@@ -787,7 +912,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessageContent"}
       },
-      "documentation":"<p>The specified resource wasn't found.</p>",
+      "documentation":"<p>The specified resource wasn't found.</p> <p>HTTP status code: 404</p>",
       "error":{"httpStatusCode":404},
       "exception":true,
       "synthetic":true
@@ -801,6 +926,12 @@
       "error":{"httpStatusCode":415},
       "exception":true,
       "synthetic":true
+    },
+    "ResourcePolicyJson":{
+      "type":"string",
+      "max":10240,
+      "min":1,
+      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+$"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -909,13 +1040,13 @@
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"},
-      "max":50,
+      "max":200,
       "min":1
     },
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"},
-      "max":50,
+      "max":200,
       "min":1
     },
     "TagResourceRequest":{
@@ -951,7 +1082,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessageContent"}
       },
-      "documentation":"<p>Too many requests.</p>",
+      "documentation":"<p>Too many requests.</p> <p>HTTP status code: 429</p>",
       "error":{"httpStatusCode":429},
       "exception":true,
       "synthetic":true
@@ -983,7 +1114,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessageContent"}
       },
-      "documentation":"<p>An error occurred during validation.</p>",
+      "documentation":"<p>An error occurred during validation.</p> <p>HTTP status code: 422</p>",
       "error":{"httpStatusCode":422},
       "exception":true,
       "synthetic":true

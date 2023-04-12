@@ -1854,11 +1854,13 @@
     },
     "Database":{
       "type":"string",
+      "documentation":"Redshift Database",
       "max":64,
       "min":1
     },
     "DbUser":{
       "type":"string",
+      "documentation":"Database user name",
       "max":128,
       "min":1
     },
@@ -3934,10 +3936,7 @@
     },
     "RedshiftDataParameters":{
       "type":"structure",
-      "required":[
-        "Database",
-        "Sql"
-      ],
+      "required":["Database"],
       "members":{
         "SecretManagerArn":{
           "shape":"RedshiftSecretManagerArn",
@@ -3962,12 +3961,14 @@
         "WithEvent":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to send an event back to EventBridge after the SQL statement runs.</p>"
-        }
+        },
+        "Sqls":{"shape":"Sqls"}
       },
       "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster or Redshift Serverless workgroup to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.</p>"
     },
     "RedshiftSecretManagerArn":{
       "type":"string",
+      "documentation":"Optional SecretManager ARN which stores the database credentials",
       "max":1600,
       "min":1,
       "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)"
@@ -4418,8 +4419,18 @@
     },
     "Sql":{
       "type":"string",
+      "documentation":"A single Redshift SQL",
       "max":100000,
-      "min":1
+      "min":1,
+      "sensitive":true
+    },
+    "Sqls":{
+      "type":"list",
+      "member":{"shape":"Sql"},
+      "documentation":"A list of SQLs.",
+      "max":40,
+      "min":0,
+      "sensitive":true
     },
     "SqsParameters":{
       "type":"structure",
@@ -4496,6 +4507,7 @@
     },
     "StatementName":{
       "type":"string",
+      "documentation":"A name for Redshift DataAPI statement which can be used as filter of ListStatement.",
       "max":500,
       "min":1
     },

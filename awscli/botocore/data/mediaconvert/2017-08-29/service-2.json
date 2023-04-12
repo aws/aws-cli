@@ -7121,7 +7121,7 @@
         "WaitMinutes": {
           "shape": "__integer",
           "locationName": "waitMinutes",
-          "documentation": "Required for setting up a job to use queue hopping. Minimum wait time in minutes until the job can hop to the destination queue. Valid range is 1 to 1440 minutes, inclusive."
+          "documentation": "Required for setting up a job to use queue hopping. Minimum wait time in minutes until the job can hop to the destination queue. Valid range is 1 to 4320 minutes, inclusive."
         }
       },
       "documentation": "Optional. Configuration for a destination queue to which the job can hop once a customer-defined minimum wait time has passed."
@@ -7631,6 +7631,11 @@
           "locationName": "billingTagsSource",
           "documentation": "The tag type that AWS Billing and Cost Management will use to sort your AWS Elemental MediaConvert costs on any billing report that you set up."
         },
+        "ClientRequestToken": {
+          "shape": "__string",
+          "locationName": "clientRequestToken",
+          "documentation": "Prevent duplicate jobs from being created and ensure idempotency for your requests. A client request token can be any string that includes up to 64 ASCII characters. If you reuse a client request token within one minute of a successful request, the API returns the job details of the original request instead. For more information see https://docs.aws.amazon.com/mediaconvert/latest/apireference/idempotency.html."
+        },
         "CreatedAt": {
           "shape": "__timestampUnix",
           "locationName": "createdAt",
@@ -7735,12 +7740,17 @@
           "shape": "__mapOf__string",
           "locationName": "userMetadata",
           "documentation": "User-defined metadata that you want to associate with an MediaConvert job. You specify metadata in key/value pairs."
+        },
+        "Warnings": {
+          "shape": "__listOfWarningGroup",
+          "locationName": "warnings",
+          "documentation": "Contains any warning messages for the job. Use to help identify potential issues with your input, output, or job. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/warning_codes.html"
         }
       },
       "documentation": "Each job converts an input file into an output file or files. For more information, see the User Guide at https://docs.aws.amazon.com/mediaconvert/latest/ug/what-is.html",
       "required": [
-        "Role",
-        "Settings"
+        "Settings",
+        "Role"
       ]
     },
     "JobMessages": {
@@ -12227,6 +12237,26 @@
       },
       "documentation": "Required when you set (Codec) under (VideoDescription)>(CodecSettings) to the value VP9."
     },
+    "WarningGroup": {
+      "type": "structure",
+      "members": {
+        "Code": {
+          "shape": "__integer",
+          "locationName": "code",
+          "documentation": "Warning code that identifies a specific warning in the job. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/warning_codes.html"
+        },
+        "Count": {
+          "shape": "__integer",
+          "locationName": "count",
+          "documentation": "The number of times this warning occurred in the job."
+        }
+      },
+      "documentation": "Contains any warning codes and their count for the job.",
+      "required": [
+        "Count",
+        "Code"
+      ]
+    },
     "WatermarkingStrength": {
       "type": "string",
       "documentation": "Optional. Ignore this setting unless Nagra support directs you to specify a value. When you don't specify a value here, the Nagra NexGuard library uses its default value.",
@@ -13426,6 +13456,12 @@
       "type": "list",
       "member": {
         "shape": "TeletextPageType"
+      }
+    },
+    "__listOfWarningGroup": {
+      "type": "list",
+      "member": {
+        "shape": "WarningGroup"
       }
     },
     "__listOf__doubleMinNegative60Max6": {

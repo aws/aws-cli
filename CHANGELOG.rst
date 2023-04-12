@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.112
+========
+
+* api-change:``groundstation``: AWS Ground Station Wideband DigIF GA Release
+* api-change:``managedblockchain``: Removal of the Ropsten network. The Ethereum foundation ceased support of Ropsten on December 31st, 2022..
+
+
 1.27.111
 ========
 

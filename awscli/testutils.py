@@ -328,6 +328,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             'AWS_CONFIG_FILE': '',
             'AWS_SHARED_CREDENTIALS_FILE': '',
         }
+        if os.environ.get('ComSpec'):
+            self.environ['ComSpec'] = os.environ['ComSpec']
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         self.http_response = AWSResponse(None, 200, {}, None)

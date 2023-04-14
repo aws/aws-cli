@@ -13,6 +13,7 @@ Output::
                 "name": "channel-1",
                 "latencyMode": "LOW",
                 "authorized": false,
+                "insecureIngest": false,
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
                 "tags": {}
             },
@@ -45,6 +46,7 @@ Output::
                 "name": "channel-1",
                 "latencyMode": "LOW",
                 "authorized": false,
+                "insecureIngest": false,
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
                 "tags": {}
             }

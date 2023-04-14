@@ -4,7 +4,8 @@ The following ``update-channel`` example updates the channel configuration for a
 
     aws ivs update-channel \
         --arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-        --name "channel-1"
+        --name "channel-1" \
+        --insecure-ingest
 
 Output::
 
@@ -16,10 +17,10 @@ Output::
             "type": "STANDARD",
             "recordingConfigurationArn": "",
             "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
+            "insecureIngest": true,
             "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",
             "authorized": false,
             "tags": {}
-        }
     }
 
 For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/userguide/GSIVS-create-channel.html>`__ in the *Amazon Interactive Video Service User Guide*.
@@ -30,6 +31,7 @@ The following ``update-channel`` example updates the channel configuration for a
 
     aws ivs update-channel \
         --arn "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh" \
+        --no-insecure-ingest \
         --recording-configuration-arn "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh"
 
 Output::
@@ -42,6 +44,7 @@ Output::
             "type": "STANDARD",
             "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
             "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
+            "insecureIngest": false,
             "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",
             "authorized": false,
             "tags": {}
@@ -68,6 +71,7 @@ Output::
             "type": "STANDARD",
             "recordingConfigurationArn": "",
             "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
+            "insecureIngest": false,
             "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",
             "authorized": false,
             "tags": {}

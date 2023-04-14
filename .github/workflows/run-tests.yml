@@ -23,7 +23,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install codecov
         python scripts/ci/install
         python scripts/ci/install-check
     - name: Run tests
@@ -31,7 +30,6 @@ jobs:
     - name: Run checks
       run: python scripts/ci/run-check
     - name: codecov
-      run: |
-        rm tests/coverage.xml
-        mv tests/.coverage ./
-        codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: tests

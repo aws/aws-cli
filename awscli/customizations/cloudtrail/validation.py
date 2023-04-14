@@ -29,7 +29,7 @@ from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
-    get_account_id_from_arn
+    get_account_id_from_arn, PublicKeyProvider
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
 from botocore.exceptions import ClientError
@@ -217,29 +217,6 @@ class InvalidDigestFormat(DigestError):
         message = 'Digest file\ts3://%s/%s\tINVALID: invalid format' % (bucket,
                                                                         key)
         super(InvalidDigestFormat, self).__init__(message)
-
-
-class PublicKeyProvider(object):
-    """Retrieves public keys from CloudTrail within a date range."""
-    def __init__(self, cloudtrail_client):
-        self._cloudtrail_client = cloudtrail_client
-
-    def get_public_keys(self, start_date, end_date):
-        """Loads public keys in a date range into a returned dict.
-
-        :type start_date: datetime
-        :param start_date: Start date of a date range.
-        :type end_date: datetime
-        :param end_date: End date of a date range.
-        :rtype: dict
-        :return: Returns a dict where each key is the fingerprint of the
-            public key, and each value is a dict of public key data.
-        """
-        public_keys = self._cloudtrail_client.list_public_keys(
-            StartTime=start_date, EndTime=end_date)
-        public_keys_in_range = public_keys['PublicKeyList']
-        LOG.debug('Loaded public keys in range: %s', public_keys_in_range)
-        return dict((key['Fingerprint'], key) for key in public_keys_in_range)
 
 
 class DigestProvider(object):

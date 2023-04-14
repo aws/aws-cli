@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.11.13
+=======
+
+* api-change:``groundstation``: AWS Ground Station Wideband DigIF GA Release
+* api-change:``mediaconnect``: Gateway is a new feature of AWS Elemental MediaConnect. Gateway allows the deployment of on-premises resources for the purpose of transporting live video to and from the AWS Cloud.
+* api-change:``chime-sdk-voice``: This release adds tagging support for Voice Connectors and SIP Media Applications
+* api-change:``managedblockchain``: Removal of the Ropsten network. The Ethereum foundation ceased support of Ropsten on December 31st, 2022..
+
+
 2.11.12
 =======
 

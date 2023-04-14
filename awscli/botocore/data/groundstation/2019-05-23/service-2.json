@@ -208,7 +208,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets the latest configuration information for a registered agent.</p>"
+      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets the latest configuration information for a registered agent.</p>"
     },
     "GetConfig":{
       "name":"GetConfig",
@@ -432,7 +432,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Registers a new agent with AWS Groundstation.</p>"
+      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p> Registers a new agent with AWS Ground Station. </p>"
     },
     "ReserveContact":{
       "name":"ReserveContact",
@@ -497,7 +497,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Update the status of the agent.</p>",
+      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Update the status of the agent.</p>",
       "idempotent":true
     },
     "UpdateConfig":{
@@ -559,16 +559,25 @@
       "min":1,
       "pattern":"^[\\w-]+$"
     },
+    "AgentCpuCoresList":{
+      "type":"list",
+      "member":{"shape":"Integer"},
+      "max":256,
+      "min":0
+    },
     "AgentDetails":{
       "type":"structure",
       "required":[
         "agentVersion",
         "componentVersions",
         "instanceId",
-        "instanceType",
-        "reservedCpuCores"
+        "instanceType"
       ],
       "members":{
+        "agentCpuCores":{
+          "shape":"AgentCpuCoresList",
+          "documentation":"<p>List of CPU cores reserved for the agent.</p>"
+        },
         "agentVersion":{
           "shape":"VersionString",
           "documentation":"<p>Current agent version.</p>"
@@ -586,8 +595,8 @@
           "documentation":"<p>Type of EC2 instance agent is running on.</p>"
         },
         "reservedCpuCores":{
-          "shape":"ReservedCpuCoresList",
-          "documentation":"<p>Number of Cpu cores reserved for agent.</p>"
+          "shape":"AgentCpuCoresList",
+          "documentation":"<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>"
         }
       },
       "documentation":"<p>Detailed information about the agent.</p>"
@@ -766,6 +775,31 @@
       "max":20,
       "min":1
     },
+    "CapabilityHealth":{
+      "type":"string",
+      "enum":[
+        "UNHEALTHY",
+        "HEALTHY"
+      ]
+    },
+    "CapabilityHealthReason":{
+      "type":"string",
+      "enum":[
+        "NO_REGISTERED_AGENT",
+        "INVALID_IP_OWNERSHIP",
+        "NOT_AUTHORIZED_TO_CREATE_SLR",
+        "UNVERIFIED_IP_OWNERSHIP",
+        "INITIALIZING_DATAPLANE",
+        "DATAPLANE_FAILURE",
+        "HEALTHY"
+      ]
+    },
+    "CapabilityHealthReasonList":{
+      "type":"list",
+      "member":{"shape":"CapabilityHealthReason"},
+      "max":500,
+      "min":0
+    },
     "ComponentStatusData":{
       "type":"structure",
       "required":[
@@ -788,7 +822,7 @@
           "documentation":"<p>Capability ARN of the component.</p>"
         },
         "componentType":{
-          "shape":"ComponentType",
+          "shape":"ComponentTypeString",
           "documentation":"<p>The Component type.</p>"
         },
         "dataflowId":{
@@ -810,15 +844,11 @@
       "type":"list",
       "member":{"shape":"ComponentStatusData"},
       "max":20,
-      "min":1
+      "min":0
     },
-    "ComponentType":{
+    "ComponentTypeString":{
       "type":"string",
-      "enum":[
-        "LAMINAR_FLOW",
-        "PRISM",
-        "DIGITIZER"
-      ]
+      "pattern":"^[a-zA-Z0-9_]{1,64}$"
     },
     "ComponentVersion":{
       "type":"structure",
@@ -828,7 +858,7 @@
       ],
       "members":{
         "componentType":{
-          "shape":"ComponentType",
+          "shape":"ComponentTypeString",
           "documentation":"<p>Component type.</p>"
         },
         "versions":{
@@ -1085,11 +1115,11 @@
       "members":{
         "contactPostPassDurationSeconds":{
           "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, after a contact ends for the contact to remain in a <code>POSTPASS</code> state. A CloudWatch event is emitted when the contact enters and exits the <code>POSTPASS</code> state.</p>"
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
         },
         "contactPrePassDurationSeconds":{
           "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, prior to contact start for the contact to remain in a <code>PREPASS</code> state. A CloudWatch event is emitted when the contact enters and exits the <code>PREPASS</code> state.</p>"
+          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
         },
         "endpointDetails":{
           "shape":"EndpointDetailsList",
@@ -1645,6 +1675,14 @@
           "shape":"DataflowEndpoint",
           "documentation":"<p>A dataflow endpoint.</p>"
         },
+        "healthReasons":{
+          "shape":"CapabilityHealthReasonList",
+          "documentation":"<p>Health reasons for a dataflow endpoint. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.</p>"
+        },
+        "healthStatus":{
+          "shape":"CapabilityHealth",
+          "documentation":"<p>A dataflow endpoint health status. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.</p>"
+        },
         "securityDetails":{
           "shape":"SecurityDetails",
           "documentation":"<p>Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.</p>"
@@ -1957,11 +1995,11 @@
       "members":{
         "contactPostPassDurationSeconds":{
           "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, after a contact ends for the contact to remain in a <code>POSTPASS</code> state. A CloudWatch event is emitted when the contact enters and exits the <code>POSTPASS</code> state.</p>"
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
         },
         "contactPrePassDurationSeconds":{
           "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, prior to contact start for the contact to remain in a <code>PREPASS</code> state. A CloudWatch event is emitted when the contact enters and exits the <code>PREPASS</code> state.</p>"
+          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
         },
         "dataflowEndpointGroupArn":{
           "shape":"DataflowEndpointGroupArn",
@@ -2692,7 +2730,7 @@
         },
         "discoveryData":{
           "shape":"DiscoveryData",
-          "documentation":"<p>Data for associating and agent with the capabilities it is managing.</p>"
+          "documentation":"<p>Data for associating an agent with the capabilities it is managing.</p>"
         }
       }
     },
@@ -2741,12 +2779,6 @@
         }
       },
       "documentation":"<p/>"
-    },
-    "ReservedCpuCoresList":{
-      "type":"list",
-      "member":{"shape":"Integer"},
-      "max":256,
-      "min":1
     },
     "ResourceLimitExceededException":{
       "type":"structure",

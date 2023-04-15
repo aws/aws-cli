@@ -137,6 +137,9 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
             f'\n{verificationUri}\n'
             f'\nThen enter the code:\n'
             f'\n{userCode}\n'
+            f'\nAlternatively, you may visit the following URL which will '
+            f'autofill the code upon loading:'
+            f'\n{verificationUriComplete}\n'
         )
         uni_print(opening_msg, self._outfile)
         if self._open_browser:

@@ -3905,6 +3905,11 @@
       },
       "documentation":"<p>Gateway list item object that specifies the frequency and list of gateways for which the downlink message should be sent.</p>"
     },
+    "GatewayMaxEirp":{
+      "type":"float",
+      "max":30,
+      "min":0
+    },
     "GenAppKey":{
       "type":"string",
       "pattern":"[a-fA-F0-9]{32}"
@@ -5926,6 +5931,10 @@
         "Beaconing":{
           "shape":"Beaconing",
           "documentation":"<p>Beaconing object information, which consists of the data rate and frequency parameters.</p>"
+        },
+        "MaxEirp":{
+          "shape":"GatewayMaxEirp",
+          "documentation":"<p>The MaxEIRP value.</p>"
         }
       },
       "documentation":"<p>LoRaWANGateway object.</p>"
@@ -6123,7 +6132,11 @@
         "DlDr":{"shape":"DlDr"},
         "DlFreq":{"shape":"DlFreq"},
         "SessionStartTime":{"shape":"SessionStartTimeTimestamp"},
-        "SessionTimeout":{"shape":"SessionTimeout"}
+        "SessionTimeout":{"shape":"SessionTimeout"},
+        "PingSlotPeriod":{
+          "shape":"PingSlotPeriod",
+          "documentation":"<p>The PingSlotPeriod value.</p>"
+        }
       },
       "documentation":"<p>The LoRaWAN information used with the multicast session.</p>"
     },
@@ -6152,6 +6165,14 @@
         "DrMax":{
           "shape":"DrMaxBox",
           "documentation":"<p>The DrMax value.</p>"
+        },
+        "PrAllowed":{
+          "shape":"PrAllowed",
+          "documentation":"<p>The PRAllowed value that describes whether passive roaming is allowed.</p>"
+        },
+        "RaAllowed":{
+          "shape":"RaAllowed",
+          "documentation":"<p>The RAAllowed value that describes whether roaming activation is allowed.</p>"
         }
       },
       "documentation":"<p>LoRaWANServiceProfile object.</p>"
@@ -6690,7 +6711,7 @@
     "PingSlotPeriod":{
       "type":"integer",
       "max":4096,
-      "min":128
+      "min":32
     },
     "PnOffset":{
       "type":"integer",
@@ -8423,7 +8444,11 @@
           "documentation":"<p>A new description of the resource.</p>"
         },
         "JoinEuiFilters":{"shape":"JoinEuiFilters"},
-        "NetIdFilters":{"shape":"NetIdFilters"}
+        "NetIdFilters":{"shape":"NetIdFilters"},
+        "MaxEirp":{
+          "shape":"GatewayMaxEirp",
+          "documentation":"<p>The MaxEIRP value.</p>"
+        }
       }
     },
     "UpdateWirelessGatewayResponse":{

@@ -1692,6 +1692,7 @@
         {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
         {"shape":"DomainNotFoundFault"}
       ],
       "documentation":"<p>Modify the settings for an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
@@ -10389,7 +10390,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage in gibibytes (GiB) to allocate to each DB instance in the Multi-AZ DB cluster.</p> <p>Type: Integer</p> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>The amount of storage in gibibytes (GiB) to allocate to each DB instance in the Multi-AZ DB cluster.</p> <p>Valid for: Multi-AZ DB clusters only</p>"
         },
         "StorageType":{
           "shape":"String",
@@ -10439,6 +10440,14 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if both of the following conditions are met:</p> <ul> <li> <p>The DB cluster doesn't manage the master user password in Amazon Web Services Secrets Manager.</p> <p>If the DB cluster already manages the master user password in Amazon Web Services Secrets Manager, you can't change the KMS key that is used to encrypt the secret.</p> </li> <li> <p>You are turning on <code>ManageMasterUserPassword</code> to manage the master user password in Amazon Web Services Secrets Manager.</p> <p>If you are turning on <code>ManageMasterUserPassword</code> and don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> </li> </ul> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+        },
+        "EngineMode":{
+          "shape":"String",
+          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <note> <p>The DB engine mode can be modified only from <code>serverless</code> to <code>provisioned</code>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html\"> CreateDBCluster</a>.</p> <p>Valid for: Aurora DB clusters only</p>"
+        },
+        "AllowEngineModeChange":{
+          "shape":"Boolean",
+          "documentation":"<p>A value that indicates whether engine mode changes from <code>serverless</code> to <code>provisioned</code> are allowed.</p> <p>Constraints: You must allow engine mode changes when specifying a different value for the <code>EngineMode</code> parameter from the DB cluster's current engine mode.</p> <p>Valid for: Aurora Serverless v1 DB clusters only</p>"
         }
       },
       "documentation":"<p/>"

@@ -103,7 +103,21 @@ class LockFileBuilder:
             f.write(content)
 
 
-def main(build_directory: Path):
+def show_files(build_directory: Path):
+    reqs_path = build_directory / 'requirements'
+    for root, dirs, files in os.walk(reqs_path):
+        for filename in files:
+            if 'lock' in filename:
+                show_file(os.path.join(root, filename))
+
+
+def show_file(path: Path):
+    print(path)
+    with open(path, 'r') as f:
+        print(f.read())
+
+
+def main(build_directory: Path, should_show_files: bool):
     builder = LockFileBuilder(
         source_directory=ROOT,
         build_directory=build_directory,
@@ -126,6 +140,8 @@ def main(build_directory: Path):
         sources=["pyproject.toml"],
         output=Path("requirements/download-deps/system-sandbox"),
     )
+    if should_show_files:
+        show_files(build_directory)
 
 
 if __name__ == "__main__":
@@ -136,5 +152,8 @@ if __name__ == "__main__":
         type=Path,
         help=("Default base directory where output lock files to be written."),
     )
+    parser.add_argument('--show-files', action='store_true')
+    parser.add_argument('--no-show-files', action='store_false', dest='show_files')
+    parser.set_defaults(show_files=False)
     args = parser.parse_args()
-    main(args.output_directory)
+    main(args.output_directory, args.show_files)

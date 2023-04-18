@@ -94,7 +94,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns a URL to access the job run dashboard.</p>"
+      "documentation":"<p>Returns a URL to access the job run dashboard. The generated URL is valid for one hour, after which you must invoke the API again to generate a new URL.</p>"
     },
     "GetJobRun":{
       "name":"GetJobRun",
@@ -875,12 +875,10 @@
     },
     "ImageDigest":{
       "type":"string",
-      "documentation":"<p>Image Digest</p>",
       "pattern":"sha256:[0-9a-f]{64}"
     },
     "ImageUri":{
       "type":"string",
-      "documentation":"<p>Image URI</p>",
       "max":1024,
       "min":1,
       "pattern":"([a-z0-9]+[a-z0-9-.]*)\\/((?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*)(?:\\:([a-zA-Z0-9_][a-zA-Z0-9-._]{0,299})|@(sha256:[0-9a-f]{64}))"
@@ -1024,7 +1022,7 @@
         },
         "totalResourceUtilization":{
           "shape":"TotalResourceUtilization",
-          "documentation":"<p>The aggregate vCPU, memory, and storage resources used from the time job start executing till the time job is terminated, rounded up to the nearest second.</p>"
+          "documentation":"<p>The aggregate vCPU, memory, and storage resources used from the time the job starts to execute, until the time the job terminates, rounded up to the nearest second.</p>"
         },
         "networkConfiguration":{"shape":"NetworkConfiguration"},
         "totalExecutionDurationSeconds":{
@@ -1033,8 +1031,12 @@
         },
         "executionTimeoutMinutes":{
           "shape":"Duration",
-          "documentation":"<p>Maximum duration for the job run to run. If the job run runs beyond this duration, it will be automatically cancelled.</p>",
+          "documentation":"<p>Returns the job run timeout value from the <code>StartJobRun</code> call. If no timeout was specified, then it returns the default timeout of 720 minutes.</p>",
           "box":true
+        },
+        "billedResourceUtilization":{
+          "shape":"ResourceUtilization",
+          "documentation":"<p>The aggregate vCPU, memory, and storage that AWS has billed for the job run. The billed resources include a 1-minute minimum usage for workers, plus additional storage over 20 GB per worker. Note that billed resources do not include usage for idle pre-initialized workers.</p>"
         }
       },
       "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an EMR Serverless application.</p>"
@@ -1374,6 +1376,24 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourceUtilization":{
+      "type":"structure",
+      "members":{
+        "vCPUHour":{
+          "shape":"Double",
+          "documentation":"<p>The aggregated vCPU used per hour from the time the job starts executing until the job is terminated.</p>"
+        },
+        "memoryGBHour":{
+          "shape":"Double",
+          "documentation":"<p>The aggregated memory used per hour from the time the job starts executing until the job is terminated.</p>"
+        },
+        "storageGBHour":{
+          "shape":"Double",
+          "documentation":"<p>The aggregated storage used per hour from the time the job starts executing until the job is terminated.</p>"
+        }
+      },
+      "documentation":"<p>The resource utilization for memory, storage, and vCPU for jobs.</p>"
     },
     "S3MonitoringConfiguration":{
       "type":"structure",

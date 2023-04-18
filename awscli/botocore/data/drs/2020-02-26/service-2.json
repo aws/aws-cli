@@ -33,6 +33,25 @@
       ],
       "documentation":"<p>Create an extended source server in the target Account based on the source server in staging account.</p>"
     },
+    "CreateLaunchConfigurationTemplate":{
+      "name":"CreateLaunchConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateLaunchConfigurationTemplate",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateLaunchConfigurationTemplateRequest"},
+      "output":{"shape":"CreateLaunchConfigurationTemplateResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Creates a new Launch Configuration Template.</p>"
+    },
     "CreateReplicationConfigurationTemplate":{
       "name":"CreateReplicationConfigurationTemplate",
       "http":{
@@ -69,6 +88,25 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Deletes a single Job by ID.</p>",
+      "idempotent":true
+    },
+    "DeleteLaunchConfigurationTemplate":{
+      "name":"DeleteLaunchConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteLaunchConfigurationTemplate",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteLaunchConfigurationTemplateRequest"},
+      "output":{"shape":"DeleteLaunchConfigurationTemplateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deletes a single Launch Configuration Template by ID.</p>",
       "idempotent":true
     },
     "DeleteRecoveryInstance":{
@@ -159,6 +197,24 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Returns a list of Jobs. Use the JobsID and fromDate and toDate filters to limit which jobs are returned. The response is sorted by creationDataTime - latest date first. Jobs are created by the StartRecovery, TerminateRecoveryInstances and StartFailbackLaunch APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>"
+    },
+    "DescribeLaunchConfigurationTemplates":{
+      "name":"DescribeLaunchConfigurationTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeLaunchConfigurationTemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeLaunchConfigurationTemplatesRequest"},
+      "output":{"shape":"DescribeLaunchConfigurationTemplatesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists all Launch Configuration Templates, filtered by Launch Configuration Template IDs</p>"
     },
     "DescribeRecoveryInstances":{
       "name":"DescribeRecoveryInstances",
@@ -609,6 +665,25 @@
       "documentation":"<p>Updates a LaunchConfiguration by Source Server ID.</p>",
       "idempotent":true
     },
+    "UpdateLaunchConfigurationTemplate":{
+      "name":"UpdateLaunchConfigurationTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateLaunchConfigurationTemplate",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLaunchConfigurationTemplateRequest"},
+      "output":{"shape":"UpdateLaunchConfigurationTemplateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Updates an existing Launch Configuration Template by ID.</p>"
+    },
     "UpdateReplicationConfiguration":{
       "name":"UpdateReplicationConfiguration",
       "http":{
@@ -811,6 +886,44 @@
         "sourceServer":{
           "shape":"SourceServer",
           "documentation":"<p>Created extended source server.</p>"
+        }
+      }
+    },
+    "CreateLaunchConfigurationTemplateRequest":{
+      "type":"structure",
+      "members":{
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private IP.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
+        "licensing":{
+          "shape":"Licensing",
+          "documentation":"<p>Licensing.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Request to associate tags during creation of a Launch Configuration Template.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Target instance type right-sizing method.</p>"
+        }
+      }
+    },
+    "CreateLaunchConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "launchConfigurationTemplate":{
+          "shape":"LaunchConfigurationTemplate",
+          "documentation":"<p>Created Launch Configuration Template.</p>"
         }
       }
     },
@@ -1084,6 +1197,21 @@
       "members":{
       }
     },
+    "DeleteLaunchConfigurationTemplateRequest":{
+      "type":"structure",
+      "required":["launchConfigurationTemplateID"],
+      "members":{
+        "launchConfigurationTemplateID":{
+          "shape":"LaunchConfigurationTemplateID",
+          "documentation":"<p>The ID of the Launch Configuration Template to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteLaunchConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteRecoveryInstanceRequest":{
       "type":"structure",
       "required":["recoveryInstanceID"],
@@ -1206,6 +1334,36 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token of the next Job to retrieve.</p>"
+        }
+      }
+    },
+    "DescribeLaunchConfigurationTemplatesRequest":{
+      "type":"structure",
+      "members":{
+        "launchConfigurationTemplateIDs":{
+          "shape":"LaunchConfigurationTemplateIDs",
+          "documentation":"<p>Request to filter Launch Configuration Templates list by Launch Configuration Template ID.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum results to be returned in DescribeLaunchConfigurationTemplates.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next Launch Configuration Template to retrieve.</p>"
+        }
+      }
+    },
+    "DescribeLaunchConfigurationTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"LaunchConfigurationTemplates",
+          "documentation":"<p>List of items returned by DescribeLaunchConfigurationTemplates.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next Launch Configuration Template to retrieve.</p>"
         }
       }
     },
@@ -1848,6 +2006,62 @@
         }
       }
     },
+    "LaunchConfigurationTemplate":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>ARN of the Launch Configuration Template.</p>"
+        },
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private IP.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "launchConfigurationTemplateID":{
+          "shape":"LaunchConfigurationTemplateID",
+          "documentation":"<p>ID of the Launch Configuration Template.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
+        "licensing":{
+          "shape":"Licensing",
+          "documentation":"<p>Licensing.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags of the Launch Configuration Template.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Target instance type right-sizing method.</p>"
+        }
+      },
+      "documentation":"<p>Account level Launch Configuration Template.</p>"
+    },
+    "LaunchConfigurationTemplateID":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^lct-[0-9a-zA-Z]{17}$"
+    },
+    "LaunchConfigurationTemplateIDs":{
+      "type":"list",
+      "member":{"shape":"LaunchConfigurationTemplateID"},
+      "max":1,
+      "min":0
+    },
+    "LaunchConfigurationTemplates":{
+      "type":"list",
+      "member":{"shape":"LaunchConfigurationTemplate"},
+      "max":200,
+      "min":0
+    },
     "LaunchDisposition":{
       "type":"string",
       "enum":[
@@ -2024,6 +2238,11 @@
     "MaxResultsReplicatingSourceServers":{
       "type":"integer",
       "max":300,
+      "min":1
+    },
+    "MaxResultsType":{
+      "type":"integer",
+      "max":1000,
       "min":1
     },
     "NetworkInterface":{
@@ -2929,6 +3148,10 @@
         "recommendedInstanceType":{
           "shape":"EC2InstanceType",
           "documentation":"<p>The recommended EC2 instance type that will be used when recovering the Source Server.</p>"
+        },
+        "supportsNitroInstances":{
+          "shape":"Boolean",
+          "documentation":"<p>Are EC2 nitro instance types supported when recovering the Source Server.</p>"
         }
       },
       "documentation":"<p>Properties of the Source Server machine.</p>"
@@ -3365,6 +3588,45 @@
         "targetInstanceTypeRightSizingMethod":{
           "shape":"TargetInstanceTypeRightSizingMethod",
           "documentation":"<p>Whether Elastic Disaster Recovery should try to automatically choose the instance type that best matches the OS, CPU, and RAM of your Source Server.</p>"
+        }
+      }
+    },
+    "UpdateLaunchConfigurationTemplateRequest":{
+      "type":"structure",
+      "required":["launchConfigurationTemplateID"],
+      "members":{
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private IP.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "launchConfigurationTemplateID":{
+          "shape":"LaunchConfigurationTemplateID",
+          "documentation":"<p>Launch Configuration Template ID.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
+        "licensing":{
+          "shape":"Licensing",
+          "documentation":"<p>Licensing.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Target instance type right-sizing method.</p>"
+        }
+      }
+    },
+    "UpdateLaunchConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "launchConfigurationTemplate":{
+          "shape":"LaunchConfigurationTemplate",
+          "documentation":"<p>Updated Launch Configuration Template.</p>"
         }
       }
     },

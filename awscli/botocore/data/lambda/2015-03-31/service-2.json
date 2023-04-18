@@ -661,6 +661,9 @@
         {"shape":"EFSMountFailureException"},
         {"shape":"EFSMountTimeoutException"},
         {"shape":"EFSIOException"},
+        {"shape":"SnapStartException"},
+        {"shape":"SnapStartTimeoutException"},
+        {"shape":"SnapStartNotReadyException"},
         {"shape":"EC2ThrottledException"},
         {"shape":"EC2AccessDeniedException"},
         {"shape":"InvalidSubnetIDException"},
@@ -674,7 +677,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p>Configure your Lambda functions to stream response payloads back to clients. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html\">Configuring a Lambda function to stream responses</a>.</p>"
+      "documentation":"<p>Configure your Lambda functions to stream response payloads back to clients. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html\">Configuring a Lambda function to stream responses</a>.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
     },
     "ListAliases":{
       "name":"ListAliases",
@@ -2468,7 +2471,7 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records. </p>"
+          "documentation":"<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records.</p> <note> <p>The minimum value that can be set is 60 seconds.</p> </note>"
         },
         "BisectBatchOnFunctionError":{
           "shape":"BisectBatchOnFunctionError",
@@ -2651,7 +2654,7 @@
         },
         "Runtime":{
           "shape":"Runtime",
-          "documentation":"<p>The runtime environment for the Lambda function.</p>"
+          "documentation":"<p>The identifier of the function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">runtime</a>. Runtime is required if the deployment package is a .zip file archive.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "Role":{
           "shape":"RoleArn",
@@ -5204,7 +5207,8 @@
         "ruby2.7",
         "provided",
         "provided.al2",
-        "nodejs18.x"
+        "nodejs18.x",
+        "python3.10"
       ]
     },
     "RuntimeVersionArn":{

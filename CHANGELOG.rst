@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.27.116
+========
+
+* bugfix:Output: Consistently remove ResponseMetadata field for all commands (`#7829 <https://github.com/aws/aws-cli/pull/7829>`__)
+* api-change:``comprehend``: This release supports native document models for custom classification, in addition to plain-text models. You train native document models using documents (PDF, Word, images) in their native format.
+* api-change:``ecs``: This release supports the Account Setting "TagResourceAuthorization" that allows for enhanced Tagging security controls.
+* api-change:``ram``: This release adds support for customer managed permissions. Customer managed permissions enable customers to author and manage tailored permissions for resources shared using RAM.
+* api-change:``rds``: Adds support for the ImageId parameter of CreateCustomDBEngineVersion to RDS Custom for Oracle
+* api-change:``s3``: Provides support for "Snow" Storage class.
+* api-change:``s3control``: Provides support for overriding endpoint when region is "snow". This will enable bucket APIs for Amazon S3 Compatible storage on Snow Family devices.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+
+
 1.27.115
 ========
 

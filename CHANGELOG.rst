@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.27.117
+========
+
+* api-change:``chime-sdk-media-pipelines``: This release adds support for specifying the recording file format in an S3 recording sink configuration.
+* api-change:``chime-sdk-meetings``: Adds support for Hindi and Thai languages and additional Amazon Transcribe parameters to the StartMeetingTranscription API.
+* api-change:``chime``: Adds support for Hindi and Thai languages and additional Amazon Transcribe parameters to the StartMeetingTranscription API.
+* api-change:``gamelift``: Amazon GameLift supports creating Builds for Windows 2016 operating system.
+* api-change:``guardduty``: This release adds support for the new Lambda Protection feature.
+* api-change:``iot``: Support additional OTA states in GetOTAUpdate API
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds ModelRegisterSettings support for CanvasAppSettings.
+* api-change:``snowball``: Adds support for Amazon S3 compatible storage. AWS Snow Family customers can now use Amazon S3 compatible storage on Snowball Edge devices. Also adds support for V3_5S. This is a refreshed AWS Snowball Edge Storage Optimized device type with 210TB SSD (customer usable).
+* api-change:``wafv2``: You can now create encrypted API keys to use in a client application integration of the JavaScript CAPTCHA API . You can also retrieve a list of your API keys and the JavaScript application integration URL.
+
+
 1.27.116
 ========
 

@@ -183,7 +183,7 @@
         {"shape":"KmsKeyValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new document classifier that you can use to categorize documents. To create a classifier, you provide a set of training documents that labeled with the categories that you want to use. After the classifier is trained you can use it to categorize a set of labeled documents into the categories. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-document-classification.html\">Document Classification</a> in the Comprehend Developer Guide. </p>"
+      "documentation":"<p>Creates a new document classifier that you can use to categorize documents. To create a classifier, you provide a set of training documents that are labeled with the categories that you want to use. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/training-classifier-model.html\">Training classifier models</a> in the Comprehend Developer Guide. </p>"
     },
     "CreateEndpoint":{
       "name":"CreateEndpoint",
@@ -1037,6 +1037,7 @@
         {"shape":"ResourceUnavailableException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous document classification job. Use the <code>DescribeDocumentClassificationJob</code> operation to track the progress of the job.</p>"
@@ -1054,6 +1055,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous dominant language detection job for a collection of documents. Use the operation to track the status of a job.</p>"
@@ -1073,6 +1075,7 @@
         {"shape":"ResourceUnavailableException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous entity detection job for a collection of documents. Use the operation to track the status of a job.</p> <p>This API can be used for either standard entity detection or custom entity recognition. In order to be used for custom entity recognition, the optional <code>EntityRecognizerArn</code> must be used in order to provide access to the recognizer being used to detect the custom entity.</p>"
@@ -1090,6 +1093,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous event detection job for a collection of documents.</p>"
@@ -1124,6 +1128,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous key phrase detection job for a collection of documents. Use the operation to track the status of a job.</p>"
@@ -1141,6 +1146,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous PII entity detection job for a collection of documents.</p>"
@@ -1158,6 +1164,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous sentiment detection job for a collection of documents. Use the operation to track the status of a job.</p>"
@@ -1175,6 +1182,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous targeted sentiment detection job for a collection of documents. Use the <code>DescribeTargetedSentimentDetectionJob</code> operation to track the status of a job.</p>"
@@ -1192,6 +1200,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"KmsKeyValidationException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Starts an asynchronous topic detection job. Use the <code>DescribeTopicDetectionJob</code> operation to track the status of a job.</p>"
@@ -1982,6 +1991,10 @@
         "Errors":{
           "shape":"ListOfErrors",
           "documentation":"<p>Page-level errors that the system detected while processing the input document. The field is empty if the system encountered no errors.</p>"
+        },
+        "Warnings":{
+          "shape":"ListOfWarnings",
+          "documentation":"<p>Warnings detected while processing the input document. The response includes a warning if there is a mismatch between the input document type and the model type associated with the endpoint that you specified. The response can also include warnings for individual pages that have a mismatch. </p> <p>The field is empty if the system generated no warnings.</p>"
         }
       },
       "sensitive":true
@@ -2140,7 +2153,7 @@
         },
         "OutputDataConfig":{
           "shape":"DocumentClassifierOutputDataConfig",
-          "documentation":"<p>Enables the addition of output results configuration parameters for custom classifier jobs.</p>"
+          "documentation":"<p>Specifies the location for the output files from a custom classifier job. This parameter is required for a request that creates a native classifier model.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestTokenString",
@@ -3359,6 +3372,28 @@
         "AUGMENTED_MANIFEST"
       ]
     },
+    "DocumentClassifierDocumentTypeFormat":{
+      "type":"string",
+      "enum":[
+        "PLAIN_TEXT_DOCUMENT",
+        "SEMI_STRUCTURED_DOCUMENT"
+      ]
+    },
+    "DocumentClassifierDocuments":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI location of the training documents specified in the S3Uri CSV file.</p>"
+        },
+        "TestS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI location of the test documents included in the TestS3Uri CSV file. This field is not required if you do not specify a test CSV file.</p>"
+        }
+      },
+      "documentation":"<p>The location of the training documents. This parameter is required in a request to create a native classifier model.</p>"
+    },
     "DocumentClassifierEndpointArn":{
       "type":"string",
       "max":256,
@@ -3408,7 +3443,16 @@
         "AugmentedManifests":{
           "shape":"DocumentClassifierAugmentedManifestsList",
           "documentation":"<p>A list of augmented manifest files that provide training data for your custom model. An augmented manifest file is a labeled dataset that is produced by Amazon SageMaker Ground Truth.</p> <p>This parameter is required if you set <code>DataFormat</code> to <code>AUGMENTED_MANIFEST</code>.</p>"
-        }
+        },
+        "DocumentType":{
+          "shape":"DocumentClassifierDocumentTypeFormat",
+          "documentation":"<p>The type of input documents for training the model. Provide plain-text documents to create a plain-text model, and provide semi-structured documents to create a native model.</p>"
+        },
+        "Documents":{
+          "shape":"DocumentClassifierDocuments",
+          "documentation":"<p>The S3 location of the training documents. This parameter is required in a request to create a native classifier model.</p>"
+        },
+        "DocumentReaderConfig":{"shape":"DocumentReaderConfig"}
       },
       "documentation":"<p>The input properties for training a document classifier. </p> <p>For more information on how the input file is formatted, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/prep-classifier-data.html\">Preparing training data</a> in the Comprehend Developer Guide. </p>"
     },
@@ -3424,7 +3468,7 @@
       "members":{
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>When you use the <code>OutputDataConfig</code> object while creating a custom classifier, you specify the Amazon S3 location where you want to write the confusion matrix. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of this output file.</p> <p>When the custom classifier job is finished, the service creates the output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the confusion matrix.</p>"
+          "documentation":"<p>When you use the <code>OutputDataConfig</code> object while creating a custom classifier, you specify the Amazon S3 location where you want to write the confusion matrix and other output files. The URI must be in the same Region as the API endpoint that you are calling. The location is used as the prefix for the actual location of this output file.</p> <p>When the custom classifier job is finished, the service creates the output file in a directory specific to the job. The <code>S3Uri</code> field contains the location of the output file, called <code>output.tar.gz</code>. It is a compressed archive that contains the confusion matrix.</p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -3435,7 +3479,7 @@
           "documentation":"<p>The Amazon S3 prefix for the data lake location of the flywheel statistics.</p>"
         }
       },
-      "documentation":"<p>Provides output results configuration parameters for custom classifier jobs. </p>"
+      "documentation":"<p>Provide the location for output data from a custom classifier job. This field is mandatory if you are training a native classifier model.</p>"
     },
     "DocumentClassifierProperties":{
       "type":"structure",
@@ -3450,7 +3494,7 @@
         },
         "Status":{
           "shape":"ModelStatus",
-          "documentation":"<p>The status of the document classifier. If the status is <code>TRAINED</code> the classifier is ready to use. If the status is <code>FAILED</code> you can see additional information about why the classifier wasn't trained in the <code>Message</code> field.</p>"
+          "documentation":"<p>The status of the document classifier. If the status is <code>TRAINED</code> the classifier is ready to use. If the status is <code>TRAINED_WITH_WARNINGS</code> the classifier training succeeded, but you should review the warnings returned in the <code>CreateDocumentClassifier</code> response.</p> <p> If the status is <code>FAILED</code> you can see additional information about why the classifier wasn't trained in the <code>Message</code> field.</p>"
         },
         "Message":{
           "shape":"AnyLengthString",
@@ -3624,7 +3668,7 @@
           "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns information and the data from any forms that are detected in the input document. </p> </li> </ul>"
         }
       },
-      "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files. </p> <p> By default, Amazon Comprehend performs the following actions to extract text from files, based on the input file type: </p> <ul> <li> <p> <b>Word files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Digital PDF files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Image files and scanned PDF files</b> - Amazon Comprehend uses the Amazon Textract <code>DetectDocumentText</code> API to extract the text. </p> </li> </ul> <p> <code>DocumentReaderConfig</code> does not apply to plain text files or Word files.</p> <p> For image files and PDF documents, you can override these default actions using the fields listed below. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/detecting-cer.html#detecting-cer-pdf\"> Setting text extraction options</a>. </p>"
+      "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files. </p> <p> By default, Amazon Comprehend performs the following actions to extract text from files, based on the input file type: </p> <ul> <li> <p> <b>Word files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Digital PDF files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Image files and scanned PDF files</b> - Amazon Comprehend uses the Amazon Textract <code>DetectDocumentText</code> API to extract the text. </p> </li> </ul> <p> <code>DocumentReaderConfig</code> does not apply to plain text files or Word files.</p> <p> For image files and PDF documents, you can override these default actions using the fields listed below. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-set-textract-options.html\"> Setting text extraction options</a> in the Comprehend Developer Guide. </p>"
     },
     "DocumentType":{
       "type":"string",
@@ -5515,6 +5559,10 @@
       "type":"list",
       "member":{"shape":"TargetedSentimentEntity"}
     },
+    "ListOfWarnings":{
+      "type":"list",
+      "member":{"shape":"WarningsListItem"}
+    },
     "ListPiiEntitiesDetectionJobsRequest":{
       "type":"structure",
       "members":{
@@ -5729,6 +5777,13 @@
         "PAGE_CHARACTERS_EXCEEDED",
         "PAGE_SIZE_EXCEEDED",
         "INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "PageBasedWarningCode":{
+      "type":"string",
+      "enum":[
+        "INFERENCING_PLAINTEXT_WITH_NATIVE_TRAINED_MODEL",
+        "INFERENCING_NATIVE_DOCUMENT_WITH_PLAINTEXT_TRAINED_MODEL"
       ]
     },
     "PartOfSpeechTag":{
@@ -7554,6 +7609,24 @@
         }
       },
       "documentation":"<p> Configuration parameters for an optional private Virtual Private Cloud (VPC) containing the resources you are using for the job. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html\">Amazon VPC</a>. </p>"
+    },
+    "WarningsListItem":{
+      "type":"structure",
+      "members":{
+        "Page":{
+          "shape":"Integer",
+          "documentation":"<p>Page number in the input document.</p>"
+        },
+        "WarnCode":{
+          "shape":"PageBasedWarningCode",
+          "documentation":"<p>The type of warning.</p>"
+        },
+        "WarnMessage":{
+          "shape":"String",
+          "documentation":"<p>Text message associated with the warning.</p>"
+        }
+      },
+      "documentation":"<p>The system identified one of the following warnings while processing the input document:</p> <ul> <li> <p>The document to classify is plain text, but the classifier is a native model.</p> </li> <li> <p>The document to classify is semi-structured, but the classifier is a plain-text model.</p> </li> </ul>"
     }
   },
   "documentation":"<p>Amazon Comprehend is an Amazon Web Services service for gaining insight into the content of documents. Use these actions to determine the topics contained in your documents, the topics they discuss, the predominant sentiment expressed in them, the predominant language used, and more.</p>"

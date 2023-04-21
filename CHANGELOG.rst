@@ -5242,6 +5242,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.117
+========
+
+* api-change:``chime-sdk-media-pipelines``: This release adds support for specifying the recording file format in an S3 recording sink configuration.
+* api-change:``chime-sdk-meetings``: Adds support for Hindi and Thai languages and additional Amazon Transcribe parameters to the StartMeetingTranscription API.
+* api-change:``chime``: Adds support for Hindi and Thai languages and additional Amazon Transcribe parameters to the StartMeetingTranscription API.
+* api-change:``gamelift``: Amazon GameLift supports creating Builds for Windows 2016 operating system.
+* api-change:``guardduty``: This release adds support for the new Lambda Protection feature.
+* api-change:``iot``: Support additional OTA states in GetOTAUpdate API
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds ModelRegisterSettings support for CanvasAppSettings.
+* api-change:``snowball``: Adds support for Amazon S3 compatible storage. AWS Snow Family customers can now use Amazon S3 compatible storage on Snowball Edge devices. Also adds support for V3_5S. This is a refreshed AWS Snowball Edge Storage Optimized device type with 210TB SSD (customer usable).
+* api-change:``wafv2``: You can now create encrypted API keys to use in a client application integration of the JavaScript CAPTCHA API . You can also retrieve a list of your API keys and the JavaScript application integration URL.
+
+
+1.27.116
+========
+
+* bugfix:Output: Consistently remove ResponseMetadata field for all commands (`#7829 <https://github.com/aws/aws-cli/pull/7829>`__)
+* api-change:``comprehend``: This release supports native document models for custom classification, in addition to plain-text models. You train native document models using documents (PDF, Word, images) in their native format.
+* api-change:``ecs``: This release supports the Account Setting "TagResourceAuthorization" that allows for enhanced Tagging security controls.
+* api-change:``ram``: This release adds support for customer managed permissions. Customer managed permissions enable customers to author and manage tailored permissions for resources shared using RAM.
+* api-change:``rds``: Adds support for the ImageId parameter of CreateCustomDBEngineVersion to RDS Custom for Oracle
+* api-change:``s3``: Provides support for "Snow" Storage class.
+* api-change:``s3control``: Provides support for overriding endpoint when region is "snow". This will enable bucket APIs for Amazon S3 Compatible storage on Snow Family devices.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+
+
 1.27.115
 ========
 

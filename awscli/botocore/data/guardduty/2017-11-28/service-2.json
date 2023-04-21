@@ -2857,7 +2857,8 @@
         "EKS_AUDIT_LOGS",
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
-        "EKS_RUNTIME_MONITORING"
+        "EKS_RUNTIME_MONITORING",
+        "LAMBDA_NETWORK_LOGS"
       ]
     },
     "DetectorFeatureConfiguration":{
@@ -2925,7 +2926,8 @@
         "EKS_AUDIT_LOGS",
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
-        "EKS_RUNTIME_MONITORING"
+        "EKS_RUNTIME_MONITORING",
+        "LAMBDA_NETWORK_LOGS"
       ]
     },
     "DetectorId":{
@@ -3630,7 +3632,8 @@
         "EKS_AUDIT_LOGS",
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
-        "EKS_RUNTIME_MONITORING"
+        "EKS_RUNTIME_MONITORING",
+        "LAMBDA_NETWORK_LOGS"
       ]
     },
     "GeoLocation":{
@@ -4694,6 +4697,57 @@
       },
       "documentation":"<p>Details about the Kubernetes workload involved in a Kubernetes finding.</p>"
     },
+    "LambdaDetails":{
+      "type":"structure",
+      "members":{
+        "FunctionArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Lambda function.</p>",
+          "locationName":"functionArn"
+        },
+        "FunctionName":{
+          "shape":"String",
+          "documentation":"<p>Name of the Lambda function.</p>",
+          "locationName":"functionName"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>Description of the Lambda function.</p>",
+          "locationName":"description"
+        },
+        "LastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the Lambda function was last modified. This field is in the UTC date string format <code>(2023-03-22T19:37:20.168Z)</code>.</p>",
+          "locationName":"lastModifiedAt"
+        },
+        "RevisionId":{
+          "shape":"String",
+          "documentation":"<p>The revision ID of the Lambda function version.</p>",
+          "locationName":"revisionId"
+        },
+        "FunctionVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the Lambda function.</p>",
+          "locationName":"functionVersion"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>The execution role of the Lambda function.</p>",
+          "locationName":"role"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>Amazon Virtual Private Cloud configuration details associated with your Lambda function.</p>",
+          "locationName":"vpcConfig"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags attached to this resource, listed in the format of <code>key</code>:<code>value</code> pair.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>Information about the Lambda function involved in the finding.</p>"
+    },
     "Lineage":{
       "type":"list",
       "member":{"shape":"LineageObject"}
@@ -5632,7 +5686,8 @@
         "EKS_AUDIT_LOGS",
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
-        "EKS_RUNTIME_MONITORING"
+        "EKS_RUNTIME_MONITORING",
+        "LAMBDA_NETWORK_LOGS"
       ]
     },
     "OrgFeatureAdditionalConfiguration":{
@@ -6353,6 +6408,11 @@
           "shape":"RdsDbUserDetails",
           "documentation":"<p>Contains information about the user details through which anomalous login attempt was made.</p>",
           "locationName":"rdsDbUserDetails"
+        },
+        "LambdaDetails":{
+          "shape":"LambdaDetails",
+          "documentation":"<p>Contains information about the Lambda function that was involved in a finding.</p>",
+          "locationName":"lambdaDetails"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
@@ -7069,6 +7129,10 @@
       }
     },
     "String":{"type":"string"},
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Tag":{
       "type":"structure",
       "members":{
@@ -7952,6 +8016,27 @@
     "Volumes":{
       "type":"list",
       "member":{"shape":"Volume"}
+    },
+    "VpcConfig":{
+      "type":"structure",
+      "members":{
+        "SubnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The identifiers of the subnets that are associated with your Lambda function.</p>",
+          "locationName":"subnetIds"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the Amazon Virtual Private Cloud.</p>",
+          "locationName":"vpcId"
+        },
+        "SecurityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The identifier of the security group attached to the Lambda function.</p>",
+          "locationName":"securityGroups"
+        }
+      },
+      "documentation":"<p>Amazon Virtual Private Cloud configuration details associated with your Lambda function.</p>"
     }
   },
   "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC flow logs, Amazon Web Services CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, DNS logs, and Amazon EBS volume data. It uses threat intelligence feeds, such as lists of malicious IPs and domains, and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, domains, or presence of malware on your Amazon EC2 instances and container workloads. For example, GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise, such as unauthorized infrastructure deployments like EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you about the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon EventBridge. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"

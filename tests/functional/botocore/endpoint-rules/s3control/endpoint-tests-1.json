@@ -3458,6 +3458,133 @@
                 "UseDualStack": false,
                 "UseFIPS": false
             }
+        },
+        {
+            "documentation": "S3 Snow Control with bucket",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3",
+                                "signingRegion": "snow",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://10.0.1.12:433"
+                }
+            },
+            "params": {
+                "Region": "snow",
+                "Bucket": "bucketName",
+                "Endpoint": "https://10.0.1.12:433",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "S3 Snow Control without bucket",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3",
+                                "signingRegion": "snow",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://10.0.1.12:433"
+                }
+            },
+            "params": {
+                "Region": "snow",
+                "Endpoint": "https://10.0.1.12:433",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "S3 Snow Control with bucket and without port",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3",
+                                "signingRegion": "snow",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://10.0.1.12"
+                }
+            },
+            "params": {
+                "Region": "snow",
+                "Bucket": "bucketName",
+                "Endpoint": "https://10.0.1.12",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "S3 Snow Control with bucket and with DNS",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3",
+                                "signingRegion": "snow",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "http://s3snow.com"
+                }
+            },
+            "params": {
+                "Region": "snow",
+                "Bucket": "bucketName",
+                "Endpoint": "http://s3snow.com",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "S3 Snow Control with FIPS enabled",
+            "expect": {
+                "error": "S3 Snow does not support FIPS"
+            },
+            "params": {
+                "Region": "snow",
+                "Bucket": "bucketName",
+                "Endpoint": "https://10.0.1.12:433",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false
+            }
+        },
+        {
+            "documentation": "S3 Snow Control with Dual-stack enabled",
+            "expect": {
+                "error": "S3 Snow does not support Dual-stack"
+            },
+            "params": {
+                "Region": "snow",
+                "Bucket": "bucketName",
+                "Endpoint": "https://10.0.1.12:433",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false
+            }
         }
     ],
     "version": "1.0"

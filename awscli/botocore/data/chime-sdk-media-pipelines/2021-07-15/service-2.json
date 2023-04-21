@@ -454,7 +454,7 @@
         },
         "CallAnalyticsStreamCategories":{
           "shape":"CategoryNameList",
-          "documentation":"<p>By default, all <code>CategoryEvents</code> will be sent to the insights target. If this parameter is specified, only included categories will be sent to the insights target. </p>"
+          "documentation":"<p>By default, all <code>CategoryEvents</code> are sent to the insights target. If this parameter is specified, only included categories are sent to the insights target. </p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe call analytics processor.</p>"
@@ -501,7 +501,7 @@
         },
         "PiiEntityTypes":{
           "shape":"PiiEntityTypes",
-          "documentation":"<p>The types of personally identifiable information (PII) to redact from a transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>To include <code>PiiEntityTypes</code> in your Call Analytics request, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>, but you can't include both.</p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 300.</p>"
+          "documentation":"<p>The types of personally identifiable information (PII) to redact from a transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>To include <code>PiiEntityTypes</code> in your Call Analytics request, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>, but you can't include both.</p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>, <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>If you leave this parameter empty, the default behavior is equivalent to <code>ALL</code>.</p>"
         },
         "LanguageModelName":{
           "shape":"ModelName",
@@ -1390,7 +1390,7 @@
       "members":{
         "InsightsTarget":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+          "documentation":"<p>The ARN of the sink.</p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration settings for a Kinesis Data Stream sink.</p>"
@@ -1447,7 +1447,7 @@
       "members":{
         "InsightsTarget":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+          "documentation":"<p>The ARN of the sink.</p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration settings for an AWS Lambda function's data sink.</p>"
@@ -2131,10 +2131,10 @@
         },
         "OutputEncryptionKMSKeyId":{
           "shape":"String",
-          "documentation":"<p>The ID of the KMS (Key Management System) key used to encrypt the output.</p>"
+          "documentation":"<p>The ID of the KMS (Key Management Service) key used to encrypt the output.</p>"
         }
       },
-      "documentation":"<p>The settings for a post-call voice analytics task.</p>"
+      "documentation":"<p>Allows you to specify additional settings for your Call Analytics post-call request, including output locations for your redacted transcript, which IAM role to use, and which encryption key to use.</p> <p> <code>DataAccessRoleArn</code> and <code>OutputLocation</code> are required fields.</p> <p> <code>PostCallAnalyticsSettings</code> provides the same insights as a Call Analytics post-call transcription. For more information, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html\">Post-call analytics with real-time transcriptions</a> in the <i>Amazon Transcribe Developer Guide</i>.</p>"
     },
     "PresenterOnlyConfiguration":{
       "type":"structure",
@@ -2144,7 +2144,7 @@
           "documentation":"<p>Defines the position of the presenter video tile. Default: <code>TopRight</code>.</p>"
         }
       },
-      "documentation":"<p>Defines the configuration for a presenter only video tile.</p>"
+      "documentation":"<p>Defines the configuration for a presenter-only video tile.</p>"
     },
     "PresenterPosition":{
       "type":"string",
@@ -2221,7 +2221,7 @@
           "documentation":"<p>The ARN of the recording stream.</p>"
         }
       },
-      "documentation":"<p>A structure the holds the settings for recording audio and video.</p>"
+      "documentation":"<p>A structure that holds the settings for recording media.</p>"
     },
     "RecordingStreamList":{
       "type":"list",
@@ -2277,10 +2277,14 @@
       "members":{
         "Destination":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the Amazon S3 bucket used as the recording sink.</p>"
+          "documentation":"<p>The default URI of the Amazon S3 bucket used as the recording sink.</p>"
+        },
+        "RecordingFileFormat":{
+          "shape":"RecordingFileFormat",
+          "documentation":"<p>The default file format for the media files sent to the Amazon S3 bucket.</p>"
         }
       },
-      "documentation":"<p>The structure that holds the settings for transmitting audio and video to the Amazon S3 bucket.</p>"
+      "documentation":"<p>The structure that holds the settings for transmitting media to the Amazon S3 bucket. These values are used as defaults if <code>S3RecordingSinkRuntimeConfiguration</code> is not specified.</p>"
     },
     "S3RecordingSinkRuntimeConfiguration":{
       "type":"structure",
@@ -2291,14 +2295,14 @@
       "members":{
         "Destination":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the S3 bucket used as the runtime sink.</p>"
+          "documentation":"<p>The URI of the S3 bucket used as the sink.</p>"
         },
         "RecordingFileFormat":{
           "shape":"RecordingFileFormat",
-          "documentation":"<p>The file formats for the audio and video files sent to the Amazon S3 bucket.</p>"
+          "documentation":"<p>The file format for the media files sent to the Amazon S3 bucket.</p>"
         }
       },
-      "documentation":"<p>A structure that holds the settings for transmitting audio and video recordings to the runtime Amazon S3 bucket.</p>"
+      "documentation":"<p>A structure that holds the settings for transmitting media files to the Amazon S3 bucket. If specified, the settings in this structure override any settings in <code>S3RecordingSinkConfiguration</code>.</p>"
     },
     "SelectedVideoStreams":{
       "type":"structure",
@@ -2387,7 +2391,7 @@
       "members":{
         "InsightsTarget":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the SNS sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+          "documentation":"<p>The ARN of the SNS sink.</p>"
         }
       },
       "documentation":"<p>The configuration settings for the SNS topic sink.</p>"
@@ -2407,10 +2411,10 @@
       "members":{
         "InsightsTarget":{
           "shape":"Arn",
-          "documentation":"<p>The URL of the SQS sink, <a href=\"https://aws.amazon.com/kinesis/data-streams/\">https://aws.amazon.com/kinesis/data-streams/</a>.</p>"
+          "documentation":"<p>The ARN of the SQS sink.</p>"
         }
       },
-      "documentation":"<p>The URL of the SQS sink.</p>"
+      "documentation":"<p>The configuration settings for the SQS sink.</p>"
     },
     "StreamChannelDefinition":{
       "type":"structure",

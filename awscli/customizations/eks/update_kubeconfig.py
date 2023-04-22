@@ -104,7 +104,14 @@ class UpdateKubeconfigCommand(BasicCommand):
             'help_text': ("Alias for the generated user name. "
                           "Defaults to match cluster ARN."),
             'required': False
-        }
+        },
+        {
+            'name': 'exclude-profile',
+            'action': 'store_true',
+            'default': False,
+            'help_text': ("Exclude the AWS_PROFILE environment variable "
+                          "from the generated user's exec config.")
+        },
     ]
 
     def _display_entries(self, entries):
@@ -123,6 +130,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         client = EKSClient(self._session,
                            parsed_args.name,
                            parsed_args.role_arn,
+                           parsed_args.exclude_profile,
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
@@ -237,10 +245,11 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, cluster_name, role_arn, exclude_profile=False, parsed_globals=None):
         self._session = session
         self._cluster_name = cluster_name
         self._role_arn = role_arn
+        self._exclude_profile = exclude_profile
         self._cluster_description = None
         self._globals = parsed_globals
 
@@ -335,7 +344,7 @@ class EKSClient(object):
                 self._role_arn
             ])
 
-        if self._session.profile:
+        if self._session.profile and not self._exclude_profile:
             generated_user["user"]["exec"]["env"] = [OrderedDict([
                 ("name", "AWS_PROFILE"),
                 ("value", self._session.profile)

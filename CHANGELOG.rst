@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.120
+========
+
+* bugfix:ses: SES create and update custom verification email template operations don't send the custom redirection URL content anymore but send the URL as a string instead (as expected)
+* api-change:``chime-sdk-messaging``: Remove non actionable field from UpdateChannelReadMarker and DeleteChannelRequest.  Add precise exceptions to DeleteChannel and DeleteStreamingConfigurations error cases.
+* api-change:``connect``: Amazon Connect, Contact Lens Evaluation API release including ability to manage forms and to submit contact evaluations.
+* api-change:``datasync``: This release adds 13 new APIs to support AWS DataSync Discovery GA.
+* api-change:``ds``: New field added in AWS Managed Microsoft AD DescribeSettings response and regex pattern update for UpdateSettings value.  Added length validation to RemoteDomainName.
+* api-change:``pinpoint``: Adds support for journey runs and querying journey execution metrics based on journey runs. Adds execution metrics to campaign activities. Updates docs for Advanced Quiet Time.
+
+
 1.27.119
 ========
 

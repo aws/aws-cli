@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.27.121
+========
+
+* api-change:``osis``: Initial release for OpenSearch Ingestion
+
+
 1.27.120
 ========
 

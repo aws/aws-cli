@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.27.122
+========
+
+* api-change:``ec2``: This release adds support for AMD SEV-SNP on EC2 instances.
+* api-change:``emr-containers``: This release adds GetManagedEndpointSessionCredentials, a new API that allows customers to generate an auth token to connect to a managed endpoint, enabling features such as self-hosted Jupyter notebooks for EMR on EKS.
+* api-change:``guardduty``: Added API support to initiate on-demand malware scan on specific resources.
+* api-change:``iotdeviceadvisor``: AWS IoT Core Device Advisor now supports MQTT over WebSocket. With this update, customers can run all three test suites of AWS IoT Core Device Advisor - qualification, custom, and long duration tests - using Signature Version 4 for MQTT over WebSocket.
+* api-change:``kafka``: Amazon MSK has added new APIs that allows multi-VPC private connectivity and cluster policy support for Amazon MSK clusters that simplify connectivity and access between your Apache Kafka clients hosted in different VPCs and AWS accounts and your Amazon MSK clusters.
+* api-change:``lambda``: Add Java 17 (java17) support to AWS Lambda
+* api-change:``marketplace-catalog``: Enabled Pagination for List Entities and List Change Sets operations
+* api-change:``osis``: Documentation updates for OpenSearch Ingestion
+* api-change:``qldb``: Documentation updates for Amazon QLDB
+* api-change:``sagemaker``: Added ml.p4d.24xlarge and ml.p4de.24xlarge as supported instances for SageMaker Studio
+* api-change:``xray``: Updated X-Ray documentation with Resource Policy API descriptions.
+
+
 1.27.121
 ========
 

@@ -131,7 +131,7 @@ def test_all_lock_files_are_generated_by_expected_python_version():
     for path in lockfile_paths(REQUIREMENTS_PATH):
         with open(path, "r") as f:
             content = f.read()
-            assert f"python {CANNONICAL_PYTHON_VERSION}" in content
+            assert f"Python {CANNONICAL_PYTHON_VERSION}" in content
 
 
 @pytest.mark.skipif(

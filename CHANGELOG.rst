@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.27.123
+========
+
+* api-change:``appflow``: Adds Jwt Support for Salesforce Credentials.
+* api-change:``athena``: You can now use capacity reservations on Amazon Athena to run SQL queries on fully-managed compute capacity.
+* api-change:``directconnect``: This release corrects the jumbo frames MTU from 9100 to 8500.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``grafana``: This release adds support for the grafanaVersion parameter in CreateWorkspace.
+* api-change:``iot``: This release allows AWS IoT Core users to specify a TLS security policy when creating and updating AWS IoT Domain Configurations.
+* api-change:``rekognition``: Added support for aggregating moderation labels by video segment timestamps for Stored Video Content Moderation APIs and added additional information about the job to all Stored Video Get API responses.
+* api-change:``simspaceweaver``: Added a new CreateSnapshot API. For the StartSimulation API, SchemaS3Location is now optional, added a new SnapshotS3Location parameter. For the DescribeSimulation API, added SNAPSHOT_IN_PROGRESS simulation state, deprecated SchemaError, added new fields: StartError and SnapshotS3Location.
+* api-change:``wafv2``: You can now associate a web ACL with a Verified Access instance.
+* api-change:``workspaces``: Added Windows 11 to support Microsoft_Office_2019
+
+
 1.27.122
 ========
 

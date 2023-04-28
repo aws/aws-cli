@@ -2,6 +2,37 @@
 CHANGELOG
 =========
 
+2.11.16
+=======
+
+* api-change:``rekognition``: Added new status result to Liveness session status.
+* api-change:``qldb``: Documentation updates for Amazon QLDB
+* api-change:``ec2``: This release adds support for AMD SEV-SNP on EC2 instances.
+* api-change:``osis``: Initial release for OpenSearch Ingestion
+* api-change:``appflow``: Increased the max length for RefreshToken and AuthCode from 2048 to 4096.
+* api-change:``guardduty``: Added API support to initiate on-demand malware scan on specific resources.
+* api-change:``xray``: Updated X-Ray documentation with Resource Policy API descriptions.
+* api-change:``kafka``: Amazon MSK has added new APIs that allows multi-VPC private connectivity and cluster policy support for Amazon MSK clusters that simplify connectivity and access between your Apache Kafka clients hosted in different VPCs and AWS accounts and your Amazon MSK clusters.
+* api-change:``connect``: This release adds a new API CreateParticipant. For Amazon Connect Chat, you can use this new API to customize chat flow experiences.
+* api-change:``emr-containers``: This release adds GetManagedEndpointSessionCredentials, a new API that allows customers to generate an auth token to connect to a managed endpoint, enabling features such as self-hosted Jupyter notebooks for EMR on EKS.
+* api-change:``pinpoint``: Adds support for journey runs and querying journey execution metrics based on journey runs. Adds execution metrics to campaign activities. Updates docs for Advanced Quiet Time.
+* api-change:``mediaconvert``: This release introduces a noise reduction pre-filter, linear interpolation deinterlace mode, video pass-through, updated default job settings, and expanded LC-AAC Stereo audio bitrate ranges.
+* api-change:``fms``: AWS Firewall Manager adds support for multiple administrators. You can now delegate more than one administrator per organization.
+* api-change:``iotdeviceadvisor``: AWS IoT Core Device Advisor now supports MQTT over WebSocket. With this update, customers can run all three test suites of AWS IoT Core Device Advisor - qualification, custom, and long duration tests - using Signature Version 4 for MQTT over WebSocket.
+* api-change:``ec2``: API changes to AWS Verified Access related to identity providers' information.
+* api-change:``connect``: Amazon Connect, Contact Lens Evaluation API release including ability to manage forms and to submit contact evaluations.
+* api-change:``ecs``: Documentation update to address various Amazon ECS tickets.
+* enhancement:dependency: Bump pyinstaller from 5.8.0 to 5.10.1 
+* api-change:``codecatalyst``: Documentation updates for Amazon CodeCatalyst.
+* api-change:``lambda``: Add Java 17 (java17) support to AWS Lambda
+* api-change:``sagemaker``: Added ml.p4d.24xlarge and ml.p4de.24xlarge as supported instances for SageMaker Studio
+* api-change:``ds``: New field added in AWS Managed Microsoft AD DescribeSettings response and regex pattern update for UpdateSettings value.  Added length validation to RemoteDomainName.
+* api-change:``marketplace-catalog``: Enabled Pagination for List Entities and List Change Sets operations
+* api-change:``osis``: Documentation updates for OpenSearch Ingestion
+* api-change:``datasync``: This release adds 13 new APIs to support AWS DataSync Discovery GA.
+* api-change:``chime-sdk-messaging``: Remove non actionable field from UpdateChannelReadMarker and DeleteChannelRequest.  Add precise exceptions to DeleteChannel and DeleteStreamingConfigurations error cases.
+
+
 2.11.15
 =======
 

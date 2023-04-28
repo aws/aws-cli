@@ -51,6 +51,22 @@
       ],
       "documentation":"<p>Returns the web ACL capacity unit (WCU) requirements for a specified scope and set of rules. You can use this to check the capacity requirements for the rules you want to use in a <a>RuleGroup</a> or <a>WebACL</a>. </p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html\">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>"
     },
+    "CreateAPIKey":{
+      "name":"CreateAPIKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAPIKeyRequest"},
+      "output":{"shape":"CreateAPIKeyResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFLimitsExceededException"}
+      ],
+      "documentation":"<p>Creates an API key for use in the integration of the CAPTCHA API in your JavaScript client applications. The integration lets you customize the placement and characteristics of the CAPTCHA puzzle for your end users. For more information about the CAPTCHA JavaScript integration, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p> <p>The CAPTCHA API requires a key that authorizes CAPTCHA use from the client application domain. You can use a single key for up to 5 domains. After you generate a key, you can copy it for use in your JavaScript integration. </p>"
+    },
     "CreateIPSet":{
       "name":"CreateIPSet",
       "http":{
@@ -319,6 +335,22 @@
       ],
       "documentation":"<p>Generates a presigned download URL for the specified release of the mobile SDK.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage WAF tokens for use in HTTP(S) requests from a mobile device to WAF. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
     },
+    "GetDecryptedAPIKey":{
+      "name":"GetDecryptedAPIKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDecryptedAPIKeyRequest"},
+      "output":{"shape":"GetDecryptedAPIKeyResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFInvalidResourceException"}
+      ],
+      "documentation":"<p>Returns your API key in decrypted form. Use this to check the token domains that you have defined for the key. </p>"
+    },
     "GetIPSet":{
       "name":"GetIPSet",
       "http":{
@@ -493,6 +525,22 @@
         {"shape":"WAFInvalidOperationException"}
       ],
       "documentation":"<p>Retrieves the <a>WebACL</a> for the specified resource. </p>"
+    },
+    "ListAPIKeys":{
+      "name":"ListAPIKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAPIKeysRequest"},
+      "output":{"shape":"ListAPIKeysResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFInvalidResourceException"}
+      ],
+      "documentation":"<p>Retrieves a list of the API keys that you've defined for the specified scope. </p>"
     },
     "ListAvailableManagedRuleGroupVersions":{
       "name":"ListAvailableManagedRuleGroupVersions",
@@ -857,6 +905,47 @@
     }
   },
   "shapes":{
+    "APIKey":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "APIKeySummaries":{
+      "type":"list",
+      "member":{"shape":"APIKeySummary"}
+    },
+    "APIKeySummary":{
+      "type":"structure",
+      "members":{
+        "TokenDomains":{
+          "shape":"TokenDomains",
+          "documentation":"<p>The token domains that are defined in this API key. </p>"
+        },
+        "APIKey":{
+          "shape":"APIKey",
+          "documentation":"<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
+        },
+        "CreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the key was created. </p>"
+        },
+        "Version":{
+          "shape":"APIKeyVersion",
+          "documentation":"<p>Internal value used by WAF to manage the key. </p>"
+        }
+      },
+      "documentation":"<p>Information for a single API key. </p>"
+    },
+    "APIKeyTokenDomains":{
+      "type":"list",
+      "member":{"shape":"TokenDomain"},
+      "min":1
+    },
+    "APIKeyVersion":{
+      "type":"integer",
+      "min":0
+    },
     "AWSManagedRulesATPRuleSet":{
       "type":"structure",
       "required":["LoginPath"],
@@ -1493,6 +1582,32 @@
       "type":"list",
       "member":{"shape":"CountryCode"},
       "min":1
+    },
+    "CreateAPIKeyRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "TokenDomains"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "TokenDomains":{
+          "shape":"APIKeyTokenDomains",
+          "documentation":"<p>The client application domains that you want to use this API key for. </p>"
+        }
+      }
+    },
+    "CreateAPIKeyResponse":{
+      "type":"structure",
+      "members":{
+        "APIKey":{
+          "shape":"APIKey",
+          "documentation":"<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
+        }
+      }
     },
     "CreateIPSetRequest":{
       "type":"structure",
@@ -2345,6 +2460,36 @@
       },
       "documentation":"<p>A rule statement that labels web requests by country and region and that matches against web requests based on country code. A geo match rule labels every request that it inspects regardless of whether it finds a match.</p> <ul> <li> <p>To manage requests only by country, you can use this statement by itself and specify the countries that you want to match against in the <code>CountryCodes</code> array. </p> </li> <li> <p>Otherwise, configure your geo match rule with Count action so that it only labels requests. Then, add one or more label match rules to run after the geo match rule and configure them to match against the geographic labels and handle the requests as needed. </p> </li> </ul> <p>WAF labels requests using the alpha-2 country and region codes from the International Organization for Standardization (ISO) 3166 standard. WAF determines the codes using either the IP address in the web request origin or, if you specify it, the address in the geo match <code>ForwardedIPConfig</code>. </p> <p>If you use the web request origin, the label formats are <code>awswaf:clientip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:clientip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>If you use a forwarded IP address, the label formats are <code>awswaf:forwardedip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:forwardedip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>For additional details, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-geo-match.html\">Geographic match rule statement</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
     },
+    "GetDecryptedAPIKeyRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "APIKey"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "APIKey":{
+          "shape":"APIKey",
+          "documentation":"<p>The encrypted API key. </p>"
+        }
+      }
+    },
+    "GetDecryptedAPIKeyResponse":{
+      "type":"structure",
+      "members":{
+        "TokenDomains":{
+          "shape":"TokenDomains",
+          "documentation":"<p>The token domains that are defined in this API key. </p>"
+        },
+        "CreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the key was created. </p>"
+        }
+      }
+    },
     "GetIPSetRequest":{
       "type":"structure",
       "required":[
@@ -3075,6 +3220,41 @@
       "type":"list",
       "member":{"shape":"Label"}
     },
+    "ListAPIKeysRequest":{
+      "type":"structure",
+      "required":["Scope"],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        },
+        "Limit":{
+          "shape":"PaginationLimit",
+          "documentation":"<p>The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListAPIKeysResponse":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        },
+        "APIKeySummaries":{
+          "shape":"APIKeySummaries",
+          "documentation":"<p>The array of key summaries. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
+        },
+        "ApplicationIntegrationURL":{
+          "shape":"OutputUrl",
+          "documentation":"<p>The CAPTCHA application integration URL, for use in your JavaScript implementation. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
+        }
+      }
+    },
     "ListAvailableManagedRuleGroupVersionsRequest":{
       "type":"structure",
       "required":[
@@ -3114,7 +3294,7 @@
         },
         "Versions":{
           "shape":"ManagedRuleGroupVersions",
-          "documentation":"<p>The versions that are currently available for the specified managed rule group. </p>"
+          "documentation":"<p>The versions that are currently available for the specified managed rule group. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         },
         "CurrentDefaultVersion":{
           "shape":"VersionKeyString",
@@ -3149,7 +3329,7 @@
         },
         "ManagedRuleGroups":{
           "shape":"ManagedRuleGroupSummaries",
-          "documentation":"<p/>"
+          "documentation":"<p>Array of managed rule groups that you can use. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3180,7 +3360,7 @@
         },
         "IPSets":{
           "shape":"IPSetSummaries",
-          "documentation":"<p>Array of IPSets. This may not be the full list of IPSets that you have defined. See the <code>Limit</code> specification for this request.</p>"
+          "documentation":"<p>Array of IPSets. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3207,7 +3387,7 @@
       "members":{
         "LoggingConfigurations":{
           "shape":"LoggingConfigurations",
-          "documentation":"<p/>"
+          "documentation":"<p>Array of logging configurations. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         },
         "NextMarker":{
           "shape":"NextMarker",
@@ -3242,7 +3422,7 @@
         },
         "ManagedRuleSets":{
           "shape":"ManagedRuleSetSummaries",
-          "documentation":"<p>Your managed rule sets. </p>"
+          "documentation":"<p>Your managed rule sets. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3274,7 +3454,7 @@
       "members":{
         "ReleaseSummaries":{
           "shape":"ReleaseSummaries",
-          "documentation":"<p>High level information for the available SDK releases. </p>"
+          "documentation":"<p>The high level information for the available SDK releases. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         },
         "NextMarker":{
           "shape":"NextMarker",
@@ -3309,7 +3489,7 @@
         },
         "RegexPatternSets":{
           "shape":"RegexPatternSetSummaries",
-          "documentation":"<p/>"
+          "documentation":"<p>Array of regex pattern sets. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3363,7 +3543,7 @@
         },
         "RuleGroups":{
           "shape":"RuleGroupSummaries",
-          "documentation":"<p/>"
+          "documentation":"<p>Array of rule groups. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3394,7 +3574,7 @@
         },
         "TagInfoForResource":{
           "shape":"TagInfoForResource",
-          "documentation":"<p>The collection of tagging definitions for the resource. </p>"
+          "documentation":"<p>The collection of tagging definitions for the resource. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },
@@ -3425,7 +3605,7 @@
         },
         "WebACLs":{
           "shape":"WebACLSummaries",
-          "documentation":"<p/>"
+          "documentation":"<p>Array of web ACLs. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
         }
       }
     },

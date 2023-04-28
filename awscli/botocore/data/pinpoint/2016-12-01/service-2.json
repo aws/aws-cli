@@ -3054,6 +3054,144 @@
       ],
       "documentation": "<p>Retrieves (queries) pre-aggregated data for a standard execution metric that applies to a journey.</p>"
     },
+    "GetJourneyRunExecutionActivityMetrics": {
+      "name": "GetJourneyRunExecutionActivityMetrics",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/activities/{journey-activity-id}/execution-metrics",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetJourneyRunExecutionActivityMetricsRequest"
+      },
+      "output": {
+        "shape": "GetJourneyRunExecutionActivityMetricsResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>The request contains a syntax error (BadRequestException).</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure (InternalServerErrorException).</p>"
+        },
+        {
+          "shape": "PayloadTooLargeException",
+          "documentation": "<p>The request failed because the payload for the body of the request is too large (RequestEntityTooLargeException).</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>The request was denied because access to the specified resource is forbidden (ForbiddenException).</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The request failed because the specified resource was not found (NotFoundException).</p>"
+        },
+        {
+          "shape": "MethodNotAllowedException",
+          "documentation": "<p>The request failed because the method is not allowed for the specified resource (MethodNotAllowedException).</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The request failed because too many requests were sent during a certain amount of time (TooManyRequestsException).</p>"
+        }
+      ],
+      "documentation": "<p>Retrieves (queries) pre-aggregated data for a standard run execution metric that applies to a journey activity.</p>"
+    },
+    "GetJourneyRunExecutionMetrics": {
+      "name": "GetJourneyRunExecutionMetrics",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/execution-metrics",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetJourneyRunExecutionMetricsRequest"
+      },
+      "output": {
+        "shape": "GetJourneyRunExecutionMetricsResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>The request contains a syntax error (BadRequestException).</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure (InternalServerErrorException).</p>"
+        },
+        {
+          "shape": "PayloadTooLargeException",
+          "documentation": "<p>The request failed because the payload for the body of the request is too large (RequestEntityTooLargeException).</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>The request was denied because access to the specified resource is forbidden (ForbiddenException).</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The request failed because the specified resource was not found (NotFoundException).</p>"
+        },
+        {
+          "shape": "MethodNotAllowedException",
+          "documentation": "<p>The request failed because the method is not allowed for the specified resource (MethodNotAllowedException).</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The request failed because too many requests were sent during a certain amount of time (TooManyRequestsException).</p>"
+        }
+      ],
+      "documentation": "<p>Retrieves (queries) pre-aggregated data for a standard run execution metric that applies to a journey.</p>"
+    },
+    "GetJourneyRuns": {
+      "name": "GetJourneyRuns",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/apps/{application-id}/journeys/{journey-id}/runs",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetJourneyRunsRequest"
+      },
+      "output": {
+        "shape": "GetJourneyRunsResponse",
+        "documentation": "<p>The request succeeded.</p>"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>The request contains a syntax error (BadRequestException).</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>The request failed due to an unknown internal server error, exception, or failure (InternalServerErrorException).</p>"
+        },
+        {
+          "shape": "PayloadTooLargeException",
+          "documentation": "<p>The request failed because the payload for the body of the request is too large (RequestEntityTooLargeException).</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>The request was denied because access to the specified resource is forbidden (ForbiddenException).</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>The request failed because the specified resource was not found (NotFoundException).</p>"
+        },
+        {
+          "shape": "MethodNotAllowedException",
+          "documentation": "<p>The request failed because the method is not allowed for the specified resource (MethodNotAllowedException).</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>The request failed because too many requests were sent during a certain amount of time (TooManyRequestsException).</p>"
+        }
+      ],
+      "documentation": "<p>Provides information about the runs of a journey.</p>"
+    },
     "GetPushTemplate": {
       "name": "GetPushTemplate",
       "http": {
@@ -6111,6 +6249,10 @@
         "TreatmentId": {
           "shape": "__string",
           "documentation": "<p>The unique identifier for the campaign treatment that the activity applies to. A treatment is a variation of a campaign that's used for A/B testing of a campaign.</p>"
+        },
+        "ExecutionMetrics": {
+          "shape": "MapOf__string",
+          "documentation": "<p>A JSON object that contains metrics relating to the campaign execution for this campaign activity. For information about the structure and contents of the results, see <a href=\"https://docs.aws.amazon.com//pinpoint/latest/developerguide/analytics-standard-metrics.html\">Standard Amazon Pinpoint analytics metrics</a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
         }
       },
       "documentation": "<p>Provides information about an activity that was performed by a campaign.</p>",
@@ -10539,7 +10681,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "next-token",
-          "documentation": "<p>The  string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+          "documentation": "<p>The <code/> string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
         },
         "PageSize": {
           "shape": "__string",
@@ -10585,7 +10727,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "next-token",
-          "documentation": "<p>The  string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+          "documentation": "<p>The <code/> string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
         },
         "PageSize": {
           "shape": "__string",
@@ -10643,6 +10785,162 @@
         "JourneyResponse"
       ],
       "payload": "JourneyResponse"
+    },
+    "GetJourneyRunExecutionActivityMetricsRequest": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "application-id",
+          "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
+        },
+        "JourneyActivityId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "journey-activity-id",
+          "documentation": "<p>The unique identifier for the journey activity.</p>"
+        },
+        "JourneyId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "journey-id",
+          "documentation": "<p>The unique identifier for the journey.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "next-token",
+          "documentation": "<p>The <code/> string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+        },
+        "PageSize": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "page-size",
+          "documentation": "<p>The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+        },
+        "RunId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "run-id",
+          "documentation": "<p>The unique identifier for the journey run.</p>"
+        }
+      },
+      "required": [
+        "RunId",
+        "JourneyActivityId",
+        "JourneyId",
+        "ApplicationId"
+      ]
+    },
+    "GetJourneyRunExecutionActivityMetricsResponse": {
+      "type": "structure",
+      "members": {
+        "JourneyRunExecutionActivityMetricsResponse": {
+          "shape": "JourneyRunExecutionActivityMetricsResponse"
+        }
+      },
+      "required": [
+        "JourneyRunExecutionActivityMetricsResponse"
+      ],
+      "payload": "JourneyRunExecutionActivityMetricsResponse"
+    },
+    "GetJourneyRunExecutionMetricsRequest": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "application-id",
+          "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
+        },
+        "JourneyId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "journey-id",
+          "documentation": "<p>The unique identifier for the journey.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "next-token",
+          "documentation": "<p>The <code/> string that specifies which page of results to return in a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+        },
+        "PageSize": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "page-size",
+          "documentation": "<p>The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+        },
+        "RunId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "run-id",
+          "documentation": "<p>The unique identifier for the journey run.</p>"
+        }
+      },
+      "required": [
+        "RunId",
+        "ApplicationId",
+        "JourneyId"
+      ]
+    },
+    "GetJourneyRunExecutionMetricsResponse": {
+      "type": "structure",
+      "members": {
+        "JourneyRunExecutionMetricsResponse": {
+          "shape": "JourneyRunExecutionMetricsResponse"
+        }
+      },
+      "required": [
+        "JourneyRunExecutionMetricsResponse"
+      ],
+      "payload": "JourneyRunExecutionMetricsResponse"
+    },
+    "GetJourneyRunsRequest": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "application-id",
+          "documentation": "<p>The unique identifier for the application. This identifier is displayed as the <b>Project ID</b> on the Amazon Pinpoint console.</p>"
+        },
+        "JourneyId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "journey-id",
+          "documentation": "<p>The unique identifier for the journey.</p>"
+        },
+        "PageSize": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "page-size",
+          "documentation": "<p>The maximum number of items to include in each page of a paginated response. This parameter is not supported for application, campaign, and journey metrics.</p>"
+        },
+        "Token": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "token",
+          "documentation": "<p>The NextToken string that specifies which page of results to return in a paginated response.</p>"
+        }
+      },
+      "required": [
+        "ApplicationId",
+        "JourneyId"
+      ]
+    },
+    "GetJourneyRunsResponse": {
+      "type": "structure",
+      "members": {
+        "JourneyRunsResponse": {
+          "shape": "JourneyRunsResponse"
+        }
+      },
+      "required": [
+        "JourneyRunsResponse"
+      ],
+      "payload": "JourneyRunsResponse"
     },
     "GetPushTemplateRequest": {
       "type": "structure",
@@ -11699,7 +11997,7 @@
       "members": {
         "ActivityType": {
           "shape": "__string",
-          "documentation": "<p>The type of activity that the metric applies to. Possible values are:</p> <ul><li><p>CONDITIONAL_SPLIT - For a yes/no split activity, which is an activity that sends participants down one of two paths in a journey.</p></li> <li><p>HOLDOUT - For a holdout activity, which is an activity that stops a journey for a specified percentage of participants.</p></li> <li><p>MESSAGE - For an email activity, which is an activity that sends an email message to participants.</p></li> <li><p>MULTI_CONDITIONAL_SPLIT - For a multivariate split activity, which is an activity that sends participants down one of as many as five paths in a journey.</p></li> <li><p>RANDOM_SPLIT - For a random split activity, which is an activity that sends specified percentages of participants down one of as many as five paths in a journey.</p></li> <li><p>WAIT - For a wait activity, which is an activity that waits for a certain amount of time or until a specific date and time before moving participants to the next activity in a journey.</p></li></ul>"
+          "documentation": "<p>The type of activity that the metric applies to. Possible values are:</p> <ul><li><p>CONDITIONAL_SPLIT – For a yes/no split activity, which is an activity that sends participants down one of two paths in a journey.</p></li> <li><p>HOLDOUT – For a holdout activity, which is an activity that stops a journey for a specified percentage of participants.</p></li> <li><p>MESSAGE – For an email activity, which is an activity that sends an email message to participants.</p></li> <li><p>MULTI_CONDITIONAL_SPLIT – For a multivariate split activity, which is an activity that sends participants down one of as many as five paths in a journey.</p></li> <li><p>RANDOM_SPLIT – For a random split activity, which is an activity that sends specified percentages of participants down one of as many as five paths in a journey.</p></li> <li><p>WAIT – For a wait activity, which is an activity that waits for a certain amount of time or until a specific date and time before moving participants to the next activity in a journey.</p></li></ul>"
         },
         "ApplicationId": {
           "shape": "__string",
@@ -11872,11 +12170,11 @@
         },
         "WaitForQuietTime": {
           "shape": "__boolean",
-          "documentation": "<p>Specifies whether endpoints in quiet hours should enter a wait till the end of their quiet hours.</p>"
+          "documentation": "<p>Indicates whether endpoints in quiet hours should enter a wait activity until quiet hours have elapsed.</p>"
         },
         "RefreshOnSegmentUpdate": {
           "shape": "__boolean",
-          "documentation": "<p>Specifies whether a journey should be refreshed on segment update.</p>"
+          "documentation": "<p>Indicates whether the journey participants should be refreshed when a segment is updated.</p>"
         },
         "JourneyChannelSettings": {
           "shape": "JourneyChannelSettings",
@@ -11884,15 +12182,15 @@
         },
         "SendingSchedule": {
             "shape": "__boolean",
-            "documentation": "<p>Indicates if journey have Advance Quiet Time (OpenHours and ClosedDays). This flag should be set to true in order to allow (OpenHours and ClosedDays)</p>"
+            "documentation": "<p>Indicates if journey has Advance Quiet Time enabled. This flag should be set to true in order to allow using OpenHours and ClosedDays.</p>"
         },
         "OpenHours": {
             "shape": "OpenHours",
-            "documentation": "<p>The time when journey allow to send messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>"
+            "documentation": "<p>The time when a journey can send messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>"
         },
         "ClosedDays": {
             "shape": "ClosedDays",
-            "documentation": "<p>The time when journey will stop sending messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>"
+            "documentation": "<p>The time when a journey will not send messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>"
         }
       },
       "documentation": "<p>Provides information about the status, configuration, and other settings for a journey.</p>",
@@ -11900,6 +12198,136 @@
         "Name",
         "Id",
         "ApplicationId"
+      ]
+    },
+    "JourneyRunExecutionActivityMetricsResponse": {
+      "type": "structure",
+      "members": {
+        "ActivityType": {
+          "shape": "__string",
+          "documentation": "<p>The type of activity that the metric applies to. Possible values are:</p> <ul><li><p>CONDITIONAL_SPLIT – For a yes/no split activity, which is an activity that sends participants down one of two paths in a journey.</p></li> <li><p>HOLDOUT – For a holdout activity, which is an activity that stops a journey for a specified percentage of participants.</p></li> <li><p>MESSAGE – For an email activity, which is an activity that sends an email message to participants.</p></li> <li><p>MULTI_CONDITIONAL_SPLIT – For a multivariate split activity, which is an activity that sends participants down one of as many as five paths in a journey.</p></li> <li><p>RANDOM_SPLIT – For a random split activity, which is an activity that sends specified percentages of participants down one of as many as five paths in a journey.</p></li> <li><p>WAIT – For a wait activity, which is an activity that waits for a certain amount of time or until a specific date and time before moving participants to the next activity in a journey.</p></li></ul>"
+        },
+        "ApplicationId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the application that the metric applies to.</p>"
+        },
+        "JourneyActivityId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the activity that the metric applies to.</p>"
+        },
+        "JourneyId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the journey that the metric applies to.</p>"
+        },
+        "LastEvaluatedTime": {
+          "shape": "__string",
+          "documentation": "<p>The date and time, in ISO 8601 format, when Amazon Pinpoint last evaluated the execution status of the activity for this journey run and updated the data for the metric.</p>"
+        },
+        "Metrics": {
+          "shape": "MapOf__string",
+          "documentation": "<p>A JSON object that contains the results of the query. For information about the structure and contents of the results, see see <a href=\"https://docs.aws.amazon.com//pinpoint/latest/developerguide/analytics-standard-metrics.html\">Standard Amazon Pinpoint analytics metrics</a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+        },
+        "RunId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the journey run that the metric applies to.</p>"
+        }
+      },
+      "documentation": "<p>Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey activity for a particular journey run, and provides information about that query.</p>",
+      "required": [
+        "Metrics",
+        "JourneyId",
+        "LastEvaluatedTime",
+        "JourneyActivityId",
+        "ActivityType",
+        "RunId",
+        "ApplicationId"
+      ]
+    },
+    "JourneyRunExecutionMetricsResponse": {
+      "type": "structure",
+      "members": {
+        "ApplicationId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the application that the metric applies to.</p>"
+        },
+        "JourneyId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the journey that the metric applies to.</p>"
+        },
+        "LastEvaluatedTime": {
+          "shape": "__string",
+          "documentation": "<p>The date and time, in ISO 8601 format, when Amazon Pinpoint last evaluated the journey run and updated the data for the metric.</p>"
+        },
+        "Metrics": {
+          "shape": "MapOf__string",
+          "documentation": "<p>A JSON object that contains the results of the query. For information about the structure and contents of the results, see the <a href=\"https://docs.aws.amazon.com//pinpoint/latest/developerguide/analytics-standard-metrics.html\">Standard Amazon Pinpoint analytics metrics</a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+        },
+        "RunId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the journey run that the metric applies to.</p>"
+        }
+      },
+      "documentation": "<p>Provides the results of a query that retrieved the data for a standard execution metric that applies to a journey run, and provides information about that query.</p>",
+      "required": [
+        "Metrics",
+        "JourneyId",
+        "LastEvaluatedTime",
+        "RunId",
+        "ApplicationId"
+      ]
+    },
+    "JourneyRunResponse": {
+      "type": "structure",
+      "members": {
+        "CreationTime": {
+          "shape": "__string",
+          "documentation": "<p>The time when the journey run was created or scheduled, in ISO 8601 format.</p>"
+        },
+        "LastUpdateTime": {
+          "shape": "__string",
+          "documentation": "<p>The last time the journey run was updated, in ISO 8601 format..</p>"
+        },
+        "RunId": {
+          "shape": "__string",
+          "documentation": "<p>The unique identifier for the run.</p>"
+        },
+        "Status": {
+          "shape": "JourneyRunStatus",
+          "documentation": "<p>The current status of the journey run.</p>"
+        }
+      },
+      "documentation": "<p>Provides information from a specified run of a journey.</p>",
+      "required": [
+        "Status",
+        "LastUpdateTime",
+        "CreationTime",
+        "RunId"
+      ]
+    },
+    "JourneyRunsResponse": {
+      "type": "structure",
+      "members": {
+        "Item": {
+          "shape": "ListOfJourneyRunResponse",
+          "documentation": "<p>An array of responses, one for each run of the journey</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "documentation": "<p>The string to use in a subsequent request to get the next page of results in a paginated response. This value is null if there are no additional pages.</p>"
+        }
+      },
+      "documentation": "<p>Provides information from all runs of a journey.</p>",
+      "required": [
+        "Item"
+      ]
+    },
+    "JourneyRunStatus": {
+      "type": "string",
+      "enum": [
+        "SCHEDULED",
+        "RUNNING",
+        "COMPLETED",
+        "CANCELLED"
       ]
     },
     "JourneySMSMessage": {
@@ -15606,7 +16034,7 @@
         },
         "RefreshOnSegmentUpdate": {
             "shape": "__boolean",
-            "documentation": "<p>Specifies whether a journey should be refreshed on segment update.</p>"
+            "documentation": "<p>Indicates whether the journey participants should be refreshed when a segment is updated.</p>"
         },
         "JourneyChannelSettings": {
             "shape": "JourneyChannelSettings",
@@ -15614,7 +16042,7 @@
         },
         "SendingSchedule": {
             "shape": "__boolean",
-            "documentation": "<p>Indicates if journey have Advance Quiet Time (OpenHours and ClosedDays). This flag should be set to true in order to allow (OpenHours and ClosedDays)</p>"
+            "documentation": "<p>Indicates if journey has Advance Quiet Time enabled. This flag should be set to true in order to allow using OpenHours and ClosedDays.</p>"
         },
         "OpenHours": {
             "shape": "OpenHours",
@@ -15775,6 +16203,12 @@
       "type": "list",
       "member": {
         "shape": "JourneyResponse"
+      }
+    },
+    "ListOfJourneyRunResponse": {
+      "type": "list",
+      "member": {
+        "shape": "JourneyRunResponse"
       }
     },
     "ListOfMultiConditionalBranch": {
@@ -16054,17 +16488,17 @@
     },
     "OpenHoursRule": {
         "type": "structure",
-        "documentation" : "<p>List of OpenHours Rules.</p>",
+        "documentation": "<p>Specifies the start and end time for OpenHours.</p>",
         "members": {
-            "StartTime": {
-                "shape": "__string",
-                "documentation": "<p>Local start time in ISO 8601 format.</p>"
-            },
-            "EndTime": {
-                "shape": "__string",
-                "documentation": "<p>Local start time in ISO 8601 format.</p>"
-            }
-        }
+          "StartTime": {
+              "shape": "__string",
+              "documentation": "<p>The start of the scheduled time, in ISO 8601 format, when the channel can send messages.</p>"
+          },
+          "EndTime": {
+              "shape": "__string",
+              "documentation": "<p>The end of the scheduled time, in ISO 8601 format, when the channel can't send messages.</p>"
+          }
+      }
     },
     "ListOfOpenHoursRules": {
         "type": "list",
@@ -16086,48 +16520,48 @@
     },
     "OpenHours": {
         "type": "structure",
-        "documentation": "<p>The time when journey allow to send messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>",
+        "documentation": "<p>Specifies the times when message are allowed to be sent to endpoints.</p>",
         "members": {
             "EMAIL": {
                 "shape": "MapOfListOfOpenHoursRules",
-                "documentation": "<p>Rules for Email Channel.</p>"
+                "documentation": "<p>Specifies the schedule settings for the email channel.</p>"
             },
             "SMS": {
                 "shape": "MapOfListOfOpenHoursRules",
-                "documentation": "<p>Rules for SMS Channel.</p>"
+                "documentation": "<p>Specifies the schedule settings for the SMS channel.</p>"
             },
             "PUSH": {
                 "shape": "MapOfListOfOpenHoursRules",
-                "documentation": "<p>Rules for Push Channel.</p>"
+                "documentation": "<p>Specifies the schedule settings for the push channel.</p>"
             },
             "VOICE": {
                 "shape": "MapOfListOfOpenHoursRules",
-                "documentation": "<p>Rules for Voice Channel.</p>"
+                "documentation": "<p>Specifies the schedule settings for the voice channel.</p>"
             },
             "CUSTOM": {
                 "shape": "MapOfListOfOpenHoursRules",
-                "documentation": "<p>Rules for Custom Channel.</p>"
+                "documentation": "<p>Specifies the schedule settings for the custom channel.</p>"
             }
-        }
+      }
     },
     "ClosedDaysRule": {
         "type": "structure",
-        "documentation": "<p>Closed Days Rule. Part of Journey sending schedule.</p>",
+        "documentation": "<p>Specifies the rule settings for when messages can't be sent.</p>",
         "members": {
             "Name": {
                 "shape": "__string",
-                "documentation": "<p>Name of the rule.</p>"
+                "documentation": "<p>The name of the closed day rule.</p>"
             },
             "StartDateTime": {
                 "shape": "__string",
-                "documentation": "<p>Start Datetime in ISO 8601 format.</p>"
+                "documentation": "<p>Start DateTime ISO 8601 format</p>"
             },
             "EndDateTime": {
                 "shape": "__string",
-                "documentation": "<p>End Datetime in ISO 8601 format.</p>"
+                "documentation": "<p>End DateTime ISO 8601 format</p>"
             }
-        }
-    },  
+      }
+    },
     "ListOfClosedDaysRules": {
         "type": "list",
         "member": {
@@ -16137,29 +16571,29 @@
     },
     "ClosedDays": {
         "type": "structure",
-        "documentation" : "<p>The time when journey will stop sending messages.</p>",
+        "documentation": "<p>The time when a journey will not send messages. QuietTime should be configured first and SendingSchedule should be set to true.</p>",
         "members": {
             "EMAIL": {
                 "shape": "ListOfClosedDaysRules",
-                "documentation": "<p>Rules for Email Channel.</p>"
+                "documentation": "<p>Rules for the Email channel.</p>"
             },
             "SMS": {
                 "shape": "ListOfClosedDaysRules",
-                "documentation": "<p>Rules for SMS Channel.</p>"
+                "documentation": "<p>Rules for the SMS channel.</p>"
             },
             "PUSH": {
                 "shape": "ListOfClosedDaysRules",
-                "documentation": "<p>Rules for Push Channel.</p>"
+                "documentation": "<p>Rules for the Push channel.</p>"
             },
             "VOICE": {
                 "shape": "ListOfClosedDaysRules",
-                "documentation": "<p>Rules for Voice Channel.</p>"
+                "documentation": "<p>Rules for the Voice channel.</p>"
             },
             "CUSTOM": {
                 "shape": "ListOfClosedDaysRules",
-                "documentation": "<p>Rules for Custom Channel.</p>"
+                "documentation": "<p>Rules for the Custom channel.</p>"
             }
-        }
+      }
     }
   }
 }

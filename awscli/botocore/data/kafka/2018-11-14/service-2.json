@@ -186,6 +186,48 @@
       ],
       "documentation": "\n            <p>Creates a new MSK configuration.</p>\n         "
     },
+    "CreateVpcConnection": {
+      "name": "CreateVpcConnection",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/vpc-connection",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateVpcConnectionRequest"
+      },
+      "output": {
+        "shape": "CreateVpcConnectionResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Creates a new MSK VPC connection.</p>\n         "
+    },
     "DeleteCluster": {
       "name": "DeleteCluster",
       "http": {
@@ -220,6 +262,40 @@
       ],
       "documentation": "\n            <p>Deletes the MSK cluster specified by the Amazon Resource Name (ARN) in the request.</p>\n         "
     },
+    "DeleteClusterPolicy": {
+      "name": "DeleteClusterPolicy",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/clusters/{clusterArn}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteClusterPolicyRequest"
+      },
+      "output": {
+        "shape": "DeleteClusterPolicyResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Deletes the MSK cluster policy specified by the Amazon Resource Name (ARN) in the request.</p>\n         "
+    },
     "DeleteConfiguration": {
       "name": "DeleteConfiguration",
       "http": {
@@ -253,6 +329,40 @@
         }
       ],
       "documentation": "\n            <p>Deletes an MSK Configuration.</p>\n         "
+    },
+    "DeleteVpcConnection": {
+      "name": "DeleteVpcConnection",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/vpc-connection/{arn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteVpcConnectionRequest"
+      },
+      "output": {
+        "shape": "DeleteVpcConnectionResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Deletes a MSK VPC connection.</p>\n         "
     },
     "DescribeCluster": {
       "name": "DescribeCluster",
@@ -452,6 +562,48 @@
       ],
       "documentation": "\n            <p>Returns a description of this revision of the configuration.</p>\n         "
     },
+    "DescribeVpcConnection": {
+      "name": "DescribeVpcConnection",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/vpc-connection/{arn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeVpcConnectionRequest"
+      },
+      "output": {
+        "shape": "DescribeVpcConnectionResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a description of this MSK VPC connection.</p>\n         "
+    },
     "BatchDisassociateScramSecret" : {
       "name" : "BatchDisassociateScramSecret",
       "http" : {
@@ -542,38 +694,72 @@
         "shape" : "GetCompatibleKafkaVersionsResponse",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
-      "errors" : 
-      [ 
+      "errors" :
+      [
         {
           "shape" : "BadRequestException",
           "documentation" : "n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>n            "
-        }, 
+        },
         {
           "shape" : "UnauthorizedException",
           "documentation" : "n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>n            "
-        }, 
+        },
         {
           "shape" : "InternalServerErrorException",
           "documentation" : "n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>n            "
-        }, 
+        },
         {
           "shape" : "ForbiddenException",
           "documentation" : "n            <p>Access forbidden. Check your credentials and then retry your request.</p>n            "
-        }, 
+        },
         {
           "shape" : "NotFoundException",
           "documentation" : "n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>n            "
-        }, 
+        },
         {
           "shape" : "ServiceUnavailableException",
           "documentation" : "n            <p>503 response</p>n            "
-        }, 
+        },
         {
           "shape" : "TooManyRequestsException",
           "documentation" : "n            <p>429 response</p>n            "
-        } 
+        }
       ],
       "documentation": "\n            <p>Gets the Apache Kafka versions to which you can update the MSK cluster.</p>\n         "
+    },
+    "GetClusterPolicy": {
+      "name": "GetClusterPolicy",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetClusterPolicyRequest"
+      },
+      "output": {
+        "shape": "GetClusterPolicyResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Get the MSK cluster policy specified by the Amazon Resource Name (ARN) in the request.</p>\n         "
     },
     "ListClusterOperations": {
       "name": "ListClusterOperations",
@@ -891,6 +1077,150 @@
         }
       ],
       "documentation": "\n            <p>Returns a list of the tags associated with the specified resource.</p>\n         "
+    },
+    "ListClientVpcConnections": {
+      "name": "ListClientVpcConnections",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/client-vpc-connections",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListClientVpcConnectionsRequest"
+      },
+      "output": {
+        "shape": "ListClientVpcConnectionsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a list of all the VPC connections in this Region.</p>\n         "
+    },
+    "ListVpcConnections": {
+      "name": "ListVpcConnections",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/vpc-connections",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListVpcConnectionsRequest"
+      },
+      "output": {
+        "shape": "ListVpcConnectionsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a list of all the VPC connections in this Region.</p>\n         "
+    },
+    "RejectClientVpcConnection": {
+      "name": "RejectClientVpcConnection",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/client-vpc-connection",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "RejectClientVpcConnectionRequest"
+      },
+      "output": {
+        "shape": "RejectClientVpcConnectionResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns empty response.</p>\n         "
+    },
+    "PutClusterPolicy": {
+      "name": "PutClusterPolicy",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/policy",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "PutClusterPolicyRequest"
+      },
+      "output": {
+        "shape": "PutClusterPolicyResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Creates or updates the MSK cluster policy specified by the cluster Amazon Resource Name (ARN) in the request.</p>\n         "
     },
     "RebootBroker" : {
       "name" : "RebootBroker",
@@ -1252,35 +1582,35 @@
         "shape" : "UpdateClusterKafkaVersionResponse",
         "documentation" : "\n            <p>Successful response.</p>\n            "
       },
-      "errors" : [ 
+      "errors" : [
         {
           "shape" : "BadRequestException",
           "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n            "
-        }, 
+        },
         {
           "shape" : "UnauthorizedException",
           "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n            "
-        }, 
+        },
         {
           "shape" : "InternalServerErrorException",
           "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n            "
-        }, 
+        },
         {
           "shape" : "ForbiddenException",
           "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n            "
-        }, 
+        },
         {
           "shape" : "NotFoundException",
           "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n            "
-        }, 
+        },
         {
           "shape" : "ServiceUnavailableException",
           "documentation" : "\n            <p>503 response</p>\n            "
-        }, 
+        },
         {
           "shape" : "TooManyRequestsException",
           "documentation" : "\n            <p>429 response</p>\n            "
-        } 
+        }
       ],
       "documentation": "\n            <p>Updates the Apache Kafka version for the cluster.</p>\n         "
     },
@@ -1526,6 +1856,11 @@
           "shape" : "ConnectivityInfo",
           "locationName" : "connectivityInfo",
           "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+        },
+        "ZoneIds": {
+          "shape": "__listOf__string",
+          "locationName": "zoneIds",
+          "documentation": "\n            <p>The list of zoneIds for the cluster in the virtual private cloud (VPC).</p>\n         "
         }
       },
       "documentation": "\n            <p>Describes the setup to be used for Apache Kafka broker nodes in the cluster.</p>\n         ",
@@ -1611,6 +1946,22 @@
         }
       },
       "documentation" : "\n            <p>Includes all client authentication information.</p>\n         "
+    },
+    "VpcConnectivityClientAuthentication" : {
+      "type" : "structure",
+      "members" : {
+        "Sasl" : {
+          "shape" : "VpcConnectivitySasl",
+          "locationName" : "sasl",
+          "documentation" : "\n            <p>SASL authentication type details for VPC connectivity.</p>\n         "
+        },
+        "Tls": {
+          "shape": "VpcConnectivityTls",
+          "locationName": "tls",
+          "documentation": "\n            <p>TLS authentication type details for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Includes all client authentication information for VPC connectivity.</p>\n         "
     },
     "ServerlessClientAuthentication" : {
       "type" : "structure",
@@ -1707,7 +2058,7 @@
         "LoggingInfo": {
           "shape": "LoggingInfo",
           "locationName": "loggingInfo"
-         },
+        },
         "NumberOfBrokerNodes": {
           "shape": "__integer",
           "locationName": "numberOfBrokerNodes",
@@ -1863,6 +2214,11 @@
           "shape": "MutableClusterInfo",
           "locationName": "targetClusterInfo",
           "documentation": "\n            <p>Information about cluster attributes after a cluster is updated.</p>\n         "
+        },
+        "VpcConnectionInfo": {
+          "shape": "VpcConnectionInfo",
+          "locationName": "vpcConnectionInfo",
+          "documentation": "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>\n         "
         }
       },
       "documentation": "\n            <p>Returns information about a cluster operation.</p>\n         "
@@ -2099,6 +2455,82 @@
         "VpcConfigs"
       ]
     },
+    "ClientVpcConnection": {
+      "type": "structure",
+      "documentation": "\n            <p>The client VPC connection object.</p>\n         ",
+      "members": {
+        "Authentication": {
+          "shape": "__string",
+          "locationName": "authentication",
+          "documentation": "\n            <p>Information about the auth scheme of Vpc Connection.</p>\n         "
+
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>Creation time of the Vpc Connection.</p>\n         "
+        },
+        "State": {
+          "shape": "VpcConnectionState",
+          "locationName": "state",
+          "documentation": "\n            <p>State of the Vpc Connection.</p>\n         "
+        },
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The ARN that identifies the Vpc Connection.</p>\n         "
+        },
+        "Owner": {
+          "shape": "__string",
+          "locationName": "owner",
+          "documentation": "\n            <p>The Owner of the Vpc Connection.</p>\n         "
+
+        }
+      },
+      "required": [
+        "VpcConnectionArn"
+      ]
+    },
+    "VpcConnection": {
+      "type": "structure",
+      "documentation": "\n            <p>The VPC connection object.</p>\n         ",
+      "members": {
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The ARN that identifies the Vpc Connection.</p>\n         "
+        },
+        "TargetClusterArn": {
+          "shape": "__string",
+          "locationName": "targetClusterArn",
+          "documentation": "\n            <p>The ARN that identifies the Cluster which the Vpc Connection belongs to.</p>\n         "
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>Creation time of the Vpc Connection.</p>\n         "
+        },
+        "Authentication": {
+          "shape": "__string",
+          "locationName": "authentication",
+          "documentation": "\n            <p>Information about the auth scheme of Vpc Connection.</p>\n         "
+        },
+        "VpcId": {
+          "shape": "__string",
+          "locationName": "vpcId",
+          "documentation": "\n            <p>The vpcId that belongs to the Vpc Connection.</p>\n         "
+        },
+        "State": {
+          "shape": "VpcConnectionState",
+          "locationName": "state",
+          "documentation": "\n            <p>State of the Vpc Connection.</p>\n         "
+        }
+      },
+      "required": [
+        "VpcConnectionArn",
+        "TargetClusterArn"
+      ]
+    },
     "CompatibleKafkaVersion" : {
       "type" : "structure",
       "members" : {
@@ -2246,6 +2678,11 @@
           "shape": "PublicAccess",
           "locationName": "publicAccess",
           "documentation": "\n            <p>Public access control for brokers.</p>\n         "
+        },
+        "VpcConnectivity": {
+          "shape": "VpcConnectivity",
+          "locationName": "vpcConnectivity",
+          "documentation": "\n            <p>VPC connectivity access control for brokers.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
@@ -2324,7 +2761,7 @@
         "LoggingInfo": {
           "shape": "LoggingInfo",
           "locationName": "loggingInfo"
-         },
+        },
         "NumberOfBrokerNodes": {
           "shape": "__integerMin1Max15",
           "locationName": "numberOfBrokerNodes",
@@ -2452,6 +2889,94 @@
         }
       }
     },
+    "CreateVpcConnectionRequest": {
+      "type": "structure",
+      "members": {
+        "TargetClusterArn": {
+          "shape": "__string",
+          "locationName": "targetClusterArn",
+          "documentation": "\n            <p>The cluster Amazon Resource Name (ARN) for the VPC connection.</p>\n         "
+        },
+        "Authentication": {
+          "shape": "__string",
+          "locationName": "authentication",
+          "documentation": "\n            <p>The authentication type of VPC connection.</p>\n         "
+        },
+        "VpcId": {
+          "shape": "__string",
+          "locationName": "vpcId",
+          "documentation": "\n            <p>The VPC ID of VPC connection.</p>\n         "
+        },
+        "ClientSubnets": {
+          "shape": "__listOf__string",
+          "locationName": "clientSubnets",
+          "documentation": "\n            <p>The list of client subnets.</p>\n         "
+        },
+        "SecurityGroups": {
+          "shape": "__listOf__string",
+          "locationName": "securityGroups",
+          "documentation": "\n            <p>The list of security groups.</p>\n         "
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "\n            <p>A map of tags for the VPC connection.</p>\n         "
+        }
+      },
+      "required": [
+        "TargetClusterArn",
+        "Authentication",
+        "VpcId",
+        "ClientSubnets",
+        "SecurityGroups"
+      ]
+    },
+    "CreateVpcConnectionResponse": {
+      "type": "structure",
+      "members": {
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The VPC connection ARN.</p>\n         "
+        },
+        "State": {
+          "shape": "VpcConnectionState",
+          "locationName": "state",
+          "documentation": "\n            <p>The State of Vpc Connection.</p>\n         "
+
+        },
+        "Authentication": {
+          "shape": "__string",
+          "locationName": "authentication",
+          "documentation": "\n            <p>The authentication type of VPC connection.</p>\n         "
+        },
+        "VpcId": {
+          "shape": "__string",
+          "locationName": "vpcId",
+          "documentation": "\n            <p>The VPC ID of the VPC connection.</p>\n         "
+        },
+        "ClientSubnets": {
+          "shape": "__listOf__string",
+          "locationName": "clientSubnets",
+          "documentation": "\n            <p>The list of client subnets.</p>\n         "
+        },
+        "SecurityGroups": {
+          "shape": "__listOf__string",
+          "locationName": "securityGroups",
+          "documentation": "\n            <p>The list of security groups.</p>\n         "
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The creation time of VPC connection.</p>\n         "
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "\n            <p>A map of tags for the VPC connection.</p>\n         "
+        }
+      }
+    },
     "DeleteClusterRequest": {
       "type": "structure",
       "members": {
@@ -2487,6 +3012,25 @@
         }
       }
     },
+    "DeleteClusterPolicyRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "DeleteClusterPolicyResponse": {
+      "type": "structure",
+      "members": {
+      }
+    },
     "DeleteConfigurationRequest": {
       "type": "structure",
       "members": {
@@ -2513,6 +3057,35 @@
           "shape": "ConfigurationState",
           "locationName": "state",
           "documentation": "\n            <p>The state of the configuration. The possible states are ACTIVE, DELETING, and DELETE_FAILED. </p>\n         "
+        }
+      }
+    },
+    "DeleteVpcConnectionRequest": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "arn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK VPC connection.</p>\n         "
+        }
+      },
+      "required": [
+        "Arn"
+      ]
+    },
+    "DeleteVpcConnectionResponse": {
+      "type": "structure",
+      "members": {
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK VPC connection.</p>\n         "
+        },
+        "State": {
+          "shape": "VpcConnectionState",
+          "locationName": "state",
+          "documentation": "\n            <p>The state of the VPC connection.</p>\n         "
         }
       }
     },
@@ -2690,6 +3263,73 @@
           "shape": "__blob",
           "locationName": "serverProperties",
           "documentation": "\n            <p>Contents of the <filename>server.properties</filename> file. When using the API, you must ensure that the contents of the file are base64 encoded. \n               When using the AWS Management Console, the SDK, or the AWS CLI, the contents of <filename>server.properties</filename> can be in plaintext.</p>\n         "
+        }
+      }
+    },
+    "DescribeVpcConnectionRequest": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "arn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies a MSK VPC connection.</p>\n   "
+        }
+      },
+      "required": [
+        "Arn"
+      ]
+    },
+    "DescribeVpcConnectionResponse": {
+      "type": "structure",
+      "members": {
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies a MSK VPC connection.</p>\n   "
+        },
+        "TargetClusterArn": {
+          "shape": "__string",
+          "locationName": "targetClusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies an MSK cluster.</p>\n   "
+        },
+        "State": {
+          "shape": "VpcConnectionState",
+          "locationName": "state",
+          "documentation": "\n            <p>The state of VPC connection.</p>\n   "
+        },
+        "Authentication": {
+          "shape": "__string",
+          "locationName": "authentication",
+          "documentation": "\n            <p>The authentication type of VPC connection.</p>\n   "
+        },
+        "VpcId": {
+          "shape": "__string",
+          "locationName": "vpcId",
+          "documentation": "\n            <p>The VPC Id for the VPC connection.</p>\n   "
+        },
+        "Subnets": {
+          "shape": "__listOf__string",
+          "locationName": "subnets",
+          "documentation": "\n            <p>The list of subnets for the VPC connection.</p>\n   "
+
+        },
+        "SecurityGroups": {
+          "shape": "__listOf__string",
+          "locationName": "securityGroups",
+          "documentation": "\n            <p>The list of security groups for the VPC connection.</p>\n   "
+
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The creation time of the VPC connection.</p>\n   "
+
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "\n            <p>A map of tags for the VPC connection.</p>\n         "
         }
       }
     },
@@ -2915,6 +3555,21 @@
           "shape": "__string",
           "locationName": "bootstrapBrokerStringPublicSaslIam",
           "documentation": "\n            <p>A string that contains one or more DNS names (or IP addresses) and SASL IAM port pairs.</p>\n         "
+        },
+        "BootstrapBrokerStringVpcConnectivityTls": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringVpcConnectivityTls",
+          "documentation": "\n            <p>A string containing one or more DNS names (or IP) and TLS port pairs for VPC connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringVpcConnectivitySaslScram": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringVpcConnectivitySaslScram",
+          "documentation": "\n            <p>A string containing one or more DNS names (or IP) and SASL/SCRAM port pairs for VPC connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringVpcConnectivitySaslIam": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringVpcConnectivitySaslIam",
+          "documentation": "\n            <p>A string containing one or more DNS names (or IP) and SASL/IAM port pairs for VPC connectivity.</p>\n         "
         }
       }
     },
@@ -2936,6 +3591,36 @@
           "shape" : "__listOfCompatibleKafkaVersion",
           "locationName" : "compatibleKafkaVersions",
           "documentation": "\n            <p>A list of CompatibleKafkaVersion objects.</p>\n            "
+        }
+      }
+    },
+    "GetClusterPolicyRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n            "
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "GetClusterPolicyResponse": {
+      "type": "structure",
+      "members": {
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The version of cluster policy.</p>\n            "
+        },
+        "Policy": {
+          "shape": "__string",
+          "locationName": "policy",
+          "documentation": "\n            <p>The cluster policy.</p>\n            "
+
         }
       }
     },
@@ -3309,6 +3994,98 @@
         }
       }
     },
+    "ListClientVpcConnectionsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "location" : "uri",
+          "locationName" : "clusterArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "ListClientVpcConnectionsResponse": {
+      "type": "structure",
+      "members": {
+        "ClientVpcConnections" : {
+          "shape" : "__listOfClientVpcConnection",
+          "locationName" : "clientVpcConnections",
+          "documentation": "\n            <p>List of client VPC connections.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of a ListClientVpcConnections operation is truncated, the call returns NextToken in the response. \n               To get another batch of configurations, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "ListVpcConnectionsRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "ListVpcConnectionsResponse": {
+      "type": "structure",
+      "members": {
+        "VpcConnections" : {
+          "shape" : "__listOfVpcConnection",
+          "locationName" : "vpcConnections",
+          "documentation": "\n            <p>List of VPC connections.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of a ListClientVpcConnections operation is truncated, the call returns NextToken in the response. \n               To get another batch of configurations, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "RejectClientVpcConnectionRequest" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The VPC connection ARN.</p>\n         "
+        }
+      },
+      "required" : [ "VpcConnectionArn" ]
+    },
+    "RejectClientVpcConnectionResponse" : {
+      "type": "structure",
+      "members": {
+      }
+    },
     "MaxResults": {
       "type": "integer",
       "min": 1,
@@ -3521,6 +4298,42 @@
       },
       "documentation" : "Public access control for brokers."
     },
+    "PutClusterPolicyRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation" : "\n            <p>The policy version.</p>\n         "
+        },
+        "Policy": {
+          "shape": "__string",
+          "locationName": "policy",
+          "documentation" : "\n            <p>The policy.</p>\n         "
+
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "Policy"
+      ]
+    },
+    "PutClusterPolicyResponse": {
+      "type": "structure",
+      "members": {
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation" : "\n            <p>The policy version.</p>\n         "
+        }
+      }
+    },
     "RebootBrokerRequest" : {
       "type" : "structure",
       "members" : {
@@ -3599,6 +4412,22 @@
       },
       "documentation" : "\n            <p>Details for client authentication using SASL.</p>\n         "
     },
+    "VpcConnectivitySasl" : {
+      "type" : "structure",
+      "members" : {
+        "Scram" : {
+          "shape" : "VpcConnectivityScram",
+          "locationName" : "scram",
+          "documentation" : "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
+        },
+        "Iam" : {
+          "shape" : "VpcConnectivityIam",
+          "locationName" : "iam",
+          "documentation" : "\n            <p>Details for SASL/IAM client authentication for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Details for SASL client authentication for VPC connectivity.</p>\n         "
+    },
     "Scram" : {
       "type" : "structure",
       "members" : {
@@ -3610,6 +4439,17 @@
       },
       "documentation" : "\n            <p>Details for SASL/SCRAM client authentication.</p>\n         "
     },
+    "VpcConnectivityScram" : {
+      "type" : "structure",
+      "members" : {
+        "Enabled" : {
+          "shape" : "__boolean",
+          "locationName" : "enabled",
+          "documentation" : "\n            <p>SASL/SCRAM authentication is on or off for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
+    },
     "Iam" : {
       "type" : "structure",
       "members" : {
@@ -3620,6 +4460,17 @@
         }
       },
       "documentation" : "\n            <p>Details for IAM access control.</p>\n         "
+    },
+    "VpcConnectivityIam" : {
+      "type" : "structure",
+      "members" : {
+        "Enabled" : {
+          "shape" : "__boolean",
+          "locationName" : "enabled",
+          "documentation" : "\n            <p>SASL/IAM authentication is on or off for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Details for IAM access control for VPC connectivity.</p>\n         "
     },
     "NodeInfo": {
       "type": "structure",
@@ -3768,6 +4619,17 @@
         }
       },
       "documentation": "\n            <p>Details for client authentication using TLS.</p>\n         "
+    },
+    "VpcConnectivityTls": {
+      "type": "structure",
+      "members": {
+        "Enabled" : {
+          "shape" : "__boolean",
+          "locationName" : "enabled",
+          "documentation" : "\n            <p>TLS authentication is on or off for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Details for TLS client authentication for VPC connectivity.</p>\n         "
     },
     "TooManyRequestsException": {
       "type": "structure",
@@ -4047,7 +4909,7 @@
         "TargetKafkaVersion" : {
           "shape" : "__string",
           "locationName" : "targetKafkaVersion"
-          ,"documentation": "\n            <p>Target Kafka version.</p>\n            "
+        ,"documentation": "\n            <p>Target Kafka version.</p>\n            "
         }
       },
       "required" : [ "ClusterArn", "TargetKafkaVersion", "CurrentVersion" ]
@@ -4282,6 +5144,81 @@
         }
       }
     },
+    "UserIdentity": {
+      "type": "structure",
+      "members": {
+        "Type": {
+          "shape": "UserIdentityType",
+          "locationName": "type",
+          "documentation" : "\n            <p>The identity type of the requester that calls the API operation.</p>\n         "
+        },
+        "PrincipalId": {
+          "shape": "__string",
+          "locationName": "principalId",
+          "documentation" : "\n            <p>A unique identifier for the requester that calls the API operation.</p>\n         "
+        }
+      },
+      "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>\n         "
+    },
+    "UserIdentityType": {
+      "type": "string",
+      "documentation": "\n            <p>The identity type of the requester that calls the API operation.</p>\n         ",
+      "enum": [
+        "AWSACCOUNT",
+        "AWSSERVICE"
+      ]
+    },
+    "VpcConnectionInfo": {
+      "type": "structure",
+      "members": {
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>\n         "
+        },
+        "Owner": {
+          "shape": "__string",
+          "locationName": "owner",
+          "documentation" : "\n            <p>The owner of the VPC Connection.</p>\n         "
+        },
+        "UserIdentity": {
+          "shape": "UserIdentity",
+          "locationName": "userIdentity",
+          "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>\n         "
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation" : "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Description of the VPC connection.</p>\n         "
+    },
+    "VpcConnectionState": {
+      "type": "string",
+      "documentation": "\n            <p>The state of a VPC connection.</p>\n         ",
+      "enum": [
+        "CREATING",
+        "AVAILABLE",
+        "INACTIVE",
+        "DEACTIVATING",
+        "DELETING",
+        "FAILED",
+        "REJECTED",
+        "REJECTING"
+      ]
+    },
+    "VpcConnectivity" : {
+      "type" : "structure",
+      "members" : {
+        "ClientAuthentication": {
+          "shape": "VpcConnectivityClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication information for VPC connectivity.</p>\n         "
+        }
+      },
+      "documentation" : "VPC connectivity access control for brokers."
+    },
     "ZookeeperNodeInfo": {
       "type": "structure",
       "members": {
@@ -4399,6 +5336,18 @@
       "type": "list",
       "member": {
         "shape": "NodeInfo"
+      }
+    },
+    "__listOfClientVpcConnection": {
+      "type": "list",
+      "member": {
+        "shape": "ClientVpcConnection"
+      }
+    },
+    "__listOfVpcConnection": {
+      "type": "list",
+      "member": {
+        "shape": "VpcConnection"
       }
     },
     "__listOfUnprocessedScramSecret" : {

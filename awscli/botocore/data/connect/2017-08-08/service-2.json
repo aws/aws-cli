@@ -13,6 +13,23 @@
     "uid":"connect-2017-08-08"
   },
   "operations":{
+    "ActivateEvaluationForm":{
+      "name":"ActivateEvaluationForm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}/activate"
+      },
+      "input":{"shape":"ActivateEvaluationFormRequest"},
+      "output":{"shape":"ActivateEvaluationFormResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Activates an evaluation form in the specified Amazon Connect instance. After the evaluation form is activated, it is available to start new evaluations based on the form. </p>"
+    },
     "AssociateApprovedOrigin":{
       "name":"AssociateApprovedOrigin",
       "http":{
@@ -267,6 +284,25 @@
       ],
       "documentation":"<p>Creates a flow module for the specified Amazon Connect instance. </p>"
     },
+    "CreateEvaluationForm":{
+      "name":"CreateEvaluationForm",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/evaluation-forms/{InstanceId}"
+      },
+      "input":{"shape":"CreateEvaluationFormRequest"},
+      "output":{"shape":"CreateEvaluationFormResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Creates an evaluation form in the specified Amazon Connect instance. The form can be used to define questions related to agent performance, and create sections to organize such questions. An evaluation form must have a unique title within an instance. Question and section identifiers cannot be duplicated within the same evaluation form.</p>",
+      "idempotent":true
+    },
     "CreateHoursOfOperation":{
       "name":"CreateHoursOfOperation",
       "http":{
@@ -319,6 +355,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates an Amazon Web Services resource association with an Amazon Connect instance.</p>"
+    },
+    "CreateParticipant":{
+      "name":"CreateParticipant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/create-participant"
+      },
+      "input":{"shape":"CreateParticipantRequest"},
+      "output":{"shape":"CreateParticipantResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds a new participant into an on-going chat contact. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-customize-flow.html\">Customize chat flow experiences by integrating custom participants</a>.</p>"
     },
     "CreateQueue":{
       "name":"CreateQueue",
@@ -527,6 +581,39 @@
       ],
       "documentation":"<p>Creates a custom vocabulary associated with your Amazon Connect instance. You can set a custom vocabulary to be your default vocabulary for a given language. Contact Lens for Amazon Connect uses the default vocabulary in post-call and real-time contact analysis sessions for that language.</p>"
     },
+    "DeactivateEvaluationForm":{
+      "name":"DeactivateEvaluationForm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}/deactivate"
+      },
+      "input":{"shape":"DeactivateEvaluationFormRequest"},
+      "output":{"shape":"DeactivateEvaluationFormResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Deactivates an evaluation form in the specified Amazon Connect instance. After a form is deactivated, it is no longer available for users to start new evaluations based on the form. </p>"
+    },
+    "DeleteContactEvaluation":{
+      "name":"DeleteContactEvaluation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-evaluations/{InstanceId}/{EvaluationId}"
+      },
+      "input":{"shape":"DeleteContactEvaluationRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Deletes a contact evaluation in the specified Amazon Connect instance.</p>"
+    },
     "DeleteContactFlow":{
       "name":"DeleteContactFlow",
       "http":{
@@ -562,6 +649,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes the specified flow module.</p>"
+    },
+    "DeleteEvaluationForm":{
+      "name":"DeleteEvaluationForm",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}"
+      },
+      "input":{"shape":"DeleteEvaluationFormRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Deletes an evaluation form in the specified Amazon Connect instance. </p> <ul> <li> <p>If the version property is provided, only the specified version of the evaluation form is deleted.</p> </li> <li> <p>If no version is provided, then the full form (all versions) is deleted.</p> </li> </ul>"
     },
     "DeleteHoursOfOperation":{
       "name":"DeleteHoursOfOperation",
@@ -792,6 +895,22 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the specified contact. </p> <important> <p>Contact information remains available in Amazon Connect for 24 months, and then it is deleted.</p> <p>Only data from November 12, 2021, and later is returned by this API.</p> </important>"
     },
+    "DescribeContactEvaluation":{
+      "name":"DescribeContactEvaluation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-evaluations/{InstanceId}/{EvaluationId}"
+      },
+      "input":{"shape":"DescribeContactEvaluationRequest"},
+      "output":{"shape":"DescribeContactEvaluationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes a contact evaluation in the specified Amazon Connect instance.</p>"
+    },
     "DescribeContactFlow":{
       "name":"DescribeContactFlow",
       "http":{
@@ -827,6 +946,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the specified flow module.</p>"
+    },
+    "DescribeEvaluationForm":{
+      "name":"DescribeEvaluationForm",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}"
+      },
+      "input":{"shape":"DescribeEvaluationFormRequest"},
+      "output":{"shape":"DescribeEvaluationFormResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes an evaluation form in the specified Amazon Connect instance. If the version property is not provided, the latest version of the evaluation form is described.</p>"
     },
     "DescribeHoursOfOperation":{
       "name":"DescribeHoursOfOperation",
@@ -1427,6 +1562,22 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to returns both Amazon Lex V1 and V2 bots.</p>"
     },
+    "ListContactEvaluations":{
+      "name":"ListContactEvaluations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-evaluations/{InstanceId}"
+      },
+      "input":{"shape":"ListContactEvaluationsRequest"},
+      "output":{"shape":"ListContactEvaluationsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists contact evaluations in the specified Amazon Connect instance.</p>"
+    },
     "ListContactFlowModules":{
       "name":"ListContactFlowModules",
       "http":{
@@ -1494,6 +1645,38 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the default vocabularies for the specified Amazon Connect instance.</p>"
+    },
+    "ListEvaluationFormVersions":{
+      "name":"ListEvaluationFormVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}/versions"
+      },
+      "input":{"shape":"ListEvaluationFormVersionsRequest"},
+      "output":{"shape":"ListEvaluationFormVersionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists versions of an evaluation form in the specified Amazon Connect instance.</p>"
+    },
+    "ListEvaluationForms":{
+      "name":"ListEvaluationForms",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-forms/{InstanceId}"
+      },
+      "input":{"shape":"ListEvaluationFormsRequest"},
+      "output":{"shape":"ListEvaluationFormsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists evaluation forms in the specified Amazon Connect instance.</p>"
     },
     "ListHoursOfOperations":{
       "name":"ListHoursOfOperations",
@@ -2121,6 +2304,25 @@
       ],
       "documentation":"<p>Initiates a flow to start a new chat for the customer. Response of this API provides a token required to obtain credentials from the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API in the Amazon Connect Participant Service.</p> <p>When a new chat contact is successfully created, clients must subscribe to the participant’s connection for the created chat within 5 minutes. This is achieved by invoking <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> with WEBSOCKET and CONNECTION_CREDENTIALS. </p> <p>A 429 error occurs in the following situations:</p> <ul> <li> <p>API rate limit is exceeded. API TPS throttling returns a <code>TooManyRequests</code> exception.</p> </li> <li> <p>The <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">quota for concurrent active chats</a> is exceeded. Active chat throttling returns a <code>LimitExceededException</code>.</p> </li> </ul> <p>If you use the <code>ChatDurationInMinutes</code> parameter and receive a 400 error, your account may not support the ability to configure custom chat durations. For more information, contact Amazon Web Services Support. </p> <p>For more information about chat, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat.html\">Chat</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "StartContactEvaluation":{
+      "name":"StartContactEvaluation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact-evaluations/{InstanceId}"
+      },
+      "input":{"shape":"StartContactEvaluationRequest"},
+      "output":{"shape":"StartContactEvaluationResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Starts an empty evaluation in the specified Amazon Connect instance, using the given evaluation form for the particular contact. The evaluation form version used for the contact evaluation corresponds to the currently activated version. If no version is activated for the evaluation form, the contact evaluation cannot be started. </p> <note> <p>Evaluations created through the public API do not contain answer values suggested from automation.</p> </note>",
+      "idempotent":true
+    },
     "StartContactRecording":{
       "name":"StartContactRecording",
       "http":{
@@ -2239,6 +2441,23 @@
       ],
       "documentation":"<p> Ends message streaming on a specified contact. To restart message streaming on that contact, call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a> API. </p>"
     },
+    "SubmitContactEvaluation":{
+      "name":"SubmitContactEvaluation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-evaluations/{InstanceId}/{EvaluationId}/submit"
+      },
+      "input":{"shape":"SubmitContactEvaluationRequest"},
+      "output":{"shape":"SubmitContactEvaluationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Submits a contact evaluation in the specified Amazon Connect instance. Answers included in the request are merged with existing answers for the given evaluation. If no answers or notes are passed, the evaluation is submitted with the existing answers and notes. You can delete an answer or note by passing an empty object (<code>{}</code>) to the question identifier. </p> <p>If a contact evaluation is already in submitted state, this operation will trigger a resubmission.</p>"
+    },
     "SuspendContactRecording":{
       "name":"SuspendContactRecording",
       "http":{
@@ -2356,6 +2575,23 @@
       ],
       "documentation":"<p>Creates or updates user-defined contact attributes associated with the specified contact.</p> <p>You can create or update user-defined attributes for both ongoing and completed contacts. For example, while the call is active, you can update the customer's name or the reason the customer called. You can add notes about steps that the agent took during the call that display to the next agent that takes the call. You can also update attributes for a contact using data from your CRM application and save the data with the contact in Amazon Connect. You could also flag calls for additional analysis, such as legal review or to identify abusive callers.</p> <p>Contact attributes are available in Amazon Connect for 24 months, and are then deleted. For information about contact record retention and the maximum size of the contact record attributes section, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#feature-limits\">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
+    "UpdateContactEvaluation":{
+      "name":"UpdateContactEvaluation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-evaluations/{InstanceId}/{EvaluationId}"
+      },
+      "input":{"shape":"UpdateContactEvaluationRequest"},
+      "output":{"shape":"UpdateContactEvaluationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Updates details about a contact evaluation in the specified Amazon Connect instance. A contact evaluation must be in draft state. Answers included in the request are merged with existing answers for the given evaluation. An answer or note can be deleted by passing an empty object (<code>{}</code>) to the question identifier. </p>"
+    },
     "UpdateContactFlowContent":{
       "name":"UpdateContactFlowContent",
       "http":{
@@ -2464,6 +2700,25 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the scheduled time of a task contact that is already scheduled.</p>"
+    },
+    "UpdateEvaluationForm":{
+      "name":"UpdateEvaluationForm",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/evaluation-forms/{InstanceId}/{EvaluationFormId}"
+      },
+      "input":{"shape":"UpdateEvaluationFormRequest"},
+      "output":{"shape":"UpdateEvaluationFormResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Updates details about a specific evaluation form version in the specified Amazon Connect instance. An evaluation form must have a unique title within an instance. Question and section identifiers cannot be duplicated within the same evaluation form.</p> <p>This operation does not support partial updates. Instead it does a full update of evaluation form content.</p>",
+      "idempotent":true
     },
     "UpdateHoursOfOperation":{
       "name":"UpdateHoursOfOperation",
@@ -2947,6 +3202,54 @@
         "GENERATE_EVENTBRIDGE_EVENT",
         "SEND_NOTIFICATION"
       ]
+    },
+    "ActivateEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the evaluation form to activate. If the version property is not provided, the latest version of the evaluation form is activated.</p>"
+        }
+      }
+    },
+    "ActivateEvaluationFormResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
+        }
+      }
     },
     "AfterContactWorkTimeLimit":{
       "type":"integer",
@@ -3519,6 +3822,10 @@
     "BotName":{
       "type":"string",
       "max":50
+    },
+    "BoxedBoolean":{
+      "type":"boolean",
+      "box":true
     },
     "BucketName":{
       "type":"string",
@@ -4231,6 +4538,60 @@
         }
       }
     },
+    "CreateEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Title",
+        "Items"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Title":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "Description":{
+          "shape":"EvaluationFormDescription",
+          "documentation":"<p>The description of the evaluation form.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormItemsList",
+          "documentation":"<p>Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.</p>"
+        },
+        "ScoringStrategy":{
+          "shape":"EvaluationFormScoringStrategy",
+          "documentation":"<p>A scoring strategy of the evaluation form.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateEvaluationFormResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        }
+      }
+    },
     "CreateHoursOfOperationRequest":{
       "type":"structure",
       "required":[
@@ -4378,6 +4739,46 @@
         "IntegrationAssociationArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) for the association.</p>"
+        }
+      }
+    },
+    "CreateParticipantRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "ParticipantDetails"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. </p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. Only contacts in the CHAT channel are supported.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "ParticipantDetails":{
+          "shape":"ParticipantDetailsToAdd",
+          "documentation":"<p>Information identifying the participant.</p> <important> <p>The only Valid value for <code>ParticipantRole</code> is <code>CUSTOM_BOT</code>. </p> <p> <code>DisplayName</code> is <b>Required</b>.</p> </important>"
+        }
+      }
+    },
+    "CreateParticipantResponse":{
+      "type":"structure",
+      "members":{
+        "ParticipantCredentials":{
+          "shape":"ParticipantTokenCredentials",
+          "documentation":"<p>The token used by the chat participant to call <code>CreateParticipantConnection</code>. The participant token is valid for the lifetime of a chat participant.</p>"
+        },
+        "ParticipantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.</p>"
         }
       }
     },
@@ -5115,6 +5516,54 @@
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.</p>"
     },
+    "DeactivateEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form. If the version property is not provided, the latest version of the evaluation form is deactivated.</p>"
+        }
+      }
+    },
+    "DeactivateEvaluationFormResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the deactivated evaluation form resource.</p>"
+        }
+      }
+    },
     "DefaultVocabulary":{
       "type":"structure",
       "required":[
@@ -5151,6 +5600,27 @@
       "type":"integer",
       "max":9999,
       "min":0
+    },
+    "DeleteContactEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>",
+          "location":"uri",
+          "locationName":"EvaluationId"
+        }
+      }
     },
     "DeleteContactFlowModuleRequest":{
       "type":"structure",
@@ -5202,6 +5672,33 @@
     "DeleteContactFlowResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"querystring",
+          "locationName":"version"
+        }
       }
     },
     "DeleteHoursOfOperationRequest":{
@@ -5507,6 +6004,44 @@
         }
       }
     },
+    "DescribeContactEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>",
+          "location":"uri",
+          "locationName":"EvaluationId"
+        }
+      }
+    },
+    "DescribeContactEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "Evaluation",
+        "EvaluationForm"
+      ],
+      "members":{
+        "Evaluation":{
+          "shape":"Evaluation",
+          "documentation":"<p>Information about the evaluation form completed for a specific contact.</p>"
+        },
+        "EvaluationForm":{
+          "shape":"EvaluationFormContent",
+          "documentation":"<p>Information about the evaluation form.</p>"
+        }
+      }
+    },
     "DescribeContactFlowModuleRequest":{
       "type":"structure",
       "required":[
@@ -5594,6 +6129,43 @@
         "Contact":{
           "shape":"Contact",
           "documentation":"<p>Information about the contact.</p>"
+        }
+      }
+    },
+    "DescribeEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>",
+          "location":"querystring",
+          "locationName":"version"
+        }
+      }
+    },
+    "DescribeEvaluationFormResponse":{
+      "type":"structure",
+      "required":["EvaluationForm"],
+      "members":{
+        "EvaluationForm":{
+          "shape":"EvaluationForm",
+          "documentation":"<p>Information about the evaluation form.</p>"
         }
       }
     },
@@ -6399,6 +6971,851 @@
     "EncryptionType":{
       "type":"string",
       "enum":["KMS"]
+    },
+    "Evaluation":{
+      "type":"structure",
+      "required":[
+        "EvaluationId",
+        "EvaluationArn",
+        "Metadata",
+        "Answers",
+        "Notes",
+        "Status",
+        "CreatedTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
+        },
+        "Metadata":{
+          "shape":"EvaluationMetadata",
+          "documentation":"<p>Metadata about the contact evaluation.</p>"
+        },
+        "Answers":{
+          "shape":"EvaluationAnswersOutputMap",
+          "documentation":"<p>A map of question identifiers to answer value.</p>"
+        },
+        "Notes":{
+          "shape":"EvaluationNotesMap",
+          "documentation":"<p>A map of question identifiers to note value.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationStatus",
+          "documentation":"<p>The status of the contact evaluation.</p>"
+        },
+        "Scores":{
+          "shape":"EvaluationScoresMap",
+          "documentation":"<p>A map of item (section or question) identifiers to score value.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation was last updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Information about a contact evaluation.</p>"
+    },
+    "EvaluationAnswerData":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"EvaluationAnswerDataStringValue",
+          "documentation":"<p>The string value for an answer in a contact evaluation.</p>"
+        },
+        "NumericValue":{
+          "shape":"EvaluationAnswerDataNumericValue",
+          "documentation":"<p>The numeric value for an answer in a contact evaluation.</p>"
+        },
+        "NotApplicable":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the question as not applicable.</p>"
+        }
+      },
+      "documentation":"<p>Information about answer data for a contact evaluation. Answer data must be either string, numeric, or not applicable.</p>",
+      "union":true
+    },
+    "EvaluationAnswerDataNumericValue":{"type":"double"},
+    "EvaluationAnswerDataStringValue":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "EvaluationAnswerInput":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"EvaluationAnswerData",
+          "documentation":"<p>The value for an answer in a contact evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Information about input answers for a contact evaluation.</p>"
+    },
+    "EvaluationAnswerOutput":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"EvaluationAnswerData",
+          "documentation":"<p>The value for an answer in a contact evaluation.</p>"
+        },
+        "SystemSuggestedValue":{
+          "shape":"EvaluationAnswerData",
+          "documentation":"<p>The system suggested value for an answer in a contact evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Information about output answers for a contact evaluation.</p>"
+    },
+    "EvaluationAnswersInputMap":{
+      "type":"map",
+      "key":{"shape":"ResourceId"},
+      "value":{"shape":"EvaluationAnswerInput"},
+      "max":100
+    },
+    "EvaluationAnswersOutputMap":{
+      "type":"map",
+      "key":{"shape":"ResourceId"},
+      "value":{"shape":"EvaluationAnswerOutput"},
+      "max":100
+    },
+    "EvaluationForm":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormVersion",
+        "Locked",
+        "EvaluationFormArn",
+        "Title",
+        "Status",
+        "Items",
+        "CreatedTime",
+        "CreatedBy",
+        "LastModifiedTime",
+        "LastModifiedBy"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
+        },
+        "Locked":{
+          "shape":"EvaluationFormVersionIsLocked",
+          "documentation":"<p>The flag indicating whether the evaluation form is locked for changes.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "Title":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "Description":{
+          "shape":"EvaluationFormDescription",
+          "documentation":"<p>The description of the evaluation form.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationFormVersionStatus",
+          "documentation":"<p>The status of the evaluation form.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormItemsList",
+          "documentation":"<p>Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.</p>"
+        },
+        "ScoringStrategy":{
+          "shape":"EvaluationFormScoringStrategy",
+          "documentation":"<p>A scoring strategy of the evaluation form.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who created the evaluation form.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was last updated.</p>"
+        },
+        "LastModifiedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the evaluation form.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Information about the evaluation form.</p>"
+    },
+    "EvaluationFormContent":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormVersion",
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "Title",
+        "Items"
+      ],
+      "members":{
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "Title":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "Description":{
+          "shape":"EvaluationFormDescription",
+          "documentation":"<p>The description of the evaluation form.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormItemsList",
+          "documentation":"<p>Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.</p>"
+        },
+        "ScoringStrategy":{
+          "shape":"EvaluationFormScoringStrategy",
+          "documentation":"<p>A scoring strategy of the evaluation form.</p>"
+        }
+      },
+      "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
+    },
+    "EvaluationFormDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "EvaluationFormItem":{
+      "type":"structure",
+      "members":{
+        "Section":{
+          "shape":"EvaluationFormSection",
+          "documentation":"<p>The information of the section.</p>"
+        },
+        "Question":{
+          "shape":"EvaluationFormQuestion",
+          "documentation":"<p>The information of the question.</p>"
+        }
+      },
+      "documentation":"<p>Information about an item from an evaluation form. The item must be either a section or a question.</p>",
+      "union":true
+    },
+    "EvaluationFormItemWeight":{
+      "type":"double",
+      "max":100,
+      "min":0
+    },
+    "EvaluationFormItemsList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormItem"},
+      "max":100,
+      "min":0
+    },
+    "EvaluationFormNumericQuestionAutomation":{
+      "type":"structure",
+      "members":{
+        "PropertyValue":{
+          "shape":"NumericQuestionPropertyValueAutomation",
+          "documentation":"<p>The property value of the automation.</p>"
+        }
+      },
+      "documentation":"<p>Information about the automation configuration in numeric questions.</p>",
+      "union":true
+    },
+    "EvaluationFormNumericQuestionOption":{
+      "type":"structure",
+      "required":[
+        "MinValue",
+        "MaxValue"
+      ],
+      "members":{
+        "MinValue":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum answer value of the range option.</p>"
+        },
+        "MaxValue":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum answer value of the range option.</p>"
+        },
+        "Score":{
+          "shape":"EvaluationFormQuestionAnswerScore",
+          "documentation":"<p>The score assigned to answer values within the range option.</p>"
+        },
+        "AutomaticFail":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the option as automatic fail. If an automatic fail answer is provided, the overall evaluation gets a score of 0.</p>"
+        }
+      },
+      "documentation":"<p>Information about the option range used for scoring in numeric questions.</p>"
+    },
+    "EvaluationFormNumericQuestionOptionList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormNumericQuestionOption"},
+      "max":10,
+      "min":1
+    },
+    "EvaluationFormNumericQuestionProperties":{
+      "type":"structure",
+      "required":[
+        "MinValue",
+        "MaxValue"
+      ],
+      "members":{
+        "MinValue":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum answer value.</p>"
+        },
+        "MaxValue":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum answer value.</p>"
+        },
+        "Options":{
+          "shape":"EvaluationFormNumericQuestionOptionList",
+          "documentation":"<p>The scoring options of the numeric question.</p>"
+        },
+        "Automation":{
+          "shape":"EvaluationFormNumericQuestionAutomation",
+          "documentation":"<p>The automation properties of the numeric question.</p>"
+        }
+      },
+      "documentation":"<p>Information about properties for a numeric question in an evaluation form.</p>"
+    },
+    "EvaluationFormQuestion":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "RefId",
+        "QuestionType"
+      ],
+      "members":{
+        "Title":{
+          "shape":"EvaluationFormQuestionTitle",
+          "documentation":"<p>The title of the question.</p>"
+        },
+        "Instructions":{
+          "shape":"EvaluationFormQuestionInstructions",
+          "documentation":"<p>The instructions of the section.</p>"
+        },
+        "RefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the question. An identifier must be unique within the evaluation form.</p>"
+        },
+        "NotApplicableEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to enable not applicable answers to the question.</p>"
+        },
+        "QuestionType":{
+          "shape":"EvaluationFormQuestionType",
+          "documentation":"<p>The type of the question.</p>"
+        },
+        "QuestionTypeProperties":{
+          "shape":"EvaluationFormQuestionTypeProperties",
+          "documentation":"<p>The properties of the type of question. Text questions do not have to define question type properties.</p>"
+        },
+        "Weight":{
+          "shape":"EvaluationFormItemWeight",
+          "documentation":"<p>The scoring weight of the section.</p>"
+        }
+      },
+      "documentation":"<p>Information about a question from an evaluation form.</p>"
+    },
+    "EvaluationFormQuestionAnswerScore":{
+      "type":"integer",
+      "max":10,
+      "min":0
+    },
+    "EvaluationFormQuestionInstructions":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "EvaluationFormQuestionTitle":{
+      "type":"string",
+      "max":350,
+      "min":0
+    },
+    "EvaluationFormQuestionType":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "SINGLESELECT",
+        "NUMERIC"
+      ]
+    },
+    "EvaluationFormQuestionTypeProperties":{
+      "type":"structure",
+      "members":{
+        "Numeric":{
+          "shape":"EvaluationFormNumericQuestionProperties",
+          "documentation":"<p>The properties of the numeric question.</p>"
+        },
+        "SingleSelect":{
+          "shape":"EvaluationFormSingleSelectQuestionProperties",
+          "documentation":"<p>The properties of the numeric question.</p>"
+        }
+      },
+      "documentation":"<p>Information about properties for a question in an evaluation form. The question type properties must be either for a numeric question or a single select question.</p>",
+      "union":true
+    },
+    "EvaluationFormScoringMode":{
+      "type":"string",
+      "enum":[
+        "QUESTION_ONLY",
+        "SECTION_ONLY"
+      ]
+    },
+    "EvaluationFormScoringStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "EvaluationFormScoringStrategy":{
+      "type":"structure",
+      "required":[
+        "Mode",
+        "Status"
+      ],
+      "members":{
+        "Mode":{
+          "shape":"EvaluationFormScoringMode",
+          "documentation":"<p>The scoring mode of the evaluation form.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationFormScoringStatus",
+          "documentation":"<p>The scoring status of the evaluation form.</p>"
+        }
+      },
+      "documentation":"<p>Information about scoring strategy for an evaluation form.</p>"
+    },
+    "EvaluationFormSection":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "RefId"
+      ],
+      "members":{
+        "Title":{
+          "shape":"EvaluationFormSectionTitle",
+          "documentation":"<p>The title of the section.</p>"
+        },
+        "RefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the section. An identifier must be unique within the evaluation form.</p>"
+        },
+        "Instructions":{
+          "shape":"EvaluationFormQuestionInstructions",
+          "documentation":"<p>The instructions of the section.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormItemsList",
+          "documentation":"<p>The items of the section.</p>"
+        },
+        "Weight":{
+          "shape":"EvaluationFormItemWeight",
+          "documentation":"<p>The scoring weight of the section.</p>"
+        }
+      },
+      "documentation":"<p>Information about a section from an evaluation form. A section can contain sections and/or questions. Evaluation forms can only contain sections and subsections (two level nesting).</p>"
+    },
+    "EvaluationFormSectionTitle":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "EvaluationFormSingleSelectQuestionAutomation":{
+      "type":"structure",
+      "required":["Options"],
+      "members":{
+        "Options":{
+          "shape":"EvaluationFormSingleSelectQuestionAutomationOptionList",
+          "documentation":"<p>The automation options of the single select question.</p>"
+        },
+        "DefaultOptionRefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the default answer option, when none of the automation options match the criteria.</p>"
+        }
+      },
+      "documentation":"<p>Information about the automation configuration in single select questions. Automation options are evaluated in order, and the first matched option is applied. If no automation option matches, and there is a default option, then the default option is applied.</p>"
+    },
+    "EvaluationFormSingleSelectQuestionAutomationOption":{
+      "type":"structure",
+      "members":{
+        "RuleCategory":{
+          "shape":"SingleSelectQuestionRuleCategoryAutomation",
+          "documentation":"<p>The automation option based on a rule category for the single select question.</p>"
+        }
+      },
+      "documentation":"<p>Information about the automation option of a single select question.</p>",
+      "union":true
+    },
+    "EvaluationFormSingleSelectQuestionAutomationOptionList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormSingleSelectQuestionAutomationOption"},
+      "max":20,
+      "min":1
+    },
+    "EvaluationFormSingleSelectQuestionDisplayMode":{
+      "type":"string",
+      "enum":[
+        "DROPDOWN",
+        "RADIO"
+      ]
+    },
+    "EvaluationFormSingleSelectQuestionOption":{
+      "type":"structure",
+      "required":[
+        "RefId",
+        "Text"
+      ],
+      "members":{
+        "RefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the answer option. An identifier must be unique within the question.</p>"
+        },
+        "Text":{
+          "shape":"EvaluationFormSingleSelectQuestionOptionText",
+          "documentation":"<p>The title of the answer option.</p>"
+        },
+        "Score":{
+          "shape":"EvaluationFormQuestionAnswerScore",
+          "documentation":"<p>The score assigned to the answer option.</p>"
+        },
+        "AutomaticFail":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the option as automatic fail. If an automatic fail answer is provided, the overall evaluation gets a score of 0.</p>"
+        }
+      },
+      "documentation":"<p>Information about the automation configuration in single select questions.</p>"
+    },
+    "EvaluationFormSingleSelectQuestionOptionList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormSingleSelectQuestionOption"},
+      "max":256,
+      "min":1
+    },
+    "EvaluationFormSingleSelectQuestionOptionText":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "EvaluationFormSingleSelectQuestionProperties":{
+      "type":"structure",
+      "required":["Options"],
+      "members":{
+        "Options":{
+          "shape":"EvaluationFormSingleSelectQuestionOptionList",
+          "documentation":"<p>The answer options of the single select question.</p>"
+        },
+        "DisplayAs":{
+          "shape":"EvaluationFormSingleSelectQuestionDisplayMode",
+          "documentation":"<p>The display mode of the single select question.</p>"
+        },
+        "Automation":{
+          "shape":"EvaluationFormSingleSelectQuestionAutomation",
+          "documentation":"<p>The display mode of the single select question.</p>"
+        }
+      },
+      "documentation":"<p>Information about the options in single select questions.</p>"
+    },
+    "EvaluationFormSummary":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "Title",
+        "CreatedTime",
+        "CreatedBy",
+        "LastModifiedTime",
+        "LastModifiedBy",
+        "LatestVersion"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "Title":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who created the evaluation form.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was last updated.</p>"
+        },
+        "LastModifiedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the evaluation form.</p>"
+        },
+        "LastActivatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was last activated.</p>"
+        },
+        "LastActivatedBy":{
+          "shape":"ARN",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the user who last activated the evaluation form.</p>"
+        },
+        "LatestVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version number of the latest evaluation form version.</p>"
+        },
+        "ActiveVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the active evaluation form version.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an evaluation form.</p>"
+    },
+    "EvaluationFormSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormSummary"}
+    },
+    "EvaluationFormTitle":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "EvaluationFormVersionIsLocked":{"type":"boolean"},
+    "EvaluationFormVersionStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "ACTIVE"
+      ]
+    },
+    "EvaluationFormVersionSummary":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormArn",
+        "EvaluationFormId",
+        "EvaluationFormVersion",
+        "Locked",
+        "Status",
+        "CreatedTime",
+        "CreatedBy",
+        "LastModifiedTime",
+        "LastModifiedBy"
+      ],
+      "members":{
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form.</p>"
+        },
+        "Locked":{
+          "shape":"EvaluationFormVersionIsLocked",
+          "documentation":"<p>The flag indicating whether the evaluation form is locked for changes.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationFormVersionStatus",
+          "documentation":"<p>The status of the evaluation form.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who created the evaluation form.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation form was last updated.</p>"
+        },
+        "LastModifiedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the evaluation form.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an evaluation form.</p>"
+    },
+    "EvaluationFormVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormVersionSummary"}
+    },
+    "EvaluationMetadata":{
+      "type":"structure",
+      "required":[
+        "ContactId",
+        "EvaluatorArn"
+      ],
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
+        },
+        "EvaluatorArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the evaluation.</p>"
+        },
+        "ContactAgentId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the agent who performed the contact.</p>"
+        },
+        "Score":{
+          "shape":"EvaluationScore",
+          "documentation":"<p>The overall score of the contact evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about a contact evaluation.</p>"
+    },
+    "EvaluationNote":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"EvaluationNoteString",
+          "documentation":"<p>The note for an item (section or question) in a contact evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Information about notes for a contact evaluation.</p>"
+    },
+    "EvaluationNoteString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "EvaluationNotesMap":{
+      "type":"map",
+      "key":{"shape":"ResourceId"},
+      "value":{"shape":"EvaluationNote"},
+      "max":100
+    },
+    "EvaluationScore":{
+      "type":"structure",
+      "members":{
+        "Percentage":{
+          "shape":"EvaluationScorePercentage",
+          "documentation":"<p>The score percentage for an item in a contact evaluation.</p>"
+        },
+        "NotApplicable":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to mark the item as not applicable for scoring.</p>"
+        },
+        "AutomaticFail":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag that marks the item as automatic fail. If the item or a child item gets an automatic fail answer, this flag will be true.</p>"
+        }
+      },
+      "documentation":"<p>Information about scores of a contact evaluation item (section or question).</p>"
+    },
+    "EvaluationScorePercentage":{
+      "type":"double",
+      "max":100,
+      "min":0
+    },
+    "EvaluationScoresMap":{
+      "type":"map",
+      "key":{"shape":"ResourceId"},
+      "value":{"shape":"EvaluationScore"},
+      "max":100
+    },
+    "EvaluationStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "SUBMITTED"
+      ]
+    },
+    "EvaluationSummary":{
+      "type":"structure",
+      "required":[
+        "EvaluationId",
+        "EvaluationArn",
+        "EvaluationFormTitle",
+        "EvaluationFormId",
+        "Status",
+        "EvaluatorArn",
+        "CreatedTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
+        },
+        "EvaluationFormTitle":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationStatus",
+          "documentation":"<p>The status of the contact evaluation.</p>"
+        },
+        "EvaluatorArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the evaluation.</p>"
+        },
+        "Score":{
+          "shape":"EvaluationScore",
+          "documentation":"<p>The overall score of the contact evaluation.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the evaluation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a contact evaluation.</p>"
+    },
+    "EvaluationSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluationSummary"}
     },
     "EventBridgeActionDefinition":{
       "type":"structure",
@@ -7358,6 +8775,7 @@
       },
       "documentation":"<p>The start time or end time for an hours of operation.</p>"
     },
+    "ISO8601Datetime":{"type":"string"},
     "IdempotencyException":{
       "type":"structure",
       "members":{
@@ -7562,6 +8980,7 @@
       "type":"list",
       "member":{"shape":"InstanceSummary"}
     },
+    "Integer":{"type":"integer"},
     "IntegerCount":{
       "type":"integer",
       "min":0
@@ -7949,6 +9368,47 @@
         }
       }
     },
+    "ListContactEvaluationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>",
+          "location":"querystring",
+          "locationName":"contactId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p> <important> <p>This is not expected to be set because the value returned in the previous response is always null.</p> </important>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContactEvaluationsResponse":{
+      "type":"structure",
+      "required":["EvaluationSummaryList"],
+      "members":{
+        "EvaluationSummaryList":{
+          "shape":"EvaluationSummaryList",
+          "documentation":"<p>Provides details about a list of contact evaluations belonging to an instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as null in the response.</p> </important>"
+        }
+      }
+    },
     "ListContactFlowModulesRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -8117,6 +9577,93 @@
         },
         "NextToken":{
           "shape":"VocabularyNextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListEvaluationFormVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEvaluationFormVersionsResponse":{
+      "type":"structure",
+      "required":["EvaluationFormVersionSummaryList"],
+      "members":{
+        "EvaluationFormVersionSummaryList":{
+          "shape":"EvaluationFormVersionSummaryList",
+          "documentation":"<p>Provides details about a list of evaluation forms belonging to an instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListEvaluationFormsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEvaluationFormsResponse":{
+      "type":"structure",
+      "required":["EvaluationFormSummaryList"],
+      "members":{
+        "EvaluationFormSummaryList":{
+          "shape":"EvaluationFormSummaryList",
+          "documentation":"<p>Provides details about a list of evaluation forms belonging to an instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
@@ -9269,7 +10816,7 @@
       "members":{
         "MetricFilterKey":{
           "shape":"String",
-          "documentation":"<p>The key to use for filtering data. </p> <p>Valid metric filter keys: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code> </p>"
+          "documentation":"<p>The key to use for filtering data. </p> <p>Valid metric filter keys: <code>INITIATION_METHOD</code>, <code>DISCONNECT_REASON</code>. These are the same values as the <code>InitiationMethod</code> and <code>DisconnectReason</code> in the contact record. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord\">ContactTraceRecord</a> in the <i>Amazon Connect Administrator's Guide</i>. </p>"
         },
         "MetricFilterValues":{
           "shape":"MetricFilterValueList",
@@ -9439,6 +10986,30 @@
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.</p>"
     },
+    "NumericQuestionPropertyAutomationLabel":{
+      "type":"string",
+      "enum":[
+        "OVERALL_CUSTOMER_SENTIMENT_SCORE",
+        "OVERALL_AGENT_SENTIMENT_SCORE",
+        "NON_TALK_TIME",
+        "NON_TALK_TIME_PERCENTAGE",
+        "NUMBER_OF_INTERRUPTIONS",
+        "CONTACT_DURATION",
+        "AGENT_INTERACTION_DURATION",
+        "CUSTOMER_HOLD_TIME"
+      ]
+    },
+    "NumericQuestionPropertyValueAutomation":{
+      "type":"structure",
+      "required":["Label"],
+      "members":{
+        "Label":{
+          "shape":"NumericQuestionPropertyAutomationLabel",
+          "documentation":"<p>The property label of the automation.</p>"
+        }
+      },
+      "documentation":"<p>Information about the property value used in automation of a numeric questions. Label values are associated with minimum and maximum values for the numeric question.</p> <ul> <li> <p>Sentiment scores have a minimum value of -5 and maximum value of 5.</p> </li> <li> <p> Duration labels, such as <code>NON_TALK_TIME</code>, <code>CONTACT_DURATION</code>, <code>AGENT_INTERACTION_DURATION</code>, <code>CUSTOMER_HOLD_TIME</code> have a minimum value of 0 and maximum value of 28800.</p> </li> <li> <p>Percantages have a minimum value of 0 and maximum value of 100. </p> </li> <li> <p> <code>NUMBER_OF_INTERRUPTIONS</code> has a minimum value of 0 and maximum value of 100.</p> </li> </ul>"
+    },
     "Origin":{
       "type":"string",
       "max":267
@@ -9499,10 +11070,33 @@
       },
       "documentation":"<p>The customer's details.</p>"
     },
+    "ParticipantDetailsToAdd":{
+      "type":"structure",
+      "members":{
+        "ParticipantRole":{
+          "shape":"ParticipantRole",
+          "documentation":"<p>The role of the participant being added.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the participant.</p>"
+        }
+      },
+      "documentation":"<p>The details to add for the participant.</p>"
+    },
     "ParticipantId":{
       "type":"string",
       "max":256,
       "min":1
+    },
+    "ParticipantRole":{
+      "type":"string",
+      "enum":[
+        "AGENT",
+        "CUSTOMER",
+        "SYSTEM",
+        "CUSTOM_BOT"
+      ]
     },
     "ParticipantTimerAction":{
       "type":"string",
@@ -9568,6 +11162,20 @@
       "type":"string",
       "max":1000,
       "min":1
+    },
+    "ParticipantTokenCredentials":{
+      "type":"structure",
+      "members":{
+        "ParticipantToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The token used by the chat participant to call <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a>. The participant token is valid for the lifetime of a chat participant. </p>"
+        },
+        "Expiry":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p>The expiration of the token. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        }
+      },
+      "documentation":"<p>The credentials used by the participant.</p>"
     },
     "Password":{
       "type":"string",
@@ -10420,6 +12028,11 @@
       },
       "documentation":"<p>Well-formed data on a contact, used by agents to complete a contact request. You can have up to 4,096 UTF-8 bytes across all references for a contact.</p>"
     },
+    "ReferenceId":{
+      "type":"string",
+      "max":40,
+      "min":0
+    },
     "ReferenceKey":{
       "type":"string",
       "max":4096,
@@ -10583,6 +12196,11 @@
       "documentation":"<p>A resource already has that name.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":50,
+      "min":1
     },
     "ResourceInUseException":{
       "type":"structure",
@@ -11572,6 +13190,41 @@
       "type":"list",
       "member":{"shape":"TaskTemplateSingleSelectOption"}
     },
+    "SingleSelectQuestionRuleCategoryAutomation":{
+      "type":"structure",
+      "required":[
+        "Category",
+        "Condition",
+        "OptionRefId"
+      ],
+      "members":{
+        "Category":{
+          "shape":"SingleSelectQuestionRuleCategoryAutomationLabel",
+          "documentation":"<p> The category name, as defined in Rules.</p>"
+        },
+        "Condition":{
+          "shape":"SingleSelectQuestionRuleCategoryAutomationCondition",
+          "documentation":"<p>The condition to apply for the automation option. If the condition is <code>PRESENT</code>, then the option is applied when the contact data includes the category. Similarly, if the condition is <code>NOT_PRESENT</code>, then the option is applied when the contact data does not include the category.</p>"
+        },
+        "OptionRefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the answer option tha</p>"
+        }
+      },
+      "documentation":"<p>Information about the automation option based on a rule category for a single select question.</p>"
+    },
+    "SingleSelectQuestionRuleCategoryAutomationCondition":{
+      "type":"string",
+      "enum":[
+        "PRESENT",
+        "NOT_PRESENT"
+      ]
+    },
+    "SingleSelectQuestionRuleCategoryAutomationLabel":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "SnapshotVersion":{"type":"string"},
     "SortOrder":{
       "type":"string",
@@ -11662,6 +13315,52 @@
         "ContinuedFromContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId from which a persistent chat session is started. This field is populated only for persistent chats.</p>"
+        }
+      }
+    },
+    "StartContactEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "EvaluationFormId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartContactEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationId",
+        "EvaluationArn"
+      ],
+      "members":{
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
         }
       }
     },
@@ -12005,6 +13704,52 @@
       "type":"string",
       "max":200,
       "min":1
+    },
+    "SubmitContactEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>",
+          "location":"uri",
+          "locationName":"EvaluationId"
+        },
+        "Answers":{
+          "shape":"EvaluationAnswersInputMap",
+          "documentation":"<p>A map of question identifiers to answer value.</p>"
+        },
+        "Notes":{
+          "shape":"EvaluationNotesMap",
+          "documentation":"<p>A map of question identifiers to note value.</p>"
+        }
+      }
+    },
+    "SubmitContactEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationId",
+        "EvaluationArn"
+      ],
+      "members":{
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
+        }
+      }
     },
     "SupportedMessagingContentType":{
       "type":"string",
@@ -12654,6 +14399,52 @@
       "members":{
       }
     },
+    "UpdateContactEvaluationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>",
+          "location":"uri",
+          "locationName":"EvaluationId"
+        },
+        "Answers":{
+          "shape":"EvaluationAnswersInputMap",
+          "documentation":"<p>A map of question identifiers to answer value.</p>"
+        },
+        "Notes":{
+          "shape":"EvaluationNotesMap",
+          "documentation":"<p>A map of question identifiers to note value.</p>"
+        }
+      }
+    },
+    "UpdateContactEvaluationResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationId",
+        "EvaluationArn"
+      ],
+      "members":{
+        "EvaluationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the contact evaluation.</p>"
+        },
+        "EvaluationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
+        }
+      }
+    },
     "UpdateContactFlowContentRequest":{
       "type":"structure",
       "required":[
@@ -12889,6 +14680,81 @@
     "UpdateContactScheduleResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateEvaluationFormRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EvaluationFormId",
+        "EvaluationFormVersion",
+        "Title",
+        "Items"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>",
+          "location":"uri",
+          "locationName":"EvaluationFormId"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>A version of the evaluation form to update.</p>"
+        },
+        "CreateNewVersion":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A flag indicating whether the operation must create a new version.</p>"
+        },
+        "Title":{
+          "shape":"EvaluationFormTitle",
+          "documentation":"<p>A unique title of the evaluation form.</p>"
+        },
+        "Description":{
+          "shape":"EvaluationFormDescription",
+          "documentation":"<p>The description of the evaluation form.</p>"
+        },
+        "Items":{
+          "shape":"EvaluationFormItemsList",
+          "documentation":"<p>Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.</p>"
+        },
+        "ScoringStrategy":{
+          "shape":"EvaluationFormScoringStrategy",
+          "documentation":"<p>A scoring strategy of the evaluation form.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateEvaluationFormResponse":{
+      "type":"structure",
+      "required":[
+        "EvaluationFormId",
+        "EvaluationFormArn",
+        "EvaluationFormVersion"
+      ],
+      "members":{
+        "EvaluationFormId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation form.</p>"
+        },
+        "EvaluationFormArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
+        },
+        "EvaluationFormVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the updated evaluation form resource.</p>"
+        }
       }
     },
     "UpdateHoursOfOperationDescription":{
@@ -14133,6 +15999,11 @@
       "value":{"shape":"String"}
     },
     "Value":{"type":"double"},
+    "VersionNumber":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "Vocabulary":{
       "type":"structure",
       "required":[

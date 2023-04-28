@@ -813,6 +813,22 @@
       ],
       "documentation":"<p>Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID. If you use this operation from a member account, the ThreatIntelSets associated with the administrator account are returned.</p>"
     },
+    "StartMalwareScan":{
+      "name":"StartMalwareScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/malware-scan/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMalwareScanRequest"},
+      "output":{"shape":"StartMalwareScanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Initiates the malware scan. Invoking this API will automatically create the <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/slr-permissions-malware-protection.html\">Service-linked role </a> in the corresponding account.</p>"
+    },
     "StartMonitoringMembers":{
       "name":"StartMonitoringMembers",
       "http":{
@@ -1593,6 +1609,24 @@
       },
       "documentation":"<p>Contains information about the condition.</p>"
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>A request conflict exception object.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "Container":{
       "type":"structure",
       "members":{
@@ -2222,7 +2256,8 @@
         "ACCOUNT_ID",
         "GUARDDUTY_FINDING_ID",
         "SCAN_START_TIME",
-        "SCAN_STATUS"
+        "SCAN_STATUS",
+        "SCAN_TYPE"
       ]
     },
     "DNSLogsConfigurationResult":{
@@ -3123,6 +3158,11 @@
           "shape":"ScanDetections",
           "documentation":"<p>Contains a complete view providing malware scan result details.</p>",
           "locationName":"scanDetections"
+        },
+        "ScanType":{
+          "shape":"ScanType",
+          "documentation":"<p>Specifies the scan type that invoked the malware scan.</p>",
+          "locationName":"scanType"
         }
       },
       "documentation":"<p>Contains details from the malware scan that created a finding.</p>"
@@ -6417,6 +6457,10 @@
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
     },
+    "ResourceArn":{
+      "type":"string",
+      "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9-]*$"
+    },
     "ResourceDetails":{
       "type":"structure",
       "members":{
@@ -6704,6 +6748,11 @@
           "shape":"VolumeDetails",
           "documentation":"<p>List of volumes that were attached to the original instance to be scanned.</p>",
           "locationName":"attachedVolumes"
+        },
+        "ScanType":{
+          "shape":"ScanType",
+          "documentation":"<p>Specifies the scan type that invoked the malware scan.</p>",
+          "locationName":"scanType"
         }
       },
       "documentation":"<p>Contains information about a malware scan.</p>"
@@ -6861,7 +6910,8 @@
       "enum":[
         "RUNNING",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "SKIPPED"
       ]
     },
     "ScanThreatName":{
@@ -6893,6 +6943,13 @@
     "ScanThreatNames":{
       "type":"list",
       "member":{"shape":"ScanThreatName"}
+    },
+    "ScanType":{
+      "type":"string",
+      "enum":[
+        "GUARDDUTY_INITIATED",
+        "ON_DEMAND"
+      ]
     },
     "ScannedItemCount":{
       "type":"structure",
@@ -7065,6 +7122,27 @@
     "Sources":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "StartMalwareScanRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource for which you invoked the API.</p>",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "StartMalwareScanResponse":{
+      "type":"structure",
+      "members":{
+        "ScanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A unique identifier that gets generated when you invoke the API without any error. Each malware scan has a corresponding scan ID. Using this scan ID, you can monitor the status of your malware scan.</p>",
+          "locationName":"scanId"
+        }
+      }
     },
     "StartMonitoringMembersRequest":{
       "type":"structure",

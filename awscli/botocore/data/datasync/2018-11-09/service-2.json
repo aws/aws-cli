@@ -14,6 +14,21 @@
     "uid":"datasync-2018-11-09"
   },
   "operations":{
+    "AddStorageSystem":{
+      "name":"AddStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AddStorageSystemRequest"},
+      "output":{"shape":"AddStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an Amazon Web Services resource for an on-premises storage system that you want DataSync Discovery to collect information about.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "CancelTaskExecution":{
       "name":"CancelTaskExecution",
       "http":{
@@ -166,7 +181,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a>.</p>"
+      "documentation":"<p>A <i>location</i> is an endpoint for an Amazon S3 bucket. DataSync can use the location as a source or destination for copying data.</p> <important> <p>Before you create your location, make sure that you read the following sections:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Storage class considerations with Amazon S3 locations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">Evaluating S3 request costs when using DataSync</a> </p> </li> </ul> </important> <p> For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Creating an Amazon S3 location</a>.</p>"
     },
     "CreateLocationSmb":{
       "name":"CreateLocationSmb",
@@ -194,7 +209,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p>"
+      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
     },
     "DeleteAgent":{
       "name":"DeleteAgent",
@@ -251,6 +266,21 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns metadata about an DataSync agent, such as its name, endpoint type, and status.</p>"
+    },
+    "DescribeDiscoveryJob":{
+      "name":"DescribeDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDiscoveryJobRequest"},
+      "output":{"shape":"DescribeDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information about a DataSync discovery job.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "DescribeLocationEfs":{
       "name":"DescribeLocationEfs",
@@ -392,6 +422,51 @@
       ],
       "documentation":"<p>Returns metadata, such as the path and user information about an SMB location.</p>"
     },
+    "DescribeStorageSystem":{
+      "name":"DescribeStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemRequest"},
+      "output":{"shape":"DescribeStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information about an on-premises storage system that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeStorageSystemResourceMetrics":{
+      "name":"DescribeStorageSystemResourceMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemResourceMetricsRequest"},
+      "output":{"shape":"DescribeStorageSystemResourceMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information, including performance data and capacity usage, which DataSync Discovery collects about a specific resource in your-premises storage system.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeStorageSystemResources":{
+      "name":"DescribeStorageSystemResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemResourcesRequest"},
+      "output":{"shape":"DescribeStorageSystemResourcesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information that DataSync Discovery collects about resources in your on-premises storage system.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "DescribeTask":{
       "name":"DescribeTask",
       "http":{
@@ -420,6 +495,21 @@
       ],
       "documentation":"<p>Returns detailed metadata about a task that is being executed.</p>"
     },
+    "GenerateRecommendations":{
+      "name":"GenerateRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GenerateRecommendationsRequest"},
+      "output":{"shape":"GenerateRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates recommendations about where to migrate your data to in Amazon Web Services. Recommendations are generated based on information that DataSync Discovery collects about your on-premises storage system's resources. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p> <p>Once generated, you can view your recommendations by using the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeStorageSystemResources.html\">DescribeStorageSystemResources</a> operation.</p> <note> <p>If your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">discovery job completes successfully</a>, you don't need to use this operation. DataSync Discovery generates the recommendations for you automatically.</p> </note>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "ListAgents":{
       "name":"ListAgents",
       "http":{
@@ -434,6 +524,21 @@
       ],
       "documentation":"<p>Returns a list of DataSync agents that belong to an Amazon Web Services account in the Amazon Web Services Region specified in the request.</p> <p>With pagination, you can reduce the number of agents returned in a response. If you get a truncated list of agents in a response, the response contains a marker that you can specify in your next request to fetch the next page of agents.</p> <p> <code>ListAgents</code> is eventually consistent. This means the result of running the operation might not reflect that you just created or deleted an agent. For example, if you create an agent with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateAgent.html\">CreateAgent</a> and then immediately run <code>ListAgents</code>, that agent might not show up in the list right away. In situations like this, you can always confirm whether an agent has been created (or deleted) by using <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeAgent.html\">DescribeAgent</a>.</p>"
     },
+    "ListDiscoveryJobs":{
+      "name":"ListDiscoveryJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDiscoveryJobsRequest"},
+      "output":{"shape":"ListDiscoveryJobsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Provides a list of the existing discovery jobs in the Amazon Web Services Region and Amazon Web Services account where you're using DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "ListLocations":{
       "name":"ListLocations",
       "http":{
@@ -447,6 +552,21 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns a list of source and destination locations.</p> <p>If you have more locations than are returned in a response (that is, the response returns only a truncated list of your agents), the response contains a token that you can specify in your next request to fetch the next page of locations.</p>"
+    },
+    "ListStorageSystems":{
+      "name":"ListStorageSystems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStorageSystemsRequest"},
+      "output":{"shape":"ListStorageSystemsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists the on-premises storage systems that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -490,6 +610,36 @@
       ],
       "documentation":"<p>Returns a list of the DataSync tasks you created.</p>"
     },
+    "RemoveStorageSystem":{
+      "name":"RemoveStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveStorageSystemRequest"},
+      "output":{"shape":"RemoveStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Permanently removes a storage system resource from DataSync Discovery, including the associated discovery jobs, collected data, and recommendations.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "StartDiscoveryJob":{
+      "name":"StartDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDiscoveryJobRequest"},
+      "output":{"shape":"StartDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Runs a DataSync discovery job on your on-premises storage system. If you haven't added the storage system to DataSync Discovery yet, do this first by using the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_AddStorageSystem.html\">AddStorageSystem</a> operation.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "StartTaskExecution":{
       "name":"StartTaskExecution",
       "http":{
@@ -502,7 +652,22 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Starts an DataSync task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p>"
+      "documentation":"<p>Starts an DataSync task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
+    },
+    "StopDiscoveryJob":{
+      "name":"StopDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopDiscoveryJobRequest"},
+      "output":{"shape":"StopDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Stops a running DataSync discovery job.</p> <p>You can stop a discovery job anytime. A job that's stopped before it's scheduled to end likely will provide you some information about your on-premises storage system resources. To get recommendations for a stopped job, you must use the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_GenerateRecommendations.html\">GenerateRecommendations</a> operation.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "TagResource":{
       "name":"TagResource",
@@ -545,6 +710,21 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Updates the name of an agent.</p>"
+    },
+    "UpdateDiscoveryJob":{
+      "name":"UpdateDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDiscoveryJobRequest"},
+      "output":{"shape":"UpdateDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Edits a DataSync discovery job configuration.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "UpdateLocationHdfs":{
       "name":"UpdateLocationHdfs",
@@ -602,6 +782,21 @@
       ],
       "documentation":"<p>Updates some of the parameters of a previously created location for Server Message Block (SMB) file system access. For information about creating an SMB location, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">Creating a location for SMB</a>.</p>"
     },
+    "UpdateStorageSystem":{
+      "name":"UpdateStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateStorageSystemRequest"},
+      "output":{"shape":"UpdateStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Modifies some configurations of an on-premises storage system resource that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "UpdateTask":{
       "name":"UpdateTask",
       "http":{
@@ -628,7 +823,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates execution of a task.</p> <p>You can modify bandwidth throttling for a task execution that is running or queued. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#adjust-bandwidth-throttling\">Adjusting Bandwidth Throttling for a Task Execution</a>.</p> <note> <p>The only <code>Option</code> that can be modified by <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>.</p> </note>"
+      "documentation":"<p>Modifies a running DataSync task.</p> <note> <p>Currently, the only <code>Option</code> that you can modify with <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>, which throttles bandwidth for a running or queued task.</p> </note>"
     }
   },
   "shapes":{
@@ -636,6 +831,61 @@
       "type":"string",
       "max":29,
       "pattern":"[A-Z0-9]{5}(-[A-Z0-9]{5}){4}"
+    },
+    "AddStorageSystemRequest":{
+      "type":"structure",
+      "required":[
+        "ServerConfiguration",
+        "SystemType",
+        "AgentArns",
+        "ClientToken",
+        "Credentials"
+      ],
+      "members":{
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>Specifies the server name and network port required to connect with the management interface of your on-premises storage system.</p>"
+        },
+        "SystemType":{
+          "shape":"DiscoverySystemType",
+          "documentation":"<p>Specifies the type of on-premises storage system that you want DataSync Discovery to collect information about.</p> <note> <p>DataSync Discovery currently supports NetApp Fabric-Attached Storage (FAS) and All Flash FAS (AFF) systems running ONTAP 9.7 or later.</p> </note>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads from your on-premises storage system's management interface.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>Specifies the ARN of the Amazon CloudWatch log group for monitoring and logging discovery job events.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your on-premises storage system.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>Specifies a familiar name for your on-premises storage system.</p>"
+        },
+        "ClientToken":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>Specifies a client token to make sure requests with this API operation are idempotent. If you don't specify a client token, DataSync generates one for you automatically.</p>",
+          "idempotencyToken":true
+        },
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Specifies the user name and password for accessing your on-premises storage system's management interface.</p>"
+        }
+      }
+    },
+    "AddStorageSystemResponse":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system that you can use with DataSync Discovery.</p>"
+        }
+      }
     },
     "AgentArn":{
       "type":"string",
@@ -703,6 +953,29 @@
       "type":"structure",
       "members":{
       }
+    },
+    "Capacity":{
+      "type":"structure",
+      "members":{
+        "Used":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space that's being used in a storage system resource.</p>"
+        },
+        "Provisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total amount of space available in a storage system resource.</p>"
+        },
+        "LogicalUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space that's being used in a storage system resource without accounting for compression or deduplication.</p>"
+        }
+      },
+      "documentation":"<p>The storage capacity of an on-premises storage system resource (for example, a volume).</p>"
+    },
+    "CollectionDurationMinutes":{
+      "type":"integer",
+      "max":44640,
+      "min":60
     },
     "CreateAgentRequest":{
       "type":"structure",
@@ -1275,6 +1548,24 @@
       },
       "documentation":"<p>CreateTaskResponse</p>"
     },
+    "Credentials":{
+      "type":"structure",
+      "required":[
+        "Username",
+        "Password"
+      ],
+      "members":{
+        "Username":{
+          "shape":"PtolemyUsername",
+          "documentation":"<p>Specifies the user name for your storage system's management interface.</p>"
+        },
+        "Password":{
+          "shape":"PtolemyPassword",
+          "documentation":"<p>Specifies the password for your storage system's management interface.</p>"
+        }
+      },
+      "documentation":"<p>The credentials that provide DataSync Discovery read access to your on-premises storage system's management interface.</p> <p>DataSync Discovery stores these credentials in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a>. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-configure-storage.html\">Accessing your on-premises storage system</a>.</p>"
+    },
     "DeleteAgentRequest":{
       "type":"structure",
       "required":["AgentArn"],
@@ -1367,6 +1658,45 @@
         }
       },
       "documentation":"<p>DescribeAgentResponse</p>"
+    },
+    "DescribeDiscoveryJobRequest":{
+      "type":"structure",
+      "required":["DiscoveryJobArn"],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want information about.</p>"
+        }
+      }
+    },
+    "DescribeDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system you're running the discovery job on.</p>"
+        },
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The ARN of the discovery job.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>The number of minutes that the discovery job runs.</p>"
+        },
+        "Status":{
+          "shape":"DiscoveryJobStatus",
+          "documentation":"<p>Indicates the status of a discovery job. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">Discovery job statuses</a>.</p>"
+        },
+        "JobStartTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>The time when the discovery job started.</p>"
+        },
+        "JobEndTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>The time when the discovery job ended.</p>"
+        }
+      }
     },
     "DescribeLocationEfsRequest":{
       "type":"structure",
@@ -1784,6 +2114,158 @@
       },
       "documentation":"<p>DescribeLocationSmbResponse</p>"
     },
+    "DescribeStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of an on-premises storage system that you're using with DataSync Discovery.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourceMetricsRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceType",
+        "ResourceId"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies the kind of storage system resource that you want information about.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Specifies the universally unique identifier (UUID) of the storage system resource that you want information about.</p>"
+        },
+        "StartTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>Specifies a time within the total duration that the discovery job ran. To see information gathered during a certain time frame, use this parameter with <code>EndTime</code>.</p>"
+        },
+        "EndTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>Specifies a time within the total duration that the discovery job ran. To see information gathered during a certain time frame, use this parameter with <code>StartTime</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results that you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourceMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "Metrics":{
+          "shape":"Metrics",
+          "documentation":"<p>The details that your discovery job collected about your storage system resource.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceType"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that's collecting data from your on-premises storage system.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies what kind of storage system resources that you want information about.</p>"
+        },
+        "ResourceIds":{
+          "shape":"ResourceIds",
+          "documentation":"<p>Specifies the universally unique identifiers (UUIDs) of the storage system resources that you want information about. You can't use this parameter in combination with the <code>Filter</code> parameter.</p>"
+        },
+        "Filter":{
+          "shape":"ResourceFilters",
+          "documentation":"<p>Filters the storage system resources that you want returned. For example, this might be volumes associated with a specific storage virtual machine (SVM).</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies the maximum number of storage system resources that you want to list in a response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>The information collected about your storage system's resources. A response can also include Amazon Web Services storage service recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-findings.html\">storage resource information</a> collected by and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">recommendations</a> provided by DataSync Discovery.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system that the discovery job looked at.</p>"
+        },
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>The server name and network port required to connect with your on-premises storage system's management interface.</p>"
+        },
+        "SystemType":{
+          "shape":"DiscoverySystemType",
+          "documentation":"<p>The type of on-premises storage system.</p> <note> <p>DataSync Discovery currently only supports NetApp Fabric-Attached Storage (FAS) and All Flash FAS (AFF) systems running ONTAP 9.7 or later. </p> </note>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>The ARN of the DataSync agent that connects to and reads from your on-premises storage system.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name that you gave your on-premises storage system when adding it to DataSync Discovery.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Describes the connectivity error that the DataSync agent is encountering with your on-premises storage system.</p>"
+        },
+        "ConnectivityStatus":{
+          "shape":"StorageSystemConnectivityStatus",
+          "documentation":"<p>Indicates whether your DataSync agent can connect to your on-premises storage system.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The ARN of the Amazon CloudWatch log group that's used to monitor and log discovery job events.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when you added the on-premises storage system to DataSync Discovery.</p>"
+        },
+        "SecretsManagerArn":{
+          "shape":"SecretsManagerArn",
+          "documentation":"<p>The ARN of the secret that stores your on-premises storage system's credentials. DataSync Discovery stores these credentials in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-configure-storage.html#discovery-add-storage\">Secrets Manager</a>.</p>"
+        }
+      }
+    },
     "DescribeTaskExecutionRequest":{
       "type":"structure",
       "required":["TaskExecutionArn"],
@@ -1935,6 +2417,100 @@
       "type":"list",
       "member":{"shape":"NetworkInterfaceArn"}
     },
+    "DiscoveryAgentArnList":{
+      "type":"list",
+      "member":{"shape":"AgentArn"},
+      "max":1,
+      "min":1
+    },
+    "DiscoveryJobArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:system/storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/job/discovery-job-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "DiscoveryJobList":{
+      "type":"list",
+      "member":{"shape":"DiscoveryJobListEntry"}
+    },
+    "DiscoveryJobListEntry":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a discovery job.</p>"
+        },
+        "Status":{
+          "shape":"DiscoveryJobStatus",
+          "documentation":"<p>The status of a discovery job. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">Discovery job statuses</a>.</p>"
+        }
+      },
+      "documentation":"<p>The details about a specific DataSync discovery job.</p>"
+    },
+    "DiscoveryJobStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "WARNING",
+        "TERMINATED",
+        "FAILED",
+        "STOPPED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES"
+      ]
+    },
+    "DiscoveryMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "DiscoveryNextToken":{
+      "type":"string",
+      "max":65535,
+      "pattern":"[a-zA-Z0-9=_-]+"
+    },
+    "DiscoveryResourceFilter":{
+      "type":"string",
+      "enum":["SVM"]
+    },
+    "DiscoveryResourceType":{
+      "type":"string",
+      "enum":[
+        "SVM",
+        "VOLUME",
+        "CLUSTER"
+      ]
+    },
+    "DiscoveryServerConfiguration":{
+      "type":"structure",
+      "required":["ServerHostname"],
+      "members":{
+        "ServerHostname":{
+          "shape":"DiscoveryServerHostname",
+          "documentation":"<p>The domain name or IP address of your storage system's management interface.</p>"
+        },
+        "ServerPort":{
+          "shape":"DiscoveryServerPort",
+          "documentation":"<p>The network port for accessing the storage system's management interface.</p>"
+        }
+      },
+      "documentation":"<p>The network settings that DataSync Discovery uses to connect with your on-premises storage system's management interface.</p>"
+    },
+    "DiscoveryServerHostname":{
+      "type":"string",
+      "max":255,
+      "pattern":"^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
+    },
+    "DiscoveryServerPort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "DiscoverySystemType":{
+      "type":"string",
+      "enum":["NetAppONTAP"]
+    },
+    "DiscoveryTime":{"type":"timestamp"},
     "Duration":{
       "type":"long",
       "min":0
@@ -1960,7 +2536,7 @@
     "Ec2SecurityGroupArn":{
       "type":"string",
       "max":128,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/sg-[a-f0-9]+$"
     },
     "Ec2SecurityGroupArnList":{
       "type":"list",
@@ -1995,6 +2571,10 @@
       "max":4096,
       "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\p{Zs}]*$"
     },
+    "EnabledProtocols":{
+      "type":"list",
+      "member":{"shape":"PtolemyString"}
+    },
     "Endpoint":{
       "type":"string",
       "max":15,
@@ -2009,6 +2589,11 @@
         "FIPS"
       ]
     },
+    "ErrorMessage":{
+      "type":"string",
+      "max":128,
+      "pattern":".*"
+    },
     "FilterAttributeValue":{
       "type":"string",
       "max":255,
@@ -2020,6 +2605,10 @@
       "member":{"shape":"FilterRule"},
       "max":1,
       "min":0
+    },
+    "FilterMembers":{
+      "type":"list",
+      "member":{"shape":"PtolemyString"}
     },
     "FilterRule":{
       "type":"structure",
@@ -2119,6 +2708,33 @@
       "max":4096,
       "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
     },
+    "GenerateRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceIds",
+        "ResourceType"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.</p>"
+        },
+        "ResourceIds":{
+          "shape":"ResourceIds",
+          "documentation":"<p>Specifies the universally unique identifiers (UUIDs) of the resources in your storage system that you want recommendations on.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies the type of resource in your storage system that you want recommendations on.</p>"
+        }
+      }
+    },
+    "GenerateRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Gid":{
       "type":"string",
       "enum":[
@@ -2211,6 +2827,28 @@
       "min":1,
       "pattern":"^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"
     },
+    "IOPS":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS unrelated to read and write operations.</p>"
+        },
+        "Total":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total IOPS on your on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -2262,6 +2900,24 @@
       "min":1,
       "pattern":"^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$"
     },
+    "Latency":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for operations unrelated to read and write operations.</p>"
+        }
+      },
+      "documentation":"<p>The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "ListAgentsRequest":{
       "type":"structure",
       "members":{
@@ -2289,6 +2945,36 @@
         }
       },
       "documentation":"<p>ListAgentsResponse</p>"
+    },
+    "ListDiscoveryJobsRequest":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of an on-premises storage system. Use this parameter if you only want to list the discovery jobs that are associated with a specific storage system.</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "ListDiscoveryJobsResponse":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobs":{
+          "shape":"DiscoveryJobList",
+          "documentation":"<p>The discovery jobs that you've run.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
     },
     "ListLocationsRequest":{
       "type":"structure",
@@ -2321,6 +3007,32 @@
         }
       },
       "documentation":"<p>ListLocationsResponse</p>"
+    },
+    "ListStorageSystemsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response. </p>"
+        }
+      }
+    },
+    "ListStorageSystemsResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystems":{
+          "shape":"StorageSystemList",
+          "documentation":"<p>The Amazon Resource Names ARNs) of the on-premises storage systems that you're using with DataSync Discovery.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -2485,7 +3197,7 @@
     "LogGroupArn":{
       "type":"string",
       "max":562,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]+:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
     },
     "LogLevel":{
       "type":"string",
@@ -2495,10 +3207,64 @@
         "TRANSFER"
       ]
     },
+    "MaxP95Performance":{
+      "type":"structure",
+      "members":{
+        "IopsRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to read operations.</p>"
+        },
+        "IopsWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to write operations.</p>"
+        },
+        "IopsOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS unrelated to read and write operations.</p>"
+        },
+        "IopsTotal":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total IOPS on your on-premises storage system resource.</p>"
+        },
+        "ThroughputRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to read operations.</p>"
+        },
+        "ThroughputWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to write operations.</p>"
+        },
+        "ThroughputOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput unrelated to read and write operations.</p>"
+        },
+        "ThroughputTotal":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total throughput on your on-premises storage system resource.</p>"
+        },
+        "LatencyRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for read operations.</p>"
+        },
+        "LatencyWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for write operations.</p>"
+        },
+        "LatencyOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for operations unrelated to read and write operations.</p>"
+        }
+      },
+      "documentation":"<p>The performance data that DataSync Discovery collects about an on-premises storage system resource.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "Metrics":{
+      "type":"list",
+      "member":{"shape":"ResourceMetrics"}
     },
     "Mtime":{
       "type":"string",
@@ -2506,6 +3272,190 @@
         "NONE",
         "PRESERVE"
       ]
+    },
+    "Name":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{M}\\p{N}\\s+=._:@\\/-]+$"
+    },
+    "NetAppONTAPCluster":{
+      "type":"structure",
+      "members":{
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the cluster.</p>"
+        },
+        "NfsExportedVolumes":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of NFS volumes in the cluster.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the cluster.</p>"
+        },
+        "ClusterName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the cluster.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the cluster.</p>"
+        },
+        "ClusterBlockStorageSize":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the cluster.</p>"
+        },
+        "ClusterBlockStorageUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in a cluster.</p>"
+        },
+        "ClusterBlockStorageLogicalUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the cluster without accounting for compression or deduplication.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the cluster are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about an on-premises storage system cluster.</p>"
+    },
+    "NetAppONTAPClusters":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPCluster"}
+    },
+    "NetAppONTAPSVM":{
+      "type":"structure",
+      "members":{
+        "ClusterUuid":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the cluster associated with the SVM.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The UUID of the SVM.</p>"
+        },
+        "SvmName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the SVM</p>"
+        },
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the SVM.</p>"
+        },
+        "EnabledProtocols":{
+          "shape":"EnabledProtocols",
+          "documentation":"<p>The data transfer protocols (such as NFS) configured for the SVM.</p>"
+        },
+        "TotalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the SVM.</p>"
+        },
+        "TotalCapacityProvisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the SVM.</p>"
+        },
+        "TotalLogicalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the SVM without accounting for compression or deduplication.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the SVM.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the SVM. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "NfsExportedVolumes":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of NFS volumes in the SVM.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the SVM are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        },
+        "TotalSnapshotCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of storage in the SVM that's being used for snapshots.</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about a storage virtual machine (SVM) in your on-premises storage system.</p>"
+    },
+    "NetAppONTAPSVMs":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPSVM"}
+    },
+    "NetAppONTAPVolume":{
+      "type":"structure",
+      "members":{
+        "VolumeName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the volume.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the volume.</p>"
+        },
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the volume.</p>"
+        },
+        "SecurityStyle":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The volume's security style (such as Unix or NTFS).</p>"
+        },
+        "SvmUuid":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The UUID of the storage virtual machine (SVM) associated with the volume.</p>"
+        },
+        "SvmName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the SVM associated with the volume.</p>"
+        },
+        "CapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the volume.</p>"
+        },
+        "CapacityProvisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the volume.</p>"
+        },
+        "LogicalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the volume without accounting for compression or deduplication.</p>"
+        },
+        "NfsExported":{
+          "shape":"PtolemyBoolean",
+          "documentation":"<p>The number of NFS volumes in the volume.</p>"
+        },
+        "SnapshotCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of storage in the volume that's being used for snapshots.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the volume.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the volume. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the volume are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about a volume in your on-premises storage system.</p>"
+    },
+    "NetAppONTAPVolumes":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPVolume"}
     },
     "NetworkInterfaceArn":{
       "type":"string",
@@ -2540,6 +3490,16 @@
         "NFS4_0",
         "NFS4_1"
       ]
+    },
+    "NonNegativeDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "NonNegativeLong":{
+      "type":"long",
+      "box":true,
+      "min":0
     },
     "ObjectStorageAccessKey":{
       "type":"string",
@@ -2689,6 +3649,24 @@
         "NEVER"
       ]
     },
+    "P95Metrics":{
+      "type":"structure",
+      "members":{
+        "IOPS":{
+          "shape":"IOPS",
+          "documentation":"<p>The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        },
+        "Throughput":{
+          "shape":"Throughput",
+          "documentation":"<p>The throughput peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        },
+        "Latency":{
+          "shape":"Latency",
+          "documentation":"<p>The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        }
+      },
+      "documentation":"<p>The types of performance data that DataSync Discovery collects about an on-premises storage system resource.</p>"
+    },
     "PLSecurityGroupArnList":{
       "type":"list",
       "member":{"shape":"Ec2SecurityGroupArn"},
@@ -2752,6 +3730,28 @@
       },
       "documentation":"<p>The VPC endpoint, subnet, and security group that an agent uses to access IP addresses in a VPC (Virtual Private Cloud).</p>"
     },
+    "PtolemyBoolean":{"type":"boolean"},
+    "PtolemyPassword":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(?!.*[:\\\"][^:\"]*$).+$",
+      "sensitive":true
+    },
+    "PtolemyString":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^.{0,1024}$"
+    },
+    "PtolemyUUID":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "PtolemyUsername":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(?!.*[:\\\"][^:\"]*$).+$",
+      "sensitive":true
+    },
     "QopConfiguration":{
       "type":"structure",
       "members":{
@@ -2765,6 +3765,116 @@
         }
       },
       "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer privacy settings configured on the Hadoop Distributed File System (HDFS) cluster.</p>"
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "StorageType":{
+          "shape":"PtolemyString",
+          "documentation":"<p>A recommended Amazon Web Services storage service that you can migrate data to based on information that DataSync Discovery collects about your on-premises storage system.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"RecommendationsConfigMap",
+          "documentation":"<p>Information about how you can set up a recommended Amazon Web Services storage service.</p>"
+        },
+        "EstimatedMonthlyStorageCost":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The estimated monthly cost of the recommended Amazon Web Services storage service.</p>"
+        }
+      },
+      "documentation":"<p>The details about an Amazon Web Services storage service that DataSync Discovery recommends for a resource in your on-premises storage system.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+    },
+    "RecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "Recommendations":{
+      "type":"list",
+      "member":{"shape":"Recommendation"}
+    },
+    "RecommendationsConfigMap":{
+      "type":"map",
+      "key":{"shape":"PtolemyString"},
+      "value":{"shape":"PtolemyString"}
+    },
+    "RemoveStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the storage system that you want to permanently remove from DataSync Discovery.</p>"
+        }
+      }
+    },
+    "RemoveStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "NetAppONTAPSVMs":{
+          "shape":"NetAppONTAPSVMs",
+          "documentation":"<p>The information that DataSync Discovery collects about storage virtual machines (SVMs) in your on-premises storage system.</p>"
+        },
+        "NetAppONTAPVolumes":{
+          "shape":"NetAppONTAPVolumes",
+          "documentation":"<p>The information that DataSync Discovery collects about volumes in your on-premises storage system.</p>"
+        },
+        "NetAppONTAPClusters":{
+          "shape":"NetAppONTAPClusters",
+          "documentation":"<p>The information that DataSync Discovery collects about the cluster in your on-premises storage system.</p>"
+        }
+      },
+      "documentation":"<p>Information provided by DataSync Discovery about the resources in your on-premises storage system.</p>"
+    },
+    "ResourceFilters":{
+      "type":"map",
+      "key":{"shape":"DiscoveryResourceFilter"},
+      "value":{"shape":"FilterMembers"}
+    },
+    "ResourceId":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ResourceIds":{
+      "type":"list",
+      "member":{"shape":"ResourceId"},
+      "max":100,
+      "min":1
+    },
+    "ResourceMetrics":{
+      "type":"structure",
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when DataSync Discovery collected this information from the resource.</p>"
+        },
+        "P95Metrics":{
+          "shape":"P95Metrics",
+          "documentation":"<p>The types of performance data that DataSync Discovery collects about the on-premises storage system resource.</p>"
+        },
+        "Capacity":{
+          "shape":"Capacity",
+          "documentation":"<p>The storage capacity of the on-premises storage system resource.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The universally unique identifier (UUID) of the on-premises storage system resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>The type of on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>Information, including performance data and capacity usage, provided by DataSync Discovery about a resource in your on-premises storage system.</p>"
     },
     "S3BucketArn":{
       "type":"string",
@@ -2805,6 +3915,11 @@
       "max":256,
       "pattern":"^[a-zA-Z0-9\\ \\_\\*\\?\\,\\|\\^\\-\\/\\#\\s\\(\\)\\+]*$"
     },
+    "SecretsManagerArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):secretsmanager:[a-z\\-0-9]+:[0-9]{12}:secret:.*"
+    },
     "ServerHostname":{
       "type":"string",
       "max":255,
@@ -2820,7 +3935,7 @@
       "members":{
         "Version":{
           "shape":"SmbVersion",
-          "documentation":"<p>By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically.</p> <p>These are the following options for configuring the SMB version:</p> <ul> <li> <p> <code>AUTOMATIC</code> (default): DataSync and the SMB file server negotiate a protocol version that they mutually support. (DataSync supports SMB versions 1.0 and later.)</p> <p>This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an <code>Operation Not Supported</code> error.</p> </li> <li> <p> <code>SMB3</code>: Restricts the protocol negotiation to only SMB version 3.0.2.</p> </li> <li> <p> <code>SMB2</code>: Restricts the protocol negotiation to only SMB version 2.1.</p> </li> <li> <p> <code>SMB2_0</code>: Restricts the protocol negotiation to only SMB version 2.0.</p> </li> <li> <p> <code>SMB1</code>: Restricts the protocol negotiation to only SMB version 1.0.</p> <note> <p>The <code>SMB1</code> option isn't available when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateLocationFsxOntap.html\">creating an Amazon FSx for NetApp ONTAP location</a>.</p> </note> </li> </ul>"
+          "documentation":"<p>By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically.</p> <p>These are the following options for configuring the SMB version:</p> <ul> <li> <p> <code>AUTOMATIC</code> (default): DataSync and the SMB file server negotiate the highest version of SMB that they mutually support between 2.1 and 3.1.1.</p> <p>This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an <code>Operation Not Supported</code> error.</p> </li> <li> <p> <code>SMB3</code>: Restricts the protocol negotiation to only SMB version 3.0.2.</p> </li> <li> <p> <code>SMB2</code>: Restricts the protocol negotiation to only SMB version 2.1.</p> </li> <li> <p> <code>SMB2_0</code>: Restricts the protocol negotiation to only SMB version 2.0.</p> </li> <li> <p> <code>SMB1</code>: Restricts the protocol negotiation to only SMB version 1.0.</p> <note> <p>The <code>SMB1</code> option isn't available when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateLocationFsxOntap.html\">creating an Amazon FSx for NetApp ONTAP location</a>.</p> </note> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies the version of the Server Message Block (SMB) protocol that DataSync uses to access an SMB file server.</p>"
@@ -2863,6 +3978,42 @@
       "type":"list",
       "member":{"shape":"NetworkInterfaceArn"}
     },
+    "StartDiscoveryJobRequest":{
+      "type":"structure",
+      "required":[
+        "StorageSystemArn",
+        "CollectionDurationMinutes",
+        "ClientToken"
+      ],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the on-premises storage system that you want to run the discovery job on.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>Specifies in minutes how long you want the discovery job to run.</p> <note> <p>For more accurate recommendations, we recommend a duration of at least 14 days. Longer durations allow time to collect a sufficient number of data points and provide a realistic representation of storage performance and utilization.</p> </note>"
+        },
+        "ClientToken":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>Specifies a client token to make sure requests with this API operation are idempotent. If you don't specify a client token, DataSync generates one for you automatically.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources.</p>"
+        }
+      }
+    },
+    "StartDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The ARN of the discovery job that you started.</p>"
+        }
+      }
+    },
     "StartTaskExecutionRequest":{
       "type":"structure",
       "required":["TaskArn"],
@@ -2896,6 +4047,52 @@
         }
       },
       "documentation":"<p>StartTaskExecutionResponse</p>"
+    },
+    "StopDiscoveryJobRequest":{
+      "type":"structure",
+      "required":["DiscoveryJobArn"],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want to stop. </p>"
+        }
+      }
+    },
+    "StopDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "StorageSystemArn":{
+      "type":"string",
+      "max":128,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:system/storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "StorageSystemConnectivityStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "UNKNOWN"
+      ]
+    },
+    "StorageSystemList":{
+      "type":"list",
+      "member":{"shape":"StorageSystemListEntry"}
+    },
+    "StorageSystemListEntry":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The Amazon Resource Names (ARN) of an on-premises storage system that you added to DataSync Discovery.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of an on-premises storage system that you added to DataSync Discovery.</p>"
+        }
+      },
+      "documentation":"<p>Information that identifies an on-premises storage system that you're using with DataSync Discovery.</p>"
     },
     "StorageVirtualMachineArn":{
       "type":"string",
@@ -2961,7 +4158,7 @@
     "TaggableResourceArn":{
       "type":"string",
       "max":128,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location)/(agent|task|loc)-[a-f0-9]{17}(/execution/exec-[a-f0-9]{17})?$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location|system)/((agent|task|loc)-[a-f0-9]{17}|storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(/execution/exec-[a-f0-9]{17})?$"
     },
     "TaskArn":{
       "type":"string",
@@ -3129,7 +4326,30 @@
         "UNAVAILABLE"
       ]
     },
+    "Throughput":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput unrelated to read and write operations.</p>"
+        },
+        "Total":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total throughput on your on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>The throughput peaks for an on-premises storage system volume. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "Time":{"type":"timestamp"},
+    "Timestamp":{"type":"timestamp"},
     "TransferMode":{
       "type":"string",
       "enum":[
@@ -3185,6 +4405,28 @@
       "documentation":"<p>UpdateAgentRequest</p>"
     },
     "UpdateAgentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateDiscoveryJobRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "CollectionDurationMinutes"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want to update.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>Specifies in minutes how long that you want the discovery job to run. (You can't set this parameter to less than the number of minutes that the job has already run for.)</p>"
+        }
+      }
+    },
+    "UpdateDiscoveryJobResponse":{
       "type":"structure",
       "members":{
       }
@@ -3352,6 +4594,41 @@
       "members":{
       }
     },
+    "UpdateStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the ARN of the on-premises storage system that you want reconfigure.</p>"
+        },
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>Specifies the server name and network port required to connect with your on-premises storage system's management interface.</p>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads your on-premises storage system.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>Specifies a familiar name for your on-premises storage system.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>Specifies the ARN of the Amazon CloudWatch log group for monitoring and logging discovery job events.</p>"
+        },
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Specifies the user name and password for accessing your on-premises storage system's management interface.</p>"
+        }
+      }
+    },
+    "UpdateStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateTaskExecutionRequest":{
       "type":"structure",
       "required":[
@@ -3361,7 +4638,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the specific task execution that is being updated. </p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task execution that you're updating.</p>"
         },
         "Options":{"shape":"Options"}
       }

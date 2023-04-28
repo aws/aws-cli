@@ -189,6 +189,7 @@
       "errors":[
         {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
         {"shape":"UnauthorizedClientException"},
         {"shape":"ThrottledClientException"},
         {"shape":"ServiceUnavailableException"},
@@ -297,6 +298,7 @@
       },
       "input":{"shape":"DeleteMessagingStreamingConfigurationsRequest"},
       "errors":[
+        {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
         {"shape":"UnauthorizedClientException"},
         {"shape":"ThrottledClientException"},
@@ -1881,7 +1883,8 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>The client token for the request. An Idempotency token.</p>"
+          "documentation":"<p>The client token for the request. An Idempotency token.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2214,12 +2217,6 @@
           "documentation":"<p>The ARN of the <code>AppInstanceUser</code> or <code>AppInstanceBot</code> that makes the API call.</p>",
           "location":"header",
           "locationName":"x-amz-chime-bearer"
-        },
-        "SubChannelId":{
-          "shape":"SubChannelId",
-          "documentation":"<p>The ID of the SubChannel in the request.</p>",
-          "location":"querystring",
-          "locationName":"sub-channel-id"
         }
       }
     },
@@ -4207,10 +4204,6 @@
           "documentation":"<p>The ARN of the <code>AppInstanceUser</code> or <code>AppInstanceBot</code> that makes the API call.</p>",
           "location":"header",
           "locationName":"x-amz-chime-bearer"
-        },
-        "SubChannelId":{
-          "shape":"SubChannelId",
-          "documentation":"<p>The ID of the SubChannel in the request.</p>"
         }
       }
     },
@@ -4220,10 +4213,6 @@
         "ChannelArn":{
           "shape":"ChimeArn",
           "documentation":"<p>The ARN of the channel.</p>"
-        },
-        "SubChannelId":{
-          "shape":"SubChannelId",
-          "documentation":"<p>The ID of the SubChannel in the response.</p>"
         }
       }
     },

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.27.124
+========
+
+* api-change:``compute-optimizer``: support for tag filtering within compute optimizer. ability to filter recommendation results by tag and tag key value pairs. ability to filter by inferred workload type added.
+* api-change:``kms``: This release makes the NitroEnclave request parameter Recipient and the response field for CiphertextForRecipient available in AWS SDKs. It also adds the regex pattern for CloudHsmClusterId validation.
+
+
 1.27.123
 ========
 

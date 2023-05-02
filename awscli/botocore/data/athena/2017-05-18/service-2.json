@@ -54,6 +54,36 @@
       ],
       "documentation":"<p>Returns the details of a single query execution or a list of up to 50 query executions, which you provide as an array of query execution ID strings. Requires you to have access to the workgroup in which the queries ran. To get a list of query execution IDs, use <a>ListQueryExecutionsInput$WorkGroup</a>. Query executions differ from named (saved) queries. Use <a>BatchGetNamedQueryInput</a> to get details about named queries.</p>"
     },
+    "CancelCapacityReservation":{
+      "name":"CancelCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelCapacityReservationInput"},
+      "output":{"shape":"CancelCapacityReservationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels the capacity reservation with the specified name.</p>",
+      "idempotent":true
+    },
+    "CreateCapacityReservation":{
+      "name":"CreateCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCapacityReservationInput"},
+      "output":{"shape":"CreateCapacityReservationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Creates a capacity reservation with the specified name and number of requested data processing units.</p>",
+      "idempotent":true
+    },
     "CreateDataCatalog":{
       "name":"CreateDataCatalog",
       "http":{
@@ -275,6 +305,34 @@
       ],
       "documentation":"<p>Gets the status of a current calculation.</p>"
     },
+    "GetCapacityAssignmentConfiguration":{
+      "name":"GetCapacityAssignmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityAssignmentConfigurationInput"},
+      "output":{"shape":"GetCapacityAssignmentConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the capacity assignment configuration for a capacity reservation, if one exists.</p>"
+    },
+    "GetCapacityReservation":{
+      "name":"GetCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityReservationInput"},
+      "output":{"shape":"GetCapacityReservationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about the capacity reservation with the specified name.</p>"
+    },
     "GetDataCatalog":{
       "name":"GetDataCatalog",
       "http":{
@@ -495,6 +553,20 @@
       ],
       "documentation":"<p>Lists the calculations that have been submitted to a session in descending order. Newer calculations are listed first; older calculations are listed later.</p>"
     },
+    "ListCapacityReservations":{
+      "name":"ListCapacityReservations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCapacityReservationsInput"},
+      "output":{"shape":"ListCapacityReservationsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Lists the capacity reservations for the current account.</p>"
+    },
     "ListDataCatalogs":{
       "name":"ListDataCatalogs",
       "http":{
@@ -668,7 +740,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the tags associated with an Athena workgroup or data catalog resource.</p>"
+      "documentation":"<p>Lists the tags associated with an Athena resource.</p>"
     },
     "ListWorkGroups":{
       "name":"ListWorkGroups",
@@ -683,6 +755,21 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Lists available workgroups for the account.</p>"
+    },
+    "PutCapacityAssignmentConfiguration":{
+      "name":"PutCapacityAssignmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutCapacityAssignmentConfigurationInput"},
+      "output":{"shape":"PutCapacityAssignmentConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Puts a new capacity assignment configuration for a specified capacity reservation. If a capacity assignment configuration already exists for the capacity reservation, replaces the existing capacity assignment configuration.</p>",
+      "idempotent":true
     },
     "StartCalculationExecution":{
       "name":"StartCalculationExecution",
@@ -775,7 +862,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds one or more tags to an Athena resource. A tag is a label that you assign to a resource. In Athena, a resource can be a workgroup or data catalog. Each tag consists of a key and an optional value, both of which you define. For example, you can use tags to categorize Athena workgroups or data catalogs by purpose, owner, or environment. Use a consistent set of tag keys to make it easier to search and filter workgroups or data catalogs in your account. For best practices, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html\">Tagging Best Practices</a>. Tag keys can be from 1 to 128 UTF-8 Unicode characters, and tag values can be from 0 to 256 UTF-8 Unicode characters. Tags can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys and values are case-sensitive. Tag keys must be unique per resource. If you specify more than one tag, separate them by commas.</p>"
+      "documentation":"<p>Adds one or more tags to an Athena resource. A tag is a label that you assign to a resource. Each tag consists of a key and an optional value, both of which you define. For example, you can use tags to categorize Athena workgroups, data catalogs, or capacity reservations by purpose, owner, or environment. Use a consistent set of tag keys to make it easier to search and filter the resources in your account. For best practices, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html\">Tagging Best Practices</a>. Tag keys can be from 1 to 128 UTF-8 Unicode characters, and tag values can be from 0 to 256 UTF-8 Unicode characters. Tags can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys and values are case-sensitive. Tag keys must be unique per resource. If you specify more than one tag, separate them by commas.</p>"
     },
     "TerminateSession":{
       "name":"TerminateSession",
@@ -805,7 +892,21 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Removes one or more tags from a data catalog or workgroup resource.</p>"
+      "documentation":"<p>Removes one or more tags from an Athena resource.</p>"
+    },
+    "UpdateCapacityReservation":{
+      "name":"UpdateCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCapacityReservationInput"},
+      "output":{"shape":"UpdateCapacityReservationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the number of requested data processing units for the capacity reservation with the specified name.</p>"
     },
     "UpdateDataCatalog":{
       "name":"UpdateDataCatalog",
@@ -911,6 +1012,11 @@
     "Age":{
       "type":"integer",
       "max":10080,
+      "min":0
+    },
+    "AllocatedDpusInteger":{
+      "type":"integer",
+      "box":true,
       "min":0
     },
     "AmazonResourceName":{
@@ -1168,6 +1274,142 @@
       "max":100,
       "min":0
     },
+    "CancelCapacityReservationInput":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation to cancel.</p>"
+        }
+      }
+    },
+    "CancelCapacityReservationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "CapacityAllocation":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"CapacityAllocationStatus",
+          "documentation":"<p>The status of the capacity allocation.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message of the capacity allocation.</p>"
+        },
+        "RequestTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the capacity allocation was requested.</p>"
+        },
+        "RequestCompletionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the capacity allocation request was completed.</p>"
+        }
+      },
+      "documentation":"<p>Contains the submission time of a single allocation request for a capacity reservation and the most recent status of the attempted allocation.</p>"
+    },
+    "CapacityAllocationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "CapacityAssignment":{
+      "type":"structure",
+      "members":{
+        "WorkGroupNames":{
+          "shape":"WorkGroupNamesList",
+          "documentation":"<p>The list of workgroup names for the capacity assignment.</p>"
+        }
+      },
+      "documentation":"<p>A mapping between one or more workgroups and a capacity reservation.</p>"
+    },
+    "CapacityAssignmentConfiguration":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationName":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the reservation that the capacity assignment configuration is for.</p>"
+        },
+        "CapacityAssignments":{
+          "shape":"CapacityAssignmentsList",
+          "documentation":"<p>The list of assignments that make up the capacity assignment configuration.</p>"
+        }
+      },
+      "documentation":"<p>Assigns Athena workgroups (and hence their queries) to capacity reservations. A capacity reservation can have only one capacity assignment configuration, but the capacity assignment configuration can be made up of multiple individual assignments. Each assignment specifies how Athena queries can consume capacity from the capacity reservation that their workgroup is mapped to.</p>"
+    },
+    "CapacityAssignmentsList":{
+      "type":"list",
+      "member":{"shape":"CapacityAssignment"}
+    },
+    "CapacityReservation":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Status",
+        "TargetDpus",
+        "AllocatedDpus",
+        "CreationTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation.</p>"
+        },
+        "Status":{
+          "shape":"CapacityReservationStatus",
+          "documentation":"<p>The status of the capacity reservation.</p>"
+        },
+        "TargetDpus":{
+          "shape":"TargetDpusInteger",
+          "documentation":"<p>The number of data processing units requested.</p>"
+        },
+        "AllocatedDpus":{
+          "shape":"AllocatedDpusInteger",
+          "documentation":"<p>The number of data processing units currently allocated.</p>"
+        },
+        "LastAllocation":{"shape":"CapacityAllocation"},
+        "LastSuccessfulAllocationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time of the most recent capacity allocation that succeeded.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time in UTC epoch millis when the capacity reservation was created.</p>"
+        }
+      },
+      "documentation":"<p>A reservation for a specified number of data processing units (DPUs). When a reservation is initially created, it has no DPUs. Athena allocates DPUs until the allocated amount equals the requested amount.</p>"
+    },
+    "CapacityReservationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "CapacityReservationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ACTIVE",
+        "CANCELLING",
+        "CANCELLED",
+        "FAILED",
+        "UPDATE_PENDING"
+      ]
+    },
+    "CapacityReservationsList":{
+      "type":"list",
+      "member":{"shape":"CapacityReservation"}
+    },
     "CatalogNameString":{
       "type":"string",
       "max":256,
@@ -1280,6 +1522,32 @@
       "box":true,
       "max":1,
       "min":1
+    },
+    "CreateCapacityReservationInput":{
+      "type":"structure",
+      "required":[
+        "TargetDpus",
+        "Name"
+      ],
+      "members":{
+        "TargetDpus":{
+          "shape":"TargetDpusInteger",
+          "documentation":"<p>The number of requested data processing units.</p>"
+        },
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation to create.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags for the capacity reservation.</p>"
+        }
+      }
+    },
+    "CreateCapacityReservationOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "CreateDataCatalogInput":{
       "type":"structure",
@@ -1708,7 +1976,7 @@
       "members":{
         "CoordinatorDpuSize":{
           "shape":"CoordinatorDpuSize",
-          "documentation":"<p>The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session.</p>"
+          "documentation":"<p>The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session. The default is 1.</p>"
         },
         "MaxConcurrentDpus":{
           "shape":"MaxConcurrentDpus",
@@ -1716,7 +1984,7 @@
         },
         "DefaultExecutorDpuSize":{
           "shape":"DefaultExecutorDpuSize",
-          "documentation":"<p>The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena.</p>"
+          "documentation":"<p>The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena. The default is 1.</p>"
         },
         "AdditionalConfigs":{
           "shape":"ParametersMap",
@@ -1953,6 +2221,46 @@
         "Statistics":{
           "shape":"CalculationStatistics",
           "documentation":"<p>Contains information about the DPU execution time and progress.</p>"
+        }
+      }
+    },
+    "GetCapacityAssignmentConfigurationInput":{
+      "type":"structure",
+      "required":["CapacityReservationName"],
+      "members":{
+        "CapacityReservationName":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation to retrieve the capacity assignment configuration for.</p>"
+        }
+      }
+    },
+    "GetCapacityAssignmentConfigurationOutput":{
+      "type":"structure",
+      "required":["CapacityAssignmentConfiguration"],
+      "members":{
+        "CapacityAssignmentConfiguration":{
+          "shape":"CapacityAssignmentConfiguration",
+          "documentation":"<p>The requested capacity assignment configuration for the specified capacity reservation.</p>"
+        }
+      }
+    },
+    "GetCapacityReservationInput":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation.</p>"
+        }
+      }
+    },
+    "GetCapacityReservationOutput":{
+      "type":"structure",
+      "required":["CapacityReservation"],
+      "members":{
+        "CapacityReservation":{
+          "shape":"CapacityReservation",
+          "documentation":"<p>The requested capacity reservation structure.</p>"
         }
       }
     },
@@ -2399,6 +2707,33 @@
         }
       }
     },
+    "ListCapacityReservationsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxCapacityReservationsCount",
+          "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        }
+      }
+    },
+    "ListCapacityReservationsOutput":{
+      "type":"structure",
+      "required":["CapacityReservations"],
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token generated by the Athena service that specifies where to continue pagination if a previous request was truncated. To obtain the next set of pages, pass in the NextToken from the response object of the previous page call.</p>"
+        },
+        "CapacityReservations":{
+          "shape":"CapacityReservationsList",
+          "documentation":"<p>The capacity reservations for the current account.</p>"
+        }
+      }
+    },
     "ListDataCatalogsInput":{
       "type":"structure",
       "members":{
@@ -2826,6 +3161,12 @@
       "max":100,
       "min":1
     },
+    "MaxCapacityReservationsCount":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
     "MaxConcurrentDpus":{
       "type":"integer",
       "max":5000,
@@ -3115,6 +3456,28 @@
       "member":{"shape":"PreparedStatementSummary"},
       "max":50,
       "min":0
+    },
+    "PutCapacityAssignmentConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "CapacityReservationName",
+        "CapacityAssignments"
+      ],
+      "members":{
+        "CapacityReservationName":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation to put a capacity assignment configuration for.</p>"
+        },
+        "CapacityAssignments":{
+          "shape":"CapacityAssignmentsList",
+          "documentation":"<p>The list of assignments for the capacity assignment configuration.</p>"
+        }
+      }
+    },
+    "PutCapacityAssignmentConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "QueryExecution":{
       "type":"structure",
@@ -3944,7 +4307,7 @@
           "documentation":"<p>A tag value. The tag value length is from 0 to 256 Unicode characters in UTF-8. You can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag values are case-sensitive. </p>"
         }
       },
-      "documentation":"<p>A label that you assign to a resource. In Athena, a resource can be a workgroup or data catalog. Each tag consists of a key and an optional value, both of which you define. For example, you can use tags to categorize Athena workgroups or data catalogs by purpose, owner, or environment. Use a consistent set of tag keys to make it easier to search and filter workgroups or data catalogs in your account. For best practices, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html\">Tagging Best Practices</a>. Tag keys can be from 1 to 128 UTF-8 Unicode characters, and tag values can be from 0 to 256 UTF-8 Unicode characters. Tags can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys and values are case-sensitive. Tag keys must be unique per resource. If you specify more than one tag, separate them by commas. </p>"
+      "documentation":"<p>A label that you assign to a resource. Athena resources include workgroups, data catalogs, and capacity reservations. Each tag consists of a key and an optional value, both of which you define. For example, you can use tags to categorize Athena resources by purpose, owner, or environment. Use a consistent set of tag keys to make it easier to search and filter the resources in your account. For best practices, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html\">Tagging Best Practices</a>. Tag keys can be from 1 to 128 UTF-8 Unicode characters, and tag values can be from 0 to 256 UTF-8 Unicode characters. Tags can use letters and numbers representable in UTF-8, and the following characters: + - = . _ : / @. Tag keys and values are case-sensitive. Tag keys must be unique per resource. If you specify more than one tag, separate them by commas. </p>"
     },
     "TagKey":{
       "type":"string",
@@ -3968,11 +4331,11 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>Specifies the ARN of the Athena resource (workgroup or data catalog) to which tags are to be added.</p>"
+          "documentation":"<p>Specifies the ARN of the Athena resource to which tags are to be added.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>A collection of one or more tags, separated by commas, to be added to an Athena workgroup or data catalog resource.</p>"
+          "documentation":"<p>A collection of one or more tags, separated by commas, to be added to an Athena resource.</p>"
         }
       }
     },
@@ -3985,6 +4348,11 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TargetDpusInteger":{
+      "type":"integer",
+      "box":true,
+      "min":24
     },
     "TerminateSessionRequest":{
       "type":"structure",
@@ -4115,6 +4483,28 @@
       }
     },
     "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateCapacityReservationInput":{
+      "type":"structure",
+      "required":[
+        "TargetDpus",
+        "Name"
+      ],
+      "members":{
+        "TargetDpus":{
+          "shape":"TargetDpusInteger",
+          "documentation":"<p>The new number of requested data processing units.</p>"
+        },
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation.</p>"
+        }
+      }
+    },
+    "UpdateCapacityReservationOutput":{
       "type":"structure",
       "members":{
       }
@@ -4431,6 +4821,10 @@
     "WorkGroupName":{
       "type":"string",
       "pattern":"[a-zA-Z0-9._-]{1,128}"
+    },
+    "WorkGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"WorkGroupName"}
     },
     "WorkGroupState":{
       "type":"string",

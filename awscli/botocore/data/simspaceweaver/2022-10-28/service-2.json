@@ -12,6 +12,24 @@
     "uid":"simspaceweaver-2022-10-28"
   },
   "operations":{
+    "CreateSnapshot":{
+      "name":"CreateSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/createsnapshot",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSnapshotInput"},
+      "output":{"shape":"CreateSnapshotOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a snapshot of the specified simulation. A snapshot is a file that contains simulation state data at a specific time. The state data saved in a snapshot includes entity data from the State Fabric, the simulation configuration specified in the schema, and the clock tick number. You can use the snapshot to initialize a new simulation. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/working-with_snapshots.html\">Snapshots</a> in the <i>SimSpace Weaver User Guide</i>. </p> <p>You specify a <code>Destination</code> when you create a snapshot. The <code>Destination</code> is the name of an Amazon S3 bucket and an optional <code>ObjectKeyPrefix</code>. The <code>ObjectKeyPrefix</code> is usually the name of a folder in the bucket. SimSpace Weaver creates a <code>snapshot</code> folder inside the <code>Destination</code> and places the snapshot file there.</p> <p>The snapshot file is an Amazon S3 object. It has an object key with the form: <code> <i>object-key-prefix</i>/snapshot/<i>simulation-name</i>-<i>YYMMdd</i>-<i>HHmm</i>-<i>ss</i>.zip</code>, where: </p> <ul> <li> <p> <code> <i>YY</i> </code> is the 2-digit year</p> </li> <li> <p> <code> <i>MM</i> </code> is the 2-digit month</p> </li> <li> <p> <code> <i>dd</i> </code> is the 2-digit day of the month</p> </li> <li> <p> <code> <i>HH</i> </code> is the 2-digit hour (24-hour clock)</p> </li> <li> <p> <code> <i>mm</i> </code> is the 2-digit minutes</p> </li> <li> <p> <code> <i>ss</i> </code> is the 2-digit seconds</p> </li> </ul>"
+    },
     "DeleteApp":{
       "name":"DeleteApp",
       "http":{
@@ -47,7 +65,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes all SimSpace Weaver resources assigned to the given simulation.</p> <note> <p>Your simulation uses resources in other Amazon Web Services services. This API operation doesn't delete resources in other Amazon Web Services services.</p> </note>",
+      "documentation":"<p>Deletes all SimSpace Weaver resources assigned to the given simulation.</p> <note> <p>Your simulation uses resources in other Amazon Web Services. This API operation doesn't delete resources in other Amazon Web Services.</p> </note>",
       "idempotent":true
     },
     "DescribeApp":{
@@ -184,7 +202,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts a simulation with the given name and schema.</p>"
+      "documentation":"<p>Starts a simulation with the given name. You must choose to start your simulation from a schema or from a snapshot. For more information about the schema, see the <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/schema-reference.html\">schema reference</a> in the <i>SimSpace Weaver User Guide</i>. For more information about snapshots, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/working-with_snapshots.html\">Snapshots</a> in the <i>SimSpace Weaver User Guide</i>.</p>"
     },
     "StopApp":{
       "name":"StopApp",
@@ -238,7 +256,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Stops the given simulation.</p> <important> <p>You can't restart a simulation after you stop it. If you need to restart a simulation, you must stop it, delete it, and start a new instance of it.</p> </important>"
+      "documentation":"<p>Stops the given simulation.</p> <important> <p>You can't restart a simulation after you stop it. If you want to restart a simulation, then you must stop it, delete it, and start a new instance of it.</p> </important>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -341,6 +359,28 @@
       },
       "exception":true
     },
+    "CreateSnapshotInput":{
+      "type":"structure",
+      "required":[
+        "Destination",
+        "Simulation"
+      ],
+      "members":{
+        "Destination":{
+          "shape":"S3Destination",
+          "documentation":"<p>The Amazon S3 bucket and optional folder (object key prefix) where SimSpace Weaver creates the snapshot file.</p>"
+        },
+        "Simulation":{
+          "shape":"SimSpaceWeaverResourceName",
+          "documentation":"<p>The name of the simulation.</p>"
+        }
+      }
+    },
+    "CreateSnapshotOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteAppInput":{
       "type":"structure",
       "required":[
@@ -400,7 +440,7 @@
       ],
       "members":{
         "App":{
-          "shape":"SimSpaceWeaverResourceName",
+          "shape":"SimSpaceWeaverLongResourceName",
           "documentation":"<p>The name of the app.</p>",
           "location":"querystring",
           "locationName":"app"
@@ -436,7 +476,7 @@
         },
         "LaunchOverrides":{"shape":"LaunchOverrides"},
         "Name":{
-          "shape":"SimSpaceWeaverResourceName",
+          "shape":"SimSpaceWeaverLongResourceName",
           "documentation":"<p>The name of the app.</p>"
         },
         "Simulation":{
@@ -494,7 +534,7 @@
         },
         "MaximumDuration":{
           "shape":"TimeToLiveString",
-          "documentation":"<p>The maximum running time of the simulation, specified as a number of months (m or M), hours (h or H), or days (d or D). The simulation stops when it reaches this limit.</p>"
+          "documentation":"<p>The maximum running time of the simulation, specified as a number of minutes (m or M), hours (h or H), or days (d or D). The simulation stops when it reaches this limit. The maximum value is <code>14D</code>, or its equivalent in the other units. The default value is <code>14D</code>. A value equivalent to <code>0</code> makes the simulation immediately transition to <code>Stopping</code> as soon as it reaches <code>Started</code>.</p>"
         },
         "Name":{
           "shape":"SimSpaceWeaverResourceName",
@@ -506,11 +546,18 @@
         },
         "SchemaError":{
           "shape":"OptionalString",
-          "documentation":"<p>An error message that SimSpace Weaver returns only if there is a problem with the simulation schema.</p>"
+          "documentation":"<p>An error message that SimSpace Weaver returns only if there is a problem with the simulation schema.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"SchemaError is no longer used, check StartError instead."
         },
         "SchemaS3Location":{
           "shape":"S3Location",
           "documentation":"<p>The location of the simulation schema in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p>"
+        },
+        "SnapshotS3Location":{"shape":"S3Location"},
+        "StartError":{
+          "shape":"OptionalString",
+          "documentation":"<p>An error message that SimSpace Weaver returns only if a problem occurs when the simulation is in the <code>STARTING</code> state.</p>"
         },
         "Status":{
           "shape":"SimulationStatus",
@@ -532,14 +579,14 @@
       "members":{
         "Lifecycle":{
           "shape":"LifecycleManagementStrategy",
-          "documentation":"<p>The type of lifecycle management for apps in the domain. This value indicates whether apps in this domain are <i>managed</i> (SimSpace Weaver starts and stops the apps) or <i>unmanaged</i> (you must start and stop the apps).</p> <p class=\"title\"> <b>Lifecycle types</b> </p> <ul> <li> <p> <code>PerWorker</code> – Managed: SimSpace Weaver starts 1 app on each worker</p> </li> <li> <p> <code>BySpatialSubdivision</code> – Managed: SimSpace Weaver starts 1 app for each spatial partition</p> </li> <li> <p> <code>ByRequest</code> – Unmanaged: You use the <b>StartApp</b> API to start the apps and use the <b>StopApp</b> API to stop the apps.</p> </li> </ul> <note> <p>The lifecycle types will change when the service is released for general availability (GA).</p> </note>"
+          "documentation":"<p>The type of lifecycle management for apps in the domain. Indicates whether apps in this domain are <i>managed</i> (SimSpace Weaver starts and stops the apps) or <i>unmanaged</i> (you must start and stop the apps).</p> <p class=\"title\"> <b>Lifecycle types</b> </p> <ul> <li> <p> <code>PerWorker</code> – Managed: SimSpace Weaver starts one app on each worker.</p> </li> <li> <p> <code>BySpatialSubdivision</code> – Managed: SimSpace Weaver starts one app for each spatial partition.</p> </li> <li> <p> <code>ByRequest</code> – Unmanaged: You use the <code>StartApp</code> API to start the apps and use the <code>StopApp</code> API to stop the apps.</p> </li> </ul>"
         },
         "Name":{
           "shape":"SimSpaceWeaverResourceName",
           "documentation":"<p>The name of the domain.</p>"
         }
       },
-      "documentation":"<p>A collection of app instances that run the same executable app code and have the same launch options and commands.</p> <p>For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html\">Key concepts</a> in the <i>Amazon Web Services SimSpace Weaver User Guide</i>.</p>"
+      "documentation":"<p>A collection of app instances that run the same executable app code and have the same launch options and commands.</p> <p>For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html#what-is_key-concepts_domains\">Key concepts: Domains</a> in the <i>SimSpace Weaver User Guide</i>.</p>"
     },
     "DomainList":{
       "type":"list",
@@ -567,7 +614,7 @@
           "documentation":"<p>App launch commands and command line parameters that override the launch command configured in the simulation schema.</p>"
         }
       },
-      "documentation":"<p>Options that apply when the app starts. These optiAons override default behavior.</p>"
+      "documentation":"<p>Options that apply when the app starts. These options override default behavior.</p>"
     },
     "LifecycleManagementStrategy":{
       "type":"string",
@@ -596,7 +643,7 @@
         },
         "NextToken":{
           "shape":"OptionalString",
-          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, you receive an <i>HTTP 400 ValidationException</i> error.</p>",
+          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an <i>HTTP 400 ValidationException</i> error.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -617,7 +664,7 @@
         },
         "NextToken":{
           "shape":"OptionalString",
-          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, you receive an <i>HTTP 400 ValidationException</i> error.</p>"
+          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an <i>HTTP 400 ValidationException</i> error.</p>"
         }
       }
     },
@@ -632,7 +679,7 @@
         },
         "NextToken":{
           "shape":"OptionalString",
-          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, you receive an <i>HTTP 400 ValidationException</i> error.</p>",
+          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an <i>HTTP 400 ValidationException</i> error.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -643,7 +690,7 @@
       "members":{
         "NextToken":{
           "shape":"OptionalString",
-          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, you receive an <i>HTTP 400 ValidationException</i> error.</p>"
+          "documentation":"<p>If SimSpace Weaver returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an <i>HTTP 400 ValidationException</i> error.</p>"
         },
         "Simulations":{
           "shape":"SimulationList",
@@ -681,7 +728,7 @@
         },
         "Domains":{
           "shape":"DomainList",
-          "documentation":"<p>A list of domains for the simulation. For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html\">Key concepts</a> in the <i>Amazon Web Services SimSpace Weaver User Guide</i>.</p>"
+          "documentation":"<p>A list of domains for the simulation. For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html#what-is_key-concepts_domains\">Key concepts: Domains</a> in the <i>SimSpace Weaver User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A collection of additional state information, such as domain and clock configuration.</p>"
@@ -726,6 +773,11 @@
       "max":1024,
       "min":1
     },
+    "ObjectKeyPrefix":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "OptionalString":{"type":"string"},
     "PortNumber":{
       "type":"integer",
@@ -756,6 +808,20 @@
       "min":0,
       "pattern":"^arn:(?:aws|aws-cn):iam::(\\d{12})?:role\\/(.+)$"
     },
+    "S3Destination":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"BucketName",
+          "documentation":"<p>The name of an Amazon S3 bucket. For more information about buckets, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-buckets-s3.html\">Creating, configuring, and working with Amazon S3 buckets</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        },
+        "ObjectKeyPrefix":{
+          "shape":"ObjectKeyPrefix",
+          "documentation":"<p>A string prefix for an Amazon S3 object key. It's usually a folder name. For more information about folders in Amazon S3, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-folders.html\">Organizing objects in the Amazon S3 console using folders</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon S3 bucket and optional folder (object key prefix) where SimSpace Weaver creates a file.</p>"
+    },
     "S3Location":{
       "type":"structure",
       "members":{
@@ -768,7 +834,7 @@
           "documentation":"<p>The key name of an object in Amazon S3. For more information about Amazon S3 objects and object keys, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-downloading-objects.html\">Uploading, downloading, and working with objects in Amazon S3</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>A location in Amazon Simple Storage Service (Amazon S3) where SimSpace Weaver stores simulation data, such as your app zip files and schema file. For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p>"
+      "documentation":"<p>A location in Amazon Simple Storage Service (Amazon S3) where SimSpace Weaver stores simulation data, such as your app .zip files and schema file. For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -788,6 +854,12 @@
       "min":0,
       "pattern":"^arn:(?:aws|aws-cn):simspaceweaver:([a-z]{2}-[a-z]+-\\d{1}):(\\d{12})?:([a-z]+)\\/(.+)$"
     },
+    "SimSpaceWeaverLongResourceName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.-]+$"
+    },
     "SimSpaceWeaverResourceName":{
       "type":"string",
       "max":64,
@@ -806,7 +878,7 @@
           "documentation":"<p>The inbound TCP/UDP port numbers of the app. The combination of an IP address and a port number form a network endpoint.</p>"
         }
       },
-      "documentation":"<p>Information about the network endpoint that you can use to connect to your custom or service app.</p>"
+      "documentation":"<p>Information about the network endpoint that you can use to connect to your custom or service app. For more information about SimSpace Weaver apps, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html#what-is_key-concepts_apps\">Key concepts: Apps</a> in the <i>SimSpace Weaver User Guide</i>..</p>"
     },
     "SimulationAppList":{
       "type":"list",
@@ -817,10 +889,10 @@
       "members":{
         "Domain":{
           "shape":"SimSpaceWeaverResourceName",
-          "documentation":"<p>The domain of the app. For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html\">Key concepts</a> in the <i>Amazon Web Services SimSpace Weaver User Guide</i>.</p>"
+          "documentation":"<p>The domain of the app. For more information about domains, see <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/what-is_key-concepts.html#what-is_key-concepts_domains\">Key concepts: Domains</a> in the <i>SimSpace Weaver User Guide</i>.</p>"
         },
         "Name":{
-          "shape":"SimSpaceWeaverResourceName",
+          "shape":"SimSpaceWeaverLongResourceName",
           "documentation":"<p>The name of the app.</p>"
         },
         "Simulation":{
@@ -836,7 +908,7 @@
           "documentation":"<p>The desired status of the app.</p>"
         }
       },
-      "documentation":"<p>A collection of metadata about an app.</p>"
+      "documentation":"<p>A collection of metadata about the app.</p>"
     },
     "SimulationAppPortMapping":{
       "type":"structure",
@@ -929,7 +1001,8 @@
         "STOPPED",
         "FAILED",
         "DELETING",
-        "DELETED"
+        "DELETED",
+        "SNAPSHOT_IN_PROGRESS"
       ]
     },
     "SimulationTargetStatus":{
@@ -1009,8 +1082,7 @@
       "type":"structure",
       "required":[
         "Name",
-        "RoleArn",
-        "SchemaS3Location"
+        "RoleArn"
       ],
       "members":{
         "ClientToken":{
@@ -1024,7 +1096,7 @@
         },
         "MaximumDuration":{
           "shape":"TimeToLiveString",
-          "documentation":"<p>The maximum running time of the simulation, specified as a number of months (m or M), hours (h or H), or days (d or D). The simulation stops when it reaches this limit.</p>"
+          "documentation":"<p>The maximum running time of the simulation, specified as a number of minutes (m or M), hours (h or H), or days (d or D). The simulation stops when it reaches this limit. The maximum value is <code>14D</code>, or its equivalent in the other units. The default value is <code>14D</code>. A value equivalent to <code>0</code> makes the simulation immediately transition to <code>Stopping</code> as soon as it reaches <code>Started</code>.</p>"
         },
         "Name":{
           "shape":"SimSpaceWeaverResourceName",
@@ -1036,7 +1108,11 @@
         },
         "SchemaS3Location":{
           "shape":"S3Location",
-          "documentation":"<p>The location of the simulation schema in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p>"
+          "documentation":"<p>The location of the simulation schema in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p> <p>Provide a <code>SchemaS3Location</code> to start your simulation from a schema.</p> <p>If you provide a <code>SchemaS3Location</code> then you can't provide a <code>SnapshotS3Location</code>.</p>"
+        },
+        "SnapshotS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The location of the snapshot .zip file in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p> <p>Provide a <code>SnapshotS3Location</code> to start your simulation from a snapshot.</p> <p>If you provide a <code>SnapshotS3Location</code> then you can't provide a <code>SchemaS3Location</code>.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -1228,5 +1304,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Amazon Web Services SimSpace Weaver (SimSpace Weaver) is a managed service that you can use to build and operate large-scale spatial simulations in the Amazon Web Services Cloud. For example, you can create a digital twin of a city, crowd simulations with millions of people and objects, and massilvely-multiplayer games with hundreds of thousands of connected players. For more information about SimSpace Weaver, see the <i> <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/\">Amazon Web Services SimSpace Weaver User Guide</a> </i>.</p> <p>This API reference describes the API operations and data types that you can use to communicate directly with SimSpace Weaver.</p> <p>SimSpace Weaver also provides the SimSpace Weaver app SDK, which you use for app development. The SimSpace Weaver app SDK API reference is included in the SimSpace Weaver app SDK documentation, which is part of the SimSpace Weaver app SDK distributable package.</p>"
+  "documentation":"<p>SimSpace Weaver (SimSpace Weaver) is a managed service that you can use to build and operate large-scale spatial simulations in the Amazon Web Services Cloud. For example, you can create a digital twin of a city, crowd simulations with millions of people and objects, and massively multiplayer games with hundreds of thousands of connected players. For more information about SimSpace Weaver, see the <i> <a href=\"https://docs.aws.amazon.com/simspaceweaver/latest/userguide/\">SimSpace Weaver User Guide</a> </i>.</p> <p>This API reference describes the API operations and data types that you can use to communicate directly with SimSpace Weaver.</p> <p>SimSpace Weaver also provides the SimSpace Weaver app SDK, which you use for app development. The SimSpace Weaver app SDK API reference is included in the SimSpace Weaver app SDK documentation. This documentation is part of the SimSpace Weaver app SDK distributable package.</p>"
 }

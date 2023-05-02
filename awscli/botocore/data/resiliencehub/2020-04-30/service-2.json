@@ -49,7 +49,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates an Resilience Hub application. An Resilience Hub application is a collection of Amazon Web Services resources structured to prevent and recover Amazon Web Services application disruptions. To describe a Resilience Hub application, you provide an application name, resources from one or more–up to 20–CloudFormation stacks, and an appropriate resiliency policy.</p> <p>After you create an Resilience Hub application, you publish it so that you can run a resiliency assessment on it. You can then use recommendations from the assessment to improve resiliency by running another assessment, comparing results, and then iterating the process until you achieve your goals for recovery time objective (RTO) and recovery point objective (RPO).</p>"
+      "documentation":"<p>Creates an Resilience Hub application. An Resilience Hub application is a collection of Amazon Web Services resources structured to prevent and recover Amazon Web Services application disruptions. To describe an Resilience Hub application, you provide an application name, resources from one or more CloudFormation stacks, Resource Groups, Terraform state files, AppRegistry applications, and an appropriate resiliency policy. For more information about the number of resources supported per application, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/resiliencehub.html#limits_resiliencehub\">Service Quotas</a>.</p> <p>After you create an Resilience Hub application, you publish it so that you can run a resiliency assessment on it. You can then use recommendations from the assessment to improve resiliency by running another assessment, comparing results, and then iterating the process until you achieve your goals for recovery time objective (RTO) and recovery point objective (RPO).</p>"
     },
     "CreateAppVersionAppComponent":{
       "name":"CreateAppVersionAppComponent",
@@ -1475,7 +1475,7 @@
     },
     "AppTemplateBody":{
       "type":"string",
-      "max":204800,
+      "max":409600,
       "min":0,
       "pattern":"^[\\w\\s:,-\\.'\\/{}\\[\\]:\"\\\\]+$"
     },
@@ -1803,7 +1803,6 @@
         "appComponents",
         "logicalResourceId",
         "physicalResourceId",
-        "resourceName",
         "resourceType"
       ],
       "members":{
@@ -3580,6 +3579,10 @@
           "shape":"LogicalResourceId",
           "documentation":"<p>The logical identifier of the resource.</p>"
         },
+        "parentResourceName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the parent resource.</p>"
+        },
         "physicalResourceId":{
           "shape":"PhysicalResourceId",
           "documentation":"<p>The physical identifier of the resource.</p>"
@@ -3591,6 +3594,10 @@
         "resourceType":{
           "shape":"String255",
           "documentation":"<p>The type of resource.</p>"
+        },
+        "sourceType":{
+          "shape":"ResourceSourceType",
+          "documentation":"<p>The type of input source.</p>"
         }
       },
       "documentation":"<p>Defines a physical resource. A physical resource is a resource that exists in your account. It can be identified using an Amazon Resource Name (ARN) or an Resilience Hub-native identifier. </p>"
@@ -4159,6 +4166,13 @@
         "InProgress",
         "Failed",
         "Success"
+      ]
+    },
+    "ResourceSourceType":{
+      "type":"string",
+      "enum":[
+        "AppTemplate",
+        "Discovered"
       ]
     },
     "ResourceType":{

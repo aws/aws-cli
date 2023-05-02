@@ -12,6 +12,23 @@
     "uid":"appflow-2020-08-23"
   },
   "operations":{
+    "CancelFlowExecutions":{
+      "name":"CancelFlowExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cancel-flow-executions"
+      },
+      "input":{"shape":"CancelFlowExecutionsRequest"},
+      "output":{"shape":"CancelFlowExecutionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels active runs for a flow.</p> <p>You can cancel all of the active runs for a flow, or you can cancel specific runs by providing their IDs.</p> <p>You can cancel a flow run only when the run is in progress. You can't cancel a run that has already completed or failed. You also can't cancel a run that's scheduled to occur but hasn't started yet. To prevent a scheduled run, you can deactivate the flow with the <code>StopFlow</code> action.</p> <p>You cannot resume a run after you cancel it.</p> <p>When you send your request, the status for each run becomes <code>CancelStarted</code>. When the cancellation completes, the status becomes <code>Canceled</code>.</p> <note> <p>When you cancel a run, you still incur charges for any data that the run already processed before the cancellation. If the run had already written some data to the flow destination, then that data remains in the destination. If you configured the flow to use a batch API (such as the Salesforce Bulk API 2.0), then the run will finish reading or writing its entire batch of data after the cancellation. For these operations, the data processing charges for Amazon AppFlow apply. For the pricing information, see <a href=\"http://aws.amazon.com/appflow/pricing/\">Amazon AppFlow pricing</a>.</p> </note>"
+    },
     "CreateConnectorProfile":{
       "name":"CreateConnectorProfile",
       "http":{
@@ -659,6 +676,29 @@
       "type":"string",
       "max":18,
       "pattern":"\\S+"
+    },
+    "CancelFlowExecutionsRequest":{
+      "type":"structure",
+      "required":["flowName"],
+      "members":{
+        "flowName":{
+          "shape":"FlowName",
+          "documentation":"<p>The name of a flow with active runs that you want to cancel.</p>"
+        },
+        "executionIds":{
+          "shape":"ExecutionIds",
+          "documentation":"<p>The ID of each active run to cancel. These runs must belong to the flow you specify in your request.</p> <p>If you omit this parameter, your request ends all active runs that belong to the flow.</p>"
+        }
+      }
+    },
+    "CancelFlowExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "invalidExecutions":{
+          "shape":"ExecutionIds",
+          "documentation":"<p>The IDs of runs that Amazon AppFlow couldn't cancel. These runs might be ineligible for canceling because they haven't started yet or have already completed.</p>"
+        }
+      }
     },
     "CatalogType":{
       "type":"string",
@@ -2509,6 +2549,12 @@
       "max":256,
       "pattern":"\\S+"
     },
+    "ExecutionIds":{
+      "type":"list",
+      "member":{"shape":"ExecutionId"},
+      "max":100,
+      "min":0
+    },
     "ExecutionMessage":{
       "type":"string",
       "max":2048,
@@ -2579,7 +2625,9 @@
       "enum":[
         "InProgress",
         "Successful",
-        "Error"
+        "Error",
+        "CancelStarted",
+        "Canceled"
       ]
     },
     "FieldType":{"type":"string"},
@@ -3005,6 +3053,12 @@
       "exception":true
     },
     "JavaBoolean":{"type":"boolean"},
+    "JwtToken":{
+      "type":"string",
+      "max":8000,
+      "pattern":"^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]*)",
+      "sensitive":true
+    },
     "KMSArn":{
       "type":"string",
       "max":2048,
@@ -3411,7 +3465,8 @@
       "type":"string",
       "enum":[
         "CLIENT_CREDENTIALS",
-        "AUTHORIZATION_CODE"
+        "AUTHORIZATION_CODE",
+        "JWT_BEARER"
       ]
     },
     "OAuth2GrantTypeSupportedList":{
@@ -4241,6 +4296,14 @@
         "clientCredentialsArn":{
           "shape":"ClientCredentialsArn",
           "documentation":"<p> The secret manager ARN, which contains the client ID and client secret of the connected app. </p>"
+        },
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>Specifies the OAuth 2.0 grant type that Amazon AppFlow uses when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records.</p> <p>You can specify one of the following values:</p> <dl> <dt>AUTHORIZATION_CODE</dt> <dd> <p>Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records.</p> </dd> <dt>CLIENT_CREDENTIALS</dt> <dd> <p>Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account.</p> </dd> <dt>JWT_BEARER</dt> <dd> <p>Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.</p> </dd> </dl>"
+        },
+        "jwtToken":{
+          "shape":"JwtToken",
+          "documentation":"<p>A JSON web token (JWT) that authorizes Amazon AppFlow to access your Salesforce records.</p>"
         }
       },
       "documentation":"<p> The connector-specific profile credentials required when using Salesforce. </p>"
@@ -4312,6 +4375,10 @@
         "dataTransferApis":{
           "shape":"SalesforceDataTransferApiList",
           "documentation":"<p>The Salesforce APIs that you can have Amazon AppFlow use when your flows transfers data to or from Salesforce.</p>"
+        },
+        "oauth2GrantTypesSupported":{
+          "shape":"OAuth2GrantTypeSupportedList",
+          "documentation":"<p>The OAuth 2.0 grant types that Amazon AppFlow can use when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records.</p> <dl> <dt>AUTHORIZATION_CODE</dt> <dd> <p>Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records.</p> </dd> <dt>CLIENT_CREDENTIALS</dt> <dd> <p>Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account.</p> </dd> <dt>JWT_BEARER</dt> <dd> <p>Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.</p> </dd> </dl>"
         }
       },
       "documentation":"<p> The connector metadata specific to Salesforce. </p>"

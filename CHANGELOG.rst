@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.125
+========
+
+* api-change:``appflow``: This release adds new API to cancel flow executions.
+* api-change:``connect``: Amazon Connect Service Rules API update: Added OnContactEvaluationSubmit event source to support user configuring evaluation form rules.
+* api-change:``ecs``: Documentation only update to address Amazon ECS tickets.
+* api-change:``kendra``: AWS Kendra now supports configuring document fields/attributes via the GetQuerySuggestions API. You can now base query suggestions on the contents of document fields.
+* api-change:``resiliencehub``: This release will improve resource level transparency in applications by discovering previously hidden resources.
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot supports training models with sample weights and additional objective metrics.
+
+
 1.27.124
 ========
 

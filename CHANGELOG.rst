@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.27.126
+========
+
+* api-change:``appsync``: Private API support for AWS AppSync. With Private APIs, you can now create GraphQL APIs that can only be accessed from your Amazon Virtual Private Cloud ("VPC").
+* api-change:``ec2``: Adds an SDK paginator for GetNetworkInsightsAccessScopeAnalysisFindings
+* api-change:``inspector2``: This feature provides deep inspection for linux based instance
+* api-change:``iottwinmaker``: This release adds a field for GetScene API to return error code and message from dependency services.
+* api-change:``network-firewall``: AWS Network Firewall now supports policy level HOME_NET variable overrides.
+* api-change:``opensearch``: Amazon OpenSearch Service adds the option to deploy a domain across multiple Availability Zones, with each AZ containing a complete copy of data and with nodes in one AZ acting as a standby. This option provides 99.99% availability and consistent performance in the event of infrastructure failure.
+* api-change:``wellarchitected``: This release deepens integration with AWS Service Catalog AppRegistry to improve workload resource discovery.
+
+
 1.27.125
 ========
 

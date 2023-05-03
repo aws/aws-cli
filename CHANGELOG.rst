@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.11.17
+=======
+
+* api-change:``grafana``: This release adds support for the grafanaVersion parameter in CreateWorkspace.
+* api-change:``connect``: Amazon Connect Service Rules API update: Added OnContactEvaluationSubmit event source to support user configuring evaluation form rules.
+* api-change:``athena``: You can now use capacity reservations on Amazon Athena to run SQL queries on fully-managed compute capacity.
+* api-change:``wafv2``: You can now associate a web ACL with a Verified Access instance.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``appflow``: Adds Jwt Support for Salesforce Credentials.
+* api-change:``workspaces``: Added Windows 11 to support Microsoft_Office_2019
+* api-change:``resiliencehub``: This release will improve resource level transparency in applications by discovering previously hidden resources.
+* api-change:``kendra``: AWS Kendra now supports configuring document fields/attributes via the GetQuerySuggestions API. You can now base query suggestions on the contents of document fields.
+* api-change:``ecs``: Documentation only update to address Amazon ECS tickets.
+* api-change:``kms``: This release makes the NitroEnclave request parameter Recipient and the response field for CiphertextForRecipient available in AWS SDKs. It also adds the regex pattern for CloudHsmClusterId validation.
+* api-change:``compute-optimizer``: support for tag filtering within compute optimizer. ability to filter recommendation results by tag and tag key value pairs. ability to filter by inferred workload type added.
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot supports training models with sample weights and additional objective metrics.
+* api-change:``appflow``: This release adds new API to cancel flow executions.
+* api-change:``directconnect``: This release corrects the jumbo frames MTU from 9100 to 8500.
+* api-change:``rekognition``: Added support for aggregating moderation labels by video segment timestamps for Stored Video Content Moderation APIs and added additional information about the job to all Stored Video Get API responses.
+* api-change:``simspaceweaver``: Added a new CreateSnapshot API. For the StartSimulation API, SchemaS3Location is now optional, added a new SnapshotS3Location parameter. For the DescribeSimulation API, added SNAPSHOT_IN_PROGRESS simulation state, deprecated SchemaError, added new fields: StartError and SnapshotS3Location.
+* api-change:``iot``: This release allows AWS IoT Core users to specify a TLS security policy when creating and updating AWS IoT Domain Configurations.
+
+
 2.11.16
 =======
 

@@ -1739,6 +1739,13 @@
       "member":{"shape":"ContentClassifier"},
       "max":256
     },
+    "ContentModerationAggregateBy":{
+      "type":"string",
+      "enum":[
+        "TIMESTAMPS",
+        "SEGMENTS"
+      ]
+    },
     "ContentModerationDetection":{
       "type":"structure",
       "members":{
@@ -1749,6 +1756,18 @@
         "ModerationLabel":{
           "shape":"ModerationLabel",
           "documentation":"<p>The content moderation label detected by in the stored video.</p>"
+        },
+        "StartTimestampMillis":{
+          "shape":"ULong",
+          "documentation":"<p>The time in milliseconds defining the start of the timeline segment containing a continuously detected moderation label.</p>"
+        },
+        "EndTimestampMillis":{
+          "shape":"ULong",
+          "documentation":"<p> The time in milliseconds defining the end of the timeline segment containing a continuously detected moderation label. </p>"
+        },
+        "DurationMillis":{
+          "shape":"ULong",
+          "documentation":"<p> The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis. </p>"
         }
       },
       "documentation":"<p>Information about an inappropriate, unwanted, or offensive content label detection in a stored video.</p>"
@@ -3460,6 +3479,15 @@
         "Celebrities":{
           "shape":"CelebrityRecognitions",
           "documentation":"<p>Array of celebrities recognized in the video.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the celebrity recognition operation for which you want to obtain results. The job identifer is returned by an initial call to StartCelebrityRecognition.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -3482,8 +3510,26 @@
         "SortBy":{
           "shape":"ContentModerationSortBy",
           "documentation":"<p>Sort to use for elements in the <code>ModerationLabelDetections</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time labels are detected. Use <code>NAME</code> to alphabetically group elements for a label together. Within each label group, the array element are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.</p>"
+        },
+        "AggregateBy":{
+          "shape":"ContentModerationAggregateBy",
+          "documentation":"<p>Defines how to aggregate results of the StartContentModeration request. Default aggregation option is TIMESTAMPS. SEGMENTS mode aggregates moderation labels over time.</p>"
         }
       }
+    },
+    "GetContentModerationRequestMetadata":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"ContentModerationSortBy",
+          "documentation":"<p>The sorting method chosen for a GetContentModeration request.</p>"
+        },
+        "AggregateBy":{
+          "shape":"ContentModerationAggregateBy",
+          "documentation":"<p>The aggregation method chosen for a GetContentModeration request.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a content moderation request, including the SortBy and AggregateBy options.</p>"
     },
     "GetContentModerationResponse":{
       "type":"structure",
@@ -3511,6 +3557,19 @@
         "ModerationModelVersion":{
           "shape":"String",
           "documentation":"<p>Version number of the moderation detection model that was used to detect inappropriate, unwanted, or offensive content.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the content moderation operation for which you want to obtain results. The job identifer is returned by an initial call to StartContentModeration.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartContentModeration and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
+        },
+        "GetRequestMetadata":{
+          "shape":"GetContentModerationRequestMetadata",
+          "documentation":"<p>Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.</p>"
         }
       }
     },
@@ -3554,6 +3613,15 @@
         "Faces":{
           "shape":"FaceDetections",
           "documentation":"<p>An array of faces detected in the video. Each element contains a detected face's details and the time, in milliseconds from the start of the video, the face was detected. </p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the face detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceDetection.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartFaceDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -3640,6 +3708,15 @@
         "Persons":{
           "shape":"PersonMatches",
           "documentation":"<p>An array of persons, <a>PersonMatch</a>, in the video whose face(s) match the face(s) in an Amazon Rekognition collection. It also includes time information for when persons are matched in the video. You specify the input collection in an initial call to <code>StartFaceSearch</code>. Each <code>Persons</code> element includes a time the person was matched, face match details (<code>FaceMatches</code>) for matching faces in the collection, and person information (<code>Person</code>) for the matched person. </p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the face search operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceSearch.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartFaceSearch and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -3669,6 +3746,20 @@
         }
       }
     },
+    "GetLabelDetectionRequestMetadata":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"LabelDetectionSortBy",
+          "documentation":"<p>The sorting method chosen for a GetLabelDetection request.</p>"
+        },
+        "AggregateBy":{
+          "shape":"LabelDetectionAggregateBy",
+          "documentation":"<p>The aggregation method chosen for a GetLabelDetection request.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a label detection request, including the SortBy and AggregateBy options.</p>"
+    },
     "GetLabelDetectionResponse":{
       "type":"structure",
       "members":{
@@ -3695,6 +3786,19 @@
         "LabelModelVersion":{
           "shape":"String",
           "documentation":"<p>Version number of the label detection model that was used to detect labels.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the label detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartLabelDetection.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartLabelDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
+        },
+        "GetRequestMetadata":{
+          "shape":"GetLabelDetectionRequestMetadata",
+          "documentation":"<p>Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.</p>"
         }
       }
     },
@@ -3742,6 +3846,15 @@
         "Persons":{
           "shape":"PersonDetections",
           "documentation":"<p>An array of the persons detected in the video and the time(s) their path was tracked throughout the video. An array element will exist for each time a person's path is tracked. </p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the person tracking operation for which you want to obtain results. The job identifer is returned by an initial call to StartPersonTracking.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -3793,6 +3906,15 @@
         "SelectedSegmentTypes":{
           "shape":"SegmentTypesInfo",
           "documentation":"<p>An array containing the segment types requested in the call to <code>StartSegmentDetection</code>. </p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the segment detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartSegmentDetection.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartSegmentDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -3837,6 +3959,15 @@
         "TextModelVersion":{
           "shape":"String",
           "documentation":"<p>Version number of the text detection model that was used to detect text.</p>"
+        },
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>Job identifier for the text detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartTextDetection.</p>"
+        },
+        "Video":{"shape":"Video"},
+        "JobTag":{
+          "shape":"JobTag",
+          "documentation":"<p>A job identifier specified in the call to StartTextDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.</p>"
         }
       }
     },
@@ -4130,9 +4261,9 @@
     },
     "JobTag":{
       "type":"string",
-      "max":256,
+      "max":1024,
       "min":1,
-      "pattern":"[a-zA-Z0-9_.\\-:]+"
+      "pattern":"[a-zA-Z0-9_.\\-:+=\\/]+"
     },
     "KinesisDataArn":{
       "type":"string",

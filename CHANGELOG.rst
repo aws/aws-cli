@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.27.127
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in April 2023.
+* api-change:``connect``: Remove unused InvalidParameterException from CreateParticipant API
+* api-change:``ecs``: Documentation update for new error type NamespaceNotFoundException for CreateCluster and UpdateCluster
+* api-change:``network-firewall``: This release adds support for the Suricata REJECT option in midstream exception configurations.
+* api-change:``opensearch``: DescribeDomainNodes: A new API that provides configuration information for nodes part of the domain
+* api-change:``quicksight``: Add support for Topic, Dataset parameters and VPC
+* api-change:``rekognition``: This release adds a new attribute FaceOccluded. Additionally, you can now select attributes individually (e.g. ["DEFAULT", "FACE_OCCLUDED", "AGE_RANGE"] instead of ["ALL"]), which can reduce response time.
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``sagemaker``: We added support for ml.inf2 and ml.trn1 family of instances on Amazon SageMaker for deploying machine learning (ML) models for Real-time and Asynchronous inference. You can use these instances to achieve high performance at a low cost for generative artificial intelligence (AI) models.
+* api-change:``securityhub``: Add support for Finding History.
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol.
+
+
 1.27.126
 ========
 

@@ -211,7 +211,7 @@ def _s3_region_names():
 
     for partition in endpoints['partitions']:
         s3_service = partition['services'].get('s3', {})
-        for region_name in s3_service['endpoints']:
+        for region_name in s3_service.get('endpoints', []):
             yield region_name.lower()
 
 

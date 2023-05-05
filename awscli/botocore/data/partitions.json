@@ -176,6 +176,17 @@
         "description" : "US ISOB East (Ohio)"
       }
     }
+  }, {
+    "id" : "aws-iso-e",
+    "outputs" : {
+      "dnsSuffix" : "cloud.adc-e.uk",
+      "dualStackDnsSuffix" : "cloud.adc-e.uk",
+      "name" : "aws-iso-e",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^eu\\-isoe\\-\\w+\\-\\d+$",
+    "regions" : { }
   } ],
   "version" : "1.1"
 }

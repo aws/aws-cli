@@ -1074,7 +1074,7 @@
         },
         "apiId":{
           "shape":"String",
-          "documentation":"<p>The API ID.</p>"
+          "documentation":"<p>The API ID. Private APIs can not be associated with custom domains.</p>"
         }
       }
     },
@@ -1570,6 +1570,10 @@
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
           "documentation":"<p>Configuration for Lambda function authorization.</p>"
+        },
+        "visibility":{
+          "shape":"GraphQLApiVisibility",
+          "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
         }
       }
     },
@@ -2564,6 +2568,13 @@
         }
       }
     },
+    "GraphQLApiVisibility":{
+      "type":"string",
+      "enum":[
+        "GLOBAL",
+        "PRIVATE"
+      ]
+    },
     "GraphQLSchemaException":{
       "type":"structure",
       "members":{
@@ -2627,6 +2638,14 @@
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
           "documentation":"<p>Configuration for Lambda function authorization.</p>"
+        },
+        "dns":{
+          "shape":"MapOfStringToString",
+          "documentation":"<p>The DNS records for the API.</p>"
+        },
+        "visibility":{
+          "shape":"GraphQLApiVisibility",
+          "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
         }
       },
       "documentation":"<p>Describes a GraphQL API.</p>"
@@ -2665,7 +2684,7 @@
       "members":{
         "authorizerResultTtlInSeconds":{
           "shape":"TTL",
-          "documentation":"<p>The number of seconds a response should be cached for. The default is 5 minutes (300 seconds). The Lambda function can override this by returning a <code>ttlOverride</code> key in its response. A value of 0 disables caching of responses.</p>"
+          "documentation":"<p>The number of seconds a response should be cached for. The default is 0 seconds, which disables caching. If you don't specify a value for <code>authorizerResultTtlInSeconds</code>, the default value is used. The maximum value is one hour (3600 seconds). The Lambda function can override this by returning a <code>ttlOverride</code> key in its response.</p>"
         },
         "authorizerUri":{
           "shape":"String",

@@ -656,7 +656,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates whether the Amazon Web Services account is opted into organization sharing features.</p>"
+      "documentation":"<p>Updates whether the Amazon Web Services account is opted into organization sharing and discovery integration features.</p>"
     },
     "UpdateLensReview":{
       "name":"UpdateLensReview",
@@ -1422,6 +1422,13 @@
       },
       "documentation":"<p>Input for Create Workload Share</p>"
     },
+    "DefinitionType":{
+      "type":"string",
+      "enum":[
+        "WORKLOAD_METADATA",
+        "APP_REGISTRY"
+      ]
+    },
     "DeleteLensInput":{
       "type":"structure",
       "required":[
@@ -1546,6 +1553,13 @@
         "LensAliases":{"shape":"LensAliases"}
       },
       "documentation":"<p>Input to disassociate lens reviews.</p>"
+    },
+    "DiscoveryIntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "DisplayText":{
       "type":"string",
@@ -3261,6 +3275,10 @@
         "OrganizationSharingStatus":{
           "shape":"OrganizationSharingStatus",
           "documentation":"<p>The status of organization sharing settings.</p>"
+        },
+        "DiscoveryIntegrationStatus":{
+          "shape":"DiscoveryIntegrationStatus",
+          "documentation":"<p>The status of discovery support settings.</p>"
         }
       }
     },
@@ -3558,6 +3576,10 @@
         "TrustedAdvisorIntegrationStatus":{
           "shape":"TrustedAdvisorIntegrationStatus",
           "documentation":"<p>Discovery integration status in respect to Trusted Advisor for the workload.</p>"
+        },
+        "WorkloadResourceDefinition":{
+          "shape":"WorkloadResourceDefinition",
+          "documentation":"<p>The mode to use for identifying resources associated with the workload.</p> <p>You can specify <code>WORKLOAD_METADATA</code>, <code>APP_REGISTRY</code>, or both.</p>"
         }
       },
       "documentation":"<p>Discovery configuration associated to the workload.</p>"
@@ -3627,6 +3649,10 @@
       "type":"list",
       "member":{"shape":"PillarId"},
       "documentation":"<p>The priorities of the pillars, which are used to order items in the improvement plan. Each pillar is represented by its <a>PillarReviewSummary$PillarId</a>.</p>"
+    },
+    "WorkloadResourceDefinition":{
+      "type":"list",
+      "member":{"shape":"DefinitionType"}
     },
     "WorkloadReviewOwner":{
       "type":"string",

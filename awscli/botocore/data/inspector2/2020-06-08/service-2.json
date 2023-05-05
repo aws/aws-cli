@@ -28,7 +28,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator.</p>"
+      "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator. An HTTP 200 response indicates the association was successfully started, but doesn’t indicate whether it was completed. You can check if the association completed by using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_ListMembers.html\">ListMembers</a> for multiple accounts or <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_GetMember.html\">GetMembers</a> for a single account.</p>"
     },
     "BatchGetAccountStatus":{
       "name":"BatchGetAccountStatus",
@@ -64,6 +64,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets free trial status for multiple Amazon Web Services accounts.</p>"
+    },
+    "BatchGetMemberEc2DeepInspectionStatus":{
+      "name":"BatchGetMemberEc2DeepInspectionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionstatus/member/batch/get",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetMemberEc2DeepInspectionStatusRequest"},
+      "output":{"shape":"BatchGetMemberEc2DeepInspectionStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves Amazon Inspector deep inspection activation status of multiple member accounts within your organization. You must be the delegated administrator of an organization in Amazon Inspector to use this API.</p>"
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatus":{
+      "name":"BatchUpdateMemberEc2DeepInspectionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionstatus/member/batch/update",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateMemberEc2DeepInspectionStatusRequest"},
+      "output":{"shape":"BatchUpdateMemberEc2DeepInspectionStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Activates or deactivates Amazon Inspector deep inspection for the provided member accounts in your organization. You must be the delegated administrator of an organization in Amazon Inspector to use this API.</p>"
     },
     "CancelFindingsReport":{
       "name":"CancelFindingsReport",
@@ -118,7 +152,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a finding report.</p>"
+      "documentation":"<p>Creates a finding report. By default only <code>ACTIVE</code> findings are returned in the report. To see <code>SUPRESSED</code> or <code>CLOSED</code> findings you must specify a value for the <code>findingStatus</code> filter criteria. </p>"
     },
     "DeleteFilter":{
       "name":"DeleteFilter",
@@ -279,6 +313,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about the Amazon Inspector delegated administrator for your organization.</p>"
+    },
+    "GetEc2DeepInspectionConfiguration":{
+      "name":"GetEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"GetEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the activation status of Amazon Inspector deep inspection and custom paths associated with your account. </p>"
     },
     "GetFindingsReportStatus":{
       "name":"GetFindingsReportStatus",
@@ -535,6 +586,23 @@
       ],
       "documentation":"<p>Updates setting configurations for your Amazon Inspector account. When you use this API as an Amazon Inspector delegated administrator this updates the setting for all accounts you manage. Member accounts in an organization cannot update this setting.</p>"
     },
+    "UpdateEc2DeepInspectionConfiguration":{
+      "name":"UpdateEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"UpdateEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Activates, deactivates Amazon Inspector deep inspection, or updates custom paths for your account. </p>"
+    },
     "UpdateFilter":{
       "name":"UpdateFilter",
       "http":{
@@ -552,6 +620,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Specifies the action that is to be applied to the findings that match the filter.</p>"
+    },
+    "UpdateOrgEc2DeepInspectionConfiguration":{
+      "name":"UpdateOrgEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/org/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateOrgEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"UpdateOrgEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the Amazon Inspector deep inspection custom paths for your organization. You must be an Amazon Inspector delegated administrator to use this API.</p>"
     },
     "UpdateOrganizationConfiguration":{
       "name":"UpdateOrganizationConfiguration",
@@ -944,7 +1029,7 @@
         },
         "lambda":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether AWS Lambda scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
+          "documentation":"<p>Represents whether AWS Lambda standard scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
         }
       },
       "documentation":"<p>Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.</p>"
@@ -1234,6 +1319,51 @@
         "failedAccounts":{
           "shape":"FreeTrialInfoErrorList",
           "documentation":"<p>An array of objects detailing any accounts that free trial data could not be returned for.</p>"
+        }
+      }
+    },
+    "BatchGetMemberEc2DeepInspectionStatusRequest":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdSet",
+          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to retrieve Amazon Inspector deep inspection activation status for. <pre><code> &lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "BatchGetMemberEc2DeepInspectionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details on the activation status of Amazon Inspector deep inspection for each of the requested accounts. <pre><code> &lt;/p&gt; </code></pre>"
+        },
+        "failedAccountIds":{
+          "shape":"FailedMemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details on any accounts that failed to activate Amazon Inspector deep inspection and why. <pre><code> &lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatusRequest":{
+      "type":"structure",
+      "required":["accountIds"],
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusList",
+          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to change Amazon Inspector deep inspection status for.</p>"
+        }
+      }
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status was successfully changed for. </p>"
+        },
+        "failedAccountIds":{
+          "shape":"FailedMemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status could not be successfully changed for. </p>"
         }
       }
     },
@@ -1765,7 +1895,7 @@
         },
         "keyPrefix":{
           "shape":"String",
-          "documentation":"<p>The prefix of the KMS key used to export findings.</p>"
+          "documentation":"<p>The prefix of the Amazon S3 bucket used to export findings.</p>"
         },
         "kmsKeyArn":{
           "shape":"String",
@@ -1850,6 +1980,15 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "Ec2DeepInspectionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVATED",
+        "DEACTIVATED",
+        "PENDING",
+        "FAILED"
+      ]
     },
     "Ec2InstanceAggregation":{
       "type":"structure",
@@ -2186,6 +2325,31 @@
     "FailedAccountList":{
       "type":"list",
       "member":{"shape":"FailedAccount"},
+      "max":100,
+      "min":0
+    },
+    "FailedMemberAccountEc2DeepInspectionStatusState":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member that failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "ec2ScanStatus":{
+          "shape":"Status",
+          "documentation":"<p>The status of EC2 scanning in the account that failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message explaining why the account failed to activate Amazon Inspector deep inspection.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about a member account in your organization that failed to activate Amazon Inspector deep inspection.</p>"
+    },
+    "FailedMemberAccountEc2DeepInspectionStatusStateList":{
+      "type":"list",
+      "member":{"shape":"FailedMemberAccountEc2DeepInspectionStatusState"},
       "max":100,
       "min":0
     },
@@ -2538,8 +2702,9 @@
     },
     "FindingArn":{
       "type":"string",
-      "max":1024,
-      "min":1
+      "max":100,
+      "min":1,
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:finding/[a-f0-9]{32}$"
     },
     "FindingDescription":{
       "type":"string",
@@ -2756,6 +2921,32 @@
         "delegatedAdmin":{
           "shape":"DelegatedAdmin",
           "documentation":"<p>The Amazon Web Services account ID of the Amazon Inspector delegated administrator.</p>"
+        }
+      }
+    },
+    "GetEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An error message explaining why Amazon Inspector deep inspection configurations could not be retrieved for your account.</p>"
+        },
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths for your organization.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths for your account.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The activation status of Amazon Inspector deep inspection in your account.</p>"
         }
       }
     },
@@ -3578,6 +3769,55 @@
       },
       "documentation":"<p>Details on a member account in your organization.</p>"
     },
+    "MemberAccountEc2DeepInspectionStatus":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "activateDeepInspection"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member.</p>"
+        },
+        "activateDeepInspection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether Amazon Inspector deep inspection is active in the account. If <code>TRUE</code> Amazon Inspector deep inspection is active, if <code>FALSE</code> it is not active.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the status of Amazon Inspector deep inspection for a member account in your organization.</p>"
+    },
+    "MemberAccountEc2DeepInspectionStatusList":{
+      "type":"list",
+      "member":{"shape":"MemberAccountEc2DeepInspectionStatus"},
+      "max":100,
+      "min":0
+    },
+    "MemberAccountEc2DeepInspectionStatusState":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message explaining why the account failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The state of Amazon Inspector deep inspection in the member account.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the state of Amazon Inspector deep inspection for a member account.</p>"
+    },
+    "MemberAccountEc2DeepInspectionStatusStateList":{
+      "type":"list",
+      "member":{"shape":"MemberAccountEc2DeepInspectionStatusState"},
+      "max":100,
+      "min":0
+    },
     "MemberList":{
       "type":"list",
       "member":{"shape":"Member"},
@@ -3778,7 +4018,8 @@
         "PIP",
         "PYTHONPKG",
         "NODEPKG",
-        "POM"
+        "POM",
+        "GEMSPEC"
       ]
     },
     "PackageName":{
@@ -3860,6 +4101,18 @@
         }
       },
       "documentation":"<p>Information about a package vulnerability finding.</p>"
+    },
+    "Path":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^(?:/(?:\\.[-\\w]+|[-\\w]+(?:\\.[-\\w]+)?))+/?$"
+    },
+    "PathList":{
+      "type":"list",
+      "member":{"shape":"Path"},
+      "max":5,
+      "min":0
     },
     "Permission":{
       "type":"structure",
@@ -4190,7 +4443,7 @@
         },
         "lambda":{
           "shape":"Status",
-          "documentation":"<p>The status of Amazon Inspector scanning for AWS Lambda function resources.</p>"
+          "documentation":"<p>The status of Amazon Inspector scanning for AWS Lambda function.</p>"
         }
       },
       "documentation":"<p>Details the status of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
@@ -4267,7 +4520,13 @@
         "NO_INVENTORY",
         "STALE_INVENTORY",
         "EXCLUDED_BY_TAG",
-        "UNSUPPORTED_RUNTIME"
+        "UNSUPPORTED_RUNTIME",
+        "UNSUPPORTED_MEDIA_TYPE",
+        "UNSUPPORTED_CONFIG_FILE",
+        "DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_NO_INVENTORY"
       ]
     },
     "ScanType":{
@@ -4674,6 +4933,40 @@
       "members":{
       }
     },
+    "UpdateEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "activateDeepInspection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specify <code>TRUE</code> to activate Amazon Inspector deep inspection in your account, or <code>FALSE</code> to deactivate. Member accounts in an organization cannot deactivate deep inspection, instead the delegated administrator for the organization can deactivate a member account using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_BatchUpdateMemberEc2DeepInspectionStatus.html\">BatchUpdateMemberEc2DeepInspectionStatus</a>.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths you are adding for your account.</p>"
+        }
+      }
+    },
+    "UpdateEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An error message explaining why new Amazon Inspector deep inspection custom paths could not be added.</p>"
+        },
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The current Amazon Inspector deep inspection custom paths for the organization.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The current Amazon Inspector deep inspection custom paths for your account.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The status of Amazon Inspector deep inspection in your account.</p>"
+        }
+      }
+    },
     "UpdateFilterRequest":{
       "type":"structure",
       "required":["filterArn"],
@@ -4712,6 +5005,21 @@
           "shape":"FilterArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the successfully updated filter.</p>"
         }
+      }
+    },
+    "UpdateOrgEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "required":["orgPackagePaths"],
+      "members":{
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths you are adding for your organization.</p>"
+        }
+      }
+    },
+    "UpdateOrgEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "UpdateOrganizationConfigurationRequest":{

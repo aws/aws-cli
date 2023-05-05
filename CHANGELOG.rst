@@ -5318,6 +5318,35 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.127
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in April 2023.
+* api-change:``connect``: Remove unused InvalidParameterException from CreateParticipant API
+* api-change:``ecs``: Documentation update for new error type NamespaceNotFoundException for CreateCluster and UpdateCluster
+* api-change:``network-firewall``: This release adds support for the Suricata REJECT option in midstream exception configurations.
+* api-change:``opensearch``: DescribeDomainNodes: A new API that provides configuration information for nodes part of the domain
+* api-change:``quicksight``: Add support for Topic, Dataset parameters and VPC
+* api-change:``rekognition``: This release adds a new attribute FaceOccluded. Additionally, you can now select attributes individually (e.g. ["DEFAULT", "FACE_OCCLUDED", "AGE_RANGE"] instead of ["ALL"]), which can reduce response time.
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``sagemaker``: We added support for ml.inf2 and ml.trn1 family of instances on Amazon SageMaker for deploying machine learning (ML) models for Real-time and Asynchronous inference. You can use these instances to achieve high performance at a low cost for generative artificial intelligence (AI) models.
+* api-change:``securityhub``: Add support for Finding History.
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol.
+
+
+1.27.126
+========
+
+* api-change:``appsync``: Private API support for AWS AppSync. With Private APIs, you can now create GraphQL APIs that can only be accessed from your Amazon Virtual Private Cloud ("VPC").
+* api-change:``ec2``: Adds an SDK paginator for GetNetworkInsightsAccessScopeAnalysisFindings
+* api-change:``inspector2``: This feature provides deep inspection for linux based instance
+* api-change:``iottwinmaker``: This release adds a field for GetScene API to return error code and message from dependency services.
+* api-change:``network-firewall``: AWS Network Firewall now supports policy level HOME_NET variable overrides.
+* api-change:``opensearch``: Amazon OpenSearch Service adds the option to deploy a domain across multiple Availability Zones, with each AZ containing a complete copy of data and with nodes in one AZ acting as a standby. This option provides 99.99% availability and consistent performance in the event of infrastructure failure.
+* api-change:``wellarchitected``: This release deepens integration with AWS Service Catalog AppRegistry to improve workload resource discovery.
+
+
 1.27.125
 ========
 

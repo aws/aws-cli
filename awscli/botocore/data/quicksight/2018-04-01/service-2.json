@@ -393,6 +393,66 @@
       ],
       "documentation":"<p>Creates a theme alias for a theme.</p>"
     },
+    "CreateTopic":{
+      "name":"CreateTopic",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topics"
+      },
+      "input":{"shape":"CreateTopicRequest"},
+      "output":{"shape":"CreateTopicResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a new Q topic.</p>"
+    },
+    "CreateTopicRefreshSchedule":{
+      "name":"CreateTopicRefreshSchedule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/schedules"
+      },
+      "input":{"shape":"CreateTopicRefreshScheduleRequest"},
+      "output":{"shape":"CreateTopicRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a topic refresh schedule.</p>"
+    },
+    "CreateVPCConnection":{
+      "name":"CreateVPCConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/vpc-connections"
+      },
+      "input":{"shape":"CreateVPCConnectionRequest"},
+      "output":{"shape":"CreateVPCConnectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a new VPC connection.</p>"
+    },
     "DeleteAccountCustomization":{
       "name":"DeleteAccountCustomization",
       "http":{
@@ -725,6 +785,44 @@
       ],
       "documentation":"<p>Deletes the version of the theme that the specified theme alias points to. If you provide a specific alias, you delete the version of the theme that the alias points to.</p>"
     },
+    "DeleteTopic":{
+      "name":"DeleteTopic",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}"
+      },
+      "input":{"shape":"DeleteTopicRequest"},
+      "output":{"shape":"DeleteTopicResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a topic.</p>"
+    },
+    "DeleteTopicRefreshSchedule":{
+      "name":"DeleteTopicRefreshSchedule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}"
+      },
+      "input":{"shape":"DeleteTopicRefreshScheduleRequest"},
+      "output":{"shape":"DeleteTopicRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
     "DeleteUser":{
       "name":"DeleteUser",
       "http":{
@@ -762,6 +860,25 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Deletes a user identified by its principal ID. </p>"
+    },
+    "DeleteVPCConnection":{
+      "name":"DeleteVPCConnection",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}"
+      },
+      "input":{"shape":"DeleteVPCConnectionRequest"},
+      "output":{"shape":"DeleteVPCConnectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a VPC connection.</p>"
     },
     "DescribeAccountCustomization":{
       "name":"DescribeAccountCustomization",
@@ -1324,6 +1441,77 @@
       ],
       "documentation":"<p>Describes the read and write permissions for a theme.</p>"
     },
+    "DescribeTopic":{
+      "name":"DescribeTopic",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}"
+      },
+      "input":{"shape":"DescribeTopicRequest"},
+      "output":{"shape":"DescribeTopicResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a topic.</p>"
+    },
+    "DescribeTopicPermissions":{
+      "name":"DescribeTopicPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/permissions"
+      },
+      "input":{"shape":"DescribeTopicPermissionsRequest"},
+      "output":{"shape":"DescribeTopicPermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the permissions of a topic.</p>"
+    },
+    "DescribeTopicRefresh":{
+      "name":"DescribeTopicRefresh",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/refresh/{RefreshId}"
+      },
+      "input":{"shape":"DescribeTopicRefreshRequest"},
+      "output":{"shape":"DescribeTopicRefreshResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the status of a topic refresh.</p>"
+    },
+    "DescribeTopicRefreshSchedule":{
+      "name":"DescribeTopicRefreshSchedule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}"
+      },
+      "input":{"shape":"DescribeTopicRefreshScheduleRequest"},
+      "output":{"shape":"DescribeTopicRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
     "DescribeUser":{
       "name":"DescribeUser",
       "http":{
@@ -1342,6 +1530,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Returns information about a user, given the user name. </p>"
+    },
+    "DescribeVPCConnection":{
+      "name":"DescribeVPCConnection",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}"
+      },
+      "input":{"shape":"DescribeVPCConnectionRequest"},
+      "output":{"shape":"DescribeVPCConnectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a VPC connection.</p>"
     },
     "GenerateEmbedUrlForAnonymousUser":{
       "name":"GenerateEmbedUrlForAnonymousUser",
@@ -1595,7 +1801,7 @@
       "name":"ListIAMPolicyAssignments",
       "http":{
         "method":"GET",
-        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments"
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/v2/iam-policy-assignments"
       },
       "input":{"shape":"ListIAMPolicyAssignmentsRequest"},
       "output":{"shape":"ListIAMPolicyAssignmentsResponse"},
@@ -1607,7 +1813,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Lists IAM policy assignments in the current Amazon QuickSight account.</p>"
+      "documentation":"<p>Lists the IAM policy assignments in the current Amazon QuickSight account.</p>"
     },
     "ListIAMPolicyAssignmentsForUser":{
       "name":"ListIAMPolicyAssignmentsForUser",
@@ -1626,7 +1832,7 @@
         {"shape":"ConcurrentUpdatingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Lists all the IAM policy assignments, including the Amazon Resource Names (ARNs) for the IAM policies assigned to the specified user and group or groups that the user belongs to.</p>"
+      "documentation":"<p>Lists all of the IAM policy assignments, including the Amazon Resource Names (ARNs), for the IAM policies assigned to the specified user and group, or groups that the user belongs to.</p>"
     },
     "ListIngestions":{
       "name":"ListIngestions",
@@ -1812,6 +2018,43 @@
       ],
       "documentation":"<p>Lists all the themes in the current Amazon Web Services account.</p>"
     },
+    "ListTopicRefreshSchedules":{
+      "name":"ListTopicRefreshSchedules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/schedules"
+      },
+      "input":{"shape":"ListTopicRefreshSchedulesRequest"},
+      "output":{"shape":"ListTopicRefreshSchedulesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of the refresh schedules for a topic.</p>"
+    },
+    "ListTopics":{
+      "name":"ListTopics",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics"
+      },
+      "input":{"shape":"ListTopicsRequest"},
+      "output":{"shape":"ListTopicsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of the topics within an account.</p>"
+    },
     "ListUserGroups":{
       "name":"ListUserGroups",
       "http":{
@@ -1850,6 +2093,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Returns a list of all of the Amazon QuickSight users belonging to this account. </p>"
+    },
+    "ListVPCConnections":{
+      "name":"ListVPCConnections",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/vpc-connections"
+      },
+      "input":{"shape":"ListVPCConnectionsRequest"},
+      "output":{"shape":"ListVPCConnectionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of the VPC connections in the current set Amazon Web Services Region of an Amazon Web Services account.</p>"
     },
     "PutDataSetRefreshProperties":{
       "name":"PutDataSetRefreshProperties",
@@ -2038,7 +2299,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified Amazon QuickSight resource. </p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values. You can use the <code>TagResource</code> operation with a resource that already has tags. If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a resource. Amazon QuickSight supports tagging on data set, data source, dashboard, and template. </p> <p>Tagging for Amazon QuickSight works in a similar way to tagging for other Amazon Web Services services, except for the following:</p> <ul> <li> <p>You can't use tags to track costs for Amazon QuickSight. This isn't possible because you can't tag the resources that Amazon QuickSight costs are based on, for example Amazon QuickSight storage capacity (SPICE), number of users, type of users, and usage metrics.</p> </li> <li> <p>Amazon QuickSight doesn't currently support the tag editor for Resource Groups.</p> </li> </ul>"
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified Amazon QuickSight resource. </p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only resources with certain tag values. You can use the <code>TagResource</code> operation with a resource that already has tags. If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p> <p>You can associate as many as 50 tags with a resource. Amazon QuickSight supports tagging on data set, data source, dashboard, template, and topic. </p> <p>Tagging for Amazon QuickSight works in a similar way to tagging for other Amazon Web Services services, except for the following:</p> <ul> <li> <p>You can't use tags to track costs for Amazon QuickSight. This isn't possible because you can't tag the resources that Amazon QuickSight costs are based on, for example Amazon QuickSight storage capacity (SPICE), number of users, type of users, and usage metrics.</p> </li> <li> <p>Amazon QuickSight doesn't currently support the tag editor for Resource Groups.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -2355,7 +2616,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates the content and status of IP rules. To use this operation, you need to provide the entire map of rules. You can use the <code>DescribeIpRestriction</code> operation to get the current rule map.</p>"
+      "documentation":"<p>Updates the content and status of IP rules. To use this operation, you must provide the entire map of rules. You can use the <code>DescribeIpRestriction</code> operation to get the current rule map.</p>"
     },
     "UpdatePublicSharingSettings":{
       "name":"UpdatePublicSharingSettings",
@@ -2509,6 +2770,66 @@
       ],
       "documentation":"<p>Updates the resource permissions for a theme. Permissions apply to the action to grant or revoke permissions on, for example <code>\"quicksight:DescribeTheme\"</code>.</p> <p>Theme permissions apply in groupings. Valid groupings include the following for the three levels of permissions, which are user, owner, or no permissions: </p> <ul> <li> <p>User</p> <ul> <li> <p> <code>\"quicksight:DescribeTheme\"</code> </p> </li> <li> <p> <code>\"quicksight:DescribeThemeAlias\"</code> </p> </li> <li> <p> <code>\"quicksight:ListThemeAliases\"</code> </p> </li> <li> <p> <code>\"quicksight:ListThemeVersions\"</code> </p> </li> </ul> </li> <li> <p>Owner</p> <ul> <li> <p> <code>\"quicksight:DescribeTheme\"</code> </p> </li> <li> <p> <code>\"quicksight:DescribeThemeAlias\"</code> </p> </li> <li> <p> <code>\"quicksight:ListThemeAliases\"</code> </p> </li> <li> <p> <code>\"quicksight:ListThemeVersions\"</code> </p> </li> <li> <p> <code>\"quicksight:DeleteTheme\"</code> </p> </li> <li> <p> <code>\"quicksight:UpdateTheme\"</code> </p> </li> <li> <p> <code>\"quicksight:CreateThemeAlias\"</code> </p> </li> <li> <p> <code>\"quicksight:DeleteThemeAlias\"</code> </p> </li> <li> <p> <code>\"quicksight:UpdateThemeAlias\"</code> </p> </li> <li> <p> <code>\"quicksight:UpdateThemePermissions\"</code> </p> </li> <li> <p> <code>\"quicksight:DescribeThemePermissions\"</code> </p> </li> </ul> </li> <li> <p>To specify no permissions, omit the permissions list.</p> </li> </ul>"
     },
+    "UpdateTopic":{
+      "name":"UpdateTopic",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}"
+      },
+      "input":{"shape":"UpdateTopicRequest"},
+      "output":{"shape":"UpdateTopicResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a topic.</p>"
+    },
+    "UpdateTopicPermissions":{
+      "name":"UpdateTopicPermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/permissions"
+      },
+      "input":{"shape":"UpdateTopicPermissionsRequest"},
+      "output":{"shape":"UpdateTopicPermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the permissions of a topic.</p>"
+    },
+    "UpdateTopicRefreshSchedule":{
+      "name":"UpdateTopicRefreshSchedule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}"
+      },
+      "input":{"shape":"UpdateTopicRefreshScheduleRequest"},
+      "output":{"shape":"UpdateTopicRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a topic refresh schedule.</p>"
+    },
     "UpdateUser":{
       "name":"UpdateUser",
       "http":{
@@ -2527,6 +2848,26 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Updates an Amazon QuickSight user.</p>"
+    },
+    "UpdateVPCConnection":{
+      "name":"UpdateVPCConnection",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}"
+      },
+      "input":{"shape":"UpdateVPCConnectionRequest"},
+      "output":{"shape":"UpdateVPCConnectionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a VPC connection.</p>"
     }
   },
   "shapes":{
@@ -2670,6 +3011,11 @@
         }
       },
       "documentation":"<p>An aggregation function aggregates values from a dimension or measure.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "AggregationFunctionParameters":{
+      "type":"map",
+      "key":{"shape":"LimitedString"},
+      "value":{"shape":"LimitedString"}
     },
     "AggregationSortConfiguration":{
       "type":"structure",
@@ -3180,6 +3526,27 @@
         "ACTIVE_DIRECTORY"
       ]
     },
+    "AuthorSpecifiedAggregation":{
+      "type":"string",
+      "enum":[
+        "COUNT",
+        "DISTINCT_COUNT",
+        "MIN",
+        "MAX",
+        "MEDIAN",
+        "SUM",
+        "AVERAGE",
+        "STDEV",
+        "STDEVP",
+        "VAR",
+        "VARP",
+        "PERCENTILE"
+      ]
+    },
+    "AuthorSpecifiedAggregations":{
+      "type":"list",
+      "member":{"shape":"AuthorSpecifiedAggregation"}
+    },
     "AwsAccountId":{
       "type":"string",
       "max":12,
@@ -3650,6 +4017,17 @@
       },
       "documentation":"<p>The configuration of content in a body section.</p>"
     },
+    "BookmarksConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that determines whether a user can bookmark an embedded dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The bookmarks configuration of an embedded dashboard.</p>"
+    },
     "Boolean":{"type":"boolean"},
     "BooleanObject":{"type":"boolean"},
     "BorderStyle":{
@@ -3874,16 +4252,22 @@
           "documentation":"<p>The name of the calculated field.</p>"
         },
         "Expression":{
-          "shape":"Expression",
+          "shape":"CalculatedFieldExpression",
           "documentation":"<p>The expression of the calculated field.</p>"
         }
       },
       "documentation":"<p>The calculated field of an analysis.</p>"
     },
+    "CalculatedFieldExpression":{
+      "type":"string",
+      "max":32000,
+      "min":1,
+      "sensitive":true
+    },
     "CalculatedFields":{
       "type":"list",
       "member":{"shape":"CalculatedField"},
-      "max":100
+      "max":500
     },
     "CalculatedMeasureField":{
       "type":"structure",
@@ -4126,6 +4510,13 @@
       },
       "documentation":"<p>The configuration for a <code>CategoryFilter</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
+    "CategoryFilterFunction":{
+      "type":"string",
+      "enum":[
+        "EXACT",
+        "CONTAINS"
+      ]
+    },
     "CategoryFilterMatchOperator":{
       "type":"string",
       "enum":[
@@ -4141,6 +4532,14 @@
       "type":"string",
       "enum":["FILTER_ALL_VALUES"]
     },
+    "CategoryFilterType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM_FILTER",
+        "CUSTOM_FILTER_LIST",
+        "FILTER_LIST"
+      ]
+    },
     "CategoryValue":{
       "type":"string",
       "max":512
@@ -4149,6 +4548,24 @@
       "type":"list",
       "member":{"shape":"CategoryValue"},
       "max":100000
+    },
+    "CellValueSynonym":{
+      "type":"structure",
+      "members":{
+        "CellValue":{
+          "shape":"LimitedString",
+          "documentation":"<p>The cell value.</p>"
+        },
+        "Synonyms":{
+          "shape":"StringList",
+          "documentation":"<p>Other names or aliases for the cell value.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents the cell value synonym.</p>"
+    },
+    "CellValueSynonyms":{
+      "type":"list",
+      "member":{"shape":"CellValueSynonym"}
     },
     "ChartAxisLabelOptions":{
       "type":"structure",
@@ -4192,6 +4609,16 @@
         }
       },
       "documentation":"<p>The cluster marker configuration of the geospatial map selected point style.</p>"
+    },
+    "CollectiveConstant":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"StringList",
+          "documentation":"<p>A list of values for the collective constant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a collective constant.</p>"
     },
     "ColorFillType":{
       "type":"string",
@@ -4256,6 +4683,13 @@
       "type":"list",
       "member":{"shape":"ColumnConfiguration"},
       "max":200
+    },
+    "ColumnDataRole":{
+      "type":"string",
+      "enum":[
+        "DIMENSION",
+        "MEASURE"
+      ]
     },
     "ColumnDataType":{
       "type":"string",
@@ -4416,6 +4850,14 @@
       "type":"list",
       "member":{"shape":"String"},
       "min":1
+    },
+    "ColumnOrderingType":{
+      "type":"string",
+      "enum":[
+        "GREATER_IS_BETTER",
+        "LESSER_IS_BETTER",
+        "SPECIFIED"
+      ]
     },
     "ColumnRole":{
       "type":"string",
@@ -4675,6 +5117,24 @@
       },
       "documentation":"<p>A combo chart.</p> <p>The <code>ComboChartVisual</code> includes stacked bar combo charts and clustered bar combo charts</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html\">Using combo charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
     },
+    "ComparativeOrder":{
+      "type":"structure",
+      "members":{
+        "UseOrdering":{
+          "shape":"ColumnOrderingType",
+          "documentation":"<p>The ordering type for a column. Valid values for this structure are <code>GREATER_IS_BETTER</code>, <code>LESSER_IS_BETTER</code> and <code>SPECIFIED</code>.</p>"
+        },
+        "SpecifedOrder":{
+          "shape":"StringList",
+          "documentation":"<p>The list of columns to be used in the ordering.</p>"
+        },
+        "TreatUndefinedSpecifiedValues":{
+          "shape":"UndefinedSpecifiedValueType",
+          "documentation":"<p>The treat of undefined specified values. Valid values for this structure are <code>LEAST</code> and <code>MOST</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a comparative order.</p>"
+    },
     "ComparisonConfiguration":{
       "type":"structure",
       "members":{
@@ -4930,6 +5390,14 @@
       "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ConstantType":{
+      "type":"string",
+      "enum":[
+        "SINGULAR",
+        "RANGE",
+        "COLLECTIVE"
+      ]
     },
     "ContributionAnalysisDefault":{
       "type":"structure",
@@ -5355,7 +5823,11 @@
           "shape":"TagList",
           "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags assigned to the dataset.</p>"
         },
-        "DataSetUsageConfiguration":{"shape":"DataSetUsageConfiguration"}
+        "DataSetUsageConfiguration":{"shape":"DataSetUsageConfiguration"},
+        "DatasetParameters":{
+          "shape":"DatasetParameterList",
+          "documentation":"<p>The parameter declarations of the dataset.</p>"
+        }
       }
     },
     "CreateDataSetResponse":{
@@ -5702,7 +6174,7 @@
         },
         "AssignmentName":{
           "shape":"IAMPolicyAssignmentName",
-          "documentation":"<p>The name of the assignment, also called a rule. It must be unique within an Amazon Web Services account.</p>"
+          "documentation":"<p>The name of the assignment, also called a rule. The name must be unique within the Amazon Web Services account.</p>"
         },
         "AssignmentStatus":{
           "shape":"AssignmentStatus",
@@ -5729,7 +6201,7 @@
       "members":{
         "AssignmentName":{
           "shape":"IAMPolicyAssignmentName",
-          "documentation":"<p>The name of the assignment. This name must be unique within the Amazon Web Services account.</p>"
+          "documentation":"<p>The name of the assignment. The name must be unique within the Amazon Web Services account.</p>"
         },
         "AssignmentId":{
           "shape":"String",
@@ -6181,6 +6653,198 @@
         }
       }
     },
+    "CreateTopicRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "DatasetArn",
+        "RefreshSchedule"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic you're creating a refresh schedule for.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "DatasetName":{
+          "shape":"String",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "RefreshSchedule":{
+          "shape":"TopicRefreshSchedule",
+          "documentation":"<p>The definition of a refresh schedule.</p>"
+        }
+      }
+    },
+    "CreateTopicRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "CreateTopicRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to create a topic in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicDetails",
+          "documentation":"<p>The definition of a topic to create.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags that are assigned to the dataset.</p>"
+        }
+      }
+    },
+    "CreateTopicResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RefreshArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "CreateVPCConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "VPCConnectionId",
+        "Name",
+        "SubnetIds",
+        "SecurityGroupIds",
+        "RoleArn"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account where you want to create a new VPC connection.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdRestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the VPC connection.</p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>A list of subnet IDs for the VPC connection.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A list of security group IDs for the VPC connection.</p>"
+        },
+        "DnsResolvers":{
+          "shape":"DnsResolverList",
+          "documentation":"<p>A list of IP addresses of DNS resolver endpoints for the VPC connection.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role to associate with the VPC connection.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A map of the key-value pairs for the resource tag or tags assigned to the VPC connection.</p>"
+        }
+      }
+    },
+    "CreateVPCConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdRestricted",
+          "documentation":"<p>The ID for the VPC connection that you're creating. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "CreationStatus":{
+          "shape":"VPCConnectionResourceStatus",
+          "documentation":"<p>The status of the creation of the VPC connection.</p>"
+        },
+        "AvailabilityStatus":{
+          "shape":"VPCConnectionAvailabilityStatus",
+          "documentation":"<p>The availability status of the VPC connection.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "CredentialPair":{
       "type":"structure",
       "required":[
@@ -6251,6 +6915,11 @@
         }
       },
       "documentation":"<p>The options that determine the currency display format configuration.</p>"
+    },
+    "CustomActionColumnList":{
+      "type":"list",
+      "member":{"shape":"ColumnIdentifier"},
+      "max":10
     },
     "CustomActionFilterOperation":{
       "type":"structure",
@@ -6908,6 +7577,20 @@
       },
       "documentation":"<p>The visual publish options of a visual in a dashboard</p>"
     },
+    "DataAggregation":{
+      "type":"structure",
+      "members":{
+        "DatasetRowDateGranularity":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The level of time precision that is used to aggregate <code>DateTime</code> values.</p>"
+        },
+        "DefaultDateColumnName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The column name for the default date.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a data aggregation.</p>"
+    },
     "DataBarsOptions":{
       "type":"structure",
       "required":["FieldId"],
@@ -7032,6 +7715,10 @@
         "Overlap":{
           "shape":"DataLabelOverlap",
           "documentation":"<p>Determines whether overlap is enabled or disabled for the data labels.</p>"
+        },
+        "TotalsVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Determines the visibility of the total.</p>"
         }
       },
       "documentation":"<p>The options that determine the presentation of the data labels.</p>"
@@ -7267,6 +7954,10 @@
         "DataSetUsageConfiguration":{
           "shape":"DataSetUsageConfiguration",
           "documentation":"<p>The usage configuration to apply to child datasets that reference this dataset as a source.</p>"
+        },
+        "DatasetParameters":{
+          "shape":"DatasetParameterList",
+          "documentation":"<p>The parameters that are declared in a dataset.</p>"
         }
       },
       "documentation":"<p>Dataset.</p>"
@@ -7827,6 +8518,96 @@
       },
       "documentation":"<p>The required parameters that are needed to connect to a Databricks data source.</p>"
     },
+    "DatasetMetadata":{
+      "type":"structure",
+      "required":["DatasetArn"],
+      "members":{
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "DatasetName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "DatasetDescription":{
+          "shape":"LimitedString",
+          "documentation":"<p>The description of the dataset.</p>"
+        },
+        "DataAggregation":{
+          "shape":"DataAggregation",
+          "documentation":"<p>The definition of a data aggregation.</p>"
+        },
+        "Filters":{
+          "shape":"TopicFilters",
+          "documentation":"<p>The list of filter definitions.</p>"
+        },
+        "Columns":{
+          "shape":"TopicColumns",
+          "documentation":"<p>The list of column definitions.</p>"
+        },
+        "CalculatedFields":{
+          "shape":"TopicCalculatedFields",
+          "documentation":"<p>The list of calculated field definitions.</p>"
+        },
+        "NamedEntities":{
+          "shape":"TopicNamedEntities",
+          "documentation":"<p>The list of named entities definitions.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a dataset.</p>"
+    },
+    "DatasetParameter":{
+      "type":"structure",
+      "members":{
+        "StringDatasetParameter":{
+          "shape":"StringDatasetParameter",
+          "documentation":"<p>A string parameter that is created in the dataset.</p>"
+        },
+        "DecimalDatasetParameter":{
+          "shape":"DecimalDatasetParameter",
+          "documentation":"<p>A decimal parameter that is created in the dataset.</p>"
+        },
+        "IntegerDatasetParameter":{
+          "shape":"IntegerDatasetParameter",
+          "documentation":"<p>An integer parameter that is created in the dataset.</p>"
+        },
+        "DateTimeDatasetParameter":{
+          "shape":"DateTimeDatasetParameter",
+          "documentation":"<p>A date time parameter that is created in the dataset.</p>"
+        }
+      },
+      "documentation":"<p>A dataset parameter.</p>"
+    },
+    "DatasetParameterId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "DatasetParameterList":{
+      "type":"list",
+      "member":{"shape":"DatasetParameter"},
+      "max":32,
+      "min":1
+    },
+    "DatasetParameterName":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]+$"
+    },
+    "DatasetParameterValueType":{
+      "type":"string",
+      "enum":[
+        "MULTI_VALUED",
+        "SINGLE_VALUED"
+      ]
+    },
+    "Datasets":{
+      "type":"list",
+      "member":{"shape":"DatasetMetadata"}
+    },
     "DateAggregationFunction":{
       "type":"string",
       "enum":[
@@ -7901,6 +8682,57 @@
         }
       },
       "documentation":"<p>The measure type field with date type columns.</p>"
+    },
+    "DateTimeDatasetParameter":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DatasetParameterId",
+          "documentation":"<p>An identifier for the parameter that is created in the dataset.</p>"
+        },
+        "Name":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The name of the date time parameter that is created in the dataset.</p>"
+        },
+        "ValueType":{
+          "shape":"DatasetParameterValueType",
+          "documentation":"<p>The value type of the dataset parameter. Valid values are <code>single value</code> or <code>multi value</code>.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The time granularity of the date time parameter.</p>"
+        },
+        "DefaultValues":{
+          "shape":"DateTimeDatasetParameterDefaultValues",
+          "documentation":"<p>A list of default values for a given date time parameter. This structure only accepts static values.</p>"
+        }
+      },
+      "documentation":"<p>A date time parameter for a dataset.</p>"
+    },
+    "DateTimeDatasetParameterDefaultValue":{
+      "type":"timestamp",
+      "documentation":"<p>The default value for the date time parameter.</p>"
+    },
+    "DateTimeDatasetParameterDefaultValues":{
+      "type":"structure",
+      "members":{
+        "StaticValues":{
+          "shape":"DateTimeDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given date time parameter.</p>"
+        }
+      },
+      "documentation":"<p>The default values of a date time parameter.</p>"
+    },
+    "DateTimeDatasetParameterValueList":{
+      "type":"list",
+      "member":{"shape":"DateTimeDatasetParameterDefaultValue"},
+      "max":32,
+      "min":1
     },
     "DateTimeDefaultValueList":{
       "type":"list",
@@ -8000,7 +8832,8 @@
         "ValueWhenUnset":{
           "shape":"DateTimeValueWhenUnsetConfiguration",
           "documentation":"<p>The configuration that defines the default value of a <code>DateTime</code> parameter when a value has not been set.</p>"
-        }
+        },
+        "MappedDataSetParameters":{"shape":"MappedDataSetParameters"}
       },
       "documentation":"<p>A parameter declaration for the <code>DateTime</code> data type.</p>"
     },
@@ -8054,6 +8887,53 @@
         "FRIDAY",
         "SATURDAY"
       ]
+    },
+    "DecimalDatasetParameter":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DatasetParameterId",
+          "documentation":"<p>An identifier for the decimal parameter created in the dataset.</p>"
+        },
+        "Name":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The name of the decimal parameter that is created in the dataset.</p>"
+        },
+        "ValueType":{
+          "shape":"DatasetParameterValueType",
+          "documentation":"<p>The value type of the dataset parameter. Valid values are <code>single value</code> or <code>multi value</code>.</p>"
+        },
+        "DefaultValues":{
+          "shape":"DecimalDatasetParameterDefaultValues",
+          "documentation":"<p>A list of default values for a given decimal parameter. This structure only accepts static values.</p>"
+        }
+      },
+      "documentation":"<p>A decimal parameter for a dataset.</p>"
+    },
+    "DecimalDatasetParameterDefaultValue":{
+      "type":"double",
+      "documentation":"<p>The default value for the decimal parameter.</p>"
+    },
+    "DecimalDatasetParameterDefaultValues":{
+      "type":"structure",
+      "members":{
+        "StaticValues":{
+          "shape":"DecimalDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given decimal parameter.</p>"
+        }
+      },
+      "documentation":"<p>The default values of a decimal parameter.</p>"
+    },
+    "DecimalDatasetParameterValueList":{
+      "type":"list",
+      "member":{"shape":"DecimalDatasetParameterDefaultValue"},
+      "max":32,
+      "min":1
     },
     "DecimalDefaultValueList":{
       "type":"list",
@@ -8114,7 +8994,8 @@
         "ValueWhenUnset":{
           "shape":"DecimalValueWhenUnsetConfiguration",
           "documentation":"<p>The configuration that defines the default value of a <code>Decimal</code> parameter when a value has not been set.</p>"
-        }
+        },
+        "MappedDataSetParameters":{"shape":"MappedDataSetParameters"}
       },
       "documentation":"<p>A parameter declaration for the <code>Decimal</code> data type.</p>"
     },
@@ -8153,6 +9034,31 @@
         }
       },
       "documentation":"<p>The configuration that defines the default value of a <code>Decimal</code> parameter when a value has not been set.</p>"
+    },
+    "DefaultAggregation":{
+      "type":"string",
+      "enum":[
+        "SUM",
+        "MAX",
+        "MIN",
+        "COUNT",
+        "DISTINCT_COUNT",
+        "AVERAGE"
+      ]
+    },
+    "DefaultFormatting":{
+      "type":"structure",
+      "members":{
+        "DisplayFormat":{
+          "shape":"DisplayFormat",
+          "documentation":"<p>The display format. Valid values for this structure are <code>AUTO</code>, <code>PERCENT</code>, <code>CURRENCY</code>, <code>NUMBER</code>, <code>DATE</code>, and <code>STRING</code>.</p>"
+        },
+        "DisplayFormatOptions":{
+          "shape":"DisplayFormatOptions",
+          "documentation":"<p>The additional options for display formatting.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a default formatting definition.</p>"
     },
     "DefaultFreeFormLayoutConfiguration":{
       "type":"structure",
@@ -9035,6 +9941,103 @@
         }
       }
     },
+    "DeleteTopicRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "DatasetId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "DatasetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DatasetId"
+        }
+      }
+    },
+    "DeleteTopicRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DeleteTopicRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DeleteTopicResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteUserByPrincipalIdRequest":{
       "type":"structure",
       "required":[
@@ -9109,6 +10112,57 @@
     "DeleteUserResponse":{
       "type":"structure",
       "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DeleteVPCConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "VPCConnectionId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account where you want to delete a VPC connection.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"VPCConnectionId"
+        }
+      }
+    },
+    "DeleteVPCConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted VPC connection.</p>"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>"
+        },
+        "DeletionStatus":{
+          "shape":"VPCConnectionResourceStatus",
+          "documentation":"<p>The deletion status of the VPC connection.</p>"
+        },
+        "AvailabilityStatus":{
+          "shape":"VPCConnectionAvailabilityStatus",
+          "documentation":"<p>The availability status of the VPC connection.</p>"
+        },
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
@@ -10579,6 +11633,204 @@
         }
       }
     },
+    "DescribeTopicPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions that are configured to the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeTopicRefreshRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "RefreshId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic whose refresh you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "RefreshId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the refresh, which is performed when the topic is created or updated.</p>",
+          "location":"uri",
+          "locationName":"RefreshId"
+        }
+      }
+    },
+    "DescribeTopicRefreshResponse":{
+      "type":"structure",
+      "members":{
+        "RefreshDetails":{
+          "shape":"TopicRefreshDetails",
+          "documentation":"<p>Details of the refresh, which is performed when the topic is created or updated.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeTopicRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "DatasetId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that contains the refresh schedule that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "DatasetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DatasetId"
+        }
+      }
+    },
+    "DescribeTopicRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that contains the refresh schedule that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "RefreshSchedule":{
+          "shape":"TopicRefreshSchedule",
+          "documentation":"<p>The definition of a refresh schedule.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeTopicRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicDetails",
+          "documentation":"<p>The definition of a topic.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeUserRequest":{
       "type":"structure",
       "required":[
@@ -10625,6 +11877,44 @@
         }
       }
     },
+    "DescribeVPCConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "VPCConnectionId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account that contains the VPC connection that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"VPCConnectionId"
+        }
+      }
+    },
+    "DescribeVPCConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "VPCConnection":{
+          "shape":"VPCConnection",
+          "documentation":"<p>A response object that provides information for the specified VPC connection.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        }
+      }
+    },
     "DestinationParameterValueConfiguration":{
       "type":"structure",
       "members":{
@@ -10643,7 +11933,8 @@
         "SourceField":{
           "shape":"FieldId",
           "documentation":"<p>The source field ID of the destination parameter.</p>"
-        }
+        },
+        "SourceColumn":{"shape":"ColumnIdentifier"}
       },
       "documentation":"<p>The configuration of destination parameter values.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
@@ -10669,6 +11960,76 @@
       "type":"list",
       "member":{"shape":"DimensionField"},
       "max":200
+    },
+    "DisplayFormat":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "PERCENT",
+        "CURRENCY",
+        "NUMBER",
+        "DATE",
+        "STRING"
+      ]
+    },
+    "DisplayFormatOptions":{
+      "type":"structure",
+      "members":{
+        "UseBlankCellFormat":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to use blank cell format.</p>"
+        },
+        "BlankCellFormat":{
+          "shape":"LimitedString",
+          "documentation":"<p>Determines the blank cell format.</p>"
+        },
+        "DateFormat":{
+          "shape":"LimitedString",
+          "documentation":"<p>Determines the <code>DateTime</code> format.</p>"
+        },
+        "DecimalSeparator":{
+          "shape":"TopicNumericSeparatorSymbol",
+          "documentation":"<p>Determines the decimal separator.</p>"
+        },
+        "GroupingSeparator":{
+          "shape":"LimitedString",
+          "documentation":"<p>Determines the grouping separator.</p>"
+        },
+        "UseGrouping":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to use grouping.</p>"
+        },
+        "FractionDigits":{
+          "shape":"Integer",
+          "documentation":"<p>Determines the number of fraction digits.</p>"
+        },
+        "Prefix":{
+          "shape":"LimitedString",
+          "documentation":"<p>The prefix value for a display format.</p>"
+        },
+        "Suffix":{
+          "shape":"LimitedString",
+          "documentation":"<p>The suffix value for a display format.</p>"
+        },
+        "UnitScaler":{
+          "shape":"NumberScale",
+          "documentation":"<p>The unit scaler. Valid values for this structure are: <code>NONE</code>, <code>AUTO</code>, <code>THOUSANDS</code>, <code>MILLIONS</code>, <code>BILLIONS</code>, and <code>TRILLIONS</code>.</p>"
+        },
+        "NegativeFormat":{
+          "shape":"NegativeFormat",
+          "documentation":"<p>The negative format.</p>"
+        },
+        "CurrencySymbol":{
+          "shape":"LimitedString",
+          "documentation":"<p>The currency symbol, such as <code>USD</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents additional options for display formatting.</p>"
+    },
+    "DnsResolverList":{
+      "type":"list",
+      "member":{"shape":"IPv4Address"},
+      "max":15
     },
     "Domain":{
       "type":"string",
@@ -11318,6 +12679,14 @@
       },
       "documentation":"<p>With a <code>Filter</code>, you can remove portions of data from a particular visual or view.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
+    "FilterClass":{
+      "type":"string",
+      "enum":[
+        "ENFORCED_VALUE_FILTER",
+        "CONDITIONAL_VALUE_FILTER",
+        "NAMED_VALUE_FILTER"
+      ]
+    },
     "FilterControl":{
       "type":"structure",
       "members":{
@@ -11556,6 +12925,10 @@
         "SelectedFieldOptions":{
           "shape":"SelectedFieldOptions",
           "documentation":"<p>A structure that contains the options that choose which fields are filtered in the <code>CustomActionFilterOperation</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>ALL_FIELDS</code>: Applies the filter operation to all fields.</p> </li> </ul>"
+        },
+        "SelectedColumns":{
+          "shape":"CustomActionColumnList",
+          "documentation":"<p>The selected columns of a dataset.</p>"
         }
       },
       "documentation":"<p>The configuration of selected fields in the<code>CustomActionFilterOperation</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -13639,6 +15012,11 @@
       "type":"list",
       "member":{"shape":"IAMPolicyAssignmentSummary"}
     },
+    "IPv4Address":{
+      "type":"string",
+      "max":15,
+      "min":7
+    },
     "Icon":{
       "type":"string",
       "enum":[
@@ -13961,6 +15339,53 @@
       "min":1
     },
     "Integer":{"type":"integer"},
+    "IntegerDatasetParameter":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DatasetParameterId",
+          "documentation":"<p>An identifier for the integer parameter created in the dataset.</p>"
+        },
+        "Name":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The name of the integer parameter that is created in the dataset.</p>"
+        },
+        "ValueType":{
+          "shape":"DatasetParameterValueType",
+          "documentation":"<p>The value type of the dataset parameter. Valid values are <code>single value</code> or <code>multi value</code>.</p>"
+        },
+        "DefaultValues":{
+          "shape":"IntegerDatasetParameterDefaultValues",
+          "documentation":"<p>A list of default values for a given integer parameter. This structure only accepts static values.</p>"
+        }
+      },
+      "documentation":"<p>An integer parameter for a dataset.</p>"
+    },
+    "IntegerDatasetParameterDefaultValue":{
+      "type":"long",
+      "documentation":"<p>The default value for the integer parameter.</p>"
+    },
+    "IntegerDatasetParameterDefaultValues":{
+      "type":"structure",
+      "members":{
+        "StaticValues":{
+          "shape":"IntegerDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given integer parameter.</p>"
+        }
+      },
+      "documentation":"<p>The default values of an integer parameter.</p>"
+    },
+    "IntegerDatasetParameterValueList":{
+      "type":"list",
+      "member":{"shape":"IntegerDatasetParameterDefaultValue"},
+      "max":32,
+      "min":1
+    },
     "IntegerDefaultValueList":{
       "type":"list",
       "member":{"shape":"SensitiveLongObject"},
@@ -14020,7 +15445,8 @@
         "ValueWhenUnset":{
           "shape":"IntegerValueWhenUnsetConfiguration",
           "documentation":"<p>A parameter declaration for the <code>Integer</code> data type.</p>"
-        }
+        },
+        "MappedDataSetParameters":{"shape":"MappedDataSetParameters"}
       },
       "documentation":"<p>A parameter declaration for the <code>Integer</code> data type.</p>"
     },
@@ -14479,6 +15905,10 @@
       "documentation":"<p>A limit is exceeded.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "LimitedString":{
+      "type":"string",
+      "max":256
     },
     "LineChartAggregatedFieldWells":{
       "type":"structure",
@@ -15367,7 +16797,9 @@
         },
         "AssignmentStatus":{
           "shape":"AssignmentStatus",
-          "documentation":"<p>The status of the assignments.</p>"
+          "documentation":"<p>The status of the assignments.</p>",
+          "location":"querystring",
+          "locationName":"assignment-status"
         },
         "Namespace":{
           "shape":"Namespace",
@@ -15908,6 +17340,100 @@
         }
       }
     },
+    "ListTopicRefreshSchedulesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic whose refresh schedule you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "ListTopicRefreshSchedulesResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "RefreshSchedules":{
+          "shape":"TopicRefreshScheduleSummaries",
+          "documentation":"<p>The list of topic refresh schedules.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "ListTopicsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topics that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListTopicsResponse":{
+      "type":"structure",
+      "members":{
+        "TopicsSummaries":{
+          "shape":"TopicSummaries",
+          "documentation":"<p>A list of topic summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListUserGroupsRequest":{
       "type":"structure",
       "required":[
@@ -16027,6 +17553,53 @@
         }
       }
     },
+    "ListVPCConnectionsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account that contains the VPC connections that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListVPCConnectionsResponse":{
+      "type":"structure",
+      "members":{
+        "VPCConnectionSummaries":{
+          "shape":"VPCConnectionSummaryList",
+          "documentation":"<p>A <code>VPCConnectionSummaries</code> object that returns a summary of VPC connection objects.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "LoadingAnimation":{
       "type":"structure",
       "members":{
@@ -16077,6 +17650,7 @@
     },
     "LogicalTableId":{
       "type":"string",
+      "documentation":"<p>An identifier for the logical table that is defined in the dataset</p>",
       "max":64,
       "min":1,
       "pattern":"[0-9a-zA-Z-]*"
@@ -16191,6 +17765,31 @@
         "AUTO",
         "MANUAL"
       ]
+    },
+    "MappedDataSetParameter":{
+      "type":"structure",
+      "required":[
+        "DataSetIdentifier",
+        "DataSetParameterName"
+      ],
+      "members":{
+        "DataSetIdentifier":{
+          "shape":"DataSetIdentifier",
+          "documentation":"<p>A unique name that identifies a dataset within the analysis or dashboard.</p>"
+        },
+        "DataSetParameterName":{
+          "shape":"ParameterName",
+          "documentation":"<p>The name of the dataset parameter.</p>"
+        }
+      },
+      "documentation":"<p>A dataset parameter that is mapped to an analysis parameter.</p>"
+    },
+    "MappedDataSetParameters":{
+      "type":"list",
+      "member":{"shape":"MappedDataSetParameter"},
+      "documentation":"<p>A list of dataset parameters that are mapped to an analysis parameter.</p>",
+      "max":150,
+      "min":0
     },
     "MarginStyle":{
       "type":"structure",
@@ -16416,6 +18015,95 @@
       },
       "documentation":"<p>The parameters for MySQL.</p>"
     },
+    "NamedEntityAggType":{
+      "type":"string",
+      "enum":[
+        "SUM",
+        "MIN",
+        "MAX",
+        "COUNT",
+        "AVERAGE",
+        "DISTINCT_COUNT",
+        "STDEV",
+        "STDEVP",
+        "VAR",
+        "VARP",
+        "PERCENTILE",
+        "MEDIAN",
+        "CUSTOM"
+      ]
+    },
+    "NamedEntityDefinition":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the entity.</p>"
+        },
+        "PropertyName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The property name to be used for the named entity.</p>"
+        },
+        "PropertyRole":{
+          "shape":"PropertyRole",
+          "documentation":"<p>The property role. Valid values for this structure are <code>PRIMARY</code> and <code>ID</code>.</p>"
+        },
+        "PropertyUsage":{
+          "shape":"PropertyUsage",
+          "documentation":"<p>The property usage. Valid values for this structure are <code>INHERIT</code>, <code>DIMENSION</code>, and <code>MEASURE</code>.</p>"
+        },
+        "Metric":{
+          "shape":"NamedEntityDefinitionMetric",
+          "documentation":"<p>The definition of a metric.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a named entity.</p>"
+    },
+    "NamedEntityDefinitionMetric":{
+      "type":"structure",
+      "members":{
+        "Aggregation":{
+          "shape":"NamedEntityAggType",
+          "documentation":"<p>The aggregation of a named entity. Valid values for this structure are <code>SUM</code>, <code>MIN</code>, <code>MAX</code>, <code>COUNT</code>, <code>AVERAGE</code>, <code>DISTINCT_COUNT</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, <code>VARP</code>, <code>PERCENTILE</code>, <code>MEDIAN</code>, and <code>CUSTOM</code>.</p>"
+        },
+        "AggregationFunctionParameters":{
+          "shape":"AggregationFunctionParameters",
+          "documentation":"<p>The additional parameters for an aggregation function.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a metric.</p>"
+    },
+    "NamedEntityDefinitions":{
+      "type":"list",
+      "member":{"shape":"NamedEntityDefinition"}
+    },
+    "NamedFilterAggType":{
+      "type":"string",
+      "enum":[
+        "NO_AGGREGATION",
+        "SUM",
+        "AVERAGE",
+        "COUNT",
+        "DISTINCT_COUNT",
+        "MAX",
+        "MEDIAN",
+        "MIN",
+        "STDEV",
+        "STDEVP",
+        "VAR",
+        "VARP"
+      ]
+    },
+    "NamedFilterType":{
+      "type":"string",
+      "enum":[
+        "CATEGORY_FILTER",
+        "NUMERIC_EQUALITY_FILTER",
+        "NUMERIC_RANGE_FILTER",
+        "DATE_RANGE_FILTER",
+        "RELATIVE_DATE_FILTER"
+      ]
+    },
     "Namespace":{
       "type":"string",
       "max":64,
@@ -16490,6 +18178,20 @@
       "type":"string",
       "max":150000
     },
+    "NegativeFormat":{
+      "type":"structure",
+      "members":{
+        "Prefix":{
+          "shape":"LimitedString",
+          "documentation":"<p>The prefix for a negative format.</p>"
+        },
+        "Suffix":{
+          "shape":"LimitedString",
+          "documentation":"<p>The suffix for a negative format.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a negative format.</p>"
+    },
     "NegativeValueConfiguration":{
       "type":"structure",
       "required":["DisplayMode"],
@@ -16507,6 +18209,78 @@
         "POSITIVE",
         "NEGATIVE"
       ]
+    },
+    "NetworkInterface":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The subnet ID associated with the network interface.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The availability zone that the network interface resides in.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message.</p>"
+        },
+        "Status":{
+          "shape":"NetworkInterfaceStatus",
+          "documentation":"<p>The status of the network interface.</p>"
+        },
+        "NetworkInterfaceId":{
+          "shape":"NetworkInterfaceId",
+          "documentation":"<p>The network interface ID.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains information about a network interface.</p>"
+    },
+    "NetworkInterfaceId":{
+      "type":"string",
+      "max":255,
+      "pattern":"^eni-[0-9a-z]*$"
+    },
+    "NetworkInterfaceList":{
+      "type":"list",
+      "member":{"shape":"NetworkInterface"}
+    },
+    "NetworkInterfaceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "AVAILABLE",
+        "CREATION_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETED",
+        "DELETION_FAILED",
+        "DELETION_SCHEDULED",
+        "ATTACHMENT_FAILED_ROLLBACK_FAILED"
+      ]
+    },
+    "NewDefaultValues":{
+      "type":"structure",
+      "members":{
+        "StringStaticValues":{
+          "shape":"StringDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given string parameter.</p>"
+        },
+        "DecimalStaticValues":{
+          "shape":"DecimalDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given decimal parameter.</p>"
+        },
+        "DateTimeStaticValues":{
+          "shape":"DateTimeDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given date time parameter.</p>"
+        },
+        "IntegerStaticValues":{
+          "shape":"IntegerDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given integer parameter.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that overrides the existing default values for a dataset parameter that is inherited from another dataset.</p>"
     },
     "NonEmptyString":{
       "type":"string",
@@ -16869,11 +18643,11 @@
         },
         "Port":{
           "shape":"Port",
-          "documentation":"<p>Port.</p>"
+          "documentation":"<p>The port.</p>"
         },
         "Database":{
           "shape":"Database",
-          "documentation":"<p>Database.</p>"
+          "documentation":"<p>The database.</p>"
         }
       },
       "documentation":"<p>The parameters for Oracle.</p>"
@@ -16898,7 +18672,7 @@
         },
         "Type":{
           "shape":"ColumnDataType",
-          "documentation":"<p>Type.</p>"
+          "documentation":"<p>The type.</p>"
         }
       },
       "documentation":"<p>Output column.</p>"
@@ -16906,6 +18680,25 @@
     "OutputColumnList":{
       "type":"list",
       "member":{"shape":"OutputColumn"}
+    },
+    "OverrideDatasetParameterOperation":{
+      "type":"structure",
+      "required":["ParameterName"],
+      "members":{
+        "ParameterName":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The name of the parameter to be overridden with different values.</p>"
+        },
+        "NewParameterName":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The new name for the parameter.</p>"
+        },
+        "NewDefaultValues":{
+          "shape":"NewDefaultValues",
+          "documentation":"<p>The new default values for the parameter.</p>"
+        }
+      },
+      "documentation":"<p>A transform operation that overrides the dataset parameter values that are defined in another dataset.</p>"
     },
     "PageNumber":{
       "type":"long",
@@ -18221,6 +20014,21 @@
       "max":2000,
       "min":1
     },
+    "PropertyRole":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "ID"
+      ]
+    },
+    "PropertyUsage":{
+      "type":"string",
+      "enum":[
+        "INHERIT",
+        "DIMENSION",
+        "MEASURE"
+      ]
+    },
     "PutDataSetRefreshPropertiesRequest":{
       "type":"structure",
       "required":[
@@ -18487,6 +20295,20 @@
       },
       "documentation":"<p>A radar chart visual.</p>"
     },
+    "RangeConstant":{
+      "type":"structure",
+      "members":{
+        "Minimum":{
+          "shape":"LimitedString",
+          "documentation":"<p>The minimum value for a range constant.</p>"
+        },
+        "Maximum":{
+          "shape":"LimitedString",
+          "documentation":"<p>The maximum value for a range constant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a range constant.</p>"
+    },
     "RangeEndsLabelType":{
       "type":"structure",
       "members":{
@@ -18599,7 +20421,6 @@
       "type":"structure",
       "required":[
         "Column",
-        "MeasureAggregationFunction",
         "Calculation"
       ],
       "members":{
@@ -18922,6 +20743,10 @@
         "StatePersistence":{
           "shape":"StatePersistenceConfigurations",
           "documentation":"<p>The state persistence settings of an embedded dashboard.</p>"
+        },
+        "Bookmarks":{
+          "shape":"BookmarksConfigurations",
+          "documentation":"<p>The bookmarks configuration for an embedded dashboard in Amazon QuickSight.</p>"
         }
       },
       "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
@@ -19641,6 +21466,10 @@
         "Size":{
           "shape":"MeasureFieldList",
           "documentation":"<p>The size field well of a scatter plot.</p>"
+        },
+        "Label":{
+          "shape":"DimensionFieldList",
+          "documentation":"<p>The label field well of a scatter plot.</p>"
         }
       },
       "documentation":"<p>The aggregated field well of a scatter plot.</p>"
@@ -19692,11 +21521,11 @@
       "members":{
         "ScatterPlotCategoricallyAggregatedFieldWells":{
           "shape":"ScatterPlotCategoricallyAggregatedFieldWells",
-          "documentation":"<p>The aggregated field wells of a scatter plot. Scatter plots that have a field in the category (group/color) field will have aggregated field wells. The x and y-axes of these scatter plots are aggregated by category.</p>"
+          "documentation":"<p>The aggregated field wells of a scatter plot. The x and y-axes of scatter plots with aggregated field wells are aggregated by category, label, or both.</p>"
         },
         "ScatterPlotUnaggregatedFieldWells":{
           "shape":"ScatterPlotUnaggregatedFieldWells",
-          "documentation":"<p>The unaggregated field wells of a scatter plot. Scatter plots without a category field well have unaggregated field wells. The x and y-axes of these scatter plots are unaggregated.</p>"
+          "documentation":"<p>The unaggregated field wells of a scatter plot. The x and y-axes of these scatter plots are unaggregated.</p>"
         }
       },
       "documentation":"<p>The field well configuration of a scatter plot.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -19715,6 +21544,14 @@
         "Size":{
           "shape":"MeasureFieldList",
           "documentation":"<p>The size field well of a scatter plot.</p>"
+        },
+        "Category":{
+          "shape":"DimensionFieldList",
+          "documentation":"<p>The category field well of a scatter plot.</p>"
+        },
+        "Label":{
+          "shape":"DimensionFieldList",
+          "documentation":"<p>The label field well of a scatter plot.</p>"
         }
       },
       "documentation":"<p>The unaggregated field wells of a scatter plot.</p>"
@@ -20218,6 +22055,18 @@
       },
       "documentation":"<p>The options that style a section.</p>"
     },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^sg-[0-9a-z]*$"
+    },
+    "SecurityGroupIdList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":16,
+      "min":1
+    },
     "SelectAllValueOptions":{
       "type":"string",
       "enum":["ALL_VALUES"]
@@ -20248,6 +22097,58 @@
         "BASIC",
         "DETAILED"
       ]
+    },
+    "SemanticEntityType":{
+      "type":"structure",
+      "members":{
+        "TypeName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The semantic entity type name.</p>"
+        },
+        "SubTypeName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The semantic entity sub type name.</p>"
+        },
+        "TypeParameters":{
+          "shape":"TypeParameters",
+          "documentation":"<p>The semantic entity type parameters.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a semantic entity type.</p>"
+    },
+    "SemanticType":{
+      "type":"structure",
+      "members":{
+        "TypeName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The semantic type name.</p>"
+        },
+        "SubTypeName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The semantic type sub type name.</p>"
+        },
+        "TypeParameters":{
+          "shape":"TypeParameters",
+          "documentation":"<p>The semantic type parameters.</p>"
+        },
+        "TruthyCellValue":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The semantic type truthy cell value.</p>"
+        },
+        "TruthyCellValueSynonyms":{
+          "shape":"SensitiveStringList",
+          "documentation":"<p>The other names or aliases for the true cell value.</p>"
+        },
+        "FalseyCellValue":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The semantic type falsey cell value.</p>"
+        },
+        "FalseyCellValueSynonyms":{
+          "shape":"SensitiveStringList",
+          "documentation":"<p>The other names or aliases for the false cell value.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a semantic type.</p>"
     },
     "SensitiveDouble":{
       "type":"double",
@@ -20926,6 +22827,55 @@
     },
     "StatusCode":{"type":"integer"},
     "String":{"type":"string"},
+    "StringDatasetParameter":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"DatasetParameterId",
+          "documentation":"<p>An identifier for the string parameter that is created in the dataset.</p>"
+        },
+        "Name":{
+          "shape":"DatasetParameterName",
+          "documentation":"<p>The name of the string parameter that is created in the dataset.</p>"
+        },
+        "ValueType":{
+          "shape":"DatasetParameterValueType",
+          "documentation":"<p>The value type of the dataset parameter. Valid values are <code>single value</code> or <code>multi value</code>.</p>"
+        },
+        "DefaultValues":{
+          "shape":"StringDatasetParameterDefaultValues",
+          "documentation":"<p>A list of default values for a given string dataset parameter type. This structure only accepts static values.</p>"
+        }
+      },
+      "documentation":"<p>A string parameter for a dataset.</p>"
+    },
+    "StringDatasetParameterDefaultValue":{
+      "type":"string",
+      "documentation":"<p>The default value for the string parameter.</p>",
+      "max":512,
+      "min":0
+    },
+    "StringDatasetParameterDefaultValues":{
+      "type":"structure",
+      "members":{
+        "StaticValues":{
+          "shape":"StringDatasetParameterValueList",
+          "documentation":"<p>A list of static default values for a given string parameter.</p>"
+        }
+      },
+      "documentation":"<p>The default values of a string parameter.</p>"
+    },
+    "StringDatasetParameterValueList":{
+      "type":"list",
+      "member":{"shape":"StringDatasetParameterDefaultValue"},
+      "max":32,
+      "min":1
+    },
     "StringDefaultValueList":{
       "type":"list",
       "member":{"shape":"SensitiveStringObject"},
@@ -21003,7 +22953,8 @@
         "ValueWhenUnset":{
           "shape":"StringValueWhenUnsetConfiguration",
           "documentation":"<p>The configuration that defines the default value of a <code>String</code> parameter when a value has not been set.</p>"
-        }
+        },
+        "MappedDataSetParameters":{"shape":"MappedDataSetParameters"}
       },
       "documentation":"<p>A parameter declaration for the <code>String</code> data type.</p>"
     },
@@ -21025,6 +22976,18 @@
         }
       },
       "documentation":"<p>The configuration that defines the default value of a <code>String</code> parameter when a value has not been set.</p>"
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^subnet-[0-9a-z]*$"
+    },
+    "SubnetIdList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":15,
+      "min":2
     },
     "SubtotalOptions":{
       "type":"structure",
@@ -21065,6 +23028,10 @@
       "max":128,
       "min":1,
       "sensitive":true
+    },
+    "Synonyms":{
+      "type":"list",
+      "member":{"shape":"LimitedString"}
     },
     "TableAggregatedFieldWells":{
       "type":"structure",
@@ -21659,7 +23626,7 @@
     "TargetVisualList":{
       "type":"list",
       "member":{"shape":"ShortRestrictiveResourceId"},
-      "max":30,
+      "max":50,
       "min":1
     },
     "TargetVisualOptions":{
@@ -22660,6 +24627,555 @@
         "ABSOLUTE_DIFFERENCE"
       ]
     },
+    "TopicCalculatedField":{
+      "type":"structure",
+      "required":[
+        "CalculatedFieldName",
+        "Expression"
+      ],
+      "members":{
+        "CalculatedFieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The calculated field name.</p>"
+        },
+        "CalculatedFieldDescription":{
+          "shape":"LimitedString",
+          "documentation":"<p>The calculated field description.</p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>The calculated field expression.</p>"
+        },
+        "CalculatedFieldSynonyms":{
+          "shape":"Synonyms",
+          "documentation":"<p>The other names or aliases for the calculated field.</p>"
+        },
+        "IsIncludedInTopic":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value that indicates if a calculated field is included in the topic.</p>"
+        },
+        "DisableIndexing":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A Boolean value that indicates if a calculated field is visible in the autocomplete.</p>"
+        },
+        "ColumnDataRole":{
+          "shape":"ColumnDataRole",
+          "documentation":"<p>The column data role for a calculated field. Valid values for this structure are <code>DIMENSION</code> and <code>MEASURE</code>.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The level of time precision that is used to aggregate <code>DateTime</code> values.</p>"
+        },
+        "DefaultFormatting":{
+          "shape":"DefaultFormatting",
+          "documentation":"<p>The default formatting definition.</p>"
+        },
+        "Aggregation":{
+          "shape":"DefaultAggregation",
+          "documentation":"<p>The default aggregation. Valid values for this structure are <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, and <code>AVERAGE</code>.</p>"
+        },
+        "ComparativeOrder":{
+          "shape":"ComparativeOrder",
+          "documentation":"<p>The order in which data is displayed for the calculated field when it's used in a comparative context.</p>"
+        },
+        "SemanticType":{
+          "shape":"SemanticType",
+          "documentation":"<p>The semantic type.</p>"
+        },
+        "AllowedAggregations":{
+          "shape":"AuthorSpecifiedAggregations",
+          "documentation":"<p>The list of aggregation types that are allowed for the calculated field. Valid values for this structure are <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, <code>VARP</code>, and <code>PERCENTILE</code>.</p>"
+        },
+        "NotAllowedAggregations":{
+          "shape":"AuthorSpecifiedAggregations",
+          "documentation":"<p>The list of aggregation types that are not allowed for the calculated field. Valid values for this structure are <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, <code>VARP</code>, and <code>PERCENTILE</code>.</p>"
+        },
+        "NeverAggregateInFilter":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to never aggregate calculated field in filters.</p>"
+        },
+        "CellValueSynonyms":{
+          "shape":"CellValueSynonyms",
+          "documentation":"<p>The other names or aliases for the calculated field cell value.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a calculated field.</p>"
+    },
+    "TopicCalculatedFields":{
+      "type":"list",
+      "member":{"shape":"TopicCalculatedField"}
+    },
+    "TopicCategoryFilter":{
+      "type":"structure",
+      "members":{
+        "CategoryFilterFunction":{
+          "shape":"CategoryFilterFunction",
+          "documentation":"<p>The category filter function. Valid values for this structure are <code>EXACT</code> and <code>CONTAINS</code>.</p>"
+        },
+        "CategoryFilterType":{
+          "shape":"CategoryFilterType",
+          "documentation":"<p>The category filter type. This element is used to specify whether a filter is a simple category filter or an inverse category filter.</p>"
+        },
+        "Constant":{
+          "shape":"TopicCategoryFilterConstant",
+          "documentation":"<p>The constant used in a category filter.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a category filter.</p>"
+    },
+    "TopicCategoryFilterConstant":{
+      "type":"structure",
+      "members":{
+        "ConstantType":{
+          "shape":"ConstantType",
+          "documentation":"<p>The type of category filter constant. This element is used to specify whether a constant is a singular or collective. Valid values are <code>SINGULAR</code> and <code>COLLECTIVE</code>.</p>"
+        },
+        "SingularConstant":{
+          "shape":"LimitedString",
+          "documentation":"<p>A singular constant used in a category filter. This element is used to specify a single value for the constant.</p>"
+        },
+        "CollectiveConstant":{
+          "shape":"CollectiveConstant",
+          "documentation":"<p>A collective constant used in a category filter. This element is used to specify a list of values for the constant.</p>"
+        }
+      },
+      "documentation":"<p>A constant used in a category filter.</p>",
+      "sensitive":true
+    },
+    "TopicColumn":{
+      "type":"structure",
+      "required":["ColumnName"],
+      "members":{
+        "ColumnName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "ColumnFriendlyName":{
+          "shape":"LimitedString",
+          "documentation":"<p>A user-friendly name for the column.</p>"
+        },
+        "ColumnDescription":{
+          "shape":"LimitedString",
+          "documentation":"<p>A description of the column and its contents.</p>"
+        },
+        "ColumnSynonyms":{
+          "shape":"Synonyms",
+          "documentation":"<p>The other names or aliases for the column.</p>"
+        },
+        "ColumnDataRole":{
+          "shape":"ColumnDataRole",
+          "documentation":"<p>The role of the column in the data. Valid values are <code>DIMENSION</code> and <code>MEASURE</code>.</p>"
+        },
+        "Aggregation":{
+          "shape":"DefaultAggregation",
+          "documentation":"<p>The type of aggregation that is performed on the column data when it's queried. Valid values for this structure are <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, and <code>AVERAGE</code>.</p>"
+        },
+        "IsIncludedInTopic":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the column is included in the query results.</p>"
+        },
+        "DisableIndexing":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A Boolean value that indicates whether the column shows in the autocomplete functionality.</p>"
+        },
+        "ComparativeOrder":{
+          "shape":"ComparativeOrder",
+          "documentation":"<p>The order in which data is displayed for the column when it's used in a comparative context.</p>"
+        },
+        "SemanticType":{
+          "shape":"SemanticType",
+          "documentation":"<p>The semantic type of data contained in the column.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The level of time precision that is used to aggregate <code>DateTime</code> values.</p>"
+        },
+        "AllowedAggregations":{
+          "shape":"AuthorSpecifiedAggregations",
+          "documentation":"<p>The list of aggregation types that are allowed for the column. Valid values for this structure are <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, <code>VARP</code>, and <code>PERCENTILE</code>.</p>"
+        },
+        "NotAllowedAggregations":{
+          "shape":"AuthorSpecifiedAggregations",
+          "documentation":"<p>The list of aggregation types that are not allowed for the column. Valid values for this structure are <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MIN</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, <code>VARP</code>, and <code>PERCENTILE</code>.</p>"
+        },
+        "DefaultFormatting":{
+          "shape":"DefaultFormatting",
+          "documentation":"<p>The default formatting used for values in the column.</p>"
+        },
+        "NeverAggregateInFilter":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to aggregate the column data when it's used in a filter context.</p>"
+        },
+        "CellValueSynonyms":{
+          "shape":"CellValueSynonyms",
+          "documentation":"<p>The other names or aliases for the column cell value.</p>"
+        }
+      },
+      "documentation":"<p>Represents a column in a dataset.</p>"
+    },
+    "TopicColumns":{
+      "type":"list",
+      "member":{"shape":"TopicColumn"}
+    },
+    "TopicDateRangeFilter":{
+      "type":"structure",
+      "members":{
+        "Inclusive":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the date range filter should include the boundary values. If set to true, the filter includes the start and end dates. If set to false, the filter excludes them.</p>"
+        },
+        "Constant":{
+          "shape":"TopicRangeFilterConstant",
+          "documentation":"<p>The constant used in a date range filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter used to restrict data based on a range of dates or times.</p>"
+    },
+    "TopicDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        },
+        "Description":{
+          "shape":"LimitedString",
+          "documentation":"<p>The description of the topic.</p>"
+        },
+        "DataSets":{
+          "shape":"Datasets",
+          "documentation":"<p>The data sets that the topic is associated with.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the details of a topic, such as its name, description, and associated data sets.</p>"
+    },
+    "TopicFilter":{
+      "type":"structure",
+      "required":[
+        "FilterName",
+        "OperandFieldName"
+      ],
+      "members":{
+        "FilterDescription":{
+          "shape":"LimitedString",
+          "documentation":"<p>A description of the filter used to select items for a topic.</p>"
+        },
+        "FilterClass":{
+          "shape":"FilterClass",
+          "documentation":"<p>The class of the filter. Valid values for this structure are <code>ENFORCED_VALUE_FILTER</code>, <code>CONDITIONAL_VALUE_FILTER</code>, and <code>NAMED_VALUE_FILTER</code>.</p>"
+        },
+        "FilterName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the filter.</p>"
+        },
+        "FilterSynonyms":{
+          "shape":"Synonyms",
+          "documentation":"<p>The other names or aliases for the filter.</p>"
+        },
+        "OperandFieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the field that the filter operates on.</p>"
+        },
+        "FilterType":{
+          "shape":"NamedFilterType",
+          "documentation":"<p>The type of the filter. Valid values for this structure are <code>CATEGORY_FILTER</code>, <code>NUMERIC_EQUALITY_FILTER</code>, <code>NUMERIC_RANGE_FILTER</code>, <code>DATE_RANGE_FILTER</code>, and <code>RELATIVE_DATE_FILTER</code>.</p>"
+        },
+        "CategoryFilter":{
+          "shape":"TopicCategoryFilter",
+          "documentation":"<p>The category filter that is associated with this filter.</p>"
+        },
+        "NumericEqualityFilter":{
+          "shape":"TopicNumericEqualityFilter",
+          "documentation":"<p>The numeric equality filter.</p>"
+        },
+        "NumericRangeFilter":{
+          "shape":"TopicNumericRangeFilter",
+          "documentation":"<p>The numeric range filter.</p>"
+        },
+        "DateRangeFilter":{
+          "shape":"TopicDateRangeFilter",
+          "documentation":"<p>The date range filter.</p>"
+        },
+        "RelativeDateFilter":{
+          "shape":"TopicRelativeDateFilter",
+          "documentation":"<p>The relative date filter.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a filter used to select items for a topic.</p>"
+    },
+    "TopicFilters":{
+      "type":"list",
+      "member":{"shape":"TopicFilter"}
+    },
+    "TopicId":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[A-Za-z0-9-_.\\\\+]*$"
+    },
+    "TopicNamedEntities":{
+      "type":"list",
+      "member":{"shape":"TopicNamedEntity"}
+    },
+    "TopicNamedEntity":{
+      "type":"structure",
+      "required":["EntityName"],
+      "members":{
+        "EntityName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the named entity.</p>"
+        },
+        "EntityDescription":{
+          "shape":"LimitedString",
+          "documentation":"<p>The description of the named entity.</p>"
+        },
+        "EntitySynonyms":{
+          "shape":"Synonyms",
+          "documentation":"<p>The other names or aliases for the named entity.</p>"
+        },
+        "SemanticEntityType":{
+          "shape":"SemanticEntityType",
+          "documentation":"<p>The type of named entity that a topic represents.</p>"
+        },
+        "Definition":{
+          "shape":"NamedEntityDefinitions",
+          "documentation":"<p>The definition of a named entity.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a named entity.</p>"
+    },
+    "TopicNumericEqualityFilter":{
+      "type":"structure",
+      "members":{
+        "Constant":{
+          "shape":"TopicSingularFilterConstant",
+          "documentation":"<p>The constant used in a numeric equality filter.</p>"
+        },
+        "Aggregation":{
+          "shape":"NamedFilterAggType",
+          "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic. Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value matches the specified value.</p>"
+    },
+    "TopicNumericRangeFilter":{
+      "type":"structure",
+      "members":{
+        "Inclusive":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether the endpoints of the numeric range are included in the filter. If set to true, topics whose numeric field value is equal to the endpoint values will be included in the filter. If set to false, topics whose numeric field value is equal to the endpoint values will be excluded from the filter.</p>"
+        },
+        "Constant":{
+          "shape":"TopicRangeFilterConstant",
+          "documentation":"<p>The constant used in a numeric range filter.</p>"
+        },
+        "Aggregation":{
+          "shape":"NamedFilterAggType",
+          "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic, Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value falls within the specified range.</p>"
+    },
+    "TopicNumericSeparatorSymbol":{
+      "type":"string",
+      "enum":[
+        "COMMA",
+        "DOT"
+      ]
+    },
+    "TopicRangeFilterConstant":{
+      "type":"structure",
+      "members":{
+        "ConstantType":{
+          "shape":"ConstantType",
+          "documentation":"<p>The data type of the constant value that is used in a range filter. Valid values for this structure are <code>RANGE</code>.</p>"
+        },
+        "RangeConstant":{
+          "shape":"RangeConstant",
+          "documentation":"<p>The value of the constant that is used to specify the endpoints of a range filter.</p>"
+        }
+      },
+      "documentation":"<p>A constant value that is used in a range filter to specify the endpoints of the range.</p>",
+      "sensitive":true
+    },
+    "TopicRefreshDetails":{
+      "type":"structure",
+      "members":{
+        "RefreshArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
+        },
+        "RefreshId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the refresh, which occurs as a result of topic creation or topic update.</p>"
+        },
+        "RefreshStatus":{
+          "shape":"TopicRefreshStatus",
+          "documentation":"<p>The status of the refresh job that indicates whether the job is still running, completed successfully, or failed.</p>"
+        }
+      },
+      "documentation":"<p>The details about the refresh of a topic.</p>"
+    },
+    "TopicRefreshSchedule":{
+      "type":"structure",
+      "required":[
+        "IsEnabled",
+        "BasedOnSpiceSchedule"
+      ],
+      "members":{
+        "IsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A Boolean value that controls whether to schedule is enabled.</p>"
+        },
+        "BasedOnSpiceSchedule":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that controls whether to schedule runs at the same schedule that is specified in SPICE dataset.</p>"
+        },
+        "StartingAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The starting date and time for the refresh schedule.</p>"
+        },
+        "Timezone":{
+          "shape":"LimitedString",
+          "documentation":"<p>The timezone that you want the refresh schedule to use.</p>"
+        },
+        "RepeatAt":{
+          "shape":"LimitedString",
+          "documentation":"<p>The time of day when the refresh should run, for example, Monday-Sunday.</p>"
+        },
+        "TopicScheduleType":{
+          "shape":"TopicScheduleType",
+          "documentation":"<p>The type of refresh schedule. Valid values for this structure are <code>HOURLY</code>, <code>DAILY</code>, <code>WEEKLY</code>, and <code>MONTHLY</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a topic refresh schedule.</p>"
+    },
+    "TopicRefreshScheduleSummaries":{
+      "type":"list",
+      "member":{"shape":"TopicRefreshScheduleSummary"}
+    },
+    "TopicRefreshScheduleSummary":{
+      "type":"structure",
+      "members":{
+        "DatasetId":{
+          "shape":"LimitedString",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "DatasetName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "RefreshSchedule":{
+          "shape":"TopicRefreshSchedule",
+          "documentation":"<p>The definition of a refresh schedule.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the refresh schedule details for a dataset.</p>"
+    },
+    "TopicRefreshStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZED",
+        "RUNNING",
+        "FAILED",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    "TopicRelativeDateFilter":{
+      "type":"structure",
+      "members":{
+        "TimeGranularity":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The level of time precision that is used to aggregate <code>DateTime</code> values.</p>"
+        },
+        "RelativeDateFilterFunction":{
+          "shape":"TopicRelativeDateFilterFunction",
+          "documentation":"<p>The function to be used in a relative date filter to determine the range of dates to include in the results. Valid values for this structure are <code>BEFORE</code>, <code>AFTER</code>, and <code>BETWEEN</code>.</p>"
+        },
+        "Constant":{
+          "shape":"TopicSingularFilterConstant",
+          "documentation":"<p>The constant used in a relative date filter.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a relative date filter.</p>"
+    },
+    "TopicRelativeDateFilterFunction":{
+      "type":"string",
+      "enum":[
+        "PREVIOUS",
+        "THIS",
+        "LAST",
+        "NEXT",
+        "NOW"
+      ]
+    },
+    "TopicScheduleType":{
+      "type":"string",
+      "enum":[
+        "HOURLY",
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY"
+      ]
+    },
+    "TopicSingularFilterConstant":{
+      "type":"structure",
+      "members":{
+        "ConstantType":{
+          "shape":"ConstantType",
+          "documentation":"<p>The type of the singular filter constant. Valid values for this structure are <code>SINGULAR</code>.</p>"
+        },
+        "SingularConstant":{
+          "shape":"LimitedString",
+          "documentation":"<p>The value of the singular filter constant.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a singular filter constant, used in filters to specify a single value to match against.</p>",
+      "sensitive":true
+    },
+    "TopicSummaries":{
+      "type":"list",
+      "member":{"shape":"TopicSummary"}
+    },
+    "TopicSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        }
+      },
+      "documentation":"<p>A topic summary.</p>"
+    },
+    "TopicTimeGranularity":{
+      "type":"string",
+      "enum":[
+        "SECOND",
+        "MINUTE",
+        "HOUR",
+        "DAY",
+        "WEEK",
+        "MONTH",
+        "QUARTER",
+        "YEAR"
+      ]
+    },
     "TotalAggregationComputation":{
       "type":"structure",
       "required":[
@@ -22735,7 +25251,8 @@
           "shape":"TagColumnOperation",
           "documentation":"<p>An operation that tags a column with additional information.</p>"
         },
-        "UntagColumnOperation":{"shape":"UntagColumnOperation"}
+        "UntagColumnOperation":{"shape":"UntagColumnOperation"},
+        "OverrideDatasetParameterOperation":{"shape":"OverrideDatasetParameterOperation"}
       },
       "documentation":"<p>A data transformation on a logical table. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
     },
@@ -22902,6 +25419,11 @@
       "type":"string",
       "max":32
     },
+    "TypeParameters":{
+      "type":"map",
+      "key":{"shape":"LimitedString"},
+      "value":{"shape":"LimitedString"}
+    },
     "Typography":{
       "type":"structure",
       "members":{
@@ -23021,6 +25543,13 @@
       "type":"list",
       "member":{"shape":"UnaggregatedField"},
       "max":200
+    },
+    "UndefinedSpecifiedValueType":{
+      "type":"string",
+      "enum":[
+        "LEAST",
+        "MOST"
+      ]
     },
     "UnicodeIcon":{
       "type":"string",
@@ -23655,7 +26184,11 @@
           "shape":"ColumnLevelPermissionRuleList",
           "documentation":"<p>A set of one or more definitions of a <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_ColumnLevelPermissionRule.html\">ColumnLevelPermissionRule</a> </code>.</p>"
         },
-        "DataSetUsageConfiguration":{"shape":"DataSetUsageConfiguration"}
+        "DataSetUsageConfiguration":{"shape":"DataSetUsageConfiguration"},
+        "DatasetParameters":{
+          "shape":"DatasetParameterList",
+          "documentation":"<p>The parameter declarations of the dataset.</p>"
+        }
       }
     },
     "UpdateDataSetResponse":{
@@ -23975,7 +26508,7 @@
         },
         "AssignmentName":{
           "shape":"IAMPolicyAssignmentName",
-          "documentation":"<p>The name of the assignment, also called a rule. This name must be unique within an Amazon Web Services account.</p>",
+          "documentation":"<p>The name of the assignment, also called a rule. The name must be unique within the Amazon Web Services account.</p>",
           "location":"uri",
           "locationName":"AssignmentName"
         },
@@ -24506,6 +27039,172 @@
         }
       }
     },
+    "UpdateTopicPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update the permissions for.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "GrantPermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to grant to the topic.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to revoke from the topic.</p>"
+        }
+      }
+    },
+    "UpdateTopicPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions on the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateTopicRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "DatasetId",
+        "RefreshSchedule"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic whose refresh schedule you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "DatasetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"DatasetId"
+        },
+        "RefreshSchedule":{
+          "shape":"TopicRefreshSchedule",
+          "documentation":"<p>The definition of a refresh schedule.</p>"
+        }
+      }
+    },
+    "UpdateTopicRefreshScheduleResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateTopicRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "Topic":{
+          "shape":"TopicDetails",
+          "documentation":"<p>The definition of the topic that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateTopicResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "RefreshArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdateUserRequest":{
       "type":"structure",
       "required":[
@@ -24570,6 +27269,81 @@
         "User":{
           "shape":"User",
           "documentation":"<p>The Amazon QuickSight user.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateVPCConnectionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "VPCConnectionId",
+        "Name",
+        "SubnetIds",
+        "SecurityGroupIds",
+        "RoleArn"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the account that contains the VPC connection that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're updating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"VPCConnectionId"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the VPC connection.</p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>A list of subnet IDs for the VPC connection.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A list of security group IDs for the VPC connection.</p>"
+        },
+        "DnsResolvers":{
+          "shape":"DnsResolverList",
+          "documentation":"<p>A list of IP addresses of DNS resolver endpoints for the VPC connection.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>An IAM role associated with the VPC connection.</p>"
+        }
+      }
+    },
+    "UpdateVPCConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        },
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you are updating. This ID is a unique identifier for each Amazon Web Services Region in anAmazon Web Services account.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"VPCConnectionResourceStatus",
+          "documentation":"<p>The update status of the VPC connection's last update.</p>"
+        },
+        "AvailabilityStatus":{
+          "shape":"VPCConnectionAvailabilityStatus",
+          "documentation":"<p>The availability status of the VPC connection.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -24683,6 +27457,151 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "VPCConnection":{
+      "type":"structure",
+      "members":{
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the VPC connection.</p>"
+        },
+        "VPCId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 VPC ID associated with the VPC connection.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The Amazon EC2 security group IDs associated with the VPC connection.</p>"
+        },
+        "DnsResolvers":{
+          "shape":"StringList",
+          "documentation":"<p>A list of IP addresses of DNS resolver endpoints for the VPC connection.</p>"
+        },
+        "Status":{
+          "shape":"VPCConnectionResourceStatus",
+          "documentation":"<p>The status of the VPC connection.</p>"
+        },
+        "AvailabilityStatus":{
+          "shape":"VPCConnectionAvailabilityStatus",
+          "documentation":"<p>The availability status of the VPC connection.</p>"
+        },
+        "NetworkInterfaces":{
+          "shape":"NetworkInterfaceList",
+          "documentation":"<p>A list of network interfaces.</p>"
+        },
+        "RoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role associated with the VPC connection.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the VPC connection was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the VPC connection was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The structure of a VPC connection.</p>"
+    },
+    "VPCConnectionAvailabilityStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "PARTIALLY_AVAILABLE"
+      ]
+    },
+    "VPCConnectionResourceIdRestricted":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[\\w\\-]+"
+    },
+    "VPCConnectionResourceIdUnrestricted":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "VPCConnectionResourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATION_IN_PROGRESS",
+        "CREATION_SUCCESSFUL",
+        "CREATION_FAILED",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_SUCCESSFUL",
+        "UPDATE_FAILED",
+        "DELETION_IN_PROGRESS",
+        "DELETION_FAILED",
+        "DELETED"
+      ]
+    },
+    "VPCConnectionSummary":{
+      "type":"structure",
+      "members":{
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC connection that you're creating. This ID is a unique identifier for each Amazon Web Services Region in an Amazon Web Services account.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name for the VPC connection.</p>"
+        },
+        "VPCId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 VPC ID associated with the VPC connection.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The Amazon EC2 security group IDs associated with the VPC connection.</p>"
+        },
+        "DnsResolvers":{
+          "shape":"StringList",
+          "documentation":"<p>A list of IP addresses of DNS resolver endpoints for the VPC connection.</p>"
+        },
+        "Status":{
+          "shape":"VPCConnectionResourceStatus",
+          "documentation":"<p>The status of the VPC connection.</p>"
+        },
+        "AvailabilityStatus":{
+          "shape":"VPCConnectionAvailabilityStatus",
+          "documentation":"<p>The availability status of the VPC connection.</p>"
+        },
+        "NetworkInterfaces":{
+          "shape":"NetworkInterfaceList",
+          "documentation":"<p>A list of network interfaces.</p>"
+        },
+        "RoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM role associated with the VPC connection.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the VPC connection was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the VPC connection was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The summary metadata that describes a VPC connection.</p>"
+    },
+    "VPCConnectionSummaryList":{
+      "type":"list",
+      "member":{"shape":"VPCConnectionSummary"}
     },
     "ValueWhenUnsetOption":{
       "type":"string",
@@ -24923,7 +27842,7 @@
     "VisualList":{
       "type":"list",
       "member":{"shape":"Visual"},
-      "max":30
+      "max":50
     },
     "VisualMenuOption":{
       "type":"structure",

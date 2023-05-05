@@ -628,6 +628,22 @@
       ],
       "documentation":"<p>Returns the current finding aggregation configuration.</p>"
     },
+    "GetFindingHistory":{
+      "name":"GetFindingHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findingHistory/get"
+      },
+      "input":{"shape":"GetFindingHistoryRequest"},
+      "output":{"shape":"GetFindingHistoryResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Returns history for a Security Hub finding in the last 90 days. The history includes changes made to any fields in the Amazon Web Services Security Finding Format (ASFF). </p>"
+    },
     "GetFindings":{
       "name":"GetFindings",
       "http":{
@@ -11578,7 +11594,7 @@
         },
         "GeneratorId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The identifier for the solution-specific component (a discrete unit of logic) that generated a finding. In various security-findings providers' solutions, this generator can be called a rule, a check, a detector, a plugin, etc. </p>"
+          "documentation":"<p>The identifier for the solution-specific component (a discrete unit of logic) that generated a finding. In various security findings providers' solutions, this generator can be called a rule, a check, a detector, a plugin, etc. </p>"
         },
         "AwsAccountId":{
           "shape":"NonEmptyString",
@@ -11590,19 +11606,19 @@
         },
         "FirstObservedAt":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates when the security-findings provider first observed the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+          "documentation":"<p>Indicates when the security findings provider first observed the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
         },
         "LastObservedAt":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates when the security-findings provider most recently observed the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+          "documentation":"<p>Indicates when the security findings provider most recently observed the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
         },
         "CreatedAt":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates when the security-findings provider created the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+          "documentation":"<p>Indicates when the security findings provider created the potential security issue that a finding captured.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
         },
         "UpdatedAt":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates when the security-findings provider last updated the finding record.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
+          "documentation":"<p>Indicates when the security findings provider last updated the finding record.</p> <p>Uses the <code>date-time</code> format specified in <a href=\"https://tools.ietf.org/html/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For example, <code>2020-03-22T13:22:13.933Z</code>.</p>"
         },
         "Severity":{
           "shape":"Severity",
@@ -11630,11 +11646,11 @@
         },
         "SourceUrl":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A URL that links to a page about the current finding in the security-findings provider's solution.</p>"
+          "documentation":"<p>A URL that links to a page about the current finding in the security findings provider's solution.</p>"
         },
         "ProductFields":{
           "shape":"FieldMap",
-          "documentation":"<p>A data type where security-findings providers can include additional solution-specific details that aren't part of the defined <code>AwsSecurityFinding</code> format.</p> <p>Can contain up to 50 key-value pairs. For each key-value pair, the key can contain up to 128 characters, and the value can contain up to 2048 characters.</p>"
+          "documentation":"<p>A data type where security findings providers can include additional solution-specific details that aren't part of the defined <code>AwsSecurityFinding</code> format.</p> <p>Can contain up to 50 key-value pairs. For each key-value pair, the key can contain up to 128 characters, and the value can contain up to 2048 characters.</p>"
         },
         "UserDefinedFields":{
           "shape":"FieldMap",
@@ -11736,7 +11752,7 @@
         },
         "GeneratorId":{
           "shape":"StringFilterList",
-          "documentation":"<p>The identifier for the solution-specific component (a discrete unit of logic) that generated a finding. In various security-findings providers' solutions, this generator can be called a rule, a check, a detector, a plugin, etc.</p>"
+          "documentation":"<p>The identifier for the solution-specific component (a discrete unit of logic) that generated a finding. In various security findings providers' solutions, this generator can be called a rule, a check, a detector, a plugin, etc.</p>"
         },
         "Region":{
           "shape":"StringFilterList",
@@ -11748,23 +11764,23 @@
         },
         "FirstObservedAt":{
           "shape":"DateFilterList",
-          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security-findings provider first observed the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
+          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security findings provider first observed the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
         },
         "LastObservedAt":{
           "shape":"DateFilterList",
-          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security-findings provider most recently observed the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
+          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security findings provider most recently observed the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
         },
         "CreatedAt":{
           "shape":"DateFilterList",
-          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security-findings provider captured the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
+          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security findings provider captured the potential security issue that a finding captured.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
         },
         "UpdatedAt":{
           "shape":"DateFilterList",
-          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security-findings provider last updated the finding record. </p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
+          "documentation":"<p>An ISO8601-formatted timestamp that indicates when the security findings provider last updated the finding record. </p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p>"
         },
         "SeverityProduct":{
           "shape":"NumberFilterList",
-          "documentation":"<p>The native severity as defined by the security-findings provider's solution that generated the finding.</p>",
+          "documentation":"<p>The native severity as defined by the security findings provider's solution that generated the finding.</p>",
           "deprecated":true,
           "deprecatedMessage":"This filter is deprecated. Instead, use FindingProviderSeverityOriginal."
         },
@@ -11800,11 +11816,11 @@
         },
         "SourceUrl":{
           "shape":"StringFilterList",
-          "documentation":"<p>A URL that links to a page about the current finding in the security-findings provider's solution.</p>"
+          "documentation":"<p>A URL that links to a page about the current finding in the security findings provider's solution.</p>"
         },
         "ProductFields":{
           "shape":"MapFilterList",
-          "documentation":"<p>A data type where security-findings providers can include additional solution-specific details that aren't part of the defined <code>AwsSecurityFinding</code> format.</p>"
+          "documentation":"<p>A data type where security findings providers can include additional solution-specific details that aren't part of the defined <code>AwsSecurityFinding</code> format.</p>"
         },
         "ProductName":{
           "shape":"StringFilterList",
@@ -12137,7 +12153,7 @@
           "documentation":"<p>The ARN generated by Security Hub that uniquely identifies a product that generates findings. This can be the ARN for a third-party product that is integrated with Security Hub, or the ARN for a custom integration.</p>"
         }
       },
-      "documentation":"<p>Identifies a finding to update using <code>BatchUpdateFindings</code>.</p>"
+      "documentation":"<p>Identifies which finding to get the finding history for.</p>"
     },
     "AwsSecurityFindingIdentifierList":{
       "type":"list",
@@ -14265,6 +14281,80 @@
       "type":"list",
       "member":{"shape":"FindingAggregator"}
     },
+    "FindingHistoryRecord":{
+      "type":"structure",
+      "members":{
+        "FindingIdentifier":{"shape":"AwsSecurityFindingIdentifier"},
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> An ISO 8601-formatted timestamp that indicates when the security findings provider last updated the finding record. A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. </p>"
+        },
+        "FindingCreated":{
+          "shape":"Boolean",
+          "documentation":"<p> Identifies whether the event marks the creation of a new finding. A value of <code>True</code> means that the finding is newly created. A value of <code>False</code> means that the finding isn’t newly created. </p>"
+        },
+        "UpdateSource":{
+          "shape":"FindingHistoryUpdateSource",
+          "documentation":"<p> Identifies the source of the event that changed the finding. For example, an integrated Amazon Web Service or third-party partner integration may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a>, or an Security Hub customer may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a>. </p>"
+        },
+        "Updates":{
+          "shape":"FindingHistoryUpdatesList",
+          "documentation":"<p> An array of objects that provides details about the finding change event, including the Amazon Web Services Security Finding Format (ASFF) field that changed, the value of the field before the change, and the value of the field after the change. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token for pagination purposes. Provide this token in the subsequent request to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_GetFindingsHistory.html\"> <code>GetFindingsHistory</code> </a> to get up to an additional 100 results of history for the same finding that you specified in your initial request. </p>"
+        }
+      },
+      "documentation":"<p> A list of events that changed the specified finding during the specified time period. Each record represents a single finding change event. </p>"
+    },
+    "FindingHistoryRecordList":{
+      "type":"list",
+      "member":{"shape":"FindingHistoryRecord"}
+    },
+    "FindingHistoryUpdate":{
+      "type":"structure",
+      "members":{
+        "UpdatedField":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ASFF field that changed during the finding change event. </p>"
+        },
+        "OldValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The value of the ASFF field before the finding change event. </p>"
+        },
+        "NewValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The value of the ASFF field after the finding change event. To preserve storage and readability, Security Hub omits this value if <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_FindingHistoryRecord.html\"> <code>FindingHistoryRecord</code> </a> exceeds database limits. </p>"
+        }
+      },
+      "documentation":"<p> An array of objects that provides details about a change to a finding, including the Amazon Web Services Security Finding Format (ASFF) field that changed, the value of the field before the change, and the value of the field after the change. </p>"
+    },
+    "FindingHistoryUpdateSource":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"FindingHistoryUpdateSourceType",
+          "documentation":"<p> Describes the type of finding change event, such as a call to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> (by an integrated Amazon Web Service or third party partner integration) or <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> (by a Security Hub customer). </p>"
+        },
+        "Identity":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identity of the source that initiated the finding change event. For example, the Amazon Resource Name (ARN) of a partner that calls BatchImportFindings or of a customer that calls BatchUpdateFindings. </p>"
+        }
+      },
+      "documentation":"<p> Identifies the source of the finding change event. </p>"
+    },
+    "FindingHistoryUpdateSourceType":{
+      "type":"string",
+      "enum":[
+        "BATCH_UPDATE_FINDINGS",
+        "BATCH_IMPORT_FINDINGS"
+      ]
+    },
+    "FindingHistoryUpdatesList":{
+      "type":"list",
+      "member":{"shape":"FindingHistoryUpdate"}
+    },
     "FindingProviderFields":{
       "type":"structure",
       "members":{
@@ -14466,6 +14556,42 @@
         "Regions":{
           "shape":"StringList",
           "documentation":"<p>The list of excluded Regions or included Regions.</p>"
+        }
+      }
+    },
+    "GetFindingHistoryRequest":{
+      "type":"structure",
+      "required":["FindingIdentifier"],
+      "members":{
+        "FindingIdentifier":{"shape":"AwsSecurityFindingIdentifier"},
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> An ISO 8601-formatted timestamp that indicates the start time of the requested finding history. A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p> <p>If you provide values for both <code>StartTime</code> and <code>EndTime</code>, Security Hub returns finding history for the specified time period. If you provide a value for <code>StartTime</code> but not for <code>EndTime</code>, Security Hub returns finding history from the <code>StartTime</code> to the time at which the API is called. If you provide a value for <code>EndTime</code> but not for <code>StartTime</code>, Security Hub returns finding history from the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html#securityhub-Type-AwsSecurityFindingFilters-CreatedAt\">CreatedAt</a> timestamp of the finding to the <code>EndTime</code>. If you provide neither <code>StartTime</code> nor <code>EndTime</code>, Security Hub returns finding history from the CreatedAt timestamp of the finding to the time at which the API is called. In all of these scenarios, the response is limited to 100 results, and the maximum time period is limited to 90 days. </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> An ISO 8601-formatted timestamp that indicates the end time of the requested finding history. A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>.</p> <p>If you provide values for both <code>StartTime</code> and <code>EndTime</code>, Security Hub returns finding history for the specified time period. If you provide a value for <code>StartTime</code> but not for <code>EndTime</code>, Security Hub returns finding history from the <code>StartTime</code> to the time at which the API is called. If you provide a value for <code>EndTime</code> but not for <code>StartTime</code>, Security Hub returns finding history from the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_AwsSecurityFindingFilters.html#securityhub-Type-AwsSecurityFindingFilters-CreatedAt\">CreatedAt</a> timestamp of the finding to the <code>EndTime</code>. If you provide neither <code>StartTime</code> nor <code>EndTime</code>, Security Hub returns finding history from the CreatedAt timestamp of the finding to the time at which the API is called. In all of these scenarios, the response is limited to 100 results, and the maximum time period is limited to 90 days.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token for pagination purposes. Provide <code>NULL</code> as the initial value. In subsequent requests, provide the token included in the response to get up to an additional 100 results of finding history. If you don’t provide <code>NextToken</code>, Security Hub returns up to 100 results of finding history for each request. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of results to be returned. If you don’t provide it, Security Hub returns up to 100 results of finding history. </p>"
+        }
+      }
+    },
+    "GetFindingHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "Records":{
+          "shape":"FindingHistoryRecordList",
+          "documentation":"<p> A list of events that altered the specified finding during the specified time period. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token for pagination purposes. Provide this token in the subsequent request to <code>GetFindingsHistory</code> to get up to an additional 100 results of history for the same finding that you specified in your initial request. </p>"
         }
       }
     },

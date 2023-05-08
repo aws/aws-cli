@@ -46,6 +46,8 @@ def register_removals(event_handler):
                          remove_commands=['start-conversation'])
     cmd_remover.remove(on_event='building-command-table.lambda',
                          remove_commands=['invoke-with-response-stream'])
+    cmd_remover.remove(on_event='building-command-table.sagemaker-runtime',
+                         remove_commands=['invoke-endpoint-with-response-stream'])
 
 
 class CommandRemover(object):

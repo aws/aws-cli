@@ -76,6 +76,11 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'external-id',
+            'help_text': ("The external ID to use when assuming the role"),
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -121,6 +126,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         client = EKSClient(self._session,
                            parsed_args.name,
                            parsed_args.role_arn,
+                           parsed_args.external_id,
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
@@ -235,10 +241,11 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, cluster_name, role_arn, external_id, parsed_globals=None):
         self._session = session
         self._cluster_name = cluster_name
         self._role_arn = role_arn
+        self._external_id = external_id
         self._cluster_description = None
         self._globals = parsed_globals
 
@@ -331,6 +338,12 @@ class EKSClient(object):
             generated_user["user"]["exec"]["args"].extend([
                 "--role",
                 self._role_arn
+            ])
+
+        if self._external_id is not None:
+            generated_user["user"]["exec"]["args"].extend([
+                "--external-id",
+                self._external_id
             ])
 
         if self._session.profile:

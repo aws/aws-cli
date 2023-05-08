@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.130
+========
+
+* api-change:``glue``: We don't do release notes https://w.amazon.com/bin/view/AWSDocs/common-tasks/release-notes
+* api-change:``guardduty``: Add AccessDeniedException 403 Error message code to support 3 Tagging related APIs
+* api-change:``iotsitewise``: Provide support for 20,000 max results for GetAssetPropertyValueHistory/BatchGetAssetPropertyValueHistory and 15 minute aggregate resolution for GetAssetPropertyAggregates/BatchGetAssetPropertyAggregates
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+
+
 1.27.129
 ========
 

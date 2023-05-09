@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.131
+========
+
+* api-change:``application-autoscaling``: With this release, Amazon SageMaker Serverless Inference customers can use Application Auto Scaling to auto scale the provisioned concurrency of their serverless endpoints.
+* api-change:``glue``: This release adds AmazonRedshift Source and Target nodes in addition to DynamicTransform OutputSchemas
+* api-change:``sagemaker``: This release includes support for (1) Provisioned Concurrency for Amazon SageMaker Serverless Inference and (2) UpdateEndpointWeightsAndCapacities API for Serverless endpoints.
+
+
 1.27.130
 ========
 

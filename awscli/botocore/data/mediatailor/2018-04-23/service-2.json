@@ -642,9 +642,13 @@
     "AvailSuppression":{
       "type":"structure",
       "members":{
+        "FillPolicy":{
+          "shape":"FillPolicy",
+          "documentation":"<p>Defines the policy to apply to the avail suppression mode. <code>BEHIND_LIVE_EDGE</code> will always use the full avail suppression policy. <code>AFTER_LIVE_EDGE</code> mode can be used to invoke partial ad break fills when a session starts mid-break.</p>"
+        },
         "Mode":{
           "shape":"Mode",
-          "documentation":"<p>Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window.</p>"
+          "documentation":"<p>Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window. When Mode is set to <code>AFTER_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks that are within the live edge plus the avail suppression value.</p>"
         },
         "Value":{
           "shape":"__string",
@@ -1837,6 +1841,13 @@
         }
       }
     },
+    "FillPolicy":{
+      "type":"string",
+      "enum":[
+        "FULL_AVAIL_ONLY",
+        "PARTIAL_AVAIL"
+      ]
+    },
     "GetChannelPolicyRequest":{
       "type":"structure",
       "required":["ChannelName"],
@@ -2482,7 +2493,8 @@
       "type":"string",
       "enum":[
         "OFF",
-        "BEHIND_LIVE_EDGE"
+        "BEHIND_LIVE_EDGE",
+        "AFTER_LIVE_EDGE"
       ]
     },
     "Operator":{

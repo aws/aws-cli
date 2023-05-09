@@ -533,6 +533,23 @@
       ],
       "documentation":"<p>Lists the Amazon Inspector usage totals over the last 30 days.</p>"
     },
+    "SearchVulnerabilities":{
+      "name":"SearchVulnerabilities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/vulnerabilities/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchVulnerabilitiesRequest"},
+      "output":{"shape":"SearchVulnerabilitiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists Amazon Inspector coverage details for a specific vulnerability.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -1012,6 +1029,28 @@
         }
       }
     },
+    "AtigData":{
+      "type":"structure",
+      "members":{
+        "firstSeen":{
+          "shape":"FirstSeen",
+          "documentation":"<p>The date and time this vulnerability was first observed.</p>"
+        },
+        "lastSeen":{
+          "shape":"LastSeen",
+          "documentation":"<p>The date and time this vulnerability was last observed.</p>"
+        },
+        "targets":{
+          "shape":"Targets",
+          "documentation":"<p>The commercial sectors this vulnerability targets.</p>"
+        },
+        "ttps":{
+          "shape":"Ttps",
+          "documentation":"<p>The <a href=\"https://attack.mitre.org/\">MITRE ATT&amp;CK</a> tactics, techniques, and procedures (TTPs) associated with vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Threat Intel Group (ATIG) details for a specific vulnerability.</p>"
+    },
     "AutoEnable":{
       "type":"structure",
       "required":[
@@ -1391,6 +1430,30 @@
         }
       }
     },
+    "CisaAction":{
+      "type":"string",
+      "min":0
+    },
+    "CisaData":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"CisaAction",
+          "documentation":"<p>The remediation action recommended by CISA for this vulnerability.</p>"
+        },
+        "dateAdded":{
+          "shape":"CisaDateAdded",
+          "documentation":"<p>The date and time CISA added this vulnerability to their catalogue.</p>"
+        },
+        "dateDue":{
+          "shape":"CisaDateDue",
+          "documentation":"<p>The date and time CISA expects a fix to have been provided vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.</p>"
+    },
+    "CisaDateAdded":{"type":"timestamp"},
+    "CisaDateDue":{"type":"timestamp"},
     "ClientToken":{
       "type":"string",
       "max":64,
@@ -1692,6 +1755,44 @@
       "type":"string",
       "enum":["USD"]
     },
+    "Cvss2":{
+      "type":"structure",
+      "members":{
+        "baseScore":{
+          "shape":"Cvss2BaseScore",
+          "documentation":"<p>The CVSS v2 base score for the vulnerability.</p>"
+        },
+        "scoringVector":{
+          "shape":"Cvss2ScoringVector",
+          "documentation":"<p>The scoring vector associated with the CVSS v2 score.</p>"
+        }
+      },
+      "documentation":"<p>The Common Vulnerability Scoring System (CVSS) version 2 details for the vulnerability.</p>"
+    },
+    "Cvss2BaseScore":{"type":"double"},
+    "Cvss2ScoringVector":{
+      "type":"string",
+      "min":0
+    },
+    "Cvss3":{
+      "type":"structure",
+      "members":{
+        "baseScore":{
+          "shape":"Cvss3BaseScore",
+          "documentation":"<p>The CVSS v3 base score for the vulnerability.</p>"
+        },
+        "scoringVector":{
+          "shape":"Cvss3ScoringVector",
+          "documentation":"<p>The scoring vector associated with the CVSS v3 score.</p>"
+        }
+      },
+      "documentation":"<p>The Common Vulnerability Scoring System (CVSS) version 3 details for the vulnerability.</p>"
+    },
+    "Cvss3BaseScore":{"type":"double"},
+    "Cvss3ScoringVector":{
+      "type":"string",
+      "min":0
+    },
     "CvssScore":{
       "type":"structure",
       "required":[
@@ -1781,6 +1882,15 @@
     "CvssScoreList":{
       "type":"list",
       "member":{"shape":"CvssScore"}
+    },
+    "Cwe":{
+      "type":"string",
+      "min":0
+    },
+    "Cwes":{
+      "type":"list",
+      "member":{"shape":"Cwe"},
+      "min":0
     },
     "DateFilter":{
       "type":"structure",
@@ -1903,6 +2013,12 @@
         }
       },
       "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings.</p>"
+    },
+    "DetectionPlatforms":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":0
     },
     "DisableDelegatedAdminAccountRequest":{
       "type":"structure",
@@ -2241,6 +2357,17 @@
         }
       }
     },
+    "Epss":{
+      "type":"structure",
+      "members":{
+        "score":{
+          "shape":"EpssScore",
+          "documentation":"<p>The Exploit Prediction Scoring System (EPSS) score.</p>"
+        }
+      },
+      "documentation":"<p>Details about the Exploit Prediction Scoring System (EPSS) score.</p>"
+    },
+    "EpssScore":{"type":"double"},
     "ErrorCode":{
       "type":"string",
       "enum":[
@@ -2271,6 +2398,20 @@
         "YES",
         "NO"
       ]
+    },
+    "ExploitObserved":{
+      "type":"structure",
+      "members":{
+        "firstSeen":{
+          "shape":"FirstSeen",
+          "documentation":"<p>The date an time when the exploit was first seen.</p>"
+        },
+        "lastSeen":{
+          "shape":"LastSeen",
+          "documentation":"<p>The date an time when the exploit was last seen.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on when this exploit was observed.</p>"
     },
     "ExploitabilityDetails":{
       "type":"structure",
@@ -2781,6 +2922,7 @@
         "ALL"
       ]
     },
+    "FirstSeen":{"type":"timestamp"},
     "FixAvailable":{
       "type":"string",
       "enum":[
@@ -3327,6 +3469,7 @@
       },
       "documentation":"<p>The VPC security groups and subnets that are attached to an AWS Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html\">VPC Settings</a>.</p>"
     },
+    "LastSeen":{"type":"timestamp"},
     "LayerList":{
       "type":"list",
       "member":{"shape":"LambdaLayerArn"},
@@ -4201,6 +4344,16 @@
       },
       "documentation":"<p>Details about the recommended course of action to remediate the finding.</p>"
     },
+    "RelatedVulnerabilities":{
+      "type":"list",
+      "member":{"shape":"RelatedVulnerability"},
+      "max":100,
+      "min":0
+    },
+    "RelatedVulnerability":{
+      "type":"string",
+      "min":0
+    },
     "RelationshipStatus":{
       "type":"string",
       "enum":[
@@ -4536,6 +4689,45 @@
         "PACKAGE"
       ]
     },
+    "SearchVulnerabilitiesFilterCriteria":{
+      "type":"structure",
+      "required":["vulnerabilityIds"],
+      "members":{
+        "vulnerabilityIds":{
+          "shape":"VulnIdList",
+          "documentation":"<p>The IDs for specific vulnerabilities.</p>"
+        }
+      },
+      "documentation":"<p>Details on the criteria used to define the filter for a vulnerability search. </p>"
+    },
+    "SearchVulnerabilitiesRequest":{
+      "type":"structure",
+      "required":["filterCriteria"],
+      "members":{
+        "filterCriteria":{
+          "shape":"SearchVulnerabilitiesFilterCriteria",
+          "documentation":"<p>The criteria used to filter the results of a vulnerability search.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
+    },
+    "SearchVulnerabilitiesResponse":{
+      "type":"structure",
+      "required":["vulnerabilities"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>"
+        },
+        "vulnerabilities":{
+          "shape":"Vulnerabilities",
+          "documentation":"<p>Details about the listed vulnerability.</p>"
+        }
+      }
+    },
     "SecurityGroupId":{
       "type":"string",
       "pattern":"^sg-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
@@ -4814,6 +5006,16 @@
       "members":{
       }
     },
+    "Target":{
+      "type":"string",
+      "max":50,
+      "min":0
+    },
+    "Targets":{
+      "type":"list",
+      "member":{"shape":"Target"},
+      "min":0
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -4891,6 +5093,16 @@
         "HIGH",
         "ALL"
       ]
+    },
+    "Ttp":{
+      "type":"string",
+      "max":30,
+      "min":0
+    },
+    "Ttps":{
+      "type":"list",
+      "member":{"shape":"Ttp"},
+      "min":0
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -5163,6 +5375,13 @@
         "OTHER"
       ]
     },
+    "VendorCreatedAt":{"type":"timestamp"},
+    "VendorSeverity":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "VendorUpdatedAt":{"type":"timestamp"},
     "Version":{
       "type":"string",
       "pattern":"^\\$LATEST|[0-9]+$"
@@ -5171,6 +5390,98 @@
       "type":"string",
       "pattern":"^vpc-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
     },
+    "VulnId":{
+      "type":"string",
+      "pattern":"^CVE-[12][0-9]{3}-[0-9]{1,10}$"
+    },
+    "VulnIdList":{
+      "type":"list",
+      "member":{"shape":"VulnId"},
+      "max":1,
+      "min":1
+    },
+    "Vulnerabilities":{
+      "type":"list",
+      "member":{"shape":"Vulnerability"},
+      "max":1,
+      "min":0
+    },
+    "Vulnerability":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "atigData":{
+          "shape":"AtigData",
+          "documentation":"<p>An object that contains information about the Amazon Web Services Threat Intel Group (ATIG) details for the vulnerability.</p>"
+        },
+        "cisaData":{
+          "shape":"CisaData",
+          "documentation":"<p>An object that contains the Cybersecurity and Infrastructure Security Agency (CISA) details for the vulnerability.</p>"
+        },
+        "cvss2":{
+          "shape":"Cvss2",
+          "documentation":"<p>An object that contains the Common Vulnerability Scoring System (CVSS) Version 2 details for the vulnerability.</p>"
+        },
+        "cvss3":{
+          "shape":"Cvss3",
+          "documentation":"<p>An object that contains the Common Vulnerability Scoring System (CVSS) Version 3 details for the vulnerability.</p>"
+        },
+        "cwes":{
+          "shape":"Cwes",
+          "documentation":"<p>The Common Weakness Enumeration (CWE) associated with the vulnerability.</p>"
+        },
+        "description":{
+          "shape":"VulnerabilityDescription",
+          "documentation":"<p>A description of the vulnerability.</p>"
+        },
+        "detectionPlatforms":{
+          "shape":"DetectionPlatforms",
+          "documentation":"<p>Platforms that the vulnerability can be detected on.</p>"
+        },
+        "epss":{
+          "shape":"Epss",
+          "documentation":"<p>An object that contains the Exploit Prediction Scoring System (EPSS) score.</p>"
+        },
+        "exploitObserved":{
+          "shape":"ExploitObserved",
+          "documentation":"<p>An object that contains details on when the exploit was observed.</p>"
+        },
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID for the specific vulnerability.</p>"
+        },
+        "referenceUrls":{
+          "shape":"VulnerabilityReferenceUrls",
+          "documentation":"<p>Links to various resources with more information on this vulnerability. </p>"
+        },
+        "relatedVulnerabilities":{
+          "shape":"RelatedVulnerabilities",
+          "documentation":"<p>A list of related vulnerabilities.</p>"
+        },
+        "source":{
+          "shape":"VulnerabilitySource",
+          "documentation":"<p>The source of the vulnerability information.</p>"
+        },
+        "sourceUrl":{
+          "shape":"VulnerabilitySourceUrl",
+          "documentation":"<p>A link to the official source material for this vulnerability.</p>"
+        },
+        "vendorCreatedAt":{
+          "shape":"VendorCreatedAt",
+          "documentation":"<p>The date and time when the vendor created this vulnerability.</p>"
+        },
+        "vendorSeverity":{
+          "shape":"VendorSeverity",
+          "documentation":"<p>The severity assigned by the vendor.</p>"
+        },
+        "vendorUpdatedAt":{
+          "shape":"VendorUpdatedAt",
+          "documentation":"<p>The date and time when the vendor last updated this vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific vulnerability Amazon Inspector can detect.</p>"
+    },
+    "VulnerabilityDescription":{"type":"string"},
     "VulnerabilityId":{
       "type":"string",
       "max":128,
@@ -5179,6 +5490,24 @@
     "VulnerabilityIdList":{
       "type":"list",
       "member":{"shape":"VulnerabilityId"}
+    },
+    "VulnerabilityReferenceUrl":{
+      "type":"string",
+      "min":0
+    },
+    "VulnerabilityReferenceUrls":{
+      "type":"list",
+      "member":{"shape":"VulnerabilityReferenceUrl"},
+      "max":100,
+      "min":0
+    },
+    "VulnerabilitySource":{
+      "type":"string",
+      "enum":["NVD"]
+    },
+    "VulnerabilitySourceUrl":{
+      "type":"string",
+      "min":0
     },
     "VulnerablePackage":{
       "type":"structure",

@@ -794,6 +794,7 @@
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, and threat intel sets, with a limit of 50 tags per resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
@@ -870,6 +871,7 @@
       "output":{"shape":"TagResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Adds tags to a resource.</p>"
@@ -900,6 +902,7 @@
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
@@ -1122,6 +1125,24 @@
         }
       },
       "documentation":"<p>Contains information on the current access control policies for the bucket.</p>"
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>An access denied exception object.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
     },
     "AccessKeyDetails":{
       "type":"structure",

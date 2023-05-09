@@ -5341,6 +5341,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.131
+========
+
+* api-change:``application-autoscaling``: With this release, Amazon SageMaker Serverless Inference customers can use Application Auto Scaling to auto scale the provisioned concurrency of their serverless endpoints.
+* api-change:``glue``: This release adds AmazonRedshift Source and Target nodes in addition to DynamicTransform OutputSchemas
+* api-change:``sagemaker``: This release includes support for (1) Provisioned Concurrency for Amazon SageMaker Serverless Inference and (2) UpdateEndpointWeightsAndCapacities API for Serverless endpoints.
+
+
+1.27.130
+========
+
+* api-change:``glue``: Support large worker types G.4x and G.8x for Glue Spark
+* api-change:``guardduty``: Add AccessDeniedException 403 Error message code to support 3 Tagging related APIs
+* api-change:``iotsitewise``: Provide support for 20,000 max results for GetAssetPropertyValueHistory/BatchGetAssetPropertyValueHistory and 15 minute aggregate resolution for GetAssetPropertyAggregates/BatchGetAssetPropertyAggregates
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+
+
+1.27.129
+========
+
+* api-change:``ec2``: This release adds support the inf2 and trn1n instances. inf2 instances are purpose built for deep learning inference while trn1n instances are powered by AWS Trainium accelerators and they build on the capabilities of Trainium-powered trn1 instances.
+* api-change:``inspector2``: Amazon Inspector now allows customers to search its vulnerability intelligence database if any of the Inspector scanning types are activated.
+* api-change:``mediatailor``: This release adds support for AFTER_LIVE_EDGE mode configuration for avail suppression, and adding a fill-policy setting that sets the avail suppression to PARTIAL_AVAIL or FULL_AVAIL_ONLY when AFTER_LIVE_EDGE is enabled.
+* api-change:``sqs``: Revert previous SQS protocol change.
+
+
 1.27.127
 ========
 

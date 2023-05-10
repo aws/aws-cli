@@ -7475,7 +7475,7 @@
         },
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
-          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         },
         "DomainSettings":{
           "shape":"DomainSettings",
@@ -14615,6 +14615,10 @@
         "DesiredInstanceCount":{
           "shape":"TaskCount",
           "documentation":"<p>The variant's capacity.</p>"
+        },
+        "ServerlessUpdateConfig":{
+          "shape":"ProductionVariantServerlessUpdateConfig",
+          "documentation":"<p>Specifies the serverless update concurrency configuration for an endpoint variant.</p>"
         }
       },
       "documentation":"<p>Specifies weight and capacity values for a production variant.</p>"
@@ -15059,7 +15063,7 @@
       "members":{
         "RStudioServerProDomainSettingsForUpdate":{
           "shape":"RStudioServerProDomainSettingsForUpdate",
-          "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update.</p>"
+          "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update. A single <code>RStudioServerPro</code> application is created for a domain.</p>"
         },
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
@@ -27755,9 +27759,27 @@
         "MaxConcurrency":{
           "shape":"ServerlessMaxConcurrency",
           "documentation":"<p>The maximum number of concurrent invocations your serverless endpoint can process.</p>"
+        },
+        "ProvisionedConcurrency":{
+          "shape":"ServerlessProvisionedConcurrency",
+          "documentation":"<p>The amount of provisioned concurrency to allocate for the serverless endpoint. Should be less than or equal to <code>MaxConcurrency</code>.</p>"
         }
       },
       "documentation":"<p>Specifies the serverless configuration for an endpoint variant.</p>"
+    },
+    "ProductionVariantServerlessUpdateConfig":{
+      "type":"structure",
+      "members":{
+        "MaxConcurrency":{
+          "shape":"ServerlessMaxConcurrency",
+          "documentation":"<p>The updated maximum number of concurrent invocations your serverless endpoint can process.</p>"
+        },
+        "ProvisionedConcurrency":{
+          "shape":"ServerlessProvisionedConcurrency",
+          "documentation":"<p>The updated amount of provisioned concurrency to allocate for the serverless endpoint. Should be less than or equal to <code>MaxConcurrency</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the serverless update concurrency configuration for an endpoint variant.</p>"
     },
     "ProductionVariantStatus":{
       "type":"structure",
@@ -29660,6 +29682,11 @@
       "type":"integer",
       "max":6144,
       "min":1024
+    },
+    "ServerlessProvisionedConcurrency":{
+      "type":"integer",
+      "max":200,
+      "min":1
     },
     "ServiceCatalogEntityId":{
       "type":"string",
@@ -32450,7 +32477,7 @@
         },
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
-          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         }
       }
     },

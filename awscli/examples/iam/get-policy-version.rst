@@ -1,30 +1,29 @@
 **To retrieve information about the specified version of the specified managed policy**
 
-This example returns the policy document for the v2 version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyManagedPolicy``::
+This example returns the policy document for the v2 version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyManagedPolicy`` ::
 
-  aws iam get-policy-version --policy-arn arn:aws:iam::123456789012:policy/MyPolicy --version-id v2
-
+    aws iam get-policy-version \
+        --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \
+        --version-id v2
 
 Output::
 
-  {
-      "PolicyVersion": {
-          "CreateDate": "2015-06-17T19:23;32Z",
-          "VersionId": "v2",
-          "Document": {
-			"Version": "2012-10-17",
-			"Statement": [
-				{
-					"Action": "iam:*",
-					"Resource": "*",
-					"Effect": "Allow"
-				}
-			]
-		  }
-          "IsDefaultVersion": "false"
-      }
-  }
+    {
+        "PolicyVersion": {
+            "Document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": "iam:*",
+                        "Resource": "*"
+                    }
+                ]
+            },
+            "VersionId": "v2",
+            "IsDefaultVersion": true,
+            "CreateDate": "2023-04-11T00:22:54+00:00"
+        }
+    }
 
-For more information, see `Overview of IAM Policies`_ in the *Using IAM* guide.
-
-.. _`Overview of IAM Policies`: http://docs.aws.amazon.com/IAM/latest/UserGuide/policies_overview.html
+For more information, see `Overview of IAM Policies <https://docs.aws.amazon.com/IAM/latest/UserGuide/policies_overview.html>`__ in the *IAM User Guide*.

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.27.133
+========
+
+* api-change:``connect``: This release updates GetMetricDataV2 API, to support metric data up-to last 35 days
+* api-change:``elasticache``: Added support to modify the cluster mode configuration for the existing ElastiCache ReplicationGroups. Customers can now modify the configuration from cluster mode disabled to cluster mode enabled.
+* api-change:``es``: This release fixes DescribePackages API error with null filter value parameter.
+* api-change:``health``: Add support for regional endpoints
+* api-change:``ivs-realtime``: Add methods for inspecting and debugging stages: ListStageSessions, GetStageSession, ListParticipants, GetParticipant, and ListParticipantEvents.
+* api-change:``omics``: This release provides support for Ready2Run and GPU workflows, an improved read set filter, the direct upload of read sets into Omics Storage, and annotation parsing for analytics stores.
+* api-change:``opensearch``: This release fixes DescribePackages API error with null filter value parameter.
+* api-change:``route53resolver``: Update FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``support``: This release adds 2 new Support APIs, DescribeCreateCaseOptions and DescribeSupportedLanguages. You can use these new APIs to get available support languages.
+
+
 1.27.132
 ========
 

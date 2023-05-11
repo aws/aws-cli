@@ -1,4 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2 as installer
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023 as installer
 ARG EXE_FILENAME=awscli-exe-linux-x86_64.zip
 COPY $EXE_FILENAME .
 RUN yum update -y \
@@ -11,7 +11,7 @@ RUN yum update -y \
   # may be present in /usr/local/bin of the installer stage.
   && ./aws/install --bin-dir /aws-cli-bin/
 
-FROM public.ecr.aws/amazonlinux/amazonlinux:2
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 RUN yum update -y \
   && yum install -y less groff \
   && yum clean all

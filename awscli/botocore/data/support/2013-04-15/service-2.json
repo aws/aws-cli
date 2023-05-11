@@ -104,6 +104,20 @@
       ],
       "documentation":"<p>Returns communications and attachments for one or more support cases. Use the <code>afterTime</code> and <code>beforeTime</code> parameters to filter by date. You can use the <code>caseId</code> parameter to restrict the results to a specific case.</p> <p>Case data is available for 12 months after creation. If a case was created more than 12 months ago, a request for data might cause an error.</p> <p>You can use the <code>maxResults</code> and <code>nextToken</code> parameters to control the pagination of the results. Set <code>maxResults</code> to the number of cases that you want to display on each page, and use <code>nextToken</code> to specify the resumption of pagination.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
+    "DescribeCreateCaseOptions":{
+      "name":"DescribeCreateCaseOptions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCreateCaseOptionsRequest"},
+      "output":{"shape":"DescribeCreateCaseOptionsResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of CreateCaseOption types along with the corresponding supported hours and language availability. You can specify the <code>language</code> <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code> used to retrieve the CreateCaseOptions.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+    },
     "DescribeServices":{
       "name":"DescribeServices",
       "http":{
@@ -130,6 +144,20 @@
       ],
       "documentation":"<p>Returns the list of severity levels that you can assign to a support case. The severity level for a case is also a field in the <a>CaseDetails</a> data type that you include for a <a>CreateCase</a> request.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
+    "DescribeSupportedLanguages":{
+      "name":"DescribeSupportedLanguages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSupportedLanguagesRequest"},
+      "output":{"shape":"DescribeSupportedLanguagesResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of supported languages for a specified <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code>. The returned supported languages will include a ISO 639-1 code for the <code>language</code>, and the language display name.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+    },
     "DescribeTrustedAdvisorCheckRefreshStatuses":{
       "name":"DescribeTrustedAdvisorCheckRefreshStatuses",
       "http":{
@@ -139,7 +167,8 @@
       "input":{"shape":"DescribeTrustedAdvisorCheckRefreshStatusesRequest"},
       "output":{"shape":"DescribeTrustedAdvisorCheckRefreshStatusesResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the refresh status of the Trusted Advisor checks that have the specified check IDs. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>Some checks are refreshed automatically, and you can't return their refresh statuses by using the <code>DescribeTrustedAdvisorCheckRefreshStatuses</code> operation. If you call this operation for these checks, you might see an <code>InvalidParameterValue</code> error.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
@@ -152,7 +181,8 @@
       "input":{"shape":"DescribeTrustedAdvisorCheckResultRequest"},
       "output":{"shape":"DescribeTrustedAdvisorCheckResultResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the results of the Trusted Advisor check that has the specified check ID. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains a <a>TrustedAdvisorCheckResult</a> object, which contains these three objects:</p> <ul> <li> <p> <a>TrustedAdvisorCategorySpecificSummary</a> </p> </li> <li> <p> <a>TrustedAdvisorResourceDetail</a> </p> </li> <li> <p> <a>TrustedAdvisorResourcesSummary</a> </p> </li> </ul> <p>In addition, the response contains these fields:</p> <ul> <li> <p> <b>status</b> - The alert status of the check can be <code>ok</code> (green), <code>warning</code> (yellow), <code>error</code> (red), or <code>not_available</code>.</p> </li> <li> <p> <b>timestamp</b> - The time of the last refresh of the check.</p> </li> <li> <p> <b>checkId</b> - The unique identifier for the check.</p> </li> </ul> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
@@ -165,7 +195,8 @@
       "input":{"shape":"DescribeTrustedAdvisorCheckSummariesRequest"},
       "output":{"shape":"DescribeTrustedAdvisorCheckSummariesResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the results for the Trusted Advisor check summaries for the check IDs that you specified. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains an array of <a>TrustedAdvisorCheckSummary</a> objects.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
@@ -178,7 +209,8 @@
       "input":{"shape":"DescribeTrustedAdvisorChecksRequest"},
       "output":{"shape":"DescribeTrustedAdvisorChecksResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about all available Trusted Advisor checks, including the name, ID, category, description, and metadata. You must specify a language code.</p> <p>The response contains a <a>TrustedAdvisorCheckDescription</a> object for each check. You must set the Amazon Web Services Region to us-east-1.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> <li> <p>The names and descriptions for Trusted Advisor checks are subject to change. We recommend that you specify the check ID in your code to uniquely identify a check.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
@@ -365,6 +397,7 @@
       "type":"list",
       "member":{"shape":"Attachment"}
     },
+    "AvailabilityErrorMessage":{"type":"string"},
     "BeforeTime":{"type":"string"},
     "Boolean":{"type":"boolean"},
     "CaseCreationLimitExceeded":{
@@ -427,10 +460,10 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         }
       },
-      "documentation":"<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>"
+      "documentation":"<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>"
     },
     "CaseId":{"type":"string"},
     "CaseIdList":{
@@ -482,6 +515,7 @@
       "max":10,
       "min":0
     },
+    "Code":{"type":"string"},
     "Communication":{
       "type":"structure",
       "members":{
@@ -490,12 +524,12 @@
           "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
         },
         "body":{
-          "shape":"CommunicationBody",
+          "shape":"ValidatedCommunicationBody",
           "documentation":"<p>The text of the communication between the customer and Amazon Web Services Support.</p>"
         },
         "submittedBy":{
           "shape":"SubmittedBy",
-          "documentation":"<p>The identity of the account that submitted, or responded to, the support case. Customer entries include the role or IAM user as well as the email address. For example, \"AdminRole (Role) &lt;janedoe@example.com&gt;. Entries from the Amazon Web Services Support team display \"Amazon Web Services,\" and don't show an email address. </p>"
+          "documentation":"<p>The identity of the account that submitted, or responded to, the support case. Customer entries include the IAM role as well as the email address (for example, \"AdminRole (Role) &lt;janedoe@example.com&gt;). Entries from the Amazon Web Services Support team display \"Amazon Web Services,\" and don't show an email address. </p>"
         },
         "timeCreated":{
           "shape":"TimeCreated",
@@ -516,6 +550,30 @@
     "CommunicationList":{
       "type":"list",
       "member":{"shape":"Communication"}
+    },
+    "CommunicationTypeOptions":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"Type",
+          "documentation":"<p> A string value indicating the communication type. At the moment the type value can assume one of 3 values at the moment chat, web and call. </p>"
+        },
+        "supportedHours":{
+          "shape":"SupportedHoursList",
+          "documentation":"<p> A JSON-formatted list containing time ranges when support is available. </p>"
+        },
+        "datesWithoutSupport":{
+          "shape":"DatesWithoutSupportList",
+          "documentation":"<p> A JSON-formatted list containing date and time ranges for periods without support </p>"
+        }
+      },
+      "documentation":"<p>A JSON-formatted object that contains the CommunicationTypeOptions for creating a case for a certain communication channel. It is contained in the response from a <a>DescribeCreateCaseOptions</a> request. <b>CommunicationTypeOptions</b> contains the following fields:</p> <ul> <li> <p> <b>datesWithoutSupport</b> - A JSON-formatted list containing date and time ranges for periods without support in UTC time. Date and time format is RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'. </p> </li> <li> <p> <b>supportedHours</b> - A JSON-formatted list containing time ranges when support are available. Time format is RFC 3339 : 'HH:mm:ss.SSS'. </p> </li> <li> <p> <b>type</b> - A string value indicating the communication type that the aforementioned rules apply to. At the moment the type value can assume one of 3 values at the moment <code>chat</code>, <code>web</code> and <code>call</code>. </p> </li> </ul>"
+    },
+    "CommunicationTypeOptionsList":{
+      "type":"list",
+      "member":{"shape":"CommunicationTypeOptions"},
+      "max":100,
+      "min":1
     },
     "CreateCaseRequest":{
       "type":"structure",
@@ -550,7 +608,7 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         },
         "issueType":{
           "shape":"IssueType",
@@ -573,6 +631,24 @@
       "documentation":"<p>The support case ID returned by a successful completion of the <a>CreateCase</a> operation.</p>"
     },
     "Data":{"type":"blob"},
+    "DateInterval":{
+      "type":"structure",
+      "members":{
+        "startDateTime":{
+          "shape":"ValidatedDateTime",
+          "documentation":"<p> A JSON object containing start and date time (UTC). Date and time format is RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'. </p>"
+        },
+        "endDateTime":{
+          "shape":"ValidatedDateTime",
+          "documentation":"<p> End Date Time (UTC). RFC 3339 format : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'. </p>"
+        }
+      },
+      "documentation":"<p>Date and time (UTC) format in RFC 3339 : 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ'.</p>"
+    },
+    "DatesWithoutSupportList":{
+      "type":"list",
+      "member":{"shape":"DateInterval"}
+    },
     "DescribeAttachmentLimitExceeded":{
       "type":"structure",
       "members":{
@@ -637,7 +713,7 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         },
         "includeCommunications":{
           "shape":"IncludeCommunications",
@@ -699,6 +775,46 @@
       },
       "documentation":"<p>The communications returned by the <a>DescribeCommunications</a> operation.</p>"
     },
+    "DescribeCreateCaseOptionsRequest":{
+      "type":"structure",
+      "required":[
+        "issueType",
+        "serviceCode",
+        "language",
+        "categoryCode"
+      ],
+      "members":{
+        "issueType":{
+          "shape":"IssueType",
+          "documentation":"<p>The type of issue for the case. You can specify <code>customer-service</code> or <code>technical</code>. If you don't specify a value, the default is <code>technical</code>.</p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p>The code for the Amazon Web Services service. You can use the <a>DescribeServices</a> operation to get the possible <code>serviceCode</code> values.</p>"
+        },
+        "language":{
+          "shape":"Language",
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+        },
+        "categoryCode":{
+          "shape":"CategoryCode",
+          "documentation":"<p>The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.</p>"
+        }
+      }
+    },
+    "DescribeCreateCaseOptionsResponse":{
+      "type":"structure",
+      "members":{
+        "languageAvailability":{
+          "shape":"ValidatedLanguageAvailability",
+          "documentation":"<p>Language availability can be any of the following:</p> <ul> <li> <p> available </p> </li> <li> <p> best_effort </p> </li> <li> <p> unavailable </p> </li> </ul>"
+        },
+        "communicationTypes":{
+          "shape":"CommunicationTypeOptionsList",
+          "documentation":"<p> A JSON-formatted array that contains the available communication type options, along with the available support timeframes for the given inputs. </p>"
+        }
+      }
+    },
     "DescribeServicesRequest":{
       "type":"structure",
       "members":{
@@ -708,7 +824,7 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         }
       }
     },
@@ -727,7 +843,7 @@
       "members":{
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports English (\"en\") and Japanese (\"ja\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         }
       }
     },
@@ -740,6 +856,37 @@
         }
       },
       "documentation":"<p>The list of severity levels returned by the <a>DescribeSeverityLevels</a> operation.</p>"
+    },
+    "DescribeSupportedLanguagesRequest":{
+      "type":"structure",
+      "required":[
+        "issueType",
+        "serviceCode",
+        "categoryCode"
+      ],
+      "members":{
+        "issueType":{
+          "shape":"ValidatedIssueTypeString",
+          "documentation":"<p>The type of issue for the case. You can specify <code>customer-service</code> or <code>technical</code>.</p>"
+        },
+        "serviceCode":{
+          "shape":"ValidatedServiceCode",
+          "documentation":"<p>The code for the Amazon Web Services service. You can use the <a>DescribeServices</a> operation to get the possible <code>serviceCode</code> values.</p>"
+        },
+        "categoryCode":{
+          "shape":"ValidatedCategoryCode",
+          "documentation":"<p>The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.</p>"
+        }
+      }
+    },
+    "DescribeSupportedLanguagesResponse":{
+      "type":"structure",
+      "members":{
+        "supportedLanguages":{
+          "shape":"SupportedLanguagesList",
+          "documentation":"<p> A JSON-formatted array that contains the available ISO 639-1 language codes. </p>"
+        }
+      }
     },
     "DescribeTrustedAdvisorCheckRefreshStatusesRequest":{
       "type":"structure",
@@ -829,8 +976,10 @@
       },
       "documentation":"<p>Information about the Trusted Advisor checks returned by the <a>DescribeTrustedAdvisorChecks</a> operation.</p>"
     },
+    "Display":{"type":"string"},
     "DisplayId":{"type":"string"},
     "Double":{"type":"double"},
+    "EndTime":{"type":"string"},
     "ErrorMessage":{"type":"string"},
     "ExpiryTime":{"type":"string"},
     "FileName":{"type":"string"},
@@ -968,6 +1117,7 @@
       "type":"list",
       "member":{"shape":"SeverityLevel"}
     },
+    "StartTime":{"type":"string"},
     "Status":{"type":"string"},
     "String":{"type":"string"},
     "StringList":{
@@ -976,6 +1126,57 @@
     },
     "Subject":{"type":"string"},
     "SubmittedBy":{"type":"string"},
+    "SupportedHour":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"StartTime",
+          "documentation":"<p> Start Time. RFC 3339 format <code>'HH:mm:ss.SSS'</code>. </p>"
+        },
+        "endTime":{
+          "shape":"EndTime",
+          "documentation":"<p> End Time. RFC 3339 format <code>'HH:mm:ss.SSS'</code>. </p>"
+        }
+      },
+      "documentation":"<p>Time range object with <code>startTime</code> and <code>endTime</code> range in RFC 3339 format. <code>'HH:mm:ss.SSS'</code>.</p>"
+    },
+    "SupportedHoursList":{
+      "type":"list",
+      "member":{"shape":"SupportedHour"}
+    },
+    "SupportedLanguage":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"Code",
+          "documentation":"<p> 2 digit ISO 639-1 code. e.g. <code>en</code> </p>"
+        },
+        "language":{
+          "shape":"Language",
+          "documentation":"<p> Full language description e.g. <code>ENGLISH</code> </p>"
+        },
+        "display":{
+          "shape":"Display",
+          "documentation":"<p> Language display value e.g. <code>ENGLISH</code> </p>"
+        }
+      },
+      "documentation":"<p> A JSON-formatted object that contains the available ISO 639-1 language <code>code</code>, <code>language</code> name and langauge <code>display</code> value. The language code is what should be used in the <a>CreateCase</a> call. </p>"
+    },
+    "SupportedLanguagesList":{
+      "type":"list",
+      "member":{"shape":"SupportedLanguage"},
+      "max":100,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"AvailabilityErrorMessage"}
+      },
+      "documentation":"<p> You have exceeded the maximum allowed TPS (Transactions Per Second) for the operations. </p>",
+      "exception":true,
+      "synthetic":true
+    },
     "TimeCreated":{"type":"string"},
     "TrustedAdvisorCategorySpecificSummary":{
       "type":"structure",
@@ -1204,6 +1405,37 @@
         }
       },
       "documentation":"<p>Details about Amazon Web Services resources that were analyzed in a call to Trusted Advisor <a>DescribeTrustedAdvisorCheckSummaries</a>.</p>"
+    },
+    "Type":{"type":"string"},
+    "ValidatedCategoryCode":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "ValidatedCommunicationBody":{
+      "type":"string",
+      "max":8000,
+      "min":1
+    },
+    "ValidatedDateTime":{
+      "type":"string",
+      "max":30,
+      "min":8
+    },
+    "ValidatedIssueTypeString":{
+      "type":"string",
+      "max":22,
+      "min":9
+    },
+    "ValidatedLanguageAvailability":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "ValidatedServiceCode":{
+      "type":"string",
+      "max":100,
+      "min":0
     }
   },
   "documentation":"<fullname>Amazon Web Services Support</fullname> <p>The <i>Amazon Web Services Support API Reference</i> is intended for programmers who need detailed information about the Amazon Web Services Support operations and data types. You can use the API to manage your support cases programmatically. The Amazon Web Services Support API uses HTTP methods that return results in JSON format.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>You can also use the Amazon Web Services Support API to access features for <a href=\"http://aws.amazon.com/premiumsupport/trustedadvisor/\">Trusted Advisor</a>. You can return a list of checks and their descriptions, get check results, specify checks to refresh, and get the refresh status of checks.</p> <p>You can manage your support cases with the following Amazon Web Services Support API operations:</p> <ul> <li> <p>The <a>CreateCase</a>, <a>DescribeCases</a>, <a>DescribeAttachment</a>, and <a>ResolveCase</a> operations create Amazon Web Services Support cases, retrieve information about cases, and resolve cases.</p> </li> <li> <p>The <a>DescribeCommunications</a>, <a>AddCommunicationToCase</a>, and <a>AddAttachmentsToSet</a> operations retrieve and add communications and attachments to Amazon Web Services Support cases.</p> </li> <li> <p>The <a>DescribeServices</a> and <a>DescribeSeverityLevels</a> operations return Amazon Web Service names, service codes, service categories, and problem severity levels. You use these values when you call the <a>CreateCase</a> operation.</p> </li> </ul> <p>You can also use the Amazon Web Services Support API to call the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/\">Trusted Advisor</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <p>For authentication of requests, Amazon Web Services Support uses <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p> <p>For more information about this service and the endpoints to use, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"

@@ -212,7 +212,10 @@ SSE_KMS_KEY_ID = {
         'The customer-managed AWS Key Management Service (KMS) key ID that '
         'should be used to server-side encrypt the object in S3. You should '
         'only provide this parameter if you are using a customer managed '
-        'customer master key (CMK) and not the AWS managed KMS CMK.'
+        'customer master key (CMK) and not the AWS managed KMS CMK. '
+        'Not required when destination is cross-account bucket, '
+        'in this case only set ``sse`` parameter to ``aws:kms``, '
+        'after ensuring credentials have proper cross account permissions.'
     )
 }
 

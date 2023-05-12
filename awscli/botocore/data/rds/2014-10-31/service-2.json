@@ -1693,7 +1693,8 @@
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBClusterAlreadyExistsFault"},
         {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"DomainNotFoundFault"}
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"StorageTypeNotAvailableFault"}
       ],
       "documentation":"<p>Modify the settings for an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -2220,7 +2221,8 @@
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"DBClusterNotFoundFault"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"InsufficientStorageClusterCapacityFault"}
+        {"shape":"InsufficientStorageClusterCapacityFault"},
+        {"shape":"StorageTypeNotSupportedFault"}
       ],
       "documentation":"<p>Creates an Amazon Aurora DB cluster from MySQL data stored in an Amazon S3 bucket. Amazon RDS must be authorized to access the Amazon S3 bucket and the data must be created using the Percona XtraBackup utility as described in <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.ExtMySQL.html#AuroraMySQL.Migrating.ExtMySQL.S3\"> Migrating Data from MySQL by Using an Amazon S3 Bucket</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <code>CreateDBInstance</code> action to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterFromS3</code> action has completed and the DB cluster is available.</p> </note> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action only applies to Aurora DB clusters. The source DB engine must be MySQL.</p> </note>"
     },
@@ -3299,6 +3301,10 @@
         "Iops":{
           "shape":"IntegerOptional",
           "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type for the DB cluster.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -3762,7 +3768,7 @@
         },
         "EngineMode":{
           "shape":"String",
-          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <p>The <code>serverless</code> engine mode only applies for Aurora Serverless v1 DB clusters.</p> <p>Limitations and requirements apply to some DB engine modes. For more information, see the following sections in the <i>Amazon Aurora User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations\">Limitations of Aurora Serverless v1</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.requirements.html\">Requirements for Aurora Serverless v2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-mysql-parallel-query.html#aurora-mysql-parallel-query-limitations\">Limitations of parallel query</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html#aurora-global-database.limitations\">Limitations of Aurora global databases</a> </p> </li> </ul> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <p>The <code>serverless</code> engine mode only applies for Aurora Serverless v1 DB clusters.</p> <p>For information about limitations and requirements for Serverless DB clusters, see the following sections in the <i>Amazon Aurora User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations\">Limitations of Aurora Serverless v1</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.requirements.html\">Requirements for Aurora Serverless v2</a> </p> </li> </ul> <p>Valid for: Aurora DB clusters only</p>"
         },
         "ScalingConfiguration":{
           "shape":"ScalingConfiguration",
@@ -3806,7 +3812,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Valid values: <code>io1</code> </p> <p>When specified, a value for the <code>Iops</code> parameter is required.</p> <p>Default: <code>io1</code> </p> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -4924,7 +4930,7 @@
         },
         "EngineMode":{
           "shape":"String",
-          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code>, <code>serverless</code>, <code>parallelquery</code>, <code>global</code>, or <code>multimaster</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html\"> CreateDBCluster</a>.</p>"
+          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html\"> CreateDBCluster</a>.</p>"
         },
         "ScalingConfigurationInfo":{"shape":"ScalingConfigurationInfo"},
         "DeletionProtection":{
@@ -4982,7 +4988,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type associated with the DB cluster.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>The storage type associated with the DB cluster.</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -5028,6 +5034,10 @@
         "MasterUserSecret":{
           "shape":"MasterUserSecret",
           "documentation":"<p>Contains the secret managed by RDS in Amazon Web Services Secrets Manager for the master user password.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon Aurora User Guide.</i> </p>"
+        },
+        "IOOptimizedNextAllowedModificationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The next time you can modify the DB cluster to use the <code>aurora-iopt1</code> storage type.</p> <p>This setting is only for Aurora DB clusters.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -5569,6 +5579,10 @@
         "DBSystemId":{
           "shape":"String",
           "documentation":"<p>Reserved for future use.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type associated with the DB cluster snapshot.</p> <p>This setting is only for Aurora DB clusters.</p>"
         }
       },
       "documentation":"<p>Contains the details for an Amazon RDS DB cluster snapshot</p> <p>This data type is used as a response element in the <code>DescribeDBClusterSnapshots</code> action.</p>",
@@ -6012,7 +6026,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p> <p>IAM database authentication can be enabled for the following database engines:</p> <ul> <li> <p>For MySQL 5.7, minor version 5.7.16 or higher.</p> </li> <li> <p>For Amazon Aurora, all versions of Aurora MySQL and Aurora PostgreSQL.</p> </li> </ul>"
+          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p> <p>For a list of engine versions that support IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RDS_Fea_Regions_DB-eng.Feature.IamDatabaseAuthentication.html\">IAM database authentication</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.IAMdbauth.html\">IAM database authentication in Aurora</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "PerformanceInsightsEnabled":{
           "shape":"BooleanOptional",
@@ -7812,7 +7826,7 @@
         },
         "BacktrackIdentifier":{
           "shape":"String",
-          "documentation":"<p>If specified, this value is the backtrack identifier of the backtrack to be described.</p> <p>Constraints:</p> <ul> <li> <p>Must contain a valid universally unique identifier (UUID). For more information about UUIDs, see <a href=\"http://www.ietf.org/rfc/rfc4122.txt\">A Universally Unique Identifier (UUID) URN Namespace</a>.</p> </li> </ul> <p>Example: <code>123e4567-e89b-12d3-a456-426655440000</code> </p>"
+          "documentation":"<p>If specified, this value is the backtrack identifier of the backtrack to be described.</p> <p>Constraints:</p> <ul> <li> <p>Must contain a valid universally unique identifier (UUID). For more information about UUIDs, see <a href=\"https://en.wikipedia.org/wiki/Universally_unique_identifier\">Universally unique identifier</a>.</p> </li> </ul> <p>Example: <code>123e4567-e89b-12d3-a456-426655440000</code> </p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -10394,7 +10408,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>io1</code> </p> <p>When specified, a value for the <code>Iops</code> parameter is required.</p> <p>Default: <code>io1</code> </p> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -10710,7 +10724,7 @@
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>If the DB cluster doesn't manage the master user password with Amazon Web Services Secrets Manager, you can turn on this management. In this case, you can't specify <code>MasterUserPassword</code>.</p> <p>If the DB cluster already manages the master user password with Amazon Web Services Secrets Manager, and you specify that the master user password is not managed with Amazon Web Services Secrets Manager, then you must specify <code>MasterUserPassword</code>. In this case, RDS deletes the secret and uses the new password for the master user specified by <code>MasterUserPassword</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+          "documentation":"<p>A value that indicates whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>If the DB instance doesn't manage the master user password with Amazon Web Services Secrets Manager, you can turn on this management. In this case, you can't specify <code>MasterUserPassword</code>.</p> <p>If the DB instance already manages the master user password with Amazon Web Services Secrets Manager, and you specify that the master user password is not managed with Amazon Web Services Secrets Manager, then you must specify <code>MasterUserPassword</code>. In this case, RDS deletes the secret and uses the new password for the master user specified by <code>MasterUserPassword</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
         },
         "RotateMasterUserPassword":{
           "shape":"BooleanOptional",
@@ -12661,6 +12675,10 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB cluster.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> </p> <p>Default: <code>aurora</code> </p> <p>Valid for: Aurora DB clusters only</p>"
         }
       }
     },
@@ -12772,7 +12790,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the each DB instance in the Multi-AZ DB cluster.</p> <p>Valid values: <code>io1</code> </p> <p>When specified, a value for the <code>Iops</code> parameter is required.</p> <p>Default: <code>io1</code> </p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -12890,7 +12908,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the each DB instance in the Multi-AZ DB cluster.</p> <p>Valid values: <code>io1</code> </p> <p>When specified, a value for the <code>Iops</code> parameter is required.</p> <p>Default: <code>io1</code> </p> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
@@ -13991,11 +14009,23 @@
       },
       "exception":true
     },
+    "StorageTypeNotAvailableFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The <code>aurora-iopt1</code> storage type isn't available, because you modified the DB cluster to use this storage type less than one month ago.</p>",
+      "error":{
+        "code":"StorageTypeNotAvailableFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "StorageTypeNotSupportedFault":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Storage of the <code>StorageType</code> specified can't be associated with the DB instance.</p>",
+      "documentation":"<p>The specified <code>StorageType</code> can't be associated with the DB instance.</p>",
       "error":{
         "code":"StorageTypeNotSupported",
         "httpStatusCode":400,

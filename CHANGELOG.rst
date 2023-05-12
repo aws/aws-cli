@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.11.20
+=======
+
+* api-change:``elasticache``: Added support to modify the cluster mode configuration for the existing ElastiCache ReplicationGroups. Customers can now modify the configuration from cluster mode disabled to cluster mode enabled.
+* api-change:``opensearch``: This release fixes DescribePackages API error with null filter value parameter.
+* api-change:``health``: Add support for regional endpoints
+* api-change:``support``: This release adds 2 new Support APIs, DescribeCreateCaseOptions and DescribeSupportedLanguages. You can use these new APIs to get available support languages.
+* api-change:``swf``: This release adds a new API parameter to exclude old history events from decision tasks.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``rds``: Amazon Relational Database Service (RDS) updates for the new Aurora I/O-Optimized storage type for Amazon Aurora DB clusters
+* api-change:``connect``: This release updates GetMetricDataV2 API, to support metric data up-to last 35 days
+* api-change:``route53resolver``: Update FIPS endpoints for GovCloud (US) regions in SDK.
+* api-change:``es``: This release fixes DescribePackages API error with null filter value parameter.
+* api-change:``omics``: This release provides support for Ready2Run and GPU workflows, an improved read set filter, the direct upload of read sets into Omics Storage, and annotation parsing for analytics stores.
+* api-change:``ivs-realtime``: Add methods for inspecting and debugging stages: ListStageSessions, GetStageSession, ListParticipants, GetParticipant, and ListParticipantEvents.
+
+
 2.11.19
 =======
 

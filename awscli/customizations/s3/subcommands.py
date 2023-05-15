@@ -213,9 +213,11 @@ SSE_KMS_KEY_ID = {
         'should be used to server-side encrypt the object in S3. You should '
         'only provide this parameter if you are using a customer managed '
         'customer master key (CMK) and not the AWS managed KMS CMK. '
-        'Not required when destination is cross-account bucket, '
-        'in this case only set ``sse`` parameter to ``aws:kms``, '
-        'after ensuring credentials have proper cross account permissions.'
+        'hen destination is cross-account bucket, note ID is not sufficient '
+        'and ARN would be required. To be able to use `s3 cp` with cross-account  '
+        'encryption, this parameter is required and also `sts assume-role` to be '
+        'run before it, to get credentials for a role with access to the bucket and '
+        'key in destination.'
     )
 }
 

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.134
+========
+
+* api-change:``athena``: You can now define custom spark properties at start of the session for use cases like cluster encryption, table formats, and general Spark tuning.
+* api-change:``codecatalyst``: With this release, the users can list the active sessions connected to their Dev Environment on AWS CodeCatalyst
+* api-change:``kafka``: Added a fix to make clusterarn a required field in ListClientVpcConnections and RejectClientVpcConnection APIs
+* api-change:``rekognition``: This release adds a new EyeDirection attribute in Amazon Rekognition DetectFaces and IndexFaces APIs which predicts the yaw and pitch angles of a person's eye gaze direction for each face detected in the image.
+* api-change:``rolesanywhere``: Adds support for custom notification settings in a trust anchor. Introduces PutNotificationSettings and ResetNotificationSettings API's. Updates DurationSeconds max value to 3600.
+* api-change:``transfer``: This release introduces the ability to require both password and SSH key when users authenticate to your Transfer Family servers that use the SFTP protocol.
+
+
 1.27.133
 ========
 

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.27.136
+========
+
+* api-change:``athena``: Removing SparkProperties from EngineConfiguration object for StartSession API call
+* api-change:``cloudtrail``: Add ConflictException to PutEventSelectors, add (Channel/EDS)ARNInvalidException to Tag APIs. These exceptions provide customers with more specific error messages instead of internal errors.
+* api-change:``compute-optimizer``: In this launch, we add support for showing integration status with external metric providers such as Instana, Datadog ...etc in GetEC2InstanceRecommendations and ExportEC2InstanceRecommendations apis
+* api-change:``connect``: You can programmatically create and manage prompts using APIs, for example, to extract prompts stored within Amazon Connect and add them to your Amazon S3 bucket. AWS CloudTrail, AWS CloudFormation and tagging are supported.
+* api-change:``ec2``: Add support for i4g.large, i4g.xlarge, i4g.2xlarge, i4g.4xlarge, i4g.8xlarge and i4g.16xlarge instances powered by AWS Graviton2 processors that deliver up to 15% better compute performance than our other storage-optimized instances.
+* api-change:``ecs``: Documentation only release to address various tickets.
+* api-change:``mediaconvert``: This release introduces a new MXF Profile for XDCAM which is strictly compliant with the SMPTE RDD 9 standard and improved handling of output name modifiers.
+* api-change:``rds``: RDS documentation update for the EngineVersion parameter of ModifyDBSnapshot
+* api-change:``sagemaker-geospatial``: This release makes ExecutionRoleArn a required field in the StartEarthObservationJob API.
+* api-change:``sts``: API updates for the AWS Security Token Service
+
+
 1.27.135
 ========
 

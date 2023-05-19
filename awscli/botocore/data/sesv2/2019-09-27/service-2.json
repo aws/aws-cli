@@ -1019,6 +1019,23 @@
       ],
       "documentation":"<p>Move a dedicated IP address to an existing dedicated IP pool.</p> <note> <p>The dedicated IP address that you specify must already exist, and must be associated with your Amazon Web Services account. </p> <p>The dedicated IP pool you specify must already exist. You can create a new pool by using the <code>CreateDedicatedIpPool</code> operation.</p> </note>"
     },
+    "PutDedicatedIpPoolScalingAttributes":{
+      "name":"PutDedicatedIpPoolScalingAttributes",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/dedicated-ip-pools/{PoolName}/scaling"
+      },
+      "input":{"shape":"PutDedicatedIpPoolScalingAttributesRequest"},
+      "output":{"shape":"PutDedicatedIpPoolScalingAttributesResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Used to convert a dedicated IP pool to a different scaling mode.</p> <note> <p> <code>MANAGED</code> pools cannot be converted to <code>STANDARD</code> scaling mode.</p> </note>",
+      "idempotent":true
+    },
     "PutDedicatedIpWarmupAttributes":{
       "name":"PutDedicatedIpWarmupAttributes",
       "http":{
@@ -2274,7 +2291,7 @@
         },
         "ScalingMode":{
           "shape":"ScalingMode",
-          "documentation":"<p>The type of the dedicated IP pool.</p> <ul> <li> <p> <code>STANDARD</code> – A dedicated IP pool where the customer can control which IPs are part of the pool.</p> </li> <li> <p> <code>MANAGED</code> – A dedicated IP pool where the reputation and number of IPs is automatically managed by Amazon SES.</p> </li> </ul>"
+          "documentation":"<p>The type of the dedicated IP pool.</p> <ul> <li> <p> <code>STANDARD</code> – A dedicated IP pool where you can control which IPs are part of the pool.</p> </li> <li> <p> <code>MANAGED</code> – A dedicated IP pool where the reputation and number of IPs are automatically managed by Amazon SES.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains information about a dedicated IP pool.</p>"
@@ -3221,7 +3238,7 @@
         },
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The contact's email addres.</p>",
+          "documentation":"<p>The contact's email address.</p>",
           "location":"uri",
           "locationName":"EmailAddress"
         }
@@ -3236,7 +3253,7 @@
         },
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The contact's email addres.</p>"
+          "documentation":"<p>The contact's email address.</p>"
         },
         "TopicPreferences":{
           "shape":"TopicPreferenceList",
@@ -5052,6 +5069,32 @@
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "PutDedicatedIpPoolScalingAttributesRequest":{
+      "type":"structure",
+      "required":[
+        "PoolName",
+        "ScalingMode"
+      ],
+      "members":{
+        "PoolName":{
+          "shape":"PoolName",
+          "documentation":"<p>The name of the dedicated IP pool.</p>",
+          "location":"uri",
+          "locationName":"PoolName"
+        },
+        "ScalingMode":{
+          "shape":"ScalingMode",
+          "documentation":"<p>The scaling mode to apply to the dedicated IP pool.</p> <note> <p>Changing the scaling mode from <code>MANAGED</code> to <code>STANDARD</code> is not supported.</p> </note>"
+        }
+      },
+      "documentation":"<p>A request to convert a dedicated IP pool to a different scaling mode.</p>"
+    },
+    "PutDedicatedIpPoolScalingAttributesResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
     "PutDedicatedIpWarmupAttributesRequest":{
       "type":"structure",
       "required":[
@@ -6070,7 +6113,7 @@
         },
         "EmailAddress":{
           "shape":"EmailAddress",
-          "documentation":"<p>The contact's email addres.</p>",
+          "documentation":"<p>The contact's email address.</p>",
           "location":"uri",
           "locationName":"EmailAddress"
         },

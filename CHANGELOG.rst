@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.137
+========
+
+* api-change:``backup``: Add  ResourceArn, ResourceType, and BackupVaultName to ListRecoveryPointsByLegalHold API response.
+* api-change:``connectcases``: This release adds the ability to create fields with type Url through the CreateField API. For more information see https://docs.aws.amazon.com/cases/latest/APIReference/Welcome.html
+* api-change:``mediapackagev2``: Adds support for the MediaPackage Live v2 API
+* api-change:``sesv2``: This release allows customers to update scaling mode property of dedicated IP pools with PutDedicatedIpPoolScalingAttributes call.
+
+
 1.27.136
 ========
 

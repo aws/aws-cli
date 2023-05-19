@@ -5373,6 +5373,51 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.137
+========
+
+* api-change:``backup``: Add  ResourceArn, ResourceType, and BackupVaultName to ListRecoveryPointsByLegalHold API response.
+* api-change:``connectcases``: This release adds the ability to create fields with type Url through the CreateField API. For more information see https://docs.aws.amazon.com/cases/latest/APIReference/Welcome.html
+* api-change:``mediapackagev2``: Adds support for the MediaPackage Live v2 API
+* api-change:``sesv2``: This release allows customers to update scaling mode property of dedicated IP pools with PutDedicatedIpPoolScalingAttributes call.
+
+
+1.27.136
+========
+
+* api-change:``athena``: Removing SparkProperties from EngineConfiguration object for StartSession API call
+* api-change:``cloudtrail``: Add ConflictException to PutEventSelectors, add (Channel/EDS)ARNInvalidException to Tag APIs. These exceptions provide customers with more specific error messages instead of internal errors.
+* api-change:``compute-optimizer``: In this launch, we add support for showing integration status with external metric providers such as Instana, Datadog ...etc in GetEC2InstanceRecommendations and ExportEC2InstanceRecommendations apis
+* api-change:``connect``: You can programmatically create and manage prompts using APIs, for example, to extract prompts stored within Amazon Connect and add them to your Amazon S3 bucket. AWS CloudTrail, AWS CloudFormation and tagging are supported.
+* api-change:``ec2``: Add support for i4g.large, i4g.xlarge, i4g.2xlarge, i4g.4xlarge, i4g.8xlarge and i4g.16xlarge instances powered by AWS Graviton2 processors that deliver up to 15% better compute performance than our other storage-optimized instances.
+* api-change:``ecs``: Documentation only release to address various tickets.
+* api-change:``mediaconvert``: This release introduces a new MXF Profile for XDCAM which is strictly compliant with the SMPTE RDD 9 standard and improved handling of output name modifiers.
+* api-change:``rds``: RDS documentation update for the EngineVersion parameter of ModifyDBSnapshot
+* api-change:``sagemaker-geospatial``: This release makes ExecutionRoleArn a required field in the StartEarthObservationJob API.
+* api-change:``sts``: API updates for the AWS Security Token Service
+
+
+1.27.135
+========
+
+* api-change:``detective``: Added and updated API operations in Detective to support the integration of ASFF Security Hub findings.
+* api-change:``directconnect``: This release includes an update to the mtu value for CreateTransitVirtualInterface from 9001 mtu to 8500 mtu.
+* api-change:``glue``: Add Support for Tags for Custom Entity Types
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``wafv2``: My AWS Service (placeholder) - You can now rate limit web requests based on aggregation keys other than IP addresses, and you can aggregate using combinations of keys. You can also rate limit all requests that match a scope-down statement, without further aggregation.
+
+
+1.27.134
+========
+
+* api-change:``athena``: You can now define custom spark properties at start of the session for use cases like cluster encryption, table formats, and general Spark tuning.
+* api-change:``codecatalyst``: With this release, the users can list the active sessions connected to their Dev Environment on AWS CodeCatalyst
+* api-change:``kafka``: Added a fix to make clusterarn a required field in ListClientVpcConnections and RejectClientVpcConnection APIs
+* api-change:``rekognition``: This release adds a new EyeDirection attribute in Amazon Rekognition DetectFaces and IndexFaces APIs which predicts the yaw and pitch angles of a person's eye gaze direction for each face detected in the image.
+* api-change:``rolesanywhere``: Adds support for custom notification settings in a trust anchor. Introduces PutNotificationSettings and ResetNotificationSettings API's. Updates DurationSeconds max value to 3600.
+* api-change:``transfer``: This release introduces the ability to require both password and SSH key when users authenticate to your Transfer Family servers that use the SFTP protocol.
+
+
 1.27.133
 ========
 

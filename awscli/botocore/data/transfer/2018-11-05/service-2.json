@@ -212,7 +212,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the host key that's specified in the <code>HoskKeyId</code> parameter.</p>"
+      "documentation":"<p>Deletes the host key that's specified in the <code>HostKeyId</code> parameter.</p>"
     },
     "DeleteProfile":{
       "name":"DeleteProfile",
@@ -370,7 +370,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p>"
+      "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p> <note> <p>This API call only returns details for in-progress workflows.</p> <p> If you provide an ID for an execution that is not in progress, or if the execution doesn't match the specified workflow ID, you receive a <code>ResourceNotFound</code> exception.</p> </note>"
     },
     "DescribeHostKey":{
       "name":"DescribeHostKey",
@@ -518,7 +518,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds a Secure Shell (SSH) public key to a user account identified by a <code>UserName</code> value assigned to the specific file transfer protocol-enabled server, identified by <code>ServerId</code>.</p> <p>The response returns the <code>UserName</code> value, the <code>ServerId</code> value, and the name of the <code>SshPublicKeyId</code>.</p>"
+      "documentation":"<p>Adds a Secure Shell (SSH) public key to a Transfer Family user identified by a <code>UserName</code> value assigned to the specific file transfer protocol-enabled server, identified by <code>ServerId</code>.</p> <p>The response returns the <code>UserName</code> value, the <code>ServerId</code> value, and the name of the <code>SshPublicKeyId</code>.</p>"
     },
     "ListAccesses":{
       "name":"ListAccesses",
@@ -603,7 +603,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all executions for the specified workflow.</p>"
+      "documentation":"<p>Lists all in-progress executions for the specified workflow.</p> <note> <p>If the specified workflow ID cannot be found, <code>ListExecutions</code> returns a <code>ResourceNotFound</code> exception.</p> </note>"
     },
     "ListHostKeys":{
       "name":"ListHostKeys",
@@ -718,7 +718,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Lists all of your workflows.</p>"
+      "documentation":"<p>Lists all workflows associated with your Amazon Web Services account for your current region.</p>"
     },
     "SendWorkflowStepState":{
       "name":"SendWorkflowStepState",
@@ -816,7 +816,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>If the <code>IdentityProviderType</code> of a file transfer protocol-enabled server is <code>AWS_DIRECTORY_SERVICE</code> or <code>API_Gateway</code>, tests whether your identity provider is set up successfully. We highly recommend that you call this operation to test your authentication method as soon as you create your server. By doing so, you can troubleshoot issues with the identity provider integration to ensure that your users can successfully use the service.</p> <p> The <code>ServerId</code> and <code>UserName</code> parameters are required. The <code>ServerProtocol</code>, <code>SourceIp</code>, and <code>UserPassword</code> are all optional. </p> <note> <p> You cannot use <code>TestIdentityProvider</code> if the <code>IdentityProviderType</code> of your server is <code>SERVICE_MANAGED</code>. </p> </note> <ul> <li> <p> If you provide any incorrect values for any parameters, the <code>Response</code> field is empty. </p> </li> <li> <p> If you provide a server ID for a server that uses service-managed users, you get an error: </p> <p> <code> An error occurred (InvalidRequestException) when calling the TestIdentityProvider operation: s-<i>server-ID</i> not configured for external auth </code> </p> </li> <li> <p> If you enter a Server ID for the <code>--server-id</code> parameter that does not identify an actual Transfer server, you receive the following error: </p> <p> <code>An error occurred (ResourceNotFoundException) when calling the TestIdentityProvider operation: Unknown server</code> </p> </li> </ul>"
+      "documentation":"<p>If the <code>IdentityProviderType</code> of a file transfer protocol-enabled server is <code>AWS_DIRECTORY_SERVICE</code> or <code>API_Gateway</code>, tests whether your identity provider is set up successfully. We highly recommend that you call this operation to test your authentication method as soon as you create your server. By doing so, you can troubleshoot issues with the identity provider integration to ensure that your users can successfully use the service.</p> <p> The <code>ServerId</code> and <code>UserName</code> parameters are required. The <code>ServerProtocol</code>, <code>SourceIp</code>, and <code>UserPassword</code> are all optional. </p> <p>Note the following:</p> <ul> <li> <p> You cannot use <code>TestIdentityProvider</code> if the <code>IdentityProviderType</code> of your server is <code>SERVICE_MANAGED</code>.</p> </li> <li> <p> <code>TestIdentityProvider</code> does not work with keys: it only accepts passwords.</p> </li> <li> <p> <code>TestIdentityProvider</code> can test the password operation for a custom Identity Provider that handles keys and passwords.</p> </li> <li> <p> If you provide any incorrect values for any parameters, the <code>Response</code> field is empty. </p> </li> <li> <p> If you provide a server ID for a server that uses service-managed users, you get an error: </p> <p> <code> An error occurred (InvalidRequestException) when calling the TestIdentityProvider operation: s-<i>server-ID</i> not configured for external auth </code> </p> </li> <li> <p> If you enter a Server ID for the <code>--server-id</code> parameter that does not identify an actual Transfer server, you receive the following error: </p> <p> <code>An error occurred (ResourceNotFoundException) when calling the TestIdentityProvider operation: Unknown server</code>. </p> <p>It is possible your sever is in a different region. You can specify a region by adding the following: <code>--region region-code</code>, such as <code>--region us-east-2</code> to specify a server in <b>US East (Ohio)</b>.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1158,11 +1158,11 @@
         },
         "DestinationFileLocation":{
           "shape":"InputFileLocation",
-          "documentation":"<p>Specifies the location for the file being copied. Use <code>${Transfer:username}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:username}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded.</p> </note> </li> </ul>"
+          "documentation":"<p>Specifies the location for the file being copied. Use <code>${Transfer:UserName}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UserName}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded in UTC.</p> </note> </li> </ul>"
         },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
-          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> <p>If the workflow is processing a file that has the same name as an existing file, the behavior is as follows:</p> <ul> <li> <p>If <code>OverwriteExisting</code> is <code>TRUE</code>, the existing file is replaced with the file being processed.</p> </li> <li> <p>If <code>OverwriteExisting</code> is <code>FALSE</code>, nothing happens, and the workflow processing stops.</p> </li> </ul>"
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
@@ -1381,11 +1381,11 @@
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
+          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -1417,7 +1417,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
         }
       }
     },
@@ -1494,7 +1494,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>A unique string that identifies a user account associated with a server.</p>"
+          "documentation":"<p>A unique string that identifies a Transfer Family user.</p>"
         }
       }
     },
@@ -1512,7 +1512,7 @@
         },
         "OnExceptionSteps":{
           "shape":"WorkflowSteps",
-          "documentation":"<p>Specifies the steps (actions) to take if errors are encountered during execution of the workflow.</p> <note> <p>For custom steps, the lambda function needs to send <code>FAILURE</code> to the call back API to kick off the exception steps. Additionally, if the lambda does not send <code>SUCCESS</code> before it times out, the exception steps are executed.</p> </note>"
+          "documentation":"<p>Specifies the steps (actions) to take if errors are encountered during execution of the workflow.</p> <note> <p>For custom steps, the Lambda function needs to send <code>FAILURE</code> to the call back API to kick off the exception steps. Additionally, if the Lambda does not send <code>SUCCESS</code> before it times out, the exception steps are executed.</p> </note>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1539,7 +1539,7 @@
         },
         "Target":{
           "shape":"CustomStepTarget",
-          "documentation":"<p>The ARN for the lambda function that is being called.</p>"
+          "documentation":"<p>The ARN for the Lambda function that is being called.</p>"
         },
         "TimeoutSeconds":{
           "shape":"CustomStepTimeoutSeconds",
@@ -1591,9 +1591,12 @@
         },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
-          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> <p>If the workflow is processing a file that has the same name as an existing file, the behavior is as follows:</p> <ul> <li> <p>If <code>OverwriteExisting</code> is <code>TRUE</code>, the existing file is replaced with the file being processed.</p> </li> <li> <p>If <code>OverwriteExisting</code> is <code>FALSE</code>, nothing happens, and the workflow processing stops.</p> </li> </ul>"
         },
-        "DestinationFileLocation":{"shape":"InputFileLocation"}
+        "DestinationFileLocation":{
+          "shape":"InputFileLocation",
+          "documentation":"<p>Specifies the location for the file being decrypted. Use <code>${Transfer:UserName}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UserName}</code> to decrypt uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to decrypt uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded in UTC.</p> </note> </li> </ul>"
+        }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
     },
@@ -2003,7 +2006,7 @@
         },
         "User":{
           "shape":"DescribedUser",
-          "documentation":"<p>An array containing the properties of the user account for the <code>ServerID</code> value that you specified.</p>"
+          "documentation":"<p>An array containing the properties of the Transfer Family user for the <code>ServerID</code> value that you specified.</p>"
         }
       }
     },
@@ -2373,7 +2376,7 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -2413,7 +2416,7 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -2775,7 +2778,7 @@
         },
         "InvocationRole":{
           "shape":"Role",
-          "documentation":"<p>Provides the type of <code>InvocationRole</code> used to authenticate the user account.</p>"
+          "documentation":"<p>This parameter is only applicable if your <code>IdentityProviderType</code> is <code>API_GATEWAY</code>. Provides the type of <code>InvocationRole</code> used to authenticate the user account.</p>"
         },
         "DirectoryId":{
           "shape":"DirectoryId",
@@ -2783,14 +2786,18 @@
         },
         "Function":{
           "shape":"Function",
-          "documentation":"<p>The ARN for a lambda function to use for the Identity provider.</p>"
+          "documentation":"<p>The ARN for a Lambda function to use for the Identity provider.</p>"
+        },
+        "SftpAuthenticationMethods":{
+          "shape":"SftpAuthenticationMethods",
+          "documentation":"<p>For SFTP-enabled servers, and for custom identity providers <i>only</i>, you can specify whether to authenticate using a password, SSH key pair, or both.</p> <ul> <li> <p> <code>PASSWORD</code> - users must provide their password to connect.</p> </li> <li> <p> <code>PUBLIC_KEY</code> - users must provide their private key to connect.</p> </li> <li> <p> <code>PUBLIC_KEY_OR_PASSWORD</code> - users can authenticate with either their password or their key. This is the default value.</p> </li> <li> <p> <code>PUBLIC_KEY_AND_PASSWORD</code> - users must provide both their private key and their password to connect. The server checks the key first, and then if the key is valid, the system prompts for a password. If the private key provided does not match the public key that is stored, authentication fails.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Returns information related to the type of user authentication that is in use for a file transfer protocol-enabled server's users. A server can have only one method of authentication.</p>"
     },
     "IdentityProviderType":{
       "type":"string",
-      "documentation":"<p>Returns information related to the type of user authentication that is in use for a file transfer protocol-enabled server's users. For <code>AWS_DIRECTORY_SERVICE</code> or <code>SERVICE_MANAGED</code> authentication, the Secure Shell (SSH) public keys are stored with a user on the server instance. For <code>API_GATEWAY</code> authentication, your custom authentication method is implemented by using an API call. The server can have only one method of authentication.</p>",
+      "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>",
       "enum":[
         "SERVICE_MANAGED",
         "API_GATEWAY",
@@ -2909,7 +2916,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user account that is assigned to one or more servers.</p>"
+          "documentation":"<p>The name of the Transfer Family user that is assigned to one or more servers.</p>"
         }
       }
     },
@@ -3138,7 +3145,7 @@
         },
         "Executions":{
           "shape":"ListedExecutions",
-          "documentation":"<p>Returns the details for each execution.</p> <ul> <li> <p> <b>NextToken</b>: returned from a call to several APIs, you can use pass it to a subsequent command to continue listing additional executions.</p> </li> <li> <p> <b>StartTime</b>: timestamp indicating when the execution began.</p> </li> <li> <p> <b>Executions</b>: details of the execution, including the execution ID, initial file location, and Service metadata.</p> </li> <li> <p> <b>Status</b>: one of the following values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>EXCEPTION</code>, <code>HANDLING_EXEPTION</code>. </p> </li> </ul>"
+          "documentation":"<p>Returns the details for each execution, in a <code>ListedExecution</code> array.</p>"
         }
       }
     },
@@ -3336,7 +3343,7 @@
         },
         "Users":{
           "shape":"ListedUsers",
-          "documentation":"<p>Returns the user accounts and their properties for the <code>ServerId</code> value that you specify.</p>"
+          "documentation":"<p>Returns the Transfer Family users and their properties for the <code>ServerId</code> value that you specify.</p>"
         }
       }
     },
@@ -3596,7 +3603,7 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -4111,6 +4118,15 @@
         "ENABLE_NO_OP"
       ]
     },
+    "SftpAuthenticationMethods":{
+      "type":"string",
+      "enum":[
+        "PASSWORD",
+        "PUBLIC_KEY",
+        "PUBLIC_KEY_OR_PASSWORD",
+        "PUBLIC_KEY_AND_PASSWORD"
+      ]
+    },
     "SigningAlg":{
       "type":"string",
       "enum":[
@@ -4141,7 +4157,7 @@
       "members":{
         "DateImported":{
           "shape":"DateImported",
-          "documentation":"<p>Specifies the date that the public key was added to the user account.</p>"
+          "documentation":"<p>Specifies the date that the public key was added to the Transfer Family user.</p>"
         },
         "SshPublicKeyBody":{
           "shape":"SshPublicKeyBody",
@@ -4152,7 +4168,7 @@
           "documentation":"<p>Specifies the <code>SshPublicKeyId</code> parameter contains the identifier of the public key.</p>"
         }
       },
-      "documentation":"<p>Provides information about the public Secure Shell (SSH) key that is associated with a user account for the specific file transfer protocol-enabled server (as identified by <code>ServerId</code>). The information returned includes the date the key was imported, the public key contents, and the public key ID. A user can store more than one SSH public key associated with their user name on a specific server.</p>"
+      "documentation":"<p>Provides information about the public Secure Shell (SSH) key that is associated with a Transfer Family user for the specific file transfer protocol-enabled server (as identified by <code>ServerId</code>). The information returned includes the date the key was imported, the public key contents, and the public key ID. A user can store more than one SSH public key associated with their user name on a specific server.</p>"
     },
     "SshPublicKeyBody":{
       "type":"string",
@@ -4280,7 +4296,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to user accounts for any purpose.</p>"
+          "documentation":"<p>Key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to resources (servers, users, workflows, and so on) for any purpose.</p>"
         }
       }
     },
@@ -4325,19 +4341,19 @@
         },
         "ServerProtocol":{
           "shape":"Protocol",
-          "documentation":"<p>The type of file transfer protocol to be tested.</p> <p>The available protocols are:</p> <ul> <li> <p>Secure Shell (SSH) File Transfer Protocol (SFTP)</p> </li> <li> <p>File Transfer Protocol Secure (FTPS)</p> </li> <li> <p>File Transfer Protocol (FTP)</p> </li> </ul>"
+          "documentation":"<p>The type of file transfer protocol to be tested.</p> <p>The available protocols are:</p> <ul> <li> <p>Secure Shell (SSH) File Transfer Protocol (SFTP)</p> </li> <li> <p>File Transfer Protocol Secure (FTPS)</p> </li> <li> <p>File Transfer Protocol (FTP)</p> </li> <li> <p>Applicability Statement 2 (AS2)</p> </li> </ul>"
         },
         "SourceIp":{
           "shape":"SourceIp",
-          "documentation":"<p>The source IP address of the user account to be tested.</p>"
+          "documentation":"<p>The source IP address of the account to be tested.</p>"
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user account to be tested.</p>"
+          "documentation":"<p>The name of the account to be tested.</p>"
         },
         "UserPassword":{
           "shape":"UserPassword",
-          "documentation":"<p>The password of the user account to be tested.</p>"
+          "documentation":"<p>The password of the account to be tested.</p>"
         }
       }
     },
@@ -4350,11 +4366,11 @@
       "members":{
         "Response":{
           "shape":"Response",
-          "documentation":"<p>The response that is returned from your API Gateway.</p>"
+          "documentation":"<p>The response that is returned from your API Gateway or your Lambda function.</p>"
         },
         "StatusCode":{
           "shape":"StatusCode",
-          "documentation":"<p>The HTTP status code that is the response from your API Gateway.</p>"
+          "documentation":"<p>The HTTP status code that is the response from your API Gateway or your Lambda function.</p>"
         },
         "Message":{
           "shape":"Message",
@@ -4692,11 +4708,11 @@
         },
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a server instance that the Transfer Family user is assigned to.</p>"
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
         }
       }
     },
@@ -4706,7 +4722,7 @@
       "members":{
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a server that the Transfer Family user is assigned to.</p>"
         }
       }
     },
@@ -4743,7 +4759,7 @@
         },
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a Transfer Family server instance that the user is assigned to.</p>"
         },
         "UserName":{
           "shape":"UserName",
@@ -4760,7 +4776,7 @@
       "members":{
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a Transfer Family server instance that the account is assigned to.</p>"
         },
         "UserName":{
           "shape":"UserName",
@@ -4783,7 +4799,7 @@
       "members":{
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>A unique string that identifies a user account associated with a server.</p>"
+          "documentation":"<p>A unique string that identifies a Transfer Family user associated with a server.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -4835,7 +4851,7 @@
           "documentation":"<p>Includes the necessary permissions for S3, EFS, and Lambda operations that Transfer can assume, so that all workflow steps can operate on the required resources</p>"
         }
       },
-      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
     },
     "WorkflowDetails":{
       "type":"structure",

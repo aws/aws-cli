@@ -373,6 +373,24 @@
       ],
       "documentation":"<p>Adds a new participant into an on-going chat contact. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-customize-flow.html\">Customize chat flow experiences by integrating custom participants</a>.</p>"
     },
+    "CreatePrompt":{
+      "name":"CreatePrompt",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/prompts/{InstanceId}"
+      },
+      "input":{"shape":"CreatePromptRequest"},
+      "output":{"shape":"CreatePromptResponse"},
+      "errors":[
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a prompt. For more information about prompts, such as supported file types and maximum length, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/prompts.html\">Create prompts</a> in the <i>Amazon Connect Administrator's Guide</i>.</p>"
+    },
     "CreateQueue":{
       "name":"CreateQueue",
       "http":{
@@ -710,6 +728,22 @@
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Amazon Connect instance. The association must not have any use cases associated with it.</p>"
     },
+    "DeletePrompt":{
+      "name":"DeletePrompt",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/prompts/{InstanceId}/{PromptId}"
+      },
+      "input":{"shape":"DeletePromptRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes a prompt.</p>"
+    },
     "DeleteQuickConnect":{
       "name":"DeleteQuickConnect",
       "http":{
@@ -1044,6 +1078,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets details and status of a phone number that’s claimed to your Amazon Connect instance or traffic distribution group.</p> <important> <p>If the number is claimed to a traffic distribution group, and you are calling in the Amazon Web Services Region where the traffic distribution group was created, you can use either a phone number ARN or UUID value for the <code>PhoneNumberId</code> URI request parameter. However, if the number is claimed to a traffic distribution group and you are calling this API in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </important>"
+    },
+    "DescribePrompt":{
+      "name":"DescribePrompt",
+      "http":{
+        "method":"GET",
+        "requestUri":"/prompts/{InstanceId}/{PromptId}"
+      },
+      "input":{"shape":"DescribePromptRequest"},
+      "output":{"shape":"DescribePromptResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes the prompt.</p>"
     },
     "DescribeQueue":{
       "name":"DescribeQueue",
@@ -1476,6 +1527,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Gets metric data from the specified Amazon Connect instance. </p> <p> <code>GetMetricDataV2</code> offers more features than <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricData.html\">GetMetricData</a>, the previous version of this API. It has new metrics, offers filtering at a metric level, and offers the ability to filter and group data by channels, queues, routing profiles, agents, and agent hierarchy levels. It can retrieve historical data for the last 35 days, in 24-hour intervals.</p> <p>For a description of the historical metrics that are supported by <code>GetMetricDataV2</code> and <code>GetMetricData</code>, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html\">Historical metrics definitions</a> in the <i>Amazon Connect Administrator's Guide</i>. </p> <p>This API is not available in the Amazon Web Services GovCloud (US) Regions.</p>"
+    },
+    "GetPromptFile":{
+      "name":"GetPromptFile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/prompts/{InstanceId}/{PromptId}/file"
+      },
+      "input":{"shape":"GetPromptFileRequest"},
+      "output":{"shape":"GetPromptFileResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Gets the prompt file.</p>"
     },
     "GetTaskTemplate":{
       "name":"GetTaskTemplate",
@@ -2804,6 +2872,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates your claimed phone number from its current Amazon Connect instance or traffic distribution group to another Amazon Connect instance or traffic distribution group in the same Amazon Web Services Region.</p> <important> <p>After using this API, you must verify that the phone number is attached to the correct flow in the target instance or traffic distribution group. You need to do this because the API switches only the phone number to a new instance or traffic distribution group. It doesn't migrate the flow configuration of the phone number, too.</p> <p>You can call <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html\">UpdatePhoneNumber</a> operation.</p> </important>"
+    },
+    "UpdatePrompt":{
+      "name":"UpdatePrompt",
+      "http":{
+        "method":"POST",
+        "requestUri":"/prompts/{InstanceId}/{PromptId}"
+      },
+      "input":{"shape":"UpdatePromptRequest"},
+      "output":{"shape":"UpdatePromptResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates a prompt.</p>"
     },
     "UpdateQueueHoursOfOperation":{
       "name":"UpdateQueueHoursOfOperation",
@@ -4781,6 +4866,51 @@
         }
       }
     },
+    "CreatePromptRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "S3Uri"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"CommonNameLength127",
+          "documentation":"<p>The name of the prompt.</p>"
+        },
+        "Description":{
+          "shape":"PromptDescription",
+          "documentation":"<p>The description of the prompt.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The URI for the S3 bucket where the prompt is stored.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "CreatePromptResponse":{
+      "type":"structure",
+      "members":{
+        "PromptARN":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the prompt.</p>"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>"
+        }
+      }
+    },
     "CreateQueueRequest":{
       "type":"structure",
       "required":[
@@ -5754,6 +5884,27 @@
         }
       }
     },
+    "DeletePromptRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "PromptId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>",
+          "location":"uri",
+          "locationName":"PromptId"
+        }
+      }
+    },
     "DeleteQuickConnectRequest":{
       "type":"structure",
       "required":[
@@ -6304,6 +6455,36 @@
         "ClaimedPhoneNumberSummary":{
           "shape":"ClaimedPhoneNumberSummary",
           "documentation":"<p>Information about a phone number that's been claimed to your Amazon Connect instance or traffic distribution group.</p>"
+        }
+      }
+    },
+    "DescribePromptRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "PromptId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>",
+          "location":"uri",
+          "locationName":"PromptId"
+        }
+      }
+    },
+    "DescribePromptResponse":{
+      "type":"structure",
+      "members":{
+        "Prompt":{
+          "shape":"Prompt",
+          "documentation":"<p>Information about the prompt.</p>"
         }
       }
     },
@@ -8182,6 +8363,36 @@
         "MetricResults":{
           "shape":"MetricResultsV2",
           "documentation":"<p>Information about the metrics requested in the API request If no grouping is specified, a summary of metric data is returned. </p>"
+        }
+      }
+    },
+    "GetPromptFileRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "PromptId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>",
+          "location":"uri",
+          "locationName":"PromptId"
+        }
+      }
+    },
+    "GetPromptFileResponse":{
+      "type":"structure",
+      "members":{
+        "PromptPresignedUrl":{
+          "shape":"PromptPresignedUrl",
+          "documentation":"<p>A generated URL to the prompt that can be given to an unauthorized user so they can access the prompt in S3.</p>"
         }
       }
     },
@@ -11586,6 +11797,37 @@
       "max":50,
       "min":1
     },
+    "Prompt":{
+      "type":"structure",
+      "members":{
+        "PromptARN":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the prompt.</p>"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>"
+        },
+        "Name":{
+          "shape":"CommonNameLength127",
+          "documentation":"<p>The name of the prompt.</p>"
+        },
+        "Description":{
+          "shape":"PromptDescription",
+          "documentation":"<p>A description for the prompt.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Information about a prompt.</p>"
+    },
+    "PromptDescription":{
+      "type":"string",
+      "max":250,
+      "min":1
+    },
     "PromptId":{
       "type":"string",
       "max":256,
@@ -11594,6 +11836,11 @@
     "PromptName":{
       "type":"string",
       "max":256,
+      "min":1
+    },
+    "PromptPresignedUrl":{
+      "type":"string",
+      "max":2000,
       "min":1
     },
     "PromptSummary":{
@@ -12703,6 +12950,12 @@
         }
       },
       "documentation":"<p>Information about the Amazon Simple Storage Service (Amazon S3) storage type.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"s3://\\S+/.+"
     },
     "SearchAvailablePhoneNumbersRequest":{
       "type":"structure",
@@ -14931,6 +15184,52 @@
         "PhoneNumberArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the phone number.</p>"
+        }
+      }
+    },
+    "UpdatePromptRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "PromptId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>",
+          "location":"uri",
+          "locationName":"PromptId"
+        },
+        "Name":{
+          "shape":"CommonNameLength127",
+          "documentation":"<p>The name of the prompt.</p>"
+        },
+        "Description":{
+          "shape":"PromptDescription",
+          "documentation":"<p>A description of the prompt.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The URI for the S3 bucket where the prompt is stored.</p>"
+        }
+      }
+    },
+    "UpdatePromptResponse":{
+      "type":"structure",
+      "members":{
+        "PromptARN":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the prompt.</p>"
+        },
+        "PromptId":{
+          "shape":"PromptId",
+          "documentation":"<p>A unique identifier for the prompt.</p>"
         }
       }
     },

@@ -25,7 +25,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a profile. A profile is configuration resource to list the roles that RolesAnywhere service is trusted to assume. In addition, by applying a profile you can intersect permissions with IAM managed policies.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:CreateProfile</code>. </p>"
+      "documentation":"<p>Creates a <i>profile</i>, a list of the roles that Roles Anywhere service is trusted to assume. You use profiles to intersect permissions with IAM managed policies.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:CreateProfile</code>. </p>"
     },
     "CreateTrustAnchor":{
       "name":"CreateTrustAnchor",
@@ -40,7 +40,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a trust anchor. You establish trust between IAM Roles Anywhere and your certificate authority (CA) by configuring a trust anchor. A Trust Anchor is defined either as a reference to a AWS Certificate Manager Private Certificate Authority (ACM PCA), or by uploading a Certificate Authority (CA) certificate. Your AWS workloads can authenticate with the trust anchor using certificates issued by the trusted Certificate Authority (CA) in exchange for temporary AWS credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:CreateTrustAnchor</code>. </p>"
+      "documentation":"<p>Creates a trust anchor to establish trust between IAM Roles Anywhere and your certificate authority (CA). You can define a trust anchor as a reference to an Private Certificate Authority (Private CA) or by uploading a CA certificate. Your Amazon Web Services workloads can authenticate with the trust anchor using certificates issued by the CA in exchange for temporary Amazon Web Services credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:CreateTrustAnchor</code>. </p>"
     },
     "DeleteCrl":{
       "name":"DeleteCrl",
@@ -118,7 +118,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Disables a profile. When disabled, <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> requests with this profile fail.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:DisableProfile</code>. </p>"
+      "documentation":"<p>Disables a profile. When disabled, temporary credential requests with this profile fail.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:DisableProfile</code>. </p>"
     },
     "DisableTrustAnchor":{
       "name":"DisableTrustAnchor",
@@ -133,7 +133,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Disables a trust anchor. When disabled, <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> requests specifying this trust anchor are unauthorized.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:DisableTrustAnchor</code>. </p>"
+      "documentation":"<p>Disables a trust anchor. When disabled, temporary credential requests specifying this trust anchor are unauthorized.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:DisableTrustAnchor</code>. </p>"
     },
     "EnableCrl":{
       "name":"EnableCrl",
@@ -163,7 +163,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Enables the roles in a profile to receive session credentials in <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a>. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:EnableProfile</code>. </p>"
+      "documentation":"<p>Enables temporary credential requests for a profile. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:EnableProfile</code>. </p>"
     },
     "EnableTrustAnchor":{
       "name":"EnableTrustAnchor",
@@ -222,7 +222,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a Subject. A Subject associates a certificate identity with authentication attempts by CreateSession. The Subject resources stores audit information such as status of the last authentication attempt, the certificate data used in the attempt, and the last time the associated identity attempted authentication. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetSubject</code>. </p>"
+      "documentation":"<p>Gets a <i>subject</i>, which associates a certificate identity with authentication attempts. The subject stores auditing information such as the status of the last authentication attempt, the certificate data used in the attempt, and the last time the associated identity attempted authentication. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetSubject</code>. </p>"
     },
     "GetTrustAnchor":{
       "name":"GetTrustAnchor",
@@ -253,7 +253,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Imports the certificate revocation list (CRL). CRl is a list of certificates that have been revoked by the issuing certificate Authority (CA). IAM Roles Anywhere validates against the crl list before issuing credentials. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:ImportCrl</code>. </p>"
+      "documentation":"<p>Imports the certificate revocation list (CRL). A CRL is a list of certificates that have been revoked by the issuing certificate Authority (CA). IAM Roles Anywhere validates against the CRL before issuing credentials. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:ImportCrl</code>. </p>"
     },
     "ListCrls":{
       "name":"ListCrls",
@@ -268,7 +268,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all Crls in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListCrls</code>. </p>"
+      "documentation":"<p>Lists all certificate revocation lists (CRL) in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListCrls</code>. </p>"
     },
     "ListProfiles":{
       "name":"ListProfiles",
@@ -331,6 +331,38 @@
       ],
       "documentation":"<p>Lists the trust anchors in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTrustAnchors</code>. </p>"
     },
+    "PutNotificationSettings":{
+      "name":"PutNotificationSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/put-notifications-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"PutNotificationSettingsRequest"},
+      "output":{"shape":"PutNotificationSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Attaches a list of <i>notification settings</i> to a trust anchor.</p> <p>A notification setting includes information such as event name, threshold, status of the notification setting, and the channel to notify.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:PutNotificationSettings</code>. </p>"
+    },
+    "ResetNotificationSettings":{
+      "name":"ResetNotificationSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/reset-notifications-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetNotificationSettingsRequest"},
+      "output":{"shape":"ResetNotificationSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Resets the <i>custom notification setting</i> to IAM Roles Anywhere default setting. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:ResetNotificationSettings</code>. </p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -378,7 +410,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the certificate revocation list (CRL). CRl is a list of certificates that have been revoked by the issuing certificate Authority (CA). IAM Roles Anywhere validates against the crl list before issuing credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateCrl</code>. </p>"
+      "documentation":"<p>Updates the certificate revocation list (CRL). A CRL is a list of certificates that have been revoked by the issuing certificate authority (CA). IAM Roles Anywhere validates against the CRL before issuing credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateCrl</code>. </p>"
     },
     "UpdateProfile":{
       "name":"UpdateProfile",
@@ -394,7 +426,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the profile. A profile is configuration resource to list the roles that RolesAnywhere service is trusted to assume. In addition, by applying a profile you can scope-down permissions with IAM managed policies.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateProfile</code>. </p>",
+      "documentation":"<p>Updates a <i>profile</i>, a list of the roles that IAM Roles Anywhere service is trusted to assume. You use profiles to intersect permissions with IAM managed policies.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateProfile</code>. </p>",
       "idempotent":true
     },
     "UpdateTrustAnchor":{
@@ -411,7 +443,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the trust anchor.You establish trust between IAM Roles Anywhere and your certificate authority (CA) by configuring a trust anchor. A Trust Anchor is defined either as a reference to a AWS Certificate Manager Private Certificate Authority (ACM PCA), or by uploading a Certificate Authority (CA) certificate. Your AWS workloads can authenticate with the trust anchor using certificates issued by the trusted Certificate Authority (CA) in exchange for temporary AWS credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateTrustAnchor</code>. </p>",
+      "documentation":"<p>Updates a trust anchor. You establish trust between IAM Roles Anywhere and your certificate authority (CA) by configuring a trust anchor. You can define a trust anchor as a reference to an Private Certificate Authority (Private CA) or by uploading a CA certificate. Your Amazon Web Services workloads can authenticate with the trust anchor using certificates issued by the CA in exchange for temporary Amazon Web Services credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:UpdateTrustAnchor</code>. </p>",
       "idempotent":true
     }
   },
@@ -463,11 +495,11 @@
         },
         "requireInstanceProperties":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether instance properties are required in <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> requests with this profile. </p>"
+          "documentation":"<p>Specifies whether instance properties are required in temporary credential requests with this profile. </p>"
         },
         "roleArns":{
           "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
         },
         "sessionPolicy":{
           "shape":"String",
@@ -482,7 +514,7 @@
     "CreateProfileRequestDurationSecondsInteger":{
       "type":"integer",
       "box":true,
-      "max":43200,
+      "max":3600,
       "min":900
     },
     "CreateTrustAnchorRequest":{
@@ -499,6 +531,10 @@
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the trust anchor.</p>"
+        },
+        "notificationSettings":{
+          "shape":"NotificationSettings",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         },
         "source":{
           "shape":"Source",
@@ -523,7 +559,7 @@
         },
         "failed":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation was successful. </p>"
+          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
         },
         "issuer":{
           "shape":"String",
@@ -531,7 +567,7 @@
         },
         "seenAt":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
         },
         "serialNumber":{
           "shape":"String",
@@ -542,7 +578,7 @@
           "documentation":"<p>The PEM-encoded data of the certificate.</p>"
         }
       },
-      "documentation":"<p>A record of a presented X509 credential to <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a>. </p>"
+      "documentation":"<p>A record of a presented X509 credential from a temporary credential request. </p>"
     },
     "CrlDetail":{
       "type":"structure",
@@ -606,7 +642,7 @@
       "members":{
         "crlData":{
           "shape":"ImportCrlRequestCrlDataBlob",
-          "documentation":"<p>The x509 v3 specified certificate revocation list</p>"
+          "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
         },
         "enabled":{
           "shape":"Boolean",
@@ -640,7 +676,7 @@
       "members":{
         "failed":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation was successful. </p>"
+          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
         },
         "properties":{
           "shape":"InstancePropertyMap",
@@ -648,7 +684,7 @@
         },
         "seenAt":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
         }
       },
       "documentation":"<p>A key-value pair you set that identifies a property of the authenticating instance.</p>"
@@ -683,7 +719,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous operation did not show all results. To get the next results, call the operation again with this value.</p>"
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
         }
       }
     },
@@ -692,7 +728,7 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous operation did not show all results. To get the next results, call the operation again with this value.</p>"
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
         },
         "profiles":{
           "shape":"ProfileDetails",
@@ -705,7 +741,7 @@
       "members":{
         "nextToken":{
           "shape":"ListRequestNextTokenString",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous operation did not show all results. To get the next results, call the operation again with this value.</p>",
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -727,7 +763,7 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous operation did not show all results. To get the next results, call the operation again with this value.</p>"
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
         },
         "subjects":{
           "shape":"SubjectSummaries",
@@ -761,7 +797,7 @@
       "members":{
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous operation did not show all results. To get the next results, call the operation again with this value.</p>"
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
         },
         "trustAnchors":{
           "shape":"TrustAnchorDetails",
@@ -779,6 +815,123 @@
       "type":"string",
       "max":200,
       "min":1
+    },
+    "NotificationChannel":{
+      "type":"string",
+      "enum":["ALL"]
+    },
+    "NotificationEvent":{
+      "type":"string",
+      "enum":[
+        "CA_CERTIFICATE_EXPIRY",
+        "END_ENTITY_CERTIFICATE_EXPIRY"
+      ]
+    },
+    "NotificationSetting":{
+      "type":"structure",
+      "required":[
+        "enabled",
+        "event"
+      ],
+      "members":{
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the notification setting is enabled.</p>"
+        },
+        "event":{
+          "shape":"NotificationEvent",
+          "documentation":"<p>The event to which this notification setting is applied.</p>"
+        },
+        "threshold":{
+          "shape":"NotificationSettingThresholdInteger",
+          "documentation":"<p>The number of days before a notification event. This value is required for a notification setting that is enabled.</p>"
+        }
+      },
+      "documentation":"<p> Customizable notification settings that will be applied to notification events. IAM Roles Anywhere consumes these settings while notifying across multiple channels - CloudWatch metrics, EventBridge, and Health Dashboard. </p>"
+    },
+    "NotificationSettingDetail":{
+      "type":"structure",
+      "required":[
+        "enabled",
+        "event"
+      ],
+      "members":{
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
+        },
+        "configuredBy":{
+          "shape":"NotificationSettingDetailConfiguredByString",
+          "documentation":"<p>The principal that configured the notification setting. For default settings configured by IAM Roles Anywhere, the value is <code>rolesanywhere.amazonaws.com</code>, and for customized notifications settings, it is the respective account ID. </p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the notification setting is enabled.</p>"
+        },
+        "event":{
+          "shape":"NotificationEvent",
+          "documentation":"<p>The event to which this notification setting is applied.</p>"
+        },
+        "threshold":{
+          "shape":"NotificationSettingDetailThresholdInteger",
+          "documentation":"<p>The number of days before a notification event.</p>"
+        }
+      },
+      "documentation":"<p>The state of a notification setting.</p> <p>A notification setting includes information such as event name, threshold, status of the notification setting, and the channel to notify.</p>"
+    },
+    "NotificationSettingDetailConfiguredByString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "NotificationSettingDetailThresholdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":360,
+      "min":1
+    },
+    "NotificationSettingDetails":{
+      "type":"list",
+      "member":{"shape":"NotificationSettingDetail"},
+      "max":50,
+      "min":0
+    },
+    "NotificationSettingKey":{
+      "type":"structure",
+      "required":["event"],
+      "members":{
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification.</p>"
+        },
+        "event":{
+          "shape":"NotificationEvent",
+          "documentation":"<p>The notification setting event to reset.</p>"
+        }
+      },
+      "documentation":"<p>A notification setting key to reset. A notification setting key includes the event and the channel. </p>"
+    },
+    "NotificationSettingKeys":{
+      "type":"list",
+      "member":{"shape":"NotificationSettingKey"},
+      "max":50,
+      "min":0
+    },
+    "NotificationSettingThresholdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":360,
+      "min":1
+    },
+    "NotificationSettings":{
+      "type":"list",
+      "member":{"shape":"NotificationSetting"},
+      "max":50,
+      "min":0
     },
     "ProfileArn":{
       "type":"string",
@@ -823,11 +976,11 @@
         },
         "requireInstanceProperties":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether instance properties are required in <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> requests with this profile. </p>"
+          "documentation":"<p>Specifies whether instance properties are required in temporary credential requests with this profile. </p>"
         },
         "roleArns":{
           "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
         },
         "sessionPolicy":{
           "shape":"String",
@@ -852,6 +1005,54 @@
     "ProfileDetails":{
       "type":"list",
       "member":{"shape":"ProfileDetail"}
+    },
+    "PutNotificationSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "notificationSettings",
+        "trustAnchorId"
+      ],
+      "members":{
+        "notificationSettings":{
+          "shape":"NotificationSettings",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
+        },
+        "trustAnchorId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the trust anchor.</p>"
+        }
+      }
+    },
+    "PutNotificationSettingsResponse":{
+      "type":"structure",
+      "required":["trustAnchor"],
+      "members":{
+        "trustAnchor":{"shape":"TrustAnchorDetail"}
+      }
+    },
+    "ResetNotificationSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "notificationSettingKeys",
+        "trustAnchorId"
+      ],
+      "members":{
+        "notificationSettingKeys":{
+          "shape":"NotificationSettingKeys",
+          "documentation":"<p>A list of notification setting keys to reset. A notification setting key includes the event and the channel. </p>"
+        },
+        "trustAnchorId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the trust anchor.</p>"
+        }
+      }
+    },
+    "ResetNotificationSettingsResponse":{
+      "type":"structure",
+      "required":["trustAnchor"],
+      "members":{
+        "trustAnchor":{"shape":"TrustAnchorDetail"}
+      }
     },
     "ResourceName":{
       "type":"string",
@@ -950,15 +1151,20 @@
       "members":{
         "acmPcaArn":{
           "shape":"String",
-          "documentation":"<p>The root certificate of the Certificate Manager Private Certificate Authority specified by this ARN is used in trust validation for <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operations. Included for trust anchors of type <code>AWS_ACM_PCA</code>. </p>"
+          "documentation":"<p> The root certificate of the Private Certificate Authority specified by this ARN is used in trust validation for temporary credential requests. Included for trust anchors of type <code>AWS_ACM_PCA</code>. </p>"
         },
         "x509CertificateData":{
-          "shape":"String",
+          "shape":"SourceDataX509CertificateDataString",
           "documentation":"<p>The PEM-encoded data for the certificate anchor. Included for trust anchors of type <code>CERTIFICATE_BUNDLE</code>. </p>"
         }
       },
       "documentation":"<p>The data field of the trust anchor depending on its type. </p>",
       "union":true
+    },
+    "SourceDataX509CertificateDataString":{
+      "type":"string",
+      "max":8000,
+      "min":1
     },
     "String":{"type":"string"},
     "SubjectDetail":{
@@ -970,7 +1176,7 @@
         },
         "credentials":{
           "shape":"CredentialSummaries",
-          "documentation":"<p>The temporary session credentials vended at the last authenticating call with this Subject.</p>"
+          "documentation":"<p>The temporary session credentials vended at the last authenticating call with this subject.</p>"
         },
         "enabled":{
           "shape":"Boolean",
@@ -982,7 +1188,7 @@
         },
         "lastSeenAt":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp of the last time this Subject requested temporary session credentials.</p>"
+          "documentation":"<p>The ISO-8601 timestamp of the last time this subject requested temporary session credentials.</p>"
         },
         "subjectArn":{
           "shape":"String",
@@ -1021,15 +1227,15 @@
       "members":{
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was first used in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was first used in a temporary credential request.</p>"
         },
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>The enabled status of the Subject. </p>"
+          "documentation":"<p>The enabled status of the subject. </p>"
         },
         "lastSeenAt":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
         },
         "subjectArn":{
           "shape":"String",
@@ -1048,7 +1254,7 @@
           "documentation":"<p>The x509 principal identifier of the authenticating certificate.</p>"
         }
       },
-      "documentation":"<p>A summary representation of Subject resources returned in read operations; primarily ListSubjects.</p>"
+      "documentation":"<p>A summary representation of subjects.</p>"
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
@@ -1082,13 +1288,13 @@
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"},
-      "max":50,
+      "max":200,
       "min":0
     },
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"},
-      "max":50,
+      "max":200,
       "min":0
     },
     "TagResourceRequest":{
@@ -1152,6 +1358,10 @@
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the trust anchor.</p>"
+        },
+        "notificationSettings":{
+          "shape":"NotificationSettingDetails",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         },
         "source":{
           "shape":"Source",
@@ -1222,7 +1432,7 @@
       "members":{
         "crlData":{
           "shape":"UpdateCrlRequestCrlDataBlob",
-          "documentation":"<p>The x509 v3 specified certificate revocation list</p>"
+          "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
         },
         "crlId":{
           "shape":"Uuid",
@@ -1265,7 +1475,7 @@
         },
         "roleArns":{
           "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/APIReference/API_CreateSession.html\">CreateSession</a> operation.</p>"
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
         },
         "sessionPolicy":{
           "shape":"UpdateProfileRequestSessionPolicyString",
@@ -1276,7 +1486,7 @@
     "UpdateProfileRequestDurationSecondsInteger":{
       "type":"integer",
       "box":true,
-      "max":43200,
+      "max":3600,
       "min":900
     },
     "UpdateProfileRequestSessionPolicyString":{
@@ -1323,5 +1533,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>AWS Identity and Access Management Roles Anywhere provides a secure way for your workloads such as servers, containers, and applications running outside of AWS to obtain Temporary AWS credentials. Your workloads can use the same IAM policies and roles that you have configured with native AWS applications to access AWS resources. Using IAM Roles Anywhere will eliminate the need to manage long term credentials for workloads running outside of AWS.</p> <p>To use IAM Roles Anywhere customer workloads will need to use X.509 certificates issued by their Certificate Authority (CA) . The Certificate Authority (CA) needs to be registered with IAM Roles Anywhere as a trust anchor to establish trust between customer PKI and IAM Roles Anywhere. Customers who do not manage their own PKI system can use AWS Certificate Manager Private Certificate Authority (ACM PCA) to create a Certificate Authority and use that to establish trust with IAM Roles Anywhere</p> <p>This guide describes the IAM rolesanywhere operations that you can call programmatically. For general information about IAM Roles Anywhere see <a href=\"https://docs.aws.amazon.com/\">https://docs.aws.amazon.com/</a> </p>"
+  "documentation":"<p>Identity and Access Management Roles Anywhere provides a secure way for your workloads such as servers, containers, and applications that run outside of Amazon Web Services to obtain temporary Amazon Web Services credentials. Your workloads can use the same IAM policies and roles you have for native Amazon Web Services applications to access Amazon Web Services resources. Using IAM Roles Anywhere eliminates the need to manage long-term credentials for workloads running outside of Amazon Web Services.</p> <p> To use IAM Roles Anywhere, your workloads must use X.509 certificates issued by their certificate authority (CA). You register the CA with IAM Roles Anywhere as a trust anchor to establish trust between your public key infrastructure (PKI) and IAM Roles Anywhere. If you don't manage your own PKI system, you can use Private Certificate Authority to create a CA and then use that to establish trust with IAM Roles Anywhere. </p> <p>This guide describes the IAM Roles Anywhere operations that you can call programmatically. For more information about IAM Roles Anywhere, see the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html\">IAM Roles Anywhere User Guide</a>.</p>"
 }

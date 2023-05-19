@@ -1337,6 +1337,7 @@
         "AGE_RANGE",
         "BEARD",
         "EMOTIONS",
+        "EYE_DIRECTION",
         "EYEGLASSES",
         "EYES_OPEN",
         "GENDER",
@@ -3117,6 +3118,24 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_.\\-:]+"
     },
+    "EyeDirection":{
+      "type":"structure",
+      "members":{
+        "Yaw":{
+          "shape":"Degree",
+          "documentation":"<p>Value representing eye direction on the yaw axis.</p>"
+        },
+        "Pitch":{
+          "shape":"Degree",
+          "documentation":"<p>Value representing eye direction on the pitch axis.</p>"
+        },
+        "Confidence":{
+          "shape":"Percent",
+          "documentation":"<p>The confidence that the service has in its predicted eye direction.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the direction the eyes are gazing in (independent of the head pose) as determined by its pitch and yaw. </p>"
+    },
     "EyeOpen":{
       "type":"structure",
       "members":{
@@ -3248,6 +3267,10 @@
         "FaceOccluded":{
           "shape":"FaceOccluded",
           "documentation":"<p> <code>FaceOccluded</code> should return \"true\" with a high confidence score if a detected face’s eyes, nose, and mouth are partially captured or if they are covered by masks, dark sunglasses, cell phones, hands, or other objects. <code>FaceOccluded</code> should return \"false\" with a high confidence score if common occurrences that do not impact face verification are detected, such as eye glasses, lightly tinted sunglasses, strands of hair, and others. </p>"
+        },
+        "EyeDirection":{
+          "shape":"EyeDirection",
+          "documentation":"<p>Indicates the direction the eyes are gazing in, as defined by pitch and yaw.</p>"
         }
       },
       "documentation":"<p>Structure containing attributes of the face that the algorithm detected.</p> <p>A <code>FaceDetail</code> object contains either the default facial attributes or all facial attributes. The default attributes are <code>BoundingBox</code>, <code>Confidence</code>, <code>Landmarks</code>, <code>Pose</code>, and <code>Quality</code>.</p> <p> <a>GetFaceDetection</a> is the only Amazon Rekognition Video stored video operation that can return a <code>FaceDetail</code> object with all attributes. To specify which attributes to return, use the <code>FaceAttributes</code> input parameter for <a>StartFaceDetection</a>. The following Amazon Rekognition Video operations return only the default attributes. The corresponding Start operations don't have a <code>FaceAttributes</code> input parameter:</p> <ul> <li> <p>GetCelebrityRecognition</p> </li> <li> <p>GetPersonTracking</p> </li> <li> <p>GetFaceSearch</p> </li> </ul> <p>The Amazon Rekognition Image <a>DetectFaces</a> and <a>IndexFaces</a> operations can return all facial attributes. To specify which attributes to return, use the <code>Attributes</code> input parameter for <code>DetectFaces</code>. For <code>IndexFaces</code>, use the <code>DetectAttributes</code> input parameter.</p>"

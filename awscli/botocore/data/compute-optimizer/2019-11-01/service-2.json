@@ -1499,7 +1499,9 @@
         "RecommendationOptionsMigrationEffort",
         "EffectiveRecommendationPreferencesExternalMetricsSource",
         "InstanceState",
-        "Tags"
+        "Tags",
+        "ExternalMetricStatusCode",
+        "ExternalMetricStatusReason"
       ]
     },
     "ExportableInstanceFields":{
@@ -1581,6 +1583,36 @@
       "type":"list",
       "member":{"shape":"ExportableVolumeField"}
     },
+    "ExternalMetricStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"ExternalMetricStatusCode",
+          "documentation":"<p> The status code for Compute Optimizer's integration with an external metrics provider. </p>"
+        },
+        "statusReason":{
+          "shape":"ExternalMetricStatusReason",
+          "documentation":"<p> The reason for Compute Optimizer's integration status with your external metric provider. </p>"
+        }
+      },
+      "documentation":"<p> Describes Compute Optimizer's integration status with your chosen external metric provider. For example, Datadog. </p>"
+    },
+    "ExternalMetricStatusCode":{
+      "type":"string",
+      "enum":[
+        "NO_EXTERNAL_METRIC_SET",
+        "INTEGRATION_SUCCESS",
+        "DATADOG_INTEGRATION_ERROR",
+        "DYNATRACE_INTEGRATION_ERROR",
+        "NEWRELIC_INTEGRATION_ERROR",
+        "INSTANA_INTEGRATION_ERROR",
+        "INSUFFICIENT_DATADOG_METRICS",
+        "INSUFFICIENT_DYNATRACE_METRICS",
+        "INSUFFICIENT_NEWRELIC_METRICS",
+        "INSUFFICIENT_INSTANA_METRICS"
+      ]
+    },
+    "ExternalMetricStatusReason":{"type":"string"},
     "ExternalMetricsPreference":{
       "type":"structure",
       "members":{
@@ -2247,6 +2279,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p> A list of tags assigned to your Amazon EC2 instance recommendations. </p>"
+        },
+        "externalMetricStatus":{
+          "shape":"ExternalMetricStatus",
+          "documentation":"<p> An object that describes Compute Optimizer's integration status with your external metrics provider. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon EC2 instance recommendation.</p>"

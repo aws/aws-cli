@@ -13,6 +13,8 @@
 import os
 
 from awscli.testutils import mock, unittest, FileCreator, skip_if_windows
+from awscli.testutils import unittest, FileCreator, skip_if_windows
+from awscli.customizations.arguments import NestedBlobArgumentHoister
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.arguments import StatefulArgument
 from awscli.customizations.arguments import QueryOutFileArgument
@@ -151,3 +153,106 @@ class TestQueryFileArgument(unittest.TestCase):
         with open(outfile) as fp:
             fp.read()
         self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)
+
+
+class TestNestedBlobArgumentHoister(unittest.TestCase):
+    def setUp(self):
+        self.blob_hoister = NestedBlobArgumentHoister(
+            'complexArgX', 'valueY', 'argY', 'argYDoc', '.argYDocAddendum')
+
+        self.arg_table = {
+            'complexArgX': mock.Mock(
+                required=True,
+                documentation='complexArgXDoc',
+                argument_model=mock.Mock(
+                    members={
+                        'valueY': mock.Mock(
+                            type_name='blob',
+                        )
+                    }
+                )
+            )
+        }
+
+    def test_apply_to_arg_table(self):
+        self.blob_hoister(None, self.arg_table)
+
+        self.assertFalse(self.arg_table['complexArgX'].required)
+        self.assertEqual(
+            self.arg_table['complexArgX'].documentation,
+            'complexArgXDoc.argYDocAddendum')
+
+        argY = self.arg_table['argY']
+        self.assertFalse(argY.required)
+        self.assertEqual(argY.documentation, 'argYDoc')
+        self.assertEqual(argY.argument_model.type_name, 'blob')
+
+    def test_populates_underlying_complex_arg(self):
+        self.blob_hoister(None, self.arg_table)
+        argY = self.arg_table['argY']
+
+        # parameters bag doesn't
+        # already contain 'ComplexArgX'
+        parameters = {
+            'any': 'other',
+        }
+        argY.add_to_params(parameters, 'test-value')
+        self.assertEqual('other', parameters['any'])
+        self.assertEqual('test-value', parameters['ComplexArgX']['valueY'])
+
+    def test_preserves_member_values_in_underlying_complex_arg(self):
+        self.blob_hoister(None, self.arg_table)
+        argY = self.arg_table['argY']
+
+        # parameters bag already contains 'ComplexArgX'
+        # but that does not contain 'valueY'
+        parameters = {
+            'any': 'other',
+            'ComplexArgX': {
+                'another': 'one',
+            }
+        }
+        argY.add_to_params(parameters, 'test-value')
+        self.assertEqual('other', parameters['any'])
+        self.assertEqual('one', parameters['ComplexArgX']['another'])
+        self.assertEqual('test-value', parameters['ComplexArgX']['valueY'])
+
+    def test_overrides_target_member_in_underlying_complex_arg(self):
+        self.blob_hoister(None, self.arg_table)
+        argY = self.arg_table['argY']
+
+        # parameters bag already contains 'ComplexArgX'
+        # and that already contains 'valueY'
+        parameters = {
+            'any': 'other',
+            'ComplexArgX': {
+                'another': 'one',
+                'valueY': 'doomed',
+            }
+        }
+        argY.add_to_params(parameters, 'test-value')
+        self.assertEqual('other', parameters['any'])
+        self.assertEqual('one', parameters['ComplexArgX']['another'])
+        self.assertEqual('test-value', parameters['ComplexArgX']['valueY'])
+
+    def test_not_apply_to_mismatch_arg_type(self):
+        nonmatching_arg_table = {
+            'complexArgX': mock.Mock(
+                required=True,
+                documentation='complexArgXDoc',
+                argument_model=mock.Mock(
+                    members={
+                        'valueY': mock.Mock(
+                            type_name='string',
+                        )
+                    }
+                )
+            )
+        }
+
+        self.blob_hoister(None, nonmatching_arg_table)
+
+        self.assertTrue(nonmatching_arg_table['complexArgX'].required)
+        self.assertEqual(
+            nonmatching_arg_table['complexArgX'].documentation, 'complexArgXDoc')
+        self.assertFalse('argY' in self.arg_table)

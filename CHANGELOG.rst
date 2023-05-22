@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.138
+========
+
+* api-change:``backup``: Added support for tags on restore.
+* api-change:``pinpoint``: Amazon Pinpoint is deprecating the tags parameter in the UpdateSegment, UpdateCampaign, UpdateEmailTemplate, UpdateSmsTemplate, UpdatePushTemplate, UpdateInAppTemplate and UpdateVoiceTemplate. Amazon Pinpoint will end support tags parameter by May 22, 2023.
+* api-change:``quicksight``: Add support for Asset Bundle, Geospatial Heatmaps.
+
+
 1.27.137
 ========
 

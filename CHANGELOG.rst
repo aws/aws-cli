@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.139
+========
+
+* api-change:``fms``: Fixes issue that could cause calls to GetAdminScope and ListAdminAccountsForOrganization to return a 500 Internal Server error.
+* api-change:``sagemaker``: Added ModelNameEquals, ModelPackageVersionArnEquals in request and ModelName, SamplePayloadUrl, ModelPackageVersionArn in response of ListInferenceRecommendationsJobs API. Added Invocation timestamps in response of DescribeInferenceRecommendationsJob API & ListInferenceRecommendationsJobSteps API.
+* api-change:``translate``: Added support for calling TranslateDocument API.
+
+
 1.27.138
 ========
 

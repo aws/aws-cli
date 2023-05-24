@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.140
+========
+
+* api-change:``appsync``: This release introduces AppSync Merged APIs, which provide the ability to compose multiple source APIs into a single federated/merged API.
+* api-change:``connect``: Amazon Connect Evaluation Capabilities: validation improvements
+* api-change:``cur``: Add support for split cost allocation data on a report.
+* api-change:``sagemaker``: SageMaker now provides an instantaneous deployment recommendation through the DescribeModel API
+
+
 1.27.139
 ========
 

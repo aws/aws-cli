@@ -49,6 +49,6 @@ class TestStartAssetBundleImportJob(BaseQuickSightAssetBundleTest):
         result = {
             'AwsAccountId': '123456789012',
             'AssetBundleImportJobId': 'import-job-1',
-            'AssetBundleImportSource': {'Body': 'aGVsbG8gd29ybGQ='},
+            'AssetBundleImportSource': {'Body': b'hello world'},
         }
         self.assert_params_for_cmd(cmdline, result)

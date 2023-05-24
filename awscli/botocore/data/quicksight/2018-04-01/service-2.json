@@ -989,6 +989,36 @@
       ],
       "documentation":"<p>Provides the read and write permissions for an analysis.</p>"
     },
+    "DescribeAssetBundleExportJob":{
+      "name":"DescribeAssetBundleExportJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-export-jobs/{AssetBundleExportJobId}"
+      },
+      "input":{"shape":"DescribeAssetBundleExportJobRequest"},
+      "output":{"shape":"DescribeAssetBundleExportJobResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes an existing export job.</p> <p>Poll job descriptions after a job starts to know the status of the job. When a job succeeds, a URL is provided to download the exported assets' data from. Download URLs are valid for five minutes after they are generated. You can call the <code>DescribeAssetBundleExportJob</code> API for a new download URL as needed.</p> <p>Job descriptions are available for 14 days after the job starts.</p>"
+    },
+    "DescribeAssetBundleImportJob":{
+      "name":"DescribeAssetBundleImportJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-import-jobs/{AssetBundleImportJobId}"
+      },
+      "input":{"shape":"DescribeAssetBundleImportJobRequest"},
+      "output":{"shape":"DescribeAssetBundleImportJobResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes an existing import job.</p> <p>Poll job descriptions after starting a job to know when it has succeeded or failed. Job descriptions are available for 14 days after job starts.</p>"
+    },
     "DescribeDashboard":{
       "name":"DescribeDashboard",
       "http":{
@@ -1651,6 +1681,40 @@
       ],
       "documentation":"<p>Lists Amazon QuickSight analyses that exist in the specified Amazon Web Services account.</p>"
     },
+    "ListAssetBundleExportJobs":{
+      "name":"ListAssetBundleExportJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-export-jobs"
+      },
+      "input":{"shape":"ListAssetBundleExportJobsRequest"},
+      "output":{"shape":"ListAssetBundleExportJobsResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all asset bundle export jobs that have been taken place in the last 14 days. Jobs created more than 14 days ago are deleted forever and are not returned. If you are using the same job ID for multiple jobs, <code>ListAssetBundleExportJobs</code> only returns the most recent job that uses the repeated job ID.</p>"
+    },
+    "ListAssetBundleImportJobs":{
+      "name":"ListAssetBundleImportJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-import-jobs"
+      },
+      "input":{"shape":"ListAssetBundleImportJobsRequest"},
+      "output":{"shape":"ListAssetBundleImportJobsResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all asset bundle import jobs that have taken place in the last 14 days. Jobs created more than 14 days ago are deleted forever and are not returned. If you are using the same job ID for multiple jobs, <code>ListAssetBundleImportJobs</code> only returns the most recent job that uses the repeated job ID.</p>"
+    },
     "ListDashboardVersions":{
       "name":"ListDashboardVersions",
       "http":{
@@ -2282,6 +2346,44 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Use the <code>SearchGroups</code> operation to search groups in a specified Amazon QuickSight namespace using the supplied filters.</p>"
+    },
+    "StartAssetBundleExportJob":{
+      "name":"StartAssetBundleExportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-export-jobs/export"
+      },
+      "input":{"shape":"StartAssetBundleExportJobRequest"},
+      "output":{"shape":"StartAssetBundleExportJobResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts an Asset Bundle export job.</p> <p>An Asset Bundle export job exports specified Amazon QuickSight assets. You can also choose to export any asset dependencies in the same job. Export jobs run asynchronously and can be polled with a <code>DescribeAssetBundleExportJob</code> API call. When a job is successfully completed, a download URL that contains the exported assets is returned. The URL is valid for 5 minutes and can be refreshed with a <code>DescribeAssetBundleExportJob</code> API call. Each Amazon QuickSight account can run up to 10 export jobs concurrently.</p> <p>The API caller must have the necessary permissions in their IAM role to access each resource before the resources can be exported.</p>"
+    },
+    "StartAssetBundleImportJob":{
+      "name":"StartAssetBundleImportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/asset-bundle-import-jobs/import"
+      },
+      "input":{"shape":"StartAssetBundleImportJobRequest"},
+      "output":{"shape":"StartAssetBundleImportJobResponse"},
+      "errors":[
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts an Asset Bundle import job.</p> <p>An Asset Bundle import job imports specified Amazon QuickSight assets into an Amazon QuickSight account. You can also choose to import a naming prefix and specified configuration overrides. The assets that are contained in the bundle file that you provide are used to create or update a new or existing asset in your Amazon QuickSight account. Each Amazon QuickSight account can run up to 10 import jobs concurrently.</p> <p>The API caller must have the necessary <code>\"create\"</code>, <code>\"describe\"</code>, and <code>\"update\"</code> permissions in their IAM role to access each resource type that is contained in the bundle file before the resources can be imported.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3450,6 +3552,734 @@
       "type":"list",
       "member":{"shape":"Arn"}
     },
+    "AssetBundleCloudFormationOverridePropertyConfiguration":{
+      "type":"structure",
+      "members":{
+        "ResourceIdOverrideConfiguration":{
+          "shape":"AssetBundleExportJobResourceIdOverrideConfiguration",
+          "documentation":"<p>An optional list of structures that control how resource IDs are parameterized in the returned CloudFormation template.</p>"
+        },
+        "VPCConnections":{
+          "shape":"AssetBundleExportJobVPCConnectionOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>VPCConnection</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "RefreshSchedules":{
+          "shape":"AssetBundleExportJobRefreshScheduleOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>RefreshSchedule</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "DataSources":{
+          "shape":"AssetBundleExportJobDataSourceOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>DataSource</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "DataSets":{
+          "shape":"AssetBundleExportJobDataSetOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>DataSet</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "Themes":{
+          "shape":"AssetBundleExportJobThemeOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>Theme</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "Analyses":{
+          "shape":"AssetBundleExportJobAnalysisOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>Analysis</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "Dashboards":{
+          "shape":"AssetBundleExportJobDashboardOverridePropertiesList",
+          "documentation":"<p>An optional list of structures that control how <code>Dashboard</code> resources are parameterized in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>An optional collection of CloudFormation property configurations that control how the export job is generated.</p>"
+    },
+    "AssetBundleExportFormat":{
+      "type":"string",
+      "enum":[
+        "CLOUDFORMATION_JSON",
+        "QUICKSIGHT_JSON"
+      ]
+    },
+    "AssetBundleExportJobAnalysisOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>Analysis</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobAnalysisPropertyToOverrideList",
+          "documentation":"<p>A list of <code>Analysis</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>Analysis</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobAnalysisOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobAnalysisOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobAnalysisPropertyToOverride":{
+      "type":"string",
+      "enum":["Name"]
+    },
+    "AssetBundleExportJobAnalysisPropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobAnalysisPropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobDashboardOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>Dashboard</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobDashboardPropertyToOverrideList",
+          "documentation":"<p>A list of <code>Dashboard</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>Dashboard</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobDashboardOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDashboardOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobDashboardPropertyToOverride":{
+      "type":"string",
+      "enum":["Name"]
+    },
+    "AssetBundleExportJobDashboardPropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDashboardPropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobDataSetOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>DataSet</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobDataSetPropertyToOverrideList",
+          "documentation":"<p>A list of <code>DataSet</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>DataSet</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobDataSetOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDataSetOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobDataSetPropertyToOverride":{
+      "type":"string",
+      "enum":["Name"]
+    },
+    "AssetBundleExportJobDataSetPropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDataSetPropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobDataSourceOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>DataSource</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobDataSourcePropertyToOverrideList",
+          "documentation":"<p>A list of <code>DataSource</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>DataSource</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobDataSourceOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDataSourceOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobDataSourcePropertyToOverride":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "DisableSsl",
+        "SecretArn",
+        "Username",
+        "Password",
+        "Domain",
+        "WorkGroup",
+        "Host",
+        "Port",
+        "Database",
+        "DataSetName",
+        "Catalog",
+        "InstanceId",
+        "ClusterId",
+        "ManifestFileLocation",
+        "Warehouse",
+        "RoleArn"
+      ]
+    },
+    "AssetBundleExportJobDataSourcePropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobDataSourcePropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobError":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource whose processing caused an error.</p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The specific error type of the error that occurred.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error that occurred during an Asset Bundle export job.</p>"
+    },
+    "AssetBundleExportJobErrorList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobError"}
+    },
+    "AssetBundleExportJobRefreshScheduleOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>RefreshSchedule</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobRefreshSchedulePropertyToOverrideList",
+          "documentation":"<p>A list of <code>RefreshSchedule</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>RefreshSchedule</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobRefreshScheduleOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobRefreshScheduleOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobRefreshSchedulePropertyToOverride":{
+      "type":"string",
+      "enum":["StartAfterDateTime"]
+    },
+    "AssetBundleExportJobRefreshSchedulePropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobRefreshSchedulePropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobResourceIdOverrideConfiguration":{
+      "type":"structure",
+      "members":{
+        "PrefixForAllResources":{
+          "shape":"Boolean",
+          "documentation":"<p>An option to request a CloudFormation variable for a prefix to be prepended to each resource's ID before import. The prefix is only added to the asset IDs and does not change the name of the asset.</p>"
+        }
+      },
+      "documentation":"<p>An optional structure that configures resource ID overrides for the export job.</p>"
+    },
+    "AssetBundleExportJobStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED_FOR_IMMEDIATE_EXECUTION",
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED"
+      ]
+    },
+    "AssetBundleExportJobSummary":{
+      "type":"structure",
+      "members":{
+        "JobStatus":{
+          "shape":"AssetBundleExportJobStatus",
+          "documentation":"<p>The current status of the export job.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the export job.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the export job was created.</p>"
+        },
+        "AssetBundleExportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the export job.</p>"
+        },
+        "IncludeAllDependencies":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag that determines the inclusion of resource dependencies in the returned asset bundle.</p>"
+        },
+        "ExportFormat":{
+          "shape":"AssetBundleExportFormat",
+          "documentation":"<p>The format for the export job.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the export job that includes details of the job's configuration and its current status.</p>"
+    },
+    "AssetBundleExportJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobSummary"}
+    },
+    "AssetBundleExportJobThemeOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>Theme</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobThemePropertyToOverrideList",
+          "documentation":"<p>A list of <code>Theme</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>Theme</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobThemeOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobThemeOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobThemePropertyToOverride":{
+      "type":"string",
+      "enum":["Name"]
+    },
+    "AssetBundleExportJobThemePropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobThemePropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobVPCConnectionOverrideProperties":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>VPCConnection</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobVPCConnectionPropertyToOverrideList",
+          "documentation":"<p>A list of <code>VPCConnection</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>VPCConnection</code> resource is parameterized in the outputted CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobVPCConnectionOverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobVPCConnectionOverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobVPCConnectionPropertyToOverride":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "DnsResolvers",
+        "RoleArn"
+      ]
+    },
+    "AssetBundleExportJobVPCConnectionPropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobVPCConnectionPropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleImportBodyBlob":{
+      "type":"blob",
+      "max":20971520,
+      "min":0,
+      "sensitive":true
+    },
+    "AssetBundleImportFailureAction":{
+      "type":"string",
+      "enum":[
+        "DO_NOTHING",
+        "ROLLBACK"
+      ]
+    },
+    "AssetBundleImportJobAnalysisOverrideParameters":{
+      "type":"structure",
+      "required":["AnalysisId"],
+      "members":{
+        "AnalysisId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the analysis that you ant to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the analysis.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single analysis that is being imported.</p>"
+    },
+    "AssetBundleImportJobAnalysisOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobAnalysisOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobDashboardOverrideParameters":{
+      "type":"structure",
+      "required":["DashboardId"],
+      "members":{
+        "DashboardId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dashboard that you want to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single dashboard that is being imported.</p>"
+    },
+    "AssetBundleImportJobDashboardOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDashboardOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobDataSetOverrideParameters":{
+      "type":"structure",
+      "required":["DataSetId"],
+      "members":{
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the dataset to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single dataset that is being imported.</p>"
+    },
+    "AssetBundleImportJobDataSetOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSetOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobDataSourceCredentialPair":{
+      "type":"structure",
+      "required":[
+        "Username",
+        "Password"
+      ],
+      "members":{
+        "Username":{
+          "shape":"DbUsername",
+          "documentation":"<p>The username for the data source connection.</p>"
+        },
+        "Password":{
+          "shape":"Password",
+          "documentation":"<p>The password for the data source connection.</p>"
+        }
+      },
+      "documentation":"<p>A username and password credential pair to use to import a data source resource.</p>",
+      "sensitive":true
+    },
+    "AssetBundleImportJobDataSourceCredentials":{
+      "type":"structure",
+      "members":{
+        "CredentialPair":{
+          "shape":"AssetBundleImportJobDataSourceCredentialPair",
+          "documentation":"<p>A username and password credential pair to be used to create the imported data source. Leave this field blank if you are using an Secrets Manager Secret to provide credentials.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of the Secrets Manager Secret to be used to create the imported data source leave this field blank if you aren't using a Secret in place of a credential pair.</p>"
+        }
+      },
+      "documentation":"<p>The login credentials to use to import a data source resource.</p>"
+    },
+    "AssetBundleImportJobDataSourceOverrideParameters":{
+      "type":"structure",
+      "required":["DataSourceId"],
+      "members":{
+        "DataSourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the data source to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the data source.</p>"
+        },
+        "DataSourceParameters":{"shape":"DataSourceParameters"},
+        "VpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "SslProperties":{"shape":"SslProperties"},
+        "Credentials":{
+          "shape":"AssetBundleImportJobDataSourceCredentials",
+          "documentation":"<p>An optional structure that provides the credentials to be used to create the imported data source.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single data source that is being imported.</p>"
+    },
+    "AssetBundleImportJobDataSourceOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSourceOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobError":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource whose processing caused an error.</p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The specific error type or the error that occurred.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error that occurred within an Asset Bundle import execution.</p>"
+    },
+    "AssetBundleImportJobErrorList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobError"}
+    },
+    "AssetBundleImportJobOverrideParameters":{
+      "type":"structure",
+      "members":{
+        "ResourceIdOverrideConfiguration":{
+          "shape":"AssetBundleImportJobResourceIdOverrideConfiguration",
+          "documentation":"<p>An optional structure that configures resource ID overrides to be applied within the import job.</p>"
+        },
+        "VPCConnections":{
+          "shape":"AssetBundleImportJobVPCConnectionOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>VPCConnection</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "RefreshSchedules":{
+          "shape":"AssetBundleImportJobRefreshScheduleOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>RefreshSchedule</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "DataSources":{
+          "shape":"AssetBundleImportJobDataSourceOverrideParametersList",
+          "documentation":"<p> A list of overrides for any <code>DataSource</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "DataSets":{
+          "shape":"AssetBundleImportJobDataSetOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>DataSet</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Themes":{
+          "shape":"AssetBundleImportJobThemeOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>Theme</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Analyses":{
+          "shape":"AssetBundleImportJobAnalysisOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>Analysis</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Dashboards":{
+          "shape":"AssetBundleImportJobDashboardOverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>Dashboard</code> resources that are present in the asset bundle that is imported.</p>"
+        }
+      },
+      "documentation":"<p>A list of overrides that modify the asset bundle resource configuration before the resource is imported.</p>"
+    },
+    "AssetBundleImportJobRefreshScheduleOverrideParameters":{
+      "type":"structure",
+      "required":[
+        "DataSetId",
+        "ScheduleId"
+      ],
+      "members":{
+        "DataSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A partial identifier for the specific <code>RefreshSchedule</code> resource that is being overridden. This structure is used together with the <code>ScheduleID</code> structure.</p>"
+        },
+        "ScheduleId":{
+          "shape":"String",
+          "documentation":"<p>A partial identifier for the specific <code>RefreshSchedule</code> resource being overridden. This structure is used together with the <code>DataSetId</code> structure.</p>"
+        },
+        "StartAfterDateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>An override for the <code>StartAfterDateTime</code> of a <code>RefreshSchedule</code> to ensure that the <code>StartAfterDateTime</code> is set to a time that takes place in the future.</p>"
+        }
+      },
+      "documentation":"<p>A list of overrides for a specific <code>RefreshsSchedule</code> resource that is present in the asset bundle that is imported.</p>"
+    },
+    "AssetBundleImportJobRefreshScheduleOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobRefreshScheduleOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobResourceIdOverrideConfiguration":{
+      "type":"structure",
+      "members":{
+        "PrefixForAllResources":{
+          "shape":"String",
+          "documentation":"<p>An option to request a CloudFormation variable for a prefix to be prepended to each resource's ID before import. The prefix is only added to the asset IDs and does not change the name of the asset.</p>"
+        }
+      },
+      "documentation":"<p>An optional structure that configures resource ID overrides for the import job</p>"
+    },
+    "AssetBundleImportJobStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED_FOR_IMMEDIATE_EXECUTION",
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED",
+        "FAILED_ROLLBACK_IN_PROGRESS",
+        "FAILED_ROLLBACK_COMPLETED",
+        "FAILED_ROLLBACK_ERROR"
+      ]
+    },
+    "AssetBundleImportJobSummary":{
+      "type":"structure",
+      "members":{
+        "JobStatus":{
+          "shape":"AssetBundleImportJobStatus",
+          "documentation":"<p>The current status of the import job.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the import job.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the import job was created.</p>"
+        },
+        "AssetBundleImportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.</p>"
+        },
+        "FailureAction":{
+          "shape":"AssetBundleImportFailureAction",
+          "documentation":"<p>The failure action for the import job.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the import job that includes details of the requested job's configuration and its current status.</p>"
+    },
+    "AssetBundleImportJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobSummary"}
+    },
+    "AssetBundleImportJobThemeOverrideParameters":{
+      "type":"structure",
+      "required":["ThemeId"],
+      "members":{
+        "ThemeId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the theme to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the theme.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single theme that is imported.</p>"
+    },
+    "AssetBundleImportJobThemeOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobThemeOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobVPCConnectionOverrideParameters":{
+      "type":"structure",
+      "required":["VPCConnectionId"],
+      "members":{
+        "VPCConnectionId":{
+          "shape":"VPCConnectionResourceIdUnrestricted",
+          "documentation":"<p>The ID of the VPC Connection to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the VPC connection.</p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>A list of new subnet IDs for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or region.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A new security group ID for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or region.</p>"
+        },
+        "DnsResolvers":{
+          "shape":"DnsResolverList",
+          "documentation":"<p>An optional override of dns resolvers to be used by the VPC connection.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>An optional override of the role ARN to be used by the VPC connection.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single VPC connection that is imported.</p>"
+    },
+    "AssetBundleImportJobVPCConnectionOverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobVPCConnectionOverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportSource":{
+      "type":"structure",
+      "members":{
+        "Body":{
+          "shape":"AssetBundleImportBodyBlob",
+          "documentation":"<p>The bytes of the Base64 encoded asset bundle import zip file. This file can't exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to allow the direct setting of the zip file's bytes. If you are using a SDK of a different language or are receiving related errors, try to Base64 encode your data.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20MB.</p>"
+        }
+      },
+      "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import.</p>"
+    },
+    "AssetBundleImportSourceDescription":{
+      "type":"structure",
+      "members":{
+        "Body":{
+          "shape":"String",
+          "documentation":"<p>A HTTPS download URL for the provided asset bundle that you optionally provided at the start of the import job. This URL is valid for 5 minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed. The downloaded asset bundle is a <code>.qs</code> zip file.</p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 uri that you provided at the start of the import job.</p>"
+        }
+      },
+      "documentation":"<p>A description of the import source that you provide at the start of an import job. This value is set to either <code>Body</code> or <code>S3Uri</code> depending on how the <code>StartAssetBundleImportJobRequest</code> is configured.</p>"
+    },
+    "AssetBundleResourceArns":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":100,
+      "min":1
+    },
     "AssignmentStatus":{
       "type":"string",
       "enum":[
@@ -4605,7 +5435,7 @@
       "members":{
         "ClusterMarker":{
           "shape":"ClusterMarker",
-          "documentation":"<p>The cluster marker that is a part of the cluster marker configuration</p>"
+          "documentation":"<p>The cluster marker that is a part of the cluster marker configuration.</p>"
         }
       },
       "documentation":"<p>The cluster marker configuration of the geospatial map selected point style.</p>"
@@ -6853,7 +7683,7 @@
       ],
       "members":{
         "Username":{
-          "shape":"Username",
+          "shape":"DbUsername",
           "documentation":"<p>User name.</p>"
         },
         "Password":{
@@ -8888,6 +9718,11 @@
         "SATURDAY"
       ]
     },
+    "DbUsername":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "DecimalDatasetParameter":{
       "type":"structure",
       "required":[
@@ -10435,6 +11270,160 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAssetBundleExportJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AssetBundleExportJobId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account the export job is executed in. </p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AssetBundleExportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job that you want described. The job ID is set when you start a new job with a <code>StartAssetBundleExportJob</code> API call.</p>",
+          "location":"uri",
+          "locationName":"AssetBundleExportJobId"
+        }
+      }
+    },
+    "DescribeAssetBundleExportJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobStatus":{
+          "shape":"AssetBundleExportJobStatus",
+          "documentation":"<p>Indicates tha status of a job through its queueing and execution.</p> <p>Poll this <code>DescribeAssetBundleExportApi</code> until <code>JobStatus</code> is either <code>SUCCESSFUL</code> or <code>FAILED</code>.</p>"
+        },
+        "DownloadUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to download the exported asset bundle data from.</p> <p>This URL is available only after the job has succeeded. This URL is valid for 5 minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed.</p> <p>The downloaded asset bundle is a zip file named <code>assetbundle-{jobId}.qs</code>. The file has a <code>.qs</code> extension.</p> <p>This URL can't be used in a <code>StartAssetBundleImportJob</code> API call and should only be used for download purposes.</p>"
+        },
+        "Errors":{
+          "shape":"AssetBundleExportJobErrorList",
+          "documentation":"<p>An array of error records that describes any failures that occurred during the export job processing.</p> <p>Error records accumulate while the job runs. The complete set of error records is available after the job has completed and failed.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the export job.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the export job was created.</p>"
+        },
+        "AssetBundleExportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. The job ID is set when you start a new job with a <code>StartAssetBundleExportJob</code> API call.</p>"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that the export job was executed in. </p>"
+        },
+        "ResourceArns":{
+          "shape":"AssetBundleResourceArns",
+          "documentation":"<p>A list of resource ARNs that exported with the job.</p>"
+        },
+        "IncludeAllDependencies":{
+          "shape":"Boolean",
+          "documentation":"<p>The include dependencies flag.</p>"
+        },
+        "ExportFormat":{
+          "shape":"AssetBundleExportFormat",
+          "documentation":"<p>The format of the export.</p>"
+        },
+        "CloudFormationOverridePropertyConfiguration":{
+          "shape":"AssetBundleCloudFormationOverridePropertyConfiguration",
+          "documentation":"<p>The CloudFormation override property configuration for the export job.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the response.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeAssetBundleImportJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AssetBundleImportJobId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account the import job was executed in. </p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AssetBundleImportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. The job ID is set when you start a new job with a <code>StartAssetBundleImportJob</code> API call.</p>",
+          "location":"uri",
+          "locationName":"AssetBundleImportJobId"
+        }
+      }
+    },
+    "DescribeAssetBundleImportJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobStatus":{
+          "shape":"AssetBundleImportJobStatus",
+          "documentation":"<p>Indicates tha status of a job through its queueing and execution.</p> <p>Poll this <code>DescribeAssetBundleImport</code> API until <code>JobStatus</code> returns one of the following values.</p> <ul> <li> <p> <code>SUCCESSFUL</code> </p> </li> <li> <p> <code>FAILED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_COMPLETED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_ERROR</code> </p> </li> </ul>"
+        },
+        "Errors":{
+          "shape":"AssetBundleImportJobErrorList",
+          "documentation":"<p>An array of error records that describes any failures that occurred during the export job processing.</p> <p>Error records accumulate while the job is still running. The complete set of error records is available after the job has completed and failed.</p>"
+        },
+        "RollbackErrors":{
+          "shape":"AssetBundleImportJobErrorList",
+          "documentation":"<p>An array of error records that describes any failures that occurred while an import job was attempting a rollback.</p> <p>Error records accumulate while the job is still running. The complete set of error records is available after the job has completed and failed.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the import job.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the import job was created.</p>"
+        },
+        "AssetBundleImportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. The job ID is set when you start a new job with a <code>StartAssetBundleImportJob</code> API call.</p>"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account the import job was executed in. </p>"
+        },
+        "AssetBundleImportSource":{
+          "shape":"AssetBundleImportSourceDescription",
+          "documentation":"<p>The source of the asset bundle zip file that contains the data that is imported by the job.</p>"
+        },
+        "OverrideParameters":{
+          "shape":"AssetBundleImportJobOverrideParameters",
+          "documentation":"<p>Optional overrides to be applied to the resource configuration before import.</p>"
+        },
+        "FailureAction":{
+          "shape":"AssetBundleImportFailureAction",
+          "documentation":"<p>The failure action for the import job.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the response.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -14089,6 +15078,43 @@
       },
       "documentation":"<p>The bound options (north, south, west, east) of the geospatial window options.</p>"
     },
+    "GeospatialHeatmapColorScale":{
+      "type":"structure",
+      "members":{
+        "Colors":{
+          "shape":"GeospatialHeatmapDataColorList",
+          "documentation":"<p>The list of colors to be used in heatmap point style.</p>"
+        }
+      },
+      "documentation":"<p>The color scale specification for the heatmap point style.</p>"
+    },
+    "GeospatialHeatmapConfiguration":{
+      "type":"structure",
+      "members":{
+        "HeatmapColor":{
+          "shape":"GeospatialHeatmapColorScale",
+          "documentation":"<p>The color scale specification for the heatmap point style.</p>"
+        }
+      },
+      "documentation":"<p>The heatmap configuration of the geospatial point style.</p>"
+    },
+    "GeospatialHeatmapDataColor":{
+      "type":"structure",
+      "required":["Color"],
+      "members":{
+        "Color":{
+          "shape":"HexColor",
+          "documentation":"<p>The hex color to be used in the heatmap point style.</p>"
+        }
+      },
+      "documentation":"<p>The color to be used in the heatmap point style.</p>"
+    },
+    "GeospatialHeatmapDataColorList":{
+      "type":"list",
+      "member":{"shape":"GeospatialHeatmapDataColor"},
+      "max":2,
+      "min":2
+    },
     "GeospatialMapAggregatedFieldWells":{
       "type":"structure",
       "members":{
@@ -14199,6 +15225,10 @@
         "ClusterMarkerConfiguration":{
           "shape":"ClusterMarkerConfiguration",
           "documentation":"<p>The cluster marker configuration of the geospatial point style.</p>"
+        },
+        "HeatmapConfiguration":{
+          "shape":"GeospatialHeatmapConfiguration",
+          "documentation":"<p>The heatmap configuration of the geospatial point style.</p>"
         }
       },
       "documentation":"<p>The point style of the geospatial map.</p>"
@@ -14207,7 +15237,8 @@
       "type":"string",
       "enum":[
         "POINT",
-        "CLUSTER"
+        "CLUSTER",
+        "HEATMAP"
       ]
     },
     "GeospatialWindowOptions":{
@@ -16259,6 +17290,100 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "ListAssetBundleExportJobsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that the export jobs were executed in. </p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListAssetBundleExportJobsResponse":{
+      "type":"structure",
+      "members":{
+        "AssetBundleExportJobSummaryList":{
+          "shape":"AssetBundleExportJobSummaryList",
+          "documentation":"<p>A list of export job summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "ListAssetBundleImportJobsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that the import jobs were executed in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListAssetBundleImportJobsResponse":{
+      "type":"structure",
+      "members":{
+        "AssetBundleImportJobSummaryList":{
+          "shape":"AssetBundleImportJobSummaryList",
+          "documentation":"<p>A list of import job summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the response.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -21343,6 +22468,10 @@
       },
       "documentation":"<p>A physical table type for an S3 data source.</p>"
     },
+    "S3Uri":{
+      "type":"string",
+      "pattern":"^(https|s3)://([^/]+)/?(.*)$"
+    },
     "SameSheetTargetVisualConfiguration":{
       "type":"structure",
       "members":{
@@ -22806,6 +23935,119 @@
         }
       },
       "documentation":"<p>Secure Socket Layer (SSL) properties that apply when Amazon QuickSight connects to your underlying data source.</p>"
+    },
+    "StartAssetBundleExportJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AssetBundleExportJobId",
+        "ResourceArns",
+        "ExportFormat"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account to export assets from.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AssetBundleExportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.</p>"
+        },
+        "ResourceArns":{
+          "shape":"AssetBundleResourceArns",
+          "documentation":"<p>An array of resource ARNs to export. The following resources are supported.</p> <ul> <li> <p> <code>Analysis</code> </p> </li> <li> <p> <code>Dashboard</code> </p> </li> <li> <p> <code>DataSet</code> </p> </li> <li> <p> <code>DataSource</code> </p> </li> <li> <p> <code>RefreshSchedule</code> </p> </li> <li> <p> <code>Theme</code> </p> </li> <li> <p> <code>VPCConnection</code> </p> </li> </ul> <p>The API caller must have the necessary permissions in their IAM role to access each resource before the resources can be exported.</p>"
+        },
+        "IncludeAllDependencies":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean that determines whether all dependencies of each resource ARN are recursively exported with the job. For example, say you provided a Dashboard ARN to the <code>ResourceArns</code> parameter. If you set <code>IncludeAllDependencies</code> to <code>TRUE</code>, any theme, dataset, and dataource resource that is a dependency of the dashboard is also exported.</p>"
+        },
+        "ExportFormat":{
+          "shape":"AssetBundleExportFormat",
+          "documentation":"<p>The export data format.</p>"
+        },
+        "CloudFormationOverridePropertyConfiguration":{
+          "shape":"AssetBundleCloudFormationOverridePropertyConfiguration",
+          "documentation":"<p>An optional collection of structures that generate CloudFormation parameters to override the existing resource property values when the resource is exported to a new CloudFormation template.</p> <p>Use this field if the <code>ExportFormat</code> field of a <code>StartAssetBundleExportJobRequest</code> API call is set to <code>CLOUDFORMATION_JSON</code>.</p>"
+        }
+      }
+    },
+    "StartAssetBundleExportJobResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the export job.</p>"
+        },
+        "AssetBundleExportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services response ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the response.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "StartAssetBundleImportJobRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AssetBundleImportJobId",
+        "AssetBundleImportSource"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account to import assets into. </p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AssetBundleImportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.</p>"
+        },
+        "AssetBundleImportSource":{
+          "shape":"AssetBundleImportSource",
+          "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import.</p>"
+        },
+        "OverrideParameters":{
+          "shape":"AssetBundleImportJobOverrideParameters",
+          "documentation":"<p>Optional overrides to be applied to the resource configuration before import.</p>"
+        },
+        "FailureAction":{
+          "shape":"AssetBundleImportFailureAction",
+          "documentation":"<p>The failure action for the import job.</p> <p>If you choose <code>ROLLBACK</code>, failed import jobs will attempt to undo any asset changes caused by the failed job.</p> <p>If you choose <code>DO_NOTHING</code>, failed import jobs will not attempt to roll back any asset changes caused by the failed job, possibly leaving the Amazon QuickSight account in an inconsistent state.</p>"
+        }
+      }
+    },
+    "StartAssetBundleImportJobResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the import job.</p>"
+        },
+        "AssetBundleImportJobId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the job. This ID is unique while the job is running. After the job is completed, you can reuse this ID for another job.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services response ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the response.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "StatePersistenceConfigurations":{
       "type":"structure",
@@ -27452,11 +28694,6 @@
         "RESTRICTED_AUTHOR",
         "RESTRICTED_READER"
       ]
-    },
-    "Username":{
-      "type":"string",
-      "max":64,
-      "min":1
     },
     "VPCConnection":{
       "type":"structure",

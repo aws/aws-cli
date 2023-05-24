@@ -15,6 +15,7 @@ import copy
 from dataclasses import dataclass
 from typing import Optional
 from awscli.arguments import CustomArgument, CLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 
 @dataclass
@@ -54,7 +55,7 @@ class OriginalArgument(CLIArgument):
 
         unpacked = self._unpack_argument(value)
         if self._original_member_name in unpacked and self._error_message:
-            raise ValueError(self._error_message)
+            raise ParamValidationError(self._error_message)
 
         if parameters.get(self._serialized_name):
             parameters[self._serialized_name].update(unpacked)

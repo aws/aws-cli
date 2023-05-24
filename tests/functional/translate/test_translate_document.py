@@ -47,7 +47,7 @@ class TestTranslateDocument(BaseAWSCommandParamsTest):
         cmdline += " --target-language-code BAR"
         cmdline += " --document Content=data,ContentType=datatype"
 
-        stdout, stderr, rc = self.assert_params_for_cmd(cmdline, expected_rc=2)
+        stdout, stderr, rc = self.assert_params_for_cmd(cmdline, expected_rc=252)
         self.assertIn(
             "the following arguments are required: --document-content", stderr
         )
@@ -59,7 +59,7 @@ class TestTranslateDocument(BaseAWSCommandParamsTest):
         cmdline += " --document Content=data,ContentType=datatype"
         cmdline += " --document-content fileb://%s" % self.temp_file
 
-        stdout, stderr, rc = self.assert_params_for_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.assert_params_for_cmd(cmdline, expected_rc=252)
         self.assertIn(
             "Content cannot be provided as a part of the '--document' "
             "argument. Please use the '--document-content' option instead to "

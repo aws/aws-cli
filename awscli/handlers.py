@@ -99,6 +99,8 @@ from awscli.customizations.lightsail import initialize as lightsail_initialize
 from awscli.alias import register_alias_commands
 from awscli.customizations.kinesis import \
     register_kinesis_list_streams_pagination_backcompat
+from awscli.customizations.quicksight import \
+    register_quicksight_asset_bundle_customizations
 
 
 def awscli_initialize(event_handlers):
@@ -197,3 +199,4 @@ def awscli_initialize(event_handlers):
     register_dynamodb_paginator_fix(event_handlers)
     register_alias_commands(event_handlers)
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
+    register_quicksight_asset_bundle_customizations(event_handlers)

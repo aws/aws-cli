@@ -5401,6 +5401,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.139
+========
+
+* api-change:``fms``: Fixes issue that could cause calls to GetAdminScope and ListAdminAccountsForOrganization to return a 500 Internal Server error.
+* api-change:``sagemaker``: Added ModelNameEquals, ModelPackageVersionArnEquals in request and ModelName, SamplePayloadUrl, ModelPackageVersionArn in response of ListInferenceRecommendationsJobs API. Added Invocation timestamps in response of DescribeInferenceRecommendationsJob API & ListInferenceRecommendationsJobSteps API.
+* api-change:``translate``: Added support for calling TranslateDocument API.
+
+
+1.27.138
+========
+
+* api-change:``backup``: Added support for tags on restore.
+* api-change:``pinpoint``: Amazon Pinpoint is deprecating the tags parameter in the UpdateSegment, UpdateCampaign, UpdateEmailTemplate, UpdateSmsTemplate, UpdatePushTemplate, UpdateInAppTemplate and UpdateVoiceTemplate. Amazon Pinpoint will end support tags parameter by May 22, 2023.
+* api-change:``quicksight``: Add support for Asset Bundle, Geospatial Heatmaps.
+
+
 1.27.137
 ========
 

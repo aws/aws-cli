@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.141
+========
+
+* api-change:``application-autoscaling``: With this release, ElastiCache customers will be able to use predefined metricType "ElastiCacheDatabaseCapacityUsageCountedForEvictPercentage" for their ElastiCache instances.
+* api-change:``codepipeline``: Add PollingDisabledAt time information in PipelineMetadata object of GetPipeline API.
+* api-change:``gamelift``: GameLift FleetIQ users can now filter game server claim requests to exclude servers on instances that are draining.
+* api-change:``glue``: Added ability to create data quality rulesets for shared, cross-account Glue Data Catalog tables. Added support for dataset comparison rules through a new parameter called AdditionalDataSources. Enhanced the data quality results with a map containing profiled metric values.
+* api-change:``migration-hub-refactor-spaces``: This SDK update allows for path parameter syntax to be passed to the CreateRoute API. Path parameter syntax require parameters to be enclosed in {} characters. This update also includes a new AppendSourcePath field which lets users forward the source path to the Service URL endpoint.
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now supports enabling Autotune for tuning jobs which can choose tuning job configurations.
+
+
 1.27.140
 ========
 

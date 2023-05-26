@@ -3420,6 +3420,10 @@
       "type":"list",
       "member":{"shape":"Action"}
     },
+    "AdditionalOptionKeys":{
+      "type":"string",
+      "enum":["performanceTuning.caching"]
+    },
     "AdditionalOptions":{
       "type":"map",
       "key":{"shape":"EnclosedInStringProperty"},
@@ -3518,14 +3522,14 @@
       "members":{
         "Key":{
           "shape":"GenericString",
-          "documentation":"<p>The key when specifying a key-value pair.</p>"
+          "documentation":"<p>The key for the additional connection option.</p>"
         },
         "Value":{
           "shape":"GenericString",
-          "documentation":"<p>The value when specifying a key-value pair.</p>"
+          "documentation":"<p>The value for the additional connection option.</p>"
         }
       },
-      "documentation":"<p>Specifies an Amazon Redshift data store.</p>"
+      "documentation":"<p>Specifies an optional value when connecting to the Redshift cluster.</p>"
     },
     "AmazonRedshiftAdvancedOptions":{
       "type":"list",
@@ -5369,6 +5373,10 @@
         "AmazonRedshiftTarget":{
           "shape":"AmazonRedshiftTarget",
           "documentation":"<p>Specifies a target that writes to a data target in Amazon Redshift.</p>"
+        },
+        "EvaluateDataQualityMultiFrame":{
+          "shape":"EvaluateDataQualityMultiFrame",
+          "documentation":"<p>Specifies your data quality evaluation criteria. Allows multiple input data and returns a collection of Dynamic Frames.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -7674,6 +7682,16 @@
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
     },
+    "DQAdditionalOptions":{
+      "type":"map",
+      "key":{"shape":"AdditionalOptionKeys"},
+      "value":{"shape":"GenericString"}
+    },
+    "DQDLAliases":{
+      "type":"map",
+      "key":{"shape":"NodeName"},
+      "value":{"shape":"EnclosedInStringProperty"}
+    },
     "DQDLString":{
       "type":"string",
       "max":65536,
@@ -7970,6 +7988,10 @@
         "Result":{
           "shape":"DataQualityRuleResultStatus",
           "documentation":"<p>A pass or fail status for the rule.</p>"
+        },
+        "EvaluatedMetrics":{
+          "shape":"EvaluatedMetricsMap",
+          "documentation":"<p>A map of metrics associated with the evaluation of the rule.</p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
@@ -8124,6 +8146,10 @@
         "DatabaseName":{
           "shape":"NameString",
           "documentation":"<p>The name of the database where the Glue table exists.</p>"
+        },
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>The catalog id where the Glue table exists.</p>"
         }
       },
       "documentation":"<p>An object representing an Glue table.</p>"
@@ -8138,6 +8164,11 @@
         }
       },
       "documentation":"<p>A data source (an Glue table) for which you want data quality results.</p>"
+    },
+    "DataSourceMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DataSource"}
     },
     "Database":{
       "type":"structure",
@@ -9551,6 +9582,50 @@
       },
       "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
     },
+    "EvaluateDataQualityMultiFrame":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Inputs",
+        "Ruleset"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the data quality evaluation.</p>"
+        },
+        "Inputs":{
+          "shape":"ManyInputs",
+          "documentation":"<p>The inputs of your data quality evaluation. The first input in this list is the primary data source.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DQDLAliases",
+          "documentation":"<p>The aliases of all data sources except primary.</p>"
+        },
+        "Ruleset":{
+          "shape":"DQDLString",
+          "documentation":"<p>The ruleset for your data quality evaluation.</p>"
+        },
+        "PublishingOptions":{
+          "shape":"DQResultsPublishingOptions",
+          "documentation":"<p>Options to configure how your results are published.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"DQAdditionalOptions",
+          "documentation":"<p>Options to configure runtime behavior of the transform.</p>"
+        },
+        "StopJobOnFailureOptions":{
+          "shape":"DQStopJobOnFailureOptions",
+          "documentation":"<p>Options to configure how your job will stop if your data quality evaluation fails.</p>"
+        }
+      },
+      "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
+    },
+    "EvaluatedMetricsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NullableDouble"}
+    },
     "EvaluationMetrics":{
       "type":"structure",
       "required":["TransformType"],
@@ -10590,6 +10665,10 @@
         "ResultIds":{
           "shape":"DataQualityResultIdList",
           "documentation":"<p>A list of result IDs for the data quality results for the run.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DataSourceMap",
+          "documentation":"<p>A map of reference strings to additional data sources you can specify for an evaluation run.</p>"
         }
       }
     },
@@ -17996,6 +18075,10 @@
         "RulesetNames":{
           "shape":"RulesetNames",
           "documentation":"<p>A list of ruleset names.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DataSourceMap",
+          "documentation":"<p>A map of reference strings to additional data sources you can specify for an evaluation run.</p>"
         }
       }
     },

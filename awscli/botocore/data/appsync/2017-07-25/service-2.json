@@ -29,6 +29,42 @@
       ],
       "documentation":"<p>Maps an endpoint to your custom domain.</p>"
     },
+    "AssociateMergedGraphqlApi":{
+      "name":"AssociateMergedGraphqlApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations"
+      },
+      "input":{"shape":"AssociateMergedGraphqlApiRequest"},
+      "output":{"shape":"AssociateMergedGraphqlApiResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates an association between a Merged API and source API using the source API's identifier.</p>"
+    },
+    "AssociateSourceGraphqlApi":{
+      "name":"AssociateSourceGraphqlApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations"
+      },
+      "input":{"shape":"AssociateSourceGraphqlApiRequest"},
+      "output":{"shape":"AssociateSourceGraphqlApiResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates an association between a Merged API and source API using the Merged API's identifier.</p>"
+    },
     "CreateApiCache":{
       "name":"CreateApiCache",
       "http":{
@@ -318,6 +354,40 @@
       ],
       "documentation":"<p>Removes an <code>ApiAssociation</code> object from a custom domain.</p>"
     },
+    "DisassociateMergedGraphqlApi":{
+      "name":"DisassociateMergedGraphqlApi",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations/{associationId}"
+      },
+      "input":{"shape":"DisassociateMergedGraphqlApiRequest"},
+      "output":{"shape":"DisassociateMergedGraphqlApiResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes an association between a Merged API and source API using the source API's identifier and the association ID.</p>"
+    },
+    "DisassociateSourceGraphqlApi":{
+      "name":"DisassociateSourceGraphqlApi",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}"
+      },
+      "input":{"shape":"DisassociateSourceGraphqlApiRequest"},
+      "output":{"shape":"DisassociateSourceGraphqlApiResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes an association between a Merged API and source API using the Merged API's identifier and the association ID.</p>"
+    },
     "EvaluateCode":{
       "name":"EvaluateCode",
       "http":{
@@ -510,6 +580,22 @@
       ],
       "documentation":"<p>Retrieves the current status of a schema creation operation.</p>"
     },
+    "GetSourceApiAssociation":{
+      "name":"GetSourceApiAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}"
+      },
+      "input":{"shape":"GetSourceApiAssociationRequest"},
+      "output":{"shape":"GetSourceApiAssociationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a <code>SourceApiAssociation</code> object.</p>"
+    },
     "GetType":{
       "name":"GetType",
       "http":{
@@ -637,6 +723,22 @@
       ],
       "documentation":"<p>List the resolvers that are associated with a specific function.</p>"
     },
+    "ListSourceApiAssociations":{
+      "name":"ListSourceApiAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/apis/{apiId}/sourceApiAssociations"
+      },
+      "input":{"shape":"ListSourceApiAssociationsRequest"},
+      "output":{"shape":"ListSourceApiAssociationsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Lists the <code>SourceApiAssociationSummary</code> data.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -672,6 +774,23 @@
       ],
       "documentation":"<p>Lists the types for a given API.</p>"
     },
+    "ListTypesByAssociation":{
+      "name":"ListTypesByAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/types"
+      },
+      "input":{"shape":"ListTypesByAssociationRequest"},
+      "output":{"shape":"ListTypesByAssociationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists <code>Type</code> objects by the source API association ID.</p>"
+    },
     "StartSchemaCreation":{
       "name":"StartSchemaCreation",
       "http":{
@@ -688,6 +807,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Adds a new schema to your GraphQL API.</p> <p>This operation is asynchronous. Use to determine when it has completed.</p>"
+    },
+    "StartSchemaMerge":{
+      "name":"StartSchemaMerge",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/merge"
+      },
+      "input":{"shape":"StartSchemaMergeRequest"},
+      "output":{"shape":"StartSchemaMergeResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Initiates a merge operation. Returns a status that shows the result of the merge operation.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -844,6 +980,23 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Updates a <code>Resolver</code> object.</p>"
+    },
+    "UpdateSourceApiAssociation":{
+      "name":"UpdateSourceApiAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}"
+      },
+      "input":{"shape":"UpdateSourceApiAssociationRequest"},
+      "output":{"shape":"UpdateSourceApiAssociationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates some of the configuration choices of a particular source API association.</p>"
     },
     "UpdateType":{
       "name":"UpdateType",
@@ -1084,6 +1237,78 @@
         "apiAssociation":{
           "shape":"ApiAssociation",
           "documentation":"<p>The <code>ApiAssociation</code> object.</p>"
+        }
+      }
+    },
+    "AssociateMergedGraphqlApiRequest":{
+      "type":"structure",
+      "required":[
+        "sourceApiIdentifier",
+        "mergedApiIdentifier"
+      ],
+      "members":{
+        "sourceApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Source API. This is generated by the AppSync service. In most cases, source APIs (especially in your account) only require the API ID value or ARN of the source API. However, source APIs from other accounts (cross-account use cases) strictly require the full resource ARN of the source API.</p>",
+          "location":"uri",
+          "locationName":"sourceApiIdentifier"
+        },
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description field.</p>"
+        },
+        "sourceApiAssociationConfig":{
+          "shape":"SourceApiAssociationConfig",
+          "documentation":"<p>The <code>SourceApiAssociationConfig</code> object data.</p>"
+        }
+      }
+    },
+    "AssociateMergedGraphqlApiResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociation":{
+          "shape":"SourceApiAssociation",
+          "documentation":"<p>The <code>SourceApiAssociation</code> object data.</p>"
+        }
+      }
+    },
+    "AssociateSourceGraphqlApiRequest":{
+      "type":"structure",
+      "required":[
+        "mergedApiIdentifier",
+        "sourceApiIdentifier"
+      ],
+      "members":{
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        },
+        "sourceApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Source API. This is generated by the AppSync service. In most cases, source APIs (especially in your account) only require the API ID value or ARN of the source API. However, source APIs from other accounts (cross-account use cases) strictly require the full resource ARN of the source API.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description field.</p>"
+        },
+        "sourceApiAssociationConfig":{
+          "shape":"SourceApiAssociationConfig",
+          "documentation":"<p>The <code>SourceApiAssociationConfig</code> object data.</p>"
+        }
+      }
+    },
+    "AssociateSourceGraphqlApiResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociation":{
+          "shape":"SourceApiAssociation",
+          "documentation":"<p>The <code>SourceApiAssociation</code> object data.</p>"
         }
       }
     },
@@ -1574,6 +1799,18 @@
         "visibility":{
           "shape":"GraphQLApiVisibility",
           "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
+        },
+        "apiType":{
+          "shape":"GraphQLApiType",
+          "documentation":"<p>The value that indicates whether the GraphQL API is a standard API (<code>GRAPHQL</code>) or merged API (<code>MERGED</code>).</p>"
+        },
+        "mergedApiExecutionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Identity and Access Management service role ARN for a merged API. The AppSync service assumes this role on behalf of the Merged API to validate access to source APIs at runtime and to prompt the <code>AUTO_MERGE</code> to update the merged API endpoint with the source API changes automatically.</p>"
+        },
+        "ownerContact":{
+          "shape":"String",
+          "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
         }
       }
     },
@@ -1762,6 +1999,7 @@
       "type":"list",
       "member":{"shape":"DataSource"}
     },
+    "Date":{"type":"timestamp"},
     "DefaultAction":{
       "type":"string",
       "enum":[
@@ -1998,6 +2236,66 @@
     "DisassociateApiResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DisassociateMergedGraphqlApiRequest":{
+      "type":"structure",
+      "required":[
+        "sourceApiIdentifier",
+        "associationId"
+      ],
+      "members":{
+        "sourceApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Source API. This is generated by the AppSync service. In most cases, source APIs (especially in your account) only require the API ID value or ARN of the source API. However, source APIs from other accounts (cross-account use cases) strictly require the full resource ARN of the source API.</p>",
+          "location":"uri",
+          "locationName":"sourceApiIdentifier"
+        },
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        }
+      }
+    },
+    "DisassociateMergedGraphqlApiResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociationStatus":{
+          "shape":"SourceApiAssociationStatus",
+          "documentation":"<p>The state of the source API association.</p>"
+        }
+      }
+    },
+    "DisassociateSourceGraphqlApiRequest":{
+      "type":"structure",
+      "required":[
+        "mergedApiIdentifier",
+        "associationId"
+      ],
+      "members":{
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        },
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        }
+      }
+    },
+    "DisassociateSourceGraphqlApiResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociationStatus":{
+          "shape":"SourceApiAssociationStatus",
+          "documentation":"<p>The state of the source API association.</p>"
+        }
       }
     },
     "DomainName":{
@@ -2531,6 +2829,36 @@
         }
       }
     },
+    "GetSourceApiAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "mergedApiIdentifier",
+        "associationId"
+      ],
+      "members":{
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        },
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        }
+      }
+    },
+    "GetSourceApiAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociation":{
+          "shape":"SourceApiAssociation",
+          "documentation":"<p>The <code>SourceApiAssociation</code> object data.</p>"
+        }
+      }
+    },
     "GetTypeRequest":{
       "type":"structure",
       "required":[
@@ -2567,6 +2895,13 @@
           "documentation":"<p>The <code>Type</code> object.</p>"
         }
       }
+    },
+    "GraphQLApiType":{
+      "type":"string",
+      "enum":[
+        "GRAPHQL",
+        "MERGED"
+      ]
     },
     "GraphQLApiVisibility":{
       "type":"string",
@@ -2646,6 +2981,22 @@
         "visibility":{
           "shape":"GraphQLApiVisibility",
           "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
+        },
+        "apiType":{
+          "shape":"GraphQLApiType",
+          "documentation":"<p>The value that indicates whether the GraphQL API is a standard API (<code>GRAPHQL</code>) or merged API (<code>MERGED</code>).</p>"
+        },
+        "mergedApiExecutionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Identity and Access Management service role ARN for a merged API. The AppSync service assumes this role on behalf of the Merged API to validate access to source APIs at runtime and to prompt the <code>AUTO_MERGE</code> to update the merged API endpoint with the source API changes automatically.</p>"
+        },
+        "owner":{
+          "shape":"String",
+          "documentation":"<p>The account owner of the GraphQL API.</p>"
+        },
+        "ownerContact":{
+          "shape":"String",
+          "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
         }
       },
       "documentation":"<p>Describes a GraphQL API.</p>"
@@ -2806,7 +3157,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The API token.</p>",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2827,7 +3178,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The API token.</p>"
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
         }
       }
     },
@@ -2882,6 +3233,18 @@
           "documentation":"<p>The maximum number of results that you want the request to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "apiType":{
+          "shape":"GraphQLApiType",
+          "documentation":"<p>The value that indicates whether the GraphQL API is a standard API (<code>GRAPHQL</code>) or merged API (<code>MERGED</code>).</p>",
+          "location":"querystring",
+          "locationName":"apiType"
+        },
+        "owner":{
+          "shape":"Ownership",
+          "documentation":"<p>The account owner of the GraphQL API.</p>",
+          "location":"querystring",
+          "locationName":"owner"
         }
       }
     },
@@ -2990,6 +3353,43 @@
         }
       }
     },
+    "ListSourceApiAssociationsRequest":{
+      "type":"structure",
+      "required":["apiId"],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The API ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSourceApiAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociationSummaries":{
+          "shape":"SourceApiAssociationSummaryList",
+          "documentation":"<p>The <code>SourceApiAssociationSummary</code> object data.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3008,6 +3408,59 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>A <code>TagMap</code> object.</p>"
+        }
+      }
+    },
+    "ListTypesByAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "mergedApiIdentifier",
+        "associationId",
+        "format"
+      ],
+      "members":{
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        },
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        },
+        "format":{
+          "shape":"TypeDefinitionFormat",
+          "documentation":"<p>The format type.</p>",
+          "location":"querystring",
+          "locationName":"format"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTypesByAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "types":{
+          "shape":"TypeList",
+          "documentation":"<p>The <code>Type</code> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
         }
       }
     },
@@ -3105,6 +3558,13 @@
       "max":25,
       "min":0
     },
+    "MergeType":{
+      "type":"string",
+      "enum":[
+        "MANUAL_MERGE",
+        "AUTO_MERGE"
+      ]
+    },
     "NotFoundException":{
       "type":"structure",
       "members":{
@@ -3160,6 +3620,13 @@
       "enum":[
         "SDL",
         "JSON"
+      ]
+    },
+    "Ownership":{
+      "type":"string",
+      "enum":[
+        "CURRENT_ACCOUNT",
+        "OTHER_ACCOUNTS"
       ]
     },
     "PaginationToken":{
@@ -3315,6 +3782,117 @@
         "NOT_APPLICABLE"
       ]
     },
+    "SourceApiAssociation":{
+      "type":"structure",
+      "members":{
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>"
+        },
+        "associationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source API association.</p>"
+        },
+        "sourceApiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AppSync source API.</p>"
+        },
+        "sourceApiArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AppSync source API.</p>"
+        },
+        "mergedApiArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AppSync Merged API.</p>"
+        },
+        "mergedApiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AppSync Merged API.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description field.</p>"
+        },
+        "sourceApiAssociationConfig":{
+          "shape":"SourceApiAssociationConfig",
+          "documentation":"<p>The <code>SourceApiAssociationConfig</code> object data.</p>"
+        },
+        "sourceApiAssociationStatus":{
+          "shape":"SourceApiAssociationStatus",
+          "documentation":"<p>The state of the source API association.</p>"
+        },
+        "sourceApiAssociationStatusDetail":{
+          "shape":"String",
+          "documentation":"<p>The detailed message related to the current state of the source API association.</p>"
+        },
+        "lastSuccessfulMergeDate":{
+          "shape":"Date",
+          "documentation":"<p>The datetime value of the last successful merge of the source API association. The result will be in UTC format and your local time zone.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a source API. A source API is a GraphQL API that is linked to a merged API. There can be multiple source APIs attached to each merged API. When linked to a merged API, the source API's schema, data sources, and resolvers will be combined with other linked source API data to form a new, singular API. </p> <p>Source APIs can originate from your account or from other accounts via Amazon Web Services Resource Access Manager. For more information about sharing resources from other accounts, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/what-is.html\">What is Amazon Web Services Resource Access Manager?</a> in the <i>Amazon Web Services Resource Access Manager</i> guide.</p>"
+    },
+    "SourceApiAssociationConfig":{
+      "type":"structure",
+      "members":{
+        "mergeType":{
+          "shape":"MergeType",
+          "documentation":"<p>The property that indicates which merging option is enabled in the source API association.</p> <p>Valid merge types are <code>MANUAL_MERGE</code> (default) and <code>AUTO_MERGE</code>. Manual merges are the default behavior and require the user to trigger any changes from the source APIs to the merged API manually. Auto merges subscribe the merged API to the changes performed on the source APIs so that any change in the source APIs are also made to the merged API. Auto merges use <code>MergedApiExecutionRoleArn</code> to perform merge operations.</p>"
+        }
+      },
+      "documentation":"<p>Describes properties used to specify configurations related to a source API.</p>"
+    },
+    "SourceApiAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "MERGE_SCHEDULED",
+        "MERGE_FAILED",
+        "MERGE_SUCCESS",
+        "MERGE_IN_PROGRESS",
+        "AUTO_MERGE_SCHEDULE_FAILED",
+        "DELETION_SCHEDULED",
+        "DELETION_IN_PROGRESS",
+        "DELETION_FAILED"
+      ]
+    },
+    "SourceApiAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>"
+        },
+        "associationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source API association.</p>"
+        },
+        "sourceApiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AppSync source API.</p>"
+        },
+        "sourceApiArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AppSync Source API.</p>"
+        },
+        "mergedApiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the AppSync Merged API.</p>"
+        },
+        "mergedApiArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AppSync Merged API.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description field.</p>"
+        }
+      },
+      "documentation":"<p>Describes the ARNs and IDs of associations, Merged APIs, and source APIs.</p>"
+    },
+    "SourceApiAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"SourceApiAssociationSummary"}
+    },
     "StartSchemaCreationRequest":{
       "type":"structure",
       "required":[
@@ -3340,6 +3918,36 @@
         "status":{
           "shape":"SchemaStatus",
           "documentation":"<p>The current state of the schema (PROCESSING, FAILED, SUCCESS, or NOT_APPLICABLE). When the schema is in the ACTIVE state, you can add data.</p>"
+        }
+      }
+    },
+    "StartSchemaMergeRequest":{
+      "type":"structure",
+      "required":[
+        "associationId",
+        "mergedApiIdentifier"
+      ],
+      "members":{
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        },
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        }
+      }
+    },
+    "StartSchemaMergeResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociationStatus":{
+          "shape":"SourceApiAssociationStatus",
+          "documentation":"<p>The state of the source API association.</p>"
         }
       }
     },
@@ -3780,6 +4388,14 @@
         "lambdaAuthorizerConfig":{
           "shape":"LambdaAuthorizerConfig",
           "documentation":"<p>Configuration for Lambda function authorization.</p>"
+        },
+        "mergedApiExecutionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Identity and Access Management service role ARN for a merged API. The AppSync service assumes this role on behalf of the Merged API to validate access to source APIs at runtime and to prompt the <code>AUTO_MERGE</code> to update the merged API endpoint with the source API changes automatically.</p>"
+        },
+        "ownerContact":{
+          "shape":"String",
+          "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
         }
       }
     },
@@ -3863,6 +4479,44 @@
         "resolver":{
           "shape":"Resolver",
           "documentation":"<p>The updated <code>Resolver</code> object.</p>"
+        }
+      }
+    },
+    "UpdateSourceApiAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "associationId",
+        "mergedApiIdentifier"
+      ],
+      "members":{
+        "associationId":{
+          "shape":"String",
+          "documentation":"<p>The ID generated by the AppSync service for the source API association.</p>",
+          "location":"uri",
+          "locationName":"associationId"
+        },
+        "mergedApiIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the AppSync Merged API. This is generated by the AppSync service. In most cases, Merged APIs (especially in your account) only require the API ID value or ARN of the merged API. However, Merged APIs in other accounts (cross-account use cases) strictly require the full resource ARN of the merged API.</p>",
+          "location":"uri",
+          "locationName":"mergedApiIdentifier"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description field.</p>"
+        },
+        "sourceApiAssociationConfig":{
+          "shape":"SourceApiAssociationConfig",
+          "documentation":"<p>The <code>SourceApiAssociationConfig</code> object data.</p>"
+        }
+      }
+    },
+    "UpdateSourceApiAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceApiAssociation":{
+          "shape":"SourceApiAssociation",
+          "documentation":"<p>The <code>SourceApiAssociation</code> object data.</p>"
         }
       }
     },

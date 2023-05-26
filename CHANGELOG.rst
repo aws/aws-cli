@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.27.142
+========
+
+* api-change:``connect``: Documentation update for a new Initiation Method value in DescribeContact API
+* api-change:``iotwireless``: Add Multicast Group support in Network Analyzer Configuration.
+* api-change:``sagemaker``: Added ml.p4d and ml.inf1 as supported instance type families for SageMaker Notebook Instances.
+
+
 1.27.141
 ========
 

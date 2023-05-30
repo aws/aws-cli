@@ -1381,6 +1381,220 @@
       "type":"list",
       "member":{"shape":"AvailabilityZone"}
     },
+    "AwsAmazonMqBrokerDetails":{
+      "type":"structure",
+      "members":{
+        "AuthenticationStrategy":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The authentication strategy used to secure the broker. The default is <code>SIMPLE</code>. </p>"
+        },
+        "AutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p> Whether automatically upgrade new minor versions for brokers, as new versions are released and supported by Amazon MQ. Automatic upgrades occur during the scheduled maintenance window of the broker or after a manual broker reboot. </p>"
+        },
+        "BrokerArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the broker. </p>"
+        },
+        "BrokerName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The broker's name. </p>"
+        },
+        "DeploymentMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The broker's deployment mode. </p>"
+        },
+        "EncryptionOptions":{
+          "shape":"AwsAmazonMqBrokerEncryptionOptionsDetails",
+          "documentation":"<p> Encryption options for the broker. Doesn’t apply to RabbitMQ brokers. </p>"
+        },
+        "EngineType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of broker engine. </p>"
+        },
+        "EngineVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The version of the broker engine. </p>"
+        },
+        "HostInstanceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The broker's instance type. </p>"
+        },
+        "BrokerId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique ID that Amazon MQ generates for the broker. </p>"
+        },
+        "LdapServerMetadata":{
+          "shape":"AwsAmazonMqBrokerLdapServerMetadataDetails",
+          "documentation":"<p> The metadata of the Lightweight Directory Access Protocol (LDAP) server used to authenticate and authorize connections to the broker. This is an optional failover server. </p>"
+        },
+        "Logs":{
+          "shape":"AwsAmazonMqBrokerLogsDetails",
+          "documentation":"<p> Turns on Amazon CloudWatch logging for brokers. </p>"
+        },
+        "MaintenanceWindowStartTime":{
+          "shape":"AwsAmazonMqBrokerMaintenanceWindowStartTimeDetails",
+          "documentation":"<p> The scheduled time period (UTC) during which Amazon MQ begins to apply pending updates or patches to the broker. </p>"
+        },
+        "PubliclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p> Permits connections from applications outside of the VPC that hosts the broker's subnets. </p>"
+        },
+        "SecurityGroups":{
+          "shape":"StringList",
+          "documentation":"<p> The list of rules (one minimum, 125 maximum) that authorize connections to brokers. </p>"
+        },
+        "StorageType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The broker's storage type. </p>"
+        },
+        "SubnetIds":{
+          "shape":"StringList",
+          "documentation":"<p> The list of groups that define which subnets and IP ranges the broker can use from different Availability Zones. </p>"
+        },
+        "Users":{
+          "shape":"AwsAmazonMqBrokerUsersList",
+          "documentation":"<p> The list of all broker usernames for the specified broker. Doesn't apply to RabbitMQ brokers. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Amazon MQ message broker. A message broker allows software applications and components to communicate using various programming languages, operating systems, and formal messaging protocols. </p>"
+    },
+    "AwsAmazonMqBrokerEncryptionOptionsDetails":{
+      "type":"structure",
+      "members":{
+        "KmsKeyId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The KMS key that’s used to encrypt your data at rest. If not provided, Amazon MQ will use a default KMS key to encrypt your data. </p>"
+        },
+        "UseAwsOwnedKey":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies that an KMS key should be used for at-rest encryption. Set to <code>true</code> by default if no value is provided (for example, for RabbitMQ brokers). </p>"
+        }
+      },
+      "documentation":"<p> Provides details about broker encryption options. </p>"
+    },
+    "AwsAmazonMqBrokerLdapServerMetadataDetails":{
+      "type":"structure",
+      "members":{
+        "Hosts":{
+          "shape":"StringList",
+          "documentation":"<p> Specifies the location of the LDAP server, such as Amazon Web Services Directory Service for Microsoft Active Directory. </p>"
+        },
+        "RoleBase":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The distinguished name of the node in the directory information tree (DIT) to search for roles or groups. </p>"
+        },
+        "RoleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The group name attribute in a role entry whose value is the name of that role. </p>"
+        },
+        "RoleSearchMatching":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The LDAP search filter used to find roles within the <code>roleBase</code>. </p>"
+        },
+        "RoleSearchSubtree":{
+          "shape":"Boolean",
+          "documentation":"<p> The directory search scope for the role. If set to <code>true</code>, the scope is to search the entire subtree. </p>"
+        },
+        "ServiceAccountUsername":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A username for the service account, which is an account in your LDAP server that has access to initiate a connection. </p>"
+        },
+        "UserBase":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Selects a particular subtree of the directory information tree (DIT) to search for user entries. </p>"
+        },
+        "UserRoleName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the LDAP attribute in the user's directory entry for the user's group membership. </p>"
+        },
+        "UserSearchMatching":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The LDAP search filter used to find users within the <code>userBase</code>. </p>"
+        },
+        "UserSearchSubtree":{
+          "shape":"Boolean",
+          "documentation":"<p> The directory search scope for the user. If set to true, the scope is to search the entire subtree. </p>"
+        }
+      },
+      "documentation":"<p> The metadata of the Lightweight Directory Access Protocol (LDAP) server used to authenticate and authorize connections to the broker. This is an optional failover server. </p>"
+    },
+    "AwsAmazonMqBrokerLogsDetails":{
+      "type":"structure",
+      "members":{
+        "Audit":{
+          "shape":"Boolean",
+          "documentation":"<p> Activates audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Doesn't apply to RabbitMQ brokers. </p>"
+        },
+        "General":{
+          "shape":"Boolean",
+          "documentation":"<p> Activates general logging. </p>"
+        },
+        "AuditLogGroup":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The location of the CloudWatch Logs log group where audit logs are sent. </p>"
+        },
+        "GeneralLogGroup":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The location of the CloudWatch Logs log group where general logs are sent. </p>"
+        },
+        "Pending":{
+          "shape":"AwsAmazonMqBrokerLogsPendingDetails",
+          "documentation":"<p> The list of information about logs that are to be turned on for the specified broker. </p>"
+        }
+      },
+      "documentation":"<p> Provides information about logs to be activated for the specified broker. </p>"
+    },
+    "AwsAmazonMqBrokerLogsPendingDetails":{
+      "type":"structure",
+      "members":{
+        "Audit":{
+          "shape":"Boolean",
+          "documentation":"<p> Activates audit logging. Every user management action made using JMX or the ActiveMQ Web Console is logged. Doesn't apply to RabbitMQ brokers. </p>"
+        },
+        "General":{
+          "shape":"Boolean",
+          "documentation":"<p> Activates general logging. </p>"
+        }
+      },
+      "documentation":"<p> Provides information about logs to be activated for the specified broker. </p>"
+    },
+    "AwsAmazonMqBrokerMaintenanceWindowStartTimeDetails":{
+      "type":"structure",
+      "members":{
+        "DayOfWeek":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The day of the week on which the maintenance window falls. </p>"
+        },
+        "TimeOfDay":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The time, in 24-hour format, on which the maintenance window falls. </p>"
+        },
+        "TimeZone":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The time zone in either the Country/City format or the UTC offset format. UTC is the default format. </p>"
+        }
+      },
+      "documentation":"<p> The scheduled time period (UTC) during which Amazon MQ begins to apply pending updates or patches to the broker. </p>"
+    },
+    "AwsAmazonMqBrokerUsersDetails":{
+      "type":"structure",
+      "members":{
+        "PendingChange":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of change pending for the broker user. </p>"
+        },
+        "Username":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The username of the broker user. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about the broker usernames for the specified broker. Doesn't apply to RabbitMQ brokers. </p>"
+    },
+    "AwsAmazonMqBrokerUsersList":{
+      "type":"list",
+      "member":{"shape":"AwsAmazonMqBrokerUsersDetails"}
+    },
     "AwsApiCallAction":{
       "type":"structure",
       "members":{
@@ -1774,6 +1988,166 @@
         }
       },
       "documentation":"<p>Contains information about a version 2 stage for Amazon API Gateway.</p>"
+    },
+    "AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersDetails":{
+      "type":"structure",
+      "members":{
+        "AuthenticationType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of security configuration for your GraphQL API: API key, Identity and Access Management (IAM), OpenID Connect (OIDC), Amazon Cognito user pools, or Lambda. </p>"
+        },
+        "LambdaAuthorizerConfig":{
+          "shape":"AwsAppSyncGraphQlApiLambdaAuthorizerConfigDetails",
+          "documentation":"<p> The configuration for Lambda function authorization. </p>"
+        },
+        "OpenIdConnectConfig":{
+          "shape":"AwsAppSyncGraphQlApiOpenIdConnectConfigDetails",
+          "documentation":"<p> The OpenID Connect configuration. </p>"
+        },
+        "UserPoolConfig":{
+          "shape":"AwsAppSyncGraphQlApiUserPoolConfigDetails",
+          "documentation":"<p> The Amazon Cognito user pools configuration. </p>"
+        }
+      },
+      "documentation":"<p> A list of additional authentication providers for the GraphqlApi API. </p>"
+    },
+    "AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersList":{
+      "type":"list",
+      "member":{"shape":"AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersDetails"}
+    },
+    "AwsAppSyncGraphQlApiDetails":{
+      "type":"structure",
+      "members":{
+        "ApiId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier for the API. </p>"
+        },
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for the API.</p>"
+        },
+        "OpenIdConnectConfig":{
+          "shape":"AwsAppSyncGraphQlApiOpenIdConnectConfigDetails",
+          "documentation":"<p> Specifies the authorization configuration for using an OpenID Connect compliant service with an AppSync GraphQL API endpoint. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The API name. </p>"
+        },
+        "LambdaAuthorizerConfig":{
+          "shape":"AwsAppSyncGraphQlApiLambdaAuthorizerConfigDetails",
+          "documentation":"<p> Specifies the configuration for Lambda function authorization. </p>"
+        },
+        "XrayEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether to use X-Ray tracing for the GraphQL API. </p>"
+        },
+        "Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the API. </p>"
+        },
+        "UserPoolConfig":{
+          "shape":"AwsAppSyncGraphQlApiUserPoolConfigDetails",
+          "documentation":"<p> The Amazon Cognito user pools configuration. </p>"
+        },
+        "AuthenticationType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of security configuration for your GraphQL API: API key, Identity and Access Management (IAM), OpenID Connect (OIDC), Amazon Cognito user pools, or Lambda. </p>"
+        },
+        "LogConfig":{
+          "shape":"AwsAppSyncGraphQlApiLogConfigDetails",
+          "documentation":"<p> The Amazon CloudWatch Logs configuration. </p>"
+        },
+        "AdditionalAuthenticationProviders":{
+          "shape":"AwsAppSyncGraphQlApiAdditionalAuthenticationProvidersList",
+          "documentation":"<p> A list of additional authentication providers for the GraphQL API. </p>"
+        },
+        "WafWebAclArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the WAF web access control list (web ACL) associated with this GraphQL API, if one exists. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an AppSync Graph QL API, which lets you query multiple databases, microservices, and APIs from a single GraphQL endpoint. </p>"
+    },
+    "AwsAppSyncGraphQlApiLambdaAuthorizerConfigDetails":{
+      "type":"structure",
+      "members":{
+        "AuthorizerResultTtlInSeconds":{
+          "shape":"Integer",
+          "documentation":"<p> The number of seconds a response should be cached for. The default is 5 minutes (300 seconds). </p>"
+        },
+        "AuthorizerUri":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function to be called for authorization. This can be a standard Lambda ARN, a version ARN (.../v3), or an alias ARN. </p>"
+        },
+        "IdentityValidationExpression":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A regular expression for validation of tokens before the Lambda function is called. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the authorization configuration for using an Lambda function with your AppSync GraphQL API endpoint. </p>"
+    },
+    "AwsAppSyncGraphQlApiLogConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogsRoleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the service role that AppSync assumes to publish to CloudWatch Logs in your account. </p>"
+        },
+        "ExcludeVerboseContent":{
+          "shape":"Boolean",
+          "documentation":"<p> Set to <code>TRUE</code> to exclude sections that contain information such as headers, context, and evaluated mapping templates, regardless of logging level. </p>"
+        },
+        "FieldLogLevel":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The field logging level. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the logging configuration when writing GraphQL operations and tracing to Amazon CloudWatch for an AppSync GraphQL API. </p>"
+    },
+    "AwsAppSyncGraphQlApiOpenIdConnectConfigDetails":{
+      "type":"structure",
+      "members":{
+        "AuthTtL":{
+          "shape":"Long",
+          "documentation":"<p> The number of milliseconds that a token is valid after being authenticated. </p>"
+        },
+        "ClientId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The client identifier of the relying party at the OpenID identity provider. This identifier is typically obtained when the relying party is registered with the OpenID identity provider. You can specify a regular expression so that AppSync can validate against multiple client identifiers at a time. </p>"
+        },
+        "IatTtL":{
+          "shape":"Long",
+          "documentation":"<p> The number of milliseconds that a token is valid after it's issued to a user. </p>"
+        },
+        "Issuer":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The issuer for the OIDC configuration. The issuer returned by discovery must exactly match the value of <code>iss</code> in the ID token. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the authorization configuration for using an OpenID Connect compliant service with your AppSync GraphQL API endpoint. </p>"
+    },
+    "AwsAppSyncGraphQlApiUserPoolConfigDetails":{
+      "type":"structure",
+      "members":{
+        "AppIdClientRegex":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A regular expression for validating the incoming Amazon Cognito user pools app client ID. If this value isn't set, no filtering is applied. </p>"
+        },
+        "AwsRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Web Services Region in which the user pool was created. </p>"
+        },
+        "DefaultAction":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The action that you want your GraphQL API to take when a request that uses Amazon Cognito user pools authentication doesn't match the Amazon Cognito user pools configuration. </p>"
+        },
+        "UserPoolId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The user pool ID. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the authorization configuration for using Amazon Cognito user pools with your AppSync GraphQL API endpoint. </p>"
     },
     "AwsAutoScalingAutoScalingGroupAvailabilityZonesList":{
       "type":"list",
@@ -8076,6 +8450,196 @@
       },
       "documentation":"<p>Information about a load balancer.</p>"
     },
+    "AwsEventSchemasRegistryDetails":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A description of the registry to be created. </p>"
+        },
+        "RegistryArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry. </p>"
+        },
+        "RegistryName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the schema registry. </p>"
+        }
+      },
+      "documentation":"<p> A schema defines the structure of events that are sent to Amazon EventBridge. Schema registries are containers for schemas. They collect and organize schemas so that your schemas are in logical groups. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesCloudTrailDetails":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Specifies whether CloudTrail is activated as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of CloudTrail as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesDetails":{
+      "type":"structure",
+      "members":{
+        "CloudTrail":{
+          "shape":"AwsGuardDutyDetectorDataSourcesCloudTrailDetails",
+          "documentation":"<p> An object that contains information on the status of CloudTrail as a data source for the detector. </p>"
+        },
+        "DnsLogs":{
+          "shape":"AwsGuardDutyDetectorDataSourcesDnsLogsDetails",
+          "documentation":"<p> An object that contains information on the status of DNS logs as a data source for the detector. </p>"
+        },
+        "FlowLogs":{
+          "shape":"AwsGuardDutyDetectorDataSourcesFlowLogsDetails",
+          "documentation":"<p> An object that contains information on the status of VPC Flow Logs as a data source for the detector. </p>"
+        },
+        "Kubernetes":{
+          "shape":"AwsGuardDutyDetectorDataSourcesKubernetesDetails",
+          "documentation":"<p> An object that contains information on the status of Kubernetes data sources for the detector. </p>"
+        },
+        "MalwareProtection":{
+          "shape":"AwsGuardDutyDetectorDataSourcesMalwareProtectionDetails",
+          "documentation":"<p> An object that contains information on the status of Malware Protection as a data source for the detector. </p>"
+        },
+        "S3Logs":{
+          "shape":"AwsGuardDutyDetectorDataSourcesS3LogsDetails",
+          "documentation":"<p> An object that contains information on the status of S3 Data event logs as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> Describes which data sources are activated for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesDnsLogsDetails":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Describes whether DNS logs is enabled as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of DNS logs as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesFlowLogsDetails":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Describes whether VPC Flow Logs are activated as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of VPC Flow Logs as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesKubernetesAuditLogsDetails":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Describes whether Kubernetes audit logs are activated as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of Kubernetes audit logs as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesKubernetesDetails":{
+      "type":"structure",
+      "members":{
+        "AuditLogs":{
+          "shape":"AwsGuardDutyDetectorDataSourcesKubernetesAuditLogsDetails",
+          "documentation":"<p> Describes whether Kubernetes audit logs are activated as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of Kubernetes data sources for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesMalwareProtectionDetails":{
+      "type":"structure",
+      "members":{
+        "ScanEc2InstanceWithFindings":{
+          "shape":"AwsGuardDutyDetectorDataSourcesMalwareProtectionScanEc2InstanceWithFindingsDetails",
+          "documentation":"<p> Describes the configuration of Malware Protection for EC2 instances with findings. </p>"
+        },
+        "ServiceRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The GuardDuty Malware Protection service role. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of Malware Protection as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesMalwareProtectionScanEc2InstanceWithFindingsDetails":{
+      "type":"structure",
+      "members":{
+        "EbsVolumes":{
+          "shape":"AwsGuardDutyDetectorDataSourcesMalwareProtectionScanEc2InstanceWithFindingsEbsVolumesDetails",
+          "documentation":"<p> Describes the configuration of scanning EBS volumes (Malware Protection) as a data source. </p>"
+        }
+      },
+      "documentation":"<p> Describes the configuration of Malware Protection for EC2 instances with findings. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesMalwareProtectionScanEc2InstanceWithFindingsEbsVolumesDetails":{
+      "type":"structure",
+      "members":{
+        "Reason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Specifies the reason why scanning EBS volumes (Malware Protection) isn’t activated as a data source. </p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Describes whether scanning EBS volumes is activated as a data source for the detector. </p>"
+        }
+      },
+      "documentation":"<p> Describes the configuration of scanning EBS volumes (Malware Protection) as a data source. </p>"
+    },
+    "AwsGuardDutyDetectorDataSourcesS3LogsDetails":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A value that describes whether S3 data event logs are automatically enabled for new members of an organization. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains information on the status of S3 data event logs as a data source for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorDetails":{
+      "type":"structure",
+      "members":{
+        "DataSources":{
+          "shape":"AwsGuardDutyDetectorDataSourcesDetails",
+          "documentation":"<p> Describes which data sources are activated for the detector. </p>"
+        },
+        "Features":{
+          "shape":"AwsGuardDutyDetectorFeaturesList",
+          "documentation":"<p> Describes which features are activated for the detector. </p>"
+        },
+        "FindingPublishingFrequency":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The publishing frequency of the finding. </p>"
+        },
+        "ServiceRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The GuardDuty service role. </p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The activation status of the detector. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Amazon GuardDuty detector. A detector is an object that represents the GuardDuty service. A detector is required for GuardDuty to become operational. </p>"
+    },
+    "AwsGuardDutyDetectorFeaturesDetails":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates the name of the feature that is activated for the detector. </p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates the status of the feature that is activated for the detector. </p>"
+        }
+      },
+      "documentation":"<p> Describes which features are activated for the detector. </p>"
+    },
+    "AwsGuardDutyDetectorFeaturesList":{
+      "type":"list",
+      "member":{"shape":"AwsGuardDutyDetectorFeaturesDetails"}
+    },
     "AwsIamAccessKeyDetails":{
       "type":"structure",
       "members":{
@@ -12351,6 +12915,96 @@
       },
       "documentation":"<p>Provides information about the state of a patch on an instance based on the patch baseline that was used to patch the instance.</p>"
     },
+    "AwsStepFunctionStateMachineDetails":{
+      "type":"structure",
+      "members":{
+        "Label":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A user-defined or an auto-generated string that identifies a <code>Map</code> state. This parameter is present only if the <code>stateMachineArn</code> specified in input is a qualified state machine ARN. </p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"AwsStepFunctionStateMachineLoggingConfigurationDetails",
+          "documentation":"<p> Used to set CloudWatch Logs options. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the state machine. </p>"
+        },
+        "RoleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role used when creating this state machine. </p>"
+        },
+        "StateMachineArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN that identifies the state machine. </p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The current status of the state machine. </p>"
+        },
+        "TracingConfiguration":{
+          "shape":"AwsStepFunctionStateMachineTracingConfigurationDetails",
+          "documentation":"<p> Specifies whether X-Ray tracing is enabled. </p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of the state machine (STANDARD or EXPRESS). </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Step Functions state machine, which is a workflow consisting of a series of event- driven steps. </p>"
+    },
+    "AwsStepFunctionStateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroupDetails":{
+      "type":"structure",
+      "members":{
+        "LogGroupArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN (ends with <code>:*</code>) of the CloudWatch Logs log group to which you want your logs emitted.</p>"
+        }
+      },
+      "documentation":"<p> An object describing a CloudWatch log group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html\"> Amazon Web Services::Logs::LogGroup</a> in the <i>CloudFormation User Guide</i>. </p>"
+    },
+    "AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogsLogGroup":{
+          "shape":"AwsStepFunctionStateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroupDetails",
+          "documentation":"<p> An object describing a CloudWatch Logs log group. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html\"> Amazon Web Services::Logs::LogGroup</a> in the <i>CloudFormation User Guide</i>. </p>"
+        }
+      },
+      "documentation":"<p> An array of objects that describes where your execution history events will be logged. </p>"
+    },
+    "AwsStepFunctionStateMachineLoggingConfigurationDestinationsList":{
+      "type":"list",
+      "member":{"shape":"AwsStepFunctionStateMachineLoggingConfigurationDestinationsDetails"}
+    },
+    "AwsStepFunctionStateMachineLoggingConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "Destinations":{
+          "shape":"AwsStepFunctionStateMachineLoggingConfigurationDestinationsList",
+          "documentation":"<p> An array of objects that describes where your execution history events will be logged. </p>"
+        },
+        "IncludeExecutionData":{
+          "shape":"Boolean",
+          "documentation":"<p> Determines whether execution data is included in your log. When set to false, data is excluded. </p>"
+        },
+        "Level":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Defines which category of execution history events are logged. </p>"
+        }
+      },
+      "documentation":"<p> The <code>LoggingConfiguration</code> data type is used to set CloudWatch Logs options. </p>"
+    },
+    "AwsStepFunctionStateMachineTracingConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> When set to true, X-Ray tracing is enabled. </p>"
+        }
+      },
+      "documentation":"<p> Specifies whether X-Ray tracing is enabled. </p>"
+    },
     "AwsWafRateBasedRuleDetails":{
       "type":"structure",
       "members":{
@@ -14287,7 +14941,7 @@
         "FindingIdentifier":{"shape":"AwsSecurityFindingIdentifier"},
         "UpdateTime":{
           "shape":"Timestamp",
-          "documentation":"<p> An ISO 8601-formatted timestamp that indicates when the security findings provider last updated the finding record. A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. </p>"
+          "documentation":"<p> An ISO 8601-formatted timestamp that indicates when Security Hub processed the updated finding record.</p> <p>A correctly formatted example is <code>2020-05-21T20:16:34.724Z</code>. The value cannot contain spaces, and date and time should be separated by <code>T</code>. For more information, see <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339 section 5.6, Internet Date/Time Format</a>. </p>"
         },
         "FindingCreated":{
           "shape":"Boolean",
@@ -16404,6 +17058,26 @@
         "AwsEc2RouteTable":{
           "shape":"AwsEc2RouteTableDetails",
           "documentation":"<p> Provides details about a route table. A route table contains a set of rules, called routes, that determine where to direct network traffic from your subnet or gateway. </p>"
+        },
+        "AwsAmazonMqBroker":{
+          "shape":"AwsAmazonMqBrokerDetails",
+          "documentation":"<p> Provides details about AppSync message broker. A message broker allows software applications and components to communicate using various programming languages, operating systems, and formal messaging protocols. </p>"
+        },
+        "AwsAppSyncGraphQlApi":{
+          "shape":"AwsAppSyncGraphQlApiDetails",
+          "documentation":"<p> Provides details about an AppSync Graph QL API, which lets you query multiple databases, microservices, and APIs from a single GraphQL endpoint. </p>"
+        },
+        "AwsEventSchemasRegistry":{
+          "shape":"AwsEventSchemasRegistryDetails",
+          "documentation":"<p> A schema defines the structure of events that are sent to Amazon EventBridge. Schema registries are containers for schemas. They collect and organize schemas so that your schemas are in logical groups. </p>"
+        },
+        "AwsGuardDutyDetector":{
+          "shape":"AwsGuardDutyDetectorDetails",
+          "documentation":"<p> Provides details about an Amazon GuardDuty detector. A detector is an object that represents the GuardDuty service. A detector is required for GuardDuty to become operational. </p>"
+        },
+        "AwsStepFunctionStateMachine":{
+          "shape":"AwsStepFunctionStateMachineDetails",
+          "documentation":"<p> Provides details about an Step Functions state machine, which is a workflow consisting of a series of event-driven steps. </p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"

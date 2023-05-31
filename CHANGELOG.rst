@@ -5427,6 +5427,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.143
+========
+
+* api-change:``chime-sdk-voice``: Added optional CallLeg field to StartSpeakerSearchTask API request
+* api-change:``glue``: Added Runtime parameter to allow selection of Ray Runtime
+* api-change:``groundstation``: Updating description of GetMinuteUsage to be clearer.
+* api-change:``iotfleetwise``: Campaigns now support selecting Timestream or S3 as the data destination, Signal catalogs now support "Deprecation" keyword released in VSS v2.1 and "Comment" keyword released in VSS v3.0
+* api-change:``location``: This release adds API support for political views for the maps service APIs: CreateMap, UpdateMap, DescribeMap.
+* api-change:``memorydb``: Amazon MemoryDB for Redis now supports AWS Identity and Access Management authentication access to Redis clusters starting with redis-engine version 7.0
+* api-change:``personalize``: This release provides support for the exclusion of certain columns for training when creating a solution and creating or updating a recommender with Amazon Personalize.
+* api-change:``polly``: Amazon Polly adds 2 new voices - Sofie (da-DK) and Niamh (en-IE)
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsGuardDutyDetector, AwsAmazonMqBroker, AwsEventSchemasRegistry, AwsAppSyncGraphQlApi and AwsStepFunctionStateMachine.
+* api-change:``wafv2``: This SDK release provides customers the ability to use Header Order as a field to match.
+
+
+1.27.142
+========
+
+* api-change:``connect``: Documentation update for a new Initiation Method value in DescribeContact API
+* api-change:``iotwireless``: Add Multicast Group support in Network Analyzer Configuration.
+* api-change:``sagemaker``: Added ml.p4d and ml.inf1 as supported instance type families for SageMaker Notebook Instances.
+
+
 1.27.141
 ========
 

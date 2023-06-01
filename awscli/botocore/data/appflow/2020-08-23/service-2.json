@@ -870,6 +870,14 @@
         "registeredBy":{
           "shape":"RegisteredBy",
           "documentation":"<p>Information about who registered the connector.</p>"
+        },
+        "supportedDataTransferTypes":{
+          "shape":"SupportedDataTransferTypeList",
+          "documentation":"<p>The data transfer types that the connector supports.</p> <dl> <dt>RECORD</dt> <dd> <p>Structured records.</p> </dd> <dt>FILE</dt> <dd> <p>Files or binary data.</p> </dd> </dl>"
+        },
+        "supportedDataTransferApis":{
+          "shape":"SupportedDataTransferApis",
+          "documentation":"<p>The APIs of the connector application that Amazon AppFlow can use to transfer your data.</p>"
         }
       },
       "documentation":"<p> The configuration settings related to a given connector. </p>"
@@ -930,6 +938,10 @@
         "connectorModes":{
           "shape":"ConnectorModeList",
           "documentation":"<p>The connection mode that the connector supports.</p>"
+        },
+        "supportedDataTransferTypes":{
+          "shape":"SupportedDataTransferTypeList",
+          "documentation":"<p>The data transfer types that the connector supports.</p> <dl> <dt>RECORD</dt> <dd> <p>Structured records.</p> </dd> <dt>FILE</dt> <dd> <p>Files or binary data.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>Information about the registered connector.</p>"
@@ -1839,6 +1851,10 @@
         "customProperties":{
           "shape":"CustomProperties",
           "documentation":"<p>Custom properties that are required to use the custom connector as a source.</p>"
+        },
+        "dataTransferApi":{
+          "shape":"DataTransferApi",
+          "documentation":"<p>The API of the connector application that Amazon AppFlow uses to transfer your data.</p>"
         }
       },
       "documentation":"<p>The properties that are applied when the custom connector is being used as a source.</p>"
@@ -1893,6 +1909,33 @@
         "Incremental",
         "Complete"
       ]
+    },
+    "DataTransferApi":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DataTransferApiTypeName",
+          "documentation":"<p>The name of the connector application API.</p>"
+        },
+        "Type":{
+          "shape":"DataTransferApiType",
+          "documentation":"<p>You can specify one of the following types:</p> <dl> <dt>AUTOMATIC</dt> <dd> <p>The default. Optimizes a flow for datasets that fluctuate in size from small to large. For each flow run, Amazon AppFlow chooses to use the SYNC or ASYNC API type based on the amount of data that the run transfers.</p> </dd> <dt>SYNC</dt> <dd> <p>A synchronous API. This type of API optimizes a flow for small to medium-sized datasets.</p> </dd> <dt>ASYNC</dt> <dd> <p>An asynchronous API. This type of API optimizes a flow for large datasets.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>The API of the connector application that Amazon AppFlow uses to transfer your data.</p>"
+    },
+    "DataTransferApiType":{
+      "type":"string",
+      "enum":[
+        "SYNC",
+        "ASYNC",
+        "AUTOMATIC"
+      ]
+    },
+    "DataTransferApiTypeName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\w/-]+"
     },
     "DatabaseName":{
       "type":"string",
@@ -4994,6 +5037,21 @@
     "SupportedApiVersionList":{
       "type":"list",
       "member":{"shape":"SupportedApiVersion"}
+    },
+    "SupportedDataTransferApis":{
+      "type":"list",
+      "member":{"shape":"DataTransferApi"}
+    },
+    "SupportedDataTransferType":{
+      "type":"string",
+      "enum":[
+        "RECORD",
+        "FILE"
+      ]
+    },
+    "SupportedDataTransferTypeList":{
+      "type":"list",
+      "member":{"shape":"SupportedDataTransferType"}
     },
     "SupportedFieldTypeDetails":{
       "type":"structure",

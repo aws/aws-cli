@@ -726,6 +726,10 @@
           "shape":"EntityName",
           "documentation":"<p>The name of the application.</p>"
         },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role associated with the application.</p>"
+        },
         "status":{
           "shape":"ApplicationLifecycle",
           "documentation":"<p>The status of the application.</p>"
@@ -782,7 +786,7 @@
     },
     "Arn":{
       "type":"string",
-      "pattern":"^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+      "pattern":"^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]|):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
     },
     "ArnList":{
       "type":"list",
@@ -835,7 +839,10 @@
           "shape":"Identifier",
           "documentation":"<p>The unique identifier of the application that hosts this batch job.</p>"
         },
-        "batchJobIdentifier":{"shape":"BatchJobIdentifier"},
+        "batchJobIdentifier":{
+          "shape":"BatchJobIdentifier",
+          "documentation":"<p>The unique identifier of this batch job.</p>"
+        },
         "endTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when this batch job execution ended.</p>"
@@ -858,7 +865,7 @@
         },
         "returnCode":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The batch job return code from either the Blu Age or Micro Focus runtime engines. For more information, see <a href=\"https://www.ibm.com/docs/en/was/8.5.5?topic=model-batch-return-codes\">Batch return codes</a> in the <i>IBM WebSphere Application Server</i> documentation.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -908,7 +915,7 @@
     },
     "BatchParamKey":{
       "type":"string",
-      "documentation":"<p>Parameter key: the first character must be alphabetic. Can be of up to 8 alphanumeric characters.</p>",
+      "documentation":"<p>See https://www.ibm.com/docs/en/workload-automation/9.3.0?topic=zos-coding-variables-in-jcl to get details about limits for both keys and values: 8 for keys (variable names), 44 for values (variable values) In addition, keys will be only alphabetic characters and digits, without any space or special characters (dash, underscore, etc ...)</p> <p>Parameter key: the first character must be alphabetic. Can be of up to 8 alphanumeric characters.</p>",
       "max":8,
       "min":1,
       "pattern":"^[A-Za-z][A-Za-z0-9]{1,7}$"
@@ -1005,6 +1012,10 @@
         "name":{
           "shape":"EntityName",
           "documentation":"<p>The unique identifier of the application.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role associated with the application.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1364,6 +1375,14 @@
           "shape":"GdgDetailAttributes",
           "documentation":"<p>The generation data group of the data set.</p>"
         },
+        "po":{
+          "shape":"PoDetailAttributes",
+          "documentation":"<p>The details of a PO type data set.</p>"
+        },
+        "ps":{
+          "shape":"PsDetailAttributes",
+          "documentation":"<p>The details of a PS type data set.</p>"
+        },
         "vsam":{
           "shape":"VsamDetailAttributes",
           "documentation":"<p>The details of a VSAM data set.</p>"
@@ -1378,6 +1397,14 @@
         "gdg":{
           "shape":"GdgAttributes",
           "documentation":"<p>The generation data group of the data set.</p>"
+        },
+        "po":{
+          "shape":"PoAttributes",
+          "documentation":"<p>The details of a PO type data set.</p>"
+        },
+        "ps":{
+          "shape":"PsAttributes",
+          "documentation":"<p>The details of a PS type data set.</p>"
         },
         "vsam":{
           "shape":"VsamAttributes",
@@ -1841,6 +1868,10 @@
           "shape":"EntityName",
           "documentation":"<p>The unique identifier of the application.</p>"
         },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role associated with the application.</p>"
+        },
         "status":{
           "shape":"ApplicationLifecycle",
           "documentation":"<p>The status of the application.</p>"
@@ -1954,7 +1985,10 @@
           "shape":"Identifier",
           "documentation":"<p>The identifier of the application.</p>"
         },
-        "batchJobIdentifier":{"shape":"BatchJobIdentifier"},
+        "batchJobIdentifier":{
+          "shape":"BatchJobIdentifier",
+          "documentation":"<p>The unique identifier of this batch job.</p>"
+        },
         "endTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the batch job execution ended.</p>"
@@ -1981,7 +2015,7 @@
         },
         "returnCode":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The batch job return code from either the Blu Age or Micro Focus runtime engines. For more information, see <a href=\"https://www.ibm.com/docs/en/was/8.5.5?topic=model-batch-return-codes\">Batch return codes</a> in the <i>IBM WebSphere Application Server</i> documentation.</p>"
         },
         "startTime":{
           "shape":"Timestamp",
@@ -2800,6 +2834,46 @@
       },
       "documentation":"<p>The scheduled maintenance for a runtime engine.</p>"
     },
+    "PoAttributes":{
+      "type":"structure",
+      "required":[
+        "format",
+        "memberFileExtensions"
+      ],
+      "members":{
+        "encoding":{
+          "shape":"String",
+          "documentation":"<p>The character set encoding of the data set.</p>"
+        },
+        "format":{
+          "shape":"String",
+          "documentation":"<p>The format of the data set records.</p>"
+        },
+        "memberFileExtensions":{
+          "shape":"String20List",
+          "documentation":"<p>An array containing one or more filename extensions, allowing you to specify which files to be included as PDS member.</p>"
+        }
+      },
+      "documentation":"<p>The supported properties for a PO type data set.</p>"
+    },
+    "PoDetailAttributes":{
+      "type":"structure",
+      "required":[
+        "encoding",
+        "format"
+      ],
+      "members":{
+        "encoding":{
+          "shape":"String",
+          "documentation":"<p>The character set encoding of the data set.</p>"
+        },
+        "format":{
+          "shape":"String",
+          "documentation":"<p>The format of the data set records.</p>"
+        }
+      },
+      "documentation":"<p>The supported properties for a PO type data set.</p>"
+    },
     "PortList":{
       "type":"list",
       "member":{"shape":"Integer"},
@@ -2826,6 +2900,39 @@
         }
       },
       "documentation":"<p>The primary key for a KSDS data set.</p>"
+    },
+    "PsAttributes":{
+      "type":"structure",
+      "required":["format"],
+      "members":{
+        "encoding":{
+          "shape":"String",
+          "documentation":"<p>The character set encoding of the data set.</p>"
+        },
+        "format":{
+          "shape":"String",
+          "documentation":"<p>The format of the data set records.</p>"
+        }
+      },
+      "documentation":"<p>The supported properties for a PS type data set.</p>"
+    },
+    "PsDetailAttributes":{
+      "type":"structure",
+      "required":[
+        "encoding",
+        "format"
+      ],
+      "members":{
+        "encoding":{
+          "shape":"String",
+          "documentation":"<p>The character set encoding of the data set.</p>"
+        },
+        "format":{
+          "shape":"String",
+          "documentation":"<p>The format of the data set records.</p>"
+        }
+      },
+      "documentation":"<p>The supported properties for a PS type data set.</p>"
     },
     "RecordLength":{
       "type":"structure",
@@ -3023,6 +3130,12 @@
     "String2000":{
       "type":"string",
       "pattern":"^\\S{1,2000}$"
+    },
+    "String20List":{
+      "type":"list",
+      "member":{"shape":"String20"},
+      "max":10,
+      "min":1
     },
     "String50":{
       "type":"string",

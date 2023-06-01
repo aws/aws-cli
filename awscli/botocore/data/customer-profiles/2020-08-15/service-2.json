@@ -30,6 +30,23 @@
       ],
       "documentation":"<p>Associates a new key value with a specific profile, such as a Contact Record ContactId.</p> <p>A profile object can have a single unique key and any number of additional keys that can be used to identify the profile that it belongs to.</p>"
     },
+    "CreateCalculatedAttributeDefinition":{
+      "name":"CreateCalculatedAttributeDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}"
+      },
+      "input":{"shape":"CreateCalculatedAttributeDefinitionRequest"},
+      "output":{"shape":"CreateCalculatedAttributeDefinitionResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new calculated attribute definition. After creation, new object data ingested into Customer Profiles will be included in the calculated attribute, which can be retrieved for a profile using the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetCalculatedAttributeForProfile.html\">GetCalculatedAttributeForProfile</a> API. Defining a calculated attribute makes it available for all profiles within a domain. Each calculated attribute can only reference one <code>ObjectType</code> and at most, two fields from that <code>ObjectType</code>.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -80,6 +97,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a standard profile.</p> <p>A standard profile represents the following attributes for a customer profile in a domain.</p>"
+    },
+    "DeleteCalculatedAttributeDefinition":{
+      "name":"DeleteCalculatedAttributeDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}"
+      },
+      "input":{"shape":"DeleteCalculatedAttributeDefinitionRequest"},
+      "output":{"shape":"DeleteCalculatedAttributeDefinitionResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing calculated attribute definition. Note that deleting a default calculated attribute is possible, however once deleted, you will be unable to undo that action and will need to recreate it on your own using the CreateCalculatedAttributeDefinition API if you want it back.</p>"
     },
     "DeleteDomain":{
       "name":"DeleteDomain",
@@ -216,6 +250,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Tests the auto-merging settings of your Identity Resolution Job without merging your data. It randomly selects a sample of matching groups from the existing matching results, and applies the automerging settings that you provided. You can then view the number of profiles in the sample, the number of matches, and the number of profiles identified to be merged. This enables you to evaluate the accuracy of the attributes in your matching list. </p> <p>You can't view which profiles are matched and would be merged.</p> <important> <p>We strongly recommend you use this API to do a dry run of the automerging process before running the Identity Resolution Job. Include <b>at least</b> two matching attributes. If your matching list includes too few attributes (such as only <code>FirstName</code> or only <code>LastName</code>), there may be a large number of matches. This increases the chances of erroneous merges.</p> </important>"
+    },
+    "GetCalculatedAttributeDefinition":{
+      "name":"GetCalculatedAttributeDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}"
+      },
+      "input":{"shape":"GetCalculatedAttributeDefinitionRequest"},
+      "output":{"shape":"GetCalculatedAttributeDefinitionResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Provides more information on a calculated attribute definition for Customer Profiles.</p>"
+    },
+    "GetCalculatedAttributeForProfile":{
+      "name":"GetCalculatedAttributeForProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/profile/{ProfileId}/calculated-attributes/{CalculatedAttributeName}"
+      },
+      "input":{"shape":"GetCalculatedAttributeForProfileRequest"},
+      "output":{"shape":"GetCalculatedAttributeForProfileResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve a calculated attribute for a customer profile.</p>"
     },
     "GetDomain":{
       "name":"GetDomain",
@@ -369,6 +437,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all of the integrations associated to a specific URI in the AWS account.</p>"
+    },
+    "ListCalculatedAttributeDefinitions":{
+      "name":"ListCalculatedAttributeDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/calculated-attributes"
+      },
+      "input":{"shape":"ListCalculatedAttributeDefinitionsRequest"},
+      "output":{"shape":"ListCalculatedAttributeDefinitionsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists calculated attribute definitions for Customer Profiles</p>"
+    },
+    "ListCalculatedAttributesForProfile":{
+      "name":"ListCalculatedAttributesForProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/profile/{ProfileId}/calculated-attributes"
+      },
+      "input":{"shape":"ListCalculatedAttributesForProfileRequest"},
+      "output":{"shape":"ListCalculatedAttributesForProfileResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve a list of calculated attributes for a customer profile.</p>"
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -617,6 +719,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Removes one or more tags from the specified Amazon Connect Customer Profiles resource. In Connect Customer Profiles, domains, profile object types, and integrations can be tagged.</p>"
+    },
+    "UpdateCalculatedAttributeDefinition":{
+      "name":"UpdateCalculatedAttributeDefinition",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}"
+      },
+      "input":{"shape":"UpdateCalculatedAttributeDefinitionRequest"},
+      "output":{"shape":"UpdateCalculatedAttributeDefinitionResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing calculated attribute definition. When updating the Conditions, note that increasing the date range of a calculated attribute will not trigger inclusion of historical data greater than the current date range.</p>"
     },
     "UpdateDomain":{
       "name":"UpdateDomain",
@@ -880,6 +999,41 @@
       },
       "documentation":"<p>Workflow step details for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
     },
+    "AttributeDetails":{
+      "type":"structure",
+      "required":[
+        "Attributes",
+        "Expression"
+      ],
+      "members":{
+        "Attributes":{
+          "shape":"AttributeList",
+          "documentation":"<p>A list of attribute items specified in the mathematical expression.</p>"
+        },
+        "Expression":{
+          "shape":"string1To255",
+          "documentation":"<p>Mathematical expression that is performed on attribute items provided in the attribute list. Each element in the expression should follow the structure of \\\"{ObjectTypeName.AttributeName}\\\".</p>"
+        }
+      },
+      "documentation":"<p>Mathematical expression and a list of attribute items specified in that expression.</p>"
+    },
+    "AttributeItem":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"attributeName",
+          "documentation":"<p>The name of an attribute defined in a profile object type.</p>"
+        }
+      },
+      "documentation":"<p>The details of a single attribute item specified in the mathematical expression.</p>"
+    },
+    "AttributeList":{
+      "type":"list",
+      "member":{"shape":"AttributeItem"},
+      "max":2,
+      "min":1
+    },
     "AttributeSourceIdMap":{
       "type":"map",
       "key":{"shape":"string1To255"},
@@ -955,6 +1109,32 @@
       "max":512,
       "pattern":".*"
     },
+    "CalculatedAttributeDefinitionsList":{
+      "type":"list",
+      "member":{"shape":"ListCalculatedAttributeDefinitionItem"}
+    },
+    "CalculatedAttributesForProfileList":{
+      "type":"list",
+      "member":{"shape":"ListCalculatedAttributeForProfileItem"}
+    },
+    "Conditions":{
+      "type":"structure",
+      "members":{
+        "Range":{
+          "shape":"Range",
+          "documentation":"<p>The relative time period over which data is included in the aggregation.</p>"
+        },
+        "ObjectCount":{
+          "shape":"ObjectCount",
+          "documentation":"<p>The number of profile objects used for the calculated attribute.</p>"
+        },
+        "Threshold":{
+          "shape":"Threshold",
+          "documentation":"<p>The threshold for the calculated attribute.</p>"
+        }
+      },
+      "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+    },
     "ConflictResolution":{
       "type":"structure",
       "required":["ConflictResolvingModel"],
@@ -1018,6 +1198,94 @@
         }
       },
       "documentation":"<p>The matching criteria to be used during the auto-merging process. </p>"
+    },
+    "CreateCalculatedAttributeDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "CalculatedAttributeName",
+        "AttributeDetails",
+        "Statistic"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the calculated attribute.</p>"
+        },
+        "AttributeDetails":{
+          "shape":"AttributeDetails",
+          "documentation":"<p>Mathematical expression and a list of attribute items specified in that expression.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateCalculatedAttributeDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the calculated attribute.</p>"
+        },
+        "AttributeDetails":{
+          "shape":"AttributeDetails",
+          "documentation":"<p>Mathematical expression and a list of attribute items specified in that expression.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
     },
     "CreateDomainRequest":{
       "type":"structure",
@@ -1278,6 +1546,32 @@
       "type":"string",
       "max":256,
       "pattern":".*"
+    },
+    "DeleteCalculatedAttributeDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "CalculatedAttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        }
+      }
+    },
+    "DeleteCalculatedAttributeDefinitionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -1774,6 +2068,117 @@
         "NumberOfProfilesWillBeMerged":{
           "shape":"long",
           "documentation":"<p>The number of profiles that would be merged if this wasn't a preview dry run.</p>"
+        }
+      }
+    },
+    "GetCalculatedAttributeDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "CalculatedAttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        }
+      }
+    },
+    "GetCalculatedAttributeDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the calculated attribute.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was most recently edited.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        },
+        "AttributeDetails":{
+          "shape":"AttributeDetails",
+          "documentation":"<p>Mathematical expression and a list of attribute items specified in that expression.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "GetCalculatedAttributeForProfileRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileId",
+        "CalculatedAttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of a customer profile.</p>",
+          "location":"uri",
+          "locationName":"ProfileId"
+        },
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        }
+      }
+    },
+    "GetCalculatedAttributeForProfileResponse":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "IsDataPartial":{
+          "shape":"string1To255",
+          "documentation":"<p>Indicates whether the calculated attribute’s value is based on partial data. If data is partial, it is set to true.</p>"
+        },
+        "Value":{
+          "shape":"string1To255",
+          "documentation":"<p>The value of the calculated attribute.</p>"
         }
       }
     },
@@ -2445,6 +2850,141 @@
         }
       }
     },
+    "ListCalculatedAttributeDefinitionItem":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The threshold for the calculated attribute.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The threshold for the calculated attribute.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>The details of a single calculated attribute definition.</p>"
+    },
+    "ListCalculatedAttributeDefinitionsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListCalculatedAttributeDefinitions.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of calculated attribute definitions returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListCalculatedAttributeDefinitionsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"CalculatedAttributeDefinitionsList",
+          "documentation":"<p>The list of calculated attribute definitions.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListCalculatedAttributeDefinitions.</p>"
+        }
+      }
+    },
+    "ListCalculatedAttributeForProfileItem":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "IsDataPartial":{
+          "shape":"string1To255",
+          "documentation":"<p>Indicates whether the calculated attribute’s value is based on partial data. If data is partial, it is set to true.</p>"
+        },
+        "Value":{
+          "shape":"string1To255",
+          "documentation":"<p>The value of the calculated attribute.</p>"
+        }
+      },
+      "documentation":"<p>The details of a single calculated attribute for a profile.</p>"
+    },
+    "ListCalculatedAttributesForProfileRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileId"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListCalculatedAttributesForProfile.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of calculated attributes returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of a customer profile.</p>",
+          "location":"uri",
+          "locationName":"ProfileId"
+        }
+      }
+    },
+    "ListCalculatedAttributesForProfileResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"CalculatedAttributesForProfileList",
+          "documentation":"<p>The list of calculated attributes.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListCalculatedAttributesForProfile.</p>"
+        }
+      }
+    },
     "ListDomainItem":{
       "type":"structure",
       "required":[
@@ -2799,7 +3339,7 @@
         },
         "ObjectFilter":{
           "shape":"ObjectFilter",
-          "documentation":"<p>Applies a filter to the response to include profile objects with the specified index values. This filter is only supported for ObjectTypeName _asset, _case and _order.</p>"
+          "documentation":"<p>Applies a filter to the response to include profile objects with the specified index values.</p>"
         }
       }
     },
@@ -3081,6 +3621,11 @@
       "max":512,
       "pattern":"\\S+"
     },
+    "ObjectCount":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
     "ObjectFilter":{
       "type":"structure",
       "required":[
@@ -3090,14 +3635,14 @@
       "members":{
         "KeyName":{
           "shape":"name",
-          "documentation":"<p>A searchable identifier of a standard profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.</p>"
+          "documentation":"<p>A searchable identifier of a profile object. The predefined keys you can use to search for <code>_asset</code> include: <code>_assetId</code>, <code>_assetName</code>, and <code>_serialNumber</code>. The predefined keys you can use to search for <code>_case</code> include: <code>_caseId</code>. The predefined keys you can use to search for <code>_order</code> include: <code>_orderId</code>.</p>"
         },
         "Values":{
           "shape":"requestValueList",
           "documentation":"<p>A list of key values.</p>"
         }
       },
-      "documentation":"<p>The filter applied to ListProfileObjects response to include profile objects with the specified index values. This filter is only supported for ObjectTypeName _asset, _case and _order.</p>"
+      "documentation":"<p>The filter applied to <code>ListProfileObjects</code> response to include profile objects with the specified index values.</p>"
     },
     "ObjectTypeField":{
       "type":"structure",
@@ -3139,6 +3684,15 @@
       "type":"map",
       "key":{"shape":"string1To255"},
       "value":{"shape":"typeName"}
+    },
+    "Operator":{
+      "type":"string",
+      "enum":[
+        "EQUAL_TO",
+        "GREATER_THAN",
+        "LESS_THAN",
+        "NOT_EQUAL_TO"
+      ]
     },
     "OperatorPropertiesKeys":{
       "type":"string",
@@ -3532,6 +4086,24 @@
         }
       }
     },
+    "Range":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Unit"
+      ],
+      "members":{
+        "Value":{
+          "shape":"Value",
+          "documentation":"<p>The amount of time of the specified unit.</p>"
+        },
+        "Unit":{
+          "shape":"Unit",
+          "documentation":"<p>The unit of time.</p>"
+        }
+      },
+      "documentation":"<p>The relative time period over which data is included in the aggregation.</p>"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -3883,6 +4455,19 @@
       "type":"list",
       "member":{"shape":"StandardIdentifier"}
     },
+    "Statistic":{
+      "type":"string",
+      "enum":[
+        "FIRST_OCCURRENCE",
+        "LAST_OCCURRENCE",
+        "COUNT",
+        "SUM",
+        "MINIMUM",
+        "MAXIMUM",
+        "AVERAGE",
+        "MAX_OCCURRENCE"
+      ]
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -3998,6 +4583,24 @@
       "type":"list",
       "member":{"shape":"Task"}
     },
+    "Threshold":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Operator"
+      ],
+      "members":{
+        "Value":{
+          "shape":"string1To255",
+          "documentation":"<p>The value of the threshold.</p>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The operator of the threshold.</p>"
+        }
+      },
+      "documentation":"<p>The threshold for the calculated attribute.</p>"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -4044,6 +4647,10 @@
         "Event",
         "OnDemand"
       ]
+    },
+    "Unit":{
+      "type":"string",
+      "enum":["DAYS"]
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -4121,6 +4728,80 @@
       "type":"map",
       "key":{"shape":"string1To255"},
       "value":{"shape":"string0To255"}
+    },
+    "UpdateCalculatedAttributeDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "CalculatedAttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the calculated attribute.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        }
+      }
+    },
+    "UpdateCalculatedAttributeDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the calculated attribute.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the calculated attribute definition was most recently edited.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
+        },
+        "Conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        },
+        "AttributeDetails":{
+          "shape":"AttributeDetails",
+          "documentation":"<p>The mathematical expression and a list of attribute items specified in that expression.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
     },
     "UpdateDomainRequest":{
       "type":"structure",
@@ -4317,6 +4998,11 @@
         }
       }
     },
+    "Value":{
+      "type":"integer",
+      "max":366,
+      "min":1
+    },
     "WorkflowAttributes":{
       "type":"structure",
       "members":{
@@ -4395,7 +5081,19 @@
       "max":4,
       "min":1
     },
+    "attributeName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.-]+$"
+    },
     "boolean":{"type":"boolean"},
+    "displayName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z_][a-zA-Z_0-9-\\s]*$"
+    },
     "encryptionKey":{
       "type":"string",
       "max":255,

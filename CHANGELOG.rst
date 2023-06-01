@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.145
+========
+
+* api-change:``alexaforbusiness``: Alexa for Business has been deprecated and is no longer supported.
+* api-change:``appflow``: Added ability to select DataTransferApiType for DescribeConnector and CreateFlow requests when using Async supported connectors. Added supportedDataTransferType to DescribeConnector/DescribeConnectors/ListConnector response.
+* api-change:``customer-profiles``: This release introduces calculated attribute related APIs.
+* api-change:``ivs``: API Update for IVS Advanced Channel type
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot adds support for Parquet file input to NLP text classification jobs.
+* api-change:``wafv2``: Corrected the information for the header order FieldToMatch setting
+
+
 1.27.144
 ========
 

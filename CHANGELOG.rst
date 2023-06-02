@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.146
+========
+
+* api-change:``athena``: This release introduces the DeleteCapacityReservation API and the ability to manage capacity reservations using CloudFormation
+* api-change:``cloudtrail``: This feature allows users to start and stop event ingestion on a CloudTrail Lake event data store.
+* api-change:``sagemaker``: This release adds Selective Execution feature that allows SageMaker Pipelines users to run selected steps in a pipeline.
+* api-change:``wafv2``: Added APIs to describe managed products. The APIs retrieve information about rule groups that are managed by AWS and by AWS Marketplace sellers.
+
+
 1.27.145
 ========
 

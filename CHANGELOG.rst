@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.27.147
+========
+
+* api-change:``cloudformation``: AWS CloudFormation StackSets provides customers with three new APIs to activate, deactivate, and describe AWS Organizations trusted access which is needed to get started with service-managed StackSets.
+* api-change:``ec2``: Making InstanceTagAttribute as the required parameter for the DeregisterInstanceEventNotificationAttributes and RegisterInstanceEventNotificationAttributes APIs.
+* api-change:``finspace``: Releasing new Managed kdb Insights APIs
+* api-change:``frauddetector``: Added new variable types, new DateTime data type, and new rules engine functions for interacting and working with DateTime data types.
+* api-change:``keyspaces``: This release adds support for MRR GA launch, and includes multiregion support in create-keyspace, get-keyspace, and list-keyspace.
+* api-change:``kms``: This release includes feature to import customer's asymmetric (RSA and ECC) and HMAC keys into KMS.  It also includes feature to allow customers to specify number of days to schedule a KMS key deletion as a policy condition key.
+* api-change:``lambda``: Add Ruby 3.2 (ruby3.2) Runtime support to AWS Lambda.
+* api-change:``mwaa``: This release adds ROLLING_BACK and CREATING_SNAPSHOT environment statuses for Amazon MWAA environments.
+
+
 1.27.146
 ========
 

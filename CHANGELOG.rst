@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.27.148
+========
+
+* api-change:``connect``: GetMetricDataV2 API is now available in AWS GovCloud(US) region.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``iam``: This release updates the AccountAlias regex pattern with the same length restrictions enforced by the length constraint.
+* api-change:``inspector2``: Adds new response properties and request parameters for 'last scanned at' on the ListCoverage operation. This feature allows you to search and view the date of which your resources were last scanned by Inspector.
+* api-change:``iot``: Adding IoT Device Management Software Package Catalog APIs to register, store, and report system software packages, along with their versions and metadata in a centralized location.
+* api-change:``iot-data``: Update thing shadow name regex to allow '$' character
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``quicksight``: QuickSight support for pivot table field collapse state, radar chart range scale and multiple scope options in conditional formatting.
+* api-change:``signer``: AWS Signer is launching Container Image Signing, a new feature that enables you to sign and verify container images. This feature enables you to validate that only container images you approve are used in your enterprise.
+* api-change:``sqs``: Amazon SQS adds three new APIs - StartMessageMoveTask, CancelMessageMoveTask, and ListMessageMoveTasks to automate redriving messages from dead-letter queues to source queues or a custom destination.
+
+
 1.27.147
 ========
 

@@ -457,7 +457,7 @@ INSTANCE_FLEETS_SCHEMA = {
                             "AllocationStrategy": {
                                 "type": "string",
                                 "description": "The strategy to use in launching Spot instance fleets.",
-                                "enum": ["capacity-optimized"]
+                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified"]
                             }
                         }
                     }

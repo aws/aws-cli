@@ -5463,6 +5463,43 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.148
+========
+
+* api-change:``connect``: GetMetricDataV2 API is now available in AWS GovCloud(US) region.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``iam``: This release updates the AccountAlias regex pattern with the same length restrictions enforced by the length constraint.
+* api-change:``inspector2``: Adds new response properties and request parameters for 'last scanned at' on the ListCoverage operation. This feature allows you to search and view the date of which your resources were last scanned by Inspector.
+* api-change:``iot``: Adding IoT Device Management Software Package Catalog APIs to register, store, and report system software packages, along with their versions and metadata in a centralized location.
+* api-change:``iot-data``: Update thing shadow name regex to allow '$' character
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``quicksight``: QuickSight support for pivot table field collapse state, radar chart range scale and multiple scope options in conditional formatting.
+* api-change:``signer``: AWS Signer is launching Container Image Signing, a new feature that enables you to sign and verify container images. This feature enables you to validate that only container images you approve are used in your enterprise.
+* api-change:``sqs``: Amazon SQS adds three new APIs - StartMessageMoveTask, CancelMessageMoveTask, and ListMessageMoveTasks to automate redriving messages from dead-letter queues to source queues or a custom destination.
+
+
+1.27.147
+========
+
+* api-change:``cloudformation``: AWS CloudFormation StackSets provides customers with three new APIs to activate, deactivate, and describe AWS Organizations trusted access which is needed to get started with service-managed StackSets.
+* api-change:``ec2``: Making InstanceTagAttribute as the required parameter for the DeregisterInstanceEventNotificationAttributes and RegisterInstanceEventNotificationAttributes APIs.
+* api-change:``finspace``: Releasing new Managed kdb Insights APIs
+* api-change:``frauddetector``: Added new variable types, new DateTime data type, and new rules engine functions for interacting and working with DateTime data types.
+* api-change:``keyspaces``: This release adds support for MRR GA launch, and includes multiregion support in create-keyspace, get-keyspace, and list-keyspace.
+* api-change:``kms``: This release includes feature to import customer's asymmetric (RSA and ECC) and HMAC keys into KMS.  It also includes feature to allow customers to specify number of days to schedule a KMS key deletion as a policy condition key.
+* api-change:``lambda``: Add Ruby 3.2 (ruby3.2) Runtime support to AWS Lambda.
+* api-change:``mwaa``: This release adds ROLLING_BACK and CREATING_SNAPSHOT environment statuses for Amazon MWAA environments.
+
+
+1.27.146
+========
+
+* api-change:``athena``: This release introduces the DeleteCapacityReservation API and the ability to manage capacity reservations using CloudFormation
+* api-change:``cloudtrail``: This feature allows users to start and stop event ingestion on a CloudTrail Lake event data store.
+* api-change:``sagemaker``: This release adds Selective Execution feature that allows SageMaker Pipelines users to run selected steps in a pipeline.
+* api-change:``wafv2``: Added APIs to describe managed products. The APIs retrieve information about rule groups that are managed by AWS and by AWS Marketplace sellers.
+
+
 1.27.145
 ========
 

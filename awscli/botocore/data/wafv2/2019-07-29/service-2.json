@@ -285,6 +285,35 @@
       ],
       "documentation":"<p>Deletes the specified <a>WebACL</a>. </p> <p>You can only use this if <code>ManagedByFirewallManager</code> is false in the specified <a>WebACL</a>. </p> <note> <p>Before deleting any web ACL, first disassociate it from all resources.</p> <ul> <li> <p>To retrieve a list of the resources that are associated with a web ACL, use the following calls:</p> <ul> <li> <p>For regional resources, call <a>ListResourcesForWebACL</a>.</p> </li> <li> <p>For Amazon CloudFront distributions, use the CloudFront call <code>ListDistributionsByWebACLId</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_ListDistributionsByWebACLId.html\">ListDistributionsByWebACLId</a> in the <i>Amazon CloudFront API Reference</i>. </p> </li> </ul> </li> <li> <p>To disassociate a resource from a web ACL, use the following calls:</p> <ul> <li> <p>For regional resources, call <a>DisassociateWebACL</a>.</p> </li> <li> <p>For Amazon CloudFront distributions, provide an empty web ACL ID in the CloudFront call <code>UpdateDistribution</code>. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a> in the <i>Amazon CloudFront API Reference</i>. </p> </li> </ul> </li> </ul> </note>"
     },
+    "DescribeAllManagedProducts":{
+      "name":"DescribeAllManagedProducts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAllManagedProductsRequest"},
+      "output":{"shape":"DescribeAllManagedProductsResponse"},
+      "errors":[
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFInternalErrorException"}
+      ],
+      "documentation":"<p>Provides high-level information for the Amazon Web Services Managed Rules rule groups and Amazon Web Services Marketplace managed rule groups. </p>"
+    },
+    "DescribeManagedProductsByVendor":{
+      "name":"DescribeManagedProductsByVendor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeManagedProductsByVendorRequest"},
+      "output":{"shape":"DescribeManagedProductsByVendorResponse"},
+      "errors":[
+        {"shape":"WAFInvalidOperationException"},
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"}
+      ],
+      "documentation":"<p>Provides high-level information for the managed rule groups owned by a specific vendor. </p>"
+    },
     "DescribeManagedRuleGroup":{
       "name":"DescribeManagedRuleGroup",
       "http":{
@@ -2100,6 +2129,51 @@
       "members":{
       }
     },
+    "DescribeAllManagedProductsRequest":{
+      "type":"structure",
+      "required":["Scope"],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, an App Runner service, or an Amazon Web Services Verified Access instance. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        }
+      }
+    },
+    "DescribeAllManagedProductsResponse":{
+      "type":"structure",
+      "members":{
+        "ManagedProducts":{
+          "shape":"ManagedProductDescriptors",
+          "documentation":"<p>High-level information for the Amazon Web Services Managed Rules rule groups and Amazon Web Services Marketplace managed rule groups. </p>"
+        }
+      }
+    },
+    "DescribeManagedProductsByVendorRequest":{
+      "type":"structure",
+      "required":[
+        "VendorName",
+        "Scope"
+      ],
+      "members":{
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, an App Runner service, or an Amazon Web Services Verified Access instance. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        }
+      }
+    },
+    "DescribeManagedProductsByVendorResponse":{
+      "type":"structure",
+      "members":{
+        "ManagedProducts":{
+          "shape":"ManagedProductDescriptors",
+          "documentation":"<p>High-level information for the managed rule groups owned by the specified vendor. </p>"
+        }
+      }
+    },
     "DescribeManagedRuleGroupRequest":{
       "type":"structure",
       "required":[
@@ -2110,7 +2184,7 @@
       "members":{
         "VendorName":{
           "shape":"VendorName",
-          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.</p>"
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
         },
         "Name":{
           "shape":"EntityName",
@@ -2135,7 +2209,7 @@
         },
         "SnsTopicArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that's used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide</a>.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that's used to provide notification of changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide</a>.</p>"
         },
         "Capacity":{
           "shape":"CapacityUnit",
@@ -2289,7 +2363,7 @@
         },
         "HeaderOrder":{
           "shape":"HeaderOrder",
-          "documentation":"<p>Inspect a string containing the list of the request's header names, ordered as they appear in the web request that WAF receives for inspection. WAF generates the string and then uses that as the field to match component in its inspection. WAF separates the header names in the string using colons and no added spaces, for example <code>Host:User-Agent:Accept:Authorization:Referer</code>.</p> <p>Matches against the header order string are case insensitive.</p>"
+          "documentation":"<p>Inspect a string containing the list of the request's header names, ordered as they appear in the web request that WAF receives for inspection. WAF generates the string and then uses that as the field to match component in its inspection. WAF separates the header names in the string using commas and no added spaces.</p> <p>Matches against the header order string are case insensitive.</p>"
         }
       },
       "documentation":"<p>The part of the web request that you want WAF to inspect. Include the single <code>FieldToMatch</code> type that you want to inspect, with additional specifications as needed, according to the type. You specify a single request component in <code>FieldToMatch</code> for each rule statement that requires it. To inspect more than one component of the web request, create a separate rule statement for each component.</p> <p>Example JSON for a <code>QueryString</code> field to match: </p> <p> <code> \"FieldToMatch\": { \"QueryString\": {} }</code> </p> <p>Example JSON for a <code>Method</code> field to match specification:</p> <p> <code> \"FieldToMatch\": { \"Method\": { \"Name\": \"DELETE\" } }</code> </p>"
@@ -2933,7 +3007,7 @@
           "documentation":"<p>What WAF should do if the headers of the request are more numerous or larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Inspect a string containing the list of the request's header names, ordered as they appear in the web request that WAF receives for inspection. WAF generates the string and then uses that as the field to match component in its inspection. WAF separates the header names in the string using colons and no added spaces, for example <code>Host:User-Agent:Accept:Authorization:Referer</code>.</p> <p>Matches against the header order string are case insensitive.</p>"
+      "documentation":"<p>Inspect a string containing the list of the request's header names, ordered as they appear in the web request that WAF receives for inspection. WAF generates the string and then uses that as the field to match component in its inspection. WAF separates the header names in the string using commas and no added spaces.</p> <p>Matches against the header order string are case insensitive.</p>"
     },
     "HeaderValue":{"type":"string"},
     "Headers":{
@@ -3287,7 +3361,7 @@
       "members":{
         "VendorName":{
           "shape":"VendorName",
-          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.</p>"
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
         },
         "Name":{
           "shape":"EntityName",
@@ -3701,6 +3775,52 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "ManagedProductDescriptor":{
+      "type":"structure",
+      "members":{
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
+        },
+        "ManagedRuleSetName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the managed rule group. For example, <code>AWSManagedRulesAnonymousIpList</code> or <code>AWSManagedRulesATPRuleSet</code>.</p>"
+        },
+        "ProductId":{
+          "shape":"ProductId",
+          "documentation":"<p>A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.</p>"
+        },
+        "ProductLink":{
+          "shape":"ProductLink",
+          "documentation":"<p>For Amazon Web Services Marketplace managed rule groups only, the link to the rule group product page. </p>"
+        },
+        "ProductTitle":{
+          "shape":"ProductTitle",
+          "documentation":"<p>The display name for the managed rule group. For example, <code>Anonymous IP list</code> or <code>Account takeover prevention</code>.</p>"
+        },
+        "ProductDescription":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A short description of the managed rule group.</p>"
+        },
+        "SnsTopicArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that's used to provide notification of changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/welcome.html\">Amazon Simple Notification Service Developer Guide</a>.</p>"
+        },
+        "IsVersioningSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the rule group is versioned. </p>"
+        },
+        "IsAdvancedManagedRuleSet":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the rule group provides an advanced set of protections, such as the the Amazon Web Services Managed Rules rule groups that are used for WAF intelligent threat mitigation. </p>"
+        }
+      },
+      "documentation":"<p>The properties of a managed product, such as an Amazon Web Services Managed Rules rule group or an Amazon Web Services Marketplace managed rule group. </p>"
+    },
+    "ManagedProductDescriptors":{
+      "type":"list",
+      "member":{"shape":"ManagedProductDescriptor"}
+    },
     "ManagedRuleGroupConfig":{
       "type":"structure",
       "members":{
@@ -3752,7 +3872,7 @@
       "members":{
         "VendorName":{
           "shape":"VendorName",
-          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.</p>"
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
         },
         "Name":{
           "shape":"EntityName",
@@ -3790,7 +3910,7 @@
       "members":{
         "VendorName":{
           "shape":"VendorName",
-          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.</p>"
+          "documentation":"<p>The name of the managed rule group vendor. You use this, along with the rule group name, to identify a rule group.</p>"
         },
         "Name":{
           "shape":"EntityName",
@@ -3805,7 +3925,7 @@
           "documentation":"<p>The description of the managed rule group, provided by Amazon Web Services Managed Rules or the Amazon Web Services Marketplace seller who manages it.</p>"
         }
       },
-      "documentation":"<p>High-level information about a managed rule group, returned by <a>ListAvailableManagedRuleGroups</a>. This provides information like the name and vendor name, that you provide when you add a <a>ManagedRuleGroupStatement</a> to a web ACL. Managed rule groups include Amazon Web Services Managed Rules rule groups, which are free of charge to WAF customers, and Amazon Web Services Marketplace managed rule groups, which you can subscribe to through Amazon Web Services Marketplace. </p>"
+      "documentation":"<p>High-level information about a managed rule group, returned by <a>ListAvailableManagedRuleGroups</a>. This provides information like the name and vendor name, that you provide when you add a <a>ManagedRuleGroupStatement</a> to a web ACL. Managed rule groups include Amazon Web Services Managed Rules rule groups and Amazon Web Services Marketplace managed rule groups. To use any Amazon Web Services Marketplace managed rule group, first subscribe to the rule group through Amazon Web Services Marketplace. </p>"
     },
     "ManagedRuleGroupVersion":{
       "type":"structure",
@@ -4151,6 +4271,28 @@
         "CONTAINS",
         "CONTAINS_WORD"
       ]
+    },
+    "ProductDescription":{
+      "type":"string",
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ProductId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ProductLink":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ProductTitle":{
+      "type":"string",
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "PublishedVersions":{
       "type":"map",
@@ -5829,11 +5971,11 @@
       "members":{
         "SampledRequestsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>A boolean indicating whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. </p>"
+          "documentation":"<p>Indicates whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. </p>"
         },
         "CloudWatchMetricsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>A boolean indicating whether the associated resource sends metrics to Amazon CloudWatch. For the list of available metrics, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#waf-metrics\">WAF Metrics</a> in the <i>WAF Developer Guide</i>.</p> <p>For web ACLs, the metrics are for web requests that have the web ACL default action applied. WAF applies the default action to web requests that pass the inspection of all rules in the web ACL without being either allowed or blocked. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-default-action.html\">The web ACL default action</a> in the <i>WAF Developer Guide</i>.</p>"
+          "documentation":"<p>Indicates whether the associated resource sends metrics to Amazon CloudWatch. For the list of available metrics, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#waf-metrics\">WAF Metrics</a> in the <i>WAF Developer Guide</i>.</p> <p>For web ACLs, the metrics are for web requests that have the web ACL default action applied. WAF applies the default action to web requests that pass the inspection of all rules in the web ACL without being either allowed or blocked. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-default-action.html\">The web ACL default action</a> in the <i>WAF Developer Guide</i>.</p>"
         },
         "MetricName":{
           "shape":"MetricName",

@@ -4011,11 +4011,11 @@
       "members":{
         "CredentialPair":{
           "shape":"AssetBundleImportJobDataSourceCredentialPair",
-          "documentation":"<p>A username and password credential pair to be used to create the imported data source. Leave this field blank if you are using an Secrets Manager Secret to provide credentials.</p>"
+          "documentation":"<p>A username and password credential pair to be used to create the imported data source. Keep this field blank if you are using a Secrets Manager secret to provide credentials.</p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The ARN of the Secrets Manager Secret to be used to create the imported data source leave this field blank if you aren't using a Secret in place of a credential pair.</p>"
+          "documentation":"<p>The ARN of the Secrets Manager secret that's used to create the imported data source. Keep this field blank, unless you are using a secret in place of a credential pair.</p>"
         }
       },
       "documentation":"<p>The login credentials to use to import a data source resource.</p>"
@@ -4125,7 +4125,7 @@
         },
         "StartAfterDateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>An override for the <code>StartAfterDateTime</code> of a <code>RefreshSchedule</code> to ensure that the <code>StartAfterDateTime</code> is set to a time that takes place in the future.</p>"
+          "documentation":"<p>An override for the <code>StartAfterDateTime</code> of a <code>RefreshSchedule</code>. Make sure that the <code>StartAfterDateTime</code> is set to a time that takes place in the future.</p>"
         }
       },
       "documentation":"<p>A list of overrides for a specific <code>RefreshsSchedule</code> resource that is present in the asset bundle that is imported.</p>"
@@ -4144,7 +4144,7 @@
           "documentation":"<p>An option to request a CloudFormation variable for a prefix to be prepended to each resource's ID before import. The prefix is only added to the asset IDs and does not change the name of the asset.</p>"
         }
       },
-      "documentation":"<p>An optional structure that configures resource ID overrides for the import job</p>"
+      "documentation":"<p>An optional structure that configures resource ID overrides for the import job.</p>"
     },
     "AssetBundleImportJobStatus":{
       "type":"string",
@@ -4223,15 +4223,15 @@
         },
         "SubnetIds":{
           "shape":"SubnetIdList",
-          "documentation":"<p>A list of new subnet IDs for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or region.</p>"
+          "documentation":"<p>A list of new subnet IDs for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or Region.</p>"
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdList",
-          "documentation":"<p>A new security group ID for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or region.</p>"
+          "documentation":"<p>A new security group ID for the VPC connection you are importing. This field is required if you are importing the VPC connection from another Amazon Web Services account or Region.</p>"
         },
         "DnsResolvers":{
           "shape":"DnsResolverList",
-          "documentation":"<p>An optional override of dns resolvers to be used by the VPC connection.</p>"
+          "documentation":"<p>An optional override of DNS resolvers to be used by the VPC connection.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",
@@ -4251,11 +4251,11 @@
       "members":{
         "Body":{
           "shape":"AssetBundleImportBodyBlob",
-          "documentation":"<p>The bytes of the Base64 encoded asset bundle import zip file. This file can't exceed 20MB.</p> <p>If you are calling the APIs from the Amazon Web Services Java, JavaScript, Python, or PHP SDKs, the SDK encodes Base64 automatically to allow the direct setting of the zip file's bytes. If you are using a SDK of a different language or are receiving related errors, try to Base64 encode your data.</p>"
+          "documentation":"<p>The bytes of the base64 encoded asset bundle import zip file. This file can't exceed 20 MB.</p> <p>If you are calling the API operations from the Amazon Web Services SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow the direct setting of the zip file's bytes. If you are using an SDK for a different language or receiving related errors, try to base64 encode your data.</p>"
         },
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 uri for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20MB.</p>"
+          "documentation":"<p>The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20 MB.</p>"
         }
       },
       "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import.</p>"
@@ -4265,14 +4265,14 @@
       "members":{
         "Body":{
           "shape":"String",
-          "documentation":"<p>A HTTPS download URL for the provided asset bundle that you optionally provided at the start of the import job. This URL is valid for 5 minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed. The downloaded asset bundle is a <code>.qs</code> zip file.</p>"
+          "documentation":"<p>An HTTPS download URL for the provided asset bundle that you optionally provided at the start of the import job. This URL is valid for five minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed. The downloaded asset bundle is a <code>.qs</code> zip file.</p>"
         },
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 uri that you provided at the start of the import job.</p>"
+          "documentation":"<p>The Amazon S3 URI that you provided at the start of the import job.</p>"
         }
       },
-      "documentation":"<p>A description of the import source that you provide at the start of an import job. This value is set to either <code>Body</code> or <code>S3Uri</code> depending on how the <code>StartAssetBundleImportJobRequest</code> is configured.</p>"
+      "documentation":"<p>A description of the import source that you provide at the start of an import job. This value is set to either <code>Body</code> or <code>S3Uri</code>, depending on how the <code>StartAssetBundleImportJobRequest</code> is configured.</p>"
     },
     "AssetBundleResourceArns":{
       "type":"list",
@@ -11299,7 +11299,7 @@
       "members":{
         "JobStatus":{
           "shape":"AssetBundleExportJobStatus",
-          "documentation":"<p>Indicates tha status of a job through its queueing and execution.</p> <p>Poll this <code>DescribeAssetBundleExportApi</code> until <code>JobStatus</code> is either <code>SUCCESSFUL</code> or <code>FAILED</code>.</p>"
+          "documentation":"<p>Indicates the status of a job through its queuing and execution.</p> <p>Poll this <code>DescribeAssetBundleExportApi</code> until <code>JobStatus</code> is either <code>SUCCESSFUL</code> or <code>FAILED</code>.</p>"
         },
         "DownloadUrl":{
           "shape":"String",
@@ -11378,7 +11378,7 @@
       "members":{
         "JobStatus":{
           "shape":"AssetBundleImportJobStatus",
-          "documentation":"<p>Indicates tha status of a job through its queueing and execution.</p> <p>Poll this <code>DescribeAssetBundleImport</code> API until <code>JobStatus</code> returns one of the following values.</p> <ul> <li> <p> <code>SUCCESSFUL</code> </p> </li> <li> <p> <code>FAILED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_COMPLETED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_ERROR</code> </p> </li> </ul>"
+          "documentation":"<p>Indicates the status of a job through its queuing and execution.</p> <p>Poll the <code>DescribeAssetBundleImport</code> API until <code>JobStatus</code> returns one of the following values:</p> <ul> <li> <p> <code>SUCCESSFUL</code> </p> </li> <li> <p> <code>FAILED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_COMPLETED</code> </p> </li> <li> <p> <code>FAILED_ROLLBACK_ERROR</code> </p> </li> </ul>"
         },
         "Errors":{
           "shape":"AssetBundleImportJobErrorList",
@@ -20623,6 +20623,10 @@
         "Scope":{
           "shape":"PivotTableConditionalFormattingScope",
           "documentation":"<p>The scope of the cell for conditional formatting.</p>"
+        },
+        "Scopes":{
+          "shape":"PivotTableConditionalFormattingScopeList",
+          "documentation":"<p>A list of cell scopes for conditional formatting.</p>"
         }
       },
       "documentation":"<p>The cell conditional formatting option for a pivot table.</p>"
@@ -20661,6 +20665,11 @@
         }
       },
       "documentation":"<p>The scope of the cell for conditional formatting.</p>"
+    },
+    "PivotTableConditionalFormattingScopeList":{
+      "type":"list",
+      "member":{"shape":"PivotTableConditionalFormattingScope"},
+      "max":3
     },
     "PivotTableConditionalFormattingScopeRole":{
       "type":"string",
@@ -20725,6 +20734,46 @@
       "member":{"shape":"DimensionField"},
       "max":40
     },
+    "PivotTableFieldCollapseState":{
+      "type":"string",
+      "enum":[
+        "COLLAPSED",
+        "EXPANDED"
+      ]
+    },
+    "PivotTableFieldCollapseStateOption":{
+      "type":"structure",
+      "required":["Target"],
+      "members":{
+        "Target":{
+          "shape":"PivotTableFieldCollapseStateTarget",
+          "documentation":"<p>A tagged-union object that sets the collapse state.</p>"
+        },
+        "State":{
+          "shape":"PivotTableFieldCollapseState",
+          "documentation":"<p>The state of the field target of a pivot table. Choose one of the following options:</p> <ul> <li> <p> <code>COLLAPSED</code> </p> </li> <li> <p> <code>EXPANDED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The collapse state options for the pivot table field options.</p>"
+    },
+    "PivotTableFieldCollapseStateOptionList":{
+      "type":"list",
+      "member":{"shape":"PivotTableFieldCollapseStateOption"}
+    },
+    "PivotTableFieldCollapseStateTarget":{
+      "type":"structure",
+      "members":{
+        "FieldId":{
+          "shape":"String",
+          "documentation":"<p>The field ID of the pivot table that the collapse state needs to be set to.</p>"
+        },
+        "FieldDataPathValues":{
+          "shape":"DataPathValueList",
+          "documentation":"<p>The data path of the pivot table's header. Used to set the collapse state.</p>"
+        }
+      },
+      "documentation":"<p>The target of a pivot table field collapse state.</p>"
+    },
     "PivotTableFieldOption":{
       "type":"structure",
       "required":["FieldId"],
@@ -20759,6 +20808,10 @@
         "DataPathOptions":{
           "shape":"PivotTableDataPathOptionList",
           "documentation":"<p>The data path options for the pivot table field options.</p>"
+        },
+        "CollapseStateOptions":{
+          "shape":"PivotTableFieldCollapseStateOptionList",
+          "documentation":"<p>The collapse state options for the pivot table field options.</p>"
         }
       },
       "documentation":"<p>The field options for a pivot table visual.</p>"
@@ -21258,6 +21311,14 @@
       },
       "documentation":"<p>The configured style settings of a radar chart.</p>"
     },
+    "RadarChartAxesRangeScale":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "INDEPENDENT",
+        "SHARED"
+      ]
+    },
     "RadarChartCategoryFieldList":{
       "type":"list",
       "member":{"shape":"DimensionField"},
@@ -21326,6 +21387,10 @@
         "Legend":{
           "shape":"LegendOptions",
           "documentation":"<p>The legend display setup of the visual.</p>"
+        },
+        "AxesRangeScale":{
+          "shape":"RadarChartAxesRangeScale",
+          "documentation":"<p>The axis behavior options of a radar chart.</p>"
         }
       },
       "documentation":"<p>The configuration of a <code>RadarChartVisual</code>.</p>"
@@ -23961,7 +24026,7 @@
         },
         "IncludeAllDependencies":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean that determines whether all dependencies of each resource ARN are recursively exported with the job. For example, say you provided a Dashboard ARN to the <code>ResourceArns</code> parameter. If you set <code>IncludeAllDependencies</code> to <code>TRUE</code>, any theme, dataset, and dataource resource that is a dependency of the dashboard is also exported.</p>"
+          "documentation":"<p>A Boolean that determines whether all dependencies of each resource ARN are recursively exported with the job. For example, say you provided a Dashboard ARN to the <code>ResourceArns</code> parameter. If you set <code>IncludeAllDependencies</code> to <code>TRUE</code>, any theme, dataset, and data source resource that is a dependency of the dashboard is also exported.</p>"
         },
         "ExportFormat":{
           "shape":"AssetBundleExportFormat",
@@ -24023,7 +24088,7 @@
         },
         "FailureAction":{
           "shape":"AssetBundleImportFailureAction",
-          "documentation":"<p>The failure action for the import job.</p> <p>If you choose <code>ROLLBACK</code>, failed import jobs will attempt to undo any asset changes caused by the failed job.</p> <p>If you choose <code>DO_NOTHING</code>, failed import jobs will not attempt to roll back any asset changes caused by the failed job, possibly leaving the Amazon QuickSight account in an inconsistent state.</p>"
+          "documentation":"<p>The failure action for the import job.</p> <p>If you choose <code>ROLLBACK</code>, failed import jobs will attempt to undo any asset changes caused by the failed job.</p> <p>If you choose <code>DO_NOTHING</code>, failed import jobs will not attempt to roll back any asset changes caused by the failed job, possibly keeping the Amazon QuickSight account in an inconsistent state.</p>"
         }
       }
     },

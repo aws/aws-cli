@@ -4974,7 +4974,7 @@
         },
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>ImageClassification: <code>image/png</code>, <code>image/jpeg</code>, or <code>image/*</code>. The default value is <code>image/*</code>.</p> </li> <li> <p>TextClassification: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> </ul>"
+          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>ImageClassification: <code>image/png</code>, <code>image/jpeg</code>, <code>image/*</code> </p> </li> <li> <p>TextClassification: <code>text/csv;header=present</code> </p> </li> </ul>"
         },
         "CompressionType":{
           "shape":"CompressionType",
@@ -13794,6 +13794,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>The parallelism configuration applied to the pipeline.</p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       }
     },
@@ -26834,6 +26838,10 @@
         "PipelineParameters":{
           "shape":"ParameterList",
           "documentation":"<p>Contains a list of pipeline parameters. This list can be empty. </p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       },
       "documentation":"<p>An execution of a pipeline.</p>"
@@ -26912,6 +26920,10 @@
         "Metadata":{
           "shape":"PipelineExecutionStepMetadata",
           "documentation":"<p>Metadata to run the pipeline step.</p>"
+        },
+        "SelectiveExecutionResult":{
+          "shape":"SelectiveExecutionResult",
+          "documentation":"<p>The ARN from an execution of the current pipeline from which results are reused for this step.</p>"
         }
       },
       "documentation":"<p>An execution of a step in a pipeline.</p>"
@@ -29772,6 +29784,51 @@
       "max":5
     },
     "Seed":{"type":"long"},
+    "SelectedStep":{
+      "type":"structure",
+      "required":["StepName"],
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the pipeline step.</p>"
+        }
+      },
+      "documentation":"<p>A step selected to run in selective execution mode.</p>"
+    },
+    "SelectedStepList":{
+      "type":"list",
+      "member":{"shape":"SelectedStep"},
+      "max":50,
+      "min":1
+    },
+    "SelectiveExecutionConfig":{
+      "type":"structure",
+      "required":[
+        "SourcePipelineExecutionArn",
+        "SelectedSteps"
+      ],
+      "members":{
+        "SourcePipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p>"
+        },
+        "SelectedSteps":{
+          "shape":"SelectedStepList",
+          "documentation":"<p>A list of pipeline steps to run. All step(s) in all path(s) between two selected steps should be included.</p>"
+        }
+      },
+      "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
+    },
+    "SelectiveExecutionResult":{
+      "type":"structure",
+      "members":{
+        "SourcePipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The ARN from an execution of the current pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The ARN from an execution of the current pipeline.</p>"
+    },
     "SendPipelineExecutionStepFailureRequest":{
       "type":"structure",
       "required":["CallbackToken"],
@@ -30311,6 +30368,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>This configuration, if specified, overrides the parallelism configuration of the parent pipeline for this specific run.</p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       }
     },

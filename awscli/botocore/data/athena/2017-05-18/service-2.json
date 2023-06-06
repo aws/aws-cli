@@ -66,7 +66,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Cancels the capacity reservation with the specified name.</p>",
+      "documentation":"<p>Cancels the capacity reservation with the specified name. Cancelled reservations remain in your account and will be deleted 45 days after cancellation. During the 45 days, you cannot re-purpose or reuse a reservation that has been cancelled, but you can refer to its tags and view it for historical reference. </p>",
       "idempotent":true
     },
     "CreateCapacityReservation":{
@@ -170,6 +170,21 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Creates a workgroup with the specified name. A workgroup can be an Apache Spark enabled workgroup or an Athena SQL workgroup.</p>"
+    },
+    "DeleteCapacityReservation":{
+      "name":"DeleteCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCapacityReservationInput"},
+      "output":{"shape":"DeleteCapacityReservationOutput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a cancelled capacity reservation. A reservation must be cancelled before it can be deleted. A deleted reservation is immediately removed from your account and can no longer be referenced, including by its ARN. A deleted reservation cannot be called by <code>GetCapacityReservation</code>, and deleted reservations do not appear in the output of <code>ListCapacityReservations</code>.</p>",
+      "idempotent":true
     },
     "DeleteDataCatalog":{
       "name":"DeleteDataCatalog",
@@ -1855,6 +1870,21 @@
       "max":1,
       "min":1
     },
+    "DeleteCapacityReservationInput":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"CapacityReservationName",
+          "documentation":"<p>The name of the capacity reservation to delete.</p>"
+        }
+      }
+    },
+    "DeleteCapacityReservationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteDataCatalogInput":{
       "type":"structure",
       "required":["Name"],
@@ -3524,7 +3554,7 @@
         },
         "ExecutionParameters":{
           "shape":"ExecutionParameters",
-          "documentation":"<p>A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur.</p>"
+          "documentation":"<p>A list of values for the parameters in a query. The values are applied sequentially to the parameters in the query in the order in which the parameters occur. The list of parameters is not returned in the response.</p>"
         },
         "SubstatementType":{
           "shape":"String",

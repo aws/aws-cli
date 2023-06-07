@@ -150,11 +150,12 @@
       },
       "input":{"shape":"CreateAccountAliasRequest"},
       "errors":[
+        {"shape":"ConcurrentModificationException"},
         {"shape":"EntityAlreadyExistsException"},
         {"shape":"LimitExceededException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Creates an alias for your Amazon Web Services account. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html\">Using an alias for your Amazon Web Services account ID</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p>Creates an alias for your Amazon Web Services account. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
     },
     "CreateGroup":{
       "name":"CreateGroup",
@@ -406,7 +407,8 @@
         {"shape":"EntityTemporarilyUnmodifiableException"},
         {"shape":"NoSuchEntityException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ServiceFailureException"}
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deactivates the specified MFA device and removes it from association with the user name for which it was originally enabled.</p> <p>For more information about creating and working with virtual MFA devices, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_VirtualMFA.html\">Enabling a virtual multi-factor authentication (MFA) device</a> in the <i>IAM User Guide</i>.</p>"
     },
@@ -432,11 +434,12 @@
       },
       "input":{"shape":"DeleteAccountAliasRequest"},
       "errors":[
+        {"shape":"ConcurrentModificationException"},
         {"shape":"NoSuchEntityException"},
         {"shape":"LimitExceededException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p> Deletes the specified Amazon Web Services account alias. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html\">Using an alias for your Amazon Web Services account ID</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p> Deletes the specified Amazon Web Services account alias. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
     },
     "DeleteAccountPasswordPolicy":{
       "name":"DeleteAccountPasswordPolicy",
@@ -684,6 +687,7 @@
       "errors":[
         {"shape":"NoSuchEntityException"},
         {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Deletes a signing certificate associated with the specified IAM user.</p> <p>If you do not specify a user name, IAM determines the user name implicitly based on the Amazon Web Services access key ID signing the request. This operation works for access keys under the Amazon Web Services account. Consequently, you can use this operation to manage Amazon Web Services account root user credentials even if the Amazon Web Services account has no associated IAM users.</p>"
@@ -742,7 +746,8 @@
         {"shape":"NoSuchEntityException"},
         {"shape":"DeleteConflictException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ServiceFailureException"}
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes a virtual MFA device.</p> <note> <p> You must deactivate a user's virtual MFA device before you can delete it. For information about deactivating MFA devices, see <a>DeactivateMFADevice</a>. </p> </note>"
     },
@@ -805,7 +810,8 @@
         {"shape":"InvalidAuthenticationCodeException"},
         {"shape":"LimitExceededException"},
         {"shape":"NoSuchEntityException"},
-        {"shape":"ServiceFailureException"}
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Enables the specified MFA device and associates it with the specified IAM user. When enabled, the MFA device is required for every subsequent login by the IAM user associated with the device.</p>"
     },
@@ -1313,7 +1319,7 @@
       "errors":[
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Lists the account alias associated with the Amazon Web Services account (Note: you can have only one). For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html\">Using an alias for your Amazon Web Services account ID</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p>Lists the account alias associated with the Amazon Web Services account (Note: you can have only one). For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
     },
     "ListAttachedGroupPolicies":{
       "name":"ListAttachedGroupPolicies",
@@ -2002,7 +2008,8 @@
         {"shape":"InvalidAuthenticationCodeException"},
         {"shape":"NoSuchEntityException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ServiceFailureException"}
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Synchronizes the specified MFA device with its IAM resource object on the Amazon Web Services servers.</p> <p>For more information about creating and working with virtual MFA devices, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_VirtualMFA.html\">Using a virtual MFA device</a> in the <i>IAM User Guide</i>.</p>"
     },
@@ -2589,6 +2596,7 @@
         {"shape":"InvalidCertificateException"},
         {"shape":"DuplicateCertificateException"},
         {"shape":"NoSuchEntityException"},
+        {"shape":"ConcurrentModificationException"},
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Uploads an X.509 signing certificate and associates it with the specified IAM user. Some Amazon Web Services services require you to use certificates to validate requests that are signed with a corresponding private key. When you upload the certificate, its default status is <code>Active</code>.</p> <p>For information about when you would use an X.509 signing certificate, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html\">Managing server certificates in IAM</a> in the <i>IAM User Guide</i>.</p> <p>If the <code>UserName</code> is not specified, the IAM user name is determined implicitly based on the Amazon Web Services access key ID used to sign the request. This operation works for access keys under the Amazon Web Services account. Consequently, you can use this operation to manage Amazon Web Services account root user credentials even if the Amazon Web Services account has no associated users.</p> <note> <p>Because the body of an X.509 certificate can be large, you should use POST rather than GET when calling <code>UploadSigningCertificate</code>. For information about setting up signatures and authorization through the API, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html\">Signing Amazon Web Services API requests</a> in the <i>Amazon Web Services General Reference</i>. For general information about using the Query API with IAM, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\">Making query requests</a> in the <i>IAM User Guide</i>.</p> </note>"
@@ -8545,7 +8553,7 @@
         },
         "Base32StringSeed":{
           "shape":"BootstrapDatum",
-          "documentation":"<p> The base32 seed defined as specified in <a href=\"https://tools.ietf.org/html/rfc3548.txt\">RFC3548</a>. The <code>Base32StringSeed</code> is base64-encoded. </p>"
+          "documentation":"<p> The base32 seed defined as specified in <a href=\"https://tools.ietf.org/html/rfc3548.txt\">RFC3548</a>. The <code>Base32StringSeed</code> is base32-encoded. </p>"
         },
         "QRCodePNG":{
           "shape":"BootstrapDatum",
@@ -8589,7 +8597,7 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"^[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?$"
+      "pattern":"^[a-z0-9]([a-z0-9]|-(?!-)){1,61}[a-z0-9]$"
     },
     "arnType":{
       "type":"string",
@@ -8827,7 +8835,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"(\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F)"
+      "pattern":"(\\u002F)|(\\u002F[\\u0021-\\u007E]+\\u002F)"
     },
     "policyDescriptionType":{
       "type":"string",
@@ -8931,7 +8939,7 @@
     "roleDescriptionType":{
       "type":"string",
       "max":1000,
-      "pattern":"[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}]*"
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
     },
     "roleDetailListType":{
       "type":"list",

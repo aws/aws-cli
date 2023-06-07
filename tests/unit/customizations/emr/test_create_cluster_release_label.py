@@ -1512,5 +1512,24 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
              }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_spot_allocation_strategy(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY +
+               ' --ec2-attributes AvailabilityZones=[us-east-1a,us-east-1b]')
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY,
+                              'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
+                            },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
 if __name__ == "__main__":
     unittest.main()

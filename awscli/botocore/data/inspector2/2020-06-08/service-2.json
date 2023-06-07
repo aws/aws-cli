@@ -1506,6 +1506,26 @@
       "max":5,
       "min":1
     },
+    "CoverageDateFilter":{
+      "type":"structure",
+      "members":{
+        "endInclusive":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>A timestamp representing the end of the time period to filter results by.</p>"
+        },
+        "startInclusive":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>A timestamp representing the start of the time period to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Contains details of a coverage date filter.</p>"
+    },
+    "CoverageDateFilterList":{
+      "type":"list",
+      "member":{"shape":"CoverageDateFilter"},
+      "max":10,
+      "min":1
+    },
     "CoverageFilterCriteria":{
       "type":"structure",
       "members":{
@@ -1537,13 +1557,17 @@
           "shape":"CoverageMapFilterList",
           "documentation":"<p>Returns coverage statistics for AWS Lambda functions filtered by tag.</p>"
         },
+        "lastScannedAt":{
+          "shape":"CoverageDateFilterList",
+          "documentation":"<p>Filters Amazon Web Services resources based on whether Amazon Inspector has checked them for vulnerabilities within the specified time range.</p>"
+        },
         "resourceId":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>An array of Amazon Web Services resource IDs to return coverage statistics for.</p>"
         },
         "resourceType":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
+          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -1649,6 +1673,10 @@
         "accountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID of the covered resource.</p>"
+        },
+        "lastScannedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the resource was last checked for vulnerabilities.</p>"
         },
         "resourceId":{
           "shape":"ResourceId",

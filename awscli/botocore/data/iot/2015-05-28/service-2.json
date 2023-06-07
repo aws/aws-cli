@@ -353,7 +353,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action. </p> <note> <p>The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-25 or NIST P-384 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>. </p> </note> <note> <p>Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> </note> <p>You can create multiple certificates in a batch by creating a directory, copying multiple <code>.csr</code> files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs. In the following commands, we assume that a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is: </p> <p> <code>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</code> </p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the <code>aws iot create-certificate-from-csr</code> Amazon Web Services CLI command to create a certificate for the corresponding CSR. </p> <p>You can also run the <code>aws iot create-certificate-from-csr</code> part of the command in parallel to speed up the certificate creation process:</p> <p> <code>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{} </code> </p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_} </code> </p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\" </code> </p>"
+      "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action. </p> <note> <p>The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-256 or NIST P-384 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>. </p> </note> <note> <p>Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> </note> <p>You can create multiple certificates in a batch by creating a directory, copying multiple <code>.csr</code> files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs. In the following commands, we assume that a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is: </p> <p> <code>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</code> </p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the <code>aws iot create-certificate-from-csr</code> Amazon Web Services CLI command to create a certificate for the corresponding CSR. </p> <p>You can also run the <code>aws iot create-certificate-from-csr</code> part of the command in parallel to speed up the certificate creation process:</p> <p> <code>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{} </code> </p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_} </code> </p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\" </code> </p>"
     },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
@@ -540,6 +540,44 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates an IoT OTA update on a target group of things or groups.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateOTAUpdate</a> action.</p>"
+    },
+    "CreatePackage":{
+      "name":"CreatePackage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/packages/{packageName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreatePackageRequest"},
+      "output":{"shape":"CreatePackageResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an IoT software package that can be deployed to your fleet.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreatePackage</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetIndexingConfiguration</a> actions.</p>",
+      "idempotent":true
+    },
+    "CreatePackageVersion":{
+      "name":"CreatePackageVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/packages/{packageName}/versions/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreatePackageVersionRequest"},
+      "output":{"shape":"CreatePackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new version for an existing IoT software package.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreatePackageVersion</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetIndexingConfiguration</a> actions.</p>",
+      "idempotent":true
     },
     "CreatePolicy":{
       "name":"CreatePolicy",
@@ -1060,6 +1098,40 @@
         {"shape":"VersionConflictException"}
       ],
       "documentation":"<p>Delete an OTA update.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeleteOTAUpdate</a> action.</p>"
+    },
+    "DeletePackage":{
+      "name":"DeletePackage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/packages/{packageName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePackageRequest"},
+      "output":{"shape":"DeletePackageResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a specific version from a software package.</p> <p> <b>Note:</b> All package versions must be deleted before deleting the software package.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeletePackageVersion</a> action.</p>",
+      "idempotent":true
+    },
+    "DeletePackageVersion":{
+      "name":"DeletePackageVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/packages/{packageName}/versions/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePackageVersionRequest"},
+      "output":{"shape":"DeletePackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a specific version from a software package.</p> <p> <b>Note:</b> If a package version is designated as default, you must remove the designation from the package using the <a>UpdatePackage</a> action.</p>",
+      "idempotent":true
     },
     "DeletePolicy":{
       "name":"DeletePolicy",
@@ -2133,6 +2205,55 @@
       ],
       "documentation":"<p>Gets an OTA update.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetOTAUpdate</a> action.</p>"
     },
+    "GetPackage":{
+      "name":"GetPackage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages/{packageName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPackageRequest"},
+      "output":{"shape":"GetPackageResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets information about the specified software package.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetPackage</a> action.</p>"
+    },
+    "GetPackageConfiguration":{
+      "name":"GetPackageConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/package-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPackageConfigurationRequest"},
+      "output":{"shape":"GetPackageConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about the specified software package's configuration.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetPackageConfiguration</a> action.</p>"
+    },
+    "GetPackageVersion":{
+      "name":"GetPackageVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages/{packageName}/versions/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPackageVersionRequest"},
+      "output":{"shape":"GetPackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets information about the specified package version. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetPackageVersion</a> action.</p>"
+    },
     "GetPercentiles":{
       "name":"GetPercentiles",
       "http":{
@@ -2723,6 +2844,38 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists certificates that are being transferred but not yet accepted.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListOutgoingCertificates</a> action.</p>"
+    },
+    "ListPackageVersions":{
+      "name":"ListPackageVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages/{packageName}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPackageVersionsRequest"},
+      "output":{"shape":"ListPackageVersionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the software package versions associated to the account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPackageVersions</a> action.</p>"
+    },
+    "ListPackages":{
+      "name":"ListPackages",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPackagesRequest"},
+      "output":{"shape":"ListPackagesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the software packages associated to the account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPackages</a> action.</p>"
     },
     "ListPolicies":{
       "name":"ListPolicies",
@@ -3898,6 +4051,59 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates the definition for the specified mitigation action.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateMitigationAction</a> action.</p>"
+    },
+    "UpdatePackage":{
+      "name":"UpdatePackage",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/packages/{packageName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePackageRequest"},
+      "output":{"shape":"UpdatePackageResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the supported fields for a specific package.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdatePackage</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetIndexingConfiguration</a> actions.</p>",
+      "idempotent":true
+    },
+    "UpdatePackageConfiguration":{
+      "name":"UpdatePackageConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/package-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePackageConfigurationRequest"},
+      "output":{"shape":"UpdatePackageConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the package configuration.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdatePackageConfiguration</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\">iam:PassRole</a> actions.</p>",
+      "idempotent":true
+    },
+    "UpdatePackageVersion":{
+      "name":"UpdatePackageVersion",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/packages/{packageName}/versions/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePackageVersionRequest"},
+      "output":{"shape":"UpdatePackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the supported fields for a specific package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdatePackageVersion</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetIndexingConfiguration</a> actions.</p>",
+      "idempotent":true
     },
     "UpdateProvisioningTemplate":{
       "name":"UpdateProvisioningTemplate",
@@ -6081,6 +6287,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9-_]+$"
     },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":36,
+      "pattern":"\\S{36,64}"
+    },
     "CloudwatchAlarmAction":{
       "type":"structure",
       "required":[
@@ -6276,7 +6488,11 @@
     "ConflictException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{"shape":"errorMessage"},
+        "resourceId":{
+          "shape":"resourceId",
+          "documentation":"<p>A resource with the same name already exists.</p>"
+        }
       },
       "documentation":"<p>A resource with the same name already exists.</p>",
       "error":{"httpStatusCode":409},
@@ -6774,7 +6990,7 @@
         },
         "documentSource":{
           "shape":"JobDocumentSource",
-          "documentation":"<p>An S3 link, or S3 object URL, to the job document. The link is an Amazon S3 object URL and is required if you don't specify a value for <code>document</code>.</p> <p>For example, <code>--document-source https://s3.<i>region-code</i>.amazonaws.com/example-firmware/device-firmware.1.0</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html\">Methods for accessing a bucket</a>.</p>"
+          "documentation":"<p>An S3 link, or S3 object URL, to the job document. The link is an Amazon S3 object URL and is required if you don't specify a value for <code>document</code>.</p> <p>For example, <code>--document-source https://s3.<i>region-code</i>.amazonaws.com/example-firmware/device-firmware.1.0</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html\">Methods for accessing a bucket</a>.</p>"
         },
         "document":{
           "shape":"JobDocument",
@@ -6827,6 +7043,10 @@
         "schedulingConfig":{
           "shape":"SchedulingConfig",
           "documentation":"<p>The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.</p>"
+        },
+        "destinationPackageVersions":{
+          "shape":"DestinationPackageVersions",
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
         }
       }
     },
@@ -6891,6 +7111,10 @@
         "maintenanceWindows":{
           "shape":"MaintenanceWindows",
           "documentation":"<p>Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.</p>"
+        },
+        "destinationPackageVersions":{
+          "shape":"DestinationPackageVersions",
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
         }
       }
     },
@@ -7069,6 +7293,123 @@
         "otaUpdateStatus":{
           "shape":"OTAUpdateStatus",
           "documentation":"<p>The OTA update status.</p>"
+        }
+      }
+    },
+    "CreatePackageRequest":{
+      "type":"structure",
+      "required":["packageName"],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A summary of the package being created. This can be used to outline the package's contents or purpose.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Metadata that can be used to manage the package.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreatePackageResponse":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the package.</p>"
+        },
+        "packageArn":{
+          "shape":"PackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the package.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package description.</p>"
+        }
+      }
+    },
+    "CreatePackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A summary of the package version being created. This can be used to outline the package's contents or purpose.</p>"
+        },
+        "attributes":{
+          "shape":"ResourceAttributes",
+          "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the S3 file location, configuration options that are being sent to the device or fleet.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Metadata that can be used to manage the package version.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreatePackageVersionResponse":{
+      "type":"structure",
+      "members":{
+        "packageVersionArn":{
+          "shape":"PackageVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the package.</p>"
+        },
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated package.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package version description.</p>"
+        },
+        "attributes":{
+          "shape":"ResourceAttributes",
+          "documentation":"<p>Metadata that were added to the package version that can be used to define a package version’s configuration.</p>"
+        },
+        "status":{
+          "shape":"PackageVersionStatus",
+          "documentation":"<p>The status of the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "errorReason":{
+          "shape":"PackageVersionErrorReason",
+          "documentation":"<p>Error reason for a package version failure during creation or update.</p>"
         }
       }
     },
@@ -8072,6 +8413,63 @@
       }
     },
     "DeleteOTAUpdateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeletePackageRequest":{
+      "type":"structure",
+      "required":["packageName"],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the target package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeletePackageResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeletePackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the target package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeletePackageVersionResponse":{
       "type":"structure",
       "members":{
       }
@@ -9094,6 +9492,10 @@
         "maintenanceWindows":{
           "shape":"MaintenanceWindows",
           "documentation":"<p>Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.</p>"
+        },
+        "destinationPackageVersions":{
+          "shape":"DestinationPackageVersions",
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
         }
       }
     },
@@ -9665,6 +10067,10 @@
       },
       "documentation":"<p>Describes the location of the updated firmware.</p>"
     },
+    "DestinationPackageVersions":{
+      "type":"list",
+      "member":{"shape":"PackageVersionArn"}
+    },
     "DetachPolicyRequest":{
       "type":"structure",
       "required":[
@@ -10080,7 +10486,7 @@
     "DurationInMinutes":{
       "type":"integer",
       "max":1430,
-      "min":30
+      "min":1
     },
     "DurationSeconds":{"type":"integer"},
     "DynamicGroupStatus":{
@@ -10264,6 +10670,10 @@
       "documentation":"<p>The input for the EnableTopicRuleRequest operation.</p>"
     },
     "Enabled":{"type":"boolean"},
+    "EnabledBoolean":{
+      "type":"boolean",
+      "box":true
+    },
     "EndpointAddress":{"type":"string"},
     "EndpointType":{
       "type":"string",
@@ -10755,6 +11165,123 @@
         "otaUpdateInfo":{
           "shape":"OTAUpdateInfo",
           "documentation":"<p>The OTA update info.</p>"
+        }
+      }
+    },
+    "GetPackageConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetPackageConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "versionUpdateByJobsConfig":{
+          "shape":"VersionUpdateByJobsConfig",
+          "documentation":"<p>The version that is associated to a specific job.</p>"
+        }
+      }
+    },
+    "GetPackageRequest":{
+      "type":"structure",
+      "required":["packageName"],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the target package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        }
+      }
+    },
+    "GetPackageResponse":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the package.</p>"
+        },
+        "packageArn":{
+          "shape":"PackageArn",
+          "documentation":"<p>The ARN for the package.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package description.</p>"
+        },
+        "defaultVersionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the default package version.</p>"
+        },
+        "creationDate":{
+          "shape":"CreationDate",
+          "documentation":"<p>The date the package was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"LastModifiedDate",
+          "documentation":"<p>The date when the package was last updated.</p>"
+        }
+      }
+    },
+    "GetPackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the target package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        }
+      }
+    },
+    "GetPackageVersionResponse":{
+      "type":"structure",
+      "members":{
+        "packageVersionArn":{
+          "shape":"PackageVersionArn",
+          "documentation":"<p>The ARN for the package version.</p>"
+        },
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the package.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the package version.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package version description.</p>"
+        },
+        "attributes":{
+          "shape":"ResourceAttributes",
+          "documentation":"<p>Metadata that were added to the package version that can be used to define a package version’s configuration.</p>"
+        },
+        "status":{
+          "shape":"PackageVersionStatus",
+          "documentation":"<p>The status associated to the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "errorReason":{
+          "shape":"PackageVersionErrorReason",
+          "documentation":"<p>Error reason for a package version failure during creation or update.</p>"
+        },
+        "creationDate":{
+          "shape":"CreationDate",
+          "documentation":"<p>The date when the package version was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"LastModifiedDate",
+          "documentation":"<p>The date when the package version was last updated.</p>"
         }
       }
     },
@@ -11524,6 +12051,10 @@
         "scheduledJobRollouts":{
           "shape":"ScheduledJobRolloutList",
           "documentation":"<p>Displays the next seven maintenance window occurrences and their start times.</p>"
+        },
+        "destinationPackageVersions":{
+          "shape":"DestinationPackageVersions",
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -13212,6 +13743,79 @@
         }
       },
       "documentation":"<p>The output from the ListOutgoingCertificates operation.</p>"
+    },
+    "ListPackageVersionsRequest":{
+      "type":"structure",
+      "required":["packageName"],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the target package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "status":{
+          "shape":"PackageVersionStatus",
+          "documentation":"<p>The status of the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"PackageCatalogMaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPackageVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "packageVersionSummaries":{
+          "shape":"PackageVersionSummaryList",
+          "documentation":"<p>Lists the package versions associated to the package.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListPackagesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"PackageCatalogMaxResults",
+          "documentation":"<p>The maximum number of results returned at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPackagesResponse":{
+      "type":"structure",
+      "members":{
+        "packageSummaries":{
+          "shape":"PackageSummaryList",
+          "documentation":"<p>The software package summary.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results.</p>"
+        }
+      }
     },
     "ListPoliciesRequest":{
       "type":"structure",
@@ -15187,6 +15791,97 @@
       "member":{"shape":"OutgoingCertificate"}
     },
     "OverrideDynamicGroups":{"type":"boolean"},
+    "PackageArn":{"type":"string"},
+    "PackageCatalogMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "PackageName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_.]+"
+    },
+    "PackageSummary":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name for the target package.</p>"
+        },
+        "defaultVersionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the default package version.</p>"
+        },
+        "creationDate":{
+          "shape":"CreationDate",
+          "documentation":"<p>The date that the package was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"LastModifiedDate",
+          "documentation":"<p>The date that the package was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about a software package.</p>"
+    },
+    "PackageSummaryList":{
+      "type":"list",
+      "member":{"shape":"PackageSummary"}
+    },
+    "PackageVersionAction":{
+      "type":"string",
+      "enum":[
+        "PUBLISH",
+        "DEPRECATE"
+      ]
+    },
+    "PackageVersionArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"^arn:[!-~]+$"
+    },
+    "PackageVersionErrorReason":{"type":"string"},
+    "PackageVersionStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PUBLISHED",
+        "DEPRECATED"
+      ]
+    },
+    "PackageVersionSummary":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated software package.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the target package version.</p>"
+        },
+        "status":{
+          "shape":"PackageVersionStatus",
+          "documentation":"<p>The status of the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "creationDate":{
+          "shape":"CreationDate",
+          "documentation":"<p>The date that the package version was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"LastModifiedDate",
+          "documentation":"<p>The date that the package version was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about a package version.</p>"
+    },
+    "PackageVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"PackageVersionSummary"}
+    },
     "PageSize":{
       "type":"integer",
       "max":250,
@@ -16029,6 +16724,29 @@
       "key":{"shape":"ResourceLogicalId"},
       "value":{"shape":"ResourceArn"}
     },
+    "ResourceAttributeKey":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+"
+    },
+    "ResourceAttributeValue":{
+      "type":"string",
+      "min":1,
+      "pattern":"[^\\p{C}]+"
+    },
+    "ResourceAttributes":{
+      "type":"map",
+      "key":{"shape":"ResourceAttributeKey"},
+      "value":{"shape":"ResourceAttributeValue"},
+      "sensitive":true
+    },
+    "ResourceDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[^\\p{C}]+",
+      "sensitive":true
+    },
     "ResourceIdentifier":{
       "type":"structure",
       "members":{
@@ -16568,6 +17286,15 @@
       "pattern":"[\\s\\S]*"
     },
     "ServiceName":{"type":"string"},
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>A limit has been exceeded.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
+    },
     "ServiceType":{
       "type":"string",
       "enum":[
@@ -17244,6 +17971,13 @@
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"}
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":1
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -18317,6 +19051,10 @@
       "exception":true
     },
     "UndoDeprecate":{"type":"boolean"},
+    "UnsetDefaultVersion":{
+      "type":"boolean",
+      "box":true
+    },
     "UnsignedLong":{
       "type":"long",
       "min":0
@@ -18886,6 +19624,108 @@
         }
       }
     },
+    "UpdatePackageConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "versionUpdateByJobsConfig":{
+          "shape":"VersionUpdateByJobsConfig",
+          "documentation":"<p>Configuration to manage job's package version reporting. This updates the thing's reserved named shadow that the job targets.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "UpdatePackageConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdatePackageRequest":{
+      "type":"structure",
+      "required":["packageName"],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the target package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package description.</p>"
+        },
+        "defaultVersionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the default package version.</p> <p> <b>Note:</b> You cannot name a <code>defaultVersion</code> and set <code>unsetDefaultVersion</code> equal to <code>true</code> at the same time.</p>"
+        },
+        "unsetDefaultVersion":{
+          "shape":"UnsetDefaultVersion",
+          "documentation":"<p>Indicates whether you want to remove the named default package version from the software package. Set as <code>true</code> to remove the default package version. </p> <p> <b>Note:</b> You cannot name a <code>defaultVersion</code> and set <code>unsetDefaultVersion</code> equal to <code>true</code> at the same time.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "UpdatePackageResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdatePackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the associated software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the target package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The package version description.</p>"
+        },
+        "attributes":{
+          "shape":"ResourceAttributes",
+          "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the S3 file location, configuration options that are being sent to the device or fleet. </p> <p> <b>Note:</b> Attributes can be updated only when the package version is in a draft state.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
+        },
+        "action":{
+          "shape":"PackageVersionAction",
+          "documentation":"<p>The status that the package version should be assigned. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "UpdatePackageVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateProvisioningTemplateRequest":{
       "type":"structure",
       "required":["templateName"],
@@ -19333,6 +20173,15 @@
       "type":"list",
       "member":{"shape":"ValidationError"}
     },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The request is not valid.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "Value":{
       "type":"string",
       "max":4096,
@@ -19367,7 +20216,27 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "VersionName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_.]+"
+    },
     "VersionNumber":{"type":"long"},
+    "VersionUpdateByJobsConfig":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"EnabledBoolean",
+          "documentation":"<p>Indicates whether the Job is enabled or not.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role that grants permission to the IoT jobs service to update the reserved named shadow when the job successfully completes.</p>"
+        }
+      },
+      "documentation":"<p>Configuration to manage IoT Job's package version reporting. If configured, Jobs updates the thing's reserved named shadow with the package version information up on successful job completion.</p> <p> <b>Note:</b> For each job, the destinationPackageVersions attribute has to be set with the correct data for Jobs to report to the thing shadow. </p>"
+    },
     "VersionsLimitExceededException":{
       "type":"structure",
       "members":{

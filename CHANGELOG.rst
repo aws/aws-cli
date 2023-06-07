@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.27.149
+========
+
+* api-change:``cloudformation``: AWS CloudFormation StackSets is updating the deployment experience for all stackset operations to skip suspended AWS accounts during deployments. StackSets will skip target AWS accounts that are suspended and set the Detailed Status of the corresponding stack instances as SKIPPED_SUSPENDED_ACCOUNT
+* api-change:``customer-profiles``: This release introduces event stream related APIs.
+* api-change:``directconnect``: This update corrects the jumbo frames mtu values from 9100 to 8500 for transit virtual interfaces.
+* api-change:``emr-containers``: EMR on EKS adds support for log rotation of Spark container logs with EMR-6.11.0 onwards, to the StartJobRun API.
+* api-change:``iotdeviceadvisor``: AWS IoT Core Device Advisor now supports new Qualification Suite test case list. With this update, customers can more easily create new qualification test suite with an empty rootGroup input.
+* api-change:``logs``: This change adds support for account level data protection policies using 3 new APIs, PutAccountPolicy, DeleteAccountPolicy and DescribeAccountPolicy. DescribeLogGroup API has been modified to indicate if account level policy is applied to the LogGroup via "inheritedProperties" list in the response.
+
+
 1.27.148
 ========
 

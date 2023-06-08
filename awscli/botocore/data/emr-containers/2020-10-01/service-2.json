@@ -442,6 +442,24 @@
       "documentation":"<p>The information about the container used for a job run or a managed endpoint.</p>",
       "union":true
     },
+    "ContainerLogRotationConfiguration":{
+      "type":"structure",
+      "required":[
+        "rotationSize",
+        "maxFilesToKeep"
+      ],
+      "members":{
+        "rotationSize":{
+          "shape":"RotationSize",
+          "documentation":"<p>The file size at which to rotate logs. Minimum of 2KB, Maximum of 2GB.</p>"
+        },
+        "maxFilesToKeep":{
+          "shape":"MaxFilesToKeep",
+          "documentation":"<p>The number of files to keep in container after rotation.</p>"
+        }
+      },
+      "documentation":"<p>The settings for container log rotation.</p>"
+    },
     "ContainerProvider":{
       "type":"structure",
       "required":[
@@ -1276,7 +1294,7 @@
       "type":"string",
       "max":2048,
       "min":3,
-      "pattern":"^(arn:(aws[a-zA-Z0-9-]*):kms:([a-zA-Z0-9]+-?)+:(\\d{12})?:key\\/[(0-9a-zA-Z)-?]+|\\$\\{[a-zA-Z]\\w*\\})$"
+      "pattern":"^(arn:(aws[a-zA-Z0-9-]*):kms:.+:(\\d{12})?:key\\/[(0-9a-zA-Z)-?]+|\\$\\{[a-zA-Z]\\w*\\})$"
     },
     "KubernetesNamespace":{
       "type":"string",
@@ -1541,6 +1559,11 @@
       "min":1,
       "pattern":"[\\.\\-_/#A-Za-z0-9]+"
     },
+    "MaxFilesToKeep":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
     "MonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -1555,6 +1578,10 @@
         "s3MonitoringConfiguration":{
           "shape":"S3MonitoringConfiguration",
           "documentation":"<p>Amazon S3 configuration for monitoring log publishing.</p>"
+        },
+        "containerLogRotationConfiguration":{
+          "shape":"ContainerLogRotationConfiguration",
+          "documentation":"<p>Enable or disable container log rotation.</p>"
         }
       },
       "documentation":"<p>Configuration setting for monitoring.</p>"
@@ -1703,6 +1730,12 @@
         }
       },
       "documentation":"<p>The current status of the retry policy executed on the job.</p>"
+    },
+    "RotationSize":{
+      "type":"string",
+      "max":12,
+      "min":3,
+      "pattern":"^\\d+(\\.\\d+)?[KMG][Bb]?$"
     },
     "RsiArn":{
       "type":"string",

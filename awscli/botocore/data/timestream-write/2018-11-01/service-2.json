@@ -32,7 +32,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p>Creates a new Timestream batch load task. A batch load task processes data from a CSV source in an S3 location and writes to a Timestream table. A mapping from source to target is defined in a batch load task. Errors and events are written to a report at an S3 location. For the report, if the KMS key is not specified, the batch load task will be encrypted with a Timestream managed KMS key located in your account. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed keys</a>. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. For details, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.create-batch-load.html\">code sample</a>.</p>",
+      "documentation":"<p>Creates a new Timestream batch load task. A batch load task processes data from a CSV source in an S3 location and writes to a Timestream table. A mapping from source to target is defined in a batch load task. Errors and events are written to a report at an S3 location. For the report, if the KMS key is not specified, the report will be encrypted with an S3 managed key when <code>SSE_S3</code> is the option. Otherwise an error is thrown. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk\">Amazon Web Services managed keys</a>. <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html\">Service quotas apply</a>. For details, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.create-batch-load.html\">code sample</a>.</p>",
       "endpointdiscovery":{"required":true}
     },
     "CreateDatabase":{
@@ -649,6 +649,10 @@
         "MagneticStoreWriteProperties":{
           "shape":"MagneticStoreWriteProperties",
           "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
+        },
+        "Schema":{
+          "shape":"Schema",
+          "documentation":"<p> The schema of the table. </p>"
         }
       }
     },
@@ -1164,7 +1168,7 @@
         },
         "Value":{
           "shape":"StringValue2048",
-          "documentation":"<p> The value for the MeasureValue. </p>"
+          "documentation":"<p> The value for the MeasureValue. For information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/writes.html#writes.data-types\">Data types</a>.</p>"
         },
         "Type":{
           "shape":"MeasureValueType",
@@ -1276,6 +1280,44 @@
       "max":20,
       "min":1
     },
+    "PartitionKey":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"PartitionKeyType",
+          "documentation":"<p> The type of the partition key. Options are DIMENSION (dimension key) and MEASURE (measure key). </p>"
+        },
+        "Name":{
+          "shape":"SchemaName",
+          "documentation":"<p> The name of the attribute used for a dimension key. </p>"
+        },
+        "EnforcementInRecord":{
+          "shape":"PartitionKeyEnforcementLevel",
+          "documentation":"<p> The level of enforcement for the specification of a dimension key in ingested records. Options are REQUIRED (dimension key must be specified) and OPTIONAL (dimension key does not have to be specified). </p>"
+        }
+      },
+      "documentation":"<p> An attribute used in partitioning data in a table. A dimension key partitions data using the values of the dimension specified by the dimension-name as partition key, while a measure key partitions data using measure names (values of the 'measure_name' column). </p>"
+    },
+    "PartitionKeyEnforcementLevel":{
+      "type":"string",
+      "enum":[
+        "REQUIRED",
+        "OPTIONAL"
+      ]
+    },
+    "PartitionKeyList":{
+      "type":"list",
+      "member":{"shape":"PartitionKey"},
+      "min":1
+    },
+    "PartitionKeyType":{
+      "type":"string",
+      "enum":[
+        "DIMENSION",
+        "MEASURE"
+      ]
+    },
     "Record":{
       "type":"structure",
       "members":{
@@ -1293,7 +1335,7 @@
         },
         "MeasureValueType":{
           "shape":"MeasureValueType",
-          "documentation":"<p> Contains the data type of the measure value for the time-series data point. Default type is <code>DOUBLE</code>. </p>"
+          "documentation":"<p> Contains the data type of the measure value for the time-series data point. Default type is <code>DOUBLE</code>. For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/writes.html#writes.data-types\">Data types</a>.</p>"
         },
         "Time":{
           "shape":"StringValue256",
@@ -1512,6 +1554,16 @@
         "TIMESTAMP"
       ]
     },
+    "Schema":{
+      "type":"structure",
+      "members":{
+        "CompositePartitionKey":{
+          "shape":"PartitionKeyList",
+          "documentation":"<p>A non-empty list of partition keys defining the attributes used to partition the table data. The order of the list determines the partition hierarchy. The name and type of each partition key as well as the partition key order cannot be changed after the table is created. However, the enforcement level of each partition key can be changed. </p>"
+        }
+      },
+      "documentation":"<p> A Schema specifies the expected data model of the table. </p>"
+    },
     "SchemaName":{
       "type":"string",
       "min":1
@@ -1575,6 +1627,10 @@
         "MagneticStoreWriteProperties":{
           "shape":"MagneticStoreWriteProperties",
           "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
+        },
+        "Schema":{
+          "shape":"Schema",
+          "documentation":"<p> The schema of the table. </p>"
         }
       },
       "documentation":"<p>Represents a database table in Timestream. Tables contain one or more related time series. You can modify the retention duration of the memory store and the magnetic store for a table. </p>"
@@ -1738,6 +1794,10 @@
         "MagneticStoreWriteProperties":{
           "shape":"MagneticStoreWriteProperties",
           "documentation":"<p>Contains properties to set on the table when enabling magnetic store writes.</p>"
+        },
+        "Schema":{
+          "shape":"Schema",
+          "documentation":"<p> The schema of the table. </p>"
         }
       }
     },

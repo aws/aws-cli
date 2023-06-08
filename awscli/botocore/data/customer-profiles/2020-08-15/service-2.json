@@ -64,6 +64,23 @@
       ],
       "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p>"
     },
+    "CreateEventStream":{
+      "name":"CreateEventStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/event-streams/{EventStreamName}"
+      },
+      "input":{"shape":"CreateEventStreamRequest"},
+      "output":{"shape":"CreateEventStreamResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Amazon Connect Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
+    },
     "CreateIntegrationWorkflow":{
       "name":"CreateIntegrationWorkflow",
       "http":{
@@ -131,6 +148,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a specific domain and all of its customer data, such as customer profile attributes and their related objects.</p>"
+    },
+    "DeleteEventStream":{
+      "name":"DeleteEventStream",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/event-streams/{EventStreamName}"
+      },
+      "input":{"shape":"DeleteEventStreamRequest"},
+      "output":{"shape":"DeleteEventStreamResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disables and deletes the specified event stream.</p>",
+      "idempotent":true
     },
     "DeleteIntegration":{
       "name":"DeleteIntegration",
@@ -301,6 +336,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns information about a specific domain.</p>"
+    },
+    "GetEventStream":{
+      "name":"GetEventStream",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/event-streams/{EventStreamName}"
+      },
+      "input":{"shape":"GetEventStreamRequest"},
+      "output":{"shape":"GetEventStreamResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about the specified event stream in a specific domain.</p>"
     },
     "GetIdentityResolutionJob":{
       "name":"GetIdentityResolutionJob",
@@ -488,6 +540,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of all the domains for an AWS account that have been created.</p>"
+    },
+    "ListEventStreams":{
+      "name":"ListEventStreams",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/event-streams"
+      },
+      "input":{"shape":"ListEventStreamsRequest"},
+      "output":{"shape":"ListEventStreamsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of all the event streams in a specific domain.</p>"
     },
     "ListIdentityResolutionJobs":{
       "name":"ListIdentityResolutionJobs",
@@ -1365,6 +1434,50 @@
         }
       }
     },
+    "CreateEventStreamRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Uri",
+        "EventStreamName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Uri":{
+          "shape":"string1To255",
+          "documentation":"<p>The StreamARN of the destination to deliver profile events to. For example, arn:aws:kinesis:region:account-id:stream/stream-name</p>"
+        },
+        "EventStreamName":{
+          "shape":"name",
+          "documentation":"<p>The name of the event stream.</p>",
+          "location":"uri",
+          "locationName":"EventStreamName"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateEventStreamResponse":{
+      "type":"structure",
+      "required":["EventStreamArn"],
+      "members":{
+        "EventStreamArn":{
+          "shape":"string1To255",
+          "documentation":"<p>A unique identifier for the event stream.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "CreateIntegrationWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -1595,6 +1708,32 @@
         }
       }
     },
+    "DeleteEventStreamRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventStreamName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventStreamName":{
+          "shape":"name",
+          "documentation":"<p>The name of the event stream</p>",
+          "location":"uri",
+          "locationName":"EventStreamName"
+        }
+      }
+    },
+    "DeleteEventStreamResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteIntegrationRequest":{
       "type":"structure",
       "required":[
@@ -1790,6 +1929,28 @@
       "max":256,
       "pattern":".*"
     },
+    "DestinationSummary":{
+      "type":"structure",
+      "required":[
+        "Uri",
+        "Status"
+      ],
+      "members":{
+        "Uri":{
+          "shape":"string1To255",
+          "documentation":"<p>The StreamARN of the destination to deliver profile events to. For example, arn:aws:kinesis:region:account-id:stream/stream-name.</p>"
+        },
+        "Status":{
+          "shape":"EventStreamDestinationStatus",
+          "documentation":"<p>The status of enabling the Kinesis stream as a destination for export.</p>"
+        },
+        "UnhealthySince":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the status last changed to <code>UNHEALHY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about the Kinesis data stream</p>"
+    },
     "DomainList":{
       "type":"list",
       "member":{"shape":"ListDomainItem"}
@@ -1821,6 +1982,90 @@
       "type":"double",
       "max":1.0,
       "min":0.0
+    },
+    "EventStreamDestinationDetails":{
+      "type":"structure",
+      "required":[
+        "Uri",
+        "Status"
+      ],
+      "members":{
+        "Uri":{
+          "shape":"string1To255",
+          "documentation":"<p>The StreamARN of the destination to deliver profile events to. For example, arn:aws:kinesis:region:account-id:stream/stream-name.</p>"
+        },
+        "Status":{
+          "shape":"EventStreamDestinationStatus",
+          "documentation":"<p>The status of enabling the Kinesis stream as a destination for export.</p>"
+        },
+        "UnhealthySince":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the status last changed to <code>UNHEALHY</code>.</p>"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>The human-readable string that corresponds to the error or success while enabling the streaming destination.</p>"
+        }
+      },
+      "documentation":"<p>Details of the destination being used for the EventStream.</p>"
+    },
+    "EventStreamDestinationStatus":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
+    },
+    "EventStreamState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "STOPPED"
+      ]
+    },
+    "EventStreamSummary":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventStreamName",
+        "EventStreamArn",
+        "State"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>"
+        },
+        "EventStreamName":{
+          "shape":"name",
+          "documentation":"<p>The name of the event stream.</p>"
+        },
+        "EventStreamArn":{
+          "shape":"string1To255",
+          "documentation":"<p>A unique identifier for the event stream.</p>"
+        },
+        "State":{
+          "shape":"EventStreamState",
+          "documentation":"<p>The operational state of destination stream for export.</p>"
+        },
+        "StoppedSince":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the <code>State</code> changed to <code>STOPPED</code>.</p>"
+        },
+        "DestinationSummary":{
+          "shape":"DestinationSummary",
+          "documentation":"<p>Summary information about the Kinesis data stream.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>An instance of EventStream in a list of EventStreams.</p>"
+    },
+    "EventStreamSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventStreamSummary"}
     },
     "ExportingConfig":{
       "type":"structure",
@@ -2233,6 +2478,67 @@
         "LastUpdatedAt":{
           "shape":"timestamp",
           "documentation":"<p>The timestamp of when the domain was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "GetEventStreamRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventStreamName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventStreamName":{
+          "shape":"name",
+          "documentation":"<p>The name of the event stream provided during create operations.</p>",
+          "location":"uri",
+          "locationName":"EventStreamName"
+        }
+      }
+    },
+    "GetEventStreamResponse":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventStreamArn",
+        "CreatedAt",
+        "State",
+        "DestinationDetails"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>"
+        },
+        "EventStreamArn":{
+          "shape":"string1To255",
+          "documentation":"<p>A unique identifier for the event stream.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the export was created.</p>"
+        },
+        "State":{
+          "shape":"EventStreamState",
+          "documentation":"<p>The operational state of destination stream for export.</p>"
+        },
+        "StoppedSince":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the <code>State</code> changed to <code>STOPPED</code>.</p>"
+        },
+        "DestinationDetails":{
+          "shape":"EventStreamDestinationDetails",
+          "documentation":"<p>Details regarding the Kinesis stream.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -3039,6 +3345,43 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous ListDomains API call.</p>"
+        }
+      }
+    },
+    "ListEventStreamsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>Identifies the next page of results to return.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of objects returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListEventStreamsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"EventStreamSummaryList",
+          "documentation":"<p>Contains summary information about an EventStream.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>Identifies the next page of results to return.</p>"
         }
       }
     },

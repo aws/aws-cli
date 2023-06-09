@@ -1771,7 +1771,7 @@
           "documentation":"<p>The KMS key that is used to encrypt the user's data stores in Athena.</p>"
         }
       },
-      "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena.</p>"
+      "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena. This setting does not apply to Athena SQL workgroups.</p>"
     },
     "DataCatalog":{
       "type":"structure",
@@ -2019,6 +2019,10 @@
         "AdditionalConfigs":{
           "shape":"ParametersMap",
           "documentation":"<p>Contains additional notebook engine <code>MAP&lt;string, string&gt;</code> parameter mappings in the form of key-value pairs. To specify an Athena notebook that the Jupyter server will download and serve, specify a value for the <a>StartSessionRequest$NotebookVersion</a> field, and then add a key named <code>NotebookId</code> to <code>AdditionalConfigs</code> that has the value of the Athena notebook ID.</p>"
+        },
+        "SparkProperties":{
+          "shape":"ParametersMap",
+          "documentation":"<p>Specifies custom jar files and Spark properties for use cases like cluster encryption, table formats, and general Spark tuning.</p>"
         }
       },
       "documentation":"<p>Contains data processing unit (DPU) configuration settings and parameter mappings for a notebook engine.</p>"
@@ -4783,7 +4787,7 @@
         },
         "CustomerContentEncryptionConfiguration":{
           "shape":"CustomerContentEncryptionConfiguration",
-          "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena.</p>"
+          "documentation":"<p>Specifies the KMS key that is used to encrypt the user's data stores in Athena. This setting does not apply to Athena SQL workgroups.</p>"
         },
         "EnableMinimumEncryptionConfiguration":{
           "shape":"BoxedBoolean",
@@ -4825,7 +4829,7 @@
         },
         "RemoveCustomerContentEncryptionConfiguration":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>Removes content encryption configuration for a workgroup.</p>"
+          "documentation":"<p>Removes content encryption configuration from an Apache Spark-enabled Athena workgroup.</p>"
         },
         "AdditionalConfiguration":{
           "shape":"NameString",

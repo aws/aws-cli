@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.11.27
+=======
+
+* api-change:``iotdeviceadvisor``: AWS IoT Core Device Advisor now supports new Qualification Suite test case list. With this update, customers can more easily create new qualification test suite with an empty rootGroup input.
+* api-change:``payment-cryptography``: Initial release of AWS Payment Cryptography Control Plane service for creating and managing cryptographic keys used during card payment processing.
+* api-change:``customer-profiles``: This release introduces event stream related APIs.
+* api-change:``timestream-write``: This release adds the capability for customers to define how their data should be partitioned, optimizing for certain access patterns. This definition will take place as a part of the table creation.
+* api-change:``logs``: This change adds support for account level data protection policies using 3 new APIs, PutAccountPolicy, DeleteAccountPolicy and DescribeAccountPolicy. DescribeLogGroup API has been modified to indicate if account level policy is applied to the LogGroup via "inheritedProperties" list in the response.
+* api-change:``directconnect``: This update corrects the jumbo frames mtu values from 9100 to 8500 for transit virtual interfaces.
+* api-change:``athena``: You can now define custom spark properties at start of the session for use cases like cluster encryption, table formats, and general Spark tuning.
+* api-change:``emr-containers``: EMR on EKS adds support for log rotation of Spark container logs with EMR-6.11.0 onwards, to the StartJobRun API.
+* api-change:``cloudformation``: AWS CloudFormation StackSets is updating the deployment experience for all stackset operations to skip suspended AWS accounts during deployments. StackSets will skip target AWS accounts that are suspended and set the Detailed Status of the corresponding stack instances as SKIPPED_SUSPENDED_ACCOUNT
+* api-change:``payment-cryptography-data``: Initial release of AWS Payment Cryptography DataPlane Plane service for performing cryptographic operations typically used during card payment processing.
+* api-change:``servicecatalog``: New parameter added in ServiceCatalog DescribeProvisioningArtifact api - IncludeProvisioningArtifactParameters. This parameter can be used to return information about the parameters used to provision the product
+* api-change:``comprehendmedical``: This release supports a new set of entities and traits.
+
+
 2.11.26
 =======
 

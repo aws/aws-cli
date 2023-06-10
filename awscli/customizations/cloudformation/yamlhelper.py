@@ -112,7 +112,7 @@ def yaml_parse(yamlstr):
     except ValueError:
         yaml = ruamel.yaml.YAML(typ="safe", pure=True)
         yaml.Constructor.add_constructor(
-            ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+            str(ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG),
             _dict_constructor)
         yaml.Constructor.add_multi_constructor(
             "!", intrinsics_multi_constructor)

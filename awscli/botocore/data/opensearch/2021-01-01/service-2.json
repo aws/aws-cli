@@ -1763,7 +1763,11 @@
       "members":{
         "Endpoint":{
           "shape":"Endpoint",
-          "documentation":"<p>The endpoint of the remote domain.</p>"
+          "documentation":"<important> <p>The Endpoint attribute cannot be modified. </p> </important> <p>The endpoint of the remote domain. Applicable for VPC_ENDPOINT connection mode.</p>"
+        },
+        "CrossClusterSearch":{
+          "shape":"CrossClusterSearchConnectionProperties",
+          "documentation":"<p>The connection properties for cross cluster search.</p>"
         }
       },
       "documentation":"<p>The connection properties of an outbound connection.</p>"
@@ -1880,6 +1884,10 @@
         "ConnectionMode":{
           "shape":"ConnectionMode",
           "documentation":"<p>The connection mode.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The <code>ConnectionProperties</code> for the outbound connection.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>CreateOutboundConnection</code> operation.</p>"
@@ -1987,6 +1995,16 @@
       }
     },
     "CreatedAt":{"type":"timestamp"},
+    "CrossClusterSearchConnectionProperties":{
+      "type":"structure",
+      "members":{
+        "SkipUnavailable":{
+          "shape":"SkipUnavailableStatus",
+          "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p>"
+        }
+      },
+      "documentation":"<p>Cross cluster search specific connection properties.</p>"
+    },
     "DeleteDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -2529,8 +2547,7 @@
     },
     "DescribePackagesFilterValues":{
       "type":"list",
-      "member":{"shape":"DescribePackagesFilterValue"},
-      "min":1
+      "member":{"shape":"DescribePackagesFilterValue"}
     },
     "DescribePackagesRequest":{
       "type":"structure",
@@ -5135,6 +5152,14 @@
     "ServiceUrl":{
       "type":"string",
       "documentation":"<p>The domain endpoint to which index and search requests are submitted. For example, <code>search-imdb-movies-oopcnjfn6ugo.eu-west-1.es.amazonaws.com</code> or <code>doc-imdb-movies-oopcnjfn6u.eu-west-1.es.amazonaws.com</code>.</p>"
+    },
+    "SkipUnavailableStatus":{
+      "type":"string",
+      "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p> <ul> <li> <p> <b>ENABLED</b> - The SkipUnavailable param is enabled for the connection.</p> </li> <li> <p> <b>DISABLED</b> - The SkipUnavailable param is disabled for the connection.</p> </li> </ul>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "SlotList":{
       "type":"list",

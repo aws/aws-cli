@@ -107,7 +107,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Creates an Amazon FSx for Lustre data repository association (DRA). A data repository association is a link between a directory on the file system and an Amazon S3 bucket or prefix. You can have a maximum of 8 data repository associations on a file system. Data repository associations are supported for all file systems except for <code>Scratch_1</code> deployment type.</p> <p>Each data repository association must have a unique Amazon FSx file system directory and a unique S3 bucket or prefix associated with it. You can configure a data repository association for automatic import only, for automatic export only, or for both. To learn more about linking a data repository to your file system, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/create-dra-linked-data-repo.html\">Linking your file system to an S3 bucket</a>.</p> <note> <p> <code>CreateDataRepositoryAssociation</code> isn't supported on Amazon File Cache resources. To create a DRA on Amazon File Cache, use the <code>CreateFileCache</code> operation.</p> </note>",
+      "documentation":"<p>Creates an Amazon FSx for Lustre data repository association (DRA). A data repository association is a link between a directory on the file system and an Amazon S3 bucket or prefix. You can have a maximum of 8 data repository associations on a file system. Data repository associations are supported on all FSx for Lustre 2.12 and newer file systems, excluding <code>scratch_1</code> deployment type.</p> <p>Each data repository association must have a unique Amazon FSx file system directory and a unique S3 bucket or prefix associated with it. You can configure a data repository association for automatic import only, for automatic export only, or for both. To learn more about linking a data repository to your file system, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/create-dra-linked-data-repo.html\">Linking your file system to an S3 bucket</a>.</p> <note> <p> <code>CreateDataRepositoryAssociation</code> isn't supported on Amazon File Cache resources. To create a DRA on Amazon File Cache, use the <code>CreateFileCache</code> operation.</p> </note>",
       "idempotent":true
     },
     "CreateDataRepositoryTask":{
@@ -304,7 +304,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Deletes a data repository association on an Amazon FSx for Lustre file system. Deleting the data repository association unlinks the file system from the Amazon S3 bucket. When deleting a data repository association, you have the option of deleting the data in the file system that corresponds to the data repository association. Data repository associations are supported for all file systems except for <code>Scratch_1</code> deployment type.</p>",
+      "documentation":"<p>Deletes a data repository association on an Amazon FSx for Lustre file system. Deleting the data repository association unlinks the file system from the Amazon S3 bucket. When deleting a data repository association, you have the option of deleting the data in the file system that corresponds to the data repository association. Data repository associations are supported on all FSx for Lustre 2.12 and newer file systems, excluding <code>scratch_1</code> deployment type.</p>",
       "idempotent":true
     },
     "DeleteFileCache":{
@@ -387,7 +387,8 @@
         {"shape":"BadRequest"},
         {"shape":"IncompatibleParameterError"},
         {"shape":"InternalServerError"},
-        {"shape":"VolumeNotFound"}
+        {"shape":"VolumeNotFound"},
+        {"shape":"ServiceLimitExceeded"}
       ],
       "documentation":"<p>Deletes an Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS volume.</p>"
     },
@@ -423,7 +424,7 @@
         {"shape":"InvalidDataRepositoryType"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Returns the description of specific Amazon FSx for Lustre or Amazon File Cache data repository associations, if one or more <code>AssociationIds</code> values are provided in the request, or if filters are used in the request. Data repository associations are supported on Amazon File Cache resources and all Amazon FSx for Lustre file systems excluding <code>Scratch_1</code> deployment types.</p> <p>You can use filters to narrow the response to include just data repository associations for specific file systems (use the <code>file-system-id</code> filter with the ID of the file system) or caches (use the <code>file-cache-id</code> filter with the ID of the cache), or data repository associations for a specific repository type (use the <code>data-repository-type</code> filter with a value of <code>S3</code> or <code>NFS</code>). If you don't use filters, the response returns all data repository associations owned by your Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling.</p> <p>When retrieving all data repository associations, you can paginate the response by using the optional <code>MaxResults</code> parameter to limit the number of data repository associations returned in a response. If more data repository associations remain, a <code>NextToken</code> value is returned in the response. In this case, send a later request with the <code>NextToken</code> request parameter set to the value of <code>NextToken</code> from the last response.</p>",
+      "documentation":"<p>Returns the description of specific Amazon FSx for Lustre or Amazon File Cache data repository associations, if one or more <code>AssociationIds</code> values are provided in the request, or if filters are used in the request. Data repository associations are supported on Amazon File Cache resources and all FSx for Lustre 2.12 and newer file systems, excluding <code>scratch_1</code> deployment type.</p> <p>You can use filters to narrow the response to include just data repository associations for specific file systems (use the <code>file-system-id</code> filter with the ID of the file system) or caches (use the <code>file-cache-id</code> filter with the ID of the cache), or data repository associations for a specific repository type (use the <code>data-repository-type</code> filter with a value of <code>S3</code> or <code>NFS</code>). If you don't use filters, the response returns all data repository associations owned by your Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling.</p> <p>When retrieving all data repository associations, you can paginate the response by using the optional <code>MaxResults</code> parameter to limit the number of data repository associations returned in a response. If more data repository associations remain, a <code>NextToken</code> value is returned in the response. In this case, send a later request with the <code>NextToken</code> request parameter set to the value of <code>NextToken</code> from the last response.</p>",
       "idempotent":true
     },
     "DescribeDataRepositoryTasks":{
@@ -650,7 +651,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Updates the configuration of an existing data repository association on an Amazon FSx for Lustre file system. Data repository associations are supported for all file systems except for <code>Scratch_1</code> deployment type.</p>",
+      "documentation":"<p>Updates the configuration of an existing data repository association on an Amazon FSx for Lustre file system. Data repository associations are supported on all FSx for Lustre 2.12 and newer file systems, excluding <code>scratch_1</code> deployment type.</p>",
       "idempotent":true
     },
     "UpdateFileCache":{
@@ -724,7 +725,7 @@
         {"shape":"StorageVirtualMachineNotFound"},
         {"shape":"UnsupportedOperation"}
       ],
-      "documentation":"<p>Updates an Amazon FSx for ONTAP storage virtual machine (SVM).</p>"
+      "documentation":"<p>Updates an FSx for ONTAP storage virtual machine (SVM).</p>"
     },
     "UpdateVolume":{
       "name":"UpdateVolume",
@@ -1615,11 +1616,11 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "DeploymentType":{
           "shape":"OpenZFSDeploymentType",
-          "documentation":"<p>Specifies the file system deployment type. Single AZ deployment types are configured for redundancy within a single Availability Zone in an Amazon Web Services Region . Valid values are the following:</p> <ul> <li> <p> <code>SINGLE_AZ_1</code>- (Default) Creates file systems with throughput capacities of 64 - 4,096 MB/s. <code>Single_AZ_1</code> is available in all Amazon Web Services Regions where Amazon FSx for OpenZFS is available, except US West (Oregon).</p> </li> <li> <p> <code>SINGLE_AZ_2</code>- Creates file systems with throughput capacities of 160 - 10,240 MB/s using an NVMe L2ARC cache. <code>Single_AZ_2</code> is available only in the US East (N. Virginia), US East (Ohio), US West (Oregon), and Europe (Ireland) Amazon Web Services Regions.</p> </li> </ul> <p>For more information, see: <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/availability-durability.html#available-aws-regions\">Deployment type availability</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#zfs-fs-performance\">File system performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+          "documentation":"<p>Specifies the file system deployment type. Single AZ deployment types are configured for redundancy within a single Availability Zone in an Amazon Web Services Region . Valid values are the following:</p> <ul> <li> <p> <code>SINGLE_AZ_1</code>- (Default) Creates file systems with throughput capacities of 64 - 4,096 MBps. <code>Single_AZ_1</code> is available in all Amazon Web Services Regions where Amazon FSx for OpenZFS is available, except US West (Oregon).</p> </li> <li> <p> <code>SINGLE_AZ_2</code>- Creates file systems with throughput capacities of 160 - 10,240 MBps using an NVMe L2ARC cache. <code>Single_AZ_2</code> is available only in the US East (N. Virginia), US East (Ohio), US West (Oregon), and Europe (Ireland) Amazon Web Services Regions.</p> </li> </ul> <p>For more information, see: <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/availability-durability.html#available-aws-regions\">Deployment type availability</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance.html#zfs-fs-performance\">File system performance</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Specifies the throughput of an Amazon FSx for OpenZFS file system, measured in megabytes per second (MB/s). Valid values depend on the DeploymentType you choose, as follows:</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code>, valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MB/s.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 160, 320, 640, 1280, 2560, 3840, 5120, 7680, or 10240 MB/s.</p> </li> </ul> <p>You pay for additional throughput capacity that you provision.</p>"
+          "documentation":"<p>Specifies the throughput of an Amazon FSx for OpenZFS file system, measured in megabytes per second (MBps). Valid values depend on the DeploymentType you choose, as follows:</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code>, valid values are 64, 128, 256, 512, 1024, 2048, 3072, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 160, 320, 640, 1280, 2560, 3840, 5120, 7680, or 10240 MBps.</p> </li> </ul> <p>You pay for additional throughput capacity that you provision.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{"shape":"DiskIopsConfiguration"},
@@ -2008,7 +2009,7 @@
     },
     "DNSName":{
       "type":"string",
-      "documentation":"<p>The Domain Name Service (DNS) name for the file system. You can mount your file system using its DNS name.</p>",
+      "documentation":"<p>The file system's DNS name. You can mount your file system using its DNS name.</p>",
       "max":275,
       "min":16,
       "pattern":"^((fs|fc)i?-[0-9a-f]{8,}\\..{4,253})$"
@@ -2080,7 +2081,7 @@
           "documentation":"<p>The configuration for an NFS data repository linked to an Amazon File Cache resource with a data repository association.</p>"
         }
       },
-      "documentation":"<p>The configuration of a data repository association that links an Amazon FSx for Lustre file system to an Amazon S3 bucket or an Amazon File Cache resource to an Amazon S3 bucket or an NFS file system. The data repository association configuration object is returned in the response of the following operations:</p> <ul> <li> <p> <code>CreateDataRepositoryAssociation</code> </p> </li> <li> <p> <code>UpdateDataRepositoryAssociation</code> </p> </li> <li> <p> <code>DescribeDataRepositoryAssociations</code> </p> </li> </ul> <p>Data repository associations are supported on Amazon File Cache resources and all Amazon FSx for Lustre file systems excluding <code>Scratch_1</code> deployment types.</p>"
+      "documentation":"<p>The configuration of a data repository association that links an Amazon FSx for Lustre file system to an Amazon S3 bucket or an Amazon File Cache resource to an Amazon S3 bucket or an NFS file system. The data repository association configuration object is returned in the response of the following operations:</p> <ul> <li> <p> <code>CreateDataRepositoryAssociation</code> </p> </li> <li> <p> <code>UpdateDataRepositoryAssociation</code> </p> </li> <li> <p> <code>DescribeDataRepositoryAssociations</code> </p> </li> </ul> <p>Data repository associations are supported on Amazon File Cache resources and all FSx for Lustre 2.12 and newer file systems, excluding <code>scratch_1</code> deployment type.</p>"
     },
     "DataRepositoryAssociationId":{
       "type":"string",
@@ -3007,14 +3008,14 @@
       "members":{
         "Mode":{
           "shape":"DiskIopsConfigurationMode",
-          "documentation":"<p>Specifies whether the number of IOPS for the file system is using the system default (<code>AUTOMATIC</code>) or was provisioned by the customer (<code>USER_PROVISIONED</code>).</p>"
+          "documentation":"<p>Specifies whether the file system is using the <code>AUTOMATIC</code> setting of SSD IOPS of 3 IOPS per GB of storage capacity, , or if it using a <code>USER_PROVISIONED</code> value.</p>"
         },
         "Iops":{
           "shape":"Iops",
           "documentation":"<p>The total number of SSD IOPS provisioned for the file system.</p>"
         }
       },
-      "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS file system. The default is 3 IOPS per GB of storage capacity, but you can provision additional IOPS per GB of storage. The configuration consists of the total number of provisioned SSD IOPS and how the amount was provisioned (by the customer or by the system).</p>"
+      "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for NetApp ONTAP or FSx for OpenZFS file system. By default, Amazon FSx automatically provisions 3 IOPS per GB of storage capacity. You can provision additional IOPS per GB of storage. The configuration consists of the total number of provisioned SSD IOPS and how it is was provisioned, or the mode (by the customer or by Amazon FSx).</p>"
     },
     "DiskIopsConfigurationMode":{
       "type":"string",
@@ -4044,7 +4045,11 @@
           "documentation":"<p>(Multi-AZ only) The VPC route tables in which your file system's endpoints are created.</p>"
         },
         "ThroughputCapacity":{"shape":"MegabytesPerSecond"},
-        "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"}
+        "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
+        "FsxAdminPassword":{
+          "shape":"AdminPassword",
+          "documentation":"<p>You can use the <code>fsxadmin</code> user account to access the NetApp ONTAP CLI and REST API. The password value is always redacted in the response.</p>"
+        }
       },
       "documentation":"<p>Configuration for the FSx for NetApp ONTAP file system.</p>"
     },
@@ -4375,7 +4380,7 @@
     },
     "ProgressPercent":{
       "type":"integer",
-      "documentation":"<p>The current percent of progress of an asynchronous task.</p>",
+      "documentation":"<p>Displays the current percent of progress of an asynchronous task.</p>",
       "max":100,
       "min":0
     },
@@ -4618,25 +4623,37 @@
           "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory. </p>"
         }
       },
-      "documentation":"<p>The configuration that Amazon FSx uses to join a FSx for Windows File Server file system or an ONTAP storage virtual machine (SVM) to a self-managed (including on-premises) Microsoft Active Directory (AD) directory. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html\"> Using Amazon FSx with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing SVMs</a>.</p>"
+      "documentation":"<p>The configuration that Amazon FSx uses to join a FSx for Windows File Server file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed (including on-premises) Microsoft Active Directory (AD) directory. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html\"> Using Amazon FSx for Windows with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing FSx for ONTAP SVMs</a>.</p>"
     },
     "SelfManagedActiveDirectoryConfigurationUpdates":{
       "type":"structure",
       "members":{
         "UserName":{
           "shape":"DirectoryUserName",
-          "documentation":"<p>The user name for the service account on your self-managed AD domain that Amazon FSx will use to join to your AD domain. This account must have the permission to join computers to the domain in the organizational unit provided in <code>OrganizationalUnitDistinguishedName</code>.</p>"
+          "documentation":"<p>Specifies the updated user name for the service account on your self-managed AD domain. Amazon FSx uses this account to join to your self-managed AD domain.</p> <p>This account must have the permissions required to join computers to the domain in the organizational unit provided in <code>OrganizationalUnitDistinguishedName</code>.</p>"
         },
         "Password":{
           "shape":"DirectoryPassword",
-          "documentation":"<p>The password for the service account on your self-managed AD domain that Amazon FSx will use to join to your AD domain.</p>"
+          "documentation":"<p>Specifies the updated password for the service account on your self-managed AD domain. Amazon FSx uses this account to join to your self-managed AD domain.</p>"
         },
         "DnsIps":{
           "shape":"DnsIps",
-          "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory.</p>"
+          "documentation":"<p>A list of up to three DNS server or domain controller IP addresses in your self-managed AD domain.</p>"
+        },
+        "DomainName":{
+          "shape":"ActiveDirectoryFullyQualifiedName",
+          "documentation":"<p>Specifies an updated fully qualified domain name of your self-managed AD configuration.</p>"
+        },
+        "OrganizationalUnitDistinguishedName":{
+          "shape":"OrganizationalUnitDistinguishedName",
+          "documentation":"<p>Specifies an updated fully qualified distinguished name of the organization unit within your self-managed AD.</p>"
+        },
+        "FileSystemAdministratorsGroup":{
+          "shape":"FileSystemAdministratorsGroupName",
+          "documentation":"<p>Specifies the updated name of the self-managed AD domain group whose members are granted administrative privileges for the Amazon FSx resource.</p>"
         }
       },
-      "documentation":"<p>The configuration that Amazon FSx uses to join the Windows File Server instance to a self-managed Microsoft Active Directory (AD) directory.</p>"
+      "documentation":"<p>Specifies changes you are making to the self-managed Microsoft Active Directory (AD) configuration to which an FSx for Windows File Server file system or an FSx for ONTAP SVM is joined.</p>"
     },
     "ServiceLimit":{
       "type":"string",
@@ -4806,13 +4823,13 @@
     },
     "StorageCapacity":{
       "type":"integer",
-      "documentation":"<p>The storage capacity for your Amazon FSx file system, in gibibytes.</p>",
+      "documentation":"<p>Specifies the file system's storage capacity, in gibibytes (GiB).</p>",
       "max":2147483647,
       "min":0
     },
     "StorageType":{
       "type":"string",
-      "documentation":"<p>The storage type for your Amazon FSx file system.</p>",
+      "documentation":"<p>Specifies the file system's storage type.</p>",
       "enum":[
         "SSD",
         "HDD"
@@ -4980,11 +4997,11 @@
       "members":{
         "NetBiosName":{
           "shape":"NetBiosAlias",
-          "documentation":"<p>The NetBIOS name of the Active Directory computer object that is joined to your SVM.</p>"
+          "documentation":"<p>The NetBIOS name of the AD computer object to which the SVM is joined.</p>"
         },
         "SelfManagedActiveDirectoryConfiguration":{"shape":"SelfManagedActiveDirectoryAttributes"}
       },
-      "documentation":"<p>Describes the configuration of the Microsoft Active Directory (AD) directory to which the Amazon FSx for ONTAP storage virtual machine (SVM) is joined. Pleae note, account credentials are not returned in the response payload.</p>"
+      "documentation":"<p>Describes the Microsoft Active Directory (AD) directory configuration to which the FSx for ONTAP storage virtual machine (SVM) is joined. Note that account credentials are not returned in the response payload.</p>"
     },
     "SvmEndpoint":{
       "type":"structure",
@@ -5261,16 +5278,16 @@
         "DailyAutomaticBackupStartTime":{"shape":"DailyTime"},
         "FsxAdminPassword":{
           "shape":"AdminPassword",
-          "documentation":"<p>The ONTAP administrative password for the <code>fsxadmin</code> user.</p>"
+          "documentation":"<p>Update the password for the <code>fsxadmin</code> user by entering a new password. You use the <code>fsxadmin</code> user to access the NetApp ONTAP CLI and REST API to manage your file system resources. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-resources-ontap-apps.html\">Managing resources using NetApp Applicaton</a>.</p>"
         },
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
-          "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for NetApp ONTAP file system. The default is 3 IOPS per GB of storage capacity, but you can provision additional IOPS per GB of storage. The configuration consists of an IOPS mode (<code>AUTOMATIC</code> or <code>USER_PROVISIONED</code>), and in the case of <code>USER_PROVISIONED</code> IOPS, the total number of SSD IOPS provisioned.</p>"
+          "documentation":"<p>The SSD IOPS (input output operations per second) configuration for an Amazon FSx for NetApp ONTAP file system. The default is 3 IOPS per GB of storage capacity, but you can provision additional IOPS per GB of storage. The configuration consists of an IOPS mode (<code>AUTOMATIC</code> or <code>USER_PROVISIONED</code>), and in the case of <code>USER_PROVISIONED</code> IOPS, the total number of SSD IOPS provisioned. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/increase-primary-storage.html\">Updating SSD storage capacity and IOPS</a>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
-          "documentation":"<p>Specifies the throughput of an FSx for NetApp ONTAP file system, measured in megabytes per second (MBps). Valid values are 128, 256, 512, 1024, 2048, and 4096 MBps.</p>"
+          "documentation":"<p>Enter a new value to change the amount of throughput capacity for the file system. Throughput capacity is measured in megabytes per second (MBps). Valid values are 128, 256, 512, 1024, 2048, and 4096 MBps. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-throughput-capacity.html\">Managing throughput capacity</a> in the FSx for ONTAP User Guide.</p>"
         },
         "AddRouteTableIds":{
           "shape":"RouteTableIds",
@@ -5320,7 +5337,7 @@
         },
         "StorageCapacity":{
           "shape":"StorageCapacity",
-          "documentation":"<p>Use this parameter to increase the storage capacity of an FSx for Windows File Server, FSx for Lustre, FSx for OpenZFS, or FSx for ONTAP file system. Specifies the storage capacity target value, in GiB, to increase the storage capacity for the file system that you're updating. </p> <note> <p>You can't make a storage capacity increase request if there is an existing storage capacity increase request in progress.</p> </note> <p>For Lustre file systems, the storage capacity target value can be the following:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_1</code>, and <code>PERSISTENT_2 SSD</code> deployment types, valid values are in multiples of 2400 GiB. The value must be greater than the current storage capacity.</p> </li> <li> <p>For <code>PERSISTENT HDD</code> file systems, valid values are multiples of 6000 GiB for 12-MBps throughput per TiB file systems and multiples of 1800 GiB for 40-MBps throughput per TiB file systems. The values must be greater than the current storage capacity.</p> </li> <li> <p>For <code>SCRATCH_1</code> file systems, you can't increase the storage capacity.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>FSx for Lustre User Guide</i>.</p> <p>For FSx for OpenZFS file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>FSx for OpenZFS User Guide</i>.</p> <p>For Windows file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. To increase storage capacity, the file system must have at least 16 MBps of throughput capacity. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSx for Windows File Server User Guide</i>.</p> <p>For ONTAP file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-storage-capacity.html\">Managing storage capacity and provisioned IOPS</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+          "documentation":"<p>Use this parameter to increase the storage capacity of an FSx for Windows File Server, FSx for Lustre, FSx for OpenZFS, or FSx for ONTAP file system. Specifies the storage capacity target value, in GiB, to increase the storage capacity for the file system that you're updating. </p> <note> <p>You can't make a storage capacity increase request if there is an existing storage capacity increase request in progress.</p> </note> <p>For Lustre file systems, the storage capacity target value can be the following:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_1</code>, and <code>PERSISTENT_2 SSD</code> deployment types, valid values are in multiples of 2400 GiB. The value must be greater than the current storage capacity.</p> </li> <li> <p>For <code>PERSISTENT HDD</code> file systems, valid values are multiples of 6000 GiB for 12-MBps throughput per TiB file systems and multiples of 1800 GiB for 40-MBps throughput per TiB file systems. The values must be greater than the current storage capacity.</p> </li> <li> <p>For <code>SCRATCH_1</code> file systems, you can't increase the storage capacity.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>FSx for Lustre User Guide</i>.</p> <p>For FSx for OpenZFS file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>FSx for OpenZFS User Guide</i>.</p> <p>For Windows file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. To increase storage capacity, the file system must have at least 16 MBps of throughput capacity. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSxfor Windows File Server User Guide</i>.</p> <p>For ONTAP file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-storage-capacity.html\">Managing storage capacity and provisioned IOPS</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
         },
         "WindowsConfiguration":{
           "shape":"UpdateFileSystemWindowsConfiguration",
@@ -5330,7 +5347,7 @@
         "OntapConfiguration":{"shape":"UpdateFileSystemOntapConfiguration"},
         "OpenZFSConfiguration":{
           "shape":"UpdateFileSystemOpenZFSConfiguration",
-          "documentation":"<p>The configuration updates for an Amazon FSx for OpenZFS file system.</p>"
+          "documentation":"<p>The configuration updates for an FSx for OpenZFS file system.</p>"
         }
       },
       "documentation":"<p>The request object for the <code>UpdateFileSystem</code> operation.</p>"
@@ -5479,7 +5496,7 @@
       "members":{
         "ActiveDirectoryConfiguration":{
           "shape":"UpdateSvmActiveDirectoryConfiguration",
-          "documentation":"<p>Updates the Microsoft Active Directory (AD) configuration for an SVM that is joined to an AD.</p>"
+          "documentation":"<p>Specifies updates to an SVM's Microsoft Active Directory (AD) configuration.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -5491,7 +5508,7 @@
         },
         "SvmAdminPassword":{
           "shape":"AdminPassword",
-          "documentation":"<p>Enter a new SvmAdminPassword if you are updating it.</p>"
+          "documentation":"<p>Specifies a new SvmAdminPassword.</p>"
         }
       }
     },
@@ -5504,9 +5521,13 @@
     "UpdateSvmActiveDirectoryConfiguration":{
       "type":"structure",
       "members":{
-        "SelfManagedActiveDirectoryConfiguration":{"shape":"SelfManagedActiveDirectoryConfigurationUpdates"}
+        "SelfManagedActiveDirectoryConfiguration":{"shape":"SelfManagedActiveDirectoryConfigurationUpdates"},
+        "NetBiosName":{
+          "shape":"NetBiosAlias",
+          "documentation":"<p>Specifies an updated NetBIOS name of the AD computer object <code>NetBiosName</code> to which an SVM is joined.</p>"
+        }
       },
-      "documentation":"<p>Updates the Microsoft Active Directory (AD) configuration of an SVM joined to an AD. Please note, account credentials are not returned in the response payload.</p>"
+      "documentation":"<p>Specifies updates to an FSx for ONTAP storage virtual machine's (SVM) Microsoft Active Directory (AD) configuration. Note that account credentials are not returned in the response payload.</p>"
     },
     "UpdateVolumeRequest":{
       "type":"structure",

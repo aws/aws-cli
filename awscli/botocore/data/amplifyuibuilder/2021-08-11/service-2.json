@@ -45,7 +45,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Creates a new form for an Amplify app.</p>",
+      "documentation":"<p>Creates a new form for an Amplify.</p>",
       "idempotent":true
     },
     "CreateTheme":{
@@ -173,6 +173,23 @@
       ],
       "documentation":"<p>Exports theme configurations to code that is ready to integrate into an Amplify app.</p>"
     },
+    "GetCodegenJob":{
+      "name":"GetCodegenJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/codegen-jobs/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCodegenJobRequest"},
+      "output":{"shape":"GetCodegenJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns an existing code generation job.</p>"
+    },
     "GetComponent":{
       "name":"GetComponent",
       "http":{
@@ -235,6 +252,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns an existing theme for an Amplify app.</p>"
+    },
+    "ListCodegenJobs":{
+      "name":"ListCodegenJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/app/{appId}/environment/{environmentName}/codegen-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCodegenJobsRequest"},
+      "output":{"shape":"ListCodegenJobsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a list of code generation jobs for a specified Amplify app and backend environment.</p>"
     },
     "ListComponents":{
       "name":"ListComponents",
@@ -308,6 +341,22 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Refreshes a previously issued access token that might have expired.</p>"
+    },
+    "StartCodegenJob":{
+      "name":"StartCodegenJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/app/{appId}/environment/{environmentName}/codegen-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartCodegenJobRequest"},
+      "output":{"shape":"StartCodegenJobResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Starts a code generation job for for a specified Amplify app and backend environment.</p>"
     },
     "UpdateComponent":{
       "name":"UpdateComponent",
@@ -404,9 +453,365 @@
       },
       "documentation":"<p>Represents the event action configuration for an element of a <code>Component</code> or <code>ComponentChild</code>. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. <code>ActionParameters</code> defines the action that is performed when an event occurs on the component.</p>"
     },
+    "AppId":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"d[a-z0-9]+"
+    },
+    "AssociatedFieldsList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CodegenFeatureFlags":{
+      "type":"structure",
+      "members":{
+        "isRelationshipSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifes whether a code generation job supports data relationships.</p>"
+        },
+        "isNonModelSupported":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether a code generation job supports non models.</p>"
+        }
+      },
+      "documentation":"<p>Describes the feature flags that you can specify for a code generation job.</p>"
+    },
+    "CodegenGenericDataEnum":{
+      "type":"structure",
+      "required":["values"],
+      "members":{
+        "values":{
+          "shape":"CodegenGenericDataEnumValuesList",
+          "documentation":"<p>The list of enum values in the generic data schema.</p>"
+        }
+      },
+      "documentation":"<p>Describes the enums in a generic data schema.</p>"
+    },
+    "CodegenGenericDataEnumValuesList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "CodegenGenericDataEnums":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"CodegenGenericDataEnum"}
+    },
+    "CodegenGenericDataField":{
+      "type":"structure",
+      "required":[
+        "dataType",
+        "dataTypeValue",
+        "required",
+        "readOnly",
+        "isArray"
+      ],
+      "members":{
+        "dataType":{
+          "shape":"CodegenGenericDataFieldDataType",
+          "documentation":"<p>The data type for the generic data field.</p>"
+        },
+        "dataTypeValue":{
+          "shape":"String",
+          "documentation":"<p>The value of the data type for the generic data field.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the generic data field is required.</p>"
+        },
+        "readOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the generic data field is read-only.</p>"
+        },
+        "isArray":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the generic data field is an array.</p>"
+        },
+        "relationship":{
+          "shape":"CodegenGenericDataRelationshipType",
+          "documentation":"<p>The relationship of the generic data schema.</p>"
+        }
+      },
+      "documentation":"<p>Describes a field in a generic data schema.</p>"
+    },
+    "CodegenGenericDataFieldDataType":{
+      "type":"string",
+      "enum":[
+        "ID",
+        "String",
+        "Int",
+        "Float",
+        "AWSDate",
+        "AWSTime",
+        "AWSDateTime",
+        "AWSTimestamp",
+        "AWSEmail",
+        "AWSURL",
+        "AWSIPAddress",
+        "Boolean",
+        "AWSJSON",
+        "AWSPhone",
+        "Enum",
+        "Model",
+        "NonModel"
+      ]
+    },
+    "CodegenGenericDataFields":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"CodegenGenericDataField"}
+    },
+    "CodegenGenericDataModel":{
+      "type":"structure",
+      "required":[
+        "fields",
+        "primaryKeys"
+      ],
+      "members":{
+        "fields":{
+          "shape":"CodegenGenericDataFields",
+          "documentation":"<p>The fields in the generic data model.</p>"
+        },
+        "isJoinTable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the generic data model is a join table.</p>"
+        },
+        "primaryKeys":{
+          "shape":"CodegenPrimaryKeysList",
+          "documentation":"<p>The primary keys of the generic data model.</p>"
+        }
+      },
+      "documentation":"<p>Describes a model in a generic data schema.</p>"
+    },
+    "CodegenGenericDataModels":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"CodegenGenericDataModel"}
+    },
+    "CodegenGenericDataNonModel":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"CodegenGenericDataNonModelFields",
+          "documentation":"<p>The fields in a generic data schema non model.</p>"
+        }
+      },
+      "documentation":"<p>Describes a non-model in a generic data schema.</p>"
+    },
+    "CodegenGenericDataNonModelFields":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"CodegenGenericDataField"}
+    },
+    "CodegenGenericDataNonModels":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"CodegenGenericDataNonModel"}
+    },
+    "CodegenGenericDataRelationshipType":{
+      "type":"structure",
+      "required":[
+        "type",
+        "relatedModelName"
+      ],
+      "members":{
+        "type":{
+          "shape":"GenericDataRelationshipType",
+          "documentation":"<p>The data relationship type.</p>"
+        },
+        "relatedModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the related model in the data relationship.</p>"
+        },
+        "relatedModelFields":{
+          "shape":"RelatedModelFieldsList",
+          "documentation":"<p>The related model fields in the data relationship.</p>"
+        },
+        "canUnlinkAssociatedModel":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the relationship can unlink the associated model.</p>"
+        },
+        "relatedJoinFieldName":{
+          "shape":"String",
+          "documentation":"<p>The name of the related join field in the data relationship.</p>"
+        },
+        "relatedJoinTableName":{
+          "shape":"String",
+          "documentation":"<p>The name of the related join table in the data relationship.</p>"
+        },
+        "belongsToFieldOnRelatedModel":{
+          "shape":"String",
+          "documentation":"<p>The value of the <code>belongsTo</code> field on the related data model. </p>"
+        },
+        "associatedFields":{
+          "shape":"AssociatedFieldsList",
+          "documentation":"<p>The associated fields of the data relationship.</p>"
+        },
+        "isHasManyIndex":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the <code>@index</code> directive is supported for a <code>hasMany</code> data relationship.</p>"
+        }
+      },
+      "documentation":"<p>Describes the relationship between generic data models.</p>"
+    },
+    "CodegenJob":{
+      "type":"structure",
+      "required":[
+        "id",
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the code generation job.</p>"
+        },
+        "appId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the Amplify app associated with the code generation job.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment associated with the code generation job.</p>"
+        },
+        "renderConfig":{"shape":"CodegenJobRenderConfig"},
+        "genericDataSchema":{"shape":"CodegenJobGenericDataSchema"},
+        "autoGenerateForms":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to autogenerate forms in the code generation job.</p>"
+        },
+        "features":{"shape":"CodegenFeatureFlags"},
+        "status":{
+          "shape":"CodegenJobStatus",
+          "documentation":"<p>The status of the code generation job.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>The customized status message for the code generation job.</p>"
+        },
+        "asset":{
+          "shape":"CodegenJobAsset",
+          "documentation":"<p>The <code>CodegenJobAsset</code> to use for the code generation job.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the code generation job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the code generation job was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the code generation job was modified.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration for a code generation job that is associated with an Amplify app.</p>"
+    },
+    "CodegenJobAsset":{
+      "type":"structure",
+      "members":{
+        "downloadUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to use to access the asset.</p>"
+        }
+      },
+      "documentation":"<p>Describes an asset for a code generation job.</p>"
+    },
+    "CodegenJobGenericDataSchema":{
+      "type":"structure",
+      "required":[
+        "dataSourceType",
+        "models",
+        "enums",
+        "nonModels"
+      ],
+      "members":{
+        "dataSourceType":{
+          "shape":"CodegenJobGenericDataSourceType",
+          "documentation":"<p>The type of the data source for the schema. Currently, the only valid value is an Amplify <code>DataStore</code>.</p>"
+        },
+        "models":{
+          "shape":"CodegenGenericDataModels",
+          "documentation":"<p>The name of a <code>CodegenGenericDataModel</code>.</p>"
+        },
+        "enums":{
+          "shape":"CodegenGenericDataEnums",
+          "documentation":"<p>The name of a <code>CodegenGenericDataEnum</code>.</p>"
+        },
+        "nonModels":{
+          "shape":"CodegenGenericDataNonModels",
+          "documentation":"<p>The name of a <code>CodegenGenericDataNonModel</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data schema for a code generation job.</p>"
+    },
+    "CodegenJobGenericDataSourceType":{
+      "type":"string",
+      "enum":["DataStore"]
+    },
+    "CodegenJobRenderConfig":{
+      "type":"structure",
+      "members":{
+        "react":{
+          "shape":"ReactStartCodegenJobData",
+          "documentation":"<p>The name of the <code>ReactStartCodegenJobData</code> object.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration information for rendering the UI component associated the code generation job.</p>",
+      "union":true
+    },
+    "CodegenJobStatus":{
+      "type":"string",
+      "enum":[
+        "in_progress",
+        "failed",
+        "succeeded"
+      ]
+    },
+    "CodegenJobSummary":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"AppId",
+          "documentation":"<p>The unique ID of the Amplify app associated with the code generation job.</p>"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment associated with the code generation job.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID for the code generation job summary.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the code generation job summary was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time that the code generation job summary was modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the basic information about the code generation job.</p>"
+    },
+    "CodegenJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"CodegenJobSummary"}
+    },
+    "CodegenPrimaryKeysList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "Component":{
       "type":"structure",
@@ -1913,6 +2318,52 @@
       "type":"list",
       "member":{"shape":"FormSummary"}
     },
+    "GenericDataRelationshipType":{
+      "type":"string",
+      "enum":[
+        "HAS_MANY",
+        "HAS_ONE",
+        "BELONGS_TO"
+      ]
+    },
+    "GetCodegenJobRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "id"
+      ],
+      "members":{
+        "appId":{
+          "shape":"AppId",
+          "documentation":"<p>The unique ID of the Amplify app associated with the code generation job.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app associated with the code generation job.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique ID of the code generation job.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetCodegenJobResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"CodegenJob",
+          "documentation":"<p>The configuration settings for the code generation job.</p>"
+        }
+      },
+      "payload":"job"
+    },
     "GetComponentRequest":{
       "type":"structure",
       "required":[
@@ -2088,6 +2539,28 @@
       },
       "exception":true
     },
+    "JSModule":{
+      "type":"string",
+      "enum":[
+        "es2020",
+        "esnext"
+      ]
+    },
+    "JSScript":{
+      "type":"string",
+      "enum":[
+        "jsx",
+        "tsx",
+        "js"
+      ]
+    },
+    "JSTarget":{
+      "type":"string",
+      "enum":[
+        "es2015",
+        "es2020"
+      ]
+    },
     "LabelDecorator":{
       "type":"string",
       "enum":[
@@ -2095,6 +2568,59 @@
         "optional",
         "none"
       ]
+    },
+    "ListCodegenJobsLimit":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCodegenJobsRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName"
+      ],
+      "members":{
+        "appId":{
+          "shape":"AppId",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListCodegenJobsLimit",
+          "documentation":"<p>The maximum number of jobs to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCodegenJobsResponse":{
+      "type":"structure",
+      "required":["entities"],
+      "members":{
+        "entities":{
+          "shape":"CodegenJobSummaryList",
+          "documentation":"<p>The list of code generation jobs for the Amplify app.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
     },
     "ListComponentsLimit":{
       "type":"integer",
@@ -2362,6 +2888,32 @@
       },
       "payload":"body"
     },
+    "ReactStartCodegenJobData":{
+      "type":"structure",
+      "members":{
+        "module":{
+          "shape":"JSModule",
+          "documentation":"<p>The JavaScript module type.</p>"
+        },
+        "target":{
+          "shape":"JSTarget",
+          "documentation":"<p>The ECMAScript specification to use.</p>"
+        },
+        "script":{
+          "shape":"JSScript",
+          "documentation":"<p>The file type to use for a JavaScript project.</p>"
+        },
+        "renderTypeDeclarations":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the code generation job should render type declaration files.</p>"
+        },
+        "inlineSourceMap":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the code generation job should render inline source maps.</p>"
+        }
+      },
+      "documentation":"<p>Describes the code generation job configuration for a React project.</p>"
+    },
     "RefreshTokenRequest":{
       "type":"structure",
       "required":[
@@ -2413,6 +2965,10 @@
           "documentation":"<p>The date and time when the new access token expires.</p>"
         }
       }
+    },
+    "RelatedModelFieldsList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "ResourceConflictException":{
       "type":"structure",
@@ -2518,6 +3074,77 @@
     "SortPropertyList":{
       "type":"list",
       "member":{"shape":"SortProperty"}
+    },
+    "StartCodegenJobData":{
+      "type":"structure",
+      "required":["renderConfig"],
+      "members":{
+        "renderConfig":{
+          "shape":"CodegenJobRenderConfig",
+          "documentation":"<p>The code generation configuration for the codegen job.</p>"
+        },
+        "genericDataSchema":{
+          "shape":"CodegenJobGenericDataSchema",
+          "documentation":"<p>The data schema to use for a code generation job.</p>"
+        },
+        "autoGenerateForms":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to autogenerate forms in the code generation job.</p>"
+        },
+        "features":{
+          "shape":"CodegenFeatureFlags",
+          "documentation":"<p>The feature flags for a code generation job.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more key-value pairs to use when tagging the code generation job data.</p>"
+        }
+      },
+      "documentation":"<p>The code generation job resource configuration.</p>"
+    },
+    "StartCodegenJobRequest":{
+      "type":"structure",
+      "required":[
+        "appId",
+        "environmentName",
+        "codegenJobToCreate"
+      ],
+      "members":{
+        "appId":{
+          "shape":"AppId",
+          "documentation":"<p>The unique ID for the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"appId"
+        },
+        "environmentName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backend environment that is a part of the Amplify app.</p>",
+          "location":"uri",
+          "locationName":"environmentName"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>The idempotency token used to ensure that the code generation job request completes only once.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "codegenJobToCreate":{
+          "shape":"StartCodegenJobData",
+          "documentation":"<p>The code generation job resource configuration.</p>"
+        }
+      },
+      "payload":"codegenJobToCreate"
+    },
+    "StartCodegenJobResponse":{
+      "type":"structure",
+      "members":{
+        "entity":{
+          "shape":"CodegenJob",
+          "documentation":"<p>The code generation job for a UI component that is associated with an Amplify app.</p>"
+        }
+      },
+      "payload":"entity"
     },
     "StorageAccessLevel":{
       "type":"string",
@@ -2674,6 +3301,18 @@
     "ThemeValuesList":{
       "type":"list",
       "member":{"shape":"ThemeValues"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
     },
     "TokenProviders":{
       "type":"string",

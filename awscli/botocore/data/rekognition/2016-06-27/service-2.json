@@ -12,6 +12,27 @@
     "uid":"rekognition-2016-06-27"
   },
   "operations":{
+    "AssociateFaces":{
+      "name":"AssociateFaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateFacesRequest"},
+      "output":{"shape":"AssociateFacesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates one or more faces with an existing UserID. Takes an array of <code>FaceIds</code>. Each <code>FaceId</code> that are present in the <code>FaceIds</code> list is associated with the provided UserID. The maximum number of total <code>FaceIds</code> per UserID is 100. </p> <p>The <code>UserMatchThreshold</code> parameter specifies the minimum user match confidence required for the face to be associated with a UserID that has at least one <code>FaceID</code> already associated. This ensures that the <code>FaceIds</code> are associated with the right UserID. The value ranges from 0-100 and default value is 75. </p> <p>If successful, an array of <code>AssociatedFace</code> objects containing the associated <code>FaceIds</code> is returned. If a given face is already associated with the given <code>UserID</code>, it will be ignored and will not be returned in the response. If a given face is already associated to a different <code>UserID</code>, isn't found in the collection, doesn’t meet the <code>UserMatchThreshold</code>, or there are already 100 faces associated with the <code>UserID</code>, it will be returned as part of an array of <code>UnsuccessfulFaceAssociations.</code> </p> <p>The <code>UserStatus</code> reflects the status of an operation which updates a UserID representation with a list of given faces. The <code>UserStatus</code> can be: </p> <ul> <li> <p>ACTIVE - All associations or disassociations of FaceID(s) for a UserID are complete.</p> </li> <li> <p>CREATED - A UserID has been created, but has no FaceID(s) associated with it.</p> </li> <li> <p>UPDATING - A UserID is being updated and there are current associations or disassociations of FaceID(s) taking place.</p> </li> </ul>"
+    },
     "CompareFaces":{
       "name":"CompareFaces",
       "http":{
@@ -171,6 +192,27 @@
       ],
       "documentation":"<p>Creates an Amazon Rekognition stream processor that you can use to detect and recognize faces or to detect labels in a streaming video.</p> <p>Amazon Rekognition Video is a consumer of live video from Amazon Kinesis Video Streams. There are two different settings for stream processors in Amazon Rekognition: detecting faces and detecting labels.</p> <ul> <li> <p>If you are creating a stream processor for detecting faces, you provide as input a Kinesis video stream (<code>Input</code>) and a Kinesis data stream (<code>Output</code>) stream for receiving the output. You must use the <code>FaceSearch</code> option in <code>Settings</code>, specifying the collection that contains the faces you want to recognize. After you have finished analyzing a streaming video, use <a>StopStreamProcessor</a> to stop processing.</p> </li> <li> <p>If you are creating a stream processor to detect labels, you provide as input a Kinesis video stream (<code>Input</code>), Amazon S3 bucket information (<code>Output</code>), and an Amazon SNS topic ARN (<code>NotificationChannel</code>). You can also provide a KMS key ID to encrypt the data sent to your Amazon S3 bucket. You specify what you want to detect by using the <code>ConnectedHome</code> option in settings, and selecting one of the following: <code>PERSON</code>, <code>PET</code>, <code>PACKAGE</code>, <code>ALL</code> You can also specify where in the frame you want Amazon Rekognition to monitor with <code>RegionsOfInterest</code>. When you run the <a>StartStreamProcessor</a> operation on a label detection stream processor, you input start and stop information to determine the length of the processing time.</p> </li> </ul> <p> Use <code>Name</code> to assign an identifier for the stream processor. You use <code>Name</code> to manage the stream processor. For example, you can start processing the source video by calling <a>StartStreamProcessor</a> with the <code>Name</code> field. </p> <p>This operation requires permissions to perform the <code>rekognition:CreateStreamProcessor</code> action. If you want to tag your stream processor, you also require permission to perform the <code>rekognition:TagResource</code> operation.</p>"
     },
+    "CreateUser":{
+      "name":"CreateUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateUserRequest"},
+      "output":{"shape":"CreateUserResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new User within a collection specified by <code>CollectionId</code>. Takes <code>UserId</code> as a parameter, which is a user provided ID which should be unique within the collection. The provided <code>UserId</code> will alias the system generated UUID to make the <code>UserId</code> more user friendly. </p> <p>Uses a <code>ClientToken</code>, an idempotency token that ensures a call to <code>CreateUser</code> completes only once. If the value is not supplied, the AWS SDK generates an idempotency token for the requests. This prevents retries after a network error results from making multiple <code>CreateUser</code> calls. </p>"
+    },
     "DeleteCollection":{
       "name":"DeleteCollection",
       "http":{
@@ -302,6 +344,26 @@
         {"shape":"ProvisionedThroughputExceededException"}
       ],
       "documentation":"<p>Deletes the stream processor identified by <code>Name</code>. You assign the value for <code>Name</code> when you create the stream processor with <a>CreateStreamProcessor</a>. You might not be able to use the same name for a stream processor for a few seconds after calling <code>DeleteStreamProcessor</code>.</p>"
+    },
+    "DeleteUser":{
+      "name":"DeleteUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteUserRequest"},
+      "output":{"shape":"DeleteUserResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified UserID within the collection. Faces that are associated with the UserID are disassociated from the UserID before deleting the specified UserID. If the specified <code>Collection</code> or <code>UserID</code> is already deleted or not found, a <code>ResourceNotFoundException</code> will be thrown. If the action is successful with a 200 response, an empty HTTP body is returned. </p>"
     },
     "DescribeCollection":{
       "name":"DescribeCollection",
@@ -517,6 +579,26 @@
         {"shape":"InvalidImageFormatException"}
       ],
       "documentation":"<p>Detects text in the input image and converts it into machine-readable text.</p> <p>Pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, you must pass it as a reference to an image in an Amazon S3 bucket. For the AWS CLI, passing image bytes is not supported. The image must be either a .png or .jpeg formatted file. </p> <p>The <code>DetectText</code> operation returns text in an array of <a>TextDetection</a> elements, <code>TextDetections</code>. Each <code>TextDetection</code> element provides information about a single word or line of text that was detected in the image. </p> <p>A word is one or more script characters that are not separated by spaces. <code>DetectText</code> can detect up to 100 words in an image.</p> <p>A line is a string of equally spaced words. A line isn't necessarily a complete sentence. For example, a driver's license number is detected as a line. A line ends when there is no aligned text after it. Also, a line ends when there is a large gap between words, relative to the length of the words. This means, depending on the gap between words, Amazon Rekognition may detect multiple lines in text aligned in the same direction. Periods don't represent the end of a line. If a sentence spans multiple lines, the <code>DetectText</code> operation returns multiple lines.</p> <p>To determine whether a <code>TextDetection</code> element is a line of text or a word, use the <code>TextDetection</code> object <code>Type</code> field. </p> <p>To be detected, text must be within +/- 90 degrees orientation of the horizontal axis.</p> <p>For more information, see Detecting text in the Amazon Rekognition Developer Guide.</p>"
+    },
+    "DisassociateFaces":{
+      "name":"DisassociateFaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateFacesRequest"},
+      "output":{"shape":"DisassociateFacesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Removes the association between a <code>Face</code> supplied in an array of <code>FaceIds</code> and the User. If the User is not present already, then a <code>ResourceNotFound</code> exception is thrown. If successful, an array of faces that are disassociated from the User is returned. If a given face is already disassociated from the given UserID, it will be ignored and not be returned in the response. If a given face is already associated with a different User or not found in the collection it will be returned as part of <code>UnsuccessfulDisassociations</code>. You can remove 1 - 100 face IDs from a user at one time.</p>"
     },
     "DistributeDatasetEntries":{
       "name":"DistributeDatasetEntries",
@@ -882,6 +964,25 @@
       ],
       "documentation":"<p> Returns a list of tags in an Amazon Rekognition collection, stream processor, or Custom Labels model. </p> <p>This operation requires permissions to perform the <code>rekognition:ListTagsForResource</code> action. </p>"
     },
+    "ListUsers":{
+      "name":"ListUsers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListUsersRequest"},
+      "output":{"shape":"ListUsersResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns metadata of the User such as <code>UserID</code> in the specified collection. Anonymous User (to reserve faces without any identity) is not returned as part of this request. The results are sorted by system generated primary key ID. If the response is truncated, <code>NextToken</code> is returned in the response that can be used in the subsequent request to retrieve the next set of identities.</p>"
+    },
     "PutProjectPolicy":{
       "name":"PutProjectPolicy",
       "http":{
@@ -964,6 +1065,45 @@
         {"shape":"InvalidImageFormatException"}
       ],
       "documentation":"<p>For a given input image, first detects the largest face in the image, and then searches the specified collection for matching faces. The operation compares the features of the input face with faces in the specified collection. </p> <note> <p>To search for all faces in an input image, you might first call the <a>IndexFaces</a> operation, and then use the face IDs returned in subsequent calls to the <a>SearchFaces</a> operation. </p> <p> You can also call the <code>DetectFaces</code> operation and use the bounding boxes in the response to make face crops, which then you can pass in to the <code>SearchFacesByImage</code> operation. </p> </note> <p>You pass the input image either as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> The response returns an array of faces that match, ordered by similarity score with the highest similarity first. More specifically, it is an array of metadata for each face match found. Along with the metadata, the response also includes a <code>similarity</code> indicating how similar the face is to the input face. In the response, the operation also returns the bounding box (and a confidence level that the bounding box contains a face) of the face that Amazon Rekognition used for the input image. </p> <p>If no faces are detected in the input image, <code>SearchFacesByImage</code> returns an <code>InvalidParameterException</code> error. </p> <p>For an example, Searching for a Face Using an Image in the Amazon Rekognition Developer Guide.</p> <p>The <code>QualityFilter</code> input parameter allows you to filter out detected faces that don’t meet a required quality bar. The quality bar is based on a variety of common use cases. Use <code>QualityFilter</code> to set the quality bar for filtering by specifying <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>. If you do not want to filter detected faces, specify <code>NONE</code>. The default value is <code>NONE</code>.</p> <note> <p>To use quality filtering, you need a collection associated with version 3 of the face model or higher. To get the version of the face model associated with a collection, call <a>DescribeCollection</a>. </p> </note> <p>This operation requires permissions to perform the <code>rekognition:SearchFacesByImage</code> action.</p>"
+    },
+    "SearchUsers":{
+      "name":"SearchUsers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchUsersRequest"},
+      "output":{"shape":"SearchUsersResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches for UserIDs within a collection based on a <code>FaceId</code> or <code>UserId</code>. This API can be used to find the closest UserID (with a highest similarity) to associate a face. The request must be provided with either <code>FaceId</code> or <code>UserId</code>. The operation returns an array of UserID that match the <code>FaceId</code> or <code>UserId</code>, ordered by similarity score with the highest similarity first. </p>"
+    },
+    "SearchUsersByImage":{
+      "name":"SearchUsersByImage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchUsersByImageRequest"},
+      "output":{"shape":"SearchUsersByImageResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidImageFormatException"},
+        {"shape":"InvalidS3ObjectException"},
+        {"shape":"ImageTooLargeException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches for UserIDs using a supplied image. It first detects the largest face in the image, and then searches a specified collection for matching UserIDs. </p> <p>The operation returns an array of UserIDs that match the face in the supplied image, ordered by similarity score with the highest similarity first. It also returns a bounding box for the face found in the input image. </p> <p>Information about faces detected in the supplied image, but not used for the search, is returned in an array of <code>UnsearchedFace</code> objects. If no valid face is detected in the image, the response will contain an empty <code>UserMatches</code> list and no <code>SearchedFace</code> object. </p>"
     },
     "StartCelebrityRecognition":{
       "name":"StartCelebrityRecognition",
@@ -1328,6 +1468,70 @@
     "Assets":{
       "type":"list",
       "member":{"shape":"Asset"}
+    },
+    "AssociateFacesRequest":{
+      "type":"structure",
+      "required":[
+        "CollectionId",
+        "UserId",
+        "FaceIds"
+      ],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection containing the UserID.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The ID for the existing UserID.</p>"
+        },
+        "FaceIds":{
+          "shape":"UserFaceIdList",
+          "documentation":"<p>An array of FaceIDs to associate with the UserID.</p>"
+        },
+        "UserMatchThreshold":{
+          "shape":"Percent",
+          "documentation":"<p>An optional value specifying the minimum confidence in the UserID match to return. The default value is 75.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token used to identify the request to <code>AssociateFaces</code>. If you use the same token with multiple <code>AssociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateFacesResponse":{
+      "type":"structure",
+      "members":{
+        "AssociatedFaces":{
+          "shape":"AssociatedFacesList",
+          "documentation":"<p>An array of AssociatedFace objects containing FaceIDs that are successfully associated with the UserID is returned. Returned if the AssociateFaces action is successful.</p>"
+        },
+        "UnsuccessfulFaceAssociations":{
+          "shape":"UnsuccessfulFaceAssociationList",
+          "documentation":"<p>An array of UnsuccessfulAssociation objects containing FaceIDs that are not successfully associated along with the reasons. Returned if the AssociateFaces action is successful.</p>"
+        },
+        "UserStatus":{
+          "shape":"UserStatus",
+          "documentation":"<p>The status of an update made to a UserID. Reflects if the UserID has been updated for every requested change.</p>"
+        }
+      }
+    },
+    "AssociatedFace":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p>Unique identifier assigned to the face.</p>"
+        }
+      },
+      "documentation":"<p>Provides face metadata for the faces that are associated to a specific UserID.</p>"
+    },
+    "AssociatedFacesList":{
+      "type":"list",
+      "member":{"shape":"AssociatedFace"},
+      "max":100,
+      "min":0
     },
     "Attribute":{
       "type":"string",
@@ -1702,6 +1906,13 @@
         }
       },
       "documentation":"<p>Type that describes the face Amazon Rekognition chose to compare with the faces in the target. This contains a bounding box for the selected face and confidence level that the bounding box contains a face. Note that Amazon Rekognition selects the largest face in the source image for this comparison. </p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> A User with the same Id already exists within the collection, or the update or deletion of the User caused an inconsistent state. ** </p>",
+      "exception":true
     },
     "ConnectedHomeLabel":{"type":"string"},
     "ConnectedHomeLabels":{
@@ -2084,6 +2295,33 @@
         }
       }
     },
+    "CreateUserRequest":{
+      "type":"structure",
+      "required":[
+        "CollectionId",
+        "UserId"
+      ],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection to which the new UserID needs to be created.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>ID for the UserID to be created. This ID needs to be unique within the collection.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token used to identify the request to <code>CreateUser</code>. If you use the same token with multiple <code>CreateUser</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateUserResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CustomLabel":{
       "type":"structure",
       "members":{
@@ -2364,6 +2602,10 @@
         "DeletedFaces":{
           "shape":"FaceIdList",
           "documentation":"<p>An array of strings (face IDs) of the faces that were deleted.</p>"
+        },
+        "UnsuccessfulFaceDeletions":{
+          "shape":"UnsuccessfulFaceDeletionsList",
+          "documentation":"<p>An array of any faces that weren't deleted.</p>"
         }
       }
     },
@@ -2446,6 +2688,33 @@
       "members":{
       }
     },
+    "DeleteUserRequest":{
+      "type":"structure",
+      "required":[
+        "CollectionId",
+        "UserId"
+      ],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection from which the UserID needs to be deleted. </p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>ID for the UserID to be deleted. </p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token used to identify the request to <code>DeleteUser</code>. If you use the same token with multiple <code>DeleteUser </code>requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DeleteUserResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DescribeCollectionRequest":{
       "type":"structure",
       "required":["CollectionId"],
@@ -2474,6 +2743,10 @@
         "CreationTimestamp":{
           "shape":"DateTime",
           "documentation":"<p>The number of milliseconds since the Unix epoch time until the creation of the collection. The Unix epoch time is 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970.</p>"
+        },
+        "UserCount":{
+          "shape":"ULong",
+          "documentation":"<p>The number of UserIDs assigned to the specified colleciton.</p>"
         }
       }
     },
@@ -2966,6 +3239,66 @@
       },
       "documentation":"<p>A set of parameters that allow you to filter out certain results from your returned results.</p>"
     },
+    "DisassociateFacesRequest":{
+      "type":"structure",
+      "required":[
+        "CollectionId",
+        "UserId",
+        "FaceIds"
+      ],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection containing the UserID.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>ID for the existing UserID.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token used to identify the request to <code>DisassociateFaces</code>. If you use the same token with multiple <code>DisassociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.</p>",
+          "idempotencyToken":true
+        },
+        "FaceIds":{
+          "shape":"UserFaceIdList",
+          "documentation":"<p>An array of face IDs to disassociate from the UserID. </p>"
+        }
+      }
+    },
+    "DisassociateFacesResponse":{
+      "type":"structure",
+      "members":{
+        "DisassociatedFaces":{
+          "shape":"DisassociatedFacesList",
+          "documentation":"<p>An array of DissociatedFace objects containing FaceIds that are successfully disassociated with the UserID is returned. Returned if the DisassociatedFaces action is successful.</p>"
+        },
+        "UnsuccessfulFaceDisassociations":{
+          "shape":"UnsuccessfulFaceDisassociationList",
+          "documentation":"<p>An array of UnsuccessfulDisassociation objects containing FaceIds that are not successfully associated, along with the reasons for the failure to associate. Returned if the DisassociateFaces action is successful.</p>"
+        },
+        "UserStatus":{
+          "shape":"UserStatus",
+          "documentation":"<p>The status of an update made to a User. Reflects if the User has been updated for every requested change.</p>"
+        }
+      }
+    },
+    "DisassociatedFace":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p>Unique identifier assigned to the face.</p>"
+        }
+      },
+      "documentation":"<p>Provides face metadata for the faces that are disassociated from a specific UserID.</p>"
+    },
+    "DisassociatedFacesList":{
+      "type":"list",
+      "member":{"shape":"DisassociatedFace"},
+      "max":100,
+      "min":0
+    },
     "DistributeDataset":{
       "type":"structure",
       "required":["Arn"],
@@ -3190,6 +3523,10 @@
         "IndexFacesModelVersion":{
           "shape":"IndexFacesModelVersion",
           "documentation":"<p> The version of the face detect and storage model that was used when indexing the face vector. </p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>Unique identifier assigned to the user.</p>"
         }
       },
       "documentation":"<p>Describes the face properties such as the bounding box, face ID, image ID of the input image, and external image ID that you assigned. </p>"
@@ -4711,6 +5048,14 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>Maximum number of faces to return.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>An array of user IDs to match when listing faces in a collection.</p>"
+        },
+        "FaceIds":{
+          "shape":"FaceIdList",
+          "documentation":"<p>An array of face IDs to match when listing faces in a collection.</p>"
         }
       }
     },
@@ -4812,6 +5157,37 @@
         }
       }
     },
+    "ListUsersRequest":{
+      "type":"structure",
+      "required":["CollectionId"],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxUserResults",
+          "documentation":"<p>Maximum number of UsersID to return. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagingation token to receive the next set of UsersID.</p>"
+        }
+      }
+    },
+    "ListUsersResponse":{
+      "type":"structure",
+      "members":{
+        "Users":{
+          "shape":"UserList",
+          "documentation":"<p>List of UsersID associated with the specified collection.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to be used with the subsequent request if the response is truncated.</p>"
+        }
+      }
+    },
     "LivenessImageBlob":{
       "type":"blob",
       "max":204800,
@@ -4861,6 +5237,20 @@
       "documentation":"<p>The format of the project policy document that you supplied to <code>PutProjectPolicy</code> is incorrect. </p>",
       "exception":true
     },
+    "MatchedUser":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>A provided ID for the UserID. Unique within the collection.</p>"
+        },
+        "UserStatus":{
+          "shape":"UserStatus",
+          "documentation":"<p>The status of the user matched to a provided FaceID.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for a UserID matched with a given face.</p>"
+    },
     "MaxDurationInSecondsULong":{
       "type":"long",
       "max":120,
@@ -4882,6 +5272,11 @@
     },
     "MaxResults":{
       "type":"integer",
+      "min":1
+    },
+    "MaxUserResults":{
+      "type":"integer",
+      "max":500,
       "min":1
     },
     "MinCoveragePercentage":{
@@ -5721,6 +6116,127 @@
           "documentation":"<p>Version number of the face detection model associated with the input collection (<code>CollectionId</code>).</p>"
         }
       }
+    },
+    "SearchUsersByImageRequest":{
+      "type":"structure",
+      "required":[
+        "CollectionId",
+        "Image"
+      ],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection containing the UserID.</p>"
+        },
+        "Image":{"shape":"Image"},
+        "UserMatchThreshold":{
+          "shape":"Percent",
+          "documentation":"<p>Specifies the minimum confidence in the UserID match to return. Default value is 80.</p>"
+        },
+        "MaxUsers":{
+          "shape":"MaxUserResults",
+          "documentation":"<p>Maximum number of UserIDs to return.</p>"
+        },
+        "QualityFilter":{
+          "shape":"QualityFilter",
+          "documentation":"<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't searched for in the collection. The default value is NONE.</p>"
+        }
+      }
+    },
+    "SearchUsersByImageResponse":{
+      "type":"structure",
+      "members":{
+        "UserMatches":{
+          "shape":"UserMatchList",
+          "documentation":"<p>An array of UserID objects that matched the input face, along with the confidence in the match. The returned structure will be empty if there are no matches. Returned if the SearchUsersByImageResponse action is successful.</p>"
+        },
+        "FaceModelVersion":{
+          "shape":"String",
+          "documentation":"<p>Version number of the face detection model associated with the input collection CollectionId.</p>"
+        },
+        "SearchedFace":{
+          "shape":"SearchedFaceDetails",
+          "documentation":"<p>A list of FaceDetail objects containing the BoundingBox for the largest face in image, as well as the confidence in the bounding box, that was searched for matches. If no valid face is detected in the image the response will contain no SearchedFace object.</p>"
+        },
+        "UnsearchedFaces":{
+          "shape":"UnsearchedFacesList",
+          "documentation":"<p>List of UnsearchedFace objects. Contains the face details infered from the specified image but not used for search. Contains reasons that describe why a face wasn't used for Search. </p>"
+        }
+      }
+    },
+    "SearchUsersRequest":{
+      "type":"structure",
+      "required":["CollectionId"],
+      "members":{
+        "CollectionId":{
+          "shape":"CollectionId",
+          "documentation":"<p>The ID of an existing collection containing the UserID, used with a UserId or FaceId. If a FaceId is provided, UserId isn’t required to be present in the Collection.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>ID for the existing User.</p>"
+        },
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p>ID for the existing face.</p>"
+        },
+        "UserMatchThreshold":{
+          "shape":"Percent",
+          "documentation":"<p>Optional value that specifies the minimum confidence in the matched UserID to return. Default value of 80.</p>"
+        },
+        "MaxUsers":{
+          "shape":"MaxUserResults",
+          "documentation":"<p>Maximum number of identities to return.</p>"
+        }
+      }
+    },
+    "SearchUsersResponse":{
+      "type":"structure",
+      "members":{
+        "UserMatches":{
+          "shape":"UserMatchList",
+          "documentation":"<p>An array of UserMatch objects that matched the input face along with the confidence in the match. Array will be empty if there are no matches.</p>"
+        },
+        "FaceModelVersion":{
+          "shape":"String",
+          "documentation":"<p>Version number of the face detection model associated with the input CollectionId.</p>"
+        },
+        "SearchedFace":{
+          "shape":"SearchedFace",
+          "documentation":"<p>Contains the ID of a face that was used to search for matches in a collection.</p>"
+        },
+        "SearchedUser":{
+          "shape":"SearchedUser",
+          "documentation":"<p>Contains the ID of the UserID that was used to search for matches in a collection.</p>"
+        }
+      }
+    },
+    "SearchedFace":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p> Unique identifier assigned to the face.</p>"
+        }
+      },
+      "documentation":"<p>Provides face metadata such as FaceId, BoundingBox, Confidence of the input face used for search.</p>"
+    },
+    "SearchedFaceDetails":{
+      "type":"structure",
+      "members":{
+        "FaceDetail":{"shape":"FaceDetail"}
+      },
+      "documentation":"<p>Contains data regarding the input face used for a search.</p>"
+    },
+    "SearchedUser":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p> A provided ID for the UserID. Unique within the collection. </p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a User searched for within a collection.</p>"
     },
     "SegmentConfidence":{
       "type":"float",
@@ -6674,6 +7190,148 @@
       "type":"list",
       "member":{"shape":"UnindexedFace"}
     },
+    "UnsearchedFace":{
+      "type":"structure",
+      "members":{
+        "FaceDetails":{"shape":"FaceDetail"},
+        "Reasons":{
+          "shape":"UnsearchedFaceReasons",
+          "documentation":"<p> Reasons why a face wasn't used for Search. </p>"
+        }
+      },
+      "documentation":"<p>Face details inferred from the image but not used for search. The response attribute contains reasons for why a face wasn't used for Search. </p>"
+    },
+    "UnsearchedFaceReason":{
+      "type":"string",
+      "enum":[
+        "FACE_NOT_LARGEST",
+        "EXCEEDS_MAX_FACES",
+        "EXTREME_POSE",
+        "LOW_BRIGHTNESS",
+        "LOW_SHARPNESS",
+        "LOW_CONFIDENCE",
+        "SMALL_BOUNDING_BOX",
+        "LOW_FACE_QUALITY"
+      ]
+    },
+    "UnsearchedFaceReasons":{
+      "type":"list",
+      "member":{"shape":"UnsearchedFaceReason"}
+    },
+    "UnsearchedFacesList":{
+      "type":"list",
+      "member":{"shape":"UnsearchedFace"}
+    },
+    "UnsuccessfulFaceAssociation":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p>A unique identifier assigned to the face. </p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>A provided ID for the UserID. Unique within the collection. </p>"
+        },
+        "Confidence":{
+          "shape":"Percent",
+          "documentation":"<p>Match confidence with the UserID, provides information regarding if a face association was unsuccessful because it didn't meet UserMatchThreshold.</p>"
+        },
+        "Reasons":{
+          "shape":"UnsuccessfulFaceAssociationReasons",
+          "documentation":"<p> The reason why the association was unsuccessful. </p>"
+        }
+      },
+      "documentation":"<p>Contains metadata like FaceId, UserID, and Reasons, for a face that was unsuccessfully associated.</p>"
+    },
+    "UnsuccessfulFaceAssociationList":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceAssociation"},
+      "max":500,
+      "min":0
+    },
+    "UnsuccessfulFaceAssociationReason":{
+      "type":"string",
+      "enum":[
+        "FACE_NOT_FOUND",
+        "ASSOCIATED_TO_A_DIFFERENT_USER",
+        "LOW_MATCH_CONFIDENCE"
+      ]
+    },
+    "UnsuccessfulFaceAssociationReasons":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceAssociationReason"}
+    },
+    "UnsuccessfulFaceDeletion":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p> A unique identifier assigned to the face.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p> A provided ID for the UserID. Unique within the collection. </p>"
+        },
+        "Reasons":{
+          "shape":"UnsuccessfulFaceDeletionReasons",
+          "documentation":"<p>The reason why the deletion was unsuccessful. </p>"
+        }
+      },
+      "documentation":"<p>Contains metadata like FaceId, UserID, and Reasons, for a face that was unsuccessfully deleted.</p>"
+    },
+    "UnsuccessfulFaceDeletionReason":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATED_TO_AN_EXISTING_USER",
+        "FACE_NOT_FOUND"
+      ]
+    },
+    "UnsuccessfulFaceDeletionReasons":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceDeletionReason"}
+    },
+    "UnsuccessfulFaceDeletionsList":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceDeletion"},
+      "max":4096,
+      "min":0
+    },
+    "UnsuccessfulFaceDisassociation":{
+      "type":"structure",
+      "members":{
+        "FaceId":{
+          "shape":"FaceId",
+          "documentation":"<p>A unique identifier assigned to the face. </p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>A provided ID for the UserID. Unique within the collection. </p>"
+        },
+        "Reasons":{
+          "shape":"UnsuccessfulFaceDisassociationReasons",
+          "documentation":"<p>The reason why the deletion was unsuccessful. </p>"
+        }
+      },
+      "documentation":"<p>Contains metadata like FaceId, UserID, and Reasons, for a face that was unsuccessfully disassociated.</p>"
+    },
+    "UnsuccessfulFaceDisassociationList":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceDisassociation"},
+      "max":500,
+      "min":0
+    },
+    "UnsuccessfulFaceDisassociationReason":{
+      "type":"string",
+      "enum":[
+        "FACE_NOT_FOUND",
+        "ASSOCIATED_TO_A_DIFFERENT_USER"
+      ]
+    },
+    "UnsuccessfulFaceDisassociationReasons":{
+      "type":"list",
+      "member":{"shape":"UnsuccessfulFaceDisassociationReason"}
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -6755,6 +7413,65 @@
       "member":{"shape":"Url"},
       "max":255,
       "min":0
+    },
+    "User":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p> A provided ID for the User. Unique within the collection.</p>"
+        },
+        "UserStatus":{
+          "shape":"UserStatus",
+          "documentation":"<p> Communicates if the UserID has been updated with latest set of faces to be associated with the UserID. </p>"
+        }
+      },
+      "documentation":"<p>Metadata of the user stored in a collection.</p>"
+    },
+    "UserFaceIdList":{
+      "type":"list",
+      "member":{"shape":"FaceId"},
+      "max":100,
+      "min":1
+    },
+    "UserId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.\\-:]+"
+    },
+    "UserList":{
+      "type":"list",
+      "member":{"shape":"User"},
+      "max":500
+    },
+    "UserMatch":{
+      "type":"structure",
+      "members":{
+        "Similarity":{
+          "shape":"Percent",
+          "documentation":"<p> Describes the UserID metadata.</p>"
+        },
+        "User":{
+          "shape":"MatchedUser",
+          "documentation":"<p> Confidence in the match of this UserID with the input face. </p>"
+        }
+      },
+      "documentation":"<p>Provides UserID metadata along with the confidence in the match of this UserID with the input face.</p>"
+    },
+    "UserMatchList":{
+      "type":"list",
+      "member":{"shape":"UserMatch"},
+      "max":500
+    },
+    "UserStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "UPDATING",
+        "CREATING",
+        "CREATED"
+      ]
     },
     "ValidationData":{
       "type":"structure",
@@ -6849,5 +7566,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>This is the API Reference for <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/images.html\">Amazon Rekognition Image</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/what-is.html\">Amazon Rekognition Custom Labels</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/video.html\">Amazon Rekognition Stored Video</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/streaming-video.html\">Amazon Rekognition Streaming Video</a>. It provides descriptions of actions, data types, common parameters, and common errors.</p> <p> <b>Amazon Rekognition Image</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CompareFaces.html\">CompareFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateCollection.html\">CreateCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteCollection.html\">DeleteCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteFaces.html\">DeleteFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeCollection.html\">DescribeCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectFaces.html\">DetectFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectLabels.html\">DetectLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectModerationLabels.html\">DetectModerationLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectProtectiveEquipment.html\">DetectProtectiveEquipment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectText.html\">DetectText</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityInfo.html\">GetCelebrityInfo</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_IndexFaces.html\">IndexFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListCollections.html\">ListCollections</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListFaces.html\">ListFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_RecognizeCelebrities.html\">RecognizeCelebrities</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFaces.html\">SearchFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFacesByImage.html\">SearchFacesByImage</a> </p> </li> </ul> <p> <b>Amazon Rekognition Custom Labels</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CopyProjectVersion.html\">CopyProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateDataset.html\">CreateDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateProject.html\">CreateProject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateProjectVersion.html\">CreateProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteDataset.html\">DeleteDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProject.html\">DeleteProject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProjectPolicy.html\">DeleteProjectPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProjectVersion.html\">DeleteProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeDataset.html\">DescribeDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeProjects.html\">DescribeProjects</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeProjectVersions.html\">DescribeProjectVersions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectCustomLabels.html\">DetectCustomLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DistributeDatasetEntries.html\">DistributeDatasetEntries</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListDatasetEntries.html\">ListDatasetEntries</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListDatasetLabels.html\">ListDatasetLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListProjectPolicies.html\">ListProjectPolicies</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_PutProjectPolicy.html\">PutProjectPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartProjectVersion.html\">StartProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StopProjectVersion.html\">StopProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_UpdateDatasetEntries.html\">UpdateDatasetEntries</a> </p> </li> </ul> <p> <b>Amazon Rekognition Video Stored Video</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityRecognition.html\">GetCelebrityRecognition</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetContentModeration.html\">GetContentModeration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceDetection.html\">GetFaceDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceSearch.html\">GetFaceSearch</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetLabelDetection.html\">GetLabelDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetPersonTracking.html\">GetPersonTracking</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetSegmentDetection.html\">GetSegmentDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetTextDetection.html\">GetTextDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartCelebrityRecognition.html\">StartCelebrityRecognition</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartContentModeration.html\">StartContentModeration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceDetection.html\">StartFaceDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceSearch.html\">StartFaceSearch</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartLabelDetection.html\">StartLabelDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartPersonTracking.html\">StartPersonTracking</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartSegmentDetection.html\">StartSegmentDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartTextDetection.html\">StartTextDetection</a> </p> </li> </ul> <p> <b>Amazon Rekognition Video Streaming Video</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateStreamProcessor.html\">CreateStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteStreamProcessor.html\">DeleteStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeStreamProcessor.html\">DescribeStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListStreamProcessors.html\">ListStreamProcessors</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartStreamProcessor.html\">StartStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StopStreamProcessor.html\">StopStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_UpdateStreamProcessor.html\">UpdateStreamProcessor</a> </p> </li> </ul>"
+  "documentation":"<p>This is the API Reference for <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/images.html\">Amazon Rekognition Image</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/what-is.html\">Amazon Rekognition Custom Labels</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/video.html\">Amazon Rekognition Stored Video</a>, <a href=\"https://docs.aws.amazon.com/rekognition/latest/dg/streaming-video.html\">Amazon Rekognition Streaming Video</a>. It provides descriptions of actions, data types, common parameters, and common errors.</p> <p> <b>Amazon Rekognition Image</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_AssociateFaces.html\">AssociateFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CompareFaces.html\">CompareFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateCollection.html\">CreateCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateUser.html\">CreateUser</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteCollection.html\">DeleteCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteFaces.html\">DeleteFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteUser.html\">DeleteUser</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeCollection.html\">DescribeCollection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectFaces.html\">DetectFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectLabels.html\">DetectLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectModerationLabels.html\">DetectModerationLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectProtectiveEquipment.html\">DetectProtectiveEquipment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectText.html\">DetectText</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DisassociateFaces.html\">DisassociateFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityInfo.html\">GetCelebrityInfo</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_IndexFaces.html\">IndexFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListCollections.html\">ListCollections</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListFaces.html\">ListFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListFaces.html\">ListUsers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_RecognizeCelebrities.html\">RecognizeCelebrities</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFaces.html\">SearchFaces</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFacesByImage.html\">SearchFacesByImage</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchUsers.html\">SearchUsers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchUsersByImage.html\">SearchUsersByImage</a> </p> </li> </ul> <p> <b>Amazon Rekognition Custom Labels</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CopyProjectVersion.html\">CopyProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateDataset.html\">CreateDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateProject.html\">CreateProject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateProjectVersion.html\">CreateProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteDataset.html\">DeleteDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProject.html\">DeleteProject</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProjectPolicy.html\">DeleteProjectPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteProjectVersion.html\">DeleteProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeDataset.html\">DescribeDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeProjects.html\">DescribeProjects</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeProjectVersions.html\">DescribeProjectVersions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectCustomLabels.html\">DetectCustomLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DistributeDatasetEntries.html\">DistributeDatasetEntries</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListDatasetEntries.html\">ListDatasetEntries</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListDatasetLabels.html\">ListDatasetLabels</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListProjectPolicies.html\">ListProjectPolicies</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_PutProjectPolicy.html\">PutProjectPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartProjectVersion.html\">StartProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StopProjectVersion.html\">StopProjectVersion</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_UpdateDatasetEntries.html\">UpdateDatasetEntries</a> </p> </li> </ul> <p> <b>Amazon Rekognition Video Stored Video</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityRecognition.html\">GetCelebrityRecognition</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetContentModeration.html\">GetContentModeration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceDetection.html\">GetFaceDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceSearch.html\">GetFaceSearch</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetLabelDetection.html\">GetLabelDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetPersonTracking.html\">GetPersonTracking</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetSegmentDetection.html\">GetSegmentDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetTextDetection.html\">GetTextDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartCelebrityRecognition.html\">StartCelebrityRecognition</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartContentModeration.html\">StartContentModeration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceDetection.html\">StartFaceDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceSearch.html\">StartFaceSearch</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartLabelDetection.html\">StartLabelDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartPersonTracking.html\">StartPersonTracking</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartSegmentDetection.html\">StartSegmentDetection</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartTextDetection.html\">StartTextDetection</a> </p> </li> </ul> <p> <b>Amazon Rekognition Video Streaming Video</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateStreamProcessor.html\">CreateStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteStreamProcessor.html\">DeleteStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeStreamProcessor.html\">DescribeStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListStreamProcessors.html\">ListStreamProcessors</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartStreamProcessor.html\">StartStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StopStreamProcessor.html\">StopStreamProcessor</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/rekognition/latest/APIReference/API_UpdateStreamProcessor.html\">UpdateStreamProcessor</a> </p> </li> </ul>"
 }

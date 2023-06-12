@@ -5507,6 +5507,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.27.152
+========
+
+* api-change:``amplifyuibuilder``: AWS Amplify UIBuilder is launching Codegen UI, a new feature that enables you to generate your amplify uibuilder components and forms.
+* api-change:``dynamodb``: Documentation updates for DynamoDB
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``fsx``: Amazon FSx for NetApp ONTAP now supports joining a storage virtual machine (SVM) to Active Directory after the SVM has been created.
+* api-change:``opensearch``: This release adds support for SkipUnavailable connection property for cross cluster search
+* api-change:``rekognition``: This release adds support for improved accuracy with user vector in Amazon Rekognition Face Search. Adds new APIs: AssociateFaces, CreateUser, DeleteUser, DisassociateFaces, ListUsers, SearchUsers, SearchUsersByImage. Also adds new face metadata that can be stored: user vector.
+* api-change:``sagemaker``: Sagemaker Neo now supports compilation for inferentia2 (ML_INF2) and Trainium1 (ML_TRN1) as available targets. With these devices, you can run your workloads at highest performance with lowest cost. inferentia2 (ML_INF2) is available in CMH and Trainium1 (ML_TRN1) is available in IAD currently
+
+
+1.27.151
+========
+
+* api-change:``acm-pca``: Document-only update to refresh CLI  documentation for AWS Private CA. No change to the service.
+* api-change:``connect``: This release adds search APIs for Prompts, Quick Connects and Hours of Operations, which can be used to search for those resources within a Connect Instance.
+
+
 1.27.150
 ========
 

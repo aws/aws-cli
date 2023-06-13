@@ -368,7 +368,7 @@
       "members":{
         "Destination":{
           "shape":"S3Destination",
-          "documentation":"<p>The Amazon S3 bucket and optional folder (object key prefix) where SimSpace Weaver creates the snapshot file.</p>"
+          "documentation":"<p>The Amazon S3 bucket and optional folder (object key prefix) where SimSpace Weaver creates the snapshot file.</p> <p>The Amazon S3 bucket must be in the same Amazon Web Services Region as the simulation.</p>"
         },
         "Simulation":{
           "shape":"SimSpaceWeaverResourceName",
@@ -751,7 +751,7 @@
       "type":"string",
       "max":1600,
       "min":0,
-      "pattern":"^arn:(?:aws|aws-cn):log-group:([a-z]{2}-[a-z]+-\\d{1}):(\\d{12})?:role\\/(.+)$"
+      "pattern":"^arn:(?:aws|aws-cn|aws-us-gov):log-group:([a-z]{2}-[a-z]+-\\d{1}):(\\d{12})?:role\\/(.+)$"
     },
     "LoggingConfiguration":{
       "type":"structure",
@@ -806,7 +806,7 @@
       "type":"string",
       "max":1600,
       "min":0,
-      "pattern":"^arn:(?:aws|aws-cn):iam::(\\d{12})?:role\\/(.+)$"
+      "pattern":"^arn:(?:aws|aws-cn|aws-us-gov):iam::(\\d{12})?:role\\/(.+)$"
     },
     "S3Destination":{
       "type":"structure",
@@ -852,7 +852,7 @@
       "type":"string",
       "max":1600,
       "min":0,
-      "pattern":"^arn:(?:aws|aws-cn):simspaceweaver:([a-z]{2}-[a-z]+-\\d{1}):(\\d{12})?:([a-z]+)\\/(.+)$"
+      "pattern":"^arn:(?:aws|aws-cn|aws-us-gov):simspaceweaver:([a-z]{2}-[a-z]+-\\d{1}):(\\d{12})?:([a-z]+)\\/(.+)$"
     },
     "SimSpaceWeaverLongResourceName":{
       "type":"string",
@@ -1112,7 +1112,7 @@
         },
         "SnapshotS3Location":{
           "shape":"S3Location",
-          "documentation":"<p>The location of the snapshot .zip file in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p> <p>Provide a <code>SnapshotS3Location</code> to start your simulation from a snapshot.</p> <p>If you provide a <code>SnapshotS3Location</code> then you can't provide a <code>SchemaS3Location</code>.</p>"
+          "documentation":"<p>The location of the snapshot .zip file in Amazon Simple Storage Service (Amazon S3). For more information about Amazon S3, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html\"> <i>Amazon Simple Storage Service User Guide</i> </a>.</p> <p>Provide a <code>SnapshotS3Location</code> to start your simulation from a snapshot.</p> <p>The Amazon S3 bucket must be in the same Amazon Web Services Region as the simulation.</p> <p>If you provide a <code>SnapshotS3Location</code> then you can't provide a <code>SchemaS3Location</code>.</p>"
         },
         "Tags":{
           "shape":"TagMap",

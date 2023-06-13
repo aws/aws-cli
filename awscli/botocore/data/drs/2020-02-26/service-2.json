@@ -13,6 +13,26 @@
     "uid":"drs-2020-02-26"
   },
   "operations":{
+    "AssociateSourceNetworkStack":{
+      "name":"AssociateSourceNetworkStack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/AssociateSourceNetworkStack",
+        "responseCode":202
+      },
+      "input":{"shape":"AssociateSourceNetworkStackRequest"},
+      "output":{"shape":"AssociateSourceNetworkStackResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Associate a Source Network to an existing CloudFormation Stack and modify launch templates to use this network. Can be used for reverting to previously deployed CloudFormation stacks.</p>"
+    },
     "CreateExtendedSourceServer":{
       "name":"CreateExtendedSourceServer",
       "http":{
@@ -70,6 +90,26 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Creates a new ReplicationConfigurationTemplate.</p>"
+    },
+    "CreateSourceNetwork":{
+      "name":"CreateSourceNetwork",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateSourceNetwork",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSourceNetworkRequest"},
+      "output":{"shape":"CreateSourceNetworkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Create a new Source Network resource for a provided VPC ID.</p>"
     },
     "DeleteJob":{
       "name":"DeleteJob",
@@ -143,6 +183,25 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Deletes a single Replication Configuration Template by ID</p>",
+      "idempotent":true
+    },
+    "DeleteSourceNetwork":{
+      "name":"DeleteSourceNetwork",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteSourceNetwork",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteSourceNetworkRequest"},
+      "output":{"shape":"DeleteSourceNetworkResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Delete Source Network resource.</p>",
       "idempotent":true
     },
     "DeleteSourceServer":{
@@ -269,6 +328,23 @@
       ],
       "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by Source Server IDs.</p>"
     },
+    "DescribeSourceNetworks":{
+      "name":"DescribeSourceNetworks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeSourceNetworks",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeSourceNetworksRequest"},
+      "output":{"shape":"DescribeSourceNetworksResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists all Source Networks or multiple Source Networks filtered by ID.</p>"
+    },
     "DescribeSourceServers":{
       "name":"DescribeSourceServers",
       "http":{
@@ -321,6 +397,25 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Disconnects a specific Source Server from Elastic Disaster Recovery. Data replication is stopped immediately. All AWS resources created by Elastic Disaster Recovery for enabling the replication of the Source Server will be terminated / deleted within 90 minutes. You cannot disconnect a Source Server if it has a Recovery Instance. If the agent on the Source Server has not been prevented from communicating with the Elastic Disaster Recovery service, then it will receive a command to uninstall itself (within approximately 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be set to DISCONNECTED; The totalStorageBytes property for each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDuration will be nullified.</p>"
+    },
+    "ExportSourceNetworkCfnTemplate":{
+      "name":"ExportSourceNetworkCfnTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ExportSourceNetworkCfnTemplate",
+        "responseCode":200
+      },
+      "input":{"shape":"ExportSourceNetworkCfnTemplateRequest"},
+      "output":{"shape":"ExportSourceNetworkCfnTemplateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Export the Source Network CloudFormation template to an S3 bucket.</p>"
     },
     "GetFailbackReplicationConfiguration":{
       "name":"GetFailbackReplicationConfiguration",
@@ -540,6 +635,43 @@
       ],
       "documentation":"<p>Starts replication for a stopped Source Server. This action would make the Source Server protected again and restart billing for it.</p>"
     },
+    "StartSourceNetworkRecovery":{
+      "name":"StartSourceNetworkRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartSourceNetworkRecovery",
+        "responseCode":202
+      },
+      "input":{"shape":"StartSourceNetworkRecoveryRequest"},
+      "output":{"shape":"StartSourceNetworkRecoveryResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deploy VPC for the specified Source Network and modify launch templates to use this network. The VPC will be deployed using a dedicated CloudFormation stack.</p>"
+    },
+    "StartSourceNetworkReplication":{
+      "name":"StartSourceNetworkReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartSourceNetworkReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StartSourceNetworkReplicationRequest"},
+      "output":{"shape":"StartSourceNetworkReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Starts replication for a Source Network. This action would make the Source Network protected.</p>"
+    },
     "StopFailback":{
       "name":"StopFailback",
       "http":{
@@ -573,6 +705,25 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Stops replication for a Source Server. This action would make the Source Server unprotected, delete its existing snapshots and stop billing for it.</p>"
+    },
+    "StopSourceNetworkReplication":{
+      "name":"StopSourceNetworkReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopSourceNetworkReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StopSourceNetworkReplicationRequest"},
+      "output":{"shape":"StopSourceNetworkReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Stops replication for a Source Network. This action would make the Source Network unprotected.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -773,6 +924,32 @@
       "max":50,
       "min":0
     },
+    "AssociateSourceNetworkStackRequest":{
+      "type":"structure",
+      "required":[
+        "cfnStackName",
+        "sourceNetworkID"
+      ],
+      "members":{
+        "cfnStackName":{
+          "shape":"CfnStackName",
+          "documentation":"<p>CloudFormation template to associate with a Source Network.</p>"
+        },
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>The Source Network ID to associate with CloudFormation template.</p>"
+        }
+      }
+    },
+    "AssociateSourceNetworkStackResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"Job",
+          "documentation":"<p>The Source Network association Job.</p>"
+        }
+      }
+    },
     "AwsAvailabilityZone":{
       "type":"string",
       "max":255,
@@ -807,6 +984,13 @@
         }
       },
       "documentation":"<p>Information about a server's CPU.</p>"
+    },
+    "CfnStackName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z][-a-zA-Z0-9]*$",
+      "sensitive":true
     },
     "ConflictException":{
       "type":"structure",
@@ -899,6 +1083,10 @@
         "copyTags":{
           "shape":"Boolean",
           "documentation":"<p>Copy tags.</p>"
+        },
+        "exportBucketArn":{
+          "shape":"ARN",
+          "documentation":"<p>S3 bucket ARN to export Source Network templates.</p>"
         },
         "launchDisposition":{
           "shape":"LaunchDisposition",
@@ -1003,6 +1191,41 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Whether to use a dedicated Replication Server in the replication staging area.</p>"
+        }
+      }
+    },
+    "CreateSourceNetworkRequest":{
+      "type":"structure",
+      "required":[
+        "originAccountID",
+        "originRegion",
+        "vpcID"
+      ],
+      "members":{
+        "originAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account containing the VPC to protect.</p>"
+        },
+        "originRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>Region containing the VPC to protect.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A set of tags to be associated with the Source Network resource.</p>"
+        },
+        "vpcID":{
+          "shape":"VpcID",
+          "documentation":"<p>Which VPC ID to protect.</p>"
+        }
+      }
+    },
+    "CreateSourceNetworkResponse":{
+      "type":"structure",
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>ID of the created Source Network.</p>"
         }
       }
     },
@@ -1233,6 +1456,21 @@
       }
     },
     "DeleteReplicationConfigurationTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteSourceNetworkRequest":{
+      "type":"structure",
+      "required":["sourceNetworkID"],
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>ID of the Source Network to delete.</p>"
+        }
+      }
+    },
+    "DeleteSourceNetworkResponse":{
       "type":"structure",
       "members":{
       }
@@ -1498,6 +1736,60 @@
         }
       }
     },
+    "DescribeSourceNetworksRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"DescribeSourceNetworksRequestFilters",
+          "documentation":"<p>A set of filters by which to return Source Networks.</p>"
+        },
+        "maxResults":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Maximum number of Source Networks to retrieve.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next Source Networks to retrieve.</p>"
+        }
+      }
+    },
+    "DescribeSourceNetworksRequestFilters":{
+      "type":"structure",
+      "members":{
+        "originAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Filter Source Networks by account ID containing the protected VPCs.</p>"
+        },
+        "originRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>Filter Source Networks by the region containing the protected VPCs.</p>"
+        },
+        "sourceNetworkIDs":{
+          "shape":"DescribeSourceNetworksRequestFiltersIDs",
+          "documentation":"<p>An array of Source Network IDs that should be returned. An empty array means all Source Networks.</p>"
+        }
+      },
+      "documentation":"<p>A set of filters by which to return Source Networks.</p>"
+    },
+    "DescribeSourceNetworksRequestFiltersIDs":{
+      "type":"list",
+      "member":{"shape":"SourceNetworkID"},
+      "max":100,
+      "min":0
+    },
+    "DescribeSourceNetworksResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"SourceNetworksList",
+          "documentation":"<p>An array of Source Networks.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token of the next Source Networks to retrieve.</p>"
+        }
+      }
+    },
     "DescribeSourceServersRequest":{
       "type":"structure",
       "members":{
@@ -1628,6 +1920,36 @@
       "max":19,
       "min":10,
       "pattern":"^vol-([0-9a-fA-F]{8}|[0-9a-fA-F]{17})$"
+    },
+    "EventResourceData":{
+      "type":"structure",
+      "members":{
+        "sourceNetworkData":{
+          "shape":"SourceNetworkData",
+          "documentation":"<p>Source Network properties.</p>"
+        }
+      },
+      "documentation":"<p>Properties of resource related to a job event.</p>",
+      "union":true
+    },
+    "ExportSourceNetworkCfnTemplateRequest":{
+      "type":"structure",
+      "required":["sourceNetworkID"],
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>The Source Network ID to export its CloudFormation template to an S3 bucket.</p>"
+        }
+      }
+    },
+    "ExportSourceNetworkCfnTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "s3DestinationUrl":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>S3 bucket URL where the Source Network CloudFormation template was exported to.</p>"
+        }
+      }
     },
     "ExtensionStatus":{
       "type":"string",
@@ -1789,7 +2111,10 @@
         "FAILBACK",
         "DIAGNOSTIC",
         "TERMINATE_RECOVERY_INSTANCES",
-        "TARGET_ACCOUNT"
+        "TARGET_ACCOUNT",
+        "CREATE_NETWORK_RECOVERY",
+        "UPDATE_NETWORK_RECOVERY",
+        "ASSOCIATE_NETWORK_RECOVERY"
       ]
     },
     "InternalServerException":{
@@ -1832,6 +2157,10 @@
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>The ID of the Job.</p>"
+        },
+        "participatingResources":{
+          "shape":"ParticipatingResources",
+          "documentation":"<p>A list of resources that the Job is acting upon.</p>"
         },
         "participatingServers":{
           "shape":"ParticipatingServers",
@@ -1895,7 +2224,17 @@
         "LAUNCH_START",
         "LAUNCH_FAILED",
         "JOB_CANCEL",
-        "JOB_END"
+        "JOB_END",
+        "DEPLOY_NETWORK_CONFIGURATION_START",
+        "DEPLOY_NETWORK_CONFIGURATION_END",
+        "DEPLOY_NETWORK_CONFIGURATION_FAILED",
+        "UPDATE_NETWORK_CONFIGURATION_START",
+        "UPDATE_NETWORK_CONFIGURATION_END",
+        "UPDATE_NETWORK_CONFIGURATION_FAILED",
+        "UPDATE_LAUNCH_TEMPLATE_START",
+        "UPDATE_LAUNCH_TEMPLATE_END",
+        "UPDATE_LAUNCH_TEMPLATE_FAILED",
+        "NETWORK_RECOVERY_FAIL"
       ]
     },
     "JobLogEventData":{
@@ -1908,6 +2247,10 @@
         "conversionServerID":{
           "shape":"EC2InstanceID",
           "documentation":"<p>The ID of a conversion server.</p>"
+        },
+        "eventResourceData":{
+          "shape":"EventResourceData",
+          "documentation":"<p>Properties of resource related to a job event.</p>"
         },
         "rawError":{
           "shape":"LargeBoundedString",
@@ -2020,6 +2363,10 @@
         "copyTags":{
           "shape":"Boolean",
           "documentation":"<p>Copy tags.</p>"
+        },
+        "exportBucketArn":{
+          "shape":"ARN",
+          "documentation":"<p>S3 bucket ARN to export Source Network templates.</p>"
         },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
@@ -2335,6 +2682,35 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "ParticipatingResource":{
+      "type":"structure",
+      "members":{
+        "launchStatus":{
+          "shape":"LaunchStatus",
+          "documentation":"<p>The launch status of a participating resource.</p>"
+        },
+        "participatingResourceID":{
+          "shape":"ParticipatingResourceID",
+          "documentation":"<p>The ID of a participating resource.</p>"
+        }
+      },
+      "documentation":"<p>Represents a resource participating in an asynchronous Job.</p>"
+    },
+    "ParticipatingResourceID":{
+      "type":"structure",
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>Source Network ID.</p>"
+        }
+      },
+      "documentation":"<p>ID of a resource participating in an asynchronous Job.</p>",
+      "union":true
+    },
+    "ParticipatingResources":{
+      "type":"list",
+      "member":{"shape":"ParticipatingResource"}
     },
     "ParticipatingServer":{
       "type":"structure",
@@ -2708,6 +3084,36 @@
       "max":200,
       "min":1
     },
+    "RecoveryLifeCycle":{
+      "type":"structure",
+      "members":{
+        "apiCallDateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the last Source Network recovery was initiated.</p>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>The ID of the Job that was used to last recover the Source Network.</p>"
+        },
+        "lastRecoveryResult":{
+          "shape":"RecoveryResult",
+          "documentation":"<p>The status of the last recovery status of this Source Network.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the Source Network recovery Lifecycle.</p>"
+    },
+    "RecoveryResult":{
+      "type":"string",
+      "enum":[
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "SUCCESS",
+        "FAIL",
+        "PARTIAL_SUCCESS",
+        "ASSOCIATE_SUCCESS",
+        "ASSOCIATE_FAIL"
+      ]
+    },
     "RecoverySnapshot":{
       "type":"structure",
       "required":[
@@ -2849,7 +3255,8 @@
       "type":"string",
       "enum":[
         "DEFAULT",
-        "CUSTOM"
+        "CUSTOM",
+        "NONE"
       ]
     },
     "ReplicationConfigurationReplicatedDisk":{
@@ -3004,6 +3411,15 @@
       "max":32,
       "min":0
     },
+    "ReplicationStatus":{
+      "type":"string",
+      "enum":[
+        "STOPPED",
+        "IN_PROGRESS",
+        "PROTECTED",
+        "ERROR"
+      ]
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -3062,6 +3478,12 @@
       "min":0,
       "pattern":"^sg-[0-9a-fA-F]{8,}$"
     },
+    "SensitiveBoundedString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3113,6 +3535,88 @@
         }
       },
       "documentation":"<p>Properties of the cloud environment where this Source Server originated from.</p>"
+    },
+    "SourceNetwork":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the Source Network.</p>"
+        },
+        "cfnStackName":{
+          "shape":"CfnStackName",
+          "documentation":"<p>CloudFormation stack name that was deployed for recovering the Source Network.</p>"
+        },
+        "lastRecovery":{
+          "shape":"RecoveryLifeCycle",
+          "documentation":"<p>An object containing information regarding the last recovery of the Source Network.</p>"
+        },
+        "launchedVpcID":{
+          "shape":"VpcID",
+          "documentation":"<p>ID of the recovered VPC following Source Network recovery.</p>"
+        },
+        "replicationStatus":{
+          "shape":"ReplicationStatus",
+          "documentation":"<p>Status of Source Network Replication. Possible values: (a) STOPPED - Source Network is not replicating. (b) IN_PROGRESS - Source Network is being replicated. (c) PROTECTED - Source Network was replicated successfully and is being synchronized for changes. (d) ERROR - Source Network replication has failed</p>"
+        },
+        "replicationStatusDetails":{
+          "shape":"SensitiveBoundedString",
+          "documentation":"<p>Error details in case Source Network replication status is ERROR.</p>"
+        },
+        "sourceAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID containing the VPC protected by the Source Network.</p>"
+        },
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>Source Network ID.</p>"
+        },
+        "sourceRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>Region containing the VPC protected by the Source Network.</p>"
+        },
+        "sourceVpcID":{
+          "shape":"VpcID",
+          "documentation":"<p>VPC ID protected by the Source Network.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of tags associated with the Source Network.</p>"
+        }
+      },
+      "documentation":"<p>The ARN of the Source Network.</p>"
+    },
+    "SourceNetworkData":{
+      "type":"structure",
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>Source Network ID.</p>"
+        },
+        "sourceVpc":{
+          "shape":"VpcID",
+          "documentation":"<p>VPC ID protected by the Source Network.</p>"
+        },
+        "stackName":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>CloudFormation stack name that was deployed for recovering the Source Network.</p>"
+        },
+        "targetVpc":{
+          "shape":"VpcID",
+          "documentation":"<p>ID of the recovered VPC following Source Network recovery.</p>"
+        }
+      },
+      "documentation":"<p>Properties of Source Network related to a job event.</p>"
+    },
+    "SourceNetworkID":{
+      "type":"string",
+      "max":20,
+      "min":20,
+      "pattern":"^sn-[0-9a-zA-Z]{17}$"
+    },
+    "SourceNetworksList":{
+      "type":"list",
+      "member":{"shape":"SourceNetwork"}
     },
     "SourceProperties":{
       "type":"structure",
@@ -3190,6 +3694,10 @@
         "sourceCloudProperties":{
           "shape":"SourceCloudProperties",
           "documentation":"<p>Source cloud properties of the Source Server.</p>"
+        },
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>ID of the Source Network which is protecting this Source Server's network.</p>"
         },
         "sourceProperties":{
           "shape":"SourceProperties",
@@ -3369,6 +3877,73 @@
         }
       }
     },
+    "StartSourceNetworkRecoveryRequest":{
+      "type":"structure",
+      "required":["sourceNetworks"],
+      "members":{
+        "deployAsNew":{
+          "shape":"Boolean",
+          "documentation":"<p>Don't update existing CloudFormation Stack, recover the network using a new stack.</p>"
+        },
+        "sourceNetworks":{
+          "shape":"StartSourceNetworkRecoveryRequestNetworkEntries",
+          "documentation":"<p>The Source Networks that we want to start a Recovery Job for.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to be associated with the Source Network recovery Job.</p>"
+        }
+      }
+    },
+    "StartSourceNetworkRecoveryRequestNetworkEntries":{
+      "type":"list",
+      "member":{"shape":"StartSourceNetworkRecoveryRequestNetworkEntry"},
+      "max":100,
+      "min":1
+    },
+    "StartSourceNetworkRecoveryRequestNetworkEntry":{
+      "type":"structure",
+      "required":["sourceNetworkID"],
+      "members":{
+        "cfnStackName":{
+          "shape":"CfnStackName",
+          "documentation":"<p>CloudFormation stack name to be used for recovering the network.</p>"
+        },
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>The ID of the Source Network you want to recover.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the Source Network to recover.</p>"
+    },
+    "StartSourceNetworkRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "job":{
+          "shape":"Job",
+          "documentation":"<p>The Source Network recovery Job.</p>"
+        }
+      }
+    },
+    "StartSourceNetworkReplicationRequest":{
+      "type":"structure",
+      "required":["sourceNetworkID"],
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>ID of the Source Network to replicate.</p>"
+        }
+      }
+    },
+    "StartSourceNetworkReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceNetwork":{
+          "shape":"SourceNetwork",
+          "documentation":"<p>Source Network which was requested for replication.</p>"
+        }
+      }
+    },
     "StopFailbackRequest":{
       "type":"structure",
       "required":["recoveryInstanceID"],
@@ -3398,6 +3973,25 @@
         }
       }
     },
+    "StopSourceNetworkReplicationRequest":{
+      "type":"structure",
+      "required":["sourceNetworkID"],
+      "members":{
+        "sourceNetworkID":{
+          "shape":"SourceNetworkID",
+          "documentation":"<p>ID of the Source Network to stop replication.</p>"
+        }
+      }
+    },
+    "StopSourceNetworkReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "sourceNetwork":{
+          "shape":"SourceNetwork",
+          "documentation":"<p>Source Network which was requested to stop replication.</p>"
+        }
+      }
+    },
     "StrictlyPositiveInteger":{
       "type":"integer",
       "min":1
@@ -3407,6 +4001,10 @@
       "max":255,
       "min":0,
       "pattern":"^subnet-[0-9a-fA-F]{8,}$"
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
     },
     "TagKey":{
       "type":"string",
@@ -3602,6 +4200,10 @@
         "copyTags":{
           "shape":"Boolean",
           "documentation":"<p>Copy tags.</p>"
+        },
+        "exportBucketArn":{
+          "shape":"ARN",
+          "documentation":"<p>S3 bucket ARN to export Source Network templates.</p>"
         },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
@@ -3831,6 +4433,12 @@
       "type":"map",
       "key":{"shape":"LargeBoundedString"},
       "value":{"shape":"PositiveInteger"}
+    },
+    "VpcID":{
+      "type":"string",
+      "max":21,
+      "min":12,
+      "pattern":"^vpc-[0-9a-fA-F]{8,}$"
     }
   },
   "documentation":"<p>AWS Elastic Disaster Recovery Service.</p>"

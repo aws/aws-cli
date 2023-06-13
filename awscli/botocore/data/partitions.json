@@ -187,6 +187,17 @@
     },
     "regionRegex" : "^eu\\-isoe\\-\\w+\\-\\d+$",
     "regions" : { }
+  }, {
+    "id" : "aws-iso-f",
+    "outputs" : {
+      "dnsSuffix" : "csp.hci.ic.gov",
+      "dualStackDnsSuffix" : "csp.hci.ic.gov",
+      "name" : "aws-iso-f",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^us\\-isof\\-\\w+\\-\\d+$",
+    "regions" : { }
   } ],
   "version" : "1.1"
 }

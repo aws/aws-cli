@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.12.0
+======
+
+* api-change:``securityhub``: Add support for Security Hub Automation Rules
+* api-change:``simspaceweaver``: This release fixes using aws-us-gov ARNs in API calls and adds documentation for snapshot APIs.
+* api-change:``fsx``: Amazon FSx for NetApp ONTAP now supports joining a storage virtual machine (SVM) to Active Directory after the SVM has been created.
+* api-change:``imagebuilder``: Change the Image Builder ImagePipeline dateNextRun field to more accurately describe the data.
+* api-change:``rekognition``: This release adds support for improved accuracy with user vector in Amazon Rekognition Face Search. Adds new APIs: AssociateFaces, CreateUser, DeleteUser, DisassociateFaces, ListUsers, SearchUsers, SearchUsersByImage. Also adds new face metadata that can be stored: user vector.
+* api-change:``wellarchitected``: AWS Well-Architected now supports Profiles that help customers prioritize which questions to focus on first by providing a list of prioritized questions that are better aligned with their business goals and outcomes.
+* api-change:``lightsail``: This release adds pagination for the Get Certificates API operation.
+* feature:``ec2-instance-connect``: Add ``ssh`` and ``open-tunnel`` commands for connecting to an EC2 instance via an OpenSSH client and a websocket tunnel respectively.
+* api-change:``amplifyuibuilder``: AWS Amplify UIBuilder is launching Codegen UI, a new feature that enables you to generate your amplify uibuilder components and forms.
+* api-change:``ec2``: This release introduces a new feature, EC2 Instance Connect Endpoint, that enables you to connect to a resource over TCP, without requiring the resource to have a public IPv4 address.
+* api-change:``s3``: Integrate double encryption feature to SDKs.
+* api-change:``acm-pca``: Document-only update to refresh CLI  documentation for AWS Private CA. No change to the service.
+* api-change:``codeguru-security``: Initial release of Amazon CodeGuru Security APIs
+* api-change:``verifiedpermissions``: GA release of Amazon Verified Permissions.
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``connect``: This release adds search APIs for Prompts, Quick Connects and Hours of Operations, which can be used to search for those resources within a Connect Instance.
+* api-change:``sagemaker``: Sagemaker Neo now supports compilation for inferentia2 (ML_INF2) and Trainium1 (ML_TRN1) as available targets. With these devices, you can run your workloads at highest performance with lowest cost. inferentia2 (ML_INF2) is available in CMH and Trainium1 (ML_TRN1) is available in IAD currently
+* api-change:``opensearch``: This release adds support for SkipUnavailable connection property for cross cluster search
+* api-change:``wafv2``: You can now detect and block fraudulent account creation attempts with the new AWS WAF Fraud Control account creation fraud prevention (ACFP) managed rule group AWSManagedRulesACFPRuleSet.
+* api-change:``cloudtrail``: This feature allows users to view dashboards for CloudTrail Lake event data stores.
+* api-change:``drs``: Added APIs to support network replication and recovery using AWS Elastic Disaster Recovery.
+* api-change:``dynamodb``: Documentation updates for DynamoDB
+
+
 2.11.27
 =======
 

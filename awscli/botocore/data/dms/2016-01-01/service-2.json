@@ -126,6 +126,25 @@
       ],
       "documentation":"<p>Creates a Fleet Advisor collector using the specified parameters.</p>"
     },
+    "CreateReplicationConfig":{
+      "name":"CreateReplicationConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateReplicationConfigMessage"},
+      "output":{"shape":"CreateReplicationConfigResponse"},
+      "errors":[
+        {"shape":"AccessDeniedFault"},
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ReplicationSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"KMSKeyNotAccessibleFault"}
+      ],
+      "documentation":"<p>Creates the replication config for DMS Serverless Replication using the specified parameters.<p>Creates a configuration that you can later provide to configure and start an AWS DMS Serverless replication. You can also provide options to validate the configuration inputs before you start the replication."
+    },
     "CreateReplicationInstance":{
       "name":"CreateReplicationInstance",
       "http":{
@@ -295,6 +314,20 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Deletes a subnet group.</p>"
+    },
+    "DeleteReplicationConfig":{
+      "name":"DeleteReplicationConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteReplicationConfigMessage"},
+      "output":{"shape":"DeleteReplicationConfigResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"}
+      ],
+      "documentation":"<p>Deletes the specified replication config.</p>"
     },
     "DeleteReplicationTask":{
       "name":"DeleteReplicationTask",
@@ -651,6 +684,19 @@
       ],
       "documentation":"<p>Returns a paginated list of individual assessments based on filter settings.</p> <p>These filter settings can specify a combination of premigration assessment runs, migration tasks, and assessment status values.</p>"
     },
+    "DescribeReplicationConfigs":{
+      "name":"DescribeReplicationConfigs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeReplicationConfigsMessage"},
+      "output":{"shape":"DescribeReplicationConfigsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"}
+      ],
+      "documentation":"<p>Returns one or more existing AWS DMS Serverless replication configurations as a list of structures.</p>"
+    },
     "DescribeReplicationTasks":{
       "name":"DescribeReplicationTasks",
       "http":{
@@ -795,6 +841,22 @@
       ],
       "documentation":"<p>Modifies the settings for the specified replication subnet group.</p>"
     },
+    "ModifyReplicationConfig":{
+      "name":"ModifyReplicationConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyReplicationConfigMessage"},
+      "output":{"shape":"ModifyReplicationConfigResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"KMSKeyNotAccessibleFault"}
+      ],
+      "documentation":"<p>Modifies an existing AWS DMS Serverless replication configuration that you can use to start a replication.</p>"
+    },
     "ModifyReplicationTask":{
       "name":"ModifyReplicationTask",
       "http":{
@@ -912,6 +974,21 @@
       ],
       "documentation":"<p>Starts the analysis of your source database to provide recommendations of target engines.</p> <p>You can create recommendations for multiple source databases using <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_BatchStartRecommendations.html\">BatchStartRecommendations</a>.</p>"
     },
+    "StartReplication":{
+      "name":"StartReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartReplicationMessage"},
+      "output":{"shape":"StartReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>For a given AWS DMS Serverless replication configuration, AWS DMS connects to the source endpoint and collects the metadata to analyze the replication workload. Using this metadata, AWS DMS then computes and provisions the required capacity and starts replicating to the target endpoint using the server resources that AWS DMS has provisioned for the AWS DMS Serverless replication.</p>"
+    },
     "StartReplicationTask":{
       "name":"StartReplicationTask",
       "http":{
@@ -964,6 +1041,21 @@
         {"shape":"ResourceAlreadyExistsFault"}
       ],
       "documentation":"<p>Starts a new premigration assessment run for one or more individual assessments of a migration task.</p> <p>The assessments that you can specify depend on the source and target database engine and the migration type defined for the given task. To run this operation, your migration task must already be created. After you run this operation, you can review the status of each individual assessment. You can also run the migration task manually after the assessment run and its individual assessments complete.</p>"
+    },
+    "StopReplication":{
+      "name":"StopReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopReplicationMessage"},
+      "output":{"shape":"StopReplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>For a given AWS DMS Serverless replication configuration, AWS DMS connects to the source endpoint and collects the metadata to analyze the replication workload. Using this metadata, AWS DMS then computes and provisions the required capacity and starts replicating to the target endpoint using the server resources that AWS DMS has provisioned for the AWS DMS Serverless replication.</p>"
     },
     "StopReplicationTask":{
       "name":"StopReplicationTask",
@@ -1672,6 +1764,78 @@
         }
       }
     },
+    "CreateReplicationConfigMessage":{
+      "type":"structure",
+      "required":[
+        "ComputeConfig",
+        "ReplicationConfigIdentifier",
+        "SourceEndpointArn",
+        "TargetEndpointArn",
+        "ReplicationType",
+        "TableMappings"
+      ],
+      "members":{
+        "ComputeConfig":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>Configuration parameters for provisioning an AWS DMS Serverless replication.</ul>"
+        },
+        "ReplicationConfigIdentifier":{
+          "shape":"String",
+          "documentation":"<p>An identifier for the replication config.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1-255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+        },
+        "SourceEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.</p>"
+        },
+        "TargetEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the target endpoint.</p>"
+        },
+        "ReplicationInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a replication instance.</p>"
+        },
+        "ReplicationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>The replication type. Valid values: <code>full-load</code> | <code>cdc</code> | <code>full-load-and-cdc</code> </p>"
+        },
+        "TableMappings":{
+          "shape":"String",
+          "documentation":"<p>The table mappings for the task, in JSON format. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html\">Using Table Mapping to Specify Task Settings</a> in the <i>Database Migration Service User Guide.</i> </p>"
+        },
+        "ReplicationSettings":{
+          "shape":"String",
+          "documentation":"<p>Overall settings for the task, in JSON format. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html\">Specifying Task Settings for Database Migration Service Tasks</a> in the <i>Database Migration Service User Guide.</i> </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>One or more tags to be assigned to the replication task.</p>"
+        },
+        "TaskData":{
+          "shape":"String",
+          "documentation":"<p>Supplemental information that the task requires to migrate the data for certain source and target endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.TaskData.html\">Specifying Supplemental Data for Task Settings</a> in the <i>Database Migration Service User Guide.</i> </p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>A friendly name for the resource identifier at the end of the <code>EndpointArn</code> response parameter that is returned in the created <code>Endpoint</code> object. The value for this parameter can have up to 31 characters. It can contain only ASCII letters, digits, and hyphen ('-'). Also, it can't end with a hyphen or contain two consecutive hyphens, and can only begin with a letter, such as <code>Example-App-ARN1</code>. For example, this value might result in the <code>EndpointArn</code> value <code>arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1</code>. If you don't specify a <code>ResourceIdentifier</code> value, DMS generates a default identifier value for the end of <code>EndpointArn</code>.</p>"
+        },
+        "SupplementalSettings":{
+          "shape":"String",
+          "documentation":"<p>Additional parameters for an AWS DMS serverless replication.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "CreateReplicationConfigResponse":{
+      "type":"structure",
+      "members":{
+        "ReplicationConfig":{
+          "shape":"ReplicationConfig",
+          "documentation":"<p>Configuration parameters returned from the AWS DMS Serverless replication after it is created.</ul>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "CreateReplicationInstanceMessage":{
       "type":"structure",
       "required":[
@@ -2162,6 +2326,27 @@
         "ReplicationTaskAssessmentRun":{
           "shape":"ReplicationTaskAssessmentRun",
           "documentation":"<p>The <code>ReplicationTaskAssessmentRun</code> object for the deleted assessment run.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "DeleteReplicationConfigMessage":{
+      "type":"structure",
+      "required":["ReplicationConfigArn"],
+      "members":{
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replication config to be deleted.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "DeleteReplicationConfigResponse":{
+      "type":"structure",
+      "members":{
+        "ReplicationConfig":{
+          "shape":"ReplicationConfig",
+          "documentation":"<p>The deleted replication config.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3014,6 +3199,42 @@
         "ReplicationTaskIndividualAssessments":{
           "shape":"ReplicationTaskIndividualAssessmentList",
           "documentation":"<p>One or more individual assessments as specified by <code>Filters</code>.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "DescribeReplicationConfigsMessage":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the replication configs.</p> <p>Valid filter names: replication-config-arn | replication-config-identifier | replication-type </p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved. </p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p> An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        },
+        "WithoutSettings":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>An option to set to avoid returning information about settings. Use this to reduce overhead when setting information is too large. To use this option, choose <code>true</code>; otherwise, choose <code>false</code> (the default).</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "DescribeReplicationConfigsResponse":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p> An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        },
+        "ReplicationConfigs":{
+          "shape":"ReplicationConfigsList",
+          "documentation":"<p>Returned configuration parameters that describe each provisioned AWS DMS Serverless replication.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4497,6 +4718,59 @@
       },
       "documentation":"<p/>"
     },
+    "ModifyReplicationConfigMessage":{
+      "type":"structure",
+      "required":["ReplicationConfigArn"],
+      "members":{
+        "ComputeConfig":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>Configuration parameters for provisioning an AWS DMS Serverless replication.</ul>"
+        },
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replication config to be deleted.</p>"
+        },
+        "ReplicationConfigIdentifier":{
+          "shape":"String",
+          "documentation":"<p>An identifier for the replication config.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1-255 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+        },
+        "ReplicationSettings":{
+          "shape":"String",
+          "documentation":"<p>Overall settings for the task, in JSON format. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html\">Specifying Task Settings for Database Migration Service Tasks</a> in the <i>Database Migration Service User Guide.</i> </p>"
+        },
+        "ReplicationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>The replication type. Valid values: <code>full-load</code> | <code>cdc</code> | <code>full-load-and-cdc</code> </p>"
+        },
+        "SourceEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.</p>"
+        },
+        "SupplementalSettings":{
+          "shape":"String",
+          "documentation":"<p>Additional parameters for an AWS DMS serverless replication.</p>"
+        },
+        "TableMappings":{
+          "shape":"String",
+          "documentation":"<p>The table mappings for the task, in JSON format. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html\">Using Table Mapping to Specify Task Settings</a> in the <i>Database Migration Service User Guide.</i> </p>"
+        },
+        "TargetEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the target endpoint.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "ModifyReplicationConfigResponse":{
+      "type":"structure",
+      "members":{
+        "ReplicationSubnetGroup":{
+          "shape":"ReplicationConfig",
+          "documentation":"<p>Information about the serverless replication config that was modified.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "ModifyReplicationTaskMessage":{
       "type":"structure",
       "required":["ReplicationTaskArn"],
@@ -5811,6 +6085,176 @@
       "type":"list",
       "member":{"shape":"ReplicationSubnetGroup"}
     },
+    "ReplicationConfig":{
+      "type":"structure",
+      "members":{
+        "ComputeConfig":{
+          "shape":"ComputeConfig",
+          "documentation":"<p>Configuration parameters for provisioning an AWS DMS serverless replication.</p>"
+        },
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this AWS DMS Serverless replication configuration.</p>"
+        },
+        "ReplicationConfigCreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the serverless replication config was created.</p>"
+        },
+        "ReplicationConfigIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the ReplicationConfig associated with the replication.</p>"
+        },
+        "ReplicationConfigUpdateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the serverless replication config was updated.</p>"
+        },
+        "ReplicationSettings":{
+          "shape":"String",
+          "documentation":"<p>Configuration parameters for an AWS DMS serverless replication.</p>"
+        },
+        "ReplicationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>The type of migration.</p>"
+        },
+        "SourceEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the endpoint.</p>"
+        },
+        "SupplementalSettings":{
+          "shape":"String",
+          "documentation":"<p>Additional parameters for an AWS DMS serverless replication.</p>"
+        },
+        "TableMappings":{
+          "shape":"String",
+          "documentation":"<p>Table mappings specified in the task.</p>"
+        },
+        "TargetEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN that uniquely identifies the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes a replication config created by the <code>CreateReplicationConfig</code> operation.</p>"
+    },
+    "ComputeConfig":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone where the AWS DMS Serverless replication using this configuration will run.</p>"
+        },
+        "DnsNameServers":{
+          "shape":"String",
+          "documentation":"<p>A list of custom DNS name servers supported for the AWS DMS Serverless replication to access your source or target database.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>An AWS Key Management Service (AWS KMS) key Amazon Resource Name (ARN) that is used to encrypt the data during AWS DMS Serverless replication.</p>"
+        },
+        "MaxCapacityUnits":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the maximum value of the AWS DMS capacity units (DCUs) for which a given AWS DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 2 DCUs as the minimum value allowed.</p>"
+        },
+        "MinCapacityUnits":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the minimum value of the AWS DMS capacity units (DCUs) for which a given AWS DMS Serverless replication can be provisioned.</p>"
+        },
+        "MultiAZ":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the AWS DMS Serverless replication is a Multi-AZ deployment. You can't set the AvailabilityZone parameter if the MultiAZ parameter is set to true.</p>"
+        },
+        "PreferredMaintenanceWindow":{
+          "shape":"String",
+          "documentation":"<p>The weekly time range during which system maintenance can occur for the AWS DMS Serverless replication, in Universal Coordinated Time (UTC). The format is ddd:hh24:mi-ddd:hh24:mi.</p>"
+        },
+        "ReplicationSubnetGroupId":{
+          "shape":"String",
+          "documentation":"<p>Specifies a subnet group identifier to associate with the AWS DMS Serverless replication.</p>"
+        },
+        "VpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>Specifies the VPC security group to be used with the replication instance. The VPC security group must work with the VPC containing the replication instance.</p>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for provisioning an AWS DMS Serverless replication.</p>"
+    },
+    "Replication":{
+      "type":"structure",
+      "members":{
+        "CdcStartPosition":{
+          "shape":"String",
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to start. Use either CdcStartPosition or CdcStartTime to specify when you want a CDC operation to start. Specifying both values results in an error.</p> <p> The value can be in date, checkpoint, or LSN/SCN format.</p> <p>Date Example: --cdc-start-position “2018-03-08T12:12:12”</p> <p>Checkpoint Example: --cdc-start-position \"checkpoint:V1#27#mysql-bin-changelog.157832:1975:-1:2002:677883278264080:mysql-bin-changelog.157832:1876#0#0#*#0#93\"</p> <p>LSN Example: --cdc-start-position “mysql-bin-changelog.000024:373”</p> <note> <p>When you use this task setting with a source PostgreSQL database, a logical replication slot should already be created and associated with the source endpoint. You can verify this by setting the <code>slotName</code> extra connection attribute to the name of this logical replication slot. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html#CHAP_Source.PostgreSQL.ConnectionAttrib\">Extra Connection Attributes When Using PostgreSQL as a Source for DMS</a>.</p> </note>"
+        },
+        "CdcStartTime":{
+          "shape":"TStamp",
+          "documentation":"<p>Indicates the start time for a change data capture (CDC) operation. Use either CdcStartTime or CdcStartPosition to specify when you want a CDC operation to start. Specifying both values results in an error.</p> <p>Timestamp Example: --cdc-start-time “2018-03-08T12:12:12”</p>"
+        },
+        "CdcStopPosition":{
+          "shape":"String",
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+        },
+        "FailureMessages":{
+          "shape":"list",
+          "documentation":"<p>Error and other information about why a serverless replication failed.</p>"
+        },
+        "ProvisionData":{
+          "shape":"ProvisionData",
+          "documentation":"<p>Information about provisioning resources for an AWS DMS serverless replication.</p>"
+        },
+        "RecoveryCheckpoint":{
+          "shape":"String",
+          "documentation":"<p>Indicates the last checkpoint that occurred during a change data capture (CDC) operation.</p>"
+        },
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this AWS DMS Serverless replication configuration.</p>"
+        },
+        "ReplicationConfigIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the ReplicationConfig associated with the replication.</p>"
+        },
+        "ReplicationCreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the serverless replication was created.</p>"
+        },
+        "ReplicationLastStopTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The timestamp when replication was last stopped.</p>"
+        },
+        "ReplicationStats":{
+          "shape":"ReplicationStats",
+          "documentation":"<p>The timestamp when replication was last stopped.</p>"
+        },
+        "ReplicationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>The replication type. Valid values: <code>full-load</code> | <code>cdc</code> | <code>full-load-and-cdc</code> </p>"
+        },
+        "ReplicationUpdateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the serverless replication was updated.</p>"
+        },
+        "SourceEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name for an existing Endpoint the serverless replication uses for its data source.</p>"
+        },
+        "StartReplicationType":{
+          "shape":"String",
+          "documentation":"<p>The replication type.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the serverless replication.</p>"
+        },
+        "StopReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the replication task was stopped. This response parameter can return one of the following values:</p> <ul> <li> <p> <code>\"Stop Reason NORMAL\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECOVERABLE_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FATAL_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FULL_LOAD_ONLY_FINISHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_FULL_LOAD\"</code> – Full load completed, with cached changes not applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_CACHED_EVENTS\"</code> – Full load completed, with cached changes applied</p> </li> <li> <p> <code>\"Stop Reason EXPRESS_LICENSE_LIMITS_REACHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_DDL_APPLY\"</code> – User-defined stop task after DDL applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_MEMORY\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_DISK\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_SERVER_TIME\"</code> – User-defined server time for stopping task</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_COMMIT_TIME\"</code> – User-defined commit time for stopping task</p> </li> <li> <p> <code>\"Stop Reason RECONFIGURATION_RESTART\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECYCLE_TASK\"</code> </p> </li> </ul>"
+        },
+        "TargetEndpointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the target endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that describes a replication task created by the <code>CreateReplicationTask</code> operation.</p>"
+    },
     "ReplicationTask":{
       "type":"structure",
       "members":{
@@ -6032,6 +6476,10 @@
     "ReplicationTaskIndividualAssessmentList":{
       "type":"list",
       "member":{"shape":"ReplicationTaskIndividualAssessment"}
+    },
+    "ReplicationConfigsList":{
+      "type":"list",
+      "member":{"shape":"ReplicationConfig"}
     },
     "ReplicationTaskList":{
       "type":"list",
@@ -6619,6 +7067,69 @@
       },
       "documentation":"<p/>"
     },
+    "StartReplicationMessage":{
+      "type":"structure",
+      "required":[
+        "ReplicationConfigArn",
+        "StartReplicationType"
+      ],
+      "members":{
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replication config to be deleted.</p>"
+        },
+        "StartReplicationType":{
+          "shape":"StartReplicationTypeValue",
+          "documentation":"<p>The replication type.</p>"
+        },
+        "CdcStartTime":{
+          "shape":"TStamp",
+          "documentation":"<p>Indicates the start time for a change data capture (CDC) operation. Use either CdcStartTime or CdcStartPosition to specify when you want a CDC operation to start. Specifying both values results in an error.</p> <p>Timestamp Example: --cdc-start-time “2018-03-08T12:12:12”</p>"
+        },
+        "CdcStartPosition":{
+          "shape":"String",
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to start. Use either CdcStartPosition or CdcStartTime to specify when you want a CDC operation to start. Specifying both values results in an error.</p> <p> The value can be in date, checkpoint, or LSN/SCN format.</p> <p>Date Example: --cdc-start-position “2018-03-08T12:12:12”</p> <p>Checkpoint Example: --cdc-start-position \"checkpoint:V1#27#mysql-bin-changelog.157832:1975:-1:2002:677883278264080:mysql-bin-changelog.157832:1876#0#0#*#0#93\"</p> <p>LSN Example: --cdc-start-position “mysql-bin-changelog.000024:373”</p> <note> <p>When you use this task setting with a source PostgreSQL database, a logical replication slot should already be created and associated with the source endpoint. You can verify this by setting the <code>slotName</code> extra connection attribute to the name of this logical replication slot. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html#CHAP_Source.PostgreSQL.ConnectionAttrib\">Extra Connection Attributes When Using PostgreSQL as a Source for DMS</a>.</p> </note>"
+        },
+        "CdcStopPosition":{
+          "shape":"String",
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "StartReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Replication":{
+          "shape":"Replication",
+          "documentation":"<p>The replication that AWS DMS started.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "StopReplicationMessage":{
+      "type":"structure",
+      "required":[
+        "ReplicationConfigArn"
+      ],
+      "members":{
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replication config to be deleted.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "StopReplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Replication":{
+          "shape":"Replication",
+          "documentation":"<p>The replication that AWS DMS stopped.</p>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "StartReplicationTaskResponse":{
       "type":"structure",
       "members":{
@@ -6630,6 +7141,14 @@
       "documentation":"<p/>"
     },
     "StartReplicationTaskTypeValue":{
+      "type":"string",
+      "enum":[
+        "start-replication",
+        "resume-processing",
+        "reload-target"
+      ]
+    },
+    "StartReplicationTypeValue":{
       "type":"string",
       "enum":[
         "start-replication",

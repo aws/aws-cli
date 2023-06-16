@@ -144,7 +144,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Uploads position update data for one or more devices to a tracker resource. Amazon Location uses the data when it reports the last known device position and position history. Amazon Location retains location data for 30 days.</p> <note> <p>Position updates are handled based on the <code>PositionFiltering</code> property of the tracker. When <code>PositionFiltering</code> is set to <code>TimeBased</code>, updates are evaluated against linked geofence collections, and location data is stored at a maximum of one position per 30 second interval. If your update frequency is more often than every 30 seconds, only one update per 30 seconds is stored for each unique device ID.</p> <p>When <code>PositionFiltering</code> is set to <code>DistanceBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than 30 m (98.4 ft).</p> <p>When <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than the measured accuracy. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is neither stored or evaluated if the device has moved less than 15 m. If <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, Amazon Location uses the default value <code>{ \"Horizontal\": 0}</code> when accuracy is not provided on a <code>DevicePositionUpdate</code>.</p> </note>",
+      "documentation":"<p>Uploads position update data for one or more devices to a tracker resource (up to 10 devices per batch). Amazon Location uses the data when it reports the last known device position and position history. Amazon Location retains location data for 30 days.</p> <note> <p>Position updates are handled based on the <code>PositionFiltering</code> property of the tracker. When <code>PositionFiltering</code> is set to <code>TimeBased</code>, updates are evaluated against linked geofence collections, and location data is stored at a maximum of one position per 30 second interval. If your update frequency is more often than every 30 seconds, only one update per 30 seconds is stored for each unique device ID.</p> <p>When <code>PositionFiltering</code> is set to <code>DistanceBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than 30 m (98.4 ft).</p> <p>When <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, location data is stored and evaluated against linked geofence collections only if the device has moved more than the measured accuracy. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is neither stored or evaluated if the device has moved less than 15 m. If <code>PositionFiltering</code> is set to <code>AccuracyBased</code> filtering, Amazon Location uses the default value <code>{ \"Horizontal\": 0}</code> when accuracy is not provided on a <code>DevicePositionUpdate</code>.</p> </note>",
       "endpoint":{"hostPrefix":"tracking."}
     },
     "CalculateRoute":{
@@ -1200,7 +1200,7 @@
     "ApiKeyRestrictionsAllowActionsList":{
       "type":"list",
       "member":{"shape":"ApiKeyAction"},
-      "max":5,
+      "max":7,
       "min":1
     },
     "ApiKeyRestrictionsAllowReferersList":{
@@ -1574,6 +1574,10 @@
           "shape":"Id",
           "documentation":"<p>The identifier for the geofence to be stored in a given geofence collection.</p>"
         },
+        "GeofenceProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>Specifies additional user-defined properties to store with the Geofence. An array of key-value pairs.</p>"
+        },
         "Geometry":{
           "shape":"GeofenceGeometry",
           "documentation":"<p>Contains the details of the position of the geofence. Can be either a polygon or a circle. Including both will return a validation error.</p> <note> <p>Each <a href=\"https://docs.aws.amazon.com/location-geofences/latest/APIReference/API_GeofenceGeometry.html\"> geofence polygon</a> can have a maximum of 1,000 vertices.</p> </note>"
@@ -1667,7 +1671,7 @@
         },
         "Updates":{
           "shape":"BatchUpdateDevicePositionRequestUpdatesList",
-          "documentation":"<p>Contains the position update details for each device.</p>"
+          "documentation":"<p>Contains the position update details for each device, up to 10 devices.</p>"
         }
       }
     },
@@ -2996,6 +3000,12 @@
       "type":"double",
       "box":true
     },
+    "FilterPlaceCategoryList":{
+      "type":"list",
+      "member":{"shape":"PlaceCategory"},
+      "max":5,
+      "min":1
+    },
     "GeoArn":{
       "type":"string",
       "max":1600,
@@ -3166,6 +3176,10 @@
         "GeofenceId":{
           "shape":"Id",
           "documentation":"<p>The geofence identifier.</p>"
+        },
+        "GeofenceProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>Contains additional user-defined properties stored with the geofence. An array of key-value pairs.</p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -3734,6 +3748,10 @@
           "shape":"Id",
           "documentation":"<p>The geofence identifier.</p>"
         },
+        "GeofenceProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>Contains additional user-defined properties stored with the geofence. An array of key-value pairs.</p>"
+        },
         "Geometry":{
           "shape":"GeofenceGeometry",
           "documentation":"<p>Contains the geofence geometry details describing a polygon or a circle.</p>"
@@ -4273,6 +4291,10 @@
           "shape":"String",
           "documentation":"<p>The numerical portion of an address, such as a building number. </p>"
         },
+        "Categories":{
+          "shape":"PlaceCategoryList",
+          "documentation":"<p>The Amazon Location categories that describe this Place.</p> <p>For more information about using categories, including a list of Amazon Location categories, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html\">Categories and filtering</a>, in the <i>Amazon Location Service Developer Guide</i>.</p>"
+        },
         "Country":{
           "shape":"String",
           "documentation":"<p>A country/region specified using <a href=\"https://www.iso.org/iso-3166-country-codes.html\">ISO 3166</a> 3-digit country/region code. For example, <code>CAN</code>.</p>"
@@ -4310,20 +4332,35 @@
           "shape":"String",
           "documentation":"<p>A county, or an area that's part of a larger region. For example, <code>Metro Vancouver</code>.</p>"
         },
+        "SupplementalCategories":{
+          "shape":"PlaceSupplementalCategoryList",
+          "documentation":"<p>Categories from the data provider that describe the Place that are not mapped to any Amazon Location categories.</p>"
+        },
         "TimeZone":{
           "shape":"TimeZone",
-          "documentation":"<p>The time zone in which the <code>Place</code> is located. Returned only when using HERE as the selected partner.</p>"
+          "documentation":"<p>The time zone in which the <code>Place</code> is located. Returned only when using HERE or Grab as the selected partner.</p>"
         },
         "UnitNumber":{
           "shape":"String",
-          "documentation":"<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>"
+          "documentation":"<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri or Grab as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>"
         },
         "UnitType":{
           "shape":"String",
-          "documentation":"<p>For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.</p>"
+          "documentation":"<p>For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider.</p> </note>"
         }
       },
       "documentation":"<p>Contains details about addresses or points of interest that match the search criteria.</p> <p>Not all details are included with all responses. Some details may only be returned by specific data partners.</p>"
+    },
+    "PlaceCategory":{
+      "type":"string",
+      "max":35,
+      "min":0
+    },
+    "PlaceCategoryList":{
+      "type":"list",
+      "member":{"shape":"PlaceCategory"},
+      "max":10,
+      "min":1
     },
     "PlaceGeometry":{
       "type":"structure",
@@ -4339,6 +4376,17 @@
     "PlaceIndexSearchResultLimit":{
       "type":"integer",
       "max":50,
+      "min":1
+    },
+    "PlaceSupplementalCategory":{
+      "type":"string",
+      "max":35,
+      "min":0
+    },
+    "PlaceSupplementalCategoryList":{
+      "type":"list",
+      "member":{"shape":"PlaceSupplementalCategory"},
+      "max":10,
       "min":1
     },
     "Position":{
@@ -4418,6 +4466,10 @@
           "documentation":"<p>An identifier for the geofence. For example, <code>ExampleGeofence-1</code>.</p>",
           "location":"uri",
           "locationName":"GeofenceId"
+        },
+        "GeofenceProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>Specifies additional user-defined properties to store with the Geofence. An array of key-value pairs.</p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -4577,9 +4629,17 @@
       "type":"structure",
       "required":["Text"],
       "members":{
+        "Categories":{
+          "shape":"PlaceCategoryList",
+          "documentation":"<p>The Amazon Location categories that describe the Place.</p> <p>For more information about using categories, including a list of Amazon Location categories, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html\">Categories and filtering</a>, in the <i>Amazon Location Service Developer Guide</i>.</p>"
+        },
         "PlaceId":{
           "shape":"PlaceId",
-          "documentation":"<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForSuggestions</code> operations, the <code>PlaceId</code> is returned by place indexes that use Esri, Grab, or HERE as data providers.</p> </note>"
+          "documentation":"<p>The unique identifier of the Place. You can use this with the <code>GetPlace</code> operation to find the place again later, or to get full information for the Place.</p> <p>The <code>GetPlace</code> request must use the same <code>PlaceIndex</code> resource as the <code>SearchPlaceIndexForSuggestions</code> that generated the Place ID.</p> <note> <p>For <code>SearchPlaceIndexForSuggestions</code> operations, the <code>PlaceId</code> is returned by place indexes that use Esri, Grab, or HERE as data providers.</p> </note>"
+        },
+        "SupplementalCategories":{
+          "shape":"PlaceSupplementalCategoryList",
+          "documentation":"<p>Categories from the data provider that describe the Place that are not mapped to any Amazon Location categories.</p>"
         },
         "Text":{
           "shape":"String",
@@ -4715,6 +4775,10 @@
           "shape":"BoundingBox",
           "documentation":"<p>An optional parameter that limits the search results by returning only suggestions within a specified bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>"
         },
+        "FilterCategories":{
+          "shape":"FilterPlaceCategoryList",
+          "documentation":"<p>A list of one or more Amazon Location categories to filter the returned places. If you include more than one category, the results will include results that match <i>any</i> of the categories listed.</p> <p>For more information about using categories, including a list of Amazon Location categories, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html\">Categories and filtering</a>, in the <i>Amazon Location Service Developer Guide</i>.</p>"
+        },
         "FilterCountries":{
           "shape":"CountryCodeList",
           "documentation":"<p>An optional parameter that limits the search results by returning only suggestions within the provided list of countries.</p> <ul> <li> <p>Use the <a href=\"https://www.iso.org/iso-3166-country-codes.html\">ISO 3166</a> 3-digit country code. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>"
@@ -4787,6 +4851,10 @@
           "shape":"BoundingBox",
           "documentation":"<p>Contains the coordinates for the optional bounding box specified in the request.</p>"
         },
+        "FilterCategories":{
+          "shape":"FilterPlaceCategoryList",
+          "documentation":"<p>The optional category filter specified in the request.</p>"
+        },
         "FilterCountries":{
           "shape":"CountryCodeList",
           "documentation":"<p>Contains the optional country filter specified in the request.</p>"
@@ -4820,6 +4888,10 @@
         "FilterBBox":{
           "shape":"BoundingBox",
           "documentation":"<p>An optional parameter that limits the search results by returning only places that are within the provided bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>"
+        },
+        "FilterCategories":{
+          "shape":"FilterPlaceCategoryList",
+          "documentation":"<p>A list of one or more Amazon Location categories to filter the returned places. If you include more than one category, the results will include results that match <i>any</i> of the categories listed.</p> <p>For more information about using categories, including a list of Amazon Location categories, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html\">Categories and filtering</a>, in the <i>Amazon Location Service Developer Guide</i>.</p>"
         },
         "FilterCountries":{
           "shape":"CountryCodeList",
@@ -4886,6 +4958,10 @@
         "FilterBBox":{
           "shape":"BoundingBox",
           "documentation":"<p>Contains the coordinates for the optional bounding box specified in the request.</p>"
+        },
+        "FilterCategories":{
+          "shape":"FilterPlaceCategoryList",
+          "documentation":"<p>The optional category filter specified in the request.</p>"
         },
         "FilterCountries":{
           "shape":"CountryCodeList",

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.155
+========
+
+* api-change:``account``: Improve pagination support for ListRegions
+* api-change:``connect``: Updates the *InstanceStorageConfig APIs to support a new ResourceType: SCREEN_RECORDINGS to enable screen recording and specify the storage configurations for publishing the recordings. Also updates DescribeInstance and ListInstances APIs to include InstanceAccessUrl attribute in the API response.
+* api-change:``discovery``: Add Amazon EC2 instance recommendations export
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``s3``: This release adds SDK support for request-payer request header and request-charged response header in the "GetBucketAccelerateConfiguration", "ListMultipartUploads", "ListObjects", "ListObjectsV2" and "ListObjectVersions" S3 APIs.
+
+
 1.27.154
 ========
 

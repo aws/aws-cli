@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.12.1
+======
+
+* api-change:``guardduty``: Updated descriptions for some APIs.
+* api-change:``efs``: Update efs command to latest version
+* enhancement:dependency: Bump pyinstaller from 5.10.1 to 5.12.0
+* api-change:``location``: Amazon Location Service adds categories to places, including filtering on those categories in searches. Also, you can now add metadata properties to your geofences.
+* api-change:``auditmanager``: This release introduces 2 Audit Manager features: CSV exports and new manual evidence options. You can now export your evidence finder results in CSV format. In addition, you can now add manual evidence to a control by entering free-form text or uploading a file from your browser.
+
+
 2.12.0
 ======
 

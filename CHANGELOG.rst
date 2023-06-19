@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.27.156
+========
+
+* api-change:``cloudformation``: Specify desired CloudFormation behavior in the event of ChangeSet execution failure using the CreateChangeSet OnStackFailure parameter
+* api-change:``ec2``: API changes to AWS Verified Access to include data from trust providers in logs
+* api-change:``ecs``: Documentation only update to address various tickets.
+* api-change:``glue``: This release adds support for creating cross region table/database resource links
+* api-change:``pricing``: This release updates the PriceListArn regex pattern.
+* api-change:``route53domains``: Update MaxItems upper bound to 1000 for ListPricesRequest
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot releases CreateAutoMLJobV2 and DescribeAutoMLJobV2 for Autopilot customers with ImageClassification, TextClassification and Tabular problem type config support.
+
+
 1.27.155
 ========
 

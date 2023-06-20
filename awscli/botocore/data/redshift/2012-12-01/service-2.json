@@ -356,6 +356,24 @@
       ],
       "documentation":"<p>Creates a new Amazon Redshift subnet group. You must provide a list of one or more subnets in your existing Amazon Virtual Private Cloud (Amazon VPC) when creating Amazon Redshift subnet group.</p> <p> For information about subnet groups, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-cluster-subnet-groups.html\">Amazon Redshift Cluster Subnet Groups</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
+    "CreateCustomDomainAssociation":{
+      "name":"CreateCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCustomDomainAssociationMessage"},
+      "output":{
+        "shape":"CreateCustomDomainAssociationResult",
+        "resultWrapper":"CreateCustomDomainAssociationResult"
+      },
+      "errors":[
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"CustomCnameAssociationFault"}
+      ],
+      "documentation":"<p>Used to create a custom domain name for a cluster. Properties include the custom domain name, the cluster the custom domain is associated with, and the certificate Amazon Resource Name (ARN).</p>"
+    },
     "CreateEndpointAccess":{
       "name":"CreateEndpointAccess",
       "http":{
@@ -654,6 +672,20 @@
         {"shape":"ClusterSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Deletes the specified cluster subnet group.</p>"
+    },
+    "DeleteCustomDomainAssociation":{
+      "name":"DeleteCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCustomDomainAssociationMessage"},
+      "errors":[
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"CustomCnameAssociationFault"}
+      ],
+      "documentation":"<p>Contains information about deleting a custom domain association for a cluster.</p>"
     },
     "DeleteEndpointAccess":{
       "name":"DeleteEndpointAccess",
@@ -976,6 +1008,23 @@
         {"shape":"InvalidTagFault"}
       ],
       "documentation":"<p>Returns properties of provisioned clusters including general cluster properties, cluster database properties, maintenance and backup properties, and security and access properties. This operation supports pagination. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>If you specify both tag keys and tag values in the same request, Amazon Redshift returns all clusters that match any combination of the specified keys and values. For example, if you have <code>owner</code> and <code>environment</code> for tag keys, and <code>admin</code> and <code>test</code> for tag values, all clusters that have any combination of those values are returned.</p> <p>If both tag keys and values are omitted from the request, clusters are returned regardless of whether they have tag keys or values associated with them.</p>"
+    },
+    "DescribeCustomDomainAssociations":{
+      "name":"DescribeCustomDomainAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCustomDomainAssociationsMessage"},
+      "output":{
+        "shape":"CustomDomainAssociationsMessage",
+        "resultWrapper":"DescribeCustomDomainAssociationsResult"
+      },
+      "errors":[
+        {"shape":"CustomDomainAssociationNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Contains information for custom domain associations for a cluster.</p>"
     },
     "DescribeDataShares":{
       "name":"DescribeDataShares",
@@ -1640,7 +1689,9 @@
         {"shape":"InvalidElasticIpFault"},
         {"shape":"TableLimitExceededFault"},
         {"shape":"InvalidClusterTrackFault"},
-        {"shape":"InvalidRetentionPeriodFault"}
+        {"shape":"InvalidRetentionPeriodFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"CustomCnameAssociationFault"}
       ],
       "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -1765,6 +1816,24 @@
         {"shape":"DependentServiceRequestThrottlingFault"}
       ],
       "documentation":"<p>Modifies a cluster subnet group to include the specified list of VPC subnets. The operation replaces the existing list of subnets with the new list of subnets.</p>"
+    },
+    "ModifyCustomDomainAssociation":{
+      "name":"ModifyCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyCustomDomainAssociationMessage"},
+      "output":{
+        "shape":"ModifyCustomDomainAssociationResult",
+        "resultWrapper":"ModifyCustomDomainAssociationResult"
+      },
+      "errors":[
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"CustomCnameAssociationFault"}
+      ],
+      "documentation":"<p>Contains information for changing a custom domain association.</p>"
     },
     "ModifyEndpointAccess":{
       "name":"ModifyEndpointAccess",
@@ -2348,6 +2417,32 @@
         "locationName":"ClusterAssociatedToSchedule"
       }
     },
+    "Association":{
+      "type":"structure",
+      "members":{
+        "CustomDomainCertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the certificate associated with the custom domain.</p>"
+        },
+        "CustomDomainCertificateExpiryDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The expiration date for the certificate.</p>"
+        },
+        "CertificateAssociations":{
+          "shape":"CertificateAssociationList",
+          "documentation":"<p>A list of all associated clusters and domain names tied to a specific certificate.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the custom domain name association.</p>",
+      "wrapper":true
+    },
+    "AssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"Association",
+        "locationName":"Association"
+      }
+    },
     "AttributeList":{
       "type":"list",
       "member":{
@@ -2559,7 +2654,7 @@
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
+          "documentation":"<p>The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
         },
         "AccountWithRestoreAccess":{
           "shape":"String",
@@ -2710,6 +2805,27 @@
           "shape":"String",
           "documentation":"<p>The unique identifier for the cluster that you want to cancel a resize operation for.</p>"
         }
+      }
+    },
+    "CertificateAssociation":{
+      "type":"structure",
+      "members":{
+        "CustomDomainName":{
+          "shape":"String",
+          "documentation":"<p>The custom domain name for the certificate association.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The cluster identifier for the certificate association.</p>"
+        }
+      },
+      "documentation":"<p>A cluster ID and custom domain name tied to a specific certificate. These are typically returned in a list.</p>"
+    },
+    "CertificateAssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"CertificateAssociation",
+        "locationName":"CertificateAssociation"
       }
     },
     "Cluster":{
@@ -2922,6 +3038,18 @@
         "ReservedNodeExchangeStatus":{
           "shape":"ReservedNodeExchangeStatus",
           "documentation":"<p>The status of the reserved-node exchange request. Statuses include in-progress and requested.</p>"
+        },
+        "CustomDomainName":{
+          "shape":"String",
+          "documentation":"<p>The custom domain name associated with the cluster.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The certificate Amazon Resource Name (ARN) for the custom domain name.</p>"
+        },
+        "CustomDomainCertificateExpiryDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The expiration date for the certificate associated with the custom domain name.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -3604,7 +3732,7 @@
         },
         "SourceSnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid cluster.</p> </li> </ul>"
+          "documentation":"<p>The identifier of the cluster the source snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier for a valid cluster.</p> </li> </ul>"
         },
         "TargetSnapshotIdentifier":{
           "shape":"String",
@@ -3692,11 +3820,11 @@
         },
         "MasterUsername":{
           "shape":"String",
-          "documentation":"<p>The user name associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 - 128 alphanumeric characters or hyphens. The user name can't be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon (:) or a slash (/).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>"
+          "documentation":"<p>The user name associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 - 128 alphanumeric characters or hyphens. The user name can't be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon (:) or a slash (/).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>"
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The password associated with the admin user for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
+          "documentation":"<p>The password associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterSecurityGroups":{
           "shape":"ClusterSecurityGroupNameList",
@@ -3943,6 +4071,49 @@
       "type":"structure",
       "members":{
         "ClusterSubnetGroup":{"shape":"ClusterSubnetGroup"}
+      }
+    },
+    "CreateCustomDomainAssociationMessage":{
+      "type":"structure",
+      "required":[
+        "CustomDomainName",
+        "CustomDomainCertificateArn",
+        "ClusterIdentifier"
+      ],
+      "members":{
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name for a custom domain association.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The certificate Amazon Resource Name (ARN) for the custom domain name association.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The cluster identifier that the custom domain is associated with.</p>"
+        }
+      }
+    },
+    "CreateCustomDomainAssociationResult":{
+      "type":"structure",
+      "members":{
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name for the association result.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the certificate associated with the custom domain name.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the cluster that the custom domain is associated with.</p>"
+        },
+        "CustomDomainCertExpiryTime":{
+          "shape":"String",
+          "documentation":"<p>The expiration time for the certificate for the custom domain.</p>"
+        }
       }
     },
     "CreateEndpointAccessMessage":{
@@ -4245,6 +4416,55 @@
         }
       }
     },
+    "CustomCnameAssociationFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An error occurred when an attempt was made to change the custom domain association.</p>",
+      "error":{
+        "code":"CustomCnameAssociationFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CustomDomainAssociationNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An error occurred. The custom domain name couldn't be found.</p>",
+      "error":{
+        "code":"CustomDomainAssociationNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CustomDomainAssociationsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>The marker for the custom domain association.</p>"
+        },
+        "Associations":{
+          "shape":"AssociationList",
+          "documentation":"<p>The associations for the custom domain.</p>"
+        }
+      }
+    },
+    "CustomDomainCertificateArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[\\w+=/,.@-]+:acm:[\\w+=/,.@-]*:[0-9]+:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+    },
+    "CustomDomainNameString":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$"
+    },
     "CustomerStorageMessage":{
       "type":"structure",
       "members":{
@@ -4523,7 +4743,7 @@
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints: Must be the name of valid cluster.</p>"
+          "documentation":"<p>The unique identifier of the cluster the snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p> <p>Constraints: Must be the name of valid cluster.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4551,6 +4771,16 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DeleteCustomDomainAssociationMessage":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the cluster to delete a custom domain association for.</p>"
+        }
+      }
     },
     "DeleteEndpointAccessMessage":{
       "type":"structure",
@@ -4826,7 +5056,7 @@
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 500.</p>"
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>"
         },
         "Marker":{
           "shape":"String",
@@ -4945,6 +5175,27 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DescribeCustomDomainAssociationsMessage":{
+      "type":"structure",
+      "members":{
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name for the custom domain association.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The certificate Amazon Resource Name (ARN) for the custom domain association.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum records setting for the associated custom domain.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>The marker for the custom domain association.</p>"
+        }
+      }
     },
     "DescribeDataSharesForConsumerMessage":{
       "type":"structure",
@@ -6218,10 +6469,7 @@
     },
     "GetClusterCredentialsMessage":{
       "type":"structure",
-      "required":[
-        "DbUser",
-        "ClusterIdentifier"
-      ],
+      "required":["DbUser"],
       "members":{
         "DbUser":{
           "shape":"String",
@@ -6246,13 +6494,16 @@
         "DbGroups":{
           "shape":"DbGroupList",
           "documentation":"<p>A list of the names of existing database groups that the user named in <code>DbUser</code> will join for the current session, in addition to any group memberships for an existing user. If not specified, a new user is added only to PUBLIC.</p> <p>Database group name constraints</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ). </p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"http://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p> </li> </ul>"
+        },
+        "CustomDomainName":{
+          "shape":"String",
+          "documentation":"<p>The custom domain name for the cluster credentials.</p>"
         }
       },
       "documentation":"<p>The request parameters to get cluster credentials.</p>"
     },
     "GetClusterCredentialsWithIAMMessage":{
       "type":"structure",
-      "required":["ClusterIdentifier"],
       "members":{
         "DbName":{
           "shape":"String",
@@ -6265,6 +6516,10 @@
         "DurationSeconds":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of seconds until the returned temporary password expires.</p> <p>Range: 900-3600. Default: 900.</p>"
+        },
+        "CustomDomainName":{
+          "shape":"String",
+          "documentation":"<p>The custom domain name for the IAM message cluster credentials.</p>"
         }
       }
     },
@@ -7230,7 +7485,7 @@
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
+          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterParameterGroupName":{
           "shape":"String",
@@ -7399,6 +7654,45 @@
       "type":"structure",
       "members":{
         "ClusterSubnetGroup":{"shape":"ClusterSubnetGroup"}
+      }
+    },
+    "ModifyCustomDomainAssociationMessage":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name for a changed custom domain association.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The certificate Amazon Resource Name (ARN) for the changed custom domain association.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the cluster to change a custom domain association for.</p>"
+        }
+      }
+    },
+    "ModifyCustomDomainAssociationResult":{
+      "type":"structure",
+      "members":{
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name associated with the result for the changed custom domain association.</p>"
+        },
+        "CustomDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The certificate Amazon Resource Name (ARN) associated with the result for the changed custom domain association.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the cluster associated with the result for the changed custom domain association.</p>"
+        },
+        "CustomDomainCertExpiryTime":{
+          "shape":"String",
+          "documentation":"<p>The certificate expiration time associated with the result for the changed custom domain association.</p>"
+        }
       }
     },
     "ModifyEndpointAccessMessage":{
@@ -8575,7 +8869,7 @@
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The name of the cluster the source snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
+          "documentation":"<p>The name of the cluster the source snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -8893,7 +9187,7 @@
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user or role has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
+          "documentation":"<p>The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
         },
         "AccountWithRestoreAccess":{
           "shape":"String",

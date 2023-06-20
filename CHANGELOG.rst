@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.157
+========
+
+* api-change:``appflow``: This release adds new API to reset connector metadata cache
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in May 2023.
+* api-change:``ec2``: Adds support for targeting Dedicated Host allocations by assetIds in AWS Outposts
+* api-change:``lambda``: This release adds RecursiveInvocationException to the Invoke API and InvokeWithResponseStream API.
+* api-change:``redshift``: Added support for custom domain names for Redshift Provisioned clusters. This feature enables customers to create a custom domain name and use ACM to generate fully secure connections to it.
+
+
 1.27.156
 ========
 

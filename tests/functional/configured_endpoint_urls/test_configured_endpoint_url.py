@@ -11,14 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import os
 from pathlib import Path
 
 import pytest
 
-from tests import CLIRunner, SessionStubber
+from tests import CLIRunner
 from awscli.compat import urlparse
-from awscli.testutils import FileCreator
 
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"
@@ -58,6 +56,13 @@ def create_cases():
                     test_case_data['environment'], {}
                 ),
             },
+            marks=pytest.mark.skipif(
+               'ignore_configured_endpoint_urls' in (
+                    test_suite['client_configs']
+                    .get(test_case_data['client_config'], {})
+                ),
+               reason="Parameter not supported on the command line"
+            ),
             id=test_case_data['name']
         )
 
@@ -100,7 +105,8 @@ class TestConfiguredEndpointUrl:
     ):
 
         aws_request = cli_runner_result.aws_requests[0]
-        assert test_case['expected_endpoint_url'] == _normalize_endpoint(aws_request.http_requests[0].url), test_case
+        assert test_case['expected_endpoint_url'] == \
+            _normalize_endpoint(aws_request.http_requests[0].url)
 
     def _create_command(self, test_case):
         service = test_case['service']
@@ -113,7 +119,8 @@ class TestConfiguredEndpointUrl:
             '--profile',
             f'{test_case["profile"]}'
         ]
-        if test_case['client_args']:
+
+        if test_case['client_args'].get('endpoint_url', None):
             cmd.extend([
                     '--endpoint-url',
                     f'{test_case["client_args"]["endpoint_url"]}'
@@ -123,14 +130,10 @@ class TestConfiguredEndpointUrl:
         return cmd
 
     @pytest.mark.parametrize('test_case', create_cases())
-    def test_resolve_configured_endpoint_url(self, test_case):
-        session_stubber = SessionStubber()
+    def test_resolve_configured_endpoint_url(self, tmp_path, test_case):
+        cli_runner = CLIRunner()
 
-        cli_runner = CLIRunner(session_stubber=session_stubber)
-
-        config_files = FileCreator()
-        config_filename = os.path.join(
-            config_files.rootdir, 'config')
+        config_filename = tmp_path / 'config'
 
         with open(config_filename, 'w') as f:
             f.write(test_case['config_file_contents'])
@@ -138,9 +141,8 @@ class TestConfiguredEndpointUrl:
 
         cli_runner.env['AWS_CONFIG_FILE'] = config_filename
         cli_runner.env.update(test_case['environment'])
-        _ = cli_runner.env.pop('AWS_DEFAULT_REGION')
+        cli_runner.env.pop('AWS_DEFAULT_REGION')
 
-        print(self._create_command(test_case))
         result = cli_runner.run(self._create_command(test_case))
 
         self.assert_endpoint_used(result, test_case)

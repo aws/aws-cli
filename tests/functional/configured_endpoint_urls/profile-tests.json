@@ -73,6 +73,13 @@
         "default": {},
         "endpoint_url_provided":{
           "endpoint_url": "https://client-config.endpoint.aws"
+        },
+        "ignore_configured_endpoint_urls": {
+          "ignore_configured_endpoint_urls": "true"
+        },
+        "provide_and_ignore_configured_endpoint_urls": {
+          "ignore_configured_endpoint_urls": "true",
+          "endpoint_url": "https://client-config.endpoint.aws"
         }
       },
 
@@ -432,6 +439,16 @@
         }
       },
       {
+        "name": "All configured endpoints ignored due to ignore shared config variable.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "ignore_configured_endpoint_urls",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.fake-region-10.amazonaws.com"
+        }
+      },
+      {
         "name": "Environment variable and shared config file configured endpoints ignored due to ignore shared config variable and client configured endpoint is used.",
         "profile": "ignore_global_and_service_specific_s3",
         "client_config": "endpoint_url_provided",
@@ -446,6 +463,16 @@
         "profile": "global_and_service_specific_s3",
         "client_config": "endpoint_url_provided",
         "environment": "ignore_global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Environment variable and shared config file configured endpoints ignored due to ignore client config variable and client configured endpoint is used.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "provide_and_ignore_configured_endpoint_urls",
+        "environment": "global_and_service_specific_s3",
         "service": "s3",
         "output": {
           "endpointUrl": "https://client-config.endpoint.aws"

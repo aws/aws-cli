@@ -676,7 +676,7 @@
       },
       "input":{"shape":"CreateFleetRequest"},
       "output":{"shape":"CreateFleetResult"},
-      "documentation":"<p>Launches an EC2 Fleet.</p> <p>You can create a single EC2 Fleet that includes multiple launch specifications that vary by instance type, AMI, Availability Zone, or subnet.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet.html\">EC2 Fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates an EC2 Fleet that contains the configuration information for On-Demand Instances and Spot Instances. Instances are launched immediately if there is available capacity.</p> <p>A single EC2 Fleet can include multiple launch specifications that vary by instance type, AMI, Availability Zone, or subnet.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet.html\">EC2 Fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateFlowLogs":{
       "name":"CreateFlowLogs",
@@ -2162,7 +2162,7 @@
       },
       "input":{"shape":"DescribeAccountAttributesRequest"},
       "output":{"shape":"DescribeAccountAttributesResult"},
-      "documentation":"<p>Describes attributes of your Amazon Web Services account. The following are the supported account attributes:</p> <ul> <li> <p> <code>supported-platforms</code>: Indicates whether your account can launch instances into EC2-Classic and EC2-VPC, or only into EC2-VPC.</p> </li> <li> <p> <code>default-vpc</code>: The ID of the default VPC for your account, or <code>none</code>.</p> </li> <li> <p> <code>max-instances</code>: This attribute is no longer supported. The returned value does not reflect your actual vCPU limit for running On-Demand Instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html#ec2-on-demand-instances-limits\">On-Demand Instance Limits</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </li> <li> <p> <code>vpc-max-security-groups-per-interface</code>: The maximum number of security groups that you can assign to a network interface.</p> </li> <li> <p> <code>max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-Classic. </p> </li> <li> <p> <code>vpc-max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate for use with EC2-VPC.</p> </li> </ul> <note> <p>We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate from EC2-Classic to a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
+      "documentation":"<p>Describes attributes of your Amazon Web Services account. The following are the supported account attributes:</p> <ul> <li> <p> <code>default-vpc</code>: The ID of the default VPC for your account, or <code>none</code>.</p> </li> <li> <p> <code>max-instances</code>: This attribute is no longer supported. The returned value does not reflect your actual vCPU limit for running On-Demand Instances. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-on-demand-instances.html#ec2-on-demand-instances-limits\">On-Demand Instance Limits</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </li> <li> <p> <code>max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate.</p> </li> <li> <p> <code>supported-platforms</code>: This attribute is deprecated.</p> </li> <li> <p> <code>vpc-max-elastic-ips</code>: The maximum number of Elastic IP addresses that you can allocate.</p> </li> <li> <p> <code>vpc-max-security-groups-per-interface</code>: The maximum number of security groups that you can assign to a network interface.</p> </li> </ul>"
     },
     "DescribeAddressTransfers":{
       "name":"DescribeAddressTransfers",
@@ -6811,10 +6811,7 @@
     },
     "AllocateHostsRequest":{
       "type":"structure",
-      "required":[
-        "AvailabilityZone",
-        "Quantity"
-      ],
+      "required":["AvailabilityZone"],
       "members":{
         "AutoPlacement":{
           "shape":"AutoPlacement",
@@ -6842,7 +6839,7 @@
         },
         "Quantity":{
           "shape":"Integer",
-          "documentation":"<p>The number of Dedicated Hosts to allocate to your account with these parameters.</p>",
+          "documentation":"<p>The number of Dedicated Hosts to allocate to your account with these parameters. If you are allocating the Dedicated Hosts on an Outpost, and you specify <b>AssetIds</b>, you can omit this parameter. In this case, Amazon EC2 allocates a Dedicated Host on each specified hardware asset. If you specify both <b>AssetIds</b> and <b>Quantity</b>, then the value that you specify for <b>Quantity</b> must be equal to the number of asset IDs specified.</p>",
           "locationName":"quantity"
         },
         "TagSpecifications":{
@@ -6856,11 +6853,16 @@
         },
         "OutpostArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Outpost on which to allocate the Dedicated Host.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Outpost on which to allocate the Dedicated Host. If you specify <b>OutpostArn</b>, you can optionally specify <b>AssetIds</b>.</p> <p>If you are allocating the Dedicated Host in a Region, omit this parameter.</p>"
         },
         "HostMaintenance":{
           "shape":"HostMaintenance",
           "documentation":"<p>Indicates whether to enable or disable host maintenance for the Dedicated Host. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-maintenance.html\">Host maintenance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "AssetIds":{
+          "shape":"AssetIdList",
+          "documentation":"<p>The IDs of the Outpost hardware assets on which to allocate the Dedicated Hosts. Targeting specific hardware assets on an Outpost can help to minimize latency between your workloads. This parameter is supported only if you specify <b>OutpostArn</b>. If you are allocating the Dedicated Hosts in a Region, omit this parameter.</p> <ul> <li> <p>If you specify this parameter, you can omit <b>Quantity</b>. In this case, Amazon EC2 allocates a Dedicated Host on each specified hardware asset.</p> </li> <li> <p>If you specify both <b>AssetIds</b> and <b>Quantity</b>, then the value for <b>Quantity</b> must be equal to the number of asset IDs specified.</p> </li> </ul>",
+          "locationName":"AssetId"
         }
       }
     },
@@ -7398,6 +7400,11 @@
         "shape":"ResourceArn",
         "locationName":"item"
       }
+    },
+    "AssetId":{"type":"string"},
+    "AssetIdList":{
+      "type":"list",
+      "member":{"shape":"AssetId"}
     },
     "AssignIpv6AddressesRequest":{
       "type":"structure",
@@ -8860,6 +8867,7 @@
       },
       "documentation":"<p>Describes Availability Zones, Local Zones, and Wavelength Zones.</p>"
     },
+    "AvailabilityZoneId":{"type":"string"},
     "AvailabilityZoneList":{
       "type":"list",
       "member":{
@@ -11442,7 +11450,7 @@
         },
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
-          "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP.</p>",
+          "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>",
           "locationName":"amdSevSnp"
         }
       },
@@ -11461,7 +11469,7 @@
         },
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
-          "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only.</p>"
+          "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>"
         }
       },
       "documentation":"<p>The CPU options for the instance. Both the core count and threads per core must be specified in the request.</p>"
@@ -11595,11 +11603,11 @@
           "documentation":"<p>The type of operating system for which to reserve capacity.</p>"
         },
         "AvailabilityZone":{
-          "shape":"String",
+          "shape":"AvailabilityZoneName",
           "documentation":"<p>The Availability Zone in which to create the Capacity Reservation.</p>"
         },
         "AvailabilityZoneId":{
-          "shape":"String",
+          "shape":"AvailabilityZoneId",
           "documentation":"<p>The ID of the Availability Zone in which to create the Capacity Reservation.</p>"
         },
         "Tenancy":{
@@ -20293,7 +20301,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether it is a burstable performance instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - Indicates whether the instance type is eligible to use in the free tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>auto-recovery-supported</code> - Indicates whether Amazon CloudWatch action based recovery is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>bare-metal</code> - Indicates whether it is a bare metal instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>burstable-performance-supported</code> - Indicates whether it is a burstable performance instance type (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>current-generation</code> - Indicates whether this instance type is the latest generation instance type of an instance family (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-bandwidth-in-mbps</code> - The baseline bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-iops</code> - The baseline input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.baseline-throughput-in-mbps</code> - The baseline throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-bandwidth-in-mbps</code> - The maximum bandwidth performance for an EBS-optimized instance type, in Mbps.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-iops</code> - The maximum input/output storage operations per second for an EBS-optimized instance type.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-info.maximum-throughput-in-mbps</code> - The maximum throughput performance for an EBS-optimized instance type, in MB/s.</p> </li> <li> <p> <code>ebs-info.ebs-optimized-support</code> - Indicates whether the instance type is EBS-optimized (<code>supported</code> | <code>unsupported</code> | <code>default</code>).</p> </li> <li> <p> <code>ebs-info.encryption-support</code> - Indicates whether EBS encryption is supported (<code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>ebs-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for EBS volumes (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>free-tier-eligible</code> - Indicates whether the instance type is eligible to use in the free tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hibernation-supported</code> - Indicates whether On-Demand hibernation is supported (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor (<code>nitro</code> | <code>xen</code>).</p> </li> <li> <p> <code>instance-storage-info.disk.count</code> - The number of local disks.</p> </li> <li> <p> <code>instance-storage-info.disk.size-in-gb</code> - The storage size of each instance storage disk, in GB.</p> </li> <li> <p> <code>instance-storage-info.disk.type</code> - The storage technology for the local instance storage disks (<code>hdd</code> | <code>ssd</code>).</p> </li> <li> <p> <code>instance-storage-info.encryption-support</code> - Indicates whether data is encrypted at rest (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.nvme-support</code> - Indicates whether non-volatile memory express (NVMe) is supported for instance store (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>instance-storage-info.total-size-in-gb</code> - The total amount of storage available from all local instance storage, in GB.</p> </li> <li> <p> <code>instance-storage-supported</code> - Indicates whether the instance type has local instance storage (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example <code>c5.2xlarge</code> or c5*).</p> </li> <li> <p> <code>memory-info.size-in-mib</code> - The memory size.</p> </li> <li> <p> <code>network-info.efa-info.maximum-efa-interfaces</code> - The maximum number of Elastic Fabric Adapters (EFAs) per instance.</p> </li> <li> <p> <code>network-info.efa-supported</code> - Indicates whether the instance type supports Elastic Fabric Adapter (EFA) (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ena-support</code> - Indicates whether Elastic Network Adapter (ENA) is supported or required (<code>required</code> | <code>supported</code> | <code>unsupported</code>).</p> </li> <li> <p> <code>network-info.encryption-in-transit-supported</code> - Indicates whether the instance type automatically encrypts in-transit traffic between instances (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.ipv4-addresses-per-interface</code> - The maximum number of private IPv4 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-addresses-per-interface</code> - The maximum number of private IPv6 addresses per network interface.</p> </li> <li> <p> <code>network-info.ipv6-supported</code> - Indicates whether the instance type supports IPv6 (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>network-info.maximum-network-cards</code> - The maximum number of network cards per instance.</p> </li> <li> <p> <code>network-info.maximum-network-interfaces</code> - The maximum number of network interfaces per instance.</p> </li> <li> <p> <code>network-info.network-performance</code> - The network performance (for example, \"25 Gigabit\").</p> </li> <li> <p> <code>processor-info.supported-architecture</code> - The CPU architecture (<code>arm64</code> | <code>i386</code> | <code>x86_64</code>).</p> </li> <li> <p> <code>processor-info.sustained-clock-speed-in-ghz</code> - The CPU clock speed, in GHz.</p> </li> <li> <p> <code>processor-info.supported-features</code> - The supported CPU features (<code>amd-sev-snp</code>).</p> </li> <li> <p> <code>supported-boot-mode</code> - The boot mode (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>supported-root-device-type</code> - The root device type (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>supported-usage-class</code> - The usage class (<code>on-demand</code> | <code>spot</code>).</p> </li> <li> <p> <code>supported-virtualization-type</code> - The virtualization type (<code>hvm</code> | <code>paravirtual</code>).</p> </li> <li> <p> <code>vcpu-info.default-cores</code> - The default number of cores for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-threads-per-core</code> - The default number of threads per core for the instance type.</p> </li> <li> <p> <code>vcpu-info.default-vcpus</code> - The default number of vCPUs for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-cores</code> - The number of cores that can be configured for the instance type.</p> </li> <li> <p> <code>vcpu-info.valid-threads-per-core</code> - The number of threads per core that can be configured for the instance type. For example, \"1\" or \"1,2\".</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -20311,7 +20319,7 @@
       "members":{
         "InstanceTypes":{
           "shape":"InstanceTypeInfoList",
-          "documentation":"<p>The instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you change your EBS-backed instance type, instance restart or replacement behavior depends on the instance type compatibility between the old and new types. An instance that's backed by an instance store volume is always replaced. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html\">Change the instance type</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"instanceTypeSet"
         },
         "NextToken":{
@@ -28479,7 +28487,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI. An AMI is required to launch an instance. The AMI ID must be specified here or in the launch template.</p>",
+          "documentation":"<p>The ID of the AMI. An AMI is required to launch an instance. This parameter is only available for fleets of type <code>instant</code>. For fleets of type <code>maintain</code> and <code>request</code>, you must specify the AMI ID in the launch template.</p>",
           "locationName":"imageId"
         }
       },
@@ -28536,7 +28544,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI. An AMI is required to launch an instance. The AMI ID must be specified here or in the launch template.</p>"
+          "documentation":"<p>The ID of the AMI. An AMI is required to launch an instance. This parameter is only available for fleets of type <code>instant</code>. For fleets of type <code>maintain</code> and <code>request</code>, you must specify the AMI ID in the launch template.</p>"
         }
       },
       "documentation":"<p>Describes overrides for a launch template.</p>"
@@ -31079,6 +31087,11 @@
           "shape":"HostMaintenance",
           "documentation":"<p>Indicates whether host maintenance is enabled or disabled for the Dedicated Host.</p>",
           "locationName":"hostMaintenance"
+        },
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the Outpost hardware asset on which the Dedicated Host is allocated.</p>",
+          "locationName":"assetId"
         }
       },
       "documentation":"<p>Describes the properties of the Dedicated Host.</p>"
@@ -37406,7 +37419,7 @@
       "members":{
         "LaunchTemplateSpecification":{
           "shape":"FleetLaunchTemplateSpecification",
-          "documentation":"<p>The launch template.</p>",
+          "documentation":"<p>The launch template to use. Make sure that the launch template does not contain the <code>NetworkInterfaceId</code> parameter because you can't specify a network interface ID in a Spot Fleet.</p>",
           "locationName":"launchTemplateSpecification"
         },
         "Overrides":{
@@ -40240,7 +40253,7 @@
         },
         "Tenancy":{
           "shape":"HostTenancy",
-          "documentation":"<p>The tenancy for the instance.</p> <note> <p>For T3 instances, you can't change the tenancy from <code>dedicated</code> to <code>host</code>, or from <code>host</code> to <code>dedicated</code>. Attempting to make one of these unsupported tenancy changes results in the <code>InvalidTenancy</code> error code.</p> </note>",
+          "documentation":"<p>The tenancy for the instance.</p> <note> <p>For T3 instances, you must launch the instance on a Dedicated Host to use a tenancy of <code>host</code>. You can't change the tenancy from <code>host</code> to <code>dedicated</code> or <code>default</code>. Attempting to make one of these unsupported tenancy changes results in an <code>InvalidRequest</code> error code.</p> </note>",
           "locationName":"tenancy"
         },
         "PartitionNumber":{
@@ -40249,7 +40262,7 @@
         },
         "HostResourceGroupArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the host resource group in which to place the instance.</p>"
+          "documentation":"<p>The ARN of the host resource group in which to place the instance. The instance must have a tenancy of <code>host</code> to specify this parameter.</p>"
         },
         "GroupId":{
           "shape":"PlacementGroupId",
@@ -42141,7 +42154,7 @@
           "documentation":"<p>The range of inside IPv6 addresses for the tunnel. Any specified CIDR blocks must be unique across all VPN connections that use the same transit gateway.</p> <p>Constraints: A size /126 CIDR block from the local <code>fd00::/8</code> range.</p>"
         },
         "PreSharedKey":{
-          "shape":"String",
+          "shape":"preSharedKey",
           "documentation":"<p>The pre-shared key (PSK) to establish initial authentication between the virtual private gateway and the customer gateway.</p> <p>Constraints: Allowed characters are alphanumeric characters, periods (.), and underscores (_). Must be between 8 and 64 characters in length and cannot start with zero (0).</p>"
         },
         "Phase1LifetimeSeconds":{
@@ -42220,7 +42233,8 @@
           "documentation":"<p>Turn on or off tunnel endpoint lifecycle control feature.</p>"
         }
       },
-      "documentation":"<p>The Amazon Web Services Site-to-Site VPN tunnel options to modify.</p>"
+      "documentation":"<p>The Amazon Web Services Site-to-Site VPN tunnel options to modify.</p>",
+      "sensitive":true
     },
     "MonitorInstancesRequest":{
       "type":"structure",
@@ -45078,7 +45092,7 @@
         },
         "SupportedFeatures":{
           "shape":"SupportedAdditionalProcessorFeatureList",
-          "documentation":"<p>Indicates whether the instance type supports AMD SEV-SNP. If the request returns <code>amd-sev-snp</code>, AMD SEV-SNP is supported. Otherwise, it is not supported.</p>",
+          "documentation":"<p>Indicates whether the instance type supports AMD SEV-SNP. If the request returns <code>amd-sev-snp</code>, AMD SEV-SNP is supported. Otherwise, it is not supported. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\"> AMD SEV-SNP</a>.</p>",
           "locationName":"supportedFeatures"
         }
       },
@@ -48971,7 +48985,7 @@
         },
         "InstanceType":{
           "shape":"InstanceType",
-          "documentation":"<p>The instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>m1.small</code> </p>"
+          "documentation":"<p>The instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you change your EBS-backed instance type, instance restart or replacement behavior depends on the instance type compatibility between the old and new types. An instance that's backed by an instance store volume is always replaced. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html\">Change the instance type</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>m1.small</code> </p>"
         },
         "Ipv6AddressCount":{
           "shape":"Integer",
@@ -55090,7 +55104,7 @@
           "locationName":"tunnelInsideIpv6Cidr"
         },
         "PreSharedKey":{
-          "shape":"String",
+          "shape":"preSharedKey",
           "documentation":"<p>The pre-shared key (PSK) to establish initial authentication between the virtual private gateway and the customer gateway.</p>",
           "locationName":"preSharedKey"
         },
@@ -56186,9 +56200,17 @@
         "KinesisDataFirehose":{
           "shape":"VerifiedAccessLogKinesisDataFirehoseDestinationOptions",
           "documentation":"<p>Sends Verified Access logs to Kinesis.</p>"
+        },
+        "LogVersion":{
+          "shape":"String",
+          "documentation":"<p> The logging version to use. </p> <p>Valid values: <code>ocsf-0.1</code> | <code>ocsf-1.0.0-rc.2</code> </p>"
+        },
+        "IncludeTrustContext":{
+          "shape":"Boolean",
+          "documentation":"<p> Include trust data sent by trust providers into the logs. </p>"
         }
       },
-      "documentation":"<p>Describes the destinations for Verified Access logs.</p>"
+      "documentation":"<p>Options for Verified Access logs.</p>"
     },
     "VerifiedAccessLogS3Destination":{
       "type":"structure",
@@ -56261,9 +56283,19 @@
           "shape":"VerifiedAccessLogKinesisDataFirehoseDestination",
           "documentation":"<p>Kinesis logging destination.</p>",
           "locationName":"kinesisDataFirehose"
+        },
+        "LogVersion":{
+          "shape":"String",
+          "documentation":"<p> Describes current setting for the logging version. </p>",
+          "locationName":"logVersion"
+        },
+        "IncludeTrustContext":{
+          "shape":"Boolean",
+          "documentation":"<p> Describes current setting for including trust data into the logs. </p>",
+          "locationName":"includeTrustContext"
         }
       },
-      "documentation":"<p>Describes the destinations for Verified Access logs.</p>"
+      "documentation":"<p>Describes the options for Verified Access logs.</p>"
     },
     "VerifiedAccessTrustProvider":{
       "type":"structure",
@@ -57569,7 +57601,7 @@
       "type":"structure",
       "members":{
         "CustomerGatewayConfiguration":{
-          "shape":"String",
+          "shape":"customerGatewayConfiguration",
           "documentation":"<p>The configuration information for the VPN connection's customer gateway (in the native XML format). This element is always present in the <a>CreateVpnConnection</a> response; however, it's present in the <a>DescribeVpnConnections</a> response only if the VPN connection is in the <code>pending</code> or <code>available</code> state.</p>",
           "locationName":"customerGatewayConfiguration"
         },
@@ -57943,7 +57975,7 @@
           "documentation":"<p>The range of inside IPv6 addresses for the tunnel. Any specified CIDR blocks must be unique across all VPN connections that use the same transit gateway.</p> <p>Constraints: A size /126 CIDR block from the local <code>fd00::/8</code> range.</p>"
         },
         "PreSharedKey":{
-          "shape":"String",
+          "shape":"preSharedKey",
           "documentation":"<p>The pre-shared key (PSK) to establish initial authentication between the virtual private gateway and customer gateway.</p> <p>Constraints: Allowed characters are alphanumeric characters, periods (.), and underscores (_). Must be between 8 and 64 characters in length and cannot start with zero (0).</p>"
         },
         "Phase1LifetimeSeconds":{
@@ -58077,6 +58109,14 @@
         "shape":"String",
         "locationName":"ZoneName"
       }
+    },
+    "customerGatewayConfiguration":{
+      "type":"string",
+      "sensitive":true
+    },
+    "preSharedKey":{
+      "type":"string",
+      "sensitive":true
     },
     "scope":{
       "type":"string",

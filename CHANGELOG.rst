@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.12.2
+======
+
+* api-change:``route53domains``: Update MaxItems upper bound to 1000 for ListPricesRequest
+* api-change:``s3``: This release adds SDK support for request-payer request header and request-charged response header in the "GetBucketAccelerateConfiguration", "ListMultipartUploads", "ListObjects", "ListObjectsV2" and "ListObjectVersions" S3 APIs.
+* api-change:``connect``: Updates the *InstanceStorageConfig APIs to support a new ResourceType: SCREEN_RECORDINGS to enable screen recording and specify the storage configurations for publishing the recordings. Also updates DescribeInstance and ListInstances APIs to include InstanceAccessUrl attribute in the API response.
+* api-change:``ec2``: Adds support for targeting Dedicated Host allocations by assetIds in AWS Outposts
+* api-change:``pricing``: This release updates the PriceListArn regex pattern.
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot releases CreateAutoMLJobV2 and DescribeAutoMLJobV2 for Autopilot customers with ImageClassification, TextClassification and Tabular problem type config support.
+* api-change:``account``: Improve pagination support for ListRegions
+* api-change:``cloudformation``: Specify desired CloudFormation behavior in the event of ChangeSet execution failure using the CreateChangeSet OnStackFailure parameter
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``appflow``: This release adds new API to reset connector metadata cache
+* api-change:``ecs``: Documentation only update to address various tickets.
+* api-change:``lambda``: This release adds RecursiveInvocationException to the Invoke API and InvokeWithResponseStream API.
+* enhancement:Python: Update bundled Python interpreter to 3.11.4
+* api-change:``ec2``: API changes to AWS Verified Access to include data from trust providers in logs
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in May 2023.
+* api-change:``redshift``: Added support for custom domain names for Redshift Provisioned clusters. This feature enables customers to create a custom domain name and use ACM to generate fully secure connections to it.
+* api-change:``glue``: This release adds support for creating cross region table/database resource links
+* api-change:``discovery``: Add Amazon EC2 instance recommendations export
+* enhancement:openssl: Update bundled openssl version to 1.1.1u
+
+
 2.12.1
 ======
 

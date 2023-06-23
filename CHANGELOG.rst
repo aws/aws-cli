@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.27.160
+========
+
+* api-change:``devops-guru``: This release adds support for encryption via customer managed keys.
+* api-change:``fsx``: Update to Amazon FSx documentation.
+* api-change:``rds``: Documentation improvements for create, describe, and modify DB clusters and DB instances.
+* api-change:``verifiedpermissions``: Added improved descriptions and new code samples to SDK documentation.
+
+
 1.27.159
 ========
 

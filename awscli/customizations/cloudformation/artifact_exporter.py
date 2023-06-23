@@ -661,6 +661,11 @@ class Template(object):
 
         for resource_id, resource in self.template_dict["Resources"].items():
 
+            if not isinstance(resource, dict):
+                raise ValueError("Resource {0} is not an object or "
+                                 "template is malformed with inconsistent "
+                                 "use of tabs and spaces".format(resource_id))
+
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)
 

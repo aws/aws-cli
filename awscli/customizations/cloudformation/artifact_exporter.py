@@ -659,11 +659,18 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        for resource_id, resource in self.template_dict["Resources"].items():
+        resources = self.template_dict.get("Resources")
+
+        if not isinstance(resources, dict):
+            raise ValueError("Resources is not defined or "
+                             "template may be malformed with inconsistent "
+                             "use of tabs and spaces")
+
+        for resource_id, resource in resources.items():
 
             if not isinstance(resource, dict):
                 raise ValueError("Resource {0} is not an object or "
-                                 "template is malformed with inconsistent "
+                                 "template may be malformed with inconsistent "
                                  "use of tabs and spaces".format(resource_id))
 
             resource_type = resource.get("Type", None)

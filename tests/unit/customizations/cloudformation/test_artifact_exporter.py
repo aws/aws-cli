@@ -1017,6 +1017,60 @@ class TestArtifactExporter(unittest.TestCase):
                 "Resource2", mock.ANY, template_dir)
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_empty_resource(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        resource_type1_class = mock.Mock()
+        resource_type1_class.RESOURCE_TYPE = "resource_type1"
+        resource_type1_instance = mock.Mock()
+        resource_type1_class.return_value = resource_type1_instance
+        resource_type2_class = mock.Mock()
+        resource_type2_class.RESOURCE_TYPE = "resource_type2"
+        resource_type2_instance = mock.Mock()
+        resource_type2_class.return_value = resource_type2_instance
+
+        resources_to_export = [
+            resource_type1_class,
+            resource_type2_class
+        ]
+
+        properties = {"foo": "bar"}
+        template_dict = {
+            "Resources": {
+                "Resource1": None,
+                "Resource2": {
+                    "Type": "resource_type2",
+                    "Properties": properties
+                },
+                "Resource3": {
+                    "Type": "some-other-type",
+                    "Properties": properties
+                }
+            }
+        }
+
+        template_error_message = "Resource Resource1 is not an object " \
+                                 "or template is malformed with " \
+                                 "inconsistent use of tabs and spaces"
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
+
+            with self.assertRaisesRegex(ValueError, template_error_message):
+                template_exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):
         parent_dir = os.path.sep
         template_dir = os.path.join(parent_dir, 'foo', 'bar')

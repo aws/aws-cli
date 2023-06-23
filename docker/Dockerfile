@@ -13,7 +13,7 @@ RUN yum update -y \
 
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 RUN yum update -y \
-  && yum install -y less groff \
+  && yum install -y less groff jq \
   && yum clean all
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/

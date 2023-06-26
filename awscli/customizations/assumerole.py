@@ -5,7 +5,9 @@ from botocore.exceptions import ProfileNotFound
 from botocore.credentials import JSONFileCache
 
 LOG = logging.getLogger(__name__)
-CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
+CACHE_DIR = os.path.expanduser(
+    os.getenv('AWS_CACHE_DIR', os.path.join('~', '.aws', 'cli', 'cache'))
+)
 
 
 def register_assume_role_provider(event_handlers):

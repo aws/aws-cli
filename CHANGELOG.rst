@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.27.161
+========
+
+* api-change:``connect``: This release provides a way to search for existing tags within an instance. Before tagging a resource, ensure consistency by searching for pre-existing key:value pairs.
+* api-change:``glue``: Timestamp Starting Position For Kinesis and Kafka Data Sources in a Glue Streaming Job
+* api-change:``guardduty``: Add support for user.extra.sessionName in Kubernetes Audit Logs Findings.
+* api-change:``iam``: Support for a new API "GetMFADevice" to present MFA device metadata such as device certifications
+* api-change:``pinpoint``: Added time zone estimation support for journeys
+
+
 1.27.160
 ========
 

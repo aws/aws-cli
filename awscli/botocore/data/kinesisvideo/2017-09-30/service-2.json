@@ -48,6 +48,23 @@
       ],
       "documentation":"<p>Creates a new Kinesis video stream. </p> <p>When you create a new stream, Kinesis Video Streams assigns it a version number. When you change the stream's metadata, Kinesis Video Streams updates the version. </p> <p> <code>CreateStream</code> is an asynchronous operation.</p> <p>For information about how the service works, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-it-works.html\">How it Works</a>. </p> <p>You must have permissions for the <code>KinesisVideo:CreateStream</code> action.</p>"
     },
+    "DeleteEdgeConfiguration":{
+      "name":"DeleteEdgeConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/deleteEdgeConfiguration"
+      },
+      "input":{"shape":"DeleteEdgeConfigurationInput"},
+      "output":{"shape":"DeleteEdgeConfigurationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"StreamEdgeConfigurationNotFoundException"}
+      ],
+      "documentation":"<p>An asynchronous API that deletes a stream’s existing edge configuration, as well as the corresponding media from the Edge Agent.</p> <p>When you invoke this API, the sync status is set to <code>DELETING</code>. A deletion process starts, in which active edge jobs are stopped and all media is deleted from the edge device. The time to delete varies, depending on the total amount of stored media. If the deletion process fails, the sync status changes to <code>DELETE_FAILED</code>. You will need to re-try the deletion.</p> <p>When the deletion process has completed successfully, the edge configuration is no longer accessible.</p>"
+    },
     "DeleteSignalingChannel":{
       "name":"DeleteSignalingChannel",
       "http":{
@@ -99,7 +116,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"StreamEdgeConfigurationNotFoundException"}
       ],
-      "documentation":"<p>Describes a stream’s edge configuration that was set using the <code>StartEdgeConfigurationUpdate</code> API. Use this API to get the status of the configuration if the configuration is in sync with the Edge Agent.</p>"
+      "documentation":"<p>Describes a stream’s edge configuration that was set using the <code>StartEdgeConfigurationUpdate</code> API and the latest status of the edge agent's recorder and uploader jobs. Use this API to get the status of the configuration to determine if the configuration is in sync with the Edge Agent. Use this API to evaluate the health of the Edge Agent.</p>"
     },
     "DescribeImageGenerationConfiguration":{
       "name":"DescribeImageGenerationConfiguration",
@@ -131,7 +148,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ClientLimitExceededException"}
       ],
-      "documentation":"<p>Returns the most current information about the stream. Either streamName or streamARN should be provided in the input.</p> <p>Returns the most current information about the stream. The <code>streamName</code> or <code>streamARN</code> should be provided in the input.</p>"
+      "documentation":"<p>Returns the most current information about the stream. The <code>streamName</code> or <code>streamARN</code> should be provided in the input.</p>"
     },
     "DescribeMediaStorageConfiguration":{
       "name":"DescribeMediaStorageConfiguration",
@@ -229,6 +246,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Provides an endpoint for the specified signaling channel to send and receive messages. This API uses the <code>SingleMasterChannelEndpointConfiguration</code> input parameter, which consists of the <code>Protocols</code> and <code>Role</code> properties.</p> <p> <code>Protocols</code> is used to determine the communication mechanism. For example, if you specify <code>WSS</code> as the protocol, this API produces a secure websocket endpoint. If you specify <code>HTTPS</code> as the protocol, this API generates an HTTPS endpoint. </p> <p> <code>Role</code> determines the messaging permissions. A <code>MASTER</code> role results in this API generating an endpoint that a client can use to communicate with any of the viewers on the channel. A <code>VIEWER</code> role results in this API generating an endpoint that a client can use to communicate only with a <code>MASTER</code>. </p>"
+    },
+    "ListEdgeAgentConfigurations":{
+      "name":"ListEdgeAgentConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listEdgeAgentConfigurations"
+      },
+      "input":{"shape":"ListEdgeAgentConfigurationsInput"},
+      "output":{"shape":"ListEdgeAgentConfigurationsOutput"},
+      "errors":[
+        {"shape":"NotAuthorizedException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"InvalidArgumentException"}
+      ],
+      "documentation":"<p>Returns an array of edge configurations associated with the specified Edge Agent.</p> <p>In the request, you must specify the Edge Agent <code>HubDeviceArn</code>.</p>"
     },
     "ListSignalingChannels":{
       "name":"ListSignalingChannels",
@@ -677,7 +709,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
+          "documentation":"<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>Amazon Web Services/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
         },
         "DataRetentionInHours":{
           "shape":"DataRetentionInHours",
@@ -708,6 +740,24 @@
       "min":0
     },
     "DeleteAfterUpload":{"type":"boolean"},
+    "DeleteEdgeConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream from which to delete the edge configuration. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream. Specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p>"
+        }
+      }
+    },
+    "DeleteEdgeConfigurationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteSignalingChannelInput":{
       "type":"structure",
       "required":["ChannelARN"],
@@ -759,7 +809,7 @@
         },
         "DeleteAfterUpload":{
           "shape":"DeleteAfterUpload",
-          "documentation":"<p>The <code>boolean</code> value used to indicate whether or not you want to mark the media for deletion, once it has been uploaded to the Kinesis Video Stream cloud. The media files can be deleted if any of the deletion configuration values are set to <code>true</code>, such as when the limit for the <code>EdgeRetentionInHours</code>, or the <code>MaxLocalMediaSizeInMB</code>, has been reached. </p> <p>Since the default value is set to <code>true</code>, configure the uploader schedule such that the media files are not being deleted before they are initially uploaded to AWS cloud.</p>"
+          "documentation":"<p>The <code>boolean</code> value used to indicate whether or not you want to mark the media for deletion, once it has been uploaded to the Kinesis Video Stream cloud. The media files can be deleted if any of the deletion configuration values are set to <code>true</code>, such as when the limit for the <code>EdgeRetentionInHours</code>, or the <code>MaxLocalMediaSizeInMB</code>, has been reached. </p> <p>Since the default value is set to <code>true</code>, configure the uploader schedule such that the media files are not being deleted before they are initially uploaded to the Amazon Web Services cloud.</p>"
         }
       },
       "documentation":"<p>The configuration details required to delete the connection of the stream from the Edge Agent.</p>"
@@ -807,6 +857,10 @@
         "EdgeConfig":{
           "shape":"EdgeConfig",
           "documentation":"<p>A description of the stream's edge configuration that will be used to sync with the Edge Agent IoT Greengrass component. The Edge Agent component will run on an IoT Hub Device setup at your premise.</p>"
+        },
+        "EdgeAgentStatus":{
+          "shape":"EdgeAgentStatus",
+          "documentation":"<p>An object that contains the latest status details for an edge agent's recorder and uploader jobs. Use this information to determine the current health of an edge agent.</p>"
         }
       }
     },
@@ -986,6 +1040,20 @@
       "max":3600,
       "min":60
     },
+    "EdgeAgentStatus":{
+      "type":"structure",
+      "members":{
+        "LastRecorderStatus":{
+          "shape":"LastRecorderStatus",
+          "documentation":"<p>The latest status of a stream’s edge recording job.</p>"
+        },
+        "LastUploaderStatus":{
+          "shape":"LastUploaderStatus",
+          "documentation":"<p>The latest status of a stream’s edge to cloud uploader job.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains the latest status details for an edge agent's recorder and uploader jobs. Use this information to determine the current health of an edge agent.</p>"
+    },
     "EdgeConfig":{
       "type":"structure",
       "required":[
@@ -1162,7 +1230,7 @@
         },
         "DestinationRegion":{
           "shape":"DestinationRegion",
-          "documentation":"<p>The AWS Region of the S3 bucket where images will be delivered. This <code>DestinationRegion</code> must match the Region where the stream is located.</p>"
+          "documentation":"<p>The Amazon Web Services Region of the S3 bucket where images will be delivered. This <code>DestinationRegion</code> must match the Region where the stream is located.</p>"
         }
       },
       "documentation":"<p>The structure that contains the information required to deliver images to a customer.</p>"
@@ -1201,11 +1269,127 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "JobStatusDetails":{"type":"string"},
     "KmsKeyId":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":".+"
+    },
+    "LastRecorderStatus":{
+      "type":"structure",
+      "members":{
+        "JobStatusDetails":{
+          "shape":"JobStatusDetails",
+          "documentation":"<p>A description of a recorder job’s latest status.</p>"
+        },
+        "LastCollectedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the recorder job was last executed and media stored to local disk.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the recorder status was last updated.</p>"
+        },
+        "RecorderStatus":{
+          "shape":"RecorderStatus",
+          "documentation":"<p>The status of the latest recorder job.</p>"
+        }
+      },
+      "documentation":"<p>The latest status of a stream's edge recording job.</p>"
+    },
+    "LastUploaderStatus":{
+      "type":"structure",
+      "members":{
+        "JobStatusDetails":{
+          "shape":"JobStatusDetails",
+          "documentation":"<p>A description of an uploader job’s latest status.</p>"
+        },
+        "LastCollectedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the uploader job was last executed and media collected to the cloud.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the uploader status was last updated.</p>"
+        },
+        "UploaderStatus":{
+          "shape":"UploaderStatus",
+          "documentation":"<p>The status of the latest uploader job.</p>"
+        }
+      },
+      "documentation":"<p>The latest status of a stream’s edge to cloud uploader job.</p>"
+    },
+    "ListEdgeAgentConfigurationsEdgeConfig":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the stream first created the edge config.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the stream last updated the edge config.</p>"
+        },
+        "SyncStatus":{
+          "shape":"SyncStatus",
+          "documentation":"<p>The current sync status of the stream's edge configuration.</p>"
+        },
+        "FailedStatusDetails":{
+          "shape":"FailedStatusDetails",
+          "documentation":"<p>A description of the generated failure status.</p>"
+        },
+        "EdgeConfig":{"shape":"EdgeConfig"}
+      },
+      "documentation":"<p>A description of a single stream's edge configuration.</p>"
+    },
+    "ListEdgeAgentConfigurationsEdgeConfigList":{
+      "type":"list",
+      "member":{"shape":"ListEdgeAgentConfigurationsEdgeConfig"}
+    },
+    "ListEdgeAgentConfigurationsInput":{
+      "type":"structure",
+      "required":["HubDeviceArn"],
+      "members":{
+        "HubDeviceArn":{
+          "shape":"HubDeviceArn",
+          "documentation":"<p>The \"Internet of Things (IoT) Thing\" Arn of the edge agent.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListEdgeAgentConfigurationsInputLimit",
+          "documentation":"<p>The maximum number of edge configurations to return in the response. The default is 5.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If you specify this parameter, when the result of a <code>ListEdgeAgentConfigurations</code> operation is truncated, the call returns the <code>NextToken</code> in the response. To get another batch of edge configurations, provide this token in your next request. </p>"
+        }
+      }
+    },
+    "ListEdgeAgentConfigurationsInputLimit":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "ListEdgeAgentConfigurationsOutput":{
+      "type":"structure",
+      "members":{
+        "EdgeConfigs":{
+          "shape":"ListEdgeAgentConfigurationsEdgeConfigList",
+          "documentation":"<p>A description of a single stream's edge configuration.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, the call returns this element with a given token. To get the next batch of edge configurations, use this token in your next request.</p>"
+        }
+      }
     },
     "ListOfProtocols":{
       "type":"list",
@@ -1388,7 +1572,7 @@
       "members":{
         "MediaUriSecretArn":{
           "shape":"MediaUriSecretArn",
-          "documentation":"<p>The AWS Secrets Manager ARN for the username and password of the camera, or a local media file location.</p>"
+          "documentation":"<p>The Amazon Web Services Secrets Manager ARN for the username and password of the camera, or a local media file location.</p>"
         },
         "MediaUriType":{
           "shape":"MediaUriType",
@@ -1512,6 +1696,14 @@
       },
       "documentation":"<p>The recorder configuration consists of the local <code>MediaSourceConfig</code> details that are used as credentials to accesss the local media files streamed on the camera. </p>"
     },
+    "RecorderStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "USER_ERROR",
+        "SYSTEM_ERROR"
+      ]
+    },
     "ResourceARN":{
       "type":"string",
       "max":1024,
@@ -1535,7 +1727,7 @@
           "documentation":"<p>The endpoint of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.</p>"
         }
       },
-      "documentation":"<p>An object that describes the endpoint of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.</p>"
+      "documentation":"<p>An object that describes the endpoint of the signaling channel returned by the <code>GetSignalingChannelEndpoint</code> API.</p> <p>The media server endpoint will correspond to the <code>WEBRTC</code> Protocol.</p>"
     },
     "ResourceInUseException":{
       "type":"structure",
@@ -1583,7 +1775,7 @@
           "documentation":"<p>The total duration to record the media. If the <code>ScheduleExpression</code> attribute is provided, then the <code>DurationInSeconds</code> attribute should also be specified.</p>"
         }
       },
-      "documentation":"<p>This API enables you to specify the duration that the camera, or local media file, should record onto the Edge Agent. The <code>ScheduleConfig</code> consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> attributes. </p> <p>If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be set to recording mode.</p>"
+      "documentation":"<p>This API enables you to specify the duration that the camera, or local media file, should record onto the Edge Agent. The <code>ScheduleConfig</code> consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> attributes. </p> <p>If the <code>ScheduleConfig</code> is not provided in the <code>RecorderConfig</code>, then the Edge Agent will always be set to recording mode.</p> <p>If the <code>ScheduleConfig</code> is not provided in the <code>UploaderConfig</code>, then the Edge Agent will upload at regular intervals (every 1 hour).</p>"
     },
     "ScheduleExpression":{
       "type":"string",
@@ -1765,7 +1957,8 @@
         "IN_SYNC",
         "SYNC_FAILED",
         "DELETING",
-        "DELETE_FAILED"
+        "DELETE_FAILED",
+        "DELETING_ACKNOWLEDGED"
       ]
     },
     "Tag":{
@@ -2088,10 +2281,18 @@
       "members":{
         "ScheduleConfig":{
           "shape":"ScheduleConfig",
-          "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code>details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in recording mode.</p>"
+          "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleConfig</code> is not provided in this <code>UploaderConfig</code>, then the Edge Agent will upload at regular intervals (every 1 hour).</p>"
         }
       },
-      "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutesdetails</code>, that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided, then the Edge Agent will always be in upload mode. </p>"
+      "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleConfig</code> is not provided in the <code>UploaderConfig</code>, then the Edge Agent will upload at regular intervals (every 1 hour). </p>"
+    },
+    "UploaderStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "USER_ERROR",
+        "SYSTEM_ERROR"
+      ]
     },
     "Version":{
       "type":"string",

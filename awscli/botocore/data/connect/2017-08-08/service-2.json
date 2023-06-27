@@ -221,7 +221,7 @@
         {"shape":"IdempotencyException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <p>For more information about how to use this operation, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html\">Claim a phone number in your country</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-numbers-traffic-distribution-groups.html\">Claim phone numbers to traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchAvailablePhoneNumbers.html\">SearchAvailablePhoneNumbers</a> API for available phone numbers that you can claim. Call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important>"
+      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <p>For more information about how to use this operation, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html\">Claim a phone number in your country</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-numbers-traffic-distribution-groups.html\">Claim phone numbers to traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchAvailablePhoneNumbers.html\">SearchAvailablePhoneNumbers</a> API for available phone numbers that you can claim. Call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important> <p>If you plan to claim and release numbers frequently during a 30 day period, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until 30 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers during any 30 day period. If you claim and release phone numbers using the UI or API during a rolling 30 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 30 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 30 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
     },
     "CreateAgentStatus":{
       "name":"CreateAgentStatus",
@@ -2219,7 +2219,7 @@
         {"shape":"IdempotencyException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Releases a phone number previously claimed to an Amazon Connect instance or traffic distribution group. You can call this API only in the Amazon Web Services Region where the number was claimed.</p> <important> <p>To release phone numbers from a traffic distribution group, use the <code>ReleasePhoneNumber</code> API, not the Amazon Connect console.</p> <p>After releasing a phone number, the phone number enters into a cooldown period of 30 days. It cannot be searched for or claimed again until the period has ended. If you accidentally release a phone number, contact Amazon Web Services Support.</p> </important>"
+      "documentation":"<p>Releases a phone number previously claimed to an Amazon Connect instance or traffic distribution group. You can call this API only in the Amazon Web Services Region where the number was claimed.</p> <important> <p>To release phone numbers from a traffic distribution group, use the <code>ReleasePhoneNumber</code> API, not the Amazon Connect console.</p> <p>After releasing a phone number, the phone number enters into a cooldown period of 30 days. It cannot be searched for or claimed again until the period has ended. If you accidentally release a phone number, contact Amazon Web Services Support.</p> </important> <p>If you plan to claim and release numbers frequently during a 30 day period, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until 30 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers during any 30 day period. If you claim and release phone numbers using the UI or API during a rolling 30 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 30 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 30 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
     },
     "ReplicateInstance":{
       "name":"ReplicateInstance",
@@ -2339,6 +2339,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Searches quick connects in an Amazon Connect instance, with optional filtering.</p>"
+    },
+    "SearchResourceTags":{
+      "name":"SearchResourceTags",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-resource-tags"
+      },
+      "input":{"shape":"SearchResourceTagsRequest"},
+      "output":{"shape":"SearchResourceTagsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"MaximumResultReturnedException"}
+      ],
+      "documentation":"<p>Searches tags used in an Amazon Connect instance using optional search criteria.</p>"
     },
     "SearchRoutingProfiles":{
       "name":"SearchRoutingProfiles",
@@ -11073,6 +11091,15 @@
       "max":7,
       "min":1
     },
+    "MaximumResultReturnedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>Maximum number (1000) of tags have been returned with current request. Consider changing request parameters to get more tags.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "MediaConcurrencies":{
       "type":"list",
       "member":{"shape":"MediaConcurrency"}
@@ -12653,6 +12680,16 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ResourceTagsSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "TagSearchCondition":{
+          "shape":"TagSearchCondition",
+          "documentation":"<p>The search criteria to be used to return tags.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to search tags.</p>"
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -12664,6 +12701,10 @@
         "HIERARCHY_GROUP",
         "USER"
       ]
+    },
+    "ResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "ResumeContactRecordingRequest":{
       "type":"structure",
@@ -13347,6 +13388,46 @@
         "ApproximateTotalCount":{
           "shape":"ApproximateTotalCount",
           "documentation":"<p>The total number of quick connects which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchResourceTagsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ResourceTypeList",
+          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchCriteria":{
+          "shape":"ResourceTagsSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return tags.</p>"
+        }
+      }
+    },
+    "SearchResourceTagsResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagsList",
+          "documentation":"<p>A list of tags used in the Amazon Connect instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -14371,6 +14452,10 @@
       "max":50,
       "min":1
     },
+    "TagKeyString":{
+      "type":"string",
+      "max":128
+    },
     "TagMap":{
       "type":"map",
       "key":{"shape":"TagKey"},
@@ -14411,9 +14496,53 @@
       "max":128,
       "min":1
     },
+    "TagSearchCondition":{
+      "type":"structure",
+      "members":{
+        "tagKey":{
+          "shape":"TagKeyString",
+          "documentation":"<p>The tag key used in the tag search condition.</p>"
+        },
+        "tagValue":{
+          "shape":"TagValueString",
+          "documentation":"<p>The tag value used in the tag search condition.</p>"
+        },
+        "tagKeyComparisonType":{
+          "shape":"StringComparisonType",
+          "documentation":"<p>The type of comparison to be made when evaluating the tag key in tag search condition.</p>"
+        },
+        "tagValueComparisonType":{
+          "shape":"StringComparisonType",
+          "documentation":"<p>The type of comparison to be made when evaluating the tag value in tag search condition.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to return tags.</p>"
+    },
+    "TagSet":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key in the tagSet.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value in the tagSet.</p>"
+        }
+      },
+      "documentation":"<p>A tag set contains tag key and tag value.</p>"
+    },
     "TagValue":{
       "type":"string",
       "max":256
+    },
+    "TagValueString":{
+      "type":"string",
+      "max":256
+    },
+    "TagsList":{
+      "type":"list",
+      "member":{"shape":"TagSet"}
     },
     "TaskActionDefinition":{
       "type":"structure",

@@ -162,6 +162,13 @@ class Config(object):
         endpoint resolution.
 
         Defaults to None.
+
+    :type ignore_configured_endpoint_urls: bool
+    :param ignore_configured_endpoint_urls: Setting to True disables use
+        of endpoint URLs provided via environment variables and
+        the shared configuration file.
+
+        Defaults to None.
     """
     OPTION_DEFAULTS = OrderedDict([
         ('region_name', None),
@@ -181,6 +188,7 @@ class Config(object):
         ('endpoint_discovery_enabled', None),
         ('use_dualstack_endpoint', None),
         ('use_fips_endpoint', None),
+        ('ignore_configured_endpoint_urls', None),
     ])
 
     def __init__(self, *args, **kwargs):

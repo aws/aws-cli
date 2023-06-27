@@ -41,6 +41,7 @@ from botocore.compat import MutableMapping
 from botocore.configprovider import (
     BOTOCORE_DEFAUT_SESSION_VARIABLES,
     ConfigChainFactory,
+    ConfiguredEndpointProvider,
     ConfigValueStore,
     create_botocore_default_config_mapping,
 )
@@ -840,6 +841,12 @@ class Session(object):
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')
         config_store = self.get_component('config_store')
+
+        self._add_configured_endpoint_provider(
+            client_name=service_name,
+            config_store=config_store,
+        )
+
         client_creator = botocore.client.ClientCreator(
             loader, endpoint_resolver, self.user_agent(), event_emitter,
             response_parser_factory, exceptions_factory, config_store)
@@ -874,6 +881,17 @@ class Session(object):
         # all regions in the partition.
         self._last_client_region_used = region_name
         return region_name
+
+    def _add_configured_endpoint_provider(self, client_name, config_store):
+        chain = ConfiguredEndpointProvider(
+            full_config=self.full_config,
+            scoped_config=self.get_scoped_config(),
+            client_name=client_name,
+        )
+        config_store.set_config_provider(
+            logical_name='endpoint_url',
+            provider=chain,
+        )
 
     def _missing_cred_vars(self, access_key, secret_key):
         if access_key is not None and secret_key is None:

@@ -25,6 +25,7 @@ from botocore.configprovider import SectionConfigProvider
 from botocore.configprovider import ConstantProvider
 from botocore.configprovider import ChainProvider
 from botocore.configprovider import ConfigChainFactory
+from botocore.configprovider import ConfiguredEndpointProvider
 
 
 class TestConfigChainFactory(unittest.TestCase):
@@ -556,3 +557,206 @@ class TestSectionConfigProvider(unittest.TestCase):
                 'override_var': 'override',
             }
         )
+
+
+def create_cases():
+    service = 'batch'
+
+    return [
+        dict(
+            service=service,
+            environ_map={},
+            full_config_map={},
+            expected_value=None,
+        ),
+        dict(
+            service=service,
+            environ_map={'AWS_ENDPOINT_URL': 'global-from-env'},
+            full_config_map={},
+            expected_value='global-from-env',
+        ),
+        dict(
+            service=service,
+            environ_map={
+                f'AWS_ENDPOINT_URL_{service.upper()}': 'service-from-env',
+                'AWS_ENDPOINT_URL': 'global-from-env',
+            },
+            full_config_map={},
+            expected_value='service-from-env',
+        ),
+        dict(
+            service=service,
+            environ_map={
+                'AWS_ENDPOINT_URL': 'global-from-env',
+                'AWS_ENDPOINT_URL_S3': 's3-endpoint-url',
+            },
+            full_config_map={},
+            expected_value='global-from-env',
+        ),
+        dict(
+            service=service,
+            environ_map={},
+            full_config_map={
+                'profiles': {'default': {'endpoint_url': 'global-from-config'}}
+            },
+            expected_value='global-from-config',
+        ),
+        dict(
+            service=service,
+            environ_map={},
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'services': 'my-services',
+                    }
+                },
+                'services': {
+                    'my-services': {
+                        service: {'endpoint_url': "service-from-config"}
+                    }
+                },
+            },
+            expected_value='service-from-config',
+        ),
+        dict(
+            service=service,
+            environ_map={},
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'services': 'my-services',
+                        'endpoint_url': 'global-from-config',
+                    }
+                },
+                'services': {
+                    'my-services': {
+                        service: {'endpoint_url': "service-from-config"}
+                    }
+                },
+            },
+            expected_value='service-from-config',
+        ),
+        dict(
+            service=service,
+            environ_map={
+                'AWS_ENDPOINT_URL': 'global-from-env',
+            },
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'endpoint_url': 'global-from-config',
+                    }
+                },
+            },
+            expected_value='global-from-env',
+        ),
+        dict(
+            service=service,
+            environ_map={
+                f'AWS_ENDPOINT_URL_{service.upper()}': 'service-from-env',
+            },
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'endpoint_url': 'global-from-config',
+                    }
+                },
+            },
+            expected_value='service-from-env',
+        ),
+        dict(
+            service='s3',
+            environ_map={},
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'services': 'my-services',
+                        'endpoint_url': 'global-from-config',
+                    }
+                },
+                'services': {
+                    'my-services': {
+                        service: {'endpoint_url': "service-from-config"}
+                    }
+                },
+            },
+            expected_value='global-from-config',
+        ),
+        dict(
+            service='runtime.sagemaker',
+            environ_map={},
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'services': 'my-services',
+                    }
+                },
+                'services': {
+                    'my-services': {
+                        'sagemaker_runtime': {
+                            'endpoint_url': "service-from-config"
+                        }
+                    }
+                },
+            },
+            expected_value='service-from-config',
+        ),
+        dict(
+            service='apigateway',
+            environ_map={},
+            full_config_map={
+                'profiles': {
+                    'default': {
+                        'services': 'my-services',
+                    }
+                },
+                'services': {
+                    'my-services': {
+                        'api_gateway': {'endpoint_url': "service-from-config"}
+                    }
+                },
+            },
+            expected_value='service-from-config',
+        ),
+    ]
+
+
+class TestConfiguredEndpointProvider:
+    def assert_does_provide(
+        self,
+        service,
+        environ_map,
+        full_config_map,
+        expected_value,
+    ):
+        scoped_config_map = full_config_map.get('profiles', {}).get(
+            'default', {}
+        )
+
+        chain = ConfiguredEndpointProvider(
+            scoped_config=scoped_config_map,
+            full_config=full_config_map,
+            client_name=service,
+            environ=environ_map,
+        )
+        value = chain.provide()
+        assert value == expected_value
+
+    @pytest.mark.parametrize('test_case', create_cases())
+    def test_does_provide(self, test_case):
+        self.assert_does_provide(**test_case)
+
+    def test_is_deepcopyable(self):
+        env = {'AWS_ENDPOINT_URL_BATCH': 'https://endpoint-override'}
+        provider = ConfiguredEndpointProvider(
+            full_config={}, scoped_config={}, client_name='batch', environ=env
+        )
+
+        provider_deepcopy = copy.deepcopy(provider)
+        assert provider is not provider_deepcopy
+        assert provider.provide() == 'https://endpoint-override'
+        assert provider_deepcopy.provide() == 'https://endpoint-override'
+
+        env['AWS_ENDPOINT_URL_BATCH'] = 'https://another-new-endpoint-override'
+        assert provider.provide() == 'https://another-new-endpoint-override'
+        assert provider_deepcopy.provide() == 'https://endpoint-override'

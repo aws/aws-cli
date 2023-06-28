@@ -12779,6 +12779,10 @@
       "exception":true
     },
     "IsVersionValid":{"type":"boolean"},
+    "Iso8601DateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "JDBCConnectionType":{
       "type":"string",
       "enum":[
@@ -13574,6 +13578,10 @@
         "EmitConsumerLagMetrics":{
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>When this option is set to 'true', for each batch, it will emit the metrics for the duration between the oldest record received by the topic and the time it arrives in Glue to CloudWatch. The metric's name is \"glue.driver.streaming.maxConsumerLagInMs\". The default value is 'false'. This option is supported in Glue version 4.0 or later.</p>"
+        },
+        "StartingTimestamp":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The timestamp of the record in the Kafka topic to start reading data from. The possible values are a timestamp string in UTC format of the pattern <code>yyyy-mm-ddTHH:MM:SSZ</code> (where Z represents a UTC timezone offset with a +/-. For example: \"2023-04-04T08:00:00+08:00\"). </p> <p>Only one of <code>StartingTimestamp</code> or <code>StartingOffsets</code> must be set.</p>"
         }
       },
       "documentation":"<p>Additional options for streaming.</p>"
@@ -13633,7 +13641,7 @@
         },
         "StartingPosition":{
           "shape":"StartingPosition",
-          "documentation":"<p>The starting position in the Kinesis data stream to read data from. The possible values are <code>\"latest\"</code>, <code>\"trim_horizon\"</code>, or <code>\"earliest\"</code>. The default value is <code>\"latest\"</code>.</p>"
+          "documentation":"<p>The starting position in the Kinesis data stream to read data from. The possible values are <code>\"latest\"</code>, <code>\"trim_horizon\"</code>, <code>\"earliest\"</code>, or a timestamp string in UTC format in the pattern <code>yyyy-mm-ddTHH:MM:SSZ</code> (where <code>Z</code> represents a UTC timezone offset with a +/-. For example: \"2023-04-04T08:00:00-04:00\"). The default value is <code>\"latest\"</code>.</p> <p>Note: Using a value that is a timestamp string in UTC format for \"startingPosition\" is supported only for Glue version 4.0 or later.</p>"
         },
         "MaxFetchTimeInMs":{
           "shape":"BoxedNonNegativeLong",
@@ -13694,6 +13702,10 @@
         "EmitConsumerLagMetrics":{
           "shape":"EnclosedInStringProperty",
           "documentation":"<p>When this option is set to 'true', for each batch, it will emit the metrics for the duration between the oldest record received by the stream and the time it arrives in Glue to CloudWatch. The metric's name is \"glue.driver.streaming.maxConsumerLagInMs\". The default value is 'false'. This option is supported in Glue version 4.0 or later.</p>"
+        },
+        "StartingTimestamp":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The timestamp of the record in the Kinesis data stream to start reading data from. The possible values are a timestamp string in UTC format of the pattern <code>yyyy-mm-ddTHH:MM:SSZ</code> (where Z represents a UTC timezone offset with a +/-. For example: \"2023-04-04T08:00:00+08:00\"). </p>"
         }
       },
       "documentation":"<p>Additional options for the Amazon Kinesis streaming data source.</p>"
@@ -18327,7 +18339,8 @@
       "enum":[
         "latest",
         "trim_horizon",
-        "earliest"
+        "earliest",
+        "timestamp"
       ]
     },
     "Statement":{

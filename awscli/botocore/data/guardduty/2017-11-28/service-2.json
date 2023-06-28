@@ -797,7 +797,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, and threat intel sets, with a limit of 50 tags per resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
+      "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, threat intel sets, publishing destination, with a limit of 50 tags per resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
     },
     "ListThreatIntelSets":{
       "name":"ListThreatIntelSets",
@@ -4713,6 +4713,11 @@
           "shape":"Groups",
           "documentation":"<p>The groups that include the user who called the Kubernetes API.</p>",
           "locationName":"groups"
+        },
+        "SessionName":{
+          "shape":"SessionNameList",
+          "documentation":"<p>Entity that assumes the IAM role when Kubernetes RBAC permissions are assigned to that role.</p>",
+          "locationName":"sessionName"
         }
       },
       "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>"
@@ -7119,6 +7124,10 @@
         }
       },
       "documentation":"<p>Additional information about the generated finding.</p>"
+    },
+    "SessionNameList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "SortCriteria":{
       "type":"structure",

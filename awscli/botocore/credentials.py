@@ -2040,7 +2040,7 @@ class SSOProvider(CredentialProvider):
     METHOD = 'sso'
 
     _SSO_TOKEN_CACHE_DIR = os.path.expanduser(
-        os.path.join('~', '.aws', 'sso', 'cache')
+        os.getenv('AWS_SSO_CACHE_DIR', os.path.join('~', '.aws', 'sso', 'cache'))
     )
     _PROFILE_REQUIRED_CONFIG_VARS = (
         'sso_role_name',

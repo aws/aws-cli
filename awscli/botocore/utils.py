@@ -3211,7 +3211,7 @@ class JSONFileCache:
     """
 
     CACHE_DIR = os.path.expanduser(
-        os.getenv('AWS_CACHE_DIR', os.path.join('~', '.aws', 'boto', 'cache'))
+        os.getenv('AWS_BOTO_CACHE_DIR', os.path.join('~', '.aws', 'boto', 'cache'))
     )
 
     def __init__(self, working_dir=CACHE_DIR, dumps_func=None):

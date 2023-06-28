@@ -73,7 +73,8 @@ class PromptToolkitFactory:
     def history_driver(self):
         if self._history_driver is None:
             cache_dir = os.path.expanduser(
-                os.path.join('~', '.aws', 'cli', 'cache'))
+                os.getenv('AWS_CLI_CACHE_DIR',
+                os.path.join('~', '.aws', 'cli', 'cache')))
             history_filename = os.path.join(cache_dir, 'prompt_history.json')
             self._history_driver = HistoryDriver(history_filename)
         return self._history_driver

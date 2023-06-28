@@ -6,7 +6,7 @@ from botocore.credentials import JSONFileCache
 
 LOG = logging.getLogger(__name__)
 CACHE_DIR = os.path.expanduser(
-    os.getenv('AWS_CACHE_DIR', os.path.join('~', '.aws', 'cli', 'cache'))
+    os.getenv('AWS_CLI_CACHE_DIR', os.path.join('~', '.aws', 'cli', 'cache'))
 )
 
 

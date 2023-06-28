@@ -4073,6 +4073,22 @@
           "shape":"String",
           "documentation":"<p>The Active Directory directory ID to create the DB instance in. Currently, only Microsoft SQL Server, MySQL, Oracle, and PostgreSQL DB instances can be created in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to the following DB instances:</p> <ul> <li> <p>Amazon Aurora (The domain is managed by the DB cluster.)</p> </li> <li> <p>RDS Custom</p> </li> </ul>"
         },
+        "DomainFqdn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the fully qualified domain name of an Active Directory domain.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>mymanagedADtest.mymanagedAD.mydomain</code> </p>"
+        },
+        "DomainOu":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the distinguished name format.</p> </li> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>OU=mymanagedADtestOU,DC=mymanagedADtest,DC=mymanagedAD,DC=mydomain</code> </p>"
+        },
+        "DomainAuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+        },
+        "DomainDnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p> <p>Constraints:</p> <ul> <li> <p>Two IP addresses must be provided. If there isn't a secondary domain controller, use the IP address of the primary domain controller for both entries in the list.</p> </li> </ul> <p>Example: <code>123.124.125.126,234.235.236.237</code> </p>"
+        },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
           "documentation":"<p>Spcifies whether to copy tags from the DB instance to snapshots of the DB instance. By default, tags are not copied.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. Copying tags to snapshots is managed by the DB cluster. Setting this value for an Aurora DB instance has no effect on the DB cluster setting.</p>"
@@ -4284,6 +4300,22 @@
         "DomainIAMRoleName":{
           "shape":"String",
           "documentation":"<p>The name of the IAM role to be used when making API calls to the Directory Service.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+        },
+        "DomainFqdn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the fully qualified domain name of an Active Directory domain.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>mymanagedADtest.mymanagedAD.mydomain</code> </p>"
+        },
+        "DomainOu":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the distinguished name format.</p> </li> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>OU=mymanagedADtestOU,DC=mymanagedADtest,DC=mymanagedAD,DC=mydomain</code> </p>"
+        },
+        "DomainAuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+        },
+        "DomainDnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p> <p>Constraints:</p> <ul> <li> <p>Two IP addresses must be provided. If there isn't a secondary domain controller, use the IP address of the primary domain controller for both entries in the list.</p> </li> </ul> <p>Example: <code>123.124.125.126,234.235.236.237</code> </p>"
         },
         "ReplicaMode":{
           "shape":"ReplicaMode",
@@ -8928,11 +8960,23 @@
         },
         "FQDN":{
           "shape":"String",
-          "documentation":"<p>The fully qualified domain name of the Active Directory Domain.</p>"
+          "documentation":"<p>The fully qualified domain name (FQDN) of the Active Directory Domain.</p>"
         },
         "IAMRoleName":{
           "shape":"String",
           "documentation":"<p>The name of the IAM role to be used when making API calls to the Directory Service.</p>"
+        },
+        "OU":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p>"
+        },
+        "AuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p>"
+        },
+        "DnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p>"
         }
       },
       "documentation":"<p>An Active Directory Domain membership record associated with the DB instance or cluster.</p>"
@@ -10626,6 +10670,22 @@
           "shape":"String",
           "documentation":"<p>The Active Directory directory ID to move the DB instance to. Specify <code>none</code> to remove the instance from its current domain. You must create the domain before this operation. Currently, you can create only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
+        "DomainFqdn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the fully qualified domain name of an Active Directory domain.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>mymanagedADtest.mymanagedAD.mydomain</code> </p>"
+        },
+        "DomainOu":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the distinguished name format.</p> </li> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>OU=mymanagedADtestOU,DC=mymanagedADtest,DC=mymanagedAD,DC=mydomain</code> </p>"
+        },
+        "DomainAuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+        },
+        "DomainDnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p> <p>Constraints:</p> <ul> <li> <p>Two IP addresses must be provided. If there isn't a secondary domain controller, use the IP address of the primary domain controller for both entries in the list.</p> </li> </ul> <p>Example: <code>123.124.125.126,234.235.236.237</code> </p>"
+        },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to copy all tags from the DB instance to snapshots of the DB instance. By default, tags aren't copied.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. Copying tags to snapshots is managed by the DB cluster. Setting this value for an Aurora DB instance has no effect on the DB cluster setting. For more information, see <code>ModifyDBCluster</code>.</p>"
@@ -10649,6 +10709,10 @@
         "DomainIAMRoleName":{
           "shape":"String",
           "documentation":"<p>The name of the IAM role to use when making API calls to the Directory Service.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
+        },
+        "DisableDomain":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Boolean. If present, removes the instance from the Active Directory domain.</p>"
         },
         "PromotionTier":{
           "shape":"IntegerOptional",
@@ -13021,6 +13085,22 @@
           "shape":"String",
           "documentation":"<p>Specify the Active Directory directory ID to restore the DB instance in. The domain/ must be created prior to this operation. Currently, you can create only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
+        "DomainFqdn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the fully qualified domain name of an Active Directory domain.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>mymanagedADtest.mymanagedAD.mydomain</code> </p>"
+        },
+        "DomainOu":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the distinguished name format.</p> </li> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>OU=mymanagedADtestOU,DC=mymanagedADtest,DC=mymanagedAD,DC=mydomain</code> </p>"
+        },
+        "DomainAuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p> <p>Constraints:</p> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+        },
+        "DomainDnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p> <p>Constraints:</p> <ul> <li> <p>Two IP addresses must be provided. If there isn't a secondary domain controller, use the IP address of the primary domain controller for both entries in the list.</p> </li> </ul> <p>Example: <code>123.124.125.126,234.235.236.237</code> </p>"
+        },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether to copy all tags from the restored DB instance to snapshots of the DB instance.</p> <p>In most cases, tags aren't copied by default. However, when you restore a DB instance from a DB snapshot, RDS checks whether you specify new tags. If yes, the new tags are added to the restored DB instance. If there are no new tags, RDS looks for the tags from the source DB instance for the DB snapshot, and then adds those tags to the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html#USER_Tagging.CopyTags\"> Copying tags to DB instance snapshots</a> in the <i>Amazon RDS User Guide</i>.</p>"
@@ -13398,6 +13478,22 @@
         "DomainIAMRoleName":{
           "shape":"String",
           "documentation":"<p>Specify the name of the IAM role to be used when making API calls to the Directory Service.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+        },
+        "DomainFqdn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the fully qualified domain name of an Active Directory domain.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>mymanagedADtest.mymanagedAD.mydomain</code> </p>"
+        },
+        "DomainOu":{
+          "shape":"String",
+          "documentation":"<p>The Active Directory organizational unit for your DB instance to join.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the distinguished name format.</p> </li> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>OU=mymanagedADtestOU,DC=mymanagedADtest,DC=mymanagedAD,DC=mydomain</code> </p>"
+        },
+        "DomainAuthSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for the Secrets Manager secret that contains the credentials for the user performing the domain join.</p> <p>Constraints:</p> <ul> <li> <p>Cannot be greater than 64 characters.</p> </li> </ul> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+        },
+        "DomainDnsIps":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 DNS IP addresses of your primary and secondary Active Directory domain controllers.</p> <p>Constraints:</p> <ul> <li> <p>Two IP addresses must be provided. If there isn't a secondary domain controller, use the IP address of the primary domain controller for both entries in the list.</p> </li> </ul> <p>Example: <code>123.124.125.126,234.235.236.237</code> </p>"
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",

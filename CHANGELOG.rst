@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.12.5
+======
+
+* api-change:``rds``: Amazon Relational Database Service (RDS) now supports joining a RDS for SQL Server instance to a self-managed Active Directory.
+* api-change:``lambda``: Surface ResourceConflictException in DeleteEventSourceMapping
+* api-change:``omics``: Add Common Workflow Language (CWL) as a supported language for Omics workflows
+* api-change:``s3``: The S3 LISTObjects, ListObjectsV2 and ListObjectVersions API now supports a new optional header x-amz-optional-object-attributes. If header contains RestoreStatus as the value, then S3 will include Glacier restore status i.e. isRestoreInProgress and RestoreExpiryDate in List response.
+* api-change:``kinesisanalyticsv2``: Support for new runtime environment in Kinesis Data Analytics Studio: Zeppelin-0.10, Apache Flink-1.15
+* api-change:``sagemaker``: This release adds support for Model Cards Model Registry integration.
+* api-change:``internetmonitor``: This release adds a new feature for Amazon CloudWatch Internet Monitor that enables customers to set custom thresholds, for performance and availability drops, for triggering when to create a health event.
+
+
 2.12.4
 ======
 

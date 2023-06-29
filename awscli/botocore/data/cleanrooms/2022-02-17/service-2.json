@@ -545,7 +545,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a protected query that is started by AWS Clean Rooms.</p>"
+      "documentation":"<p>Creates a protected query that is started by Clean Rooms .</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -857,7 +857,11 @@
         },
         "joinRequired":{
           "shape":"JoinRequiredOption",
-          "documentation":"<p>Control that requires member who runs query to do a join with their configured table and/or other configured table in query</p>"
+          "documentation":"<p>Control that requires member who runs query to do a join with their configured table and/or other configured table in query.</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p>Which logical operators (if any) are to be used in an INNER JOIN match condition. Default is <code>AND</code>.</p>"
         },
         "dimensionColumns":{
           "shape":"AnalysisRuleColumnList",
@@ -872,7 +876,7 @@
           "documentation":"<p>Columns that must meet a specific threshold value (after an aggregation function is applied to it) for each output row to be returned.</p>"
         }
       },
-      "documentation":"<p>Enables query structure and specified queries that product aggregate statistics.</p>"
+      "documentation":"<p>Enables query structure and specified queries that produce aggregate statistics.</p>"
     },
     "AnalysisRuleAggregationAggregateColumnsList":{
       "type":"list",
@@ -898,7 +902,11 @@
       "members":{
         "joinColumns":{
           "shape":"AnalysisRuleListJoinColumnsList",
-          "documentation":"<p>Columns that can be used to join a configured table with the table of the member who can query and another members' configured tables.</p>"
+          "documentation":"<p>Columns that can be used to join a configured table with the table of the member who can query and other members' configured tables.</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p>Which logical operators (if any) are to be used in an INNER JOIN match condition. Default is <code>AND</code>.</p>"
         },
         "listColumns":{
           "shape":"AnalysisRuleColumnList",
@@ -1056,7 +1064,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "creatorDisplayName":{
           "shape":"DisplayName",
@@ -1151,7 +1159,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "creatorDisplayName":{
           "shape":"DisplayName",
@@ -1200,7 +1208,7 @@
           "documentation":"<p>The type of the column.</p>"
         }
       },
-      "documentation":"<p>A column within a schema relation, derived from the underlying AWS Glue table.</p>"
+      "documentation":"<p>A column within a schema relation, derived from the underlying Glue table.</p>"
     },
     "ColumnList":{
       "type":"list",
@@ -1250,7 +1258,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>The AWS Glue table that this configured table represents.</p>"
+          "documentation":"<p>The Glue table that this configured table represents.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -1270,7 +1278,7 @@
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
-          "documentation":"<p>The columns within the underlying AWS Glue table that can be utilized within collaborations.</p>"
+          "documentation":"<p>The columns within the underlying Glue table that can be utilized within collaborations.</p>"
         }
       },
       "documentation":"<p>A table that has been configured for use in a collaboration.</p>"
@@ -1725,7 +1733,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>A reference to the AWS Glue table being configured.</p>"
+          "documentation":"<p>A reference to the Glue table being configured.</p>"
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
@@ -2186,7 +2194,13 @@
         }
       }
     },
-    "GlueResourceName":{
+    "GlueDatabaseName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_]+-)*([a-zA-Z0-9_]+))?"
+    },
+    "GlueTableName":{
       "type":"string",
       "max":128,
       "min":0,
@@ -2200,15 +2214,15 @@
       ],
       "members":{
         "tableName":{
-          "shape":"GlueResourceName",
-          "documentation":"<p>The name of the AWS Glue table.</p>"
+          "shape":"GlueTableName",
+          "documentation":"<p>The name of the Glue table.</p>"
         },
         "databaseName":{
-          "shape":"GlueResourceName",
-          "documentation":"<p>The name of the database the AWS Glue table belongs to.</p>"
+          "shape":"GlueDatabaseName",
+          "documentation":"<p>The name of the database the Glue table belongs to.</p>"
         }
       },
-      "documentation":"<p>A reference to a table within an AWS Glue data catalog.</p>"
+      "documentation":"<p>A reference to a table within an Glue data catalog.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -2219,6 +2233,19 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "JoinOperator":{
+      "type":"string",
+      "enum":[
+        "OR",
+        "AND"
+      ]
+    },
+    "JoinOperatorsList":{
+      "type":"list",
+      "member":{"shape":"JoinOperator"},
+      "max":2,
+      "min":0
     },
     "JoinRequiredOption":{
       "type":"string",
@@ -2556,7 +2583,7 @@
       "members":{
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "memberAbilities":{
           "shape":"MemberAbilities",
@@ -2591,7 +2618,7 @@
       "members":{
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "status":{
           "shape":"MemberStatus",
@@ -2663,7 +2690,7 @@
         },
         "collaborationCreatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "collaborationCreatorDisplayName":{
           "shape":"DisplayName",
@@ -2757,7 +2784,7 @@
         },
         "collaborationCreatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier of the AWS principal that created the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier of the Amazon Web Services principal that created the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "collaborationCreatorDisplayName":{
           "shape":"DisplayName",
@@ -2848,7 +2875,7 @@
           "documentation":"<p>An error thrown by the protected query.</p>"
         }
       },
-      "documentation":"<p>The parameters for an AWS Clean Rooms protected query.</p>"
+      "documentation":"<p>The parameters for an Clean Rooms protected query.</p>"
     },
     "ProtectedQueryError":{
       "type":"structure",
@@ -2959,7 +2986,6 @@
     },
     "ProtectedQuerySQLParameters":{
       "type":"structure",
-      "required":["queryString"],
       "members":{
         "queryString":{
           "shape":"ProtectedQuerySQLParametersQueryStringString",
@@ -3140,7 +3166,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The unique account ID for the AWS account that owns the schema.</p>"
+          "documentation":"<p>The unique account ID for the Amazon Web Services account that owns the schema.</p>"
         },
         "name":{
           "shape":"TableAlias",
@@ -3202,7 +3228,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The unique account ID for the AWS account that owns the schema.</p>"
+          "documentation":"<p>The unique account ID for the Amazon Web Services account that owns the schema.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -3327,17 +3353,16 @@
       "members":{
         "glue":{
           "shape":"GlueTableReference",
-          "documentation":"<p>If present, a reference to the AWS Glue table referred to by this table reference.</p>"
+          "documentation":"<p>If present, a reference to the Glue table referred to by this table reference.</p>"
         }
       },
-      "documentation":"<p>A pointer to the dataset that underlies this table. Currently, this can only be an AWS Glue table.</p>",
+      "documentation":"<p>A pointer to the dataset that underlies this table. Currently, this can only be an Glue table.</p>",
       "union":true
     },
     "TagKey":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"(?!aws:).{1,128}"
+      "min":1
     },
     "TagKeys":{
       "type":"list",
@@ -3674,5 +3699,5 @@
       ]
     }
   },
-  "documentation":"<p>Welcome to the <i>AWS Clean Rooms API Reference</i>.</p> <p>AWS Clean Rooms is an AWS service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about AWS Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">AWS Clean Rooms User Guide</a>.</p>"
+  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p>"
 }

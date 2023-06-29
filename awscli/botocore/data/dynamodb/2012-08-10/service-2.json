@@ -1438,6 +1438,10 @@
         "Message":{
           "shape":"String",
           "documentation":"<p> The error message associated with the PartiQL batch response. </p>"
+        },
+        "Item":{
+          "shape":"AttributeMap",
+          "documentation":"<p>The item which caused the condition check to fail. This will be set if ReturnValuesOnConditionCheckFailure is specified as <code>ALL_OLD</code>.</p>"
         }
       },
       "documentation":"<p> An error associated with a statement in a PartiQL batch that was run. </p>"
@@ -1473,6 +1477,10 @@
         "ConsistentRead":{
           "shape":"ConsistentRead",
           "documentation":"<p> The read consistency of the PartiQL batch request. </p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for a PartiQL batch request operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       },
       "documentation":"<p> A PartiQL batch statement request. </p>"
@@ -1700,6 +1708,10 @@
         "message":{
           "shape":"ErrorMessage",
           "documentation":"<p>The conditional request failed.</p>"
+        },
+        "Item":{
+          "shape":"AttributeMap",
+          "documentation":"<p>Item which caused the <code>ConditionalCheckFailedException</code>.</p>"
         }
       },
       "documentation":"<p>A condition specified in the operation could not be evaluated.</p>",
@@ -2155,6 +2167,10 @@
         "ExpressionAttributeValues":{
           "shape":"ExpressionAttributeValueMap",
           "documentation":"<p>One or more values that can be substituted in an expression.</p> <p>Use the <b>:</b> (colon) character in an expression to dereference an attribute value. For example, suppose that you wanted to check whether the value of the <i>ProductStatus</i> attribute was one of the following: </p> <p> <code>Available | Backordered | Discontinued</code> </p> <p>You would first need to specify <code>ExpressionAttributeValues</code> as follows:</p> <p> <code>{ \":avail\":{\"S\":\"Available\"}, \":back\":{\"S\":\"Backordered\"}, \":disc\":{\"S\":\"Discontinued\"} }</code> </p> <p>You could then use these values in an expression, such as this:</p> <p> <code>ProductStatus IN (:avail, :back, :disc)</code> </p> <p>For more information on expression attribute values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.SpecifyingConditions.html\">Condition Expressions</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for a <code>DeleteItem</code> operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>DeleteItem</code> operation.</p>"
@@ -2591,6 +2607,10 @@
         "Limit":{
           "shape":"PositiveIntegerObject",
           "documentation":"<p>The maximum number of items to evaluate (not necessarily the number of matching items). If DynamoDB processes the number of items up to the limit while processing the results, it stops the operation and returns the matching values up to that point, along with a key in <code>LastEvaluatedKey</code> to apply in a subsequent operation so you can pick up where you left off. Also, if the processed dataset size exceeds 1 MB before DynamoDB reaches this limit, it stops the operation and returns the matching values up to the limit, and a key in <code>LastEvaluatedKey</code> to apply in a subsequent operation to continue the operation. </p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for an <code>ExecuteStatement</code> operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       }
     },
@@ -4091,6 +4111,10 @@
         "Parameters":{
           "shape":"PreparedStatementParameters",
           "documentation":"<p> The parameter values. </p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for a PartiQL <code>ParameterizedStatement</code> operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       },
       "documentation":"<p> Represents a PartiQL statment that uses parameters. </p>"
@@ -4347,6 +4371,10 @@
         "ExpressionAttributeValues":{
           "shape":"ExpressionAttributeValueMap",
           "documentation":"<p>One or more values that can be substituted in an expression.</p> <p>Use the <b>:</b> (colon) character in an expression to dereference an attribute value. For example, suppose that you wanted to check whether the value of the <i>ProductStatus</i> attribute was one of the following: </p> <p> <code>Available | Backordered | Discontinued</code> </p> <p>You would first need to specify <code>ExpressionAttributeValues</code> as follows:</p> <p> <code>{ \":avail\":{\"S\":\"Available\"}, \":back\":{\"S\":\"Backordered\"}, \":disc\":{\"S\":\"Discontinued\"} }</code> </p> <p>You could then use these values in an expression, such as this:</p> <p> <code>ProductStatus IN (:avail, :back, :disc)</code> </p> <p>For more information on expression attribute values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.SpecifyingConditions.html\">Condition Expressions</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for a <code>PutItem</code> operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>PutItem</code> operation.</p>"
@@ -6118,6 +6146,10 @@
         "ExpressionAttributeValues":{
           "shape":"ExpressionAttributeValueMap",
           "documentation":"<p>One or more values that can be substituted in an expression.</p> <p>Use the <b>:</b> (colon) character in an expression to dereference an attribute value. For example, suppose that you wanted to check whether the value of the <code>ProductStatus</code> attribute was one of the following: </p> <p> <code>Available | Backordered | Discontinued</code> </p> <p>You would first need to specify <code>ExpressionAttributeValues</code> as follows:</p> <p> <code>{ \":avail\":{\"S\":\"Available\"}, \":back\":{\"S\":\"Backordered\"}, \":disc\":{\"S\":\"Discontinued\"} }</code> </p> <p>You could then use these values in an expression, such as this:</p> <p> <code>ProductStatus IN (:avail, :back, :disc)</code> </p> <p>For more information on expression attribute values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.SpecifyingConditions.html\">Condition Expressions</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "ReturnValuesOnConditionCheckFailure":{
+          "shape":"ReturnValuesOnConditionCheckFailure",
+          "documentation":"<p>An optional parameter that returns the item attributes for an <code>UpdateItem</code> operation that failed a condition check.</p> <p>There is no additional cost associated with requesting a return value aside from the small network and processing overhead of receiving a larger response. No read capacity units are consumed.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateItem</code> operation.</p>"

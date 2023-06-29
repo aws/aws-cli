@@ -6310,6 +6310,10 @@
         "DeltaTargets":{
           "shape":"DeltaTargetList",
           "documentation":"<p>Specifies Delta data store targets.</p>"
+        },
+        "IcebergTargets":{
+          "shape":"IcebergTargetList",
+          "documentation":"<p>Specifies Apache Iceberg data store targets.</p>"
         }
       },
       "documentation":"<p>Specifies data stores to crawl.</p>"
@@ -12654,6 +12658,32 @@
         "uncompressed",
         "snappy"
       ]
+    },
+    "IcebergTarget":{
+      "type":"structure",
+      "members":{
+        "Paths":{
+          "shape":"PathList",
+          "documentation":"<p>One or more Amazon S3 paths that contains Iceberg metadata folders as <code>s3://bucket/prefix</code>.</p>"
+        },
+        "ConnectionName":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The name of the connection to use to connect to the Iceberg target.</p>"
+        },
+        "Exclusions":{
+          "shape":"PathList",
+          "documentation":"<p>A list of glob patterns used to exclude from the crawl. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html\">Catalog Tables with a Crawler</a>.</p>"
+        },
+        "MaximumTraversalDepth":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The maximum depth of Amazon S3 paths that the crawler can traverse to discover the Iceberg metadata folder in your Amazon S3 path. Used to limit the crawler run time.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Apache Iceberg data source where Iceberg tables are stored in Amazon S3.</p>"
+    },
+    "IcebergTargetList":{
+      "type":"list",
+      "member":{"shape":"IcebergTarget"}
     },
     "IdString":{
       "type":"string",

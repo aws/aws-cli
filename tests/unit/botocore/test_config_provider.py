@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+import copy
 import mock
 import pytest
 
@@ -327,6 +328,76 @@ class TestConfigValueStore(unittest.TestCase):
 
         value = provider.get_config_variable('fake_variable')
         self.assertEqual(value, 'bar')
+
+    def test_can_get_config_provider(self):
+        chain_provider = ChainProvider(
+            providers=[ConstantProvider(value='bar')]
+        )
+        config_value_store = ConfigValueStore(
+            mapping={
+                'fake_variable': chain_provider,
+            }
+        )
+        provider = config_value_store.get_config_provider('fake_variable')
+        value = config_value_store.get_config_variable('fake_variable')
+        self.assertIsInstance(provider, ChainProvider)
+        self.assertEqual(value, 'bar')
+
+    def test_can_get_config_provider_non_chain_provider(self):
+        constant_provider = ConstantProvider(value='bar')
+        config_value_store = ConfigValueStore(
+            mapping={
+                'fake_variable': constant_provider,
+            }
+        )
+        provider = config_value_store.get_config_provider('fake_variable')
+        value = config_value_store.get_config_variable('fake_variable')
+        self.assertIsInstance(provider, ConstantProvider)
+        self.assertEqual(value, 'bar')
+
+    def test_copy_preserves_provider_identities(self):
+        fake_variable_provider = ConstantProvider(100)
+        config_store = ConfigValueStore(
+            mapping={
+                'fake_variable': fake_variable_provider,
+            }
+        )
+
+        config_store_copy = copy.copy(config_store)
+
+        self.assertIs(
+            config_store.get_config_provider('fake_variable'),
+            config_store_copy.get_config_provider('fake_variable'),
+        )
+
+    def test_copy_preserves_overrides(self):
+        provider = ConstantProvider(100)
+        config_store = ConfigValueStore(mapping={'fake_variable': provider})
+        config_store.set_config_variable('fake_variable', 'override-value')
+
+        config_store_copy = copy.copy(config_store)
+
+        value = config_store_copy.get_config_variable('fake_variable')
+        self.assertEqual(value, 'override-value')
+
+    def test_copy_update_does_not_mutate_source_config_store(self):
+        fake_variable_provider = ConstantProvider(100)
+        config_store = ConfigValueStore(
+            mapping={
+                'fake_variable': fake_variable_provider,
+            }
+        )
+
+        config_store_copy = copy.copy(config_store)
+
+        another_variable_provider = ConstantProvider('ABC')
+
+        config_store_copy.set_config_provider(
+            'fake_variable', another_variable_provider
+        )
+
+        assert config_store.get_config_variable('fake_variable') == 100
+        assert config_store_copy.get_config_variable('fake_variable') == 'ABC'
 
 
 class TestInstanceVarProvider(unittest.TestCase):

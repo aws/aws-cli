@@ -13,6 +13,7 @@
 """This module contains the inteface for controlling how configuration
 is loaded.
 """
+import copy
 import logging
 import os
 
@@ -301,6 +302,13 @@ class ConfigValueStore(object):
             for logical_name, provider in mapping.items():
                 self.set_config_provider(logical_name, provider)
 
+    def __copy__(self):
+        config_store = ConfigValueStore(copy.copy(self._mapping))
+        for logical_name, override_value in self._overrides.items():
+            config_store.set_config_variable(logical_name, override_value)
+
+        return config_store
+
     def get_config_variable(self, logical_name):
         """
         Retrieve the value associeated with the specified logical_name
@@ -321,6 +329,27 @@ class ConfigValueStore(object):
             return None
         provider = self._mapping[logical_name]
         return provider.provide()
+
+    def get_config_provider(self, logical_name):
+        """
+        Retrieve the provider associated with the specified logical_name.
+        If no provider is found None will be returned.
+
+        :type logical_name: str
+        :param logical_name: The logical name of the session variable
+            you want to retrieve.  This name will be mapped to the
+            appropriate environment variable name for this session as
+            well as the appropriate config file entry.
+
+        :returns: configuration provider or None if not defined.
+        """
+        if (
+            logical_name in self._overrides
+            or logical_name not in self._mapping
+        ):
+            return None
+        provider = self._mapping[logical_name]
+        return provider
 
     def set_config_variable(self, logical_name, value):
         """Set a configuration variable to a specific value.

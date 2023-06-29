@@ -840,8 +840,7 @@ class Session(object):
         auth_token = self.get_auth_token()
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')
-        config_store = self.get_component('config_store')
-
+        config_store = copy.copy(self.get_component('config_store'))
         self._add_configured_endpoint_provider(
             client_name=service_name,
             config_store=config_store,

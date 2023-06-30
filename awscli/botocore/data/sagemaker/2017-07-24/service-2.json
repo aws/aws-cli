@@ -3894,6 +3894,23 @@
       "type":"list",
       "member":{"shape":"AgentVersion"}
     },
+    "AggregationTransformationValue":{
+      "type":"string",
+      "enum":[
+        "sum",
+        "avg",
+        "first",
+        "min",
+        "max"
+      ]
+    },
+    "AggregationTransformations":{
+      "type":"map",
+      "key":{"shape":"TransformationAttributeName"},
+      "value":{"shape":"AggregationTransformationValue"},
+      "max":50,
+      "min":1
+    },
     "Alarm":{
       "type":"structure",
       "members":{
@@ -4970,11 +4987,11 @@
       "members":{
         "ChannelType":{
           "shape":"AutoMLChannelType",
-          "documentation":"<p>The type of channel. Defines whether the data are used for training or validation. The default value is <code>training</code>. Channels for <code>training</code> and <code>validation</code> must share the same <code>ContentType</code> </p>"
+          "documentation":"<p>The type of channel. Defines whether the data are used for training or validation. The default value is <code>training</code>. Channels for <code>training</code> and <code>validation</code> must share the same <code>ContentType</code> </p> <note> <p>The type of channel defaults to <code>training</code> for the time-series forecasting problem type.</p> </note>"
         },
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>For Tabular problem types: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> <li> <p>For ImageClassification: <code>image/png</code>, <code>image/jpeg</code>, or <code>image/*</code>. The default value is <code>image/*</code>.</p> </li> <li> <p>For TextClassification: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> </ul>"
+          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>For tabular problem types: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> <li> <p>For image classification: <code>image/png</code>, <code>image/jpeg</code>, or <code>image/*</code>. The default value is <code>image/*</code>.</p> </li> <li> <p>For text classification: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> <li> <p>For time-series forecasting: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> </ul>"
         },
         "CompressionType":{
           "shape":"CompressionType",
@@ -4992,7 +5009,7 @@
       "members":{
         "MaxCandidates":{
           "shape":"MaxCandidates",
-          "documentation":"<p>The maximum number of times a training job is allowed to run.</p> <p>For job V2s (jobs created by calling <code>CreateAutoMLJobV2</code>), the supported value is 1.</p>"
+          "documentation":"<p>The maximum number of times a training job is allowed to run.</p> <p>For text and image classification, as well as time-series forecasting problem types, the supported value is 1. For tabular problem types, the maximum value is 750.</p>"
         },
         "MaxRuntimePerTrainingJobInSeconds":{
           "shape":"MaxRuntimePerTrainingJobInSeconds",
@@ -5049,7 +5066,7 @@
       "members":{
         "MetricName":{
           "shape":"AutoMLMetricEnum",
-          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>For the list of all available metrics supported by Autopilot, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics\">Autopilot metrics</a>.</p> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> <li> <p>For image or text classification problem types: <code>Accuracy</code> </p> </li> </ul>"
+          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>For the list of all available metrics supported by Autopilot, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics\">Autopilot metrics</a>.</p> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> <li> <p>For image or text classification problem types: <code>Accuracy</code> </p> </li> <li> <p>For time-series forecasting problem types: <code>AverageWeightedQuantileLoss</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job.</p>"
@@ -5081,7 +5098,8 @@
         "ModelDeploymentError",
         "GeneratingModelInsightsReport",
         "ModelInsightsError",
-        "TrainingModels"
+        "TrainingModels",
+        "PreTraining"
       ]
     },
     "AutoMLJobStatus":{
@@ -5178,7 +5196,11 @@
         "Precision",
         "PrecisionMacro",
         "Recall",
-        "RecallMacro"
+        "RecallMacro",
+        "MAPE",
+        "MASE",
+        "WAPE",
+        "AverageWeightedQuantileLoss"
       ]
     },
     "AutoMLMetricExtendedEnum":{
@@ -5198,7 +5220,11 @@
         "Recall",
         "RecallMacro",
         "LogLoss",
-        "InferenceLatency"
+        "InferenceLatency",
+        "MAPE",
+        "MASE",
+        "WAPE",
+        "AverageWeightedQuantileLoss"
       ]
     },
     "AutoMLMode":{
@@ -5259,6 +5285,10 @@
         "TabularJobConfig":{
           "shape":"TabularJobConfig",
           "documentation":"<p>Settings used to configure an AutoML job V2 for a tabular problem type (regression, classification).</p>"
+        },
+        "TimeSeriesForecastingJobConfig":{
+          "shape":"TimeSeriesForecastingJobConfig",
+          "documentation":"<p>Settings used to configure an AutoML job V2 for a time-series forecasting problem type.</p>"
         }
       },
       "documentation":"<p>A collection of settings specific to the problem type used to configure an AutoML job V2. There must be one and only one config of the following type.</p>",
@@ -5269,7 +5299,8 @@
       "enum":[
         "ImageClassification",
         "TextClassification",
-        "Tabular"
+        "Tabular",
+        "TimeSeriesForecasting"
       ]
     },
     "AutoMLProblemTypeResolvedAttributes":{
@@ -5416,6 +5447,10 @@
         "AWS/Rekognition/DetectModerationLabels/Image/V3",
         "AWS/Textract/AnalyzeDocument/Forms/V1"
       ]
+    },
+    "BacktestResultsLocation":{
+      "type":"string",
+      "min":1
     },
     "BatchDataCaptureConfig":{
       "type":"structure",
@@ -5706,6 +5741,10 @@
         "ModelInsights":{
           "shape":"ModelInsightsLocation",
           "documentation":"<p>The Amazon S3 prefix to the model insight artifacts generated for the AutoML candidate.</p>"
+        },
+        "BacktestResults":{
+          "shape":"BacktestResultsLocation",
+          "documentation":"<p>The Amazon S3 prefix to the accuracy metrics and the inference results observed over the testing window. Available only for the time-series forecasting problem type.</p>"
         }
       },
       "documentation":"<p>The location of artifacts for an AutoML candidate job.</p>"
@@ -7253,7 +7292,7 @@
         },
         "AutoMLJobInputDataConfig":{
           "shape":"AutoMLJobInputDataConfig",
-          "documentation":"<p>An array of channel objects describing the input data and their location. Each channel is a named input source. Similar to the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig\">InputDataConfig</a> attribute in the <code>CreateAutoMLJob</code> input parameters. The supported formats depend on the problem type:</p> <ul> <li> <p>For Tabular problem types: <code>S3Prefix</code>, <code>ManifestFile</code>.</p> </li> <li> <p>For ImageClassification: <code>S3Prefix</code>, <code>ManifestFile</code>, <code>AugmentedManifestFile</code>.</p> </li> <li> <p>For TextClassification: <code>S3Prefix</code>.</p> </li> </ul>"
+          "documentation":"<p>An array of channel objects describing the input data and their location. Each channel is a named input source. Similar to the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig\">InputDataConfig</a> attribute in the <code>CreateAutoMLJob</code> input parameters. The supported formats depend on the problem type:</p> <ul> <li> <p>For tabular problem types: <code>S3Prefix</code>, <code>ManifestFile</code>.</p> </li> <li> <p>For image classification: <code>S3Prefix</code>, <code>ManifestFile</code>, <code>AugmentedManifestFile</code>.</p> </li> <li> <p>For text classification: <code>S3Prefix</code>.</p> </li> <li> <p>For time-series forecasting: <code>S3Prefix</code>.</p> </li> </ul>"
         },
         "OutputDataConfig":{
           "shape":"AutoMLOutputDataConfig",
@@ -7285,7 +7324,7 @@
         },
         "DataSplitConfig":{
           "shape":"AutoMLDataSplitConfig",
-          "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>The validation and training datasets must contain the same headers. For jobs created by calling <code>CreateAutoMLJob</code>, the validation dataset must be less than 2 GB in size.</p>"
+          "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>The validation and training datasets must contain the same headers. For jobs created by calling <code>CreateAutoMLJob</code>, the validation dataset must be less than 2 GB in size.</p> <note> <p>This attribute must not be set for the time-series forecasting problem type, as Autopilot automatically splits the input dataset into training and validation sets.</p> </note>"
         }
       }
     },
@@ -16693,6 +16732,39 @@
         "FSxLustre"
       ]
     },
+    "FillingTransformationMap":{
+      "type":"map",
+      "key":{"shape":"FillingType"},
+      "value":{"shape":"FillingTransformationValue"},
+      "max":6,
+      "min":1
+    },
+    "FillingTransformationValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\_\\-]+$"
+    },
+    "FillingTransformations":{
+      "type":"map",
+      "key":{"shape":"TransformationAttributeName"},
+      "value":{"shape":"FillingTransformationMap"},
+      "max":50,
+      "min":1
+    },
+    "FillingType":{
+      "type":"string",
+      "enum":[
+        "frontfill",
+        "middlefill",
+        "backfill",
+        "futurefill",
+        "frontfill_value",
+        "middlefill_value",
+        "backfill_value",
+        "futurefill_value"
+      ]
+    },
     "Filter":{
       "type":"structure",
       "required":["Name"],
@@ -16889,6 +16961,28 @@
       "min":1,
       "pattern":"^[\\t\\n\\r -\\uD7FF\\uE000-\\uFFFD]*$"
     },
+    "ForecastFrequency":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"^1Y|Y|([1-9]|1[0-1])M|M|[1-4]W|W|[1-6]D|D|([1-9]|1[0-9]|2[0-3])H|H|([1-9]|[1-5][0-9])min$"
+    },
+    "ForecastHorizon":{
+      "type":"integer",
+      "min":1
+    },
+    "ForecastQuantile":{
+      "type":"string",
+      "max":4,
+      "min":2,
+      "pattern":"(^p[1-9]\\d?$)"
+    },
+    "ForecastQuantiles":{
+      "type":"list",
+      "member":{"shape":"ForecastQuantile"},
+      "max":5,
+      "min":1
+    },
     "Framework":{
       "type":"string",
       "enum":[
@@ -17079,6 +17173,17 @@
       "max":63,
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+"
+    },
+    "GroupingAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GroupingAttributeNames":{
+      "type":"list",
+      "member":{"shape":"GroupingAttributeName"},
+      "max":5,
+      "min":1
     },
     "Groups":{
       "type":"list",
@@ -19115,6 +19220,11 @@
     "IotRoleAlias":{
       "type":"string",
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:rolealias/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "ItemIdentifierAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "JobDurationInSeconds":{
       "type":"integer",
@@ -31237,6 +31347,69 @@
       "max":128,
       "pattern":"[a-zA-Z0-9:_-]+"
     },
+    "TimeSeriesConfig":{
+      "type":"structure",
+      "required":[
+        "TargetAttributeName",
+        "TimestampAttributeName",
+        "ItemIdentifierAttributeName"
+      ],
+      "members":{
+        "TargetAttributeName":{
+          "shape":"TargetAttributeName",
+          "documentation":"<p>The name of the column representing the target variable that you want to predict for each item in your dataset. The data type of the target variable must be numerical.</p>"
+        },
+        "TimestampAttributeName":{
+          "shape":"TimestampAttributeName",
+          "documentation":"<p>The name of the column indicating a point in time at which the target value of a given item is recorded.</p>"
+        },
+        "ItemIdentifierAttributeName":{
+          "shape":"ItemIdentifierAttributeName",
+          "documentation":"<p>The name of the column that represents the set of item identifiers for which you want to predict the target value.</p>"
+        },
+        "GroupingAttributeNames":{
+          "shape":"GroupingAttributeNames",
+          "documentation":"<p>A set of columns names that can be grouped with the item identifier column to create a composite key for which a target value is predicted.</p>"
+        }
+      },
+      "documentation":"<p>The collection of components that defines the time-series.</p>"
+    },
+    "TimeSeriesForecastingJobConfig":{
+      "type":"structure",
+      "required":[
+        "ForecastFrequency",
+        "ForecastHorizon",
+        "TimeSeriesConfig"
+      ],
+      "members":{
+        "FeatureSpecificationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>A URL to the Amazon S3 data source containing additional selected features that complement the target, itemID, timestamp, and grouped columns set in <code>TimeSeriesConfig</code>. When not provided, the AutoML job V2 includes all the columns from the original dataset that are not already declared in <code>TimeSeriesConfig</code>. If provided, the AutoML job V2 only considers these additional columns as a complement to the ones declared in <code>TimeSeriesConfig</code>.</p> <p> You can input <code>FeatureAttributeNames</code> (optional) in JSON format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>You can also specify the data type of the feature (optional) in the format shown below:</p> <p> <code>{ \"FeatureDataTypes\":{\"col1\":\"numeric\", \"col2\":\"categorical\" ... } }</code> </p> <p>Autopilot supports the following data types: <code>numeric</code>, <code>categorical</code>, <code>text</code>, and <code>datetime</code>.</p> <note> <p>These column keys must not include any column set in <code>TimeSeriesConfig</code>.</p> </note> <p>When not provided, the AutoML job V2 includes all the columns from the original dataset that are not already declared in <code>TimeSeriesConfig</code>. If provided, the AutoML job V2 only considers these additional columns as a complement to the ones declared in <code>TimeSeriesConfig</code>.</p> <p>Autopilot supports the following data types: <code>numeric</code>, <code>categorical</code>, <code>text</code>, and <code>datetime</code>.</p>"
+        },
+        "CompletionCriteria":{"shape":"AutoMLJobCompletionCriteria"},
+        "ForecastFrequency":{
+          "shape":"ForecastFrequency",
+          "documentation":"<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, <code>1D</code> indicates every day and <code>15min</code> indicates every 15 minutes. The value of a frequency must not overlap with the next larger frequency. For example, you must use a frequency of <code>1H</code> instead of <code>60min</code>.</p> <p>The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul>"
+        },
+        "ForecastHorizon":{
+          "shape":"ForecastHorizon",
+          "documentation":"<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length. The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the time-steps in the dataset.</p>"
+        },
+        "ForecastQuantiles":{
+          "shape":"ForecastQuantiles",
+          "documentation":"<p>The quantiles used to train the model for forecasts at a specified quantile. You can specify quantiles from <code>0.01</code> (p1) to <code>0.99</code> (p99), by increments of 0.01 or higher. Up to five forecast quantiles can be specified. When <code>ForecastQuantiles</code> is not provided, the AutoML job uses the quantiles p10, p50, and p90 as default.</p>"
+        },
+        "Transformations":{
+          "shape":"TimeSeriesTransformations",
+          "documentation":"<p>The transformations modifying specific attributes of the time-series, such as filling strategies for missing values.</p>"
+        },
+        "TimeSeriesConfig":{
+          "shape":"TimeSeriesConfig",
+          "documentation":"<p>The collection of components that defines the time-series.</p>"
+        }
+      },
+      "documentation":"<p>The collection of settings used by an AutoML job V2 for the time-series forecasting problem type.</p> <note> <p>The <code>TimeSeriesForecastingJobConfig</code> problem type is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges.</p> </note>"
+    },
     "TimeSeriesForecastingSettings":{
       "type":"structure",
       "members":{
@@ -31251,7 +31424,26 @@
       },
       "documentation":"<p>Time series forecast settings for the SageMaker Canvas application.</p>"
     },
+    "TimeSeriesTransformations":{
+      "type":"structure",
+      "members":{
+        "Filling":{
+          "shape":"FillingTransformations",
+          "documentation":"<p>A key value pair defining the filling method for a column, where the key is the column name and the value is an object which defines the filling logic. You can specify multiple filling methods for a single column.</p> <p>The supported filling methods and their corresponding options are:</p> <ul> <li> <p> <code>frontfill</code>: <code>none</code> (Supported only for target column)</p> </li> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to the chosen filling method value (for example <code>\"backfill\" : \"value\"</code>), and define the filling value in an additional parameter prefixed with \"_value\". For example, to set <code>backfill</code> to a value of <code>2</code>, you must include two parameters: <code>\"backfill\": \"value\"</code> and <code>\"backfill_value\":\"2\"</code>.</p>"
+        },
+        "Aggregation":{
+          "shape":"AggregationTransformations",
+          "documentation":"<p>A key value pair defining the aggregation method for a column, where the key is the column name and the value is the aggregation method.</p> <p>The supported aggregation methods are <code>sum</code> (default), <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code>.</p> <note> <p>Aggregation is only supported for the target column.</p> </note>"
+        }
+      },
+      "documentation":"<p>Transformations allowed on the dataset. Supported transformations are <code>Filling</code> and <code>Aggregation</code>. <code>Filling</code> specifies how to add values to missing values in the dataset. <code>Aggregation</code> defines how to aggregate data that does not align with forecast frequency.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
+    "TimestampAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "TrafficDurationInSeconds":{
       "type":"integer",
       "min":1
@@ -32145,6 +32337,11 @@
         }
       },
       "documentation":"<p>Describes the S3 data source.</p>"
+    },
+    "TransformationAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Trial":{
       "type":"structure",

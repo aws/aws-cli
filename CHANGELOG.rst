@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.28.0
+======
+
+* api-change:``batch``: This feature allows customers to use AWS Batch with Linux with ARM64 CPU Architecture and X86_64 CPU Architecture with Windows OS on Fargate Platform.
+* api-change:``sagemaker``: SageMaker Inference Recommender now accepts new fields SupportedEndpointType and ServerlessConfiguration to support serverless endpoints.
+
+
 1.27.165
 ========
 

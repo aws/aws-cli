@@ -118,6 +118,8 @@ Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
 
+**Sync from S3 bucket to another S3 bucket in a different region**
+
 The following ``sync`` command syncs files between two buckets in different regions::
 
     aws s3 sync s3://my-us-west-2-bucket s3://my-us-east-1-bucket --source-region us-west-2 --region us-east-1

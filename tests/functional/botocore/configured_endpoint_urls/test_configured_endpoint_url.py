@@ -158,7 +158,7 @@ def assert_endpoint_url_used_for_operation(
     )
 
 
-def _known_service_names_and_models():
+def _known_service_names_and_ids():
     my_session = botocore.session.get_session()
     loader = my_session.get_component('data_loader')
     available_services = loader.list_available_services('service-2')
@@ -166,7 +166,7 @@ def _known_service_names_and_models():
     result = []
     for service_name in available_services:
         model = my_session.get_service_model(service_name)
-        result.append((model.service_name, model))
+        result.append((model.service_name, model.service_id))
     return sorted(result)
 
 
@@ -192,12 +192,12 @@ def test_resolve_configured_endpoint_url(test_case, client_creator):
 
 
 @pytest.mark.parametrize(
-    'service_name,service_model', _known_service_names_and_models()
+    'service_name,service_id', _known_service_names_and_ids()
 )
 def test_expected_service_env_var_name_is_respected(
-    service_name, service_model, client_creator
+    service_name, service_id, client_creator
 ):
-    transformed_service_id = service_model.service_id.replace(' ', '_').upper()
+    transformed_service_id = service_id.replace(' ', '_').upper()
 
     client = client_creator(
         service=service_name,
@@ -220,12 +220,12 @@ def test_expected_service_env_var_name_is_respected(
 
 
 @pytest.mark.parametrize(
-    'service_name,service_model', _known_service_names_and_models()
+    'service_name,service_id', _known_service_names_and_ids()
 )
 def test_expected_service_config_section_name_is_respected(
-    service_name, service_model, client_creator
+    service_name, service_id, client_creator
 ):
-    transformed_service_id = service_model.service_id.replace(' ', '_').lower()
+    transformed_service_id = service_id.replace(' ', '_').lower()
 
     client = client_creator(
         service=service_name,

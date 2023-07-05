@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.28.1
+======
+
+* api-change:``comprehendmedical``: Update to Amazon Comprehend Medical documentation.
+* api-change:``connect``: GetMetricDataV2 API: Channels filters do not count towards overall limitation of 100 filter values.
+* api-change:``kms``: Added Dry Run Feature to cryptographic and cross-account mutating KMS APIs (14 in all). This feature allows users to test their permissions and parameters before making the actual API call.
+* api-change:``mgn``: This release introduces the Global view feature and new Replication state APIs.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+
+
 1.28.0
 ======
 

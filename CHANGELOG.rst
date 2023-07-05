@@ -5633,6 +5633,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.28.0
+======
+
+* api-change:``batch``: This feature allows customers to use AWS Batch with Linux with ARM64 CPU Architecture and X86_64 CPU Architecture with Windows OS on Fargate Platform.
+* api-change:``sagemaker``: SageMaker Inference Recommender now accepts new fields SupportedEndpointType and ServerlessConfiguration to support serverless endpoints.
+
+
+1.27.165
+========
+
+* api-change:``amp``: AWS SDK service model  generation tool version upgrade.
+* api-change:``ecs``: Added new field  "credentialspecs" to the ecs task definition to support gMSA of windows/linux in both domainless and domain-joined mode
+* api-change:``ivs``: Corrects the HTTP response code in the generated docs for PutMetadata and DeleteRecordingConfiguration APIs.
+* api-change:``mediaconvert``: This release includes improved color handling of overlays and general updates to user documentation.
+* api-change:``sagemaker``: This release adds support for rolling deployment in SageMaker Inference.
+* api-change:``transfer``: Add outbound Basic authentication support to AS2 connectors
+* api-change:``verifiedpermissions``: This release corrects several broken links in the documentation.
+
+
 1.27.164
 ========
 

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.0
+======
+
+* api-change:``ec2``: Add Nitro Enclaves support on DescribeInstanceTypes
+* api-change:``location``: This release adds support for authenticating with Amazon Location Service's Places & Routes APIs with an API Key. Also, with this release developers can publish tracked device position updates to Amazon EventBridge.
+* api-change:``outposts``: Added paginator support to several APIs. Added the ISOLATED enum value to AssetState.
+* api-change:``quicksight``: This release includes below three changes: small multiples axes improvement, field based coloring, removed required trait from Aggregation function for TopBottomFilter.
+* api-change:``rds``: Updates Amazon RDS documentation for creating DB instances and creating Aurora global clusters.
+* feature:configuration: Configure the endpoint URL in the shared configuration file or via an environment variable for a specific AWS service or all AWS services.
+
+
 1.28.1
 ======
 

@@ -2364,7 +2364,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Starts an Asset Bundle export job.</p> <p>An Asset Bundle export job exports specified Amazon QuickSight assets. You can also choose to export any asset dependencies in the same job. Export jobs run asynchronously and can be polled with a <code>DescribeAssetBundleExportJob</code> API call. When a job is successfully completed, a download URL that contains the exported assets is returned. The URL is valid for 5 minutes and can be refreshed with a <code>DescribeAssetBundleExportJob</code> API call. Each Amazon QuickSight account can run up to 10 export jobs concurrently.</p> <p>The API caller must have the necessary permissions in their IAM role to access each resource before the resources can be exported.</p>"
+      "documentation":"<p>Starts an Asset Bundle export job.</p> <p>An Asset Bundle export job exports specified Amazon QuickSight assets. You can also choose to export any asset dependencies in the same job. Export jobs run asynchronously and can be polled with a <code>DescribeAssetBundleExportJob</code> API call. When a job is successfully completed, a download URL that contains the exported assets is returned. The URL is valid for 5 minutes and can be refreshed with a <code>DescribeAssetBundleExportJob</code> API call. Each Amazon QuickSight account can run up to 5 export jobs concurrently.</p> <p>The API caller must have the necessary permissions in their IAM role to access each resource before the resources can be exported.</p>"
     },
     "StartAssetBundleImportJob":{
       "name":"StartAssetBundleImportJob",
@@ -2383,7 +2383,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Starts an Asset Bundle import job.</p> <p>An Asset Bundle import job imports specified Amazon QuickSight assets into an Amazon QuickSight account. You can also choose to import a naming prefix and specified configuration overrides. The assets that are contained in the bundle file that you provide are used to create or update a new or existing asset in your Amazon QuickSight account. Each Amazon QuickSight account can run up to 10 import jobs concurrently.</p> <p>The API caller must have the necessary <code>\"create\"</code>, <code>\"describe\"</code>, and <code>\"update\"</code> permissions in their IAM role to access each resource type that is contained in the bundle file before the resources can be imported.</p>"
+      "documentation":"<p>Starts an Asset Bundle import job.</p> <p>An Asset Bundle import job imports specified Amazon QuickSight assets into an Amazon QuickSight account. You can also choose to import a naming prefix and specified configuration overrides. The assets that are contained in the bundle file that you provide are used to create or update a new or existing asset in your Amazon QuickSight account. Each Amazon QuickSight account can run up to 5 import jobs concurrently.</p> <p>The API caller must have the necessary <code>\"create\"</code>, <code>\"describe\"</code>, and <code>\"update\"</code> permissions in their IAM role to access each resource type that is contained in the bundle file before the resources can be imported.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3123,8 +3123,7 @@
       "type":"structure",
       "required":[
         "Column",
-        "SortDirection",
-        "AggregationFunction"
+        "SortDirection"
       ],
       "members":{
         "Column":{
@@ -4258,7 +4257,7 @@
           "documentation":"<p>The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20 MB.</p>"
         }
       },
-      "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import.</p>"
+      "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import. The file must be in <code>QUICKSIGHT_JSON</code> format.</p>"
     },
     "AssetBundleImportSourceDescription":{
       "type":"structure",
@@ -5490,6 +5489,16 @@
       "max":3,
       "min":2
     },
+    "ColorsConfiguration":{
+      "type":"structure",
+      "members":{
+        "CustomColors":{
+          "shape":"CustomColorsList",
+          "documentation":"<p>A list of up to 50 custom colors.</p>"
+        }
+      },
+      "documentation":"<p>The color configurations for a column.</p>"
+    },
     "ColumnConfiguration":{
       "type":"structure",
       "required":["Column"],
@@ -5505,6 +5514,10 @@
         "Role":{
           "shape":"ColumnRole",
           "documentation":"<p>The role of the column.</p>"
+        },
+        "ColorsConfiguration":{
+          "shape":"ColorsConfiguration",
+          "documentation":"<p>The color configurations of the column.</p>"
         }
       },
       "documentation":"<p>The general configuration of a column.</p>"
@@ -7807,6 +7820,30 @@
         }
       },
       "documentation":"<p>The URL operation that opens a link to another webpage.</p>"
+    },
+    "CustomColor":{
+      "type":"structure",
+      "required":["Color"],
+      "members":{
+        "FieldValue":{
+          "shape":"FieldValue",
+          "documentation":"<p>The data value that the color is applied to.</p>"
+        },
+        "Color":{
+          "shape":"HexColor",
+          "documentation":"<p>The color that is applied to the data value.</p>"
+        },
+        "SpecialValue":{
+          "shape":"SpecialValue",
+          "documentation":"<p>The value of a special data value.</p>"
+        }
+      },
+      "documentation":"<p>Determines the color that's applied to a particular data value in a column.</p>"
+    },
+    "CustomColorsList":{
+      "type":"list",
+      "member":{"shape":"CustomColor"},
+      "max":50
     },
     "CustomContentConfiguration":{
       "type":"structure",
@@ -11335,7 +11372,7 @@
         },
         "ExportFormat":{
           "shape":"AssetBundleExportFormat",
-          "documentation":"<p>The format of the export.</p>"
+          "documentation":"<p>The format of the exported asset bundle. A <code>QUICKSIGHT_JSON</code> formatted file can be used to make a <code>StartAssetBundleImportJob</code> API call. A <code>CLOUDFORMATION_JSON</code> formatted file can be used in the CloudFormation console and with the CloudFormation APIs.</p>"
         },
         "CloudFormationOverridePropertyConfiguration":{
           "shape":"AssetBundleCloudFormationOverridePropertyConfiguration",
@@ -23865,6 +23902,34 @@
       },
       "documentation":"<p>The display options of a control.</p>"
     },
+    "SmallMultiplesAxisPlacement":{
+      "type":"string",
+      "enum":[
+        "OUTSIDE",
+        "INSIDE"
+      ]
+    },
+    "SmallMultiplesAxisProperties":{
+      "type":"structure",
+      "members":{
+        "Scale":{
+          "shape":"SmallMultiplesAxisScale",
+          "documentation":"<p>Determines whether scale of the axes are shared or independent. The default value is <code>SHARED</code>.</p>"
+        },
+        "Placement":{
+          "shape":"SmallMultiplesAxisPlacement",
+          "documentation":"<p>Defines the placement of the axis. By default, axes are rendered <code>OUTSIDE</code> of the panels. Axes with <code>INDEPENDENT</code> scale are rendered <code>INSIDE</code> the panels.</p>"
+        }
+      },
+      "documentation":"<p>Configures the properties of a chart's axes that are used by small multiples panels.</p>"
+    },
+    "SmallMultiplesAxisScale":{
+      "type":"string",
+      "enum":[
+        "SHARED",
+        "INDEPENDENT"
+      ]
+    },
     "SmallMultiplesDimensionFieldList":{
       "type":"list",
       "member":{"shape":"DimensionField"},
@@ -23884,6 +23949,14 @@
         "PanelConfiguration":{
           "shape":"PanelConfiguration",
           "documentation":"<p>Configures the display options for each small multiples panel.</p>"
+        },
+        "XAxis":{
+          "shape":"SmallMultiplesAxisProperties",
+          "documentation":"<p>The properties of a small multiples X axis.</p>"
+        },
+        "YAxis":{
+          "shape":"SmallMultiplesAxisProperties",
+          "documentation":"<p>The properties of a small multiples Y axis.</p>"
         }
       },
       "documentation":"<p>Options that determine the layout and display options of a chart's small multiples.</p>"
@@ -23957,6 +24030,14 @@
         }
       },
       "documentation":"<p>The parameters for Spark.</p>"
+    },
+    "SpecialValue":{
+      "type":"string",
+      "enum":[
+        "EMPTY",
+        "NULL",
+        "OTHER"
+      ]
     },
     "SqlEndpointPath":{
       "type":"string",
@@ -24080,7 +24161,7 @@
         },
         "AssetBundleImportSource":{
           "shape":"AssetBundleImportSource",
-          "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import.</p>"
+          "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import. The file must be in <code>QUICKSIGHT_JSON</code> format. </p>"
         },
         "OverrideParameters":{
           "shape":"AssetBundleImportJobOverrideParameters",

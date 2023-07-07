@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.13.0
+======
+
+* feature:configuration: Configure the endpoint URL in the shared configuration file or via an environment variable for a specific AWS service or all AWS services.
+* api-change:``ec2``: Add Nitro Enclaves support on DescribeInstanceTypes
+* api-change:``connect``: GetMetricDataV2 API: Channels filters do not count towards overall limitation of 100 filter values.
+* api-change:``comprehendmedical``: Update to Amazon Comprehend Medical documentation.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``mgn``: This release introduces the Global view feature and new Replication state APIs.
+* api-change:``quicksight``: This release includes below three changes: small multiples axes improvement, field based coloring, removed required trait from Aggregation function for TopBottomFilter.
+* api-change:``rds``: Updates Amazon RDS documentation for creating DB instances and creating Aurora global clusters.
+* api-change:``kms``: Added Dry Run Feature to cryptographic and cross-account mutating KMS APIs (14 in all). This feature allows users to test their permissions and parameters before making the actual API call.
+* api-change:``outposts``: Added paginator support to several APIs. Added the ISOLATED enum value to AssetState.
+* api-change:``location``: This release adds support for authenticating with Amazon Location Service's Places & Routes APIs with an API Key. Also, with this release developers can publish tracked device position updates to Amazon EventBridge.
+
+
 2.12.7
 ======
 

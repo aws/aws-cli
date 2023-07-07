@@ -223,7 +223,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates an API key resource in your Amazon Web Services account, which lets you grant <code>geo:GetMap*</code> actions for Amazon Location Map resources to the API key bearer.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "documentation":"<p>Creates an API key resource in your Amazon Web Services account, which lets you grant actions for Amazon Location resources to the API key bearer.</p> <note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </note>",
       "endpoint":{"hostPrefix":"metadata."},
       "idempotent":true
     },
@@ -466,7 +466,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the API key resource details.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "documentation":"<p>Retrieves the API key resource details.</p>",
       "endpoint":{"hostPrefix":"metadata."}
     },
     "DescribeMap":{
@@ -786,7 +786,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists API key resources in your Amazon Web Services account.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "documentation":"<p>Lists API key resources in your Amazon Web Services account.</p>",
       "endpoint":{"hostPrefix":"metadata."}
     },
     "ListMaps":{
@@ -1051,7 +1051,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the specified properties of a given API key resource.</p> <important> <p>The API keys feature is in preview. We may add, change, or remove features before announcing general availability. For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Using API keys</a>.</p> </important>",
+      "documentation":"<p>Updates the specified properties of a given API key resource.</p>",
       "endpoint":{"hostPrefix":"metadata."},
       "idempotent":true
     },
@@ -1184,7 +1184,7 @@
       "members":{
         "AllowActions":{
           "shape":"ApiKeyRestrictionsAllowActionsList",
-          "documentation":"<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>[\"geo:GetMap*\"]</code> is valid but <code>[\"geo:GetMapTile\"]</code> is not.</p> </note>"
+          "documentation":"<p>A list of allowed actions that an API key resource grants permissions to perform. You must have at least one action for each type of resource. For example, if you have a place resource, you must include at least one place action.</p> <p>The following are valid values for the actions.</p> <ul> <li> <p> <b>Map actions</b> </p> <ul> <li> <p> <code>geo:GetMap*</code> - Allows all actions needed for map rendering.</p> </li> </ul> </li> <li> <p> <b>Place actions</b> </p> <ul> <li> <p> <code>geo:SearchPlaceIndexForText</code> - Allows geocoding.</p> </li> <li> <p> <code>geo:SearchPlaceIndexForPosition</code> - Allows reverse geocoding.</p> </li> <li> <p> <code>geo:SearchPlaceIndexForSuggestions</code> - Allows generating suggestions from text.</p> </li> <li> <p> <code>GetPlace</code> - Allows finding a place by place ID.</p> </li> </ul> </li> <li> <p> <b>Route actions</b> </p> <ul> <li> <p> <code>geo:CalculateRoute</code> - Allows point to point routing.</p> </li> <li> <p> <code>geo:CalculateRouteMatrix</code> - Allows calculating a matrix of routes.</p> </li> </ul> </li> </ul> <note> <p>You must use these strings exactly. For example, to provide access to map rendering, the only valid action is <code>geo:GetMap*</code> as an input to the list. <code>[\"geo:GetMap*\"]</code> is valid but <code>[\"geo:GetMapTile\"]</code> is not. Similarly, you cannot use <code>[\"geo:SearchPlaceIndexFor*\"]</code> - you must list each of the Place actions separately.</p> </note>"
         },
         "AllowReferers":{
           "shape":"ApiKeyRestrictionsAllowReferersList",
@@ -1192,7 +1192,7 @@
         },
         "AllowResources":{
           "shape":"ApiKeyRestrictionsAllowResourcesList",
-          "documentation":"<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>"
+          "documentation":"<p>A list of allowed resource ARNs that a API key bearer can perform actions on.</p> <ul> <li> <p>The ARN must be the correct ARN for a map, place, or route ARN. You may include wildcards in the resource-id to match multiple resources of the same type.</p> </li> <li> <p>The resources must be in the same <code>partition</code>, <code>region</code>, and <code>account-id</code> as the key that is being created.</p> </li> <li> <p>Other than wildcards, you must include the full ARN, including the <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code>, delimited by colons (:).</p> </li> <li> <p>No spaces allowed, even with wildcards. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul> <p>For more information about ARN format, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a>.</p>"
         }
       },
       "documentation":"<p>API Restrictions on the allowed actions, resources, and referers for an API key resource.</p>"
@@ -1576,7 +1576,7 @@
         },
         "GeofenceProperties":{
           "shape":"PropertyMap",
-          "documentation":"<p>Specifies additional user-defined properties to store with the Geofence. An array of key-value pairs.</p>"
+          "documentation":"<p>Associates one of more properties with the geofence. A property is a key-value pair stored with the geofence and added to any geofence event triggered with that geofence.</p> <p>Format: <code>\"key\" : \"value\"</code> </p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -1755,6 +1755,12 @@
           "shape":"DistanceUnit",
           "documentation":"<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>"
         },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "TravelMode":{
           "shape":"TravelMode",
           "documentation":"<p>Specifies the mode of transport when calculating a route. Used in estimating the speed of travel and road compatibility.</p> <p>The <code>TravelMode</code> you specify also determines how you specify route preferences: </p> <ul> <li> <p>If traveling by <code>Car</code> use the <code>CarModeOptions</code> parameter.</p> </li> <li> <p>If traveling by <code>Truck</code> use the <code>TruckModeOptions</code> parameter.</p> </li> </ul> <note> <p> <code>Bicycle</code> or <code>Motorcycle</code> are only valid when using <code>Grab</code> as a data provider, and only within Southeast Asia.</p> <p> <code>Truck</code> is not available for Grab.</p> <p>For more information about using Grab as a data provider, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/grab.html\">GrabMaps</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>Default Value: <code>Car</code> </p>"
@@ -1896,6 +1902,12 @@
         "IncludeLegGeometry":{
           "shape":"Boolean",
           "documentation":"<p>Set to include the geometry details in the result for each path between a pair of positions.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
         },
         "TravelMode":{
           "shape":"TravelMode",
@@ -2343,6 +2355,10 @@
         "Description":{
           "shape":"ResourceDescription",
           "documentation":"<p>An optional description for the tracker resource.</p>"
+        },
+        "EventBridgeEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable position <code>UPDATE</code> events from this tracker to be sent to EventBridge.</p> <note> <p>You do not need enable this feature to get <code>ENTER</code> and <code>EXIT</code> events for geofences with this tracker. Those events are always sent to EventBridge.</p> </note>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -2848,6 +2864,10 @@
           "shape":"ResourceDescription",
           "documentation":"<p>The optional description for the tracker resource.</p>"
         },
+        "EventBridgeEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether <code>UPDATE</code> events from this tracker in EventBridge are enabled. If set to <code>true</code> these events will be sent to EventBridge.</p>"
+        },
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>A key identifier for an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html\">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource.</p>"
@@ -3179,7 +3199,7 @@
         },
         "GeofenceProperties":{
           "shape":"PropertyMap",
-          "documentation":"<p>Contains additional user-defined properties stored with the geofence. An array of key-value pairs.</p>"
+          "documentation":"<p>User defined properties of the geofence. A property is a key-value pair stored with the geofence and added to any geofence event triggered with that geofence.</p> <p>Format: <code>\"key\" : \"value\"</code> </p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -3435,6 +3455,12 @@
           "documentation":"<p>The name of the place index resource that you want to use for the search.</p>",
           "location":"uri",
           "locationName":"IndexName"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
         },
         "Language":{
           "shape":"LanguageTag",
@@ -3750,7 +3776,7 @@
         },
         "GeofenceProperties":{
           "shape":"PropertyMap",
-          "documentation":"<p>Contains additional user-defined properties stored with the geofence. An array of key-value pairs.</p>"
+          "documentation":"<p>User defined properties of the geofence. A property is a key-value pair stored with the geofence and added to any geofence event triggered with that geofence.</p> <p>Format: <code>\"key\" : \"value\"</code> </p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -4469,7 +4495,7 @@
         },
         "GeofenceProperties":{
           "shape":"PropertyMap",
-          "documentation":"<p>Specifies additional user-defined properties to store with the Geofence. An array of key-value pairs.</p>"
+          "documentation":"<p>Associates one of more properties with the geofence. A property is a key-value pair stored with the geofence and added to any geofence event triggered with that geofence.</p> <p>Format: <code>\"key\" : \"value\"</code> </p>"
         },
         "Geometry":{
           "shape":"GeofenceGeometry",
@@ -4703,6 +4729,12 @@
           "location":"uri",
           "locationName":"IndexName"
         },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
+        },
         "Language":{
           "shape":"LanguageTag",
           "documentation":"<p>The preferred language used to return results. The value must be a valid <a href=\"https://tools.ietf.org/search/bcp47\">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we'll use the Greek language. You search for a location around Athens, Greece, with the <code>language</code> parameter set to <code>en</code>. The <code>city</code> in the results will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the <code>city</code> in the results will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>"
@@ -4788,6 +4820,12 @@
           "documentation":"<p>The name of the place index resource you want to use for the search.</p>",
           "location":"uri",
           "locationName":"IndexName"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
         },
         "Language":{
           "shape":"LanguageTag",
@@ -4902,6 +4940,12 @@
           "documentation":"<p>The name of the place index resource you want to use for the search.</p>",
           "location":"uri",
           "locationName":"IndexName"
+        },
+        "Key":{
+          "shape":"ApiKey",
+          "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
+          "location":"querystring",
+          "locationName":"key"
         },
         "Language":{
           "shape":"LanguageTag",
@@ -5499,6 +5543,10 @@
         "Description":{
           "shape":"ResourceDescription",
           "documentation":"<p>Updates the description for the tracker resource.</p>"
+        },
+        "EventBridgeEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable position <code>UPDATE</code> events from this tracker to be sent to EventBridge.</p> <note> <p>You do not need enable this feature to get <code>ENTER</code> and <code>EXIT</code> events for geofences with this tracker. Those events are always sent to EventBridge.</p> </note>"
         },
         "PositionFiltering":{
           "shape":"PositionFiltering",

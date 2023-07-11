@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.29.2
+======
+
+* api-change:``cognito-idp``: API model updated in Amazon Cognito
+
+
 1.29.1
 ======
 

@@ -7381,6 +7381,10 @@
         "TransactionId":{
           "shape":"TransactionIdString",
           "documentation":"<p>The ID of the transaction.</p>"
+        },
+        "OpenTableFormatInput":{
+          "shape":"OpenTableFormatInput",
+          "documentation":"<p>Specifies an <code>OpenTableFormatInput</code> structure when creating an open format table.</p>"
         }
       }
     },
@@ -12659,6 +12663,21 @@
         "snappy"
       ]
     },
+    "IcebergInput":{
+      "type":"structure",
+      "required":["MetadataOperation"],
+      "members":{
+        "MetadataOperation":{
+          "shape":"MetadataOperation",
+          "documentation":"<p>A required metadata operation. Can only be set to <code>CREATE</code>.</p>"
+        },
+        "Version":{
+          "shape":"VersionString",
+          "documentation":"<p>The table version for the Iceberg table. Defaults to 2.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines an Apache Iceberg metadata table to create in the catalog.</p>"
+    },
     "IcebergTarget":{
       "type":"structure",
       "members":{
@@ -14804,6 +14823,10 @@
       "type":"list",
       "member":{"shape":"MetadataKeyValuePair"}
     },
+    "MetadataOperation":{
+      "type":"string",
+      "enum":["CREATE"]
+    },
     "MetadataValueString":{
       "type":"string",
       "max":256,
@@ -15100,6 +15123,16 @@
       "member":{"shape":"NodeId"},
       "max":1,
       "min":1
+    },
+    "OpenTableFormatInput":{
+      "type":"structure",
+      "members":{
+        "IcebergInput":{
+          "shape":"IcebergInput",
+          "documentation":"<p>Specifies an <code>IcebergInput</code> structure that defines an Apache Iceberg metadata table.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing an open format table.</p>"
     },
     "OperationTimeoutException":{
       "type":"structure",

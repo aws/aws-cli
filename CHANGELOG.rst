@@ -5663,6 +5663,40 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.3
+======
+
+* api-change:``cognito-idp``: API model updated in Amazon Cognito
+* api-change:``connect``: Add support for deleting Queues and Routing Profiles.
+* api-change:``datasync``: Added LunCount to the response object of DescribeStorageSystemResourcesResponse, LunCount represents the number of LUNs on a storage system resource.
+* api-change:``dms``: Enhanced PostgreSQL target endpoint settings for providing Babelfish support.
+* api-change:``ec2``: This release adds support for the C7gn and Hpc7g instances. C7gn instances are powered by AWS Graviton3 processors and the fifth-generation AWS Nitro Cards. Hpc7g instances are powered by AWS Graviton 3E processors and provide up to 200 Gbps network bandwidth.
+* api-change:``fsx``: Amazon FSx for NetApp ONTAP now supports SnapLock, an ONTAP feature that enables you to protect your files in a volume by transitioning them to a write once, read many (WORM) state.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``mediatailor``: Adds categories to MediaTailor channel assembly alerts
+* api-change:``personalize``: This release provides ability to customers to change schema associated with their datasets in Amazon Personalize
+* api-change:``proton``: This release adds support for deployment history for Proton provisioned resources
+* api-change:``s3``: S3 Inventory now supports Object Access Control List and Object Owner as available object metadata fields in inventory reports.
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds WorkspeceSettings support for CanvasAppSettings
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+
+
+1.29.2
+======
+
+* api-change:``cognito-idp``: API model updated in Amazon Cognito
+
+
+1.29.1
+======
+
+* api-change:``dms``: Releasing DMS Serverless. Adding support for PostgreSQL 15.x as source and target endpoint. Adding support for DocDB Elastic Clusters with sharded collections, PostgreSQL datatype mapping customization and disabling hostname validation of the certificate authority in Kafka endpoint settings
+* api-change:``glue``: This release enables customers to create new Apache Iceberg tables and associated metadata in Amazon S3 by using native AWS Glue CreateTable operation.
+* api-change:``logs``: Add CMK encryption support for CloudWatch Logs Insights query result data
+* api-change:``medialive``: This release enables the use of Thumbnails in AWS Elemental MediaLive.
+* api-change:``mediatailor``: The AWS Elemental MediaTailor SDK for Channel Assembly has added support for EXT-X-CUE-OUT and EXT-X-CUE-IN tags to specify ad breaks in HLS outputs, including support for EXT-OATCLS, EXT-X-ASSET, and EXT-X-CUE-OUT-CONT accessory tags.
+
+
 1.29.0
 ======
 

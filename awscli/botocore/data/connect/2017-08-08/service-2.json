@@ -746,6 +746,23 @@
       ],
       "documentation":"<p>Deletes a prompt.</p>"
     },
+    "DeleteQueue":{
+      "name":"DeleteQueue",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/queues/{InstanceId}/{QueueId}"
+      },
+      "input":{"shape":"DeleteQueueRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes a queue.</p>"
+    },
     "DeleteQuickConnect":{
       "name":"DeleteQuickConnect",
       "http":{
@@ -761,6 +778,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes a quick connect.</p>"
+    },
+    "DeleteRoutingProfile":{
+      "name":"DeleteRoutingProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/routing-profiles/{InstanceId}/{RoutingProfileId}"
+      },
+      "input":{"shape":"DeleteRoutingProfileRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes a routing profile.</p>"
     },
     "DeleteRule":{
       "name":"DeleteRule",
@@ -5977,6 +6011,27 @@
         }
       }
     },
+    "DeleteQueueRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "QueueId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>",
+          "location":"uri",
+          "locationName":"QueueId"
+        }
+      }
+    },
     "DeleteQuickConnectRequest":{
       "type":"structure",
       "required":[
@@ -5995,6 +6050,27 @@
           "documentation":"<p>The identifier for the quick connect.</p>",
           "location":"uri",
           "locationName":"QuickConnectId"
+        }
+      }
+    },
+    "DeleteRoutingProfileRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "RoutingProfileId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "RoutingProfileId":{
+          "shape":"RoutingProfileId",
+          "documentation":"<p>The identifier of the routing profile.</p>",
+          "location":"uri",
+          "locationName":"RoutingProfileId"
         }
       }
     },
@@ -9148,7 +9224,7 @@
         },
         "InstanceAccessUrl":{
           "shape":"Url",
-          "documentation":"<p>This URL allows contact center users to access Amazon Connect admin website.</p>"
+          "documentation":"<p>This URL allows contact center users to access the Amazon Connect admin website.</p>"
         }
       },
       "documentation":"<p>The Amazon Connect instance.</p>"
@@ -9297,7 +9373,7 @@
         },
         "InstanceAccessUrl":{
           "shape":"Url",
-          "documentation":"<p>This URL allows contact center users to access Amazon Connect admin website.</p>"
+          "documentation":"<p>This URL allows contact center users to access the Amazon Connect admin website.</p>"
         }
       },
       "documentation":"<p>Information about the instance.</p>"

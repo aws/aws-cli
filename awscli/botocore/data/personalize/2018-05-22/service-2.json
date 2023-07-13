@@ -1017,6 +1017,22 @@
       "documentation":"<p>Updates a campaign by either deploying a new solution or changing the value of the campaign's <code>minProvisionedTPS</code> parameter.</p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You can still get recommendations from a campaign while an update is in progress. The campaign will use the previous solution version and campaign configuration to generate recommendations until the latest campaign update status is <code>Active</code>. </p> </note> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
       "idempotent":true
     },
+    "UpdateDataset":{
+      "name":"UpdateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDatasetRequest"},
+      "output":{"shape":"UpdateDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Update a dataset to replace its schema with a new or existing one. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/updating-dataset-schema.html\">Replacing a dataset's schema</a>. </p>",
+      "idempotent":true
+    },
     "UpdateMetricAttribution":{
       "name":"UpdateMetricAttribution",
       "http":{
@@ -2094,7 +2110,7 @@
         },
         "recipeArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the recipe to use for model training. Only specified when <code>performAutoML</code> is false.</p>"
+          "documentation":"<p>The ARN of the recipe to use for model training. This is required when <code>performAutoML</code> is false.</p>"
         },
         "datasetGroupArn":{
           "shape":"Arn",
@@ -2198,6 +2214,10 @@
         "lastUpdatedDateTime":{
           "shape":"Date",
           "documentation":"<p>A time stamp that shows when the dataset was updated.</p>"
+        },
+        "latestDatasetUpdate":{
+          "shape":"DatasetUpdateSummary",
+          "documentation":"<p>Describes the latest update to the dataset.</p>"
         }
       },
       "documentation":"<p>Provides metadata for a dataset.</p>"
@@ -2550,6 +2570,32 @@
     "DatasetType":{
       "type":"string",
       "max":256
+    },
+    "DatasetUpdateSummary":{
+      "type":"structure",
+      "members":{
+        "schemaArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the schema that replaced the previous schema of the dataset.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the dataset update. </p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If updating a dataset fails, provides the reason why.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The creation date and time (in Unix time) of the dataset update.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The last update date and time (in Unix time) of the dataset.</p>"
+        }
+      },
+      "documentation":"<p>Describes an update to a dataset.</p>"
     },
     "Datasets":{
       "type":"list",
@@ -4456,7 +4502,7 @@
         },
         "recipeArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the recipe used to create the solution.</p>"
+          "documentation":"<p>The ARN of the recipe used to create the solution. This is required when <code>performAutoML</code> is false.</p>"
         },
         "datasetGroupArn":{
           "shape":"Arn",
@@ -4889,6 +4935,32 @@
         "campaignArn":{
           "shape":"Arn",
           "documentation":"<p>The same campaign ARN as given in the request.</p>"
+        }
+      }
+    },
+    "UpdateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetArn",
+        "schemaArn"
+      ],
+      "members":{
+        "datasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset that you want to update.</p>"
+        },
+        "schemaArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the new schema you want use.</p>"
+        }
+      }
+    },
+    "UpdateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset you updated.</p>"
         }
       }
     },

@@ -555,6 +555,10 @@
     "AdBreak":{
       "type":"structure",
       "members":{
+        "AdBreakMetadata":{
+          "shape":"AdBreakMetadataList",
+          "documentation":"<p>Defines a list of key/value pairs that MediaTailor generates within the <code>EXT-X-ASSET</code>tag for <code>SCTE35_ENHANCED</code> output.</p>"
+        },
         "MessageType":{
           "shape":"MessageType",
           "documentation":"<p>The SCTE-35 ad insertion type. Accepted value: <code>SPLICE_INSERT</code>, <code>TIME_SIGNAL</code>.</p>"
@@ -578,6 +582,10 @@
       },
       "documentation":"<p>Ad break configuration parameters.</p>"
     },
+    "AdBreakMetadataList":{
+      "type":"list",
+      "member":{"shape":"KeyValuePair"}
+    },
     "AdMarkerPassthrough":{
       "type":"structure",
       "members":{
@@ -587,6 +595,13 @@
         }
       },
       "documentation":"<p>For HLS, when set to <code>true</code>, MediaTailor passes through <code>EXT-X-CUE-IN</code>, <code>EXT-X-CUE-OUT</code>, and <code>EXT-X-SPLICEPOINT-SCTE35</code> ad markers from the origin manifest to the MediaTailor personalized manifest.</p> <p>No logic is applied to these ad markers. For example, if <code>EXT-X-CUE-OUT</code> has a value of <code>60</code>, but no ads are filled for that ad break, MediaTailor will not set the value to <code>0</code>.</p>"
+    },
+    "AdMarkupType":{
+      "type":"string",
+      "enum":[
+        "DATERANGE",
+        "SCTE35_ENHANCED"
+      ]
     },
     "Alert":{
       "type":"structure",
@@ -606,6 +621,10 @@
           "shape":"__string",
           "documentation":"<p>If an alert is generated for a resource, an explanation of the reason for the alert.</p>"
         },
+        "Category":{
+          "shape":"AlertCategory",
+          "documentation":"<p>The category that MediaTailor assigns to the alert.</p>"
+        },
         "LastModifiedTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp when the alert was last modified.</p>"
@@ -620,6 +639,14 @@
         }
       },
       "documentation":"<p>Alert configuration parameters.</p>"
+    },
+    "AlertCategory":{
+      "type":"string",
+      "enum":[
+        "SCHEDULING_ERROR",
+        "PLAYBACK_WARNING",
+        "INFO"
+      ]
     },
     "AvailMatchingCriteria":{
       "type":"structure",
@@ -2069,6 +2096,10 @@
     "HlsPlaylistSettings":{
       "type":"structure",
       "members":{
+        "AdMarkupType":{
+          "shape":"adMarkupTypes",
+          "documentation":"<p>Determines the type of SCTE 35 tags to use in ad markup. Specify <code>DATERANGE</code> to use <code>DATERANGE</code> tags (for live or VOD content). Specify <code>SCTE35_ENHANCED</code> to use <code>EXT-X-CUE-OUT</code> and <code>EXT-X-CUE-IN</code> tags (for VOD content only).</p>"
+        },
         "ManifestWindowSeconds":{
           "shape":"__integer",
           "documentation":"<p>The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.</p>"
@@ -2118,6 +2149,24 @@
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "KeyValuePair":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>For <code>SCTE35_ENHANCED</code> output, defines a key. MediaTailor takes this key, and its associated value, and generates the key/value pair within the <code>EXT-X-ASSET</code>tag. If you specify a key, you must also specify a corresponding value.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>For <code>SCTE35_ENHANCED</code> output, defines a value. MediaTailor; takes this value, and its associated key, and generates the key/value pair within the <code>EXT-X-ASSET</code>tag. If you specify a value, you must also specify a corresponding key.</p>"
+        }
+      },
+      "documentation":"<p>For <code>SCTE35_ENHANCED</code> output, defines a key and corresponding value. MediaTailor generates these pairs within the <code>EXT-X-ASSET</code>tag.</p>"
     },
     "ListAlertsRequest":{
       "type":"structure",
@@ -3782,6 +3831,10 @@
     "__timestampUnix":{
       "type":"timestamp",
       "timestampFormat":"unixTimestamp"
+    },
+    "adMarkupTypes":{
+      "type":"list",
+      "member":{"shape":"AdMarkupType"}
     }
   },
   "documentation":"<p>Use the AWS Elemental MediaTailor SDKs and CLI to configure scalable ad insertion and linear channels. With MediaTailor, you can assemble existing content into a linear stream and serve targeted ads to viewers while maintaining broadcast quality in over-the-top (OTT) video applications. For information about using the service, including detailed information about the settings covered in this guide, see the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/\">AWS Elemental MediaTailor User Guide</a>.</p> <p>Through the SDKs and the CLI you manage AWS Elemental MediaTailor configurations and channels the same as you do through the console. For example, you specify ad insertion behavior and mapping information for the origin server and the ad decision server (ADS).</p>"

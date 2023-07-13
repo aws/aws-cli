@@ -1508,6 +1508,98 @@
       ],
       "documentation": "Get a channel schedule"
     },
+    "DescribeAccountConfiguration": {
+      "name": "DescribeAccountConfiguration",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "DescribeAccountConfigurationResponse",
+        "documentation": "An array of account configuration options."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to describe the account configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe account configuration calls."
+        }
+      ],
+      "documentation": "Get account configuration"
+    },
+    "DescribeThumbnails": {
+      "name": "DescribeThumbnails",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/channels/{channelId}/thumbnails",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeThumbnailsRequest"
+      },
+      "output": {
+        "shape": "DescribeThumbnailsResponse",
+        "documentation": "An array of thumbnails for the channel. Each member contains the thumbnail data for one pipeline."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error.."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to get thumbnails."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "There are no thumbnails for this channel."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe thumbnails calls to channel service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "Service do not have permission to customer's KMS key."
+        }
+      ],
+      "documentation": "Describe the latest thumbnails data."
+    },
     "ListChannels": {
       "name": "ListChannels",
       "http": {
@@ -2081,6 +2173,52 @@
         }
       ],
       "documentation": "Reject the transfer of the specified input device to your AWS account."
+    },
+    "UpdateAccountConfiguration": {
+      "name": "UpdateAccountConfiguration",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "UpdateAccountConfigurationResponse",
+        "documentation": "Successful update of the account configuration."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The update account configuration request failed validation."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to update the account's configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update account configuration calls."
+        }
+      ],
+      "documentation": "Update account configuration"
     },
     "StartChannel": {
       "name": "StartChannel",
@@ -3020,6 +3158,17 @@
         "DOES_NOT_IMPLEMENT_ACCESSIBILITY_FEATURES",
         "IMPLEMENTS_ACCESSIBILITY_FEATURES"
       ]
+    },
+    "AccountConfiguration": {
+      "type": "structure",
+      "members": {
+        "KmsKeyId": {
+          "shape": "__string",
+          "locationName": "kmsKeyId",
+          "documentation": "Specifies the KMS key to use for all features that use key encryption. Specify the ARN of a KMS key that you have created. Or leave blank to use the key that MediaLive creates and manages for you."
+        }
+      },
+      "documentation": "Placeholder documentation for AccountConfiguration"
     },
     "AfdSignaling": {
       "type": "string",
@@ -7318,6 +7467,11 @@
         "VideoDescriptions": {
           "shape": "__listOfVideoDescription",
           "locationName": "videoDescriptions"
+        },
+        "ThumbnailConfiguration": {
+          "shape": "ThumbnailConfiguration",
+          "locationName": "thumbnailConfiguration",
+          "documentation": "Thumbnail configuration settings."
         }
       },
       "documentation": "Encoder Settings",
@@ -7665,6 +7819,81 @@
         "httpStatusCode": 504
       },
       "documentation": "Placeholder documentation for GatewayTimeoutException"
+    },
+    "DescribeAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationRequest"
+    },
+    "DescribeAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationResponse"
+    },
+    "DescribeAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's configuration."
+    },
+    "DescribeThumbnailsRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "Unique ID of the channel"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID (\"0\" or \"1\")"
+        },
+        "ThumbnailType": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "thumbnailType",
+          "documentation": "thumbnail type"
+        }
+      },
+      "required": [
+        "ThumbnailType",
+        "PipelineId",
+        "ChannelId"
+      ],
+      "documentation": "Placeholder documentation for DescribeThumbnailsRequest"
+    },
+    "DescribeThumbnailsResponse": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeThumbnailsResponse"
+    },
+    "DescribeThumbnailsResultModel": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Thumbnail details for all the pipelines of a running channel."
     },
     "GlobalConfiguration": {
       "type": "structure",
@@ -14148,6 +14377,46 @@
         "WEB_DELIVERY_ALLOWED"
       ]
     },
+    "UpdateAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "List of account configuration parameters to update."
+    },
+    "UpdateAccountConfigurationRequestModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The desired new account configuration."
+    },
+    "UpdateAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateAccountConfigurationResponse"
+    },
+    "UpdateAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's updated configuration."
+    },
     "SmoothGroupAudioOnlyTimecodeControl": {
       "type": "string",
       "documentation": "Smooth Group Audio Only Timecode Control",
@@ -14838,6 +15107,46 @@
         "STRENGTH_16"
       ]
     },
+    "Thumbnail": {
+      "type": "structure",
+      "members": {
+        "Body": {
+          "shape": "__string",
+          "locationName": "body",
+          "documentation": "The binary data for the latest thumbnail."
+        },
+        "ContentType": {
+          "shape": "__string",
+          "locationName": "contentType",
+          "documentation": "The content type for the latest thumbnail."
+        },
+        "ThumbnailType": {
+          "shape": "ThumbnailType",
+          "locationName": "thumbnailType",
+          "documentation": "Thumbnail Type"
+        },
+        "TimeStamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "timeStamp",
+          "documentation": "Time stamp for the latest thumbnail."
+        }
+      },
+      "documentation": "Details of a single thumbnail"
+    },
+    "ThumbnailConfiguration": {
+      "type": "structure",
+      "members": {
+        "State": {
+          "shape": "ThumbnailState",
+          "locationName": "state",
+          "documentation": "Whether Thumbnail is enabled."
+        }
+      },
+      "documentation": "Thumbnail Configuration",
+      "required": [
+        "State"
+      ]
+    },
     "ThumbnailData": {
       "type": "structure",
       "members": {
@@ -14848,6 +15157,44 @@
         }
       },
       "documentation": "The binary data for the thumbnail that the Link device has most recently sent to MediaLive."
+    },
+    "ThumbnailDetail": {
+      "type": "structure",
+      "members": {
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID"
+        },
+        "Thumbnails": {
+          "shape": "__listOfThumbnail",
+          "locationName": "thumbnails",
+          "documentation": "thumbnails of a single pipeline"
+        }
+      },
+      "documentation": "Thumbnail details for one pipeline of a running channel."
+    },
+    "ThumbnailNoData": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Response when thumbnail has no data. It should have no message."
+    },
+    "ThumbnailState": {
+      "type": "string",
+      "documentation": "Thumbnail State",
+      "enum": [
+        "AUTO",
+        "DISABLED"
+      ]
+    },
+    "ThumbnailType": {
+      "type": "string",
+      "documentation": "Thumbnail type.",
+      "enum": [
+        "UNSPECIFIED",
+        "CURRENT_ACTIVE"
+      ]
     },
     "TimecodeBurninFontSize": {
       "type": "string",
@@ -16731,6 +17078,20 @@
         "shape": "Scte35Descriptor"
       },
       "documentation": "Placeholder documentation for __listOfScte35Descriptor"
+    },
+    "__listOfThumbnail": {
+      "type": "list",
+      "member": {
+        "shape": "Thumbnail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnail"
+    },
+    "__listOfThumbnailDetail": {
+      "type": "list",
+      "member": {
+        "shape": "ThumbnailDetail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnailDetail"
     },
     "__listOfTransferringInputDeviceSummary": {
       "type": "list",

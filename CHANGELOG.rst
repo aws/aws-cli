@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.29.4
+======
+
+* enhancement:dependency: Support PyYAML 6.0
+* api-change:``codeartifact``: Doc only update for AWS CodeArtifact
+* api-change:``docdb``: Added major version upgrade option in ModifyDBCluster API
+* api-change:``ec2``: Add Nitro TPM support on DescribeInstanceTypes
+* api-change:``glue``: Adding new supported permission type flags to get-unfiltered endpoints that callers may pass to indicate support for enforcing Lake Formation fine-grained access control on nested column attributes.
+* api-change:``ivs``: This release provides the flexibility to configure what renditions or thumbnail qualities to record when creating recording configuration.
+* api-change:``lakeformation``: Adds supports for ReadOnlyAdmins and AllowFullTableExternalDataAccess. Adds NESTED_PERMISSION and NESTED_CELL_PERMISSION to SUPPORTED_PERMISSION_TYPES enum. Adds CREATE_LF_TAG on catalog resource and ALTER, DROP, and GRANT_WITH_LF_TAG_EXPRESSION on LF Tag resource.
+
+
 1.29.3
 ======
 

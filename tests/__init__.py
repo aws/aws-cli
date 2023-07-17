@@ -1,6 +1,22 @@
 import collections
 import copy
 import os
+import sys
+import unittest
+
+# Both nose and py.test will add the first parent directory it
+# encounters that does not have a __init__.py to the sys.path. In
+# our case, this is the root of the repository. This means that Python
+# will import the awscli package from source instead of any installed
+# distribution. This environment variable provides the option to remove the
+# repository root from sys.path to be able to rely on the installed
+# distribution when running the tests.
+if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
+    rootdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path = [
+        path for path in sys.path
+        if not os.path.isdir(path) or not os.path.samefile(path, rootdir)
+    ]
 
 import awscli
 from awscli.clidriver import create_clidriver
@@ -12,7 +28,7 @@ import botocore.loaders
 import botocore.model
 import botocore.serialize
 import botocore.validate
-
+from botocore.compat import HAS_CRT
 
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of
@@ -308,3 +324,13 @@ class CaseInsensitiveDict(collections_abc.MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
+
+
+def requires_crt(reason=None):
+    if reason is None:
+        reason = "Test requires awscrt to be installed"
+
+    def decorator(func):
+        return unittest.skipIf(not HAS_CRT, reason)(func)
+
+    return decorator

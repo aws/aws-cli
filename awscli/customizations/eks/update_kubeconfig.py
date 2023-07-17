@@ -96,6 +96,12 @@ class UpdateKubeconfigCommand(BasicCommand):
             'help_text': ("Alias for the cluster context name. "
                           "Defaults to match cluster ARN."),
             'required': False
+        },
+        {
+            'name': 'user-alias',
+            'help_text': ("Alias for the generated user name. "
+                          "Defaults to match cluster ARN."),
+            'required': False
         }
     ]
 
@@ -117,7 +123,7 @@ class UpdateKubeconfigCommand(BasicCommand):
                            parsed_args.role_arn,
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
-        new_user_dict = client.get_user_entry()
+        new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
 
         config_selector = KubeconfigSelector(
             os.environ.get("KUBECONFIG", ""),
@@ -283,16 +289,25 @@ class EKSClient(object):
             ("name", arn)
         ])
 
-    def get_user_entry(self):
+    def get_user_entry(self, user_alias=None):
         """
         Return a user entry generated using
         the previously obtained description.
         """
+        cluster_description = self._get_cluster_description()
+        region = cluster_description.get("arn").split(":")[3]
+        outpost_config = cluster_description.get("outpostConfig")
 
-        region = self._get_cluster_description().get("arn").split(":")[3]
+        if outpost_config is None:
+            cluster_identification_parameter = "--cluster-name"
+            cluster_identification_value = self._cluster_name
+        else:
+            # If cluster contains outpostConfig, use id for identification
+            cluster_identification_parameter = "--cluster-id"
+            cluster_identification_value = cluster_description.get("id")
 
         generated_user = OrderedDict([
-            ("name", self._get_cluster_description().get("arn", "")),
+            ("name", user_alias or self._get_cluster_description().get("arn", "")),
             ("user", OrderedDict([
                 ("exec", OrderedDict([
                     ("apiVersion", API_VERSION),
@@ -302,8 +317,10 @@ class EKSClient(object):
                             region,
                             "eks",
                             "get-token",
-                            "--cluster-name",
-                            self._cluster_name,
+                            cluster_identification_parameter,
+                            cluster_identification_value,
+                            "--output",
+                            "json",
                         ]),
                     ("command", "aws"),
                 ]))

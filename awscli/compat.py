@@ -19,6 +19,7 @@ import platform
 import zipfile
 import signal
 import contextlib
+from configparser import RawConfigParser
 
 from botocore.compat import six
 #import botocore.compat
@@ -36,7 +37,6 @@ StringIO = six.StringIO
 BytesIO = six.BytesIO
 urlopen = six.moves.urllib.request.urlopen
 binary_type = six.binary_type
-RawConfigParser = six.moves.configparser.RawConfigParser
 
 
 # Most, but not all, python installations will have zlib. This is required to

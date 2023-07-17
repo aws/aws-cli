@@ -46,9 +46,9 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('``--no-paginate``')
         # Arg with choices
         self.assert_contains('``--color``')
-        self.assert_contains('* on')
-        self.assert_contains('* off')
-        self.assert_contains('* auto')
+        self.assert_contains('*   on')
+        self.assert_contains('*   off')
+        self.assert_contains('*   auto')
         # Then we should see the services.
         self.assert_contains('* ec2')
         self.assert_contains('* s3api')
@@ -80,22 +80,23 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
-    def test_waiter_does_not_have_duplicate_global_params_link(self):
-        self.driver.main(['ec2', 'wait', 'help'])
-        self.assert_contains_with_count(
-            'for descriptions of global parameters', 1)
-
     def test_custom_service_help_output(self):
         self.driver.main(['s3', 'help'])
         self.assert_contains('.. _cli:aws s3:')
         self.assert_contains('high-level S3 commands')
         self.assert_contains('* cp')
 
+    def test_waiter_does_not_have_global_args(self):
+        self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_not_contains('--debug')
+        self.assert_not_contains('Global Options')
+
     def test_custom_operation_help_output(self):
         self.driver.main(['s3', 'ls', 'help'])
         self.assert_contains('.. _cli:aws s3 ls:')
         self.assert_contains('List S3 objects')
         self.assert_contains('--summarize')
+        self.assert_contains('--debug')
 
     def test_topic_list_help_output(self):
         self.driver.main(['help', 'topics'])

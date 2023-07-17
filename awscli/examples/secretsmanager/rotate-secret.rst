@@ -1,11 +1,11 @@
 **Example 1: To configure and start automatic rotation for a secret**
 
-The following ``rotate-secret`` example configures and starts automatic rotation for a secret. Secrets Manager rotates the secret once immediately, and then on the 1st and 15th day of every month between 4:00 PM and 6:00 PM UTC. The output shows the ``VersionId`` of the new secret version created by rotation. ::
+The following ``rotate-secret`` example configures and starts automatic rotation for a secret. Secrets Manager rotates the secret once immediately, and then every eight hours in a two hour window. The output shows the ``VersionId`` of the new secret version created by rotation. ::
 
     aws secretsmanager rotate-secret \
         --secret-id MyTestDatabaseSecret \
         --rotation-lambda-arn arn:aws:lambda:us-west-2:1234566789012:function:SecretsManagerTestRotationLambda \
-        --rotation-rules "{\"ScheduleExpression\": \"cron(0 16 1,15 * ? *)\", \"Duration\": \"2h\"}"
+        --rotation-rules "{\"ScheduleExpression\": \"cron(0 8/8 * * ? *)\", \"Duration\": \"2h\"}"
 
 Output::
 

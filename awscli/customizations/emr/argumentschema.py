@@ -457,7 +457,30 @@ INSTANCE_FLEETS_SCHEMA = {
                             "AllocationStrategy": {
                                 "type": "string",
                                 "description": "The strategy to use in launching Spot instance fleets.",
-                                "enum": ["capacity-optimized"]
+                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified"]
+                            }
+                        }
+                    }
+                }
+            },
+            "ResizeSpecifications": {
+                "type": "object",
+                "properties": {
+                    "SpotResizeSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "TimeoutDurationMinutes": {
+                                "type" : "integer",
+                                "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
+                            }
+                        }
+                    },
+                    "OnDemandResizeSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "TimeoutDurationMinutes": {
+                                "type" : "integer",
+                                "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
                             }
                         }
                     }

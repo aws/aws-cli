@@ -62,6 +62,40 @@ def describe_cluster_response():
         }
     }
 
+def describe_cluster_response_outpost_cluster():
+    """Get an example describe_cluster call (For mocking)"""
+    return {
+        "cluster": {
+            "status": "ACTIVE",
+            "endpoint": "https://endpoint.amazonaws.com",
+            "name": EXAMPLE_NAME,
+            "certificateAuthority": {
+                "data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpWR1Z6ZEdsdVp5QkVZWFJoRFFwVVpYTjBhVzVuSUVSaGRHRU5DbFJsYzNScGJtY2dSR0YwWVEwS2EzVmlaWEp1WlhSbGN6QWVGdzBLVkdWemRHbHVaeUJFWVhSaERRcFVaWE4wYVc1bklFUmhkR0ZWQkFNVERRcHJkV0psY201bGRHVnpNQUVpTUEwS1ZHVnpkR2x1WnlCRVlYUmhEUXBVWlhOMGFXNW5JRVJoZEdFTkNsUmxjM1JwYm1jZ1JHRjBZY3UvR1FnbmFTcDNZaHBDTWhGVVpYTjBhVzVuSUVSaGRHRXl3clZqeEpWNjNwNFVHRmpZdHdGR1drUldJVkV1VkdWemRHbHVaeUJFWVhSaGJzT0MxSVJiTDhPd0lpMVhiWGg2VkdWemRHbHVaeUJFWVhSaFpXVndTTk9VVUZKNmN5QWJaaFpnWVNkTUV3MEtGMVJsYzNScGJtY2dSR0YwWVFZRFZSMFBBUUVFQkFNQ0FsUmxjM1JwYm1jZ1JHRjBZUUV3RFFvR0NTcElEUXBVWlhOMGFXNW5JRVJoZEdGcEgxc1pPRTNMa3lrMU9DWUNHUloyTEZjM3paOCtHell3WEZSbGMzUnBibWNnUkdGMFlYMUR5NjFNMVlGV1AxWVRIMVJsYzNScGJtY2dSR0YwWVd0aE5oMVphM2dWUDBGaGNSWjdKaW9oZVc4N1JsUmxjM1JwYm1jZ1JHRjBZUVpIVHd4NE9IdzZmZz09DQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t"
+            },
+            "roleArn": "arn:aws:iam::111222333444/eksRole",
+            "resourcesVpcConfig": {
+                "subnetIds": [
+                    "subnet-00000000000000000",
+                    "subnet-00000000000000001",
+                    "subnet-00000000000000002"
+                ],
+                "vpcId": "vpc-00000000000000000",
+                "securityGroupIds": [
+                    "sg-00000000000000000"
+                ]
+            },
+            "version": "1.10",
+            "arn": "arn:aws:eks:region:111222333444:cluster/" + EXAMPLE_NAME,
+            "createdAt": 1500000000.000,
+            "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+            "outpostConfig": {
+                "outpostArns": [
+                    "arn:aws:outposts:us-west-2:111222333444:outpost/op-00000000000000000"
+                ],
+            }
+        }
+    }
+
 def describe_cluster_no_status_response():
     """Get an example describe_cluster call (For mocking)"""
     return {

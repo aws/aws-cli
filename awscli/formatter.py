@@ -35,16 +35,11 @@ class Formatter(object):
         self._args = args
 
     def _remove_request_id(self, response_data):
-        # We only want to display the ResponseMetadata (which includes
-        # the request id) if there is an error in the response.
-        # Since all errors have been unified under the Errors key,
-        # this should be a reasonable way to filter.
-        if 'Errors' not in response_data:
-            if 'ResponseMetadata' in response_data:
-                if 'RequestId' in response_data['ResponseMetadata']:
-                    request_id = response_data['ResponseMetadata']['RequestId']
-                    LOG.debug('RequestId: %s', request_id)
-                del response_data['ResponseMetadata']
+        if 'ResponseMetadata' in response_data:
+            if 'RequestId' in response_data['ResponseMetadata']:
+                request_id = response_data['ResponseMetadata']['RequestId']
+                LOG.debug('RequestId: %s', request_id)
+            del response_data['ResponseMetadata']
 
     def _get_default_stream(self):
         return compat.get_stdout_text_writer()

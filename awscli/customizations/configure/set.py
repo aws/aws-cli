@@ -105,3 +105,4 @@ class ConfigureSetCommand(BasicCommand):
             section = profile_to_section(profile)
         updated_config = {'__section__': section, varname: value}
         self._config_writer.update_config(updated_config, config_filename)
+        return 0

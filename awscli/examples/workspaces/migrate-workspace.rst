@@ -1,15 +1,16 @@
 **To migrate a WorkSpace**
 
-The following ``migrate-workspace`` example migrates the specified WorkSpace to the ``Standard with Windows 10 (English)`` public bundle type. ::
+The following ``migrate-workspace`` example migrates the specified WorkSpace to the specified bundle. ::
 
     aws workspaces migrate-workspace \
-        --source-workspace-id ws-12345678 \
-        --bundle-id wsb-8vbljg4r6
+        --source-workspace-id ws-dk1xzr417 \
+        --bundle-id wsb-j4dky1gs4
 
 Output::
 
     {
-        "SourceWorkspaceId": "ws-12345678",
-        "TargetWorkspaceId": "ws-87654321"
+        "SourceWorkspaceId": "ws-dk1xzr417",
+        "TargetWorkspaceId": "ws-x5h1lbkp5"
     }
 
+For more information, see `Migrate a WorkSpace <https://docs.aws.amazon.com/workspaces/latest/adminguide/migrate-workspaces.html>`__ in the *Amazon WorkSpaces Administration Guide*.

@@ -48,13 +48,7 @@ HBASE_BACKUP_VERSION = (
 # create-cluster options help text
 
 CREATE_CLUSTER_DESCRIPTION = (
-    'Creates an Amazon EMR cluster with the specified configurations. '
-    'Quick start: '
-    'aws emr create-cluster --release-label <release-label> '
-    '--instance-type <instance-type> --instance-count <instance-count>'
-    'Values for the following can be set in the AWS CLI. '
-    'config file using the <code>aws configure set</code> command: <code>--service-role, --log-uri, '
-    'and InstanceProfile and KeyName arguments under --ec2-attributes.')
+    'Creates an Amazon EMR cluster with the specified configurations.')
 
 DESCRIBE_CLUSTER_DESCRIPTION = (
     'Provides  cluster-level details including status, hardware '
@@ -289,7 +283,8 @@ DEBUGGING = (
     ' which allows you to browse log files using the Amazon EMR console.'
     ' Turning debugging on requires that you specify <code>--log-uri</code>'
     ' because log files must be stored in Amazon S3 so that'
-    ' Amazon EMR can index them for viewing in the console.</p>')
+    ' Amazon EMR can index them for viewing in the console.'
+    ' Effective January 23, 2023, Amazon EMR will discontinue the debugging tool for all versions.</p>')
 
 TAGS = (
     '<p>A list of tags to associate with a cluster, which apply to'

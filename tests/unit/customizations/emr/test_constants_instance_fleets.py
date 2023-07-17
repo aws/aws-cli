@@ -14,7 +14,8 @@
 INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = (
     'InstanceFleetType=MASTER,TargetOnDemandCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge}],'
     'LaunchSpecifications={OnDemandSpecification={AllocationStrategy=lowest-price,'
-    'CapacityReservationOptions={UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}}')
+    'CapacityReservationOptions={UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}},'
+    'ResizeSpecifications={OnDemandResizeSpecification={TimeoutDurationMinutes=10}}')
 
 INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR = (
     'InstanceFleetType=MASTER,TargetOnDemandCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge}],'
@@ -23,7 +24,8 @@ INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR = (
 
 INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1}],'
-    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized}}')
+    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized}},'
+    'ResizeSpecifications={SpotResizeSpecification={TimeoutDurationMinutes=10}}')
 
 INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY_WITH_EBS_CONF = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1,'
@@ -33,12 +35,14 @@ INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY_WITH_EBS_CONF = (
 
 INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1}],'
-    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER}} '
+    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER}},'
+    'ResizeSpecifications={SpotResizeSpecification={TimeoutDurationMinutes=10}} '
     'InstanceFleetType=CORE,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.5,'
     'WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},{InstanceType=m3.4xlarge,BidPrice=0.4,'
     'WeightedCapacity=4}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,'
     'TimeoutAction=SWITCH_TO_ON_DEMAND,'
-    'BlockDurationMinutes=120}}')
+    'BlockDurationMinutes=120}},'
+    'ResizeSpecifications={OnDemandResizeSpecification={TimeoutDurationMinutes=20},SpotResizeSpecification={TimeoutDurationMinutes=30}}')
 
 INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER_WITH_CUSTOM_AMI = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1,CustomAmiId=ami-deadbeef}],'
@@ -53,6 +57,18 @@ INSTANCE_FLEETS_WITH_MISSING_BID_PRICE_CONFIGS = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge}],'
     'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER}}')
 
+INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = (
+    'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1}],'
+    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=price-capacity-optimized}} '
+    'InstanceFleetType=CORE,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.5,'
+    'WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},{InstanceType=m3.4xlarge,BidPrice=0.4,'
+    'WeightedCapacity=4}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=lowest-price}} '
+    'InstanceFleetType=TASK,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.5,'
+    'WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},{InstanceType=m3.4xlarge,BidPrice=0.4,'
+    'WeightedCapacity=4}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=diversified}}')
+
 RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = \
     [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge"}],
       "LaunchSpecifications": {
@@ -62,6 +78,11 @@ RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = \
                 "UsageStrategy": "use-capacity-reservations-first",
                 "CapacityReservationPreference": "open"
             }
+        }
+      },
+      "ResizeSpecifications": {
+        "OnDemandResizeSpecification": {
+          "TimeoutDurationMinutes": 10
         }
       },
       "TargetOnDemandCapacity": 1,
@@ -90,6 +111,11 @@ RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY = \
       "LaunchSpecifications": {
          "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "capacity-optimized"}
       },
+      "ResizeSpecifications": {
+        "SpotResizeSpecification": {
+          "TimeoutDurationMinutes": 10
+        }
+      },
       "TargetSpotCapacity": 1,
       "InstanceFleetType": "MASTER",
       "Name": "MASTER"
@@ -113,6 +139,11 @@ RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER = \
       "LaunchSpecifications": {
           "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER"}
       },
+      "ResizeSpecifications": {
+        "SpotResizeSpecification": {
+          "TimeoutDurationMinutes": 10
+        }
+      },
       "TargetSpotCapacity": 1,
       "InstanceFleetType": "MASTER",
       "Name": "MASTER"
@@ -123,6 +154,14 @@ RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER = \
       "LaunchSpecifications" : {
           "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "SWITCH_TO_ON_DEMAND",
       "BlockDurationMinutes": 120}
+      },
+      "ResizeSpecifications": {
+        "OnDemandResizeSpecification": {
+          "TimeoutDurationMinutes": 20
+        },
+        "SpotResizeSpecification": {
+          "TimeoutDurationMinutes": 30
+        }
       },
       "TargetSpotCapacity": 100,
       "InstanceFleetType": "CORE",
@@ -172,4 +211,34 @@ RES_INSTANCE_FLEETS_WITH_COMPLEX_CONFIG_FROM_JSON= \
       "Name": "core-fleet",
       "InstanceFleetType": "CORE",
       "TargetSpotCapacity": 10
+    }]
+
+RES_INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = \
+    [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.1"}],
+      "LaunchSpecifications": {
+          "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "price-capacity-optimized"}
+      },
+      "TargetSpotCapacity": 1,
+      "InstanceFleetType": "MASTER",
+      "Name": "MASTER"
+    },
+    {"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.5","WeightedCapacity": 1},
+      {"InstanceType": "m3.2xlarge","BidPrice": "0.2","WeightedCapacity": 2},{"InstanceType": "m3.4xlarge","BidPrice": "0.4",
+      "WeightedCapacity": 4}],
+      "LaunchSpecifications" : {
+          "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "lowest-price"}
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "CORE",
+      "Name": "CORE"
+    },
+    {"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.5","WeightedCapacity": 1},
+      {"InstanceType": "m3.2xlarge","BidPrice": "0.2","WeightedCapacity": 2},{"InstanceType": "m3.4xlarge","BidPrice": "0.4",
+      "WeightedCapacity": 4}],
+      "LaunchSpecifications" : {
+          "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "diversified"}
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "TASK",
+      "Name": "TASK"
     }]

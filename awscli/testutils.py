@@ -160,7 +160,7 @@ def create_bucket(session, name=None, region=None):
         bucket_name = name
     else:
         bucket_name = random_bucket_name()
-    params = {'Bucket': bucket_name}
+    params = {'Bucket': bucket_name, 'ObjectOwnership': 'ObjectWriter'}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
     try:
@@ -328,6 +328,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             'AWS_CONFIG_FILE': '',
             'AWS_SHARED_CREDENTIALS_FILE': '',
         }
+        if os.environ.get('ComSpec'):
+            self.environ['ComSpec'] = os.environ['ComSpec']
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         self.http_response = AWSResponse(None, 200, {}, None)
@@ -750,6 +752,12 @@ class BaseS3CLICommand(unittest.TestCase):
             self.fail("Contents for %s/%s do not match (but they "
                       "have the same length)" % (bucket, key))
 
+    def delete_public_access_block(self, bucket_name):
+        client = self.create_client_for_bucket(bucket_name)
+        client.delete_public_access_block(
+             Bucket=bucket_name
+        )
+
     def create_bucket(self, name=None, region=None):
         if not region:
             region = self.region
@@ -759,6 +767,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
         # Wait for the bucket to exist before letting it be used.
         self.wait_bucket_exists(bucket_name)
+        self.delete_public_access_block(bucket_name)
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):

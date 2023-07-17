@@ -1,4 +1,4 @@
-The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
+The following ``sync`` command syncs objects from a local diretory to the specified prefix and bucket by
 uploading the local files to s3.  A local file will require uploading if the size of the local file is different than
 the size of the s3 object, the last modified time of the local file is newer than the last modified time of the s3
 object, or the local file does not exist under the specified bucket and prefix.  In this example, the user syncs the
@@ -78,6 +78,22 @@ and s3 prefix from the ``sync`` command.  In this example, the user syncs the lo
 Output::
 
     download: s3://mybucket/test1.txt to test1.txt
+
+**Sync from S3 bucket to another S3 bucket while excluding and including objects that match a specified pattern**
+
+The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
+prefix and bucket by copying s3 objects. Because both the ``--exclude`` and ``--include`` parameter flags are thrown, 
+the second flag will take precedence over the first flag. In this example, all files are excluded from the ``sync`` 
+command except for files ending with .txt. The bucket ``mybucket`` contains the objects ``test.txt``, ``image1.png``, 
+and ``image2.png``. The bucket``mybucket2`` contains no objects::
+
+    aws s3 sync s3://mybucket s3://mybucket2 \
+    --exclude "*" \
+    --include "*txt"
+
+Output:: 
+
+    copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
 
 The following ``sync`` command syncs files between two buckets in different regions::
 

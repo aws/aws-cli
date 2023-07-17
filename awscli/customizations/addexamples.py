@@ -44,6 +44,20 @@ def add_examples(help_command, **kwargs):
     LOG.debug("Looking for example file at: %s", doc_path)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')
+        help_command.doc.style.start_note()
+        msg = ("<p>To use the following examples, you must have the AWS "
+               "CLI installed and configured. See the "
+               "<a href='https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-quickstart.html'>"
+               "Getting started guide</a> in the <i>AWS CLI User Guide</i> "
+               "for more information.</p>"
+               "<p>Unless otherwise stated, all examples have unix-like "
+               "quotation rules. These examples will need to be adapted "
+               "to your terminal's quoting rules. See "
+               "<a href='https://docs.aws.amazon.com/cli/v1/userguide/cli-usage-parameters-quoting-strings.html'>"
+               "Using quotation marks with strings</a> "
+               "in the <i>AWS CLI User Guide</i>.</p>")
+        help_command.doc.include_doc_string(msg)
+        help_command.doc.style.end_note()
         fp = open(doc_path)
         for line in fp.readlines():
             help_command.doc.write(line)

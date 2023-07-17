@@ -154,7 +154,7 @@ class Websocket:
         environment = os.environ.copy()
         proxy_options = None
         proxy_url = environment.get("HTTP_PROXY") or environment.get("HTTPS_PROXY")
-        no_proxy = environment.get("NO_PROXY")
+        no_proxy = environment.get("NO_PROXY", "")
         if proxy_url and parsed_url.hostname not in no_proxy:
             parsed_proxy_url = urlparse(proxy_url)
             logger.debug(f"Using the following proxy: {parsed_proxy_url.hostname}")

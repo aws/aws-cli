@@ -294,6 +294,41 @@ class TestWebsocket:
 
     @patch.object(websocket, "connect")
     @patch.object(websocket, "create_handshake_request")
+    @mock.patch.dict(os.environ, {"HTTPS_PROXY": "http://user1:pass1@localhost:8989"})
+    def test_connect_with_proxy_but_no_proxy_env_empty(
+            self, mock_handshake, mock_connect, mock_on_connection_event,
+            mock_tls_connection_options, web_socket, websocket_url
+    ):
+        parsed_url = urlparse(websocket_url)
+        host = parsed_url.hostname
+        path = parsed_url.path + "?" + parsed_url.query
+        mock_handshake.return_value = mock_handshake_request
+
+        web_socket.connect(websocket_url)
+
+        mock_handshake.assert_called_with(host=host, path=path)
+        mock_tls_connection_options.set_server_name.assert_called_with(host)
+        mock_connect.assert_called_with(
+            host=host,
+            handshake_request=mock_handshake_request,
+            port=443,
+            tls_connection_options=mock_tls_connection_options,
+            proxy_options=mock.ANY,
+            on_connection_setup=mock.ANY,
+            on_connection_shutdown=mock.ANY,
+            on_incoming_frame_payload=mock.ANY,
+            on_incoming_frame_complete=mock.ANY
+        )
+        assert "localhost" == mock_connect.call_args.kwargs['proxy_options'].host_name
+        assert 8989 == mock_connect.call_args.kwargs['proxy_options'].port
+        assert HttpProxyAuthenticationType.Basic == mock_connect.call_args.kwargs['proxy_options'].auth_type
+        assert "user1" == mock_connect.call_args.kwargs['proxy_options'].auth_username
+        assert "pass1" == mock_connect.call_args.kwargs['proxy_options'].auth_password
+
+        assert mock_on_connection_event.wait.called
+
+    @patch.object(websocket, "connect")
+    @patch.object(websocket, "create_handshake_request")
     @mock.patch.dict(os.environ,
                      {"HTTPS_PROXY": "http://user1:pass1@localhost:8989", "NO_PROXY": "1eice-123.eice.amazon.com"})
     def test_connect_with_proxy_define_and_no_proxy_defined(

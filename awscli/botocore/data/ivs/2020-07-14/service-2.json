@@ -45,7 +45,10 @@
       "input":{"shape":"BatchStartViewerSessionRevocationRequest"},
       "output":{"shape":"BatchStartViewerSessionRevocationResponse"},
       "errors":[
-        {"shape":"ValidationException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"PendingVerification"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Performs <a>StartViewerSessionRevocation</a> on multiple channel ARN and viewer ID pairs simultaneously.</p>"
     },
@@ -424,9 +427,11 @@
       "input":{"shape":"StartViewerSessionRevocationRequest"},
       "output":{"shape":"StartViewerSessionRevocationResponse"},
       "errors":[
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
+        {"shape":"PendingVerification"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Starts the process of revoking the viewer session associated with a specified channel ARN and viewer ID. Optionally, you can provide a version to revoke viewer sessions less than and including that version. For instructions on associating a viewer ID with a viewer session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/private-channels.html\">Setting Up Private Channels</a>.</p>"
@@ -920,6 +925,10 @@
         "recordingReconnectWindowSeconds":{
           "shape":"RecordingReconnectWindowSeconds",
           "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
+        },
+        "renditionConfiguration":{
+          "shape":"RenditionConfiguration",
+          "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1546,6 +1555,10 @@
           "shape":"RecordingReconnectWindowSeconds",
           "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
         },
+        "renditionConfiguration":{
+          "shape":"RenditionConfiguration",
+          "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
+        },
         "state":{
           "shape":"RecordingConfigurationState",
           "documentation":"<p>Indicates the current state of the recording configuration. When the state is <code>ACTIVE</code>, the configuration is ready for recording a channel stream.</p>"
@@ -1627,6 +1640,41 @@
       "type":"integer",
       "max":300,
       "min":0
+    },
+    "RenditionConfiguration":{
+      "type":"structure",
+      "members":{
+        "renditionSelection":{
+          "shape":"RenditionConfigurationRenditionSelection",
+          "documentation":"<p>Indicates which set of renditions are recorded for a stream. For <code>BASIC</code> channels, the <code>CUSTOM</code> value has no effect. If <code>CUSTOM</code> is specified, a set of renditions must be specified in the <code>renditions</code> field. Default: <code>ALL</code>.</p>"
+        },
+        "renditions":{
+          "shape":"RenditionConfigurationRenditionList",
+          "documentation":"<p>Indicates which renditions are recorded for a stream, if <code>renditionSelection</code> is <code>CUSTOM</code>; otherwise, this field is irrelevant. The selected renditions are recorded if they are available during the stream. If a selected rendition is unavailable, the best available rendition is recorded. For details on the resolution dimensions of each rendition, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html\">Auto-Record to Amazon S3</a>.</p>"
+        }
+      },
+      "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
+    },
+    "RenditionConfigurationRendition":{
+      "type":"string",
+      "enum":[
+        "FULL_HD",
+        "HD",
+        "SD",
+        "LOWEST_RESOLUTION"
+      ]
+    },
+    "RenditionConfigurationRenditionList":{
+      "type":"list",
+      "member":{"shape":"RenditionConfigurationRendition"}
+    },
+    "RenditionConfigurationRenditionSelection":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE",
+        "CUSTOM"
+      ]
     },
     "ResourceArn":{
       "type":"string",
@@ -2067,12 +2115,40 @@
           "shape":"RecordingMode",
           "documentation":"<p>Thumbnail recording mode. Default: <code>INTERVAL</code>.</p>"
         },
+        "resolution":{
+          "shape":"ThumbnailConfigurationResolution",
+          "documentation":"<p>Indicates the desired resolution of recorded thumbnails. Thumbnails are recorded at the selected resolution if the corresponding rendition is available during the stream; otherwise, they are recorded at source resolution. For more information about resolution values and their corresponding height and width dimensions, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html\">Auto-Record to Amazon S3</a>. Default: Null (source resolution is returned).</p>"
+        },
+        "storage":{
+          "shape":"ThumbnailConfigurationStorageList",
+          "documentation":"<p>Indicates the format in which thumbnails are recorded. <code>SEQUENTIAL</code> records all generated thumbnails in a serial manner, to the media/thumbnails directory. <code>LATEST</code> saves the latest thumbnail in media/latest_thumbnail/thumb.jpg and overwrites it at the interval specified by <code>targetIntervalSeconds</code>. You can enable both <code>SEQUENTIAL</code> and <code>LATEST</code>. Default: <code>SEQUENTIAL</code>.</p>"
+        },
         "targetIntervalSeconds":{
           "shape":"TargetIntervalSeconds",
-          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable (and required) only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p> <p> <b>Important:</b> Setting a value for <code>targetIntervalSeconds</code> does not guarantee that thumbnails are generated at the specified interval. For thumbnails to be generated at the <code>targetIntervalSeconds</code> interval, the <code>IDR/Keyframe</code> value for the input video must be less than the <code>targetIntervalSeconds</code> value. See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/streaming-config.html\"> Amazon IVS Streaming Configuration</a> for information on setting <code>IDR/Keyframe</code> to the recommended value in video-encoder settings.</p>"
+          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable (and required) only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p> <p> <b>Important:</b> For the <code>BASIC</code> channel type, setting a value for <code>targetIntervalSeconds</code> does not guarantee that thumbnails are generated at the specified interval. For thumbnails to be generated at the <code>targetIntervalSeconds</code> interval, the <code>IDR/Keyframe</code> value for the input video must be less than the <code>targetIntervalSeconds</code> value. See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/streaming-config.html\"> Amazon IVS Streaming Configuration</a> for information on setting <code>IDR/Keyframe</code> to the recommended value in video-encoder settings.</p>"
         }
       },
       "documentation":"<p>An object representing a configuration of thumbnails for recorded video.</p>"
+    },
+    "ThumbnailConfigurationResolution":{
+      "type":"string",
+      "enum":[
+        "FULL_HD",
+        "HD",
+        "SD",
+        "LOWEST_RESOLUTION"
+      ]
+    },
+    "ThumbnailConfigurationStorage":{
+      "type":"string",
+      "enum":[
+        "SEQUENTIAL",
+        "LATEST"
+      ]
+    },
+    "ThumbnailConfigurationStorageList":{
+      "type":"list",
+      "member":{"shape":"ThumbnailConfigurationStorage"}
     },
     "Time":{
       "type":"timestamp",

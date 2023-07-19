@@ -5687,6 +5687,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.5
+======
+
+* api-change:``codeguru-security``: Documentation updates for CodeGuru Security.
+* api-change:``connect``: GetMetricDataV2 API: Update to include Contact Lens Conversational Analytics Metrics
+* api-change:``es``: Regex Validation on the ElasticSearch Engine Version attribute
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``m2``: Allows UpdateEnvironment to update the environment to 0 host capacity. New GetSignedBluinsightsUrl API
+* api-change:``snowball``: Adds support for RACK_5U_C. This is the first AWS Snow Family device designed to meet U.S. Military Ruggedization Standards (MIL-STD-810H) with 208 vCPU device in a portable, compact 5U, half-rack width form-factor.
+* api-change:``translate``: Added DOCX word document support to TranslateDocument API
+
+
+1.29.4
+======
+
+* enhancement:dependency: Support PyYAML 6.0
+* api-change:``codeartifact``: Doc only update for AWS CodeArtifact
+* api-change:``docdb``: Added major version upgrade option in ModifyDBCluster API
+* api-change:``ec2``: Add Nitro TPM support on DescribeInstanceTypes
+* api-change:``glue``: Adding new supported permission type flags to get-unfiltered endpoints that callers may pass to indicate support for enforcing Lake Formation fine-grained access control on nested column attributes.
+* api-change:``ivs``: This release provides the flexibility to configure what renditions or thumbnail qualities to record when creating recording configuration.
+* api-change:``lakeformation``: Adds supports for ReadOnlyAdmins and AllowFullTableExternalDataAccess. Adds NESTED_PERMISSION and NESTED_CELL_PERMISSION to SUPPORTED_PERMISSION_TYPES enum. Adds CREATE_LF_TAG on catalog resource and ALTER, DROP, and GRANT_WITH_LF_TAG_EXPRESSION on LF Tag resource.
+
+
 1.29.3
 ======
 

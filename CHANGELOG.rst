@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.29.8
+======
+
+* api-change:``codecatalyst``: This release adds support for updating and deleting spaces and projects in Amazon CodeCatalyst. It also adds support for creating, getting, and deleting source repositories in CodeCatalyst projects.
+* api-change:``connectcases``: This release adds the ability to assign a case to a queue or user.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``route53resolver``: This release adds support for Route 53 On Outposts, a new feature that allows customers to run Route 53 Resolver and Resolver endpoints locally on their Outposts.
+* api-change:``s3``: Improve performance of S3 clients by simplifying and optimizing endpoint resolution.
+* api-change:``sagemaker-featurestore-runtime``: Cross account support for SageMaker Feature Store
+* api-change:``sagemaker``: Cross account support for SageMaker Feature Store
+* api-change:``securitylake``: Adding support for Tags on Create and Resource Tagging API.
+* api-change:``transcribe``: Added API argument --toxicity-detection to startTranscriptionJob API, which allows users to view toxicity scores of submitted audio.
+
+
 1.29.7
 ======
 

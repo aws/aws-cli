@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.29.7
+======
+
+* api-change:``savingsplans``: Savings Plans endpoints update
+
+
 1.29.6
 ======
 

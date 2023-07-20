@@ -140,6 +140,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"ResourceShareLimitExceededException"},
         {"shape":"TagPolicyViolationException"},
+        {"shape":"TagLimitExceededException"},
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
@@ -767,6 +768,10 @@
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
+        },
+        "sources":{
+          "shape":"SourceArnOrAccountList",
+          "documentation":"<p>Specifies from which source accounts the service principal has access to the resources in this resource share.</p>"
         }
       }
     },
@@ -931,6 +936,10 @@
         "permissionArns":{
           "shape":"PermissionArnList",
           "documentation":"<p>Specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> of the RAM permission to associate with the resource share. If you do not specify an ARN for the permission, RAM automatically attaches the default version of the permission for each resource type. You can associate only one permission with each resource type included in the resource share.</p>"
+        },
+        "sources":{
+          "shape":"SourceArnOrAccountList",
+          "documentation":"<p>Specifies from which source accounts the service principal has access to the resources in this resource share.</p>"
         }
       }
     },
@@ -1111,6 +1120,10 @@
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value.</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotentParameterMismatch</code> error.</p>"
+        },
+        "sources":{
+          "shape":"SourceArnOrAccountList",
+          "documentation":"<p>Specifies from which source accounts the service principal no longer has access to the resources in this resource share.</p>"
         }
       }
     },
@@ -1217,7 +1230,7 @@
         },
         "principal":{
           "shape":"String",
-          "documentation":"<p>Specifies the ID of the principal whose resource shares you want to retrieve. This can be an Amazon Web Services account ID, an organization ID, an organizational unit ID, or the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an individual IAM user or role.</p> <p>You cannot specify this parameter if the association type is <code>RESOURCE</code>.</p>"
+          "documentation":"<p>Specifies the ID of the principal whose resource shares you want to retrieve. This can be an Amazon Web Services account ID, an organization ID, an organizational unit ID, or the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an individual IAM role or user.</p> <p>You cannot specify this parameter if the association type is <code>RESOURCE</code>.</p>"
         },
         "associationStatus":{
           "shape":"ResourceShareAssociationStatus",
@@ -2619,6 +2632,10 @@
           "documentation":"<p>The idempotency identifier associated with this request. If you want to repeat the same operation in an idempotent manner then you must include this value in the <code>clientToken</code> request parameter of that later call. All other parameters must also have the same values that you used in the first call.</p>"
         }
       }
+    },
+    "SourceArnOrAccountList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "String":{"type":"string"},
     "Tag":{

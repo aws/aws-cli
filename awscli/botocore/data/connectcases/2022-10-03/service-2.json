@@ -88,7 +88,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> </important>",
+      "documentation":"<p>Creates a domain, which is a container for all case data, such as cases, fields, templates and layouts. Each Amazon Connect instance can be associated with only one Cases domain.</p> <important> <p>This will not associate your connect instance to Cases domain. Instead, use the Amazon Connect <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateIntegrationAssociation.html\">CreateIntegrationAssociation</a> API. You need specific IAM permissions to successfully associate the Cases domain. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/required-permissions-iam-cases.html#onboard-cases-iam\">Onboard to Cases</a>.</p> <pre><code> &lt;/important&gt; </code></pre>",
       "idempotent":true
     },
     "CreateField":{
@@ -190,7 +190,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes a domain.</p>",
+      "documentation":"<p>Deletes a Cases domain.</p> <pre><code> &lt;note&gt; &lt;p&gt;After deleting your domain you must disassociate the deleted domain from your Amazon Connect instance with another API call before being able to use Cases again with this Amazon Connect instance. See &lt;a href=&quot;https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html&quot;&gt;DeleteIntegrationAssociation&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; </code></pre>",
       "idempotent":true
     },
     "GetCase":{
@@ -754,12 +754,22 @@
           "shape":"FieldFilter",
           "documentation":"<p>A list of fields to filter on.</p>"
         },
-        "not":{"shape":"CaseFilter"}
+        "not":{"shape":"CaseFilter"},
+        "orAll":{
+          "shape":"CaseFilterOrAllList",
+          "documentation":"<p>Provides \"or all\" filtering.</p>"
+        }
       },
       "documentation":"<p>A filter for cases. Only one value can be provided.</p>",
       "union":true
     },
     "CaseFilterAndAllList":{
+      "type":"list",
+      "member":{"shape":"CaseFilter"},
+      "max":10,
+      "min":0
+    },
+    "CaseFilterOrAllList":{
       "type":"list",
       "member":{"shape":"CaseFilter"},
       "max":10,
@@ -1253,6 +1263,12 @@
       "type":"double",
       "box":true
     },
+    "EmptyFieldValue":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An empty value. You cannot set <code>EmptyFieldValue</code> on a field that is required on a case template.</p> <p>This structure will never have any data members. It signifies an empty value on a case field.</p>"
+    },
     "EventBridgeConfiguration":{
       "type":"structure",
       "required":["enabled"],
@@ -1545,6 +1561,10 @@
         "doubleValue":{
           "shape":"Double",
           "documentation":"<p>Can be either null, or have a Double number value type. Only one value can be provided.</p>"
+        },
+        "emptyValue":{
+          "shape":"EmptyFieldValue",
+          "documentation":"<p>An empty value.</p>"
         },
         "stringValue":{
           "shape":"FieldValueUnionStringValueString",

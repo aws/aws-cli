@@ -281,7 +281,7 @@
         {
             "documentation": "SDK::Host + access point + Dualstack is an error",
             "expect": {
-                "error": "DualStack cannot be combined with a Host override (PrivateLink)"
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "operationInputs": [
                 {
@@ -2629,21 +2629,9 @@
             }
         },
         {
-            "documentation": "non-bucket endpoint with FIPS: TODO(descriptive)",
+            "documentation": "non-bucket endpoint override with FIPS = error",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "signingRegion": "us-west-2",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://beta.example.com:1234/path"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-west-2",
@@ -2653,21 +2641,9 @@
             }
         },
         {
-            "documentation": "FIPS + dualstack + custom endpoint TODO(descriptive)",
+            "documentation": "FIPS + dualstack + custom endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "signingRegion": "us-west-2",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://beta.example.com:1234/path"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "us-west-2",
@@ -2677,21 +2653,9 @@
             }
         },
         {
-            "documentation": "dualstack + custom endpoint TODO(descriptive)",
+            "documentation": "dualstack + custom endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "signingRegion": "us-west-2",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://beta.example.com:1234/path"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "us-west-2",
@@ -2956,19 +2920,7 @@
         {
             "documentation": "endpoint override + FIPS + dualstack (BUG)",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-east-1",
@@ -2982,19 +2934,7 @@
         {
             "documentation": "endpoint override + non-dns bucket + FIPS (BUG)",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-east-1",
@@ -3084,19 +3024,7 @@
         {
             "documentation": "URI encoded bucket + use global endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-east-1",
@@ -3215,19 +3143,7 @@
         {
             "documentation": "endpoint override + non-uri safe endpoint + force path style",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-east-1",
@@ -3267,21 +3183,9 @@
             }
         },
         {
-            "documentation": "endpoint override + FIPS + dualstack (this is wrong—it's a bug in the UseGlobalEndpoint branch)",
+            "documentation": "endpoint override + FIPS + dualstack",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "us-east-1",
@@ -3294,19 +3198,7 @@
         {
             "documentation": "non-bucket endpoint override + dualstack + global endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "us-east-1",
@@ -3319,19 +3211,7 @@
         {
             "documentation": "Endpoint override + UseGlobalEndpoint + us-east-1",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true,
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "us-east-1",
@@ -3350,8 +3230,7 @@
                 "Region": "cn-north-1",
                 "UseFIPS": true,
                 "UseDualStack": false,
-                "UseGlobalEndpoint": true,
-                "Endpoint": "http://foo.com"
+                "UseGlobalEndpoint": true
             }
         },
         {
@@ -3453,21 +3332,9 @@
             }
         },
         {
-            "documentation": "aws-global + fips + custom endpoint (TODO: should be an error)",
+            "documentation": "aws-global + fips + custom endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingRegion": "us-east-1",
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "aws-global",
@@ -3505,21 +3372,9 @@
             }
         },
         {
-            "documentation": "aws-global + dualstack + custom endpoint (TODO: should be an error)",
+            "documentation": "aws-global + dualstack + custom endpoint",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingRegion": "us-east-1",
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "aws-global",
@@ -3555,7 +3410,7 @@
             }
         },
         {
-            "documentation": "FIPS + aws-global + path only bucket. TODO: this should be an error",
+            "documentation": "FIPS + aws-global + path only bucket. This is not supported by S3 but we allow garbage in garbage out",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -3581,21 +3436,9 @@
             }
         },
         {
-            "documentation": "aws-global + FIPS + endpoint override. TODO: should this be an error?",
+            "documentation": "aws-global + FIPS + endpoint override.",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingRegion": "us-east-1",
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "aws-global",
@@ -3604,21 +3447,9 @@
             }
         },
         {
-            "documentation": "force path style, aws-global & endpoint override",
+            "documentation": "force path style, FIPS, aws-global & endpoint override",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingRegion": "us-east-1",
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com/bucket%21"
-                }
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "params": {
                 "Region": "aws-global",
@@ -3654,19 +3485,7 @@
         {
             "documentation": "endpoint override with aws-global region",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingRegion": "us-east-1",
-                                "name": "sigv4",
-                                "signingName": "s3",
-                                "disableDoubleEncoding": true
-                            }
-                        ]
-                    },
-                    "url": "http://foo.com"
-                }
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "params": {
                 "Region": "aws-global",
@@ -4934,19 +4753,7 @@
         {
             "documentation": "path style + fips@cn-north-1",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "signingName": "s3",
-                                "signingRegion": "cn-north-1",
-                                "disableDoubleEncoding": true,
-                                "name": "sigv4"
-                            }
-                        ]
-                    },
-                    "url": "https://s3-fips.cn-north-1.amazonaws.com.cn/bucket-name"
-                }
+                "error": "Partition does not support FIPS"
             },
             "operationInputs": [
                 {
@@ -5491,7 +5298,7 @@
         {
             "documentation": "SDK::Host + FIPS@us-west-2",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "operationInputs": [
                 {
@@ -5521,7 +5328,7 @@
         {
             "documentation": "SDK::Host + DualStack@us-west-2",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "operationInputs": [
                 {
@@ -5551,7 +5358,7 @@
         {
             "documentation": "SDK::HOST + accelerate@us-west-2",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "A custom endpoint cannot be combined with S3 Accelerate"
             },
             "operationInputs": [
                 {
@@ -5704,7 +5511,7 @@
             }
         },
         {
-            "documentation": "SDK::Host + FIPS@cn-north-1",
+            "documentation": "FIPS@cn-north-1",
             "expect": {
                 "error": "Partition does not support FIPS"
             },
@@ -5712,7 +5519,6 @@
                 "Accelerate": false,
                 "Bucket": "bucket-name",
                 "ForcePathStyle": false,
-                "Endpoint": "https://control.vpce-1a2b3c4d-5e6f.s3.us-west-2.vpce.amazonaws.com",
                 "Region": "cn-north-1",
                 "UseDualStack": false,
                 "UseFIPS": true
@@ -5721,7 +5527,7 @@
         {
             "documentation": "SDK::Host + DualStack@cn-north-1",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "operationInputs": [
                 {
@@ -5751,7 +5557,7 @@
         {
             "documentation": "SDK::HOST + accelerate@cn-north-1",
             "expect": {
-                "error": "S3 Accelerate cannot be used in this region"
+                "error": "A custom endpoint cannot be combined with S3 Accelerate"
             },
             "params": {
                 "Accelerate": true,
@@ -5891,7 +5697,7 @@
         {
             "documentation": "SDK::Host + FIPS@af-south-1",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "A custom endpoint cannot be combined with FIPS"
             },
             "operationInputs": [
                 {
@@ -5921,7 +5727,7 @@
         {
             "documentation": "SDK::Host + DualStack@af-south-1",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "Cannot set dual-stack in combination with a custom endpoint."
             },
             "operationInputs": [
                 {
@@ -5951,7 +5757,7 @@
         {
             "documentation": "SDK::HOST + accelerate@af-south-1",
             "expect": {
-                "error": "Host override cannot be combined with Dualstack, FIPS, or S3 Accelerate"
+                "error": "A custom endpoint cannot be combined with S3 Accelerate"
             },
             "operationInputs": [
                 {
@@ -7666,7 +7472,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Real Outpost Prod us-west-1",
+            "documentation": "S3 Outposts bucketAlias Real Outpost Prod us-west-1",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7691,7 +7497,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Real Outpost Prod ap-east-1",
+            "documentation": "S3 Outposts bucketAlias Real Outpost Prod ap-east-1",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7716,7 +7522,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Ec2 Outpost Prod us-east-1",
+            "documentation": "S3 Outposts bucketAlias Ec2 Outpost Prod us-east-1",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7741,7 +7547,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Ec2 Outpost Prod me-south-1",
+            "documentation": "S3 Outposts bucketAlias Ec2 Outpost Prod me-south-1",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7766,7 +7572,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Real Outpost Beta",
+            "documentation": "S3 Outposts bucketAlias Real Outpost Beta",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7792,7 +7598,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Ec2 Outpost Beta",
+            "documentation": "S3 Outposts bucketAlias Ec2 Outpost Beta",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7818,7 +7624,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba - No endpoint set for beta",
+            "documentation": "S3 Outposts bucketAlias - No endpoint set for beta",
             "expect": {
                 "error": "Expected a endpoint to be specified but no endpoint was found"
             },
@@ -7831,7 +7637,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Invalid hardware type",
+            "documentation": "S3 Outposts bucketAlias Invalid hardware type",
             "expect": {
                 "error": "Unrecognized hardware type: \"Expected hardware type o or e but got h\""
             },
@@ -7844,7 +7650,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba Special character in Outpost Arn",
+            "documentation": "S3 Outposts bucketAlias Special character in Outpost Arn",
             "expect": {
                 "error": "Invalid ARN: The outpost Id must only contain a-z, A-Z, 0-9 and `-`."
             },
@@ -7857,7 +7663,7 @@
             }
         },
         {
-            "documentation": "S3 Outposts Abba - No endpoint set for beta",
+            "documentation": "S3 Outposts bucketAlias - No endpoint set for beta",
             "expect": {
                 "error": "Expected a endpoint to be specified but no endpoint was found"
             },

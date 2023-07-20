@@ -3191,6 +3191,10 @@
         "CallAs":{
           "shape":"CallAs",
           "documentation":"<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization's management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html\">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>"
+        },
+        "TemplateSummaryConfig":{
+          "shape":"TemplateSummaryConfig",
+          "documentation":"<p>Specifies options for the <code>GetTemplateSummary</code> API action.</p>"
         }
       },
       "documentation":"<p>The input for the <a>GetTemplateSummary</a> action.</p>"
@@ -3233,6 +3237,10 @@
         "ResourceIdentifierSummaries":{
           "shape":"ResourceIdentifierSummaries",
           "documentation":"<p>A list of resource identifier summaries that describe the target resources of an import operation and the properties you can provide during the import to identify the target resources. For example, <code>BucketName</code> is a possible identifier property for an <code>AWS::S3::Bucket</code> resource.</p>"
+        },
+        "Warnings":{
+          "shape":"Warnings",
+          "documentation":"<p>An object containing any warnings returned.</p>"
         }
       },
       "documentation":"<p>The output for the <a>GetTemplateSummary</a> action.</p>"
@@ -6368,6 +6376,16 @@
         "Processed"
       ]
     },
+    "TemplateSummaryConfig":{
+      "type":"structure",
+      "members":{
+        "TreatUnrecognizedResourceTypesAsWarnings":{
+          "shape":"TreatUnrecognizedResourceTypesAsWarnings",
+          "documentation":"<p>If set to <code>True</code>, any unrecognized resource types generate warnings and not an error. Any unrecognized resource types are returned in the <code>Warnings</code> output parameter.</p>"
+        }
+      },
+      "documentation":"<p>Options for the <code>GetTemplateSummary</code> API action.</p>"
+    },
     "TemplateURL":{
       "type":"string",
       "max":1024,
@@ -6446,6 +6464,7 @@
       "type":"list",
       "member":{"shape":"TransformName"}
     },
+    "TreatUnrecognizedResourceTypesAsWarnings":{"type":"boolean"},
     "Type":{"type":"string"},
     "TypeArn":{
       "type":"string",
@@ -7039,6 +7058,16 @@
         "PUBLIC",
         "PRIVATE"
       ]
+    },
+    "Warnings":{
+      "type":"structure",
+      "members":{
+        "UnrecognizedResourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>A list of all of the unrecognized resource types. This is only returned if the <code>TemplateSummaryConfig</code> parameter has the <code>TreatUnrecognizedResourceTypesAsWarning</code> configuration set to <code>True</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains any warnings returned by the <code>GetTemplateSummary</code> API action.</p>"
     }
   },
   "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, Elastic Load Balancing, and Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"

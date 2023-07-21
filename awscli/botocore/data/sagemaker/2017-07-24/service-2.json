@@ -2780,6 +2780,16 @@
       "output":{"shape":"ListProjectsOutput"},
       "documentation":"<p>Gets a list of the projects in an Amazon Web Services account.</p>"
     },
+    "ListResourceCatalogs":{
+      "name":"ListResourceCatalogs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceCatalogsRequest"},
+      "output":{"shape":"ListResourceCatalogsResponse"},
+      "documentation":"<p> Lists Amazon SageMaker Catalogs based on given filters and orders. The maximum number of <code>ResourceCatalog</code>s viewable is 1000. </p>"
+    },
     "ListSpaces":{
       "name":"ListSpaces",
       "http":{
@@ -3398,7 +3408,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Updates the feature group.</p>"
+      "documentation":"<p>Updates the feature group by either adding features or updating the online store configuration. Use one of the following request parameters at a time while using the <code>UpdateFeatureGroup</code> API.</p> <p>You can add features for your feature group using the <code>FeatureAdditions</code> request parameter. Features cannot be removed from a feature group.</p> <p>You can update the online store configuration by using the <code>OnlineStoreConfig</code> request parameter. If a <code>TtlDuration</code> is specified, the default <code>TtlDuration</code> applies for all records added to the feature group <i>after the feature group is updated</i>. If a record level <code>TtlDuration</code> exists from using the <code>PutRecord</code> API, the record level <code>TtlDuration</code> applies to that record instead of the default <code>TtlDuration</code>.</p>"
     },
     "UpdateFeatureMetadata":{
       "name":"UpdateFeatureMetadata",
@@ -9570,6 +9580,13 @@
       }
     },
     "CreationTime":{"type":"timestamp"},
+    "CrossAccountFilterOption":{
+      "type":"string",
+      "enum":[
+        "SameAccount",
+        "CrossAccount"
+      ]
+    },
     "CsvContentType":{
       "type":"string",
       "max":256,
@@ -12127,8 +12144,8 @@
       "required":["FeatureGroupName"],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the <code>FeatureGroup</code> you want described. </p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the <code>FeatureGroup</code> you want described. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -12226,8 +12243,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group containing the feature.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group containing the feature.</p>"
         },
         "FeatureName":{
           "shape":"FeatureName",
@@ -16491,6 +16508,12 @@
       "max":64,
       "min":1
     },
+    "FeatureGroupNameOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:feature-group\\/)?([a-zA-Z0-9]([_-]*[a-zA-Z0-9]){0,63})"
+    },
     "FeatureGroupSortBy":{
       "type":"string",
       "enum":[
@@ -16550,7 +16573,7 @@
           "documentation":"<p>Notifies you if replicating data into the <code>OfflineStore</code> has failed. Returns either: <code>Active</code> or <code>Blocked</code>.</p>"
         }
       },
-      "documentation":"<p>The name, Arn, <code>CreationTime</code>, <code>FeatureGroup</code> values, <code>LastUpdatedTime</code> and <code>EnableOnlineStorage</code> status of a <code>FeatureGroup</code>.</p>"
+      "documentation":"<p>The name, ARN, <code>CreationTime</code>, <code>FeatureGroup</code> values, <code>LastUpdatedTime</code> and <code>EnableOnlineStorage</code> status of a <code>FeatureGroup</code>.</p>"
     },
     "FeatureMetadata":{
       "type":"structure",
@@ -22866,6 +22889,52 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the result of the previous <code>ListCompilationJobs</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of model compilation jobs, use the token in the next request.</p>"
+        }
+      }
+    },
+    "ListResourceCatalogsRequest":{
+      "type":"structure",
+      "members":{
+        "NameContains":{
+          "shape":"ResourceCatalogName",
+          "documentation":"<p> A string that partially matches one or more <code>ResourceCatalog</code>s names. Filters <code>ResourceCatalog</code> by name. </p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p> Use this parameter to search for <code>ResourceCatalog</code>s created after a specific date and time. </p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p> Use this parameter to search for <code>ResourceCatalog</code>s created before a specific date and time. </p>"
+        },
+        "SortOrder":{
+          "shape":"ResourceCatalogSortOrder",
+          "documentation":"<p> The order in which the resource catalogs are listed. </p>"
+        },
+        "SortBy":{
+          "shape":"ResourceCatalogSortBy",
+          "documentation":"<p> The value on which the resource catalog list is sorted. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of results returned by <code>ListResourceCatalogs</code>. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of <code>ListResourceCatalogs</code> results. </p>"
+        }
+      }
+    },
+    "ListResourceCatalogsResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceCatalogs":{
+          "shape":"ResourceCatalogList",
+          "documentation":"<p> A list of the requested <code>ResourceCatalog</code>s. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of <code>ListResourceCatalogs</code> results. </p>"
         }
       }
     },
@@ -29455,6 +29524,63 @@
       "max":256,
       "pattern":"arn:aws[a-z-]*:sagemaker:[a-z0-9-]*:[0-9]{12}:.+"
     },
+    "ResourceCatalog":{
+      "type":"structure",
+      "required":[
+        "ResourceCatalogArn",
+        "ResourceCatalogName",
+        "Description",
+        "CreationTime"
+      ],
+      "members":{
+        "ResourceCatalogArn":{
+          "shape":"ResourceCatalogArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the <code>ResourceCatalog</code>. </p>"
+        },
+        "ResourceCatalogName":{
+          "shape":"ResourceCatalogName",
+          "documentation":"<p> The name of the <code>ResourceCatalog</code>. </p>"
+        },
+        "Description":{
+          "shape":"ResourceCatalogDescription",
+          "documentation":"<p> A free form description of the <code>ResourceCatalog</code>. </p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time the <code>ResourceCatalog</code> was created. </p>"
+        }
+      },
+      "documentation":"<p> A resource catalog containing all of the resources of a specific resource type within a resource owner account. For an example on sharing the Amazon SageMaker Feature Store <code>DefaultFeatureGroupCatalog</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/feature-store-cross-account-discoverability-share-sagemaker-catalog.html\">Share Amazon SageMaker Catalog resource type</a> in the Amazon SageMaker Developer Guide. </p>"
+    },
+    "ResourceCatalogArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:sagemaker-catalog/.*"
+    },
+    "ResourceCatalogDescription":{
+      "type":"string",
+      "max":256
+    },
+    "ResourceCatalogList":{
+      "type":"list",
+      "member":{"shape":"ResourceCatalog"}
+    },
+    "ResourceCatalogName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ResourceCatalogSortBy":{
+      "type":"string",
+      "enum":["CreationTime"]
+    },
+    "ResourceCatalogSortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
     "ResourceConfig":{
       "type":"structure",
       "required":["VolumeSizeInGB"],
@@ -29995,6 +30121,10 @@
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return.</p>",
           "box":true
+        },
+        "CrossAccountFilterOption":{
+          "shape":"CrossAccountFilterOption",
+          "documentation":"<p> A cross account filter option. When the value is <code>\"CrossAccount\"</code> the search results will only include resources made discoverable to you from other accounts. When the value is <code>\"SameAccount\"</code> or <code>null</code> the search results will only include resources from your account. Default is <code>null</code>. For more information on searching for resources made discoverable to your account, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-cross-account-discoverability-use.html\"> Search discoverable resources</a> in the SageMaker Developer Guide. The maximum number of <code>ResourceCatalog</code>s viewable is 1000. </p>"
         }
       }
     },
@@ -33278,8 +33408,8 @@
       "required":["FeatureGroupName"],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group that you're updating.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group that you're updating.</p>"
         },
         "FeatureAdditions":{
           "shape":"FeatureAdditions",
@@ -33309,8 +33439,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group containing the feature that you're updating.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group containing the feature that you're updating.</p>"
         },
         "FeatureName":{
           "shape":"FeatureName",

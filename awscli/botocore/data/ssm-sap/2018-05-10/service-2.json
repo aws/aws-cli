@@ -231,6 +231,23 @@
       ],
       "documentation":"<p>Register an SAP application with AWS Systems Manager for SAP. You must meet the following requirements before registering. </p> <p>The SAP application you want to register with AWS Systems Manager for SAP is running on Amazon EC2.</p> <p>AWS Systems Manager Agent must be setup on an Amazon EC2 instance along with the required IAM permissions.</p> <p>Amazon EC2 instance(s) must have access to the secrets created in AWS Secrets Manager to manage SAP applications and components.</p>"
     },
+    "StartApplicationRefresh":{
+      "name":"StartApplicationRefresh",
+      "http":{
+        "method":"POST",
+        "requestUri":"/start-application-refresh",
+        "responseCode":200
+      },
+      "input":{"shape":"StartApplicationRefreshInput"},
+      "output":{"shape":"StartApplicationRefreshOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Refreshes a registered application.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -276,6 +293,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the settings of an application registered with AWS Systems Manager for SAP.</p>"
@@ -308,6 +326,10 @@
         "Status":{
           "shape":"ApplicationStatus",
           "documentation":"<p>The status of the application.</p>"
+        },
+        "DiscoveryStatus":{
+          "shape":"ApplicationDiscoveryStatus",
+          "documentation":"<p>The latest discovery result for the application.</p>"
         },
         "Components":{
           "shape":"ComponentIdList",
@@ -352,6 +374,16 @@
       "member":{"shape":"ApplicationCredential"},
       "max":20,
       "min":1
+    },
+    "ApplicationDiscoveryStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "REGISTRATION_FAILED",
+        "REFRESH_FAILED",
+        "REGISTERING",
+        "DELETING"
+      ]
     },
     "ApplicationId":{
       "type":"string",
@@ -404,12 +436,74 @@
       "type":"string",
       "pattern":"arn:(.+:){2,4}.+$|^arn:(.+:){1,3}.+\\/.+"
     },
+    "AssociatedHost":{
+      "type":"structure",
+      "members":{
+        "Hostname":{
+          "shape":"String",
+          "documentation":"<p>The name of the host.</p>"
+        },
+        "Ec2InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon EC2 instance.</p>"
+        },
+        "OsVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the operating system.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of the associated host.</p>"
+    },
+    "BackintConfig":{
+      "type":"structure",
+      "required":[
+        "BackintMode",
+        "EnsureNoBackupInProcess"
+      ],
+      "members":{
+        "BackintMode":{
+          "shape":"BackintMode",
+          "documentation":"<p>AWS service for your database backup.</p>"
+        },
+        "EnsureNoBackupInProcess":{
+          "shape":"Boolean",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for AWS Backint Agent for SAP HANA. You can backup your SAP HANA database with AWS Backup or Amazon S3.</p>"
+    },
+    "BackintMode":{
+      "type":"string",
+      "enum":["AWSBackup"]
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClusterStatus":{
+      "type":"string",
+      "enum":[
+        "ONLINE",
+        "STANDBY",
+        "MAINTENANCE",
+        "OFFLINE",
+        "NONE"
+      ]
+    },
     "Component":{
       "type":"structure",
       "members":{
         "ComponentId":{
           "shape":"ComponentId",
           "documentation":"<p>The ID of the component.</p>"
+        },
+        "ParentComponent":{
+          "shape":"ComponentId",
+          "documentation":"<p>The parent component of a highly available environment. For example, in a highly available SAP on AWS workload, the parent component consists of the entire setup, including the child components.</p>"
+        },
+        "ChildComponents":{
+          "shape":"ComponentIdList",
+          "documentation":"<p>The child components of a highly available environment. For example, in a highly available SAP on AWS workload, the child component consists of the primary and secondar instances.</p>"
         },
         "ApplicationId":{
           "shape":"ApplicationId",
@@ -423,21 +517,49 @@
           "shape":"ComponentStatus",
           "documentation":"<p>The status of the component.</p>"
         },
+        "SapHostname":{
+          "shape":"String",
+          "documentation":"<p>The hostname of the component.</p>"
+        },
+        "SapKernelVersion":{
+          "shape":"String",
+          "documentation":"<p>The kernel version of the component.</p>"
+        },
+        "HdbVersion":{
+          "shape":"String",
+          "documentation":"<p>The SAP HANA version of the component.</p>"
+        },
+        "Resilience":{
+          "shape":"Resilience",
+          "documentation":"<p>Details of the SAP HANA system replication for the component.</p>"
+        },
+        "AssociatedHost":{
+          "shape":"AssociatedHost",
+          "documentation":"<p>The associated host of the component.</p>"
+        },
         "Databases":{
           "shape":"DatabaseIdList",
           "documentation":"<p>The SAP HANA databases of the component.</p>"
         },
         "Hosts":{
           "shape":"HostList",
-          "documentation":"<p>The hosts of the component.</p>"
+          "documentation":"<p>The hosts of the component.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This shape is no longer used. Please use AssociatedHost."
         },
         "PrimaryHost":{
           "shape":"String",
-          "documentation":"<p>The primary host of the component.</p>"
+          "documentation":"<p>The primary host of the component.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This shape is no longer used. Please use AssociatedHost."
         },
         "LastUpdated":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the component was last updated.</p>"
+        },
+        "Arn":{
+          "shape":"SsmSapArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component.</p>"
         }
       },
       "documentation":"<p>The SAP component of your application.</p>"
@@ -452,7 +574,15 @@
     },
     "ComponentStatus":{
       "type":"string",
-      "enum":["ACTIVATED"]
+      "enum":[
+        "ACTIVATED",
+        "STARTING",
+        "STOPPED",
+        "STOPPING",
+        "RUNNING",
+        "RUNNING_WITH_ERROR",
+        "UNDEFINED"
+      ]
     },
     "ComponentSummary":{
       "type":"structure",
@@ -472,6 +602,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the component.</p>"
+        },
+        "Arn":{
+          "shape":"SsmSapArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component summary.</p>"
         }
       },
       "documentation":"<p>The summary of the component.</p>"
@@ -482,7 +616,10 @@
     },
     "ComponentType":{
       "type":"string",
-      "enum":["HANA"]
+      "enum":[
+        "HANA",
+        "HANA_NODE"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -570,7 +707,8 @@
         "STARTING",
         "STOPPED",
         "WARNING",
-        "UNKNOWN"
+        "UNKNOWN",
+        "ERROR"
       ]
     },
     "DatabaseSummary":{
@@ -756,6 +894,10 @@
         "Component":{
           "shape":"Component",
           "documentation":"<p>The component of an application registered with AWS Systems Manager for SAP.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags of a component.</p>"
         }
       }
     },
@@ -842,17 +984,25 @@
           "shape":"String",
           "documentation":"<p>The name of the Dedicated Host.</p>"
         },
-        "HostRole":{
-          "shape":"HostRole",
-          "documentation":"<p>The role of the Dedicated Host.</p>"
-        },
         "HostIp":{
           "shape":"String",
           "documentation":"<p>The IP address of the Dedicated Host. </p>"
         },
+        "EC2InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of Amazon EC2 instance.</p>"
+        },
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The instance ID of the instance on the Dedicated Host.</p>"
+        },
+        "HostRole":{
+          "shape":"HostRole",
+          "documentation":"<p>The role of the Dedicated Host.</p>"
+        },
+        "OsVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the operating system.</p>"
         }
       },
       "documentation":"<p>Describes the properties of the Dedicated Host. </p>"
@@ -1115,6 +1265,16 @@
       "type":"list",
       "member":{"shape":"Operation"}
     },
+    "OperationMode":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "LOGREPLAY",
+        "DELTA_DATASHIPPING",
+        "LOGREPLAY_READACCESS",
+        "NONE"
+      ]
+    },
     "OperationProperties":{
       "type":"map",
       "key":{"shape":"String"},
@@ -1216,6 +1376,38 @@
         }
       }
     },
+    "ReplicationMode":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "NONE",
+        "SYNC",
+        "SYNCMEM",
+        "ASYNC"
+      ]
+    },
+    "Resilience":{
+      "type":"structure",
+      "members":{
+        "HsrTier":{
+          "shape":"String",
+          "documentation":"<p>The tier of the component.</p>"
+        },
+        "HsrReplicationMode":{
+          "shape":"ReplicationMode",
+          "documentation":"<p>The replication mode of the component.</p>"
+        },
+        "HsrOperationMode":{
+          "shape":"OperationMode",
+          "documentation":"<p>The operation mode of the component.</p>"
+        },
+        "ClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The cluster status of the component.</p>"
+        }
+      },
+      "documentation":"<p>Details of the SAP HANA system replication for the instance.</p>"
+    },
     "ResourceId":{
       "type":"string",
       "max":64,
@@ -1255,6 +1447,25 @@
     "SsmSapArn":{
       "type":"string",
       "pattern":"arn:(.+:){2,4}.+$|^arn:(.+:){1,3}.+\\/.+"
+    },
+    "StartApplicationRefreshInput":{
+      "type":"structure",
+      "required":["ApplicationId"],
+      "members":{
+        "ApplicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application.</p>"
+        }
+      }
+    },
+    "StartApplicationRefreshOutput":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The ID of the operation.</p>"
+        }
+      }
     },
     "String":{"type":"string"},
     "TagKey":{
@@ -1341,6 +1552,10 @@
         "CredentialsToRemove":{
           "shape":"ApplicationCredentialList",
           "documentation":"<p>The credentials to be removed.</p>"
+        },
+        "Backint":{
+          "shape":"BackintConfig",
+          "documentation":"<p>Installation of AWS Backint Agent for SAP HANA.</p>"
         }
       }
     },

@@ -71,6 +71,26 @@
       "documentation":"<p>Creates a project in a specified space.</p>",
       "idempotent":true
     },
+    "CreateSourceRepository":{
+      "name":"CreateSourceRepository",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSourceRepositoryRequest"},
+      "output":{"shape":"CreateSourceRepositoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an empty Git-based source repository in a specified project. The repository is created with an initial empty commit with a default branch named <code>main</code>.</p>",
+      "idempotent":true
+    },
     "CreateSourceRepositoryBranch":{
       "name":"CreateSourceRepositoryBranch",
       "http":{
@@ -131,6 +151,66 @@
       "documentation":"<p>Deletes a Dev Environment. </p>",
       "idempotent":true
     },
+    "DeleteProject":{
+      "name":"DeleteProject",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteProjectRequest"},
+      "output":{"shape":"DeleteProjectResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a project in a space.</p>",
+      "idempotent":true
+    },
+    "DeleteSourceRepository":{
+      "name":"DeleteSourceRepository",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSourceRepositoryRequest"},
+      "output":{"shape":"DeleteSourceRepositoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a source repository in Amazon CodeCatalyst. You cannot use this API to delete a linked repository. It can only be used to delete a Amazon CodeCatalyst source repository.</p>",
+      "idempotent":true
+    },
+    "DeleteSpace":{
+      "name":"DeleteSpace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/spaces/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSpaceRequest"},
+      "output":{"shape":"DeleteSpaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a space.</p> <important> <p>Deleting a space cannot be undone. Additionally, since space names must be unique across Amazon CodeCatalyst, you cannot reuse names of deleted spaces.</p> </important>",
+      "idempotent":true
+    },
     "GetDevEnvironment":{
       "name":"GetDevEnvironment",
       "http":{
@@ -168,6 +248,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns information about a project.</p>"
+    },
+    "GetSourceRepository":{
+      "name":"GetSourceRepository",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSourceRepositoryRequest"},
+      "output":{"shape":"GetSourceRepositoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about a source repository.</p>"
     },
     "GetSourceRepositoryCloneUrls":{
       "name":"GetSourceRepositoryCloneUrls",
@@ -496,6 +595,46 @@
       "documentation":"<p>Changes one or more values for a Dev Environment. Updating certain values of the Dev Environment will cause a restart.</p>",
       "idempotent":true
     },
+    "UpdateProject":{
+      "name":"UpdateProject",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProjectRequest"},
+      "output":{"shape":"UpdateProjectResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Changes one or more values for a project.</p>",
+      "idempotent":true
+    },
+    "UpdateSpace":{
+      "name":"UpdateSpace",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v1/spaces/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSpaceRequest"},
+      "output":{"shape":"UpdateSpaceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Changes one or more values for a space.</p>",
+      "idempotent":true
+    },
     "VerifySession":{
       "name":"VerifySession",
       "http":{
@@ -679,7 +818,7 @@
         },
         "ides":{
           "shape":"IdeConfigurationList",
-          "documentation":"<p>Information about the integrated development environment (IDE) configured for a Dev Environment.</p> <note> <p>An IDE is required to create a Dev Environment. For Dev Environment creation, this field contains configuration information and must be provided.</p> </note>"
+          "documentation":"<p>Information about the integrated development environment (IDE) configured for a Dev Environment.</p> <note> <p>An IDE is required to create a Dev Environment. For Dev Environment creation, this field contains configuration information and must be provided. </p> </note>"
         },
         "instanceType":{
           "shape":"InstanceType",
@@ -828,6 +967,64 @@
         }
       }
     },
+    "CreateSourceRepositoryRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository. For more information about name requirements, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/source-quotas.html\">Quotas for source repositories</a>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "description":{
+          "shape":"SourceRepositoryDescriptionString",
+          "documentation":"<p>The description of the source repository.</p>"
+        }
+      }
+    },
+    "CreateSourceRepositoryResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository.</p>"
+        },
+        "description":{
+          "shape":"SourceRepositoryDescriptionString",
+          "documentation":"<p>The description of the source repository.</p>"
+        }
+      }
+    },
     "DeleteAccessTokenRequest":{
       "type":"structure",
       "required":["id"],
@@ -892,6 +1089,124 @@
         "id":{
           "shape":"Uuid",
           "documentation":"<p>The system-generated unique ID of the deleted Dev Environment. </p>"
+        }
+      }
+    },
+    "DeleteProjectRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space. To retrieve a list of project names, use <a>ListProjects</a>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteProjectResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name displayed to users of the project in Amazon CodeCatalyst.</p>"
+        }
+      }
+    },
+    "DeleteSourceRepositoryRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteSourceRepositoryResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the repository.</p>"
+        }
+      }
+    },
+    "DeleteSpaceRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space. To retrieve a list of space names, use <a>ListSpaces</a>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteSpaceResponse":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name of the space displayed to users of the space in Amazon CodeCatalyst.</p>"
         }
       }
     },
@@ -1181,7 +1496,7 @@
         },
         "userAgent":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The user agent whose actions are recorded in the event.</p>"
         }
       },
       "documentation":"<p>Information about an entry in an event log of Amazon CodeCatalyst activity.</p>"
@@ -1238,18 +1553,18 @@
       "members":{
         "key":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>A key that can be used to sort results.</p>"
         },
         "values":{
           "shape":"StringList",
-          "documentation":"<p/>"
+          "documentation":"<p>The values of the key.</p>"
         },
         "comparisonOperator":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The operator used to compare the fields.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>Information about a filter used to limit results of a query.</p>"
     },
     "FilterKey":{
       "type":"string",
@@ -1444,6 +1759,70 @@
         "https":{
           "shape":"String",
           "documentation":"<p>The HTTPS URL to use when cloning the source repository.</p>"
+        }
+      }
+    },
+    "GetSourceRepositoryRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetSourceRepositoryResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "name",
+        "lastUpdatedTime",
+        "createdTime"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "name":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository.</p>"
+        },
+        "description":{
+          "shape":"SourceRepositoryDescriptionString",
+          "documentation":"<p>The description of the source repository.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the source repository was last updated, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a>.</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the source repository was created, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a>.</p>"
         }
       }
     },
@@ -2190,7 +2569,7 @@
         },
         "values":{
           "shape":"StringList",
-          "documentation":"<p>The value of the key.</p>"
+          "documentation":"<p>The values of the key.</p>"
         },
         "comparisonOperator":{
           "shape":"ComparisonOperator",
@@ -2305,6 +2684,12 @@
       "max":100,
       "min":1,
       "pattern":"(?!.*[.]git$)[\\w\\-.]*"
+    },
+    "SpaceDescription":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"[a-zA-Z0-9]+(?:[-_a-zA-Z0-9.,;:/\\+=?&$%    ])*"
     },
     "SpaceSummaries":{
       "type":"list",
@@ -2727,6 +3112,85 @@
       "min":1,
       "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
     },
+    "UpdateProjectRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "name"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "description":{
+          "shape":"ProjectDescription",
+          "documentation":"<p>The description of the project.</p>"
+        }
+      }
+    },
+    "UpdateProjectResponse":{
+      "type":"structure",
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name of the project displayed to users in Amazon CodeCatalyst.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the project.</p>"
+        }
+      }
+    },
+    "UpdateSpaceRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "description":{
+          "shape":"SpaceDescription",
+          "documentation":"<p>The description of the space.</p>"
+        }
+      }
+    },
+    "UpdateSpaceResponse":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name of the space displayed to users in Amazon CodeCatalyst.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the space.</p>"
+        }
+      }
+    },
     "UserIdentity":{
       "type":"structure",
       "required":[
@@ -2740,7 +3204,7 @@
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the Amazon CodeCatalyst service principal.</p>"
         },
         "userName":{
           "shape":"String",
@@ -2793,5 +3257,5 @@
       "min":1
     }
   },
-  "documentation":"<p>Welcome to the Amazon CodeCatalyst API reference. This reference provides descriptions of operations and data types for Amazon CodeCatalyst. You can use the Amazon CodeCatalyst API to work with the following objects. </p> <p>Dev Environments and the Amazon Web Services Toolkits, by calling the following:</p> <ul> <li> <p> <a>CreateAccessToken</a>, which creates a personal access token (PAT) for the current user.</p> </li> <li> <p> <a>CreateDevEnvironment</a>, which creates a Dev Environment, where you can quickly work on the code stored in the source repositories of your project.</p> </li> <li> <p> <a>CreateProject</a> which creates a project in a specified space.</p> </li> <li> <p> <a>CreateSourceRepositoryBranch</a>, which creates a branch in a specified repository where you can work on code.</p> </li> <li> <p> <a>DeleteDevEnvironment</a>, which deletes a Dev Environment.</p> </li> <li> <p> <a>GetDevEnvironment</a>, which returns information about a Dev Environment.</p> </li> <li> <p> <a>GetProject</a>, which returns information about a project.</p> </li> <li> <p> <a>GetSourceRepositoryCloneUrls</a>, which returns information about the URLs that can be used with a Git client to clone a source repository.</p> </li> <li> <p> <a>GetSpace</a>, which returns information about a space.</p> </li> <li> <p> <a>GetSubscription</a>, which returns information about the Amazon Web Services account used for billing purposes and the billing plan for the space.</p> </li> <li> <p> <a>GetUserDetails</a>, which returns information about a user in Amazon CodeCatalyst.</p> </li> <li> <p> <a>ListDevEnvironments</a>, which retrieves a list of Dev Environments in a project.</p> </li> <li> <p> <a>ListDevEnvironmentSessions</a>, which retrieves a list of active Dev Environment sessions in a project.</p> </li> <li> <p> <a>ListProjects</a>, which retrieves a list of projects in a space.</p> </li> <li> <p> <a>ListSourceRepositories</a>, which retrieves a list of source repositories in a project.</p> </li> <li> <p> <a>ListSourceRepositoryBranches</a>, which retrieves a list of branches in a source repository.</p> </li> <li> <p> <a>ListSpaces</a>, which retrieves a list of spaces.</p> </li> <li> <p> <a>StartDevEnvironment</a>, which starts a specified Dev Environment and puts it into an active state.</p> </li> <li> <p> <a>StartDevEnvironmentSession</a>, which starts a session to a specified Dev Environment.</p> </li> <li> <p> <a>StopDevEnvironment</a>, which stops a specified Dev Environment and puts it into an stopped state.</p> </li> <li> <p> <a>StopDevEnvironmentSession</a>, which stops a session for a specified Dev Environment.</p> </li> <li> <p> <a>UpdateDevEnvironment</a>, which changes one or more values for a Dev Environment.</p> </li> <li> <p> <a>VerifySession</a>, which verifies whether the calling user has a valid Amazon CodeCatalyst login and session.</p> </li> </ul> <p>Security, activity, and resource management in Amazon CodeCatalyst, by calling the following:</p> <ul> <li> <p> <a>DeleteAccessToken</a>, which deletes a specified personal access token (PAT).</p> </li> <li> <p> <a>ListAccessTokens</a>, which lists all personal access tokens (PATs) associated with a user.</p> </li> <li> <p> <a>ListEventLogs</a>, which retrieves a list of events that occurred during a specified time period in a space.</p> </li> </ul> <note> <p>If you are using the Amazon CodeCatalyst APIs with an SDK or the CLI, you must configure your computer to work with Amazon CodeCatalyst and single sign-on (SSO). For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/set-up-cli.html\">Setting up to use the CLI with Amazon CodeCatalyst</a> and the SSO documentation for your SDK.</p> </note>"
+  "documentation":"<p>Welcome to the Amazon CodeCatalyst API reference. This reference provides descriptions of operations and data types for Amazon CodeCatalyst. You can use the Amazon CodeCatalyst API to work with the following objects. </p> <p>Spaces, by calling the following:</p> <ul> <li> <p> <a>DeleteSpace</a>, which deletes a space.</p> </li> <li> <p> <a>GetSpace</a>, which returns information about a space.</p> </li> <li> <p> <a>GetSubscription</a>, which returns information about the Amazon Web Services account used for billing purposes and the billing plan for the space.</p> </li> <li> <p> <a>ListSpaces</a>, which retrieves a list of spaces.</p> </li> <li> <p> <a>UpdateSpace</a>, which hanges one or more values for a space.</p> </li> </ul> <p>Projects, by calling the following:</p> <ul> <li> <p> <a>CreateProject</a> which creates a project in a specified space.</p> </li> <li> <p> <a>GetProject</a>, which returns information about a project.</p> </li> <li> <p> <a>ListProjects</a>, which retrieves a list of projects in a space.</p> </li> </ul> <p>Users, by calling the following:</p> <ul> <li> <p> <a>GetUserDetails</a>, which returns information about a user in Amazon CodeCatalyst.</p> </li> </ul> <p>Source repositories, by calling the following:</p> <ul> <li> <p> <a>CreateSourceRepository</a>, which creates an empty Git-based source repository in a specified project.</p> </li> <li> <p> <a>CreateSourceRepositoryBranch</a>, which creates a branch in a specified repository where you can work on code.</p> </li> <li> <p> <a>DeleteSourceRepository</a>, which deletes a source repository.</p> </li> <li> <p> <a>GetSourceRepository</a>, which returns information about a source repository.</p> </li> <li> <p> <a>GetSourceRepositoryCloneUrls</a>, which returns information about the URLs that can be used with a Git client to clone a source repository.</p> </li> <li> <p> <a>ListSourceRepositories</a>, which retrieves a list of source repositories in a project.</p> </li> <li> <p> <a>ListSourceRepositoryBranches</a>, which retrieves a list of branches in a source repository.</p> </li> </ul> <p>Dev Environments and the Amazon Web Services Toolkits, by calling the following:</p> <ul> <li> <p> <a>CreateDevEnvironment</a>, which creates a Dev Environment, where you can quickly work on the code stored in the source repositories of your project.</p> </li> <li> <p> <a>DeleteDevEnvironment</a>, which deletes a Dev Environment.</p> </li> <li> <p> <a>GetDevEnvironment</a>, which returns information about a Dev Environment.</p> </li> <li> <p> <a>ListDevEnvironments</a>, which retrieves a list of Dev Environments in a project.</p> </li> <li> <p> <a>ListDevEnvironmentSessions</a>, which retrieves a list of active Dev Environment sessions in a project.</p> </li> <li> <p> <a>StartDevEnvironment</a>, which starts a specified Dev Environment and puts it into an active state.</p> </li> <li> <p> <a>StartDevEnvironmentSession</a>, which starts a session to a specified Dev Environment.</p> </li> <li> <p> <a>StopDevEnvironment</a>, which stops a specified Dev Environment and puts it into an stopped state.</p> </li> <li> <p> <a>StopDevEnvironmentSession</a>, which stops a session for a specified Dev Environment.</p> </li> <li> <p> <a>UpdateDevEnvironment</a>, which changes one or more values for a Dev Environment.</p> </li> </ul> <p>Security, activity, and resource management in Amazon CodeCatalyst, by calling the following:</p> <ul> <li> <p> <a>CreateAccessToken</a>, which creates a personal access token (PAT) for the current user.</p> </li> <li> <p> <a>DeleteAccessToken</a>, which deletes a specified personal access token (PAT).</p> </li> <li> <p> <a>ListAccessTokens</a>, which lists all personal access tokens (PATs) associated with a user.</p> </li> <li> <p> <a>ListEventLogs</a>, which retrieves a list of events that occurred during a specified time period in a space.</p> </li> <li> <p> <a>VerifySession</a>, which verifies whether the calling user has a valid Amazon CodeCatalyst login and session.</p> </li> </ul> <note> <p>If you are using the Amazon CodeCatalyst APIs with an SDK or the CLI, you must configure your computer to work with Amazon CodeCatalyst and single sign-on (SSO). For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/set-up-cli.html\">Setting up to use the CLI with Amazon CodeCatalyst</a> and the SSO documentation for your SDK.</p> </note>"
 }

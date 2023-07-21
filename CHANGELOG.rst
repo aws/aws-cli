@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.13.3
+======
+
+* api-change:``savingsplans``: Savings Plans endpoints update
+* api-change:``connectcases``: This release adds the ability to assign a case to a queue or user.
+* api-change:``transcribe``: Added API argument --toxicity-detection to startTranscriptionJob API, which allows users to view toxicity scores of submitted audio.
+* api-change:``grafana``: Amazon Managed Grafana now supports grafanaVersion update for existing workspaces with UpdateWorkspaceConfiguration API. DescribeWorkspaceConfiguration API additionally returns grafanaVersion. A new ListVersions API lists available versions or, if given a workspaceId, the versions it can upgrade to.
+* api-change:``ec2``: Amazon EC2 documentation updates.
+* api-change:``securitylake``: Adding support for Tags on Create and Resource Tagging API.
+* api-change:``codecatalyst``: This release adds support for updating and deleting spaces and projects in Amazon CodeCatalyst. It also adds support for creating, getting, and deleting source repositories in CodeCatalyst projects.
+* api-change:``route53resolver``: This release adds support for Route 53 On Outposts, a new feature that allows customers to run Route 53 Resolver and Resolver endpoints locally on their Outposts.
+* api-change:``wafv2``: Added the URI path to the custom aggregation keys that you can specify for a rate-based rule.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``cloudformation``: SDK and documentation updates for GetTemplateSummary API (unrecognized resources)
+* api-change:``ram``: This release adds support for securely sharing with AWS service principals.
+* api-change:``ssm-sap``: Added support for SAP Hana High Availability discovery (primary and secondary nodes) and Backint agent installation with SSM for SAP.
+* api-change:``sagemaker``: Cross account support for SageMaker Feature Store
+* api-change:``medical-imaging``: General Availability (GA) release of AWS Health Imaging, enabling customers to store, transform, and analyze medical imaging data at petabyte-scale.
+* api-change:``s3``: Improve performance of S3 clients by simplifying and optimizing endpoint resolution.
+* api-change:``sagemaker-featurestore-runtime``: Cross account support for SageMaker Feature Store
+
+
 2.13.2
 ======
 

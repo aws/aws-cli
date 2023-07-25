@@ -62,7 +62,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p>"
+      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p>"
     },
     "CreateEventStream":{
       "name":"CreateEventStream",
@@ -439,6 +439,23 @@
       ],
       "documentation":"<p>Returns the template information for a specific object type.</p> <p>A template is a predefined ProfileObjectType, such as “Salesforce-Account” or “Salesforce-Contact.” When a user sends a ProfileObject, using the PutProfileObject API, with an ObjectTypeName that matches one of the TemplateIds, it uses the mappings from the template.</p>"
     },
+    "GetSimilarProfiles":{
+      "name":"GetSimilarProfiles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/matches"
+      },
+      "input":{"shape":"GetSimilarProfilesRequest"},
+      "output":{"shape":"GetSimilarProfilesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a set of profiles that belong to the same matching group using the <code>matchId</code> or <code>profileId</code>. You can also specify the type of matching that you want for finding similar profiles using either <code>RULE_BASED_MATCHING</code> or <code>ML_BASED_MATCHING</code>.</p>"
+    },
     "GetWorkflow":{
       "name":"GetWorkflow",
       "http":{
@@ -643,6 +660,23 @@
       ],
       "documentation":"<p>Returns a list of objects associated with a profile of a given ProfileObjectType.</p>"
     },
+    "ListRuleBasedMatches":{
+      "name":"ListRuleBasedMatches",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/profiles/ruleBasedMatches"
+      },
+      "input":{"shape":"ListRuleBasedMatchesRequest"},
+      "output":{"shape":"ListRuleBasedMatchesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a set of <code>MatchIds</code> that belong to the given domain.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -821,7 +855,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the properties of a domain, including creating or selecting a dead letter queue or an encryption key.</p> <p>After a domain is created, the name can’t be changed.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true. </p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <p>To add or remove tags on an existing Domain, see <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_TagResource.html\">TagResource</a>/<a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
+      "documentation":"<p>Updates the properties of a domain, including creating or selecting a dead letter queue or an encryption key.</p> <p>After a domain is created, the name can’t be changed.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <p>To add or remove tags on an existing Domain, see <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_TagResource.html\">TagResource</a>/<a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
     },
     "UpdateProfile":{
       "name":"UpdateProfile",
@@ -963,6 +997,12 @@
       },
       "documentation":"<p>A generic address associated with the customer that is not mailing, shipping, or billing.</p>"
     },
+    "AddressList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":4,
+      "min":1
+    },
     "AppflowIntegration":{
       "type":"structure",
       "required":["FlowDefinition"],
@@ -1103,10 +1143,40 @@
       "max":2,
       "min":1
     },
+    "AttributeMatchingModel":{
+      "type":"string",
+      "enum":[
+        "ONE_TO_ONE",
+        "MANY_TO_MANY"
+      ]
+    },
     "AttributeSourceIdMap":{
       "type":"map",
       "key":{"shape":"string1To255"},
       "value":{"shape":"uuid"}
+    },
+    "AttributeTypesSelector":{
+      "type":"structure",
+      "required":["AttributeMatchingModel"],
+      "members":{
+        "AttributeMatchingModel":{
+          "shape":"AttributeMatchingModel",
+          "documentation":"<p>Configures the <code>AttributeMatchingModel</code>, you can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code>.</p>"
+        },
+        "Address":{
+          "shape":"AddressList",
+          "documentation":"<p>The <code>Address</code> type. You can choose from <code>Address</code>, <code>BusinessAddress</code>, <code>MaillingAddress</code>, and <code>ShippingAddress</code>.</p> <p>You only can use the Address type in the <code>MatchingRule</code>. For example, if you want to match profile based on <code>BusinessAddress.City</code> or <code>MaillingAddress.City</code>, you need to choose the <code>BusinessAddress</code> and the <code>MaillingAddress</code> to represent the Address type and specify the <code>Address.City</code> on the matching rule.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"PhoneNumberList",
+          "documentation":"<p>The <code>PhoneNumber</code> type. You can choose from <code>PhoneNumber</code>, <code>HomePhoneNumber</code>, and <code>MobilePhoneNumber</code>.</p> <p>You only can use the <code>PhoneNumber</code> type in the <code>MatchingRule</code>. For example, if you want to match a profile based on <code>Phone</code> or <code>HomePhone</code>, you need to choose the <code>Phone</code> and the <code>HomePhone</code> to represent the <code>PhoneNumber</code> type and only specify the <code>PhoneNumber</code> on the matching rule.</p>"
+        },
+        "EmailAddress":{
+          "shape":"EmailList",
+          "documentation":"<p>The <code>Email</code> type. You can choose from <code>EmailAddress</code>, <code>BusinessEmailAddress</code> and <code>PersonalEmailAddress</code>.</p> <p>You only can use the <code>EmailAddress</code> type in the <code>MatchingRule</code>. For example, if you want to match profile based on <code>PersonalEmailAddress</code> or <code>BusinessEmailAddress</code>, you need to choose the <code>PersonalEmailAddress</code> and the <code>BusinessEmailAddress</code> to represent the <code>EmailAddress</code> type and only specify the <code>EmailAddress</code> on the matching rule.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information about the <code>AttributeTypesSelector </code>where the rule-based identity resolution uses to match profiles. You can choose how profiles are compared across attribute types and which attribute to use for matching from each type. There are three attribute types you can configure:</p> <ul> <li> <p>Email type</p> <ul> <li> <p>You can choose from <code>Email</code>, <code>BusinessEmail</code>, and <code>PersonalEmail</code> </p> </li> </ul> </li> <li> <p>Phone number type</p> <ul> <li> <p>You can choose from <code>Phone</code>, <code>HomePhone</code>, and <code>MobilePhone</code> </p> </li> </ul> </li> <li> <p>Address type</p> <ul> <li> <p>You can choose from <code>Address</code>, <code>BusinessAddress</code>, <code>MaillingAddress</code>, and <code>ShippingAddress</code> </p> </li> </ul> </li> </ul> <p>You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>AttributeMatchingModel</code>. When choosing <code>MANY_TO_MANY</code>, the system can match attribute across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the Email type. When choosing <code>ONE_TO_ONE</code> the system can only match if the sub-types are exact matches. For example, only when the value of the <code>Email</code> field of Profile A and the value of the <code>Email</code> field of Profile B matches, the two profiles are matched on the Email type.</p>"
     },
     "Attributes":{
       "type":"map",
@@ -1385,6 +1455,10 @@
           "shape":"MatchingRequest",
           "documentation":"<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>"
         },
+        "RuleBasedMatching":{
+          "shape":"RuleBasedMatchingRequest",
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -1419,6 +1493,10 @@
         "Matching":{
           "shape":"MatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>"
+        },
+        "RuleBasedMatching":{
+          "shape":"RuleBasedMatchingResponse",
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "CreatedAt":{
           "shape":"timestamp",
@@ -1983,6 +2061,12 @@
       "max":1.0,
       "min":0.0
     },
+    "EmailList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":3,
+      "min":1
+    },
     "EventStreamDestinationDetails":{
       "type":"structure",
       "required":[
@@ -2471,6 +2555,10 @@
           "shape":"MatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>"
         },
+        "RuleBasedMatching":{
+          "shape":"RuleBasedMatchingResponse",
+          "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
         "CreatedAt":{
           "shape":"timestamp",
           "documentation":"<p>The timestamp of when the domain was created.</p>"
@@ -2847,6 +2935,76 @@
         "Keys":{
           "shape":"KeyMap",
           "documentation":"<p>A list of unique keys that can be used to map data to the profile.</p>"
+        }
+      }
+    },
+    "GetSimilarProfilesRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "MatchType",
+        "SearchKey",
+        "SearchValue"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous <code>GetSimilarProfiles</code> API call.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of objects returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MatchType":{
+          "shape":"MatchType",
+          "documentation":"<p>Specify the type of matching to get similar profiles for.</p>"
+        },
+        "SearchKey":{
+          "shape":"string1To255",
+          "documentation":"<p>The string indicating the search key to be used.</p>"
+        },
+        "SearchValue":{
+          "shape":"string1To255",
+          "documentation":"<p>The string based on <code>SearchKey</code> to be searched for similar profiles.</p>"
+        }
+      }
+    },
+    "GetSimilarProfilesResponse":{
+      "type":"structure",
+      "members":{
+        "ProfileIds":{
+          "shape":"ProfileIdList",
+          "documentation":"<p>Set of <code>profileId</code>s that belong to the same matching group.</p>"
+        },
+        "MatchId":{
+          "shape":"string1To255",
+          "documentation":"<p>The string <code>matchId</code> that the similar profiles belong to.</p>"
+        },
+        "MatchType":{
+          "shape":"MatchType",
+          "documentation":"<p>Specify the type of matching to get similar profiles for.</p>"
+        },
+        "RuleLevel":{
+          "shape":"RuleLevel",
+          "documentation":"<p>The integer rule level that the profiles matched on.</p>"
+        },
+        "ConfidenceScore":{
+          "shape":"Double",
+          "documentation":"<p>It only has value when the <code>MatchType</code> is <code>ML_BASED_MATCHING</code>.A number between 0 and 1, where a higher score means higher similarity. Examining match confidence scores lets you distinguish between groups of similar records in which the system is highly confident (which you may decide to merge), groups of similar records about which the system is uncertain (which you may decide to have reviewed by a human), and groups of similar records that the system deems to be unlikely (which you may decide to reject). Given confidence scores vary as per the data input, it should not be used as an absolute measure of matching quality.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous <code>GetSimilarProfiles</code> API call.</p>"
         }
       }
     },
@@ -3699,6 +3857,43 @@
         }
       }
     },
+    "ListRuleBasedMatchesRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous <code>ListRuleBasedMatches</code> API call.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of <code>MatchIds</code> returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "ListRuleBasedMatchesResponse":{
+      "type":"structure",
+      "members":{
+        "MatchIds":{
+          "shape":"MatchIdList",
+          "documentation":"<p>The list of <code>MatchIds</code> for the given domain.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous <code>ListRuleBasedMatches</code> API call.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3843,6 +4038,10 @@
       },
       "documentation":"<p>The properties that are applied when Marketo is being used as a source.</p>"
     },
+    "MatchIdList":{
+      "type":"list",
+      "member":{"shape":"string1To255"}
+    },
     "MatchItem":{
       "type":"structure",
       "members":{
@@ -3860,6 +4059,13 @@
         }
       },
       "documentation":"<p>The Match group object.</p>"
+    },
+    "MatchType":{
+      "type":"string",
+      "enum":[
+        "RULE_BASED_MATCHING",
+        "ML_BASED_MATCHING"
+      ]
     },
     "MatchesList":{
       "type":"list",
@@ -3921,6 +4127,39 @@
         }
       },
       "documentation":"<p>The flag that enables the matching process of duplicate profiles.</p>"
+    },
+    "MatchingRule":{
+      "type":"structure",
+      "required":["Rule"],
+      "members":{
+        "Rule":{
+          "shape":"MatchingRuleAttributeList",
+          "documentation":"<p>A single rule level of the <code>MatchRules</code>. Configures how the rule-based matching process should match profiles.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how does the rule-based matching process should match profiles. You can choose from the following attributes to build the matching Rule:</p> <ul> <li> <p>AccountNumber</p> </li> <li> <p>Address.Address</p> </li> <li> <p>Address.City</p> </li> <li> <p>Address.Country</p> </li> <li> <p>Address.County</p> </li> <li> <p>Address.PostalCode</p> </li> <li> <p>Address.State</p> </li> <li> <p>Address.Province</p> </li> <li> <p>BirthDate</p> </li> <li> <p>BusinessName</p> </li> <li> <p>EmailAddress</p> </li> <li> <p>FirstName</p> </li> <li> <p>Gender</p> </li> <li> <p>LastName</p> </li> <li> <p>MiddleName</p> </li> <li> <p>PhoneNumber</p> </li> <li> <p>Any customized profile attributes that start with the <code>Attributes</code> </p> </li> </ul>"
+    },
+    "MatchingRuleAttributeList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":15,
+      "min":1
+    },
+    "MatchingRules":{
+      "type":"list",
+      "member":{"shape":"MatchingRule"},
+      "max":15,
+      "min":1
+    },
+    "MaxAllowedRuleLevelForMatching":{
+      "type":"integer",
+      "max":15,
+      "min":1
+    },
+    "MaxAllowedRuleLevelForMerging":{
+      "type":"integer",
+      "max":15,
+      "min":1
     },
     "MergeProfilesRequest":{
       "type":"structure",
@@ -4064,6 +4303,12 @@
         "BUSINESS",
         "OTHER"
       ]
+    },
+    "PhoneNumberList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":4,
+      "min":1
     },
     "Profile":{
       "type":"structure",
@@ -4460,6 +4705,80 @@
       "type":"string",
       "max":512,
       "pattern":"arn:aws:iam:.*:[0-9]+:.*"
+    },
+    "RuleBasedMatchingRequest":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>The flag that enables the rule-based matching process of duplicate profiles.</p>"
+        },
+        "MatchingRules":{
+          "shape":"MatchingRules",
+          "documentation":"<p>Configures how the rule-based matching process should match profiles. You can have up to 15 <code>MatchingRule</code> in the <code>MatchingRules</code>.</p>"
+        },
+        "MaxAllowedRuleLevelForMerging":{
+          "shape":"MaxAllowedRuleLevelForMerging",
+          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html\">MatchingRule</a> </p>"
+        },
+        "MaxAllowedRuleLevelForMatching":{
+          "shape":"MaxAllowedRuleLevelForMatching",
+          "documentation":"<p>Indicates the maximum allowed rule level.</p>"
+        },
+        "AttributeTypesSelector":{
+          "shape":"AttributeTypesSelector",
+          "documentation":"<p>Configures information about the <code>AttributeTypesSelector</code> where the rule-based identity resolution uses to match profiles.</p>"
+        },
+        "ConflictResolution":{"shape":"ConflictResolution"},
+        "ExportingConfig":{"shape":"ExportingConfig"}
+      },
+      "documentation":"<p>The request to enable the rule-based matching.</p>"
+    },
+    "RuleBasedMatchingResponse":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>The flag that enables the rule-based matching process of duplicate profiles.</p>"
+        },
+        "MatchingRules":{
+          "shape":"MatchingRules",
+          "documentation":"<p>Configures how the rule-based matching process should match profiles. You can have up to 15 <code>MatchingRule</code> in the <code>MatchingRules</code>.</p>"
+        },
+        "Status":{
+          "shape":"RuleBasedMatchingStatus",
+          "documentation":"<p>PENDING</p> <ul> <li> <p>The first status after configuration a rule-based matching rule. If it is an existing domain, the rule-based Identity Resolution waits one hour before creating the matching rule. If it is a new domain, the system will skip the <code>PENDING</code> stage.</p> </li> </ul> <p>IN_PROGRESS</p> <ul> <li> <p>The system is creating the rule-based matching rule. Under this status, the system is evaluating the existing data and you can no longer change the Rule-based matching configuration.</p> </li> </ul> <p>ACTIVE</p> <ul> <li> <p>The rule is ready to use. You can change the rule a day after the status is in <code>ACTIVE</code>.</p> </li> </ul>"
+        },
+        "MaxAllowedRuleLevelForMerging":{
+          "shape":"MaxAllowedRuleLevelForMerging",
+          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html\">MatchingRule</a> </p>"
+        },
+        "MaxAllowedRuleLevelForMatching":{
+          "shape":"MaxAllowedRuleLevelForMatching",
+          "documentation":"<p>Indicates the maximum allowed rule level.</p>"
+        },
+        "AttributeTypesSelector":{
+          "shape":"AttributeTypesSelector",
+          "documentation":"<p>Configures information about the <code>AttributeTypesSelector</code> where the rule-based identity resolution uses to match profiles.</p>"
+        },
+        "ConflictResolution":{"shape":"ConflictResolution"},
+        "ExportingConfig":{"shape":"ExportingConfig"}
+      },
+      "documentation":"<p>The response of the Rule-based matching request.</p>"
+    },
+    "RuleBasedMatchingStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "ACTIVE"
+      ]
+    },
+    "RuleLevel":{
+      "type":"integer",
+      "max":15,
+      "min":1
     },
     "S3ConnectorOperator":{
       "type":"string",
@@ -5172,6 +5491,10 @@
           "shape":"MatchingRequest",
           "documentation":"<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>"
         },
+        "RuleBasedMatching":{
+          "shape":"RuleBasedMatchingRequest",
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -5205,6 +5528,10 @@
         "Matching":{
           "shape":"MatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>"
+        },
+        "RuleBasedMatching":{
+          "shape":"RuleBasedMatchingResponse",
+          "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
         "CreatedAt":{
           "shape":"timestamp",

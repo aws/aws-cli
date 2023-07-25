@@ -203,6 +203,10 @@
         "SourceIdentity":{
           "shape":"sourceIdentityType",
           "documentation":"<p>The source identity specified by the principal that is calling the <code>AssumeRole</code> operation.</p> <p>You can require users to specify a source identity when they assume a role. You do this by using the <code>sts:SourceIdentity</code> condition key in a role trust policy. You can use source identity information in CloudTrail logs to determine who took actions with a role. You can use the <code>aws:SourceIdentity</code> condition key to further control access to Amazon Web Services resources based on the value of source identity. For more information about using source identity, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">Monitor and control actions taken with assumed roles</a> in the <i>IAM User Guide</i>.</p> <p>The regex used to validate this parameter is a string of characters consisting of upper- and lower-case alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@-. You cannot use a value that begins with the text <code>aws:</code>. This prefix is reserved for Amazon Web Services internal use.</p>"
+        },
+        "ProvidedContexts":{
+          "shape":"ProvidedContextsListType",
+          "documentation":"<p>Reserved for future use.</p>"
         }
       }
     },
@@ -322,7 +326,7 @@
         },
         "WebIdentityToken":{
           "shape":"clientTokenType",
-          "documentation":"<p>The OAuth 2.0 access token or OpenID Connect ID token that is provided by the identity provider. Your application must get this token by authenticating the user who is using your application with a web identity provider before the application makes an <code>AssumeRoleWithWebIdentity</code> call. </p>"
+          "documentation":"<p>The OAuth 2.0 access token or OpenID Connect ID token that is provided by the identity provider. Your application must get this token by authenticating the user who is using your application with a web identity provider before the application makes an <code>AssumeRoleWithWebIdentity</code> call. Only tokens with RSA algorithms (RS256) are supported.</p>"
         },
         "ProviderId":{
           "shape":"urlType",
@@ -677,6 +681,25 @@
       },
       "documentation":"<p>A reference to the IAM managed policy that is passed as a session policy for a role session or a federated user session.</p>"
     },
+    "ProvidedContext":{
+      "type":"structure",
+      "members":{
+        "ProviderArn":{
+          "shape":"arnType",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "ContextAssertion":{
+          "shape":"contextAssertionType",
+          "documentation":"<p>Reserved for future use.</p>"
+        }
+      },
+      "documentation":"<p>Reserved for future use.</p>"
+    },
+    "ProvidedContextsListType":{
+      "type":"list",
+      "member":{"shape":"ProvidedContext"},
+      "max":5
+    },
     "RegionDisabledException":{
       "type":"structure",
       "members":{
@@ -744,6 +767,11 @@
       "max":20000,
       "min":4,
       "sensitive":true
+    },
+    "contextAssertionType":{
+      "type":"string",
+      "max":2048,
+      "min":4
     },
     "dateType":{"type":"timestamp"},
     "decodedMessageType":{"type":"string"},

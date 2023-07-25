@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.29.11
+=======
+
+* api-change:``billingconductor``: Added support for Auto-Assocate Billing Groups for CreateBillingGroup, UpdateBillingGroup, and ListBillingGroups.
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles now supports rule-based resolution to match and merge similar profiles into unified profiles, helping companies deliver faster and more personalized customer service by providing access to relevant customer information for agents and automated experiences.
+* api-change:``datasync``: AWS DataSync now supports Microsoft Azure Blob Storage locations.
+* api-change:``dynamodb``: Documentation updates for DynamoDB
+* api-change:``ec2``: This release adds an instance's peak and baseline network bandwidth as well as the memory sizes of an instance's inference accelerators to DescribeInstanceTypes.
+* api-change:``emr-serverless``: This release adds support for publishing application logs to CloudWatch.
+* api-change:``lambda``: Add Python 3.11 (python3.11) support to AWS Lambda
+* api-change:``rds``: This release adds support for monitoring storage optimization progress on the DescribeDBInstances API.
+* api-change:``sagemaker``: Mark ContentColumn and TargetLabelColumn as required Targets in TextClassificationJobConfig in CreateAutoMLJobV2API
+* api-change:``securityhub``: Add support for CONTAINS and NOT_CONTAINS comparison operators for Automation Rules string filters and map filters
+* api-change:``sts``: API updates for the AWS Security Token Service
+* api-change:``transfer``: This release adds support for SFTP Connectors.
+* api-change:``wisdom``: This release added two new data types: AssistantIntegrationConfiguration, and SessionIntegrationConfiguration to support Wisdom integration with Amazon Connect Chat
+
+
 1.29.10
 =======
 

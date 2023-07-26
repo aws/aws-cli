@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.29.12
+=======
+
+* api-change:``cloudcontrol``: Updates the documentation for CreateResource.
+* api-change:``entityresolution``: AWS Entity Resolution can effectively match a source record from a customer relationship management (CRM) system with a source record from a marketing system containing campaign information.
+* api-change:``glue``: Release Glue Studio Snowflake Connector Node for SDK/CLI
+* api-change:``healthlake``: Updating the HealthLake service documentation.
+* api-change:``managedblockchain-query``: Amazon Managed Blockchain (AMB) Query provides serverless access to standardized, multi-blockchain datasets with developer-friendly APIs.
+* api-change:``mediaconvert``: This release includes general updates to user documentation.
+* api-change:``omics``: The service is renaming as a part of AWS Health.
+* api-change:``opensearchserverless``: This release adds new collection type VectorSearch.
+* api-change:``polly``: Amazon Polly adds 1 new voice - Lisa (nl-BE)
+* api-change:``route53``: Update that corrects the documents for received feedback.
+
+
 1.29.11
 =======
 

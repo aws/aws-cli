@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+2.13.4
+======
+
+* api-change:``cloudformation``: This release supports filtering by DRIFT_STATUS for existing API ListStackInstances and adds support for a new API ListStackInstanceResourceDrifts. Customers can now view resource drift information from their StackSet management accounts.
+* api-change:``apigatewayv2``: Documentation updates for Amazon API Gateway.
+* api-change:``emr-serverless``: This release adds support for publishing application logs to CloudWatch.
+* api-change:``ec2``: This release adds an instance's peak and baseline network bandwidth as well as the memory sizes of an instance's inference accelerators to DescribeInstanceTypes.
+* api-change:``glue``: This release adds support for AWS Glue Crawler with Apache Hudi Tables, allowing Crawlers to discover Hudi Tables in S3 and register them in Glue Data Catalog for query engines to query against.
+* api-change:``dynamodb``: Documentation updates for DynamoDB
+* api-change:``securityhub``: Add support for CONTAINS and NOT_CONTAINS comparison operators for Automation Rules string filters and map filters
+* api-change:``ec2``: Add "disabled" enum value to SpotInstanceState.
+* api-change:``sagemaker``: Mark ContentColumn and TargetLabelColumn as required Targets in TextClassificationJobConfig in CreateAutoMLJobV2API
+* api-change:``lambda``: Add Python 3.11 (python3.11) support to AWS Lambda
+* api-change:``datasync``: AWS DataSync now supports Microsoft Azure Blob Storage locations.
+* api-change:``transfer``: This release adds support for SFTP Connectors.
+* api-change:``chime-sdk-media-pipelines``: AWS Media Pipeline compositing enhancement and Media Insights Pipeline auto language identification.
+* api-change:``quicksight``: This release launches new Snapshot APIs for CSV and PDF exports, adds support for info icon for filters and parameters in Exploration APIs, adds modeled exception to the DeleteAccountCustomization API, and introduces AttributeAggregationFunction's ability to add UNIQUE_VALUE aggregation in tooltips.
+* api-change:``billingconductor``: Added support for Auto-Assocate Billing Groups for CreateBillingGroup, UpdateBillingGroup, and ListBillingGroups.
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles now supports rule-based resolution to match and merge similar profiles into unified profiles, helping companies deliver faster and more personalized customer service by providing access to relevant customer information for agents and automated experiences.
+* api-change:``rds``: Adds support for the DBSystemID parameter of CreateDBInstance to RDS Custom for Oracle.
+* api-change:``mediaconvert``: This release includes improvements to Preserve 444 handling, compatibility of HEVC sources without frame rates, and general improvements to MP4 outputs.
+* api-change:``sts``: API updates for the AWS Security Token Service
+* api-change:``workspaces``: Fixed VolumeEncryptionKey descriptions
+* api-change:``ce``: This release introduces the new API 'GetSavingsPlanPurchaseRecommendationDetails', which retrieves the details for a Savings Plan recommendation. It also updates the existing API 'GetSavingsPlansPurchaseRecommendation' to include the recommendation detail ID.
+* api-change:``wisdom``: This release added two new data types: AssistantIntegrationConfiguration, and SessionIntegrationConfiguration to support Wisdom integration with Amazon Connect Chat
+* api-change:``rds``: This release adds support for monitoring storage optimization progress on the DescribeDBInstances API.
+* api-change:``glue``: Added support for Data Preparation Recipe node in Glue Studio jobs
+
+
 2.13.3
 ======
 

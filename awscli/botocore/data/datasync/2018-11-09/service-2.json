@@ -57,6 +57,20 @@
       ],
       "documentation":"<p>Activates an DataSync agent that you've deployed in your storage environment. The activation process associates the agent with your Amazon Web Services account.</p> <p>If you haven't deployed an agent yet, see the following topics to learn more:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/agent-requirements.html\">Agent requirements</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html\">Create an agent</a> </p> </li> </ul> <note> <p>If you're transferring between Amazon Web Services storage services, you don't need a DataSync agent. </p> </note>"
     },
+    "CreateLocationAzureBlob":{
+      "name":"CreateLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocationAzureBlobRequest"},
+      "output":{"shape":"CreateLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an endpoint for a Microsoft Azure Blob Storage container that DataSync can use as a transfer source or destination.</p> <p>Before you begin, make sure you know <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access\">how DataSync accesses Azure Blob Storage</a> and works with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">access tiers</a> and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#blob-types\">blob types</a>. You also need a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-creating-agent\">DataSync agent</a> that can connect to your container.</p>"
+    },
     "CreateLocationEfs":{
       "name":"CreateLocationEfs",
       "http":{
@@ -153,7 +167,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Defines a file system on a Network File System (NFS) server that can be read from or written to.</p>"
+      "documentation":"<p>Creates an endpoint for an Network File System (NFS) file server that DataSync can use for a data transfer.</p>"
     },
     "CreateLocationObjectStorage":{
       "name":"CreateLocationObjectStorage",
@@ -195,7 +209,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for a Server Message Block (SMB) file server that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">Creating an SMB location</a>.</p>"
+      "documentation":"<p>Creates an endpoint for a Server Message Block (SMB) file server that DataSync can use for a data transfer.</p> <p>Before you begin, make sure that you understand how DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">accesses an SMB file server</a>.</p>"
     },
     "CreateTask":{
       "name":"CreateTask",
@@ -281,6 +295,20 @@
       ],
       "documentation":"<p>Returns information about a DataSync discovery job.</p>",
       "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeLocationAzureBlob":{
+      "name":"DescribeLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLocationAzureBlobRequest"},
+      "output":{"shape":"DescribeLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Provides details about how an DataSync transfer location for Microsoft Azure Blob Storage is configured.</p>"
     },
     "DescribeLocationEfs":{
       "name":"DescribeLocationEfs",
@@ -479,7 +507,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata about a task.</p>"
+      "documentation":"<p>Provides information about an DataSync transfer task.</p>"
     },
     "DescribeTaskExecution":{
       "name":"DescribeTaskExecution",
@@ -493,7 +521,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns detailed metadata about a task that is being executed.</p>"
+      "documentation":"<p>Provides information about an DataSync transfer task that's running.</p>"
     },
     "GenerateRecommendations":{
       "name":"GenerateRecommendations",
@@ -726,6 +754,20 @@
       "documentation":"<p>Edits a DataSync discovery job configuration.</p>",
       "endpoint":{"hostPrefix":"discovery-"}
     },
+    "UpdateLocationAzureBlob":{
+      "name":"UpdateLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLocationAzureBlobRequest"},
+      "output":{"shape":"UpdateLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Modifies some configurations of the Microsoft Azure Blob Storage transfer location that you're using with DataSync.</p>"
+    },
     "UpdateLocationHdfs":{
       "name":"UpdateLocationHdfs",
       "http":{
@@ -852,7 +894,7 @@
         },
         "AgentArns":{
           "shape":"DiscoveryAgentArnList",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads from your on-premises storage system's management interface.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads from your on-premises storage system's management interface. You can only specify one ARN.</p>"
         },
         "CloudWatchLogGroupArn":{
           "shape":"LogGroupArn",
@@ -934,6 +976,50 @@
         "BEST_EFFORT"
       ]
     },
+    "AzureAccessTier":{
+      "type":"string",
+      "enum":[
+        "HOT",
+        "COOL",
+        "ARCHIVE"
+      ]
+    },
+    "AzureBlobAuthenticationType":{
+      "type":"string",
+      "enum":["SAS"]
+    },
+    "AzureBlobContainerUrl":{
+      "type":"string",
+      "max":325,
+      "pattern":"^https:\\/\\/[A-Za-z0-9]((\\.|-+)?[A-Za-z0-9]){0,252}\\/[a-z0-9](-?[a-z0-9]){2,62}$"
+    },
+    "AzureBlobSasConfiguration":{
+      "type":"structure",
+      "required":["Token"],
+      "members":{
+        "Token":{
+          "shape":"AzureBlobSasToken",
+          "documentation":"<p>Specifies a SAS token that provides permissions at the Azure storage account, container, or folder level.</p> <p>The token is part of the SAS URI string that comes after the storage resource URI and a question mark. A token looks something like this:</p> <p> <code>sp=r&amp;st=2023-12-20T14:54:52Z&amp;se=2023-12-20T22:54:52Z&amp;spr=https&amp;sv=2021-06-08&amp;sr=c&amp;sig=aBBKDWQvyuVcTPH9EBp%2FXTI9E%2F%2Fmq171%2BZU178wcwqU%3D</code> </p>"
+        }
+      },
+      "documentation":"<p>The shared access signature (SAS) configuration that allows DataSync to access your Microsoft Azure Blob Storage.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-sas-tokens\">SAS tokens</a> for accessing your Azure Blob Storage.</p>"
+    },
+    "AzureBlobSasToken":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^.+$",
+      "sensitive":true
+    },
+    "AzureBlobSubdirectory":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}\\p{C}]*$"
+    },
+    "AzureBlobType":{
+      "type":"string",
+      "enum":["BLOCK"]
+    },
     "BytesPerSecond":{
       "type":"long",
       "min":-1
@@ -999,11 +1085,11 @@
         },
         "SubnetArns":{
           "shape":"PLSubnetArnList",
-          "documentation":"<p>Specifies the ARN of the subnet where you want to run your DataSync task when using a VPC endpoint. This is the subnet where DataSync creates and manages the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> for your transfer.</p>"
+          "documentation":"<p>Specifies the ARN of the subnet where you want to run your DataSync task when using a VPC endpoint. This is the subnet where DataSync creates and manages the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> for your transfer. You can only specify one ARN.</p>"
         },
         "SecurityGroupArns":{
           "shape":"PLSecurityGroupArnList",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the security group that protects your task's <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#choose-service-endpoint-vpc\">using a virtual private cloud (VPC) endpoint</a>.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the security group that protects your task's <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#choose-service-endpoint-vpc\">using a virtual private cloud (VPC) endpoint</a>. You can only specify one ARN.</p>"
         }
       },
       "documentation":"<p>CreateAgentRequest</p>"
@@ -1017,6 +1103,57 @@
         }
       },
       "documentation":"<p>CreateAgentResponse</p>"
+    },
+    "CreateLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":[
+        "ContainerUrl",
+        "AuthenticationType",
+        "AgentArns"
+      ],
+      "members":{
+        "ContainerUrl":{
+          "shape":"AzureBlobContainerUrl",
+          "documentation":"<p>Specifies the URL of the Azure Blob Storage container involved in your transfer.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>Specifies the authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "SasConfiguration":{
+          "shape":"AzureBlobSasConfiguration",
+          "documentation":"<p>Specifies the SAS configuration that allows DataSync to access your Azure Blob Storage.</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>Specifies the type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "Subdirectory":{
+          "shape":"AzureBlobSubdirectory",
+          "documentation":"<p>Specifies path segments if you want to limit your transfer to a virtual directory in your container (for example, <code>/my/images</code>).</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container.</p> <p>You can specify more than one agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html\">Using multiple agents for your transfer</a>.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your transfer location.</p>"
+        }
+      }
+    },
+    "CreateLocationAzureBlobResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of the Azure Blob Storage transfer location that you created.</p>"
+        }
+      }
     },
     "CreateLocationEfsRequest":{
       "type":"structure",
@@ -1304,23 +1441,23 @@
       "members":{
         "Subdirectory":{
           "shape":"NfsSubdirectory",
-          "documentation":"<p>The subdirectory in the NFS file system that is used to read data from the NFS source location or write data to the NFS destination. The NFS path should be a path that's exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network. </p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder you specified, DataSync needs to have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash,</code> or ensure that the permissions for all of the files that you want DataSync allow read access for all users. Doing either enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <p>For information about NFS export configuration, see 18.7. The /etc/exports Configuration File in the Red Hat Enterprise Linux documentation.</p>"
+          "documentation":"<p>Specifies the subdirectory in the NFS file server that DataSync transfers to or from. The NFS path should be a path that's exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network. </p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder you specified, DataSync needs to have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash,</code> or ensure that the permissions for all of the files that you want DataSync allow read access for all users. Doing either enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p>"
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>The name of the NFS server. This value is the IP address or Domain Name Service (DNS) name of the NFS server. An agent that is installed on-premises uses this hostname to mount the NFS server in a network. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <note> <p>This name must either be DNS-compliant or must be an IP version 4 (IPv4) address.</p> </note>"
+          "documentation":"<p>Specifies the IP address or domain name of your NFS file server. An agent that is installed on-premises uses this hostname to mount the NFS server in a network. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <note> <p>You must specify be an IP version 4 address or Domain Name System (DNS)-compliant name.</p> </note>"
         },
         "OnPremConfig":{
           "shape":"OnPremConfig",
-          "documentation":"<p>Contains a list of Amazon Resource Names (ARNs) of agents that are used to connect to an NFS server. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Names (ARNs) of agents that DataSync uses to connect to your NFS file server. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p>"
         },
         "MountOptions":{
           "shape":"NfsMountOptions",
-          "documentation":"<p>The NFS mount options that DataSync can use to mount your NFS share.</p>"
+          "documentation":"<p>Specifies the mount options that DataSync can use to mount your NFS share.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents the tag that you want to add to the location. The value can be an empty string. We recommend using tags to name your resources.</p>"
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your location.</p>"
         }
       },
       "documentation":"<p>CreateLocationNfsRequest</p>"
@@ -1330,7 +1467,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the source NFS file system location that is created.</p>"
+          "documentation":"<p>The ARN of the transfer location that you created for your NFS file server.</p>"
         }
       },
       "documentation":"<p>CreateLocationNfsResponse</p>"
@@ -1698,6 +1835,49 @@
         }
       }
     },
+    "DescribeLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of your Azure Blob Storage transfer location.</p>"
+        }
+      }
+    },
+    "DescribeLocationAzureBlobResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of your Azure Blob Storage transfer location.</p>"
+        },
+        "LocationUri":{
+          "shape":"LocationUri",
+          "documentation":"<p>The URL of the Azure Blob Storage container involved in your transfer.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>The authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>The type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>The access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>The ARNs of the DataSync agents that can connect with your Azure Blob Storage container.</p>"
+        },
+        "CreationTime":{
+          "shape":"Time",
+          "documentation":"<p>The time that your Azure Blob Storage transfer location was created.</p>"
+        }
+      }
+    },
     "DescribeLocationEfsRequest":{
       "type":"structure",
       "required":["LocationArn"],
@@ -1973,7 +2153,7 @@
         "OnPremConfig":{"shape":"OnPremConfig"},
         "MountOptions":{
           "shape":"NfsMountOptions",
-          "documentation":"<p>The NFS mount options that DataSync used to mount your NFS share.</p>"
+          "documentation":"<p>The mount options that DataSync uses to mount your NFS share.</p>"
         },
         "CreationTime":{
           "shape":"Time",
@@ -2272,7 +2452,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task that is being executed.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the transfer task that's running.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionRequest</p>"
@@ -2338,7 +2518,7 @@
       "members":{
         "TaskArn":{
           "shape":"TaskArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task to describe.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the transfer task.</p>"
         }
       },
       "documentation":"<p>DescribeTaskRequest</p>"
@@ -3725,22 +3905,22 @@
       "members":{
         "VpcEndpointId":{
           "shape":"VpcEndpointId",
-          "documentation":"<p>The ID of the VPC endpoint that is configured for an agent. An agent that is configured with a VPC endpoint will not be accessible over the public internet.</p>"
+          "documentation":"<p>Specifies the ID of the VPC endpoint that your agent connects to.</p>"
         },
         "PrivateLinkEndpoint":{
           "shape":"Endpoint",
-          "documentation":"<p>The private endpoint that is configured for an agent that has access to IP addresses in a <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html\">PrivateLink</a>. An agent that is configured with this endpoint will not be accessible over the public internet.</p>"
+          "documentation":"<p>Specifies the VPC endpoint provided by <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html\">Amazon Web Services PrivateLink</a> that your agent connects to.</p>"
         },
         "SubnetArns":{
           "shape":"PLSubnetArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the subnets that are configured for an agent activated in a VPC or an agent that has access to a VPC endpoint.</p>"
+          "documentation":"<p>Specifies the ARN of the subnet where your VPC endpoint is located. You can only specify one ARN.</p>"
         },
         "SecurityGroupArns":{
           "shape":"PLSecurityGroupArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are configured for the EC2 resource that hosts an agent activated in a VPC or an agent that has access to a VPC endpoint.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Names (ARN) of the security group that provides DataSync access to your VPC endpoint. You can only specify one ARN.</p>"
         }
       },
-      "documentation":"<p>The VPC endpoint, subnet, and security group that an agent uses to access IP addresses in a VPC (Virtual Private Cloud).</p>"
+      "documentation":"<p>Specifies how your DataSync agent connects to Amazon Web Services using a virtual private cloud (VPC) service endpoint. An agent that uses a VPC endpoint isn't accessible over the public internet.</p>"
     },
     "PtolemyBoolean":{"type":"boolean"},
     "PtolemyPassword":{
@@ -4443,6 +4623,45 @@
       "members":{
       }
     },
+    "UpdateLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>Specifies the ARN of the Azure Blob Storage transfer location that you're updating.</p>"
+        },
+        "Subdirectory":{
+          "shape":"AzureBlobSubdirectory",
+          "documentation":"<p>Specifies path segments if you want to limit your transfer to a virtual directory in your container (for example, <code>/my/images</code>).</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>Specifies the authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "SasConfiguration":{
+          "shape":"AzureBlobSasConfiguration",
+          "documentation":"<p>Specifies the SAS configuration that allows DataSync to access your Azure Blob Storage.</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>Specifies the type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container.</p> <p>You can specify more than one agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html\">Using multiple agents for your transfer</a>.</p>"
+        }
+      }
+    },
+    "UpdateLocationAzureBlobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateLocationHdfsRequest":{
       "type":"structure",
       "required":["LocationArn"],
@@ -4512,11 +4731,11 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the NFS location to update.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the NFS location that you want to update.</p>"
         },
         "Subdirectory":{
           "shape":"NfsSubdirectory",
-          "documentation":"<p>The subdirectory in the NFS file system that is used to read data from the NFS source location or write data to the NFS destination. The NFS path should be a path that's exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network.</p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder that you specified, DataSync must have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash</code>, or ensure that the files you want DataSync to access have permissions that allow read access for all users. Doing either option enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <p>For information about NFS export configuration, see 18.7. The /etc/exports Configuration File in the Red Hat Enterprise Linux documentation.</p>"
+          "documentation":"<p>Specifies the subdirectory in your NFS file system that DataSync uses to read from or write to during a transfer. The NFS path should be exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network.</p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder that you specified, DataSync must have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash</code>, or ensure that the files you want DataSync to access have permissions that allow read access for all users. Doing either option enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p>"
         },
         "OnPremConfig":{"shape":"OnPremConfig"},
         "MountOptions":{"shape":"NfsMountOptions"}
@@ -4620,7 +4839,7 @@
         },
         "AgentArns":{
           "shape":"DiscoveryAgentArnList",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads your on-premises storage system.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads your on-premises storage system. You can only specify one ARN.</p>"
         },
         "Name":{
           "shape":"Name",

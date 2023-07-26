@@ -394,6 +394,25 @@
     }
   },
   "shapes":{
+    "ActiveSpeakerOnlyConfiguration":{
+      "type":"structure",
+      "members":{
+        "ActiveSpeakerPosition":{
+          "shape":"ActiveSpeakerPosition",
+          "documentation":"<p>The position of the <code>ActiveSpeakerOnly</code> video tile.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for an <code>ActiveSpeakerOnly</code> video tile.</p>"
+    },
+    "ActiveSpeakerPosition":{
+      "type":"string",
+      "enum":[
+        "TopLeft",
+        "TopRight",
+        "BottomLeft",
+        "BottomRight"
+      ]
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -461,7 +480,6 @@
     },
     "AmazonTranscribeProcessorConfiguration":{
       "type":"structure",
-      "required":["LanguageCode"],
       "members":{
         "LanguageCode":{
           "shape":"CallAnalyticsLanguageCode",
@@ -510,6 +528,26 @@
         "FilterPartialResults":{
           "shape":"Boolean",
           "documentation":"<p>If true, <code>TranscriptEvents</code> with <code>IsPartial: true</code> are filtered out of the insights target.</p>"
+        },
+        "IdentifyLanguage":{
+          "shape":"Boolean",
+          "documentation":"<p>Turns language identification on or off.</p>"
+        },
+        "LanguageOptions":{
+          "shape":"LanguageOptions",
+          "documentation":"<p>The language options for the transcription, such as automatic language detection.</p>"
+        },
+        "PreferredLanguage":{
+          "shape":"CallAnalyticsLanguageCode",
+          "documentation":"<p>The preferred language for the transcription.</p>"
+        },
+        "VocabularyNames":{
+          "shape":"VocabularyNames",
+          "documentation":"<p>The names of the custom vocabulary or vocabularies used during transcription.</p>"
+        },
+        "VocabularyFilterNames":{
+          "shape":"VocabularyFilterNames",
+          "documentation":"<p>The names of the custom vocabulary filter or filters using during transcription.</p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p>"
@@ -670,6 +708,22 @@
       "exception":true
     },
     "Boolean":{"type":"boolean"},
+    "BorderColor":{
+      "type":"string",
+      "enum":[
+        "Black",
+        "Blue",
+        "Red",
+        "Green",
+        "White",
+        "Yellow"
+      ]
+    },
+    "BorderThickness":{
+      "type":"integer",
+      "max":20,
+      "min":1
+    },
     "CallAnalyticsLanguageCode":{
       "type":"string",
       "enum":[
@@ -682,6 +736,13 @@
         "it-IT",
         "de-DE",
         "pt-BR"
+      ]
+    },
+    "CanvasOrientation":{
+      "type":"string",
+      "enum":[
+        "Landscape",
+        "Portrait"
       ]
     },
     "CategoryName":{
@@ -922,12 +983,18 @@
       "enum":[
         "PresenterOnly",
         "Horizontal",
-        "Vertical"
+        "Vertical",
+        "ActiveSpeakerOnly"
       ]
     },
     "ContentType":{
       "type":"string",
       "enum":["PII"]
+    },
+    "CornerRadius":{
+      "type":"integer",
+      "max":20,
+      "min":1
     },
     "CreateMediaCapturePipelineRequest":{
       "type":"structure",
@@ -1079,7 +1146,7 @@
         },
         "S3RecordingSinkRuntimeConfiguration":{
           "shape":"S3RecordingSinkRuntimeConfiguration",
-          "documentation":"<p>The runtime configuration for the S3 recording sink.</p>"
+          "documentation":"<p>The runtime configuration for the S3 recording sink. If specified, the settings in this structure override any settings in <code>S3RecordingSinkConfiguration</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -1326,6 +1393,26 @@
         "PresenterOnlyConfiguration":{
           "shape":"PresenterOnlyConfiguration",
           "documentation":"<p>Defines the configuration options for a presenter only video tile.</p>"
+        },
+        "ActiveSpeakerOnlyConfiguration":{
+          "shape":"ActiveSpeakerOnlyConfiguration",
+          "documentation":"<p>The configuration settings for an <code>ActiveSpeakerOnly</code> video tile.</p>"
+        },
+        "HorizontalLayoutConfiguration":{
+          "shape":"HorizontalLayoutConfiguration",
+          "documentation":"<p>The configuration settings for a horizontal layout.</p>"
+        },
+        "VerticalLayoutConfiguration":{
+          "shape":"VerticalLayoutConfiguration",
+          "documentation":"<p>The configuration settings for a vertical layout.</p>"
+        },
+        "VideoAttribute":{
+          "shape":"VideoAttribute",
+          "documentation":"<p>The attribute settings for the video tiles.</p>"
+        },
+        "CanvasOrientation":{
+          "shape":"CanvasOrientation",
+          "documentation":"<p>The orientation setting, horizontal or vertical.</p>"
         }
       },
       "documentation":"<p>Specifies the type of grid layout.</p>"
@@ -1335,6 +1422,46 @@
       "max":36,
       "min":36,
       "pattern":"[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}"
+    },
+    "HighlightColor":{
+      "type":"string",
+      "enum":[
+        "Black",
+        "Blue",
+        "Red",
+        "Green",
+        "White",
+        "Yellow"
+      ]
+    },
+    "HorizontalLayoutConfiguration":{
+      "type":"structure",
+      "members":{
+        "TileOrder":{
+          "shape":"TileOrder",
+          "documentation":"<p>Sets the automatic ordering of the video tiles.</p>"
+        },
+        "TilePosition":{
+          "shape":"HorizontalTilePosition",
+          "documentation":"<p>Sets the position of horizontal tiles.</p>"
+        },
+        "TileCount":{
+          "shape":"TileCount",
+          "documentation":"<p>The maximum number of video tiles to display.</p>"
+        },
+        "TileAspectRatio":{
+          "shape":"TileAspectRatio",
+          "documentation":"<p>Sets the aspect ratio of the video tiles, such as 16:9.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration settings for the horizontal layout.</p>"
+    },
+    "HorizontalTilePosition":{
+      "type":"string",
+      "enum":[
+        "Top",
+        "Bottom"
+      ]
     },
     "Iso8601Timestamp":{
       "type":"timestamp",
@@ -1451,6 +1578,12 @@
         }
       },
       "documentation":"<p>A structure that contains the configuration settings for an AWS Lambda function's data sink.</p>"
+    },
+    "LanguageOptions":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[a-zA-Z-,]+"
     },
     "LayoutOption":{
       "type":"string",
@@ -2540,6 +2673,22 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "TileAspectRatio":{
+      "type":"string",
+      "pattern":"^\\d{1,2}\\/\\d{1,2}$"
+    },
+    "TileCount":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "TileOrder":{
+      "type":"string",
+      "enum":[
+        "JoinSequence",
+        "SpeakerSequence"
+      ]
+    },
     "Timestamp":{"type":"timestamp"},
     "TimestampRange":{
       "type":"structure",
@@ -2662,6 +2811,35 @@
         }
       }
     },
+    "VerticalLayoutConfiguration":{
+      "type":"structure",
+      "members":{
+        "TileOrder":{
+          "shape":"TileOrder",
+          "documentation":"<p>Sets the automatic ordering of the video tiles.</p>"
+        },
+        "TilePosition":{
+          "shape":"VerticalTilePosition",
+          "documentation":"<p>Sets the position of vertical tiles.</p>"
+        },
+        "TileCount":{
+          "shape":"TileCount",
+          "documentation":"<p>The maximum number of tiles to display.</p>"
+        },
+        "TileAspectRatio":{
+          "shape":"TileAspectRatio",
+          "documentation":"<p>Sets the aspect ratio of the video tiles, such as 16:9.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration settings for a vertial layout.</p>"
+    },
+    "VerticalTilePosition":{
+      "type":"string",
+      "enum":[
+        "Left",
+        "Right"
+      ]
+    },
     "VideoArtifactsConfiguration":{
       "type":"structure",
       "required":["State"],
@@ -2676,6 +2854,28 @@
         }
       },
       "documentation":"<p>The video artifact configuration object.</p>"
+    },
+    "VideoAttribute":{
+      "type":"structure",
+      "members":{
+        "CornerRadius":{
+          "shape":"CornerRadius",
+          "documentation":"<p>Sets the corner radius of all video tiles.</p>"
+        },
+        "BorderColor":{
+          "shape":"BorderColor",
+          "documentation":"<p>Defines the border color of all video tiles.</p>"
+        },
+        "HighlightColor":{
+          "shape":"HighlightColor",
+          "documentation":"<p>Defines the highlight color for the active video tile.</p>"
+        },
+        "BorderThickness":{
+          "shape":"BorderThickness",
+          "documentation":"<p>Defines the border thickness for all video tiles.</p>"
+        }
+      },
+      "documentation":"<p>Defines the settings for a video tile.</p>"
     },
     "VideoConcatenationConfiguration":{
       "type":"structure",
@@ -2706,11 +2906,23 @@
       "min":1,
       "pattern":"^[0-9a-zA-Z._-]+"
     },
+    "VocabularyFilterNames":{
+      "type":"string",
+      "max":3000,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9,-._]+"
+    },
     "VocabularyName":{
       "type":"string",
       "max":200,
       "min":1,
       "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "VocabularyNames":{
+      "type":"string",
+      "max":3000,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9,-._]+"
     },
     "VoiceAnalyticsConfigurationStatus":{
       "type":"string",

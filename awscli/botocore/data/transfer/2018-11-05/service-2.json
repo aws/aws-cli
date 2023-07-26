@@ -65,7 +65,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates the connector, which captures the parameters for an outbound connection for the AS2 protocol. The connector is required for sending files to an externally hosted AS2 server. For more details about connectors, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/create-b2b-server.html#configure-as2-connector\">Create AS2 connectors</a>.</p>"
+      "documentation":"<p>Creates the connector, which captures the parameters for an outbound connection for the AS2 or SFTP protocol. The connector is required for sending files to an externally hosted AS2 or SFTP server. For more details about AS2 connectors, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/create-b2b-server.html#configure-as2-connector\">Create AS2 connectors</a>.</p> <note> <p>You must specify exactly one configuration object: either for AS2 (<code>As2Config</code>) or SFTP (<code>SftpConfig</code>).</p> </note>"
     },
     "CreateProfile":{
       "name":"CreateProfile",
@@ -196,7 +196,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes the agreement that's specified in the provided <code>ConnectorId</code>.</p>"
+      "documentation":"<p>Deletes the connector that's specified in the provided <code>ConnectorId</code>.</p>"
     },
     "DeleteHostKey":{
       "name":"DeleteHostKey",
@@ -753,7 +753,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Begins an outbound file transfer to a remote AS2 server. You specify the <code>ConnectorId</code> and the file paths for where to send the files. </p>"
+      "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to a Transfer Family server, you specify one or more <code>RetreiveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
     },
     "StartServer":{
       "name":"StartServer",
@@ -801,6 +801,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Attaches a key-value pair to a resource, as identified by its Amazon Resource Name (ARN). Resources are users, servers, roles, and other entities.</p> <p>There is no response returned from this call.</p>"
+    },
+    "TestConnection":{
+      "name":"TestConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestConnectionRequest"},
+      "output":{"shape":"TestConnectionResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tests whether your SFTP connector is set up successfully. We highly recommend that you call this operation to test your ability to transfer files between a Transfer Family server and a trading partner's SFTP server.</p>"
     },
     "TestIdentityProvider":{
       "name":"TestIdentityProvider",
@@ -1050,7 +1066,7 @@
           "documentation":"<p>Provides Basic authentication support to the AS2 Connectors API. To use Basic authentication, you must provide the name or Amazon Resource Name (ARN) of a secret in Secrets Manager.</p> <p>The default value for this parameter is <code>null</code>, which indicates that Basic authentication is not enabled for the connector.</p> <p>If the connector should use Basic authentication, the secret needs to be in the following format:</p> <p> <code>{ \"Username\": \"user-name\", \"Password\": \"user-password\" }</code> </p> <p>Replace <code>user-name</code> and <code>user-password</code> with the credentials for the actual user that is being authenticated.</p> <p>Note the following:</p> <ul> <li> <p>You are storing these credentials in Secrets Manager, <i>not passing them directly</i> into this API.</p> </li> <li> <p>If you are using the API, SDKs, or CloudFormation to configure your connector, then you must create the secret before you can enable Basic authentication. However, if you are using the Amazon Web Services management console, you can have the system create the secret for you.</p> </li> </ul> <p>If you have previously enabled Basic authentication for a connector, you can disable it by using the <code>UpdateConnector</code> API call. For example, if you are using the CLI, you can run the following command to remove Basic authentication:</p> <p> <code>update-connector --connector-id my-connector-id --as2-config 'BasicAuthSecretId=\"\"'</code> </p>"
         }
       },
-      "documentation":"<p>Contains the details for a connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
+      "documentation":"<p>Contains the details for an AS2 connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
     },
     "As2ConnectorSecretId":{
       "type":"string",
@@ -1294,17 +1310,16 @@
       "type":"structure",
       "required":[
         "Url",
-        "As2Config",
         "AccessRole"
       ],
       "members":{
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
@@ -1317,6 +1332,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for connectors. Tags are metadata attached to connectors for any purpose.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       }
     },
@@ -1462,7 +1481,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the value the user should see for their home directory when they log in.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
@@ -2198,11 +2217,11 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
@@ -2215,6 +2234,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for connectors.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
@@ -3510,7 +3533,7 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         }
       },
       "documentation":"<p>Returns details of the connector that is specified.</p>"
@@ -4035,6 +4058,11 @@
       "max":16,
       "min":0
     },
+    "SecretId":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":20,
@@ -4144,6 +4172,31 @@
         "PUBLIC_KEY_AND_PASSWORD"
       ]
     },
+    "SftpConnectorConfig":{
+      "type":"structure",
+      "members":{
+        "UserSecretId":{
+          "shape":"SecretId",
+          "documentation":"<p>The identifiers for the secrets (in Amazon Web Services Secrets Manager) that contain the SFTP user's private keys or passwords.</p>"
+        },
+        "TrustedHostKeys":{
+          "shape":"SftpConnectorTrustedHostKeyList",
+          "documentation":"<p>The public portion of the host key, or keys, that are used to authenticate the user to the external server to which you are connecting. You can use the <code>ssh-keyscan</code> command against the SFTP server to retrieve the necessary key.</p> <p>The three standard SSH public key format elements are <code>&lt;key type&gt;</code>, <code>&lt;body base64&gt;</code>, and an optional <code>&lt;comment&gt;</code>, with spaces between each element.</p> <p>For the trusted host key, Transfer Family accepts RSA and ECDSA keys.</p> <ul> <li> <p>For RSA keys, the key type is <code>ssh-rsa</code>.</p> </li> <li> <p>For ECDSA keys, the key type is either <code>ecdsa-sha2-nistp256</code>, <code>ecdsa-sha2-nistp384</code>, or <code>ecdsa-sha2-nistp521</code>, depending on the size of the key you generated.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the details for an SFTP connector object. The connector object is used for transferring files to and from a partner's SFTP server.</p>"
+    },
+    "SftpConnectorTrustedHostKey":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "SftpConnectorTrustedHostKeyList":{
+      "type":"list",
+      "member":{"shape":"SftpConnectorTrustedHostKey"},
+      "max":10,
+      "min":1
+    },
     "SigningAlg":{
       "type":"string",
       "enum":[
@@ -4205,18 +4258,27 @@
     },
     "StartFileTransferRequest":{
       "type":"structure",
-      "required":[
-        "ConnectorId",
-        "SendFilePaths"
-      ],
+      "required":["ConnectorId"],
       "members":{
         "ConnectorId":{
           "shape":"ConnectorId",
-          "documentation":"<p>The unique identifier for the connector. </p>"
+          "documentation":"<p>The unique identifier for the connector.</p>"
         },
         "SendFilePaths":{
           "shape":"FilePaths",
-          "documentation":"<p>An array of strings. Each string represents the absolute path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>. </p>"
+          "documentation":"<p>One or more source paths for the Transfer Family server. Each string represents a source file path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>.</p>"
+        },
+        "RetrieveFilePaths":{
+          "shape":"FilePaths",
+          "documentation":"<p>One or more source paths for the partner's SFTP server. Each string represents a source file path for one inbound file transfer.</p>"
+        },
+        "LocalDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>For an inbound transfer, the <code>LocaDirectoryPath</code> specifies the destination for one or more files that are transferred from the partner's SFTP server.</p>"
+        },
+        "RemoteDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>For an outbound transfer, the <code>RemoteDirectoryPath</code> specifies the destination for one or more files that are transferred to the partner's SFTP server. If you don't specify a <code>RemoteDirectoryPath</code>, the destination for transferred files is the SFTP user's home directory.</p>"
         }
       }
     },
@@ -4226,7 +4288,7 @@
       "members":{
         "TransferId":{
           "shape":"TransferId",
-          "documentation":"<p>Returns the unique identifier for this file transfer. </p>"
+          "documentation":"<p>Returns the unique identifier for the file transfer.</p>"
         }
       }
     },
@@ -4252,6 +4314,7 @@
         "STOP_FAILED"
       ]
     },
+    "Status":{"type":"string"},
     "StatusCode":{"type":"integer"},
     "StepResultOutputsJson":{
       "type":"string",
@@ -4350,6 +4413,33 @@
       "member":{"shape":"Tag"},
       "max":50,
       "min":1
+    },
+    "TestConnectionRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        }
+      }
+    },
+    "TestConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>Returns the identifier of the connector object that you are testing.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Returns <code>OK</code> for successful test, or <code>ERROR</code> if the test fails.</p>"
+        },
+        "StatusMessage":{
+          "shape":"Message",
+          "documentation":"<p>Returns <code>Connection succeeded</code> if the test is successful. Or, returns a descriptive error message if the test fails. The following list provides the details for some error messages and troubleshooting steps for each.</p> <ul> <li> <p> <b>Unable to access secrets manager</b>: Verify that your secret name aligns with the one in Transfer Role permissions.</p> </li> <li> <p> <b>Unknown Host/Connection failed</b>: Verify the server URL in the connector configuration , and verify that the login credentials work successfully outside of the connector.</p> </li> <li> <p> <b>Private key not found</b>: Verify that the secret exists and is formatted correctly.</p> </li> <li> <p> <b>Invalid trusted host keys</b>: Verify that the trusted host key in the connector configuration matches the <code>ssh-keyscan</code> output.</p> </li> </ul>"
+        }
+      }
     },
     "TestIdentityProviderRequest":{
       "type":"structure",
@@ -4592,11 +4682,11 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
@@ -4605,6 +4695,10 @@
         "LoggingRole":{
           "shape":"Role",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a connector to turn on CloudWatch logging for Amazon S3 events. When set, you can view connector activity in your CloudWatch logs.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       }
     },

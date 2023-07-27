@@ -17,6 +17,7 @@ Output::
                 "insecureIngest": false,
                 "latencyMode": "LOW",
                 "name": "mychannel",
+                "preset": "",
                 "playbackUrl": "url-string",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
                 "tags": {

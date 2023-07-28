@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.29.14
+=======
+
+* api-change:``sqs``: Documentation changes related to SQS APIs.
+
+
 1.29.13
 =======
 

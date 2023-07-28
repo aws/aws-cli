@@ -3668,7 +3668,7 @@
         },
         "Data":{
           "shape":"AmazonRedshiftNodeData",
-          "documentation":"<p>Specifies the data of the Amazon Reshift target node.</p>"
+          "documentation":"<p>Specifies the data of the Amazon Redshift target node.</p>"
         },
         "Inputs":{
           "shape":"OneInput",
@@ -5381,6 +5381,14 @@
         "Recipe":{
           "shape":"Recipe",
           "documentation":"<p>Specifies a Glue DataBrew recipe node.</p>"
+        },
+        "SnowflakeSource":{
+          "shape":"SnowflakeSource",
+          "documentation":"<p>Specifies a Snowflake data source.</p>"
+        },
+        "SnowflakeTarget":{
+          "shape":"SnowflakeTarget",
+          "documentation":"<p>Specifies a target that writes to a Snowflake data source.</p>"
         }
       },
       "documentation":"<p> <code>CodeGenConfigurationNode</code> enumerates all valid Node types. One and only one of its member variables can be populated.</p>"
@@ -17832,6 +17840,140 @@
         }
       },
       "documentation":"<p>Specifies skewed values in a table. Skewed values are those that occur with very high frequency.</p>"
+    },
+    "SnowflakeNodeData":{
+      "type":"structure",
+      "members":{
+        "SourceType":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>Specifies how retrieved data is specified. Valid values: <code>\"table\"</code>, <code> \"query\"</code>.</p>"
+        },
+        "Connection":{
+          "shape":"Option",
+          "documentation":"<p>Specifies a Glue Data Catalog Connection to a Snowflake endpoint.</p>"
+        },
+        "Schema":{
+          "shape":"GenericString",
+          "documentation":"<p>Specifies a Snowflake database schema for your node to use.</p>"
+        },
+        "Table":{
+          "shape":"GenericString",
+          "documentation":"<p>Specifies a Snowflake table for your node to use.</p>"
+        },
+        "Database":{
+          "shape":"GenericString",
+          "documentation":"<p>Specifies a Snowflake database for your node to use.</p>"
+        },
+        "TempDir":{
+          "shape":"EnclosedInStringProperty",
+          "documentation":"<p>Not currently used.</p>"
+        },
+        "IamRole":{
+          "shape":"Option",
+          "documentation":"<p>Not currently used.</p>"
+        },
+        "AdditionalOptions":{
+          "shape":"AdditionalOptions",
+          "documentation":"<p>Specifies additional options passed to the Snowflake connector. If options are specified elsewhere in this node, this will take precedence.</p>"
+        },
+        "SampleQuery":{
+          "shape":"GenericString",
+          "documentation":"<p>A SQL string used to retrieve data with the <code>query</code> sourcetype.</p>"
+        },
+        "PreAction":{
+          "shape":"GenericString",
+          "documentation":"<p>A SQL string run before the Snowflake connector performs its standard actions.</p>"
+        },
+        "PostAction":{
+          "shape":"GenericString",
+          "documentation":"<p>A SQL string run after the Snowflake connector performs its standard actions.</p>"
+        },
+        "Action":{
+          "shape":"GenericString",
+          "documentation":"<p>Specifies what action to take when writing to a table with preexisting data. Valid values: <code> append</code>, <code>merge</code>, <code>truncate</code>, <code>drop</code>.</p>"
+        },
+        "Upsert":{
+          "shape":"BooleanValue",
+          "documentation":"<p>Used when Action is <code>append</code>. Specifies the resolution behavior when a row already exists. If true, preexisting rows will be updated. If false, those rows will be inserted.</p>"
+        },
+        "MergeAction":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>Specifies a merge action. Valid values: <code>simple</code>, <code>custom</code>. If simple, merge behavior is defined by <code>MergeWhenMatched</code> and <code> MergeWhenNotMatched</code>. If custom, defined by <code>MergeClause</code>.</p>"
+        },
+        "MergeWhenMatched":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>Specifies how to resolve records that match preexisting data when merging. Valid values: <code> update</code>, <code>delete</code>.</p>"
+        },
+        "MergeWhenNotMatched":{
+          "shape":"GenericLimitedString",
+          "documentation":"<p>Specifies how to process records that do not match preexisting data when merging. Valid values: <code>insert</code>, <code>none</code>.</p>"
+        },
+        "MergeClause":{
+          "shape":"GenericString",
+          "documentation":"<p>A SQL statement that specifies a custom merge behavior.</p>"
+        },
+        "StagingTable":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of a staging table used when performing <code>merge</code> or upsert <code>append</code> actions. Data is written to this table, then moved to <code>table</code> by a generated postaction.</p>"
+        },
+        "SelectedColumns":{
+          "shape":"OptionList",
+          "documentation":"<p>Specifies the columns combined to identify a record when detecting matches for merges and upserts. A list of structures with <code>value</code>, <code>label</code> and <code> description</code> keys. Each structure describes a column.</p>"
+        },
+        "AutoPushdown":{
+          "shape":"BooleanValue",
+          "documentation":"<p>Specifies whether automatic query pushdown is enabled. If pushdown is enabled, then when a query is run on Spark, if part of the query can be \"pushed down\" to the Snowflake server, it is pushed down. This improves performance of some queries.</p>"
+        },
+        "TableSchema":{
+          "shape":"OptionList",
+          "documentation":"<p>Manually defines the target schema for the node. A list of structures with <code>value</code> , <code>label</code> and <code>description</code> keys. Each structure defines a column.</p>"
+        }
+      },
+      "documentation":"<p>Specifies configuration for Snowflake nodes in Glue Studio.</p>"
+    },
+    "SnowflakeSource":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Data"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Snowflake data source.</p>"
+        },
+        "Data":{
+          "shape":"SnowflakeNodeData",
+          "documentation":"<p>Configuration for the Snowflake data source.</p>"
+        },
+        "OutputSchemas":{
+          "shape":"GlueSchemas",
+          "documentation":"<p>Specifies user-defined schemas for your output data.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Snowflake data source.</p>"
+    },
+    "SnowflakeTarget":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Data"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the Snowflake target.</p>"
+        },
+        "Data":{
+          "shape":"SnowflakeNodeData",
+          "documentation":"<p>Specifies the data of the Snowflake target node.</p>"
+        },
+        "Inputs":{
+          "shape":"OneInput",
+          "documentation":"<p>The nodes that are inputs to the data target.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a Snowflake target.</p>"
     },
     "Sort":{
       "type":"string",

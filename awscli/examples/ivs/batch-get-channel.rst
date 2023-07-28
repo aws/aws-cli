@@ -12,25 +12,29 @@ Output::
         "channels": [
             {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
-                "name": "channel-1",
-                "latencyMode": "LOW",
-                "type": "STANDARD",
-                "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
+                "authorized": false,
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "insecureIngest": false,
+                "latencyMode": "LOW",
+                "name": "channel-1",
                 "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel-1.abcdEFGH.m3u8",
-                "tags": {}
+                "preset": "",
+                "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
+                "tags": {},
+                "type": "STANDARD"
             },
             {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/efghEFGHijkl",
-                "name": "channel-2",
-                "latencyMode": "LOW",
-                "type": "STANDARD",
-                "recordingConfigurationArn": "",
+                "authorized": false,
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "insecureIngest": true,
+                "latencyMode": "LOW",
+                "name": "channel-2",
                 "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel-2.abcdEFGH.m3u8",
-                "tags": {}
+                "preset": "",
+                "recordingConfigurationArn": "",
+                "tags": {},
+                "type": "STANDARD"
             }
         ]
     }

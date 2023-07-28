@@ -5757,6 +5757,37 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.14
+=======
+
+* api-change:``sqs``: Documentation changes related to SQS APIs.
+
+
+1.29.13
+=======
+
+* api-change:``autoscaling``: This release updates validation for instance types used in the AllowedInstanceTypes and ExcludedInstanceTypes parameters of the InstanceRequirements property of a MixedInstancesPolicy.
+* api-change:``ebs``: SDK and documentation updates for Amazon Elastic Block Store API
+* api-change:``ec2``: SDK and documentation updates for Amazon Elastic Block Store APIs
+* api-change:``eks``: Add multiple customer error code to handle customer caused failure when managing EKS node groups
+* api-change:``sagemaker``: Expose ProfilerConfig attribute in SageMaker Search API response.
+
+
+1.29.12
+=======
+
+* api-change:``cloudcontrol``: Updates the documentation for CreateResource.
+* api-change:``entityresolution``: AWS Entity Resolution can effectively match a source record from a customer relationship management (CRM) system with a source record from a marketing system containing campaign information.
+* api-change:``glue``: Release Glue Studio Snowflake Connector Node for SDK/CLI
+* api-change:``healthlake``: Updating the HealthLake service documentation.
+* api-change:``managedblockchain-query``: Amazon Managed Blockchain (AMB) Query provides serverless access to standardized, multi-blockchain datasets with developer-friendly APIs.
+* api-change:``mediaconvert``: This release includes general updates to user documentation.
+* api-change:``omics``: The service is renaming as a part of AWS Health.
+* api-change:``opensearchserverless``: This release adds new collection type VectorSearch.
+* api-change:``polly``: Amazon Polly adds 1 new voice - Lisa (nl-BE)
+* api-change:``route53``: Update that corrects the documents for received feedback.
+
+
 1.29.11
 =======
 

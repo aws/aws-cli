@@ -13,6 +13,7 @@ Output::
             "name": "channel-1",
             "latencyMode": "LOW",
             "type": "STANDARD",
+            "preset": "",
             "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
             "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
             "insecureIngest": false,

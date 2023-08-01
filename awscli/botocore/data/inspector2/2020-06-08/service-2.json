@@ -65,6 +65,23 @@
       ],
       "documentation":"<p>Retrieves code snippets from findings that Amazon Inspector detected code vulnerabilities in.</p>"
     },
+    "BatchGetFindingDetails":{
+      "name":"BatchGetFindingDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findings/details/batch/get",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetFindingDetailsRequest"},
+      "output":{"shape":"BatchGetFindingDetailsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets vulnerability details for findings.</p>"
+    },
     "BatchGetFreeTrialInfo":{
       "name":"BatchGetFreeTrialInfo",
       "http":{
@@ -1492,6 +1509,29 @@
         }
       }
     },
+    "BatchGetFindingDetailsRequest":{
+      "type":"structure",
+      "required":["findingArns"],
+      "members":{
+        "findingArns":{
+          "shape":"FindingArnList",
+          "documentation":"<p>A list of finding ARNs.</p>"
+        }
+      }
+    },
+    "BatchGetFindingDetailsResponse":{
+      "type":"structure",
+      "members":{
+        "errors":{
+          "shape":"FindingDetailsErrorList",
+          "documentation":"<p>Error information for findings that details could not be returned for.</p>"
+        },
+        "findingDetails":{
+          "shape":"FindingDetails",
+          "documentation":"<p>A finding's vulnerability details.</p>"
+        }
+      }
+    },
     "BatchGetFreeTrialInfoRequest":{
       "type":"structure",
       "required":["accountIds"],
@@ -2416,7 +2456,7 @@
         },
         "keyPrefix":{
           "shape":"String",
-          "documentation":"<p>The prefix of the Amazon S3 bucket used to export findings.</p>"
+          "documentation":"<p>The prefix that the findings will be written under.</p>"
         },
         "kmsKeyArn":{
           "shape":"String",
@@ -2820,6 +2860,40 @@
       ]
     },
     "ErrorMessage":{"type":"string"},
+    "Evidence":{
+      "type":"structure",
+      "members":{
+        "evidenceDetail":{
+          "shape":"EvidenceDetail",
+          "documentation":"<p>The evidence details.</p>"
+        },
+        "evidenceRule":{
+          "shape":"EvidenceRule",
+          "documentation":"<p>The evidence rule.</p>"
+        },
+        "severity":{
+          "shape":"EvidenceSeverity",
+          "documentation":"<p>The evidence severity.</p>"
+        }
+      },
+      "documentation":"<p>Details of the evidence for a vulnerability identified in a finding.</p>"
+    },
+    "EvidenceDetail":{
+      "type":"string",
+      "min":0
+    },
+    "EvidenceList":{
+      "type":"list",
+      "member":{"shape":"Evidence"}
+    },
+    "EvidenceRule":{
+      "type":"string",
+      "min":0
+    },
+    "EvidenceSeverity":{
+      "type":"string",
+      "min":0
+    },
     "ExecutionRoleArn":{
       "type":"string",
       "pattern":"^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
@@ -3123,7 +3197,7 @@
         },
         "networkProtocol":{
           "shape":"StringFilterList",
-          "documentation":"<p>Details on the ingress source addresses used to filter findings.</p>"
+          "documentation":"<p>Details on network protocol used to filter findings.</p>"
         },
         "portRange":{
           "shape":"PortRangeFilterList",
@@ -3303,10 +3377,97 @@
       "min":1,
       "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:finding/[a-f0-9]{32}$"
     },
+    "FindingArnList":{
+      "type":"list",
+      "member":{"shape":"FindingArn"},
+      "max":10,
+      "min":1
+    },
     "FindingDescription":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "FindingDetail":{
+      "type":"structure",
+      "members":{
+        "cisaData":{"shape":"CisaData"},
+        "cwes":{
+          "shape":"Cwes",
+          "documentation":"<p>The Common Weakness Enumerations (CWEs) associated with the vulnerability.</p>"
+        },
+        "epssScore":{
+          "shape":"Double",
+          "documentation":"<p>The Exploit Prediction Scoring System (EPSS) score of the vulnerability.</p>"
+        },
+        "evidences":{
+          "shape":"EvidenceList",
+          "documentation":"<p>Information on the evidence of the vulnerability.</p>"
+        },
+        "exploitObserved":{"shape":"ExploitObserved"},
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The finding ARN that the vulnerability details are associated with.</p>"
+        },
+        "referenceUrls":{
+          "shape":"VulnerabilityReferenceUrls",
+          "documentation":"<p>The reference URLs for the vulnerability data.</p>"
+        },
+        "riskScore":{
+          "shape":"RiskScore",
+          "documentation":"<p>The risk score of the vulnerability.</p>"
+        },
+        "tools":{
+          "shape":"Tools",
+          "documentation":"<p>The known malware tools or kits that can exploit the vulnerability.</p>"
+        },
+        "ttps":{
+          "shape":"Ttps",
+          "documentation":"<p>The MITRE adversary tactics, techniques, or procedures (TTPs) associated with the vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>Details of the vulnerability identified in a finding.</p>"
+    },
+    "FindingDetails":{
+      "type":"list",
+      "member":{"shape":"FindingDetail"},
+      "min":0
+    },
+    "FindingDetailsError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "findingArn"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"FindingDetailsErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message.</p>"
+        },
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The finding ARN that returned an error.</p>"
+        }
+      },
+      "documentation":"<p>Details about an error encountered when trying to return vulnerability data for a finding.</p>"
+    },
+    "FindingDetailsErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "ACCESS_DENIED",
+        "FINDING_DETAILS_NOT_FOUND",
+        "INVALID_INPUT"
+      ]
+    },
+    "FindingDetailsErrorList":{
+      "type":"list",
+      "member":{"shape":"FindingDetailsError"}
     },
     "FindingList":{
       "type":"list",
@@ -5283,6 +5444,10 @@
         "AWS_LAMBDA_FUNCTION"
       ]
     },
+    "RiskScore":{
+      "type":"integer",
+      "box":true
+    },
     "Runtime":{
       "type":"string",
       "enum":[
@@ -5811,6 +5976,14 @@
         "HIGH",
         "ALL"
       ]
+    },
+    "Tool":{
+      "type":"string",
+      "min":0
+    },
+    "Tools":{
+      "type":"list",
+      "member":{"shape":"Tool"}
     },
     "Ttp":{
       "type":"string",

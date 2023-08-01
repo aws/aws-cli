@@ -673,9 +673,27 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBClusterSnapshotAlreadyExistsFault"},
         {"shape":"SnapshotQuotaExceededFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"}
+        {"shape":"InvalidDBClusterSnapshotStateFault"},
+        {"shape":"DBClusterAutomatedBackupQuotaExceededFault"}
       ],
       "documentation":"<p>The DeleteDBCluster action deletes a previously provisioned DB cluster. When you delete a DB cluster, all automated backups for that DB cluster are deleted and can't be recovered. Manual DB cluster snapshots of the specified DB cluster are not deleted.</p> <p>If you're deleting a Multi-AZ DB cluster with read replicas, all cluster members are terminated and read replicas are promoted to standalone instances.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
+    },
+    "DeleteDBClusterAutomatedBackup":{
+      "name":"DeleteDBClusterAutomatedBackup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDBClusterAutomatedBackupMessage"},
+      "output":{
+        "shape":"DeleteDBClusterAutomatedBackupResult",
+        "resultWrapper":"DeleteDBClusterAutomatedBackupResult"
+      },
+      "errors":[
+        {"shape":"InvalidDBClusterAutomatedBackupStateFault"},
+        {"shape":"DBClusterAutomatedBackupNotFoundFault"}
+      ],
+      "documentation":"<p>Deletes automated backups using the <code>DbClusterResourceId</code> value of the source DB cluster or the Amazon Resource Name (ARN) of the automated backups.</p>"
     },
     "DeleteDBClusterEndpoint":{
       "name":"DeleteDBClusterEndpoint",
@@ -964,6 +982,22 @@
         {"shape":"CertificateNotFoundFault"}
       ],
       "documentation":"<p>Lists the set of CA certificates provided by Amazon RDS for this Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "DescribeDBClusterAutomatedBackups":{
+      "name":"DescribeDBClusterAutomatedBackups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDBClusterAutomatedBackupsMessage"},
+      "output":{
+        "shape":"DBClusterAutomatedBackupMessage",
+        "resultWrapper":"DescribeDBClusterAutomatedBackupsResult"
+      },
+      "errors":[
+        {"shape":"DBClusterAutomatedBackupNotFoundFault"}
+      ],
+      "documentation":"<p>Displays backups for both current and deleted DB clusters. For example, use this operation to find details about automated backups for previously deleted clusters. Current clusters are returned for both the <code>DescribeDBClusterAutomatedBackups</code> and <code>DescribeDBClusters</code> operations.</p> <p>All parameters are optional.</p>"
     },
     "DescribeDBClusterBacktracks":{
       "name":"DescribeDBClusterBacktracks",
@@ -2290,7 +2324,8 @@
         {"shape":"OptionGroupNotFoundFault"},
         {"shape":"StorageQuotaExceededFault"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"}
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"DBClusterAutomatedBackupNotFoundFault"}
       ],
       "documentation":"<p>Restores a DB cluster to an arbitrary point in time. Users can restore to any point in time before <code>LatestRestorableTime</code> for up to <code>BackupRetentionPeriod</code> days. The target DB cluster is created from the source DB cluster with the same configuration as the original DB cluster, except that the new DB cluster is created with the default DB security group.</p> <note> <p>For Aurora, this action only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <code>CreateDBInstance</code> action to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterToPointInTime</code> action has completed and the DB cluster is available.</p> </note> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -3862,6 +3897,10 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB cluster.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+        },
+        "EnableLocalWriteForwarding":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p/>"
@@ -5074,6 +5113,10 @@
         "IOOptimizedNextAllowedModificationTime":{
           "shape":"TStamp",
           "documentation":"<p>The next time you can modify the DB cluster to use the <code>aurora-iopt1</code> storage type.</p> <p>This setting is only for Aurora DB clusters.</p>"
+        },
+        "LocalWriteForwardingStatus":{
+          "shape":"LocalWriteForwardingStatus",
+          "documentation":"<p>Specifies whether an Aurora DB cluster has in-cluster write forwarding enabled, not enabled, requested, or is in the process of enabling it.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -5086,6 +5129,146 @@
       "documentation":"<p>The user already has a DB cluster with the given identifier.</p>",
       "error":{
         "code":"DBClusterAlreadyExistsFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DBClusterAutomatedBackup":{
+      "type":"structure",
+      "members":{
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the database engine for this automated backup.</p>"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID associated with the DB cluster.</p>"
+        },
+        "DBClusterAutomatedBackupsArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the automated backups.</p>"
+        },
+        "DBClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the source DB cluster, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
+        },
+        "RestoreWindow":{"shape":"RestoreWindow"},
+        "MasterUsername":{
+          "shape":"String",
+          "documentation":"<p>The master user name of the automated backup.</p>"
+        },
+        "DbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID for the source DB cluster, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region associated with the automated backup.</p>"
+        },
+        "LicenseModel":{
+          "shape":"String",
+          "documentation":"<p>The license model information for this DB cluster automated backup.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>A list of status information for an automated backup:</p> <ul> <li> <p> <code>retained</code> - Automated backups for deleted clusters.</p> </li> </ul>"
+        },
+        "IAMDatabaseAuthenticationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
+        },
+        "ClusterCreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time when the DB cluster was created, in Universal Coordinated Time (UTC).</p>"
+        },
+        "StorageEncrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the source DB cluster is encrypted.</p>"
+        },
+        "AllocatedStorage":{
+          "shape":"Integer",
+          "documentation":"<p>For all database engines except Amazon Aurora, <code>AllocatedStorage</code> specifies the allocated storage size in gibibytes (GiB). For Aurora, <code>AllocatedStorage</code> always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.</p>"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the database engine for the automated backup.</p>"
+        },
+        "DBClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the source DB cluster.</p>"
+        },
+        "BackupRetentionPeriod":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The retention period for the automated backups.</p>"
+        },
+        "EngineMode":{
+          "shape":"String",
+          "documentation":"<p>The engine mode of the database engine for the automated backup.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"AvailabilityZones",
+          "documentation":"<p>The Availability Zones where instances in the DB cluster can be created. For information on Amazon Web Services Regions and Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.RegionsAndAvailabilityZones.html\">Regions and Availability Zones</a>.</p>"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number that the automated backup used for connections.</p> <p>Default: Inherits from the source DB cluster</p> <p>Valid Values: <code>1150-65535</code> </p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services KMS key ID for an automated backup.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type associated with the DB cluster.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        },
+        "Iops":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The IOPS (I/O operations per second) value for the automated backup.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        }
+      },
+      "documentation":"<p>An automated backup of a DB cluster. It consists of system backups, transaction logs, and the database cluster properties that existed at the time you deleted the source cluster.</p>",
+      "wrapper":true
+    },
+    "DBClusterAutomatedBackupList":{
+      "type":"list",
+      "member":{
+        "shape":"DBClusterAutomatedBackup",
+        "locationName":"DBClusterAutomatedBackup"
+      }
+    },
+    "DBClusterAutomatedBackupMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>The pagination token provided in the previous request. If this parameter is specified the response includes only records beyond the marker, up to <code>MaxRecords</code>.</p>"
+        },
+        "DBClusterAutomatedBackups":{
+          "shape":"DBClusterAutomatedBackupList",
+          "documentation":"<p>A list of <code>DBClusterAutomatedBackup</code> backups.</p>"
+        }
+      }
+    },
+    "DBClusterAutomatedBackupNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>No automated backup for this DB cluster was found.</p>",
+      "error":{
+        "code":"DBClusterAutomatedBackupNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DBClusterAutomatedBackupQuotaExceededFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The quota for retained automated backups was exceeded. This prevents you from retaining any additional automated backups. The retained automated backups quota is the same as your DB cluster quota.</p>",
+      "error":{
+        "code":"DBClusterAutomatedBackupQuotaExceededFault",
         "httpStatusCode":400,
         "senderFault":true
       },
@@ -5601,7 +5784,7 @@
         },
         "DBClusterSnapshotArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the DB cluster snapshot.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) for the DB cluster snapshot.</p>"
         },
         "SourceDBClusterSnapshotArn":{
           "shape":"String",
@@ -5619,6 +5802,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type associated with the DB cluster snapshot.</p> <p>This setting is only for Aurora DB clusters.</p>"
+        },
+        "DbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the resource ID of the DB cluster that this DB cluster snapshot was created from.</p>"
         }
       },
       "documentation":"<p>Contains the details for an Amazon RDS DB cluster snapshot</p> <p>This data type is used as a response element in the <code>DescribeDBClusterSnapshots</code> action.</p>",
@@ -5828,6 +6015,10 @@
         "SupportedCACertificateIdentifiers":{
           "shape":"CACertificateIdentifiersList",
           "documentation":"<p>A list of the supported CA certificate identifiers.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+        },
+        "SupportsLocalWriteForwarding":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether the DB engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
@@ -6206,7 +6397,7 @@
         },
         "DbiResourceId":{
           "shape":"String",
-          "documentation":"<p>The identifier for the source DB instance, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
+          "documentation":"<p>The resource ID for the source DB instance, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
         },
         "Region":{
           "shape":"String",
@@ -6214,7 +6405,7 @@
         },
         "DBInstanceIdentifier":{
           "shape":"String",
-          "documentation":"<p>The customer id of the instance that is/was associated with the automated backup.</p>"
+          "documentation":"<p>The identifier for the source DB instance, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
         },
         "RestoreWindow":{
           "shape":"RestoreWindow",
@@ -6226,7 +6417,7 @@
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Provides a list of status information for an automated backup:</p> <ul> <li> <p> <code>active</code> - automated backups for current instances</p> </li> <li> <p> <code>retained</code> - automated backups for deleted instances</p> </li> <li> <p> <code>creating</code> - automated backups that are waiting for the first automated snapshot to be available.</p> </li> </ul>"
+          "documentation":"<p>Provides a list of status information for an automated backup:</p> <ul> <li> <p> <code>active</code> - Automated backups for current instances.</p> </li> <li> <p> <code>retained</code> - Automated backups for deleted instances.</p> </li> <li> <p> <code>creating</code> - Automated backups that are waiting for the first automated snapshot to be available.</p> </li> </ul>"
         },
         "Port":{
           "shape":"Integer",
@@ -6246,7 +6437,7 @@
         },
         "MasterUsername":{
           "shape":"String",
-          "documentation":"<p>The license model of an automated backup.</p>"
+          "documentation":"<p>The master user name of an automated backup.</p>"
         },
         "Engine":{
           "shape":"String",
@@ -6353,7 +6544,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The quota for retained automated backups was exceeded. This prevents you from retaining any additional automated backups. The retained automated backups quota is the same as your DB Instance quota.</p>",
+      "documentation":"<p>The quota for retained automated backups was exceeded. This prevents you from retaining any additional automated backups. The retained automated backups quota is the same as your DB instance quota.</p>",
       "error":{
         "code":"DBInstanceAutomatedBackupQuotaExceeded",
         "httpStatusCode":400,
@@ -7527,6 +7718,22 @@
         }
       }
     },
+    "DeleteDBClusterAutomatedBackupMessage":{
+      "type":"structure",
+      "required":["DbClusterResourceId"],
+      "members":{
+        "DbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the source DB cluster, which can't be changed and which is unique to an Amazon Web Services Region.</p>"
+        }
+      }
+    },
+    "DeleteDBClusterAutomatedBackupResult":{
+      "type":"structure",
+      "members":{
+        "DBClusterAutomatedBackup":{"shape":"DBClusterAutomatedBackup"}
+      }
+    },
     "DeleteDBClusterEndpointMessage":{
       "type":"structure",
       "required":["DBClusterEndpointIdentifier"],
@@ -7552,6 +7759,10 @@
         "FinalDBSnapshotIdentifier":{
           "shape":"String",
           "documentation":"<p>The DB cluster snapshot identifier of the new DB cluster snapshot created when <code>SkipFinalSnapshot</code> is disabled.</p> <note> <p>Specifying this parameter and also skipping the creation of a final DB cluster snapshot with the <code>SkipFinalShapshot</code> parameter results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
+        },
+        "DeleteAutomatedBackups":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7860,6 +8071,31 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeDBClusterAutomatedBackupsMessage":{
+      "type":"structure",
+      "members":{
+        "DbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID of the DB cluster that is the source of the automated backup. This parameter isn't case-sensitive.</p>"
+        },
+        "DBClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>(Optional) The user-supplied DB cluster identifier. If this parameter is specified, it must match the identifier of an existing DB cluster. It returns information from the specific DB cluster's automated backup. This parameter isn't case-sensitive.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies which resources to return based on status.</p> <p>Supported filters are the following:</p> <ul> <li> <p> <code>status</code> </p> <ul> <li> <p> <code>retained</code> - Automated backups for deleted clusters and after backup replication is stopped.</p> </li> </ul> </li> <li> <p> <code>db-cluster-id</code> - Accepts DB cluster identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB cluster automated backups identified by these ARNs.</p> </li> <li> <p> <code>db-cluster-resource-id</code> - Accepts DB resource identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB cluster resources identified by these ARNs.</p> </li> </ul> <p>Returns all resources by default. The status for each resource is specified in the response.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that you can retrieve the remaining results.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>The pagination token provided in the previous request. If this parameter is specified the response includes only records beyond the marker, up to <code>MaxRecords</code>.</p>"
+        }
+      }
+    },
     "DescribeDBClusterBacktracksMessage":{
       "type":"structure",
       "required":["DBClusterIdentifier"],
@@ -8012,6 +8248,10 @@
         "IncludePublic":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates whether to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon Web Services account. By default, the public snapshots are not included.</p> <p>You can share a manual DB cluster snapshot as public by using the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>"
+        },
+        "DbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>A specific DB cluster resource ID to describe.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8096,11 +8336,11 @@
         },
         "DBInstanceIdentifier":{
           "shape":"String",
-          "documentation":"<p>(Optional) The user-supplied instance identifier. If this parameter is specified, it must match the identifier of an existing DB instance. It returns information from the specific DB instance' automated backup. This parameter isn't case-sensitive.</p>"
+          "documentation":"<p>(Optional) The user-supplied instance identifier. If this parameter is specified, it must match the identifier of an existing DB instance. It returns information from the specific DB instance's automated backup. This parameter isn't case-sensitive.</p>"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>A filter that specifies which resources to return based on status.</p> <p>Supported filters are the following:</p> <ul> <li> <p> <code>status</code> </p> <ul> <li> <p> <code>active</code> - automated backups for current instances</p> </li> <li> <p> <code>retained</code> - automated backups for deleted instances and after backup replication is stopped</p> </li> <li> <p> <code>creating</code> - automated backups that are waiting for the first automated snapshot to be available</p> </li> </ul> </li> <li> <p> <code>db-instance-id</code> - Accepts DB instance identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB instance automated backups identified by these ARNs.</p> </li> <li> <p> <code>dbi-resource-id</code> - Accepts DB resource identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB instance resources identified by these ARNs.</p> </li> </ul> <p>Returns all resources by default. The status for each resource is specified in the response.</p>"
+          "documentation":"<p>A filter that specifies which resources to return based on status.</p> <p>Supported filters are the following:</p> <ul> <li> <p> <code>status</code> </p> <ul> <li> <p> <code>active</code> - Automated backups for current instances.</p> </li> <li> <p> <code>creating</code> - Automated backups that are waiting for the first automated snapshot to be available.</p> </li> <li> <p> <code>retained</code> - Automated backups for deleted instances and after backup replication is stopped.</p> </li> </ul> </li> <li> <p> <code>db-instance-id</code> - Accepts DB instance identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB instance automated backups identified by these ARNs.</p> </li> <li> <p> <code>dbi-resource-id</code> - Accepts DB resource identifiers and Amazon Resource Names (ARNs). The results list includes only information about the DB instance resources identified by these ARNs.</p> </li> </ul> <p>Returns all resources by default. The status for each resource is specified in the response.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -9849,6 +10089,18 @@
       },
       "exception":true
     },
+    "InvalidDBClusterAutomatedBackupStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The automated backup is in an invalid state. For example, this automated backup is associated with an active cluster.</p>",
+      "error":{
+        "code":"InvalidDBClusterAutomatedBackupStateFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "InvalidDBClusterCapacityFault":{
       "type":"structure",
       "members":{
@@ -10173,6 +10425,16 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "LocalWriteForwardingStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled",
+        "enabling",
+        "disabling",
+        "requested"
+      ]
     },
     "LogTypeList":{
       "type":"list",
@@ -10518,6 +10780,10 @@
         "AllowEngineModeChange":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether engine mode changes from <code>serverless</code> to <code>provisioned</code> are allowed.</p> <p>Valid for Cluster Type: Aurora Serverless v1 DB clusters only</p> <p>Constraints:</p> <ul> <li> <p>You must allow engine mode changes when specifying a different value for the <code>EngineMode</code> parameter from the DB cluster's current engine mode.</p> </li> </ul>"
+        },
+        "EnableLocalWriteForwarding":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p/>"
@@ -12900,10 +13166,7 @@
     },
     "RestoreDBClusterToPointInTimeMessage":{
       "type":"structure",
-      "required":[
-        "DBClusterIdentifier",
-        "SourceDBClusterIdentifier"
-      ],
+      "required":["DBClusterIdentifier"],
       "members":{
         "DBClusterIdentifier":{
           "shape":"String",
@@ -13006,6 +13269,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The network type of the DB cluster.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
+        },
+        "SourceDbClusterResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID of the source DB cluster from which to restore.</p>"
         }
       },
       "documentation":"<p/>"
@@ -14477,6 +14744,10 @@
         "SupportsBabelfish":{
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether you can use Babelfish for Aurora PostgreSQL with the target engine version.</p>"
+        },
+        "SupportsLocalWriteForwarding":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A value that indicates whether the target engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p>The version of the database engine that a DB instance can be upgraded to.</p>"

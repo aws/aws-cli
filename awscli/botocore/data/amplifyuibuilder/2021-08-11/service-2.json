@@ -45,7 +45,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Creates a new form for an Amplify.</p>",
+      "documentation":"<p>Creates a new form for an Amplify app.</p>",
       "idempotent":true
     },
     "CreateTheme":{
@@ -356,7 +356,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Starts a code generation job for for a specified Amplify app and backend environment.</p>"
+      "documentation":"<p>Starts a code generation job for a specified Amplify app and backend environment.</p>"
     },
     "UpdateComponent":{
       "name":"UpdateComponent",
@@ -452,6 +452,25 @@
         }
       },
       "documentation":"<p>Represents the event action configuration for an element of a <code>Component</code> or <code>ComponentChild</code>. Use for the workflow feature in Amplify Studio that allows you to bind events and actions to components. <code>ActionParameters</code> defines the action that is performed when an event occurs on the component.</p>"
+    },
+    "ApiConfiguration":{
+      "type":"structure",
+      "members":{
+        "graphQLConfig":{
+          "shape":"GraphQLRenderConfig",
+          "documentation":"<p>The configuration for an application using GraphQL APIs.</p>"
+        },
+        "dataStoreConfig":{
+          "shape":"DataStoreRenderConfig",
+          "documentation":"<p>The configuration for an application using DataStore APIs.</p>"
+        },
+        "noApiConfig":{
+          "shape":"NoApiRenderConfig",
+          "documentation":"<p>The configuration for an application with no API being used.</p>"
+        }
+      },
+      "documentation":"<p>Describes the API configuration for a code generation job.</p>",
+      "union":true
     },
     "AppId":{
       "type":"string",
@@ -763,7 +782,7 @@
           "documentation":"<p>The name of the <code>ReactStartCodegenJobData</code> object.</p>"
         }
       },
-      "documentation":"<p>Describes the configuration information for rendering the UI component associated the code generation job.</p>",
+      "documentation":"<p>Describes the configuration information for rendering the UI component associated with the code generation job.</p>",
       "union":true
     },
     "CodegenJobStatus":{
@@ -1532,6 +1551,12 @@
         }
       },
       "payload":"entity"
+    },
+    "DataStoreRenderConfig":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Describes the DataStore configuration for an API for a code generation job.</p>"
     },
     "DeleteComponentRequest":{
       "type":"structure",
@@ -2509,6 +2534,39 @@
       },
       "payload":"theme"
     },
+    "GraphQLRenderConfig":{
+      "type":"structure",
+      "required":[
+        "typesFilePath",
+        "queriesFilePath",
+        "mutationsFilePath",
+        "subscriptionsFilePath",
+        "fragmentsFilePath"
+      ],
+      "members":{
+        "typesFilePath":{
+          "shape":"String",
+          "documentation":"<p>The path to the GraphQL types file, relative to the component output directory.</p>"
+        },
+        "queriesFilePath":{
+          "shape":"String",
+          "documentation":"<p>The path to the GraphQL queries file, relative to the component output directory.</p>"
+        },
+        "mutationsFilePath":{
+          "shape":"String",
+          "documentation":"<p>The path to the GraphQL mutations file, relative to the component output directory.</p>"
+        },
+        "subscriptionsFilePath":{
+          "shape":"String",
+          "documentation":"<p>The path to the GraphQL subscriptions file, relative to the component output directory.</p>"
+        },
+        "fragmentsFilePath":{
+          "shape":"String",
+          "documentation":"<p>The path to the GraphQL fragments file, relative to the component output directory.</p>"
+        }
+      },
+      "documentation":"<p>Describes the GraphQL configuration for an API for a code generation job.</p>"
+    },
     "IdentifierList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -2801,6 +2859,12 @@
       },
       "documentation":"<p>Represents the state configuration when an action modifies a property of another element within the same component.</p>"
     },
+    "NoApiRenderConfig":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Describes the configuration for an application with no API being used.</p>"
+    },
     "NumValues":{
       "type":"list",
       "member":{"shape":"Integer"}
@@ -2910,6 +2974,10 @@
         "inlineSourceMap":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the code generation job should render inline source maps.</p>"
+        },
+        "apiConfiguration":{
+          "shape":"ApiConfiguration",
+          "documentation":"<p>The API configuration for the code generation job.</p>"
         }
       },
       "documentation":"<p>Describes the code generation job configuration for a React project.</p>"

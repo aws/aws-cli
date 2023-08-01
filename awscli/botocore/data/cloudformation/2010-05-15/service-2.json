@@ -1353,7 +1353,10 @@
     "CFNRegistryException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ErrorMessage"}
+        "Message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>An message with details about the error that occurred.</p>"
+        }
       },
       "documentation":"<p>An error occurred during a CloudFormation registry operation.</p>",
       "error":{
@@ -1856,6 +1859,10 @@
         "EnableTerminationProtection":{
           "shape":"EnableTerminationProtection",
           "documentation":"<p>Whether to enable termination protection on the specified stack. If a user attempts to delete a stack with termination protection enabled, the operation fails and the stack remains unchanged. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-protect-stacks.html\">Protecting a Stack From Being Deleted</a> in the <i>CloudFormation User Guide</i>. Termination protection is deactivated on stacks by default.</p> <p>For <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html\">nested stacks</a>, termination protection is set on the root stack and can't be changed directly on the nested stack.</p>"
+        },
+        "RetainExceptOnCreate":{
+          "shape":"RetainExceptOnCreate",
+          "documentation":"<p>This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> DeletionPolicy</a> attribute.</p>"
         }
       },
       "documentation":"<p>The input for <a>CreateStack</a> action.</p>"
@@ -3070,6 +3077,10 @@
         "DisableRollback":{
           "shape":"DisableRollback",
           "documentation":"<p>Preserves the state of previously provisioned resources when an operation fails. This parameter can't be specified when the <code>OnStackFailure</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html\">CreateChangeSet</a> API operation was specified.</p> <ul> <li> <p> <code>True</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>DO_NOTHING</code> for the <code>OnStackFailure</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html\">CreateChangeSet</a> API operation.</p> </li> <li> <p> <code>False</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>ROLLBACK</code> for the <code>OnStackFailure</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html\">CreateChangeSet</a> API operation.</p> </li> </ul> <p>Default: <code>True</code> </p>"
+        },
+        "RetainExceptOnCreate":{
+          "shape":"RetainExceptOnCreate",
+          "documentation":"<p>This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> DeletionPolicy</a> attribute.</p>"
         }
       },
       "documentation":"<p>The input for the <a>ExecuteChangeSet</a> action.</p>"
@@ -4863,6 +4874,7 @@
       "type":"list",
       "member":{"shape":"ResourceToSkip"}
     },
+    "RetainExceptOnCreate":{"type":"boolean"},
     "RetainResources":{
       "type":"list",
       "member":{"shape":"LogicalResourceId"}
@@ -4910,6 +4922,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
           "documentation":"<p>A unique identifier for this <code>RollbackStack</code> request.</p>"
+        },
+        "RetainExceptOnCreate":{
+          "shape":"RetainExceptOnCreate",
+          "documentation":"<p>This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> DeletionPolicy</a> attribute.</p>"
         }
       }
     },
@@ -5163,6 +5179,10 @@
         "DriftInformation":{
           "shape":"StackDriftInformation",
           "documentation":"<p>Information about whether a stack's actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html\">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.</p>"
+        },
+        "RetainExceptOnCreate":{
+          "shape":"RetainExceptOnCreate",
+          "documentation":"<p>This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> DeletionPolicy</a> attribute.</p>"
         }
       },
       "documentation":"<p>The Stack data type.</p>"
@@ -6941,6 +6961,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
           "documentation":"<p>A unique identifier for this <code>UpdateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to update a stack with the same name. You might retry <code>UpdateStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events triggered by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>"
+        },
+        "RetainExceptOnCreate":{
+          "shape":"RetainExceptOnCreate",
+          "documentation":"<p>This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> DeletionPolicy</a> attribute.</p>"
         }
       },
       "documentation":"<p>The input for an <a>UpdateStack</a> action.</p>"

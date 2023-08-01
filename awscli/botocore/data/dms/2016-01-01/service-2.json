@@ -444,6 +444,16 @@
       ],
       "documentation":"<p>Returns information about the endpoints for your account in the current region.</p>"
     },
+    "DescribeEngineVersions":{
+      "name":"DescribeEngineVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEngineVersionsMessage"},
+      "output":{"shape":"DescribeEngineVersionsResponse"},
+      "documentation":"<p>Returns information about the replication instance versions used in the project.</p>"
+    },
     "DescribeEventCategories":{
       "name":"DescribeEventCategories",
       "http":{
@@ -1269,6 +1279,10 @@
       "documentation":"<p>The name of an Availability Zone for use during database migration. <code>AvailabilityZone</code> is an optional parameter to the <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateReplicationInstance.html\"> <code>CreateReplicationInstance</code> </a> operation, and it’s value relates to the Amazon Web Services Region of an endpoint. For example, the availability zone of an endpoint in the us-east-1 region might be us-east-1a, us-east-1b, us-east-1c, or us-east-1d.</p>"
     },
     "AvailabilityZonesList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "AvailableUpgradesList":{
       "type":"list",
       "member":{"shape":"String"}
     },
@@ -2687,6 +2701,32 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeEngineVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved. </p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        }
+      }
+    },
+    "DescribeEngineVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "EngineVersions":{
+          "shape":"EngineVersionList",
+          "documentation":"<p>Returned <code>EngineVersion</code> objects that describe the replication instance engine versions used in the project.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        }
+      }
+    },
     "DescribeEventCategoriesMessage":{
       "type":"structure",
       "members":{
@@ -3855,6 +3895,48 @@
     "EndpointSettingsList":{
       "type":"list",
       "member":{"shape":"EndpointSetting"}
+    },
+    "EngineVersion":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version number of the replication instance.</p>"
+        },
+        "Lifecycle":{
+          "shape":"String",
+          "documentation":"<p>The lifecycle status of the replication instance version. Valid values are <code>DEPRECATED</code>, <code>DEFAULT_VERSION</code>, and <code>ACTIVE</code>.</p>"
+        },
+        "ReleaseStatus":{
+          "shape":"ReleaseStatusValues",
+          "documentation":"<p>The release status of the replication instance version.</p>"
+        },
+        "LaunchDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The date when the replication instance version became publicly available.</p>"
+        },
+        "AutoUpgradeDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The date when the replication instance will be automatically upgraded. This setting only applies if the <code>auto-minor-version</code> setting is enabled.</p>"
+        },
+        "DeprecationDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The date when the replication instance version will be deprecated and can no longer be requested.</p>"
+        },
+        "ForceUpgradeDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The date when the replication instance will have a version upgrade forced.</p>"
+        },
+        "AvailableUpgrades":{
+          "shape":"AvailableUpgradesList",
+          "documentation":"<p>The list of valid replication instance versions that you can upgrade to.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a replication instance version.</p>"
+    },
+    "EngineVersionList":{
+      "type":"list",
+      "member":{"shape":"EngineVersion"}
     },
     "Event":{
       "type":"structure",
@@ -5592,7 +5674,7 @@
         },
         "DatabaseMode":{
           "shape":"DatabaseMode",
-          "documentation":"<p>Specifies whether to use default or custom replication behavior for PostgreSQL-compatible endpoints. You can use this setting to specify replication behavior for endpoints that require additional configuration, such as Babelfish endpoints.</p>"
+          "documentation":"<p>Specifies the default behavior of the replication's handling of PostgreSQL- compatible endpoints that require some additional configuration, such as Babelfish endpoints.</p>"
         },
         "BabelfishDatabaseName":{
           "shape":"String",

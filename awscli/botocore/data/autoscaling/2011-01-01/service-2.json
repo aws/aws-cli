@@ -1228,6 +1228,20 @@
       },
       "documentation":"<p>Describes an alarm.</p>"
     },
+    "AlarmList":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen255"}
+    },
+    "AlarmSpecification":{
+      "type":"structure",
+      "members":{
+        "Alarms":{
+          "shape":"AlarmList",
+          "documentation":"<p>The names of one or more CloudWatch alarms to monitor for the instance refresh.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CloudWatch alarm specification to use in an instance refresh.</p>"
+    },
     "Alarms":{
       "type":"list",
       "member":{"shape":"Alarm"}
@@ -4714,7 +4728,7 @@
         },
         "AutoRollback":{
           "shape":"AutoRollback",
-          "documentation":"<p>(Optional) Indicates whether to roll back the Auto Scaling group to its previous configuration if the instance refresh fails. The default is <code>false</code>.</p> <p>A rollback is not supported in the following situations: </p> <ul> <li> <p>There is no desired configuration specified for the instance refresh.</p> </li> <li> <p>The Auto Scaling group has a launch template that uses an Amazon Web Services Systems Manager parameter instead of an AMI ID for the <code>ImageId</code> property.</p> </li> <li> <p>The Auto Scaling group uses the launch template's <code>$Latest</code> or <code>$Default</code> version.</p> </li> </ul>"
+          "documentation":"<p>(Optional) Indicates whether to roll back the Auto Scaling group to its previous configuration if the instance refresh fails or a CloudWatch alarm threshold is met. The default is <code>false</code>.</p> <p>A rollback is not supported in the following situations: </p> <ul> <li> <p>There is no desired configuration specified for the instance refresh.</p> </li> <li> <p>The Auto Scaling group has a launch template that uses an Amazon Web Services Systems Manager parameter instead of an AMI ID for the <code>ImageId</code> property.</p> </li> <li> <p>The Auto Scaling group uses the launch template's <code>$Latest</code> or <code>$Default</code> version.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-refresh-rollback.html\">Undo changes with a rollback</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         },
         "ScaleInProtectedInstances":{
           "shape":"ScaleInProtectedInstances",
@@ -4723,6 +4737,10 @@
         "StandbyInstances":{
           "shape":"StandbyInstances",
           "documentation":"<p>Choose the behavior that you want Amazon EC2 Auto Scaling to use if instances in <code>Standby</code> state are found.</p> <p>The following lists the valid values:</p> <dl> <dt>Terminate</dt> <dd> <p>Amazon EC2 Auto Scaling terminates instances that are in <code>Standby</code>.</p> </dd> <dt>Ignore</dt> <dd> <p>Amazon EC2 Auto Scaling ignores instances that are in <code>Standby</code> and continues to replace instances that are in the <code>InService</code> state.</p> </dd> <dt>Wait (default)</dt> <dd> <p>Amazon EC2 Auto Scaling waits one hour for you to return the instances to service. Otherwise, the instance refresh will fail.</p> </dd> </dl>"
+        },
+        "AlarmSpecification":{
+          "shape":"AlarmSpecification",
+          "documentation":"<p>(Optional) The CloudWatch alarm specification. CloudWatch alarms can be used to identify any issues and fail the operation if an alarm threshold is met.</p>"
         }
       },
       "documentation":"<p>Describes the preferences for an instance refresh.</p>"
@@ -5191,7 +5209,7 @@
         },
         "Preferences":{
           "shape":"RefreshPreferences",
-          "documentation":"<p>Sets your preferences for the instance refresh so that it performs as expected when you start it. Includes the instance warmup time, the minimum healthy percentage, and the behaviors that you want Amazon EC2 Auto Scaling to use if instances that are in <code>Standby</code> state or protected from scale in are found. You can also choose to enable additional features, such as the following:</p> <ul> <li> <p>Auto rollback</p> </li> <li> <p>Checkpoints</p> </li> <li> <p>Skip matching</p> </li> </ul>"
+          "documentation":"<p>Sets your preferences for the instance refresh so that it performs as expected when you start it. Includes the instance warmup time, the minimum healthy percentage, and the behaviors that you want Amazon EC2 Auto Scaling to use if instances that are in <code>Standby</code> state or protected from scale in are found. You can also choose to enable additional features, such as the following:</p> <ul> <li> <p>Auto rollback</p> </li> <li> <p>Checkpoints</p> </li> <li> <p>CloudWatch alarms</p> </li> <li> <p>Skip matching</p> </li> </ul>"
         }
       }
     },

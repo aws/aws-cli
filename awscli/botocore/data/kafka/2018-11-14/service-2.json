@@ -478,6 +478,44 @@
       ],
       "documentation": "\n            <p>Returns a description of the cluster operation specified by the ARN.</p>\n         "
     },
+    "DescribeClusterOperationV2" : {
+      "name" : "DescribeClusterOperationV2",
+      "http" : {
+        "method" : "GET",
+        "requestUri" : "/api/v2/operations/{clusterOperationArn}",
+        "responseCode" : 200
+      },
+      "input" : {
+        "shape" : "DescribeClusterOperationV2Request"
+      },
+      "output" : {
+        "shape" : "DescribeClusterOperationV2Response",
+        "documentation" : "\n            <p>HTTP Status Code 200: OK.</p>"
+      },
+      "errors" : [ {
+        "shape" : "BadRequestException",
+        "documentation" : "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+      }, {
+        "shape" : "UnauthorizedException",
+        "documentation" : "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+      }, {
+        "shape" : "InternalServerErrorException",
+        "documentation" : "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+      }, {
+        "shape" : "ForbiddenException",
+        "documentation" : "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+      }, {
+        "shape" : "NotFoundException",
+        "documentation" : "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+      }, {
+        "shape" : "ServiceUnavailableException",
+        "documentation" : "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+      }, {
+        "shape" : "TooManyRequestsException",
+        "documentation" : "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+      } ],
+      "documentation" : "\n            <p>Returns a description of the cluster operation specified by the ARN.</p>\n"
+    },
     "DescribeConfiguration": {
       "name": "DescribeConfiguration",
       "http": {
@@ -794,6 +832,44 @@
         }
       ],
       "documentation": "\n            <p>Returns a list of all the operations that have been performed on the specified MSK cluster.</p>\n         "
+    },
+    "ListClusterOperationsV2" : {
+      "name" : "ListClusterOperationsV2",
+      "http" : {
+        "method" : "GET",
+        "requestUri" : "/api/v2/clusters/{clusterArn}/operations",
+        "responseCode" : 200
+      },
+      "input" : {
+        "shape" : "ListClusterOperationsV2Request"
+      },
+      "output" : {
+        "shape" : "ListClusterOperationsV2Response",
+        "documentation" : "\n            <p>HTTP Status Code 200: OK.</p>"
+      },
+      "errors" : [ {
+        "shape" : "BadRequestException",
+        "documentation" : "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+      }, {
+        "shape" : "UnauthorizedException",
+        "documentation" : "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+      }, {
+        "shape" : "InternalServerErrorException",
+        "documentation" : "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+      }, {
+        "shape" : "ForbiddenException",
+        "documentation" : "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+      }, {
+        "shape" : "NotFoundException",
+        "documentation" : "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+      }, {
+        "shape" : "ServiceUnavailableException",
+        "documentation" : "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+      }, {
+        "shape" : "TooManyRequestsException",
+        "documentation" : "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+      } ],
+      "documentation" : "\n            <p>Returns a list of all the operations that have been performed on the specified MSK cluster.</p>\n         "
     },
     "ListClusters": {
       "name": "ListClusters",
@@ -2977,6 +3053,140 @@
         }
       }
     },
+    "ClusterOperationV2" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "locationName" : "clusterArn",
+          "documentation" : "\n            <p>ARN of the cluster.</p>"
+        },
+        "ClusterType" : {
+          "shape" : "ClusterType",
+          "locationName" : "clusterType",
+          "documentation" : "\n            <p>Type of the backend cluster.</p>"
+        },
+        "StartTime" : {
+          "shape" : "__timestampIso8601",
+          "locationName" : "startTime",
+          "documentation" : "\n            <p>The time at which operation was started.</p>"
+        },
+        "EndTime" : {
+          "shape" : "__timestampIso8601",
+          "locationName" : "endTime",
+          "documentation" : "\n            <p>The time at which the operation finished.</p>"
+        },
+        "ErrorInfo" : {
+          "shape" : "ErrorInfo",
+          "locationName" : "errorInfo",
+          "documentation" : "\n            <p>If cluster operation failed from an error, it describes the error.</p>"
+        },
+        "OperationArn" : {
+          "shape" : "__string",
+          "locationName" : "operationArn",
+          "documentation" : "\n            <p>ARN of the cluster operation.</p>"
+        },
+        "OperationState" : {
+          "shape" : "__string",
+          "locationName" : "operationState",
+          "documentation" : "\n            <p>State of the cluster operation.</p>"
+        },
+        "OperationType" : {
+          "shape" : "__string",
+          "locationName" : "operationType",
+          "documentation" : "\n            <p>Type of the cluster operation.</p>"
+        },
+        "Provisioned" : {
+          "shape" : "ClusterOperationV2Provisioned",
+          "locationName" : "provisioned",
+          "documentation" : "\n            <p>Properties of a provisioned cluster.</p>"
+        },
+        "Serverless" : {
+          "shape" : "ClusterOperationV2Serverless",
+          "locationName" : "serverless",
+          "documentation" : "\n            <p>Properties of a serverless cluster.</p>"
+        }
+      },
+      "documentation" : "\n            <p>Returns information about a cluster operation.</p>"
+    },
+    "ClusterOperationV2Provisioned" : {
+      "type" : "structure",
+      "members" : {
+        "OperationSteps" : {
+          "shape" : "__listOfClusterOperationStep",
+          "locationName" : "operationSteps",
+          "documentation" : "\n            <p>Steps completed during the operation.</p>"
+        },
+        "SourceClusterInfo" : {
+          "shape" : "MutableClusterInfo",
+          "locationName" : "sourceClusterInfo",
+          "documentation" : "\n            <p>Information about cluster attributes before a cluster is updated.</p>"
+        },
+        "TargetClusterInfo" : {
+          "shape" : "MutableClusterInfo",
+          "locationName" : "targetClusterInfo",
+          "documentation" : "\n            <p>Information about cluster attributes after a cluster is updated.</p>"
+        },
+        "VpcConnectionInfo" : {
+          "shape" : "VpcConnectionInfo",
+          "locationName" : "vpcConnectionInfo",
+          "documentation" : "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
+        }
+      },
+      "documentation" : "\n            <p>Returns information about a provisioned cluster operation.</p>"
+    },
+    "ClusterOperationV2Serverless" : {
+      "type" : "structure",
+      "members" : {
+        "VpcConnectionInfo" : {
+          "shape" : "VpcConnectionInfoServerless",
+          "locationName" : "vpcConnectionInfo",
+          "documentation" : "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
+        }
+      },
+      "documentation" : "\n            <p>Returns information about a serverless cluster operation.</p>"
+    },
+    "ClusterOperationV2Summary" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "locationName" : "clusterArn",
+          "documentation" : "\n            <p>ARN of the cluster.</p>"
+        },
+        "ClusterType" : {
+          "shape" : "ClusterType",
+          "locationName" : "clusterType",
+          "documentation" : "\n            <p>Type of the backend cluster.</p>"
+        },
+        "StartTime" : {
+          "shape" : "__timestampIso8601",
+          "locationName" : "startTime",
+          "documentation" : "\n            <p>The time at which operation was started.</p>"
+        },
+        "EndTime" : {
+          "shape" : "__timestampIso8601",
+          "locationName" : "endTime",
+          "documentation" : "\n            <p>The time at which the operation finished.</p>"
+        },
+        "OperationArn" : {
+          "shape" : "__string",
+          "locationName" : "operationArn",
+          "documentation" : "\n            <p>ARN of the cluster operation.</p>"
+        },
+        "OperationState" : {
+          "shape" : "__string",
+          "locationName" : "operationState",
+          "documentation" : "\n            <p>State of the cluster operation.</p>"
+        },
+        "OperationType" : {
+          "shape" : "__string",
+          "locationName" : "operationType",
+          "documentation" : "\n            <p>Type of the cluster operation.</p>"
+        }
+      },
+      "documentation" : "\n            <p>Returns information about a cluster operation.</p>"
+    },
     "DeleteClusterRequest": {
       "type": "structure",
       "members": {
@@ -3103,6 +3313,18 @@
         "ClusterOperationArn"
       ]
     },
+    "DescribeClusterOperationV2Request" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterOperationArn" : {
+          "shape" : "__string",
+          "location" : "uri",
+          "locationName" : "clusterOperationArn",
+          "documentation" : "ARN of the cluster operation to describe."
+        }
+      },
+      "required" : [ "ClusterOperationArn" ]
+    },
     "DescribeClusterOperationResponse": {
       "type": "structure",
       "members": {
@@ -3110,6 +3332,16 @@
           "shape": "ClusterOperationInfo",
           "locationName": "clusterOperationInfo",
           "documentation": "\n            <p>Cluster operation information</p>\n         "
+        }
+      }
+    },
+    "DescribeClusterOperationV2Response" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterOperationInfo" : {
+          "shape" : "ClusterOperationV2",
+          "locationName" : "clusterOperationInfo",
+          "documentation" : "\n            <p>Cluster operation information</p>"
         }
       }
     },
@@ -3690,6 +3922,30 @@
         "ClusterArn"
       ]
     },
+    "ListClusterOperationsV2Request" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterArn" : {
+          "shape" : "__string",
+          "location" : "uri",
+          "locationName" : "clusterArn",
+          "documentation" : "The arn of the cluster whose operations are being requested."
+        },
+        "MaxResults" : {
+          "shape" : "MaxResults",
+          "location" : "querystring",
+          "locationName" : "maxResults",
+          "documentation" : "The maxResults of the query."
+        },
+        "NextToken" : {
+          "shape" : "__string",
+          "location" : "querystring",
+          "locationName" : "nextToken",
+          "documentation" : "The nextToken of the query."
+        }
+      },
+      "required" : [ "ClusterArn" ]
+    },
     "ListClusterOperationsResponse": {
       "type": "structure",
       "members": {
@@ -3702,6 +3958,21 @@
           "shape": "__string",
           "locationName": "nextToken",
           "documentation": "\n            <p>If the response of ListClusterOperations is truncated, it returns a NextToken in the response. This Nexttoken should be sent in the subsequent request to ListClusterOperations.</p>\n         "
+        }
+      }
+    },
+    "ListClusterOperationsV2Response" : {
+      "type" : "structure",
+      "members" : {
+        "ClusterOperationInfoList" : {
+          "shape" : "__listOfClusterOperationV2Summary",
+          "locationName" : "clusterOperationInfoList",
+          "documentation" : "\n            <p>An array of cluster operation information objects.</p>"
+        },
+        "NextToken" : {
+          "shape" : "__string",
+          "locationName" : "nextToken",
+          "documentation" : "\n            <p>If the response of ListClusterOperationsV2 is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListClusterOperationsV2.</p>"
         }
       }
     },
@@ -5195,6 +5466,32 @@
       },
       "documentation": "\n            <p>Description of the VPC connection.</p>\n         "
     },
+    "VpcConnectionInfoServerless" : {
+      "type" : "structure",
+      "members" : {
+        "CreationTime" : {
+          "shape" : "__timestampIso8601",
+          "locationName" : "creationTime",
+          "documentation" : "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>"
+        },
+        "Owner" : {
+          "shape" : "__string",
+          "locationName" : "owner",
+          "documentation" : "\n            <p>The owner of the VPC Connection.</p>"
+        },
+        "UserIdentity" : {
+          "shape" : "UserIdentity",
+          "locationName" : "userIdentity",
+          "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>"
+        },
+        "VpcConnectionArn" : {
+          "shape" : "__string",
+          "locationName" : "vpcConnectionArn",
+          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        }
+      },
+      "documentation" : "Description of the VPC connection."
+    },
     "VpcConnectionState": {
       "type": "string",
       "documentation": "\n            <p>The state of a VPC connection.</p>\n         ",
@@ -5295,6 +5592,12 @@
       "type": "list",
       "member": {
         "shape": "ClusterOperationInfo"
+      }
+    },
+    "__listOfClusterOperationV2Summary" : {
+      "type" : "list",
+      "member" : {
+        "shape" : "ClusterOperationV2Summary"
       }
     },
     "__listOfClusterOperationStep" : {

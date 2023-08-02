@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.18
+=======
+
+* api-change:``budgets``: As part of CAE tagging integration we need to update our budget names regex filter to prevent customers from using "/action/" in their budget names.
+* api-change:``cognito-idp``: New feature that logs Cognito user pool error messages to CloudWatch logs.
+* api-change:``glue``: This release includes additional Glue Streaming KAKFA SASL property types.
+* api-change:``resiliencehub``: Drift Detection capability added when applications policy has moved from a meet to breach state. Customers will be able to exclude operational recommendations and receive credit in their resilience score. Customers can now add ARH permissions to an existing or new role.
+* api-change:``sagemaker``: SageMaker Inference Recommender introduces a new API GetScalingConfigurationRecommendation to recommend auto scaling policies based on completed Inference Recommender jobs.
+
+
 1.29.17
 =======
 

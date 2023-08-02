@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+2.13.6
+======
+
+* api-change:``lookoutequipment``: This release includes new import resource, model versioning and resource policy features.
+* api-change:``cloudformation``: This SDK release is for the feature launch of AWS CloudFormation RetainExceptOnCreate. It adds a new parameter retainExceptOnCreate in the following APIs: CreateStack, UpdateStack, RollbackStack, ExecuteChangeSet.
+* api-change:``dms``: Adding new API describe-engine-versions which provides information about the lifecycle of a replication instance's version.
+* api-change:``connect``: This release adds support for new number types.
+* api-change:``cleanrooms``: This release introduces custom SQL queries - an expanded set of SQL you can run. This release adds analysis templates, a new resource for storing pre-defined custom SQL queries ahead of time. This release also adds the Custom analysis rule, which lets you approve analysis templates for querying.
+* api-change:``sagemaker``: Add Stairs TrafficPattern and FlatInvocations to RecommendationJobStoppingConditions
+* api-change:``route53``: Amazon Route 53 now supports the Israel (Tel Aviv) Region (il-central-1) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``pinpoint``: Added support for sending push notifications using the FCM v1 API with json credentials. Amazon Pinpoint customers can now deliver messages to Android devices using both FCM v1 API and the legacy FCM/GCM API
+* api-change:``rds``: This release adds support for Aurora MySQL local write forwarding, which allows for forwarding of write operations from reader DB instances to the writer DB instance.
+* api-change:``codestar-connections``: New integration with the Gitlab provider type.
+* api-change:``amplifyuibuilder``: Amplify Studio releases GraphQL support for codegen job action.
+* api-change:``polly``: Amazon Polly adds new French Belgian voice - Isabelle. Isabelle is available as Neural voice only.
+* api-change:``inspector2``: This release adds 1 new API: BatchGetFindingDetails to retrieve enhanced vulnerability intelligence details for findings.
+* api-change:``batch``: This release adds support for price capacity optimized allocation strategy for Spot Instances.
+* api-change:``internetmonitor``: This release adds a new feature for Amazon CloudWatch Internet Monitor that enables customers to set custom thresholds, for performance and availability drops, for impact limited to a single city-network to trigger creation of a health event.
+* api-change:``scheduler``: This release introduces automatic deletion of schedules in EventBridge Scheduler. If configured, EventBridge Scheduler automatically deletes a schedule after the schedule has completed its last invocation.
+* api-change:``medialive``: AWS Elemental Link devices now report their Availability Zone. Link devices now support the ability to change their Availability Zone.
+* api-change:``autoscaling``: You can now configure an instance refresh to set its status to 'failed' when it detects that a specified CloudWatch alarm has gone into the ALARM state. You can also choose to roll back the instance refresh automatically when the alarm threshold is met.
+* api-change:``cloudfront``: Add a new JavaScript runtime version for CloudFront Functions.
+* api-change:``kafka``: Amazon MSK has introduced new versions of ListClusterOperations and DescribeClusterOperation APIs. These v2 APIs provide information and insights into the ongoing operations of both MSK Provisioned and MSK Serverless clusters.
+* api-change:``rds``: Added support for deleted clusters PiTR.
+* api-change:``drs``: Add support for in-aws right sizing
+* api-change:``omics``: Add CreationType filter for ListReadSets
+* api-change:``application-insights``: This release enable customer to add/remove/update more than one workload for a component
+
+
 2.13.5
 ======
 

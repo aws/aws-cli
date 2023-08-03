@@ -2124,6 +2124,19 @@
       "output":{"shape":"GetSagemakerServicecatalogPortfolioStatusOutput"},
       "documentation":"<p>Gets the status of Service Catalog in SageMaker. Service Catalog is used to create SageMaker projects.</p>"
     },
+    "GetScalingConfigurationRecommendation":{
+      "name":"GetScalingConfigurationRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetScalingConfigurationRecommendationRequest"},
+      "output":{"shape":"GetScalingConfigurationRecommendationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Starts an Amazon SageMaker Inference Recommender autoscaling recommendation job. Returns recommendations for autoscaling policies that you can apply to your SageMaker endpoint.</p>"
+    },
     "GetSearchSuggestions":{
       "name":"GetSearchSuggestions",
       "http":{
@@ -9650,6 +9663,24 @@
       "min":1,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)${1,256}"
     },
+    "CustomizedMetricSpecification":{
+      "type":"structure",
+      "members":{
+        "MetricName":{
+          "shape":"String",
+          "documentation":"<p>The name of the customized metric.</p>"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the customized metric.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The statistic of the customized metric.</p>"
+        }
+      },
+      "documentation":"<p>A customized metric.</p>"
+    },
     "DataCaptureConfig":{
       "type":"structure",
       "required":[
@@ -15279,6 +15310,7 @@
         "Delete_Failed"
       ]
     },
+    "Double":{"type":"double"},
     "DoubleParameterValue":{"type":"double"},
     "DriftCheckBaselines":{
       "type":"structure",
@@ -15361,6 +15393,32 @@
         }
       },
       "documentation":"<p>Represents the drift check model quality baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "DynamicScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended minimum capacity to specify for your autoscaling policy.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended maximum capacity to specify for your autoscaling policy.</p>"
+        },
+        "ScaleInCooldown":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended scale in cooldown time for your autoscaling policy.</p>"
+        },
+        "ScaleOutCooldown":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended scale out cooldown time for your autoscaling policy.</p>"
+        },
+        "ScalingPolicies":{
+          "shape":"ScalingPolicies",
+          "documentation":"<p>An object of the scaling policies for each metric.</p>"
+        }
+      },
+      "documentation":"<p>An object with the recommended values for you to specify when creating an autoscaling policy.</p>"
     },
     "EMRStepMetadata":{
       "type":"structure",
@@ -17146,6 +17204,65 @@
         "Status":{
           "shape":"SagemakerServicecatalogStatus",
           "documentation":"<p>Whether Service Catalog is enabled or disabled in SageMaker.</p>"
+        }
+      }
+    },
+    "GetScalingConfigurationRecommendationRequest":{
+      "type":"structure",
+      "required":["InferenceRecommendationsJobName"],
+      "members":{
+        "InferenceRecommendationsJobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of a previously completed Inference Recommender job.</p>"
+        },
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID of a previously completed inference recommendation. This ID should come from one of the recommendations returned by the job specified in the <code>InferenceRecommendationsJobName</code> field.</p> <p>Specify either this field or the <code>EndpointName</code> field.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of an endpoint benchmarked during a previously completed inference recommendation job. This name should come from one of the recommendations returned by the job specified in the <code>InferenceRecommendationsJobName</code> field.</p> <p>Specify either this field or the <code>RecommendationId</code> field.</p>"
+        },
+        "TargetCpuUtilizationPerCore":{
+          "shape":"UtilizationPercentagePerCore",
+          "documentation":"<p>The percentage of how much utilization you want an instance to use before autoscaling. The default value is 50%.</p>"
+        },
+        "ScalingPolicyObjective":{
+          "shape":"ScalingPolicyObjective",
+          "documentation":"<p>An object where you specify the anticipated traffic pattern for an endpoint.</p>"
+        }
+      }
+    },
+    "GetScalingConfigurationRecommendationResponse":{
+      "type":"structure",
+      "members":{
+        "InferenceRecommendationsJobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of a previously completed Inference Recommender job.</p>"
+        },
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID of a previously completed inference recommendation.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of an endpoint benchmarked during a previously completed Inference Recommender job.</p>"
+        },
+        "TargetCpuUtilizationPerCore":{
+          "shape":"UtilizationPercentagePerCore",
+          "documentation":"<p>The percentage of how much utilization you want an instance to use before autoscaling, which you specified in the request. The default value is 50%.</p>"
+        },
+        "ScalingPolicyObjective":{
+          "shape":"ScalingPolicyObjective",
+          "documentation":"<p>An object representing the anticipated traffic pattern for an endpoint that you specified in the request.</p>"
+        },
+        "Metric":{
+          "shape":"ScalingPolicyMetric",
+          "documentation":"<p>An object with a list of metrics that were benchmarked during the previously completed Inference Recommender job.</p>"
+        },
+        "DynamicScalingConfiguration":{
+          "shape":"DynamicScalingConfiguration",
+          "documentation":"<p>An object with the recommended values for you to specify when creating an autoscaling policy.</p>"
         }
       }
     },
@@ -23804,6 +23921,21 @@
         "Test"
       ]
     },
+    "MetricSpecification":{
+      "type":"structure",
+      "members":{
+        "Predefined":{
+          "shape":"PredefinedMetricSpecification",
+          "documentation":"<p>Information about a predefined metric.</p>"
+        },
+        "Customized":{
+          "shape":"CustomizedMetricSpecification",
+          "documentation":"<p>Information about a customized metric.</p>"
+        }
+      },
+      "documentation":"<p>An object containing information about a metric.</p>",
+      "union":true
+    },
     "MetricValue":{"type":"float"},
     "MetricsSource":{
       "type":"structure",
@@ -27433,6 +27565,16 @@
       "min":1,
       "pattern":".*"
     },
+    "PredefinedMetricSpecification":{
+      "type":"structure",
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"String",
+          "documentation":"<p>The metric type. You can only apply SageMaker metric types to SageMaker endpoints.</p>"
+        }
+      },
+      "documentation":"<p>A specification for a predefined metric.</p>"
+    },
     "PresignedDomainUrl":{"type":"string"},
     "ProbabilityThresholdAttribute":{"type":"double"},
     "ProblemType":{
@@ -30010,6 +30152,49 @@
       "max":100,
       "min":0
     },
+    "ScalingPolicies":{
+      "type":"list",
+      "member":{"shape":"ScalingPolicy"}
+    },
+    "ScalingPolicy":{
+      "type":"structure",
+      "members":{
+        "TargetTracking":{
+          "shape":"TargetTrackingScalingPolicyConfiguration",
+          "documentation":"<p>A target tracking scaling policy. Includes support for predefined or customized metrics.</p>"
+        }
+      },
+      "documentation":"<p>An object containing a recommended scaling policy.</p>",
+      "union":true
+    },
+    "ScalingPolicyMetric":{
+      "type":"structure",
+      "members":{
+        "InvocationsPerInstance":{
+          "shape":"Integer",
+          "documentation":"<p>The number of invocations sent to a model, normalized by <code>InstanceCount</code> in each ProductionVariant. <code>1/numberOfInstances</code> is sent as the value on each request, where <code>numberOfInstances</code> is the number of active instances for the ProductionVariant behind the endpoint at the time of the request.</p>"
+        },
+        "ModelLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The interval of time taken by a model to respond as viewed from SageMaker. This interval includes the local communication times taken to send the request and to fetch the response from the container of a model and the time taken to complete the inference in the container.</p>"
+        }
+      },
+      "documentation":"<p>The metric for a scaling policy.</p>"
+    },
+    "ScalingPolicyObjective":{
+      "type":"structure",
+      "members":{
+        "MinInvocationsPerMinute":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of expected requests to your endpoint per minute.</p>"
+        },
+        "MaxInvocationsPerMinute":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of expected requests to your endpoint per minute.</p>"
+        }
+      },
+      "documentation":"<p>An object where you specify the anticipated traffic pattern for an endpoint.</p>"
+    },
     "ScheduleConfig":{
       "type":"structure",
       "required":["ScheduleExpression"],
@@ -30853,6 +31038,16 @@
         }
       }
     },
+    "Statistic":{
+      "type":"string",
+      "enum":[
+        "Average",
+        "Minimum",
+        "Maximum",
+        "SampleCount",
+        "Sum"
+      ]
+    },
     "StatusDetails":{
       "type":"string",
       "max":1024,
@@ -31450,6 +31645,20 @@
         "LINUX"
       ]
     },
+    "TargetTrackingScalingPolicyConfiguration":{
+      "type":"structure",
+      "members":{
+        "MetricSpecification":{
+          "shape":"MetricSpecification",
+          "documentation":"<p>An object containing information about a metric.</p>"
+        },
+        "TargetValue":{
+          "shape":"Double",
+          "documentation":"<p>The recommended target value to specify for the metric when creating a scaling policy.</p>"
+        }
+      },
+      "documentation":"<p>A target tracking scaling policy. Includes support for predefined or customized metrics.</p> <p>When using the <a href=\"https://docs.aws.amazon.com/autoscaling/application/APIReference/API_PutScalingPolicy.html\">PutScalingPolicy</a> API, this parameter is required when you are creating a policy with the policy type <code>TargetTrackingScaling</code>.</p>"
+    },
     "TaskAvailabilityLifetimeInSeconds":{
       "type":"integer",
       "min":60
@@ -31848,7 +32057,8 @@
         "ml.g5.48xlarge",
         "ml.trn1.2xlarge",
         "ml.trn1.32xlarge",
-        "ml.trn1n.32xlarge"
+        "ml.trn1n.32xlarge",
+        "ml.p5.48xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -34381,6 +34591,11 @@
     "UtilizationMetric":{
       "type":"float",
       "min":0.0
+    },
+    "UtilizationPercentagePerCore":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "ValidationFraction":{
       "type":"float",

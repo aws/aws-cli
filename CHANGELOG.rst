@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.19
+=======
+
+* api-change:``autoscaling``: Documentation changes related to Amazon EC2 Auto Scaling APIs.
+* api-change:``cloud9``: Updated the deprecation date for Amazon Linux. Doc only update.
+* api-change:``dms``: The release makes public API for DMS Schema Conversion feature.
+* api-change:``ec2``: This release adds new parameter isPrimaryIPv6 to  allow assigning an IPv6 address as a primary IPv6 address to a network interface which cannot be changed to give equivalent functionality available for network interfaces with primary IPv4 address.
+* api-change:``sagemaker``: Amazon SageMaker now supports running training jobs on p5.48xlarge instance types.
+
+
 1.29.18
 =======
 

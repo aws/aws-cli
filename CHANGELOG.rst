@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.20
+=======
+
+* api-change:``acm-pca``: Documentation correction for AWS Private CA
+* api-change:``connect``: Added a new API UpdateRoutingProfileAgentAvailabilityTimer to update agent availability timer of a routing profile.
+* api-change:``datasync``: Display cloud storage used capacity at a cluster level.
+* api-change:``ecs``: This is a documentation update to address various tickets.
+* api-change:``sagemaker``: Including DataCaptureConfig key in the Amazon Sagemaker Search's transform job object
+
+
 1.29.19
 =======
 

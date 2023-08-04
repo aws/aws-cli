@@ -643,7 +643,7 @@
       "members":{
         "BudgetName":{
           "shape":"BudgetName",
-          "documentation":"<p>The name of a budget. The name must be unique within an account. The <code>:</code> and <code>\\</code> characters aren't allowed in <code>BudgetName</code>.</p>"
+          "documentation":"<p>The name of a budget. The name must be unique within an account. The <code>:</code> and <code>\\</code> characters, and the \"/action/\" substring, aren't allowed in <code>BudgetName</code>.</p>"
         },
         "BudgetLimit":{
           "shape":"Spend",
@@ -690,10 +690,10 @@
     },
     "BudgetName":{
       "type":"string",
-      "documentation":"<p> A string that represents the budget name. The \":\" and \"\\\" characters aren't allowed.</p>",
+      "documentation":"<p> A string that represents the budget name. The \":\" and \"\\\" characters, and the \"/action/\" substring, aren't allowed.</p>",
       "max":100,
       "min":1,
-      "pattern":"[^:\\\\]+"
+      "pattern":"^(?![^:\\\\]*/action/)[^:\\\\]+$"
     },
     "BudgetNotificationsForAccount":{
       "type":"structure",
@@ -1908,7 +1908,7 @@
       "members":{
         "Message":{"shape":"errorMessage"}
       },
-      "documentation":"<p> The number of API requests has exceeded the maximum allowed API request throttling limit for the account. </p>",
+      "documentation":"<p>The number of API requests has exceeded the maximum allowed API request throttling limit for the account.</p>",
       "exception":true
     },
     "TimePeriod":{

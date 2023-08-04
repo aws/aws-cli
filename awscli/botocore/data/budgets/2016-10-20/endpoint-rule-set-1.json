@@ -32,13 +32,12 @@
         {
             "conditions": [
                 {
-                    "fn": "aws.partition",
+                    "fn": "isSet",
                     "argv": [
                         {
-                            "ref": "Region"
+                            "ref": "Endpoint"
                         }
-                    ],
-                    "assign": "PartitionResult"
+                    ]
                 }
             ],
             "type": "tree",
@@ -46,90 +45,69 @@
                 {
                     "conditions": [
                         {
-                            "fn": "isSet",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
-                        },
-                        {
-                            "fn": "parseURL",
-                            "argv": [
-                                {
-                                    "ref": "Endpoint"
-                                }
-                            ],
-                            "assign": "url"
                         }
                     ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseFIPS"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
-                            "type": "error"
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": {
-                                            "ref": "Endpoint"
-                                        },
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        }
-                    ]
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                    "type": "error"
                 },
                 {
                     "conditions": [
                         {
-                            "fn": "stringEquals",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "fn": "getAttr",
-                                    "argv": [
-                                        {
-                                            "ref": "PartitionResult"
-                                        },
-                                        "name"
-                                    ]
+                                    "ref": "UseDualStack"
                                 },
-                                "aws"
+                                true
                             ]
+                        }
+                    ],
+                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                    "type": "error"
+                },
+                {
+                    "conditions": [],
+                    "endpoint": {
+                        "url": {
+                            "ref": "Endpoint"
+                        },
+                        "properties": {},
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                }
+            ]
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                }
+            ],
+            "type": "tree",
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
                         }
                     ],
                     "type": "tree",
@@ -137,12 +115,27 @@
                         {
                             "conditions": [
                                 {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
+                                        },
+                                        "aws"
+                                    ]
+                                },
+                                {
                                     "fn": "booleanEquals",
                                     "argv": [
                                         {
                                             "ref": "UseFIPS"
                                         },
-                                        true
+                                        false
                                     ]
                                 },
                                 {
@@ -151,195 +144,10 @@
                                         {
                                             "ref": "UseDualStack"
                                         },
-                                        true
+                                        false
                                     ]
                                 }
                             ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                true,
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsFIPS"
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                true,
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsDualStack"
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://budgets-fips.{Region}.api.aws",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "us-east-1"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                    "type": "error"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseFIPS"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                true,
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsFIPS"
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://budgets-fips.{Region}.amazonaws.com",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "us-east-1"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "FIPS is enabled but this partition does not support FIPS",
-                                    "type": "error"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseDualStack"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                true,
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsDualStack"
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://budgets.{Region}.api.aws",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "us-east-1"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "DualStack is enabled but this partition does not support DualStack",
-                                    "type": "error"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
                             "endpoint": {
                                 "url": "https://budgets.amazonaws.com",
                                 "properties": {
@@ -354,29 +162,58 @@
                                 "headers": {}
                             },
                             "type": "endpoint"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
+                        },
                         {
-                            "fn": "stringEquals",
-                            "argv": [
+                            "conditions": [
                                 {
-                                    "fn": "getAttr",
+                                    "fn": "stringEquals",
                                     "argv": [
                                         {
-                                            "ref": "PartitionResult"
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
                                         },
-                                        "name"
+                                        "aws-cn"
                                     ]
                                 },
-                                "aws-cn"
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        false
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        false
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://budgets.amazonaws.com.cn",
+                                "properties": {
+                                    "authSchemes": [
+                                        {
+                                            "name": "sigv4",
+                                            "signingName": "budgets",
+                                            "signingRegion": "cn-northwest-1"
+                                        }
+                                    ]
+                                },
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
                         {
                             "conditions": [
                                 {
@@ -438,16 +275,8 @@
                                         {
                                             "conditions": [],
                                             "endpoint": {
-                                                "url": "https://budgets-fips.{Region}.api.amazonwebservices.com.cn",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "cn-northwest-1"
-                                                        }
-                                                    ]
-                                                },
+                                                "url": "https://budgets-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
@@ -493,225 +322,6 @@
                                             ]
                                         }
                                     ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://budgets-fips.{Region}.amazonaws.com.cn",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "cn-northwest-1"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "FIPS is enabled but this partition does not support FIPS",
-                                    "type": "error"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseDualStack"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                true,
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsDualStack"
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://budgets.{Region}.api.amazonwebservices.com.cn",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "name": "sigv4",
-                                                            "signingName": "budgets",
-                                                            "signingRegion": "cn-northwest-1"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "DualStack is enabled but this partition does not support DualStack",
-                                    "type": "error"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "endpoint": {
-                                "url": "https://budgets.amazonaws.com.cn",
-                                "properties": {
-                                    "authSchemes": [
-                                        {
-                                            "name": "sigv4",
-                                            "signingName": "budgets",
-                                            "signingRegion": "cn-northwest-1"
-                                        }
-                                    ]
-                                },
-                                "headers": {}
-                            },
-                            "type": "endpoint"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        },
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://budgets-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseFIPS"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        true,
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsFIPS"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [],
                                     "type": "tree",
                                     "rules": [
                                         {
@@ -724,125 +334,65 @@
                                             "type": "endpoint"
                                         }
                                     ]
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                    "type": "error"
                                 }
                             ]
                         },
-                        {
-                            "conditions": [],
-                            "error": "FIPS is enabled but this partition does not support FIPS",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [
-                        {
-                            "fn": "booleanEquals",
-                            "argv": [
-                                {
-                                    "ref": "UseDualStack"
-                                },
-                                true
-                            ]
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
                         {
                             "conditions": [
                                 {
                                     "fn": "booleanEquals",
                                     "argv": [
-                                        true,
                                         {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "supportsDualStack"
-                                            ]
-                                        }
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
                                     ]
                                 }
                             ],
                             "type": "tree",
                             "rules": [
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                true,
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsDualStack"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "type": "tree",
+                                    "rules": [
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://budgets.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ]
+                                },
+                                {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://budgets.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
+                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                    "type": "error"
                                 }
                             ]
-                        },
-                        {
-                            "conditions": [],
-                            "error": "DualStack is enabled but this partition does not support DualStack",
-                            "type": "error"
-                        }
-                    ]
-                },
-                {
-                    "conditions": [],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "stringEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "Region"
-                                        },
-                                        "aws-global"
-                                    ]
-                                }
-                            ],
-                            "endpoint": {
-                                "url": "https://budgets.amazonaws.com",
-                                "properties": {
-                                    "authSchemes": [
-                                        {
-                                            "name": "sigv4",
-                                            "signingName": "budgets",
-                                            "signingRegion": "us-east-1"
-                                        }
-                                    ]
-                                },
-                                "headers": {}
-                            },
-                            "type": "endpoint"
-                        },
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "stringEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "Region"
-                                        },
-                                        "aws-cn-global"
-                                    ]
-                                }
-                            ],
-                            "endpoint": {
-                                "url": "https://budgets.amazonaws.com.cn",
-                                "properties": {
-                                    "authSchemes": [
-                                        {
-                                            "name": "sigv4",
-                                            "signingName": "budgets",
-                                            "signingRegion": "cn-northwest-1"
-                                        }
-                                    ]
-                                },
-                                "headers": {}
-                            },
-                            "type": "endpoint"
                         },
                         {
                             "conditions": [],
@@ -856,6 +406,11 @@
                     ]
                 }
             ]
+        },
+        {
+            "conditions": [],
+            "error": "Invalid Configuration: Missing Region",
+            "type": "error"
         }
     ]
 }

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.21
+=======
+
+* api-change:``detective``: Updated the email validation regex to be in line with the TLD name specifications.
+* api-change:``ivs-realtime``: Add QUOTA_EXCEEDED and PUBLISHER_NOT_FOUND to EventErrorCode for stage health events.
+* api-change:``kinesis-video-archived-media``: This release enables minimum of Images SamplingInterval to be as low as 200 milliseconds in Kinesis Video Stream Image feature.
+* api-change:``kinesisvideo``: This release enables minimum of Images SamplingInterval to be as low as 200 milliseconds in Kinesis Video Stream Image feature.
+* api-change:``rekognition``: This release adds code snippets for Amazon Rekognition Custom Labels.
+
+
 1.29.20
 =======
 

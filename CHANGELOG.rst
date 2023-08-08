@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.22
+=======
+
+* api-change:``backup``: This release introduces a new logically air-gapped vault (Preview) in AWS Backup that stores immutable backup copies, which are locked by default and isolated with encryption using AWS owned keys. Logically air-gapped vault (Preview) allows secure recovery of application data across accounts.
+* api-change:``elasticache``: Added support for cluster mode in online migration and test migration API
+* api-change:``servicecatalog``: Introduce support for HashiCorp Terraform Cloud in Service Catalog by addying TERRAFORM_CLOUD product type in CreateProduct and CreateProvisioningArtifact API.
+
+
 1.29.21
 =======
 

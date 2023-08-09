@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.13.8
+======
+
+* api-change:``detective``: Updated the email validation regex to be in line with the TLD name specifications.
+* api-change:``datasync``: Display cloud storage used capacity at a cluster level.
+* api-change:``kinesisvideo``: This release enables minimum of Images SamplingInterval to be as low as 200 milliseconds in Kinesis Video Stream Image feature.
+* api-change:``acm-pca``: Documentation correction for AWS Private CA
+* api-change:``ivs-realtime``: Add QUOTA_EXCEEDED and PUBLISHER_NOT_FOUND to EventErrorCode for stage health events.
+* api-change:``rekognition``: This release adds code snippets for Amazon Rekognition Custom Labels.
+* api-change:``ecs``: This is a documentation update to address various tickets.
+* api-change:``servicecatalog``: Introduce support for HashiCorp Terraform Cloud in Service Catalog by addying TERRAFORM_CLOUD product type in CreateProduct and CreateProvisioningArtifact API.
+* api-change:``kinesis-video-archived-media``: This release enables minimum of Images SamplingInterval to be as low as 200 milliseconds in Kinesis Video Stream Image feature.
+* api-change:``connect``: Added a new API UpdateRoutingProfileAgentAvailabilityTimer to update agent availability timer of a routing profile.
+* api-change:``sagemaker``: Including DataCaptureConfig key in the Amazon Sagemaker Search's transform job object
+* api-change:``backup``: This release introduces a new logically air-gapped vault (Preview) in AWS Backup that stores immutable backup copies, which are locked by default and isolated with encryption using AWS owned keys. Logically air-gapped vault (Preview) allows secure recovery of application data across accounts.
+* api-change:``elasticache``: Added support for cluster mode in online migration and test migration API
+
+
 2.13.7
 ======
 

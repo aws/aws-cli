@@ -73,6 +73,9 @@
       "eu-west-3" : {
         "description" : "Europe (Paris)"
       },
+      "il-central-1" : {
+        "description" : "Israel (Tel Aviv)"
+      },
       "me-central-1" : {
         "description" : "Middle East (UAE)"
       },

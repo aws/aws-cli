@@ -5840,6 +5840,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.24
+=======
+
+* api-change:``cloudtrail``: Documentation updates for CloudTrail.
+* api-change:``connect``: This release adds APIs to provision agents that are global / available in multiple AWS regions and distribute them across these regions by percentage.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``omics``: This release adds instanceType to GetRunTask & ListRunTasks responses.
+* api-change:``secretsmanager``: Add additional InvalidRequestException to list of possible exceptions for ListSecret.
+* api-change:``transfer``: Documentation updates for AW Transfer Family
+
+
+1.29.23
+=======
+
+* api-change:``chime-sdk-voice``: Updating CreatePhoneNumberOrder, UpdatePhoneNumber and BatchUpdatePhoneNumbers APIs, adding phone number name
+* api-change:``fsx``: For FSx for Lustre, add new data repository task type, RELEASE_DATA_FROM_FILESYSTEM, to release files that have been archived to S3. For FSx for Windows, enable support for configuring and updating SSD IOPS, and for updating storage type. For FSx for OpenZFS, add new deployment type, MULTI_AZ_1.
+* api-change:``globalaccelerator``: Documentation update for dualstack EC2 endpoint support
+* api-change:``guardduty``: Added autoEnable ALL to UpdateOrganizationConfiguration and DescribeOrganizationConfiguration APIs.
+* api-change:``sagemaker``: This release adds support for cross account access for SageMaker Model Cards through AWS RAM.
+
+
 1.29.22
 =======
 

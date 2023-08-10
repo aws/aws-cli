@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.24
+=======
+
+* api-change:``cloudtrail``: Documentation updates for CloudTrail.
+* api-change:``connect``: This release adds APIs to provision agents that are global / available in multiple AWS regions and distribute them across these regions by percentage.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``omics``: This release adds instanceType to GetRunTask & ListRunTasks responses.
+* api-change:``secretsmanager``: Add additional InvalidRequestException to list of possible exceptions for ListSecret.
+* api-change:``transfer``: Documentation updates for AW Transfer Family
+
+
 1.29.23
 =======
 

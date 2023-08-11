@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.25
+=======
+
+* api-change:``amplifybackend``: Adds sensitive trait to required input shapes.
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in July 2023.
+* api-change:``ec2``: Amazon EC2 P5 instances, powered by the latest NVIDIA H100 Tensor Core GPUs, deliver the highest performance in EC2 for deep learning (DL) and HPC applications. M7i-flex and M7i instances are next-generation general purpose instances powered by custom 4th Generation Intel Xeon Scalable processors.
+* api-change:``quicksight``: New Authentication method for Account subscription - IAM Identity Center. Hierarchy layout support, default column width support and related style properties for pivot table visuals. Non-additive topic field aggregations for Topic API
+* api-change:``ses``: Update ses command to latest version
+* api-change:``swf``: This release adds new API parameters to override workflow task list for workflow executions.
+
+
 1.29.24
 =======
 

@@ -986,7 +986,14 @@ class TestArtifactExporter(unittest.TestCase):
                 "Resource3": {
                     "Type": "some-other-type",
                     "Properties": properties
-                }
+                },
+                "Fn::ForEach": [
+                    "Identifier",
+                    ["Item1", "Item2"],
+                    {
+                        "Key${Identifier}": "Value"
+                    }
+                ]
             }
         }
 

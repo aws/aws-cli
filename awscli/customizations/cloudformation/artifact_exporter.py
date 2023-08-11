@@ -232,7 +232,7 @@ class Resource(object):
         self.uploader = uploader
 
     def export(self, resource_id, resource_dict, parent_dir):
-        if resource_dict is None:
+        if resource_dict is None or not isinstance(resource_dict, dict):
             return
 
         property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
@@ -660,6 +660,9 @@ class Template(object):
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
         for resource_id, resource in self.template_dict["Resources"].items():
+
+            if not isinstance(resource, dict):
+                continue
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)

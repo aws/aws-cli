@@ -1,5 +1,14 @@
 version: 2
 updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
   - package-ecosystem: "pip"
     directory: "/"
     open-pull-requests-limit: 10
@@ -8,6 +17,7 @@ updates:
     target-branch: "v2"
     labels:
       - "dependencies"
+      - "v2"
     allow:
       - dependency-name: "PyInstaller"
       - dependency-name: "flit_core"
@@ -23,3 +33,20 @@ updates:
       - dependency-name: "jmespath"
       - dependency-name: "urllib3"
       - dependency-name: "wheel"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    labels:
+      - "dependencies"
+      - "v1"
+    allow:
+      - dependency-name: "colorama"
+      - dependency-name: "docutils"
+      - dependency-name: "awscrt"
+      - dependency-name: "pyyaml"
+      - dependency-name: "wheel"
+      - dependency-name: "rsa"

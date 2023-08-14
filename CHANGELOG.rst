@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.26
+=======
+
+* api-change:``mediapackage``: Fix SDK logging of certain fields.
+* api-change:``omics``: This release provides support for annotation store versioning and cross account sharing for Omics Analytics
+* api-change:``transfer``: Documentation updates for AWS Transfer Family
+
+
 1.29.25
 =======
 

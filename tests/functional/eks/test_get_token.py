@@ -79,7 +79,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_get_token(self, mock_datetime):
-        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        mock_datetime.now.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         response = self.run_get_token(cmd)
         self.assertEqual(
@@ -97,7 +97,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_query_nested_object(self, mock_datetime):
-        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        mock_datetime.now.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         cmd += ' --query status'
         response = self.run_get_token(cmd)
@@ -119,7 +119,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_output_text(self, mock_datetime):
-        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        mock_datetime.now.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         cmd += ' --output text'
         stdout, _, _ = self.run_cmd(cmd)
@@ -129,7 +129,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
     def test_output_table(self, mock_datetime):
-        mock_datetime.utcnow.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
+        mock_datetime.now.return_value = datetime(2019, 10, 23, 23, 0, 0, 0)
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         cmd += ' --output table'
         stdout, _, _ = self.run_cmd(cmd)

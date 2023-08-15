@@ -19,7 +19,7 @@ import re
 import sys
 import zlib
 from zlib import error as ZLibError
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dateutil import tz, parser
 
 from pyasn1.error import PyAsn1Error
@@ -417,7 +417,7 @@ class DigestTraverser(object):
         :param end_date: Date to stop validating at (inclusive).
         """
         if end_date is None:
-            end_date = datetime.utcnow()
+            end_date = datetime.now(timezone.utc)
         end_date = normalize_date(end_date)
         start_date = normalize_date(start_date)
         bucket = self.starting_bucket
@@ -720,7 +720,7 @@ class CloudTrailValidateLogs(BasicCommand):
         if args.end_time:
             self.end_time = normalize_date(parse_date(args.end_time))
         else:
-            self.end_time = normalize_date(datetime.utcnow())
+            self.end_time = normalize_date(datetime.now(timezone.utc))
         if self.start_time > self.end_time:
             raise ValueError(('Invalid time range specified: start-time must '
                               'occur before end-time'))

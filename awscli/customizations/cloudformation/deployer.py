@@ -20,7 +20,7 @@ import collections
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import mktempfile, parse_s3_url
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 LOG = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ class Deployer(object):
         :return:
         """
 
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         description = "Created by AWS CLI at {0} UTC".format(now)
 
         # Each changeset will get a unique name based on time

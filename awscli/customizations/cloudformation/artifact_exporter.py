@@ -13,6 +13,7 @@
 
 import logging
 import os
+import sys
 import tempfile
 import zipfile
 import contextlib
@@ -22,6 +23,7 @@ from awscli.compat import six
 from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
+from colorama import Fore, Style
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
@@ -232,7 +234,7 @@ class Resource(object):
         self.uploader = uploader
 
     def export(self, resource_id, resource_dict, parent_dir):
-        if resource_dict is None or not isinstance(resource_dict, dict):
+        if resource_dict is None:
             return
 
         property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
@@ -659,9 +661,12 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
+        non_dict_resources = []
+
         for resource_id, resource in self.template_dict["Resources"].items():
 
             if not isinstance(resource, dict):
+                non_dict_resources.append(resource_id)
                 continue
 
             resource_type = resource.get("Type", None)
@@ -674,5 +679,12 @@ class Template(object):
                 # Export code resources
                 exporter = exporter_class(self.uploader)
                 exporter.export(resource_id, resource_dict, self.template_dir)
+
+        if non_dict_resources:
+            msg = (Fore.YELLOW +
+                   "WARNING: Ensure there are no local artifacts defined within Resources with the following logical "
+                   f"ID's: {non_dict_resources}" +
+                   Style.RESET_ALL)
+            sys.stdout.write(msg)
 
         return self.template_dict

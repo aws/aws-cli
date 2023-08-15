@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.27
+=======
+
+* api-change:``chime-sdk-meetings``: Updated API documentation to include additional exceptions.
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``glue``: AWS Glue Crawlers can now accept SerDe overrides from a custom csv classifier. The two SerDe options are LazySimpleSerDe and OpenCSVSerDe. In case, the user wants crawler to do the selection, "None" can be selected for this purpose.
+* api-change:``pi``: AWS Performance Insights for Amazon RDS is launching Performance Analysis On Demand, a new feature that allows you to analyze database performance metrics and find out the performance issues. You can now use SDK to create, list, get, delete, and manage tags of performance analysis reports.
+* api-change:``route53domains``: Provide explanation if CheckDomainTransferability return false. Provide requestId if a request is already submitted.  Add sensitive protection for customer information
+* api-change:``sagemaker``: SageMaker Inference Recommender now provides SupportedResponseMIMETypes from DescribeInferenceRecommendationsJob response
+
+
 1.29.26
 =======
 

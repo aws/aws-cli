@@ -67,6 +67,13 @@ class Kubeconfig(object):
         return name in [cluster['name']
                         for cluster in self.content['clusters'] if 'name' in cluster]
 
+    def __eq__(self, other):
+        return (
+            isinstance(other, Kubeconfig)
+            and self.path == other.path
+            and self.content == other.content
+        )
+
 
 class KubeconfigValidator(object):
     def __init__(self):

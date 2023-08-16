@@ -543,7 +543,7 @@
           "documentation":"<p>The name of the domain that was specified when another Amazon Web Services account submitted a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
         },
         "Password":{
-          "shape":"String",
+          "shape":"Password",
           "documentation":"<p>The password that was returned by the <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_TransferDomainToAnotherAwsAccount.html\">TransferDomainToAnotherAwsAccount</a> request. </p>"
         }
       },
@@ -567,7 +567,8 @@
     },
     "AddressLine":{
       "type":"string",
-      "max":255
+      "max":255,
+      "sensitive":true
     },
     "AssociateDelegationSignerToDomainRequest":{
       "type":"structure",
@@ -693,13 +694,18 @@
         "Transferability":{
           "shape":"DomainTransferability",
           "documentation":"<p>A complex type that contains information about whether the specified domain can be transferred to Route 53.</p>"
+        },
+        "Message":{
+          "shape":"Message",
+          "documentation":"<p>Provides an explanation for when a domain can't be transferred.</p>"
         }
       },
       "documentation":"<p>The CheckDomainTransferability response includes the following elements.</p>"
     },
     "City":{
       "type":"string",
-      "max":255
+      "max":255,
+      "sensitive":true
     },
     "Consent":{
       "type":"structure",
@@ -784,11 +790,13 @@
     },
     "ContactName":{
       "type":"string",
-      "max":255
+      "max":255,
+      "sensitive":true
     },
     "ContactNumber":{
       "type":"string",
-      "max":30
+      "max":30,
+      "sensitive":true
     },
     "ContactType":{
       "type":"string",
@@ -1054,7 +1062,8 @@
         "ZA",
         "ZM",
         "ZW"
-      ]
+      ],
+      "sensitive":true
     },
     "Currency":{
       "type":"string",
@@ -1366,6 +1375,10 @@
     "DuplicateRequest":{
       "type":"structure",
       "members":{
+        "requestId":{
+          "shape":"RequestId",
+          "documentation":"<p>ID of the request operation.</p>"
+        },
         "message":{
           "shape":"ErrorMessage",
           "documentation":"<p>The request is already in progress for the domain.</p>"
@@ -1381,7 +1394,8 @@
     },
     "Email":{
       "type":"string",
-      "max":254
+      "max":254,
+      "sensitive":true
     },
     "EnableDomainAutoRenewRequest":{
       "type":"structure",
@@ -1908,6 +1922,7 @@
       },
       "documentation":"<p>The ListTagsForDomain response includes the following elements.</p>"
     },
+    "Message":{"type":"string"},
     "Nameserver":{
       "type":"structure",
       "required":["Name"],
@@ -2043,6 +2058,10 @@
     "PageMaxItems":{
       "type":"integer",
       "max":100
+    },
+    "Password":{
+      "type":"string",
+      "sensitive":true
     },
     "Price":{"type":"double"},
     "PriceWithCurrency":{
@@ -2207,6 +2226,7 @@
         }
       }
     },
+    "RequestId":{"type":"string"},
     "Reseller":{"type":"string"},
     "ResendContactReachabilityEmailRequest":{
       "type":"structure",
@@ -2292,7 +2312,8 @@
     },
     "State":{
       "type":"string",
-      "max":255
+      "max":255,
+      "sensitive":true
     },
     "StatusFlag":{
       "type":"string",
@@ -2451,7 +2472,7 @@
           "documentation":"<p>Identifier for tracking the progress of the request. To query the operation status, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_GetOperationDetail.html\">GetOperationDetail</a>.</p>"
         },
         "Password":{
-          "shape":"String",
+          "shape":"Password",
           "documentation":"<p>To finish transferring a domain to another Amazon Web Services account, the account that the domain is being transferred to must submit an <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_AcceptDomainTransferFromAnotherAwsAccount.html\">AcceptDomainTransferFromAnotherAwsAccount</a> request. The request must include the value of the <code>Password</code> element that was returned in the <code>TransferDomainToAnotherAwsAccount</code> response.</p>"
         }
       },
@@ -2459,7 +2480,7 @@
     },
     "Transferable":{
       "type":"string",
-      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> or <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>Reserved for future use.</p> </dd> <dt>DOMAIN_IN_OWN_ACCOUNT</dt> <dd> <p>The domain already exists in the current Amazon Web Services account.</p> </dd> <dt>DOMAIN_IN_ANOTHER_ACCOUNT</dt> <dd> <p> the domain exists in another Amazon Web Services account.</p> </dd> <dt>PREMIUM_DOMAIN</dt> <dd> <p>Premium domain transfer is not supported.</p> </dd> </dl>",
+      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> or <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>Reserved for future use.</p> </dd> <dt>DOMAIN_IN_OWN_ACCOUNT</dt> <dd> <p>The domain already exists in the current Amazon Web Services account.</p> </dd> <dt>DOMAIN_IN_ANOTHER_ACCOUNT</dt> <dd> <p> The domain exists in another Amazon Web Services account.</p> </dd> <dt>PREMIUM_DOMAIN</dt> <dd> <p>Premium domain transfer is not supported.</p> </dd> </dl>",
       "enum":[
         "TRANSFERABLE",
         "UNTRANSFERABLE",
@@ -2652,7 +2673,8 @@
     },
     "ZipCode":{
       "type":"string",
-      "max":255
+      "max":255,
+      "sensitive":true
     }
   },
   "documentation":"<p>Amazon Route 53 API actions let you register domain names and perform related operations.</p>"

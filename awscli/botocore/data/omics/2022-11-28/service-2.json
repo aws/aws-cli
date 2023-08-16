@@ -35,6 +35,28 @@
       "authtype":"v4",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
+    "AcceptShare":{
+      "name":"AcceptShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/share/{shareId}",
+        "responseCode":200
+      },
+      "input":{"shape":"AcceptShareRequest"},
+      "output":{"shape":"AcceptShareResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Accepts a share for an analytics store. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
     "BatchDeleteReadSet":{
       "name":"BatchDeleteReadSet",
       "http":{
@@ -166,6 +188,28 @@
       "authtype":"v4",
       "endpoint":{"hostPrefix":"analytics-"}
     },
+    "CreateAnnotationStoreVersion":{
+      "name":"CreateAnnotationStoreVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/annotationStore/{name}/version",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAnnotationStoreVersionRequest"},
+      "output":{"shape":"CreateAnnotationStoreVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Creates a new version of an annotation store. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
     "CreateMultipartReadSetUpload":{
       "name":"CreateMultipartReadSetUpload",
       "http":{
@@ -254,6 +298,28 @@
       "authtype":"v4",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
+    "CreateShare":{
+      "name":"CreateShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/share",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateShareRequest"},
+      "output":{"shape":"CreateShareResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Creates a share offer that can be accepted outside the account by a subscriber. The share is created by the owner and accepted by the principal subscriber. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
     "CreateVariantStore":{
       "name":"CreateVariantStore",
       "http":{
@@ -317,6 +383,28 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes an annotation store.</p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "idempotent":true
+    },
+    "DeleteAnnotationStoreVersions":{
+      "name":"DeleteAnnotationStoreVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/annotationStore/{name}/versions/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAnnotationStoreVersionsRequest"},
+      "output":{"shape":"DeleteAnnotationStoreVersionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Deletes one or multiple versions of an annotation store. </p>",
       "authtype":"v4",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
@@ -436,6 +524,29 @@
       "endpoint":{"hostPrefix":"control-storage-"},
       "idempotent":true
     },
+    "DeleteShare":{
+      "name":"DeleteShare",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/share/{shareId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteShareRequest"},
+      "output":{"shape":"DeleteShareResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Deletes a share of an analytics store. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"},
+      "idempotent":true
+    },
     "DeleteVariantStore":{
       "name":"DeleteVariantStore",
       "http":{
@@ -518,6 +629,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about an annotation store.</p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
+    "GetAnnotationStoreVersion":{
+      "name":"GetAnnotationStoreVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/annotationStore/{name}/version/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAnnotationStoreVersionRequest"},
+      "output":{"shape":"GetAnnotationStoreVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Retrieves the metadata for an annotation store version. </p>",
       "authtype":"v4",
       "endpoint":{"hostPrefix":"analytics-"}
     },
@@ -803,6 +934,28 @@
       "authtype":"v4",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
+    "GetShare":{
+      "name":"GetShare",
+      "http":{
+        "method":"GET",
+        "requestUri":"/share/{shareId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetShareRequest"},
+      "output":{"shape":"GetShareResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Retrieves the metadata for a share. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
     "GetVariantImportJob":{
       "name":"GetVariantImportJob",
       "http":{
@@ -883,6 +1036,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list of annotation import jobs.</p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
+    "ListAnnotationStoreVersions":{
+      "name":"ListAnnotationStoreVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/annotationStore/{name}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnnotationStoreVersionsRequest"},
+      "output":{"shape":"ListAnnotationStoreVersionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Lists the versions of an annotation store. </p>",
       "authtype":"v4",
       "endpoint":{"hostPrefix":"analytics-"}
     },
@@ -1186,6 +1359,28 @@
       "documentation":"<p>Retrieves a list of sequence stores.</p>",
       "authtype":"v4",
       "endpoint":{"hostPrefix":"control-storage-"}
+    },
+    "ListShares":{
+      "name":"ListShares",
+      "http":{
+        "method":"POST",
+        "requestUri":"/shares",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSharesRequest"},
+      "output":{"shape":"ListSharesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Lists all shares associated with an account. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1493,6 +1688,26 @@
       "authtype":"v4",
       "endpoint":{"hostPrefix":"analytics-"}
     },
+    "UpdateAnnotationStoreVersion":{
+      "name":"UpdateAnnotationStoreVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/annotationStore/{name}/version/{versionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAnnotationStoreVersionRequest"},
+      "output":{"shape":"UpdateAnnotationStoreVersionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Updates the description of an annotation store version. </p>",
+      "authtype":"v4",
+      "endpoint":{"hostPrefix":"analytics-"}
+    },
     "UpdateRunGroup":{
       "name":"UpdateRunGroup",
       "http":{
@@ -1613,6 +1828,27 @@
       "enum":["GPU"],
       "max":64,
       "min":1
+    },
+    "AcceptShareRequest":{
+      "type":"structure",
+      "required":["shareId"],
+      "members":{
+        "shareId":{
+          "shape":"String",
+          "documentation":"<p> The ID for a share offer for analytics store data. </p>",
+          "location":"uri",
+          "locationName":"shareId"
+        }
+      }
+    },
+    "AcceptShareResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ShareStatus",
+          "documentation":"<p> The status of an analytics store share. </p>"
+        }
+      }
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -1773,6 +2009,7 @@
       "required":[
         "id",
         "destinationName",
+        "versionName",
         "roleArn",
         "status",
         "creationTime",
@@ -1786,6 +2023,10 @@
         "destinationName":{
           "shape":"String",
           "documentation":"<p>The job's destination annotation store.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name of the annotation store version. </p>"
         },
         "roleArn":{
           "shape":"Arn",
@@ -1864,7 +2105,7 @@
           "documentation":"<p>The store's file format.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "sseConfig":{
@@ -1894,6 +2135,73 @@
       "type":"list",
       "member":{"shape":"AnnotationStoreItem"}
     },
+    "AnnotationStoreVersionItem":{
+      "type":"structure",
+      "required":[
+        "storeId",
+        "id",
+        "status",
+        "versionArn",
+        "name",
+        "versionName",
+        "description",
+        "creationTime",
+        "updateTime",
+        "statusMessage",
+        "versionSizeBytes"
+      ],
+      "members":{
+        "storeId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The store ID for an annotation store version. </p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p> The annotation store version ID. </p>"
+        },
+        "status":{
+          "shape":"VersionStatus",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        },
+        "versionArn":{
+          "shape":"Arn",
+          "documentation":"<p> The Arn for an annotation store version. </p>"
+        },
+        "name":{
+          "shape":"StoreName",
+          "documentation":"<p> A name given to an annotation store version to distinguish it from others. </p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name of an annotation store version. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> The description of an annotation store version. </p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p> The time stamp for when an annotation store version was created. </p>"
+        },
+        "updateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p> The time stamp for when an annotation store version was updated. </p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        },
+        "versionSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p> The size of an annotation store version in Bytes. </p>"
+        }
+      },
+      "documentation":"<p> Annotation store versions. </p>"
+    },
+    "AnnotationStoreVersionItems":{
+      "type":"list",
+      "member":{"shape":"AnnotationStoreVersionItem"}
+    },
     "AnnotationType":{
       "type":"string",
       "enum":[
@@ -1911,6 +2219,12 @@
       "max":2048,
       "min":20,
       "pattern":"arn:([^: ]*):([^: ]*):([^: ]*):([0-9]{12}):([^: ]*)"
+    },
+    "ArnList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":1
     },
     "BatchDeleteReadSetRequest":{
       "type":"structure",
@@ -2097,16 +2411,20 @@
           "documentation":"<p>The genome reference for the store's annotations.</p>"
         },
         "name":{
-          "shape":"CreateAnnotationStoreRequestNameString",
+          "shape":"StoreName",
           "documentation":"<p>A name for the store.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>A description for the store.</p>"
         },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags for the store.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from other versions. </p>"
         },
         "sseConfig":{
           "shape":"SseConfig",
@@ -2122,16 +2440,13 @@
         }
       }
     },
-    "CreateAnnotationStoreRequestNameString":{
-      "type":"string",
-      "pattern":"([a-z]){1}([a-z0-9_]){2,254}"
-    },
     "CreateAnnotationStoreResponse":{
       "type":"structure",
       "required":[
         "id",
         "status",
         "name",
+        "versionName",
         "creationTime"
       ],
       "members":{
@@ -2159,9 +2474,85 @@
           "shape":"String",
           "documentation":"<p>The store's name.</p>"
         },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from other versions. </p>"
+        },
         "creationTime":{
           "shape":"CreationTime",
           "documentation":"<p>When the store was created.</p>"
+        }
+      }
+    },
+    "CreateAnnotationStoreVersionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "versionName"
+      ],
+      "members":{
+        "name":{
+          "shape":"StoreName",
+          "documentation":"<p> The name of an annotation store version from which versions are being created. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from other versions. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> The description of an annotation store version. </p>"
+        },
+        "versionOptions":{
+          "shape":"VersionOptions",
+          "documentation":"<p> The options for an annotation store version. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p> Any tags added to annotation store version. </p>"
+        }
+      }
+    },
+    "CreateAnnotationStoreVersionResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "versionName",
+        "storeId",
+        "name",
+        "status",
+        "creationTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p> A generated ID for the annotation store </p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from other versions. </p>"
+        },
+        "storeId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID for the annotation store from which new versions are being created. </p>"
+        },
+        "versionOptions":{
+          "shape":"VersionOptions",
+          "documentation":"<p> The options for an annotation store version. </p>"
+        },
+        "name":{
+          "shape":"StoreName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from other versions. </p>"
+        },
+        "status":{
+          "shape":"VersionStatus",
+          "documentation":"<p> The status of a annotation store version. </p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p> The time stamp for the creation of an annotation store version. </p>"
         }
       }
     },
@@ -2482,6 +2873,44 @@
         }
       }
     },
+    "CreateShareRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "principalSubscriber"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p> The resource ARN for the analytics store to be shared. </p>"
+        },
+        "principalSubscriber":{
+          "shape":"String",
+          "documentation":"<p> The principal subscriber is the account being given access to the analytics store data through the share offer. </p>"
+        },
+        "shareName":{
+          "shape":"ShareName",
+          "documentation":"<p> A name given to the share. </p>"
+        }
+      }
+    },
+    "CreateShareResponse":{
+      "type":"structure",
+      "members":{
+        "shareId":{
+          "shape":"String",
+          "documentation":"<p> An ID generated for the share. </p>"
+        },
+        "status":{
+          "shape":"ShareStatus",
+          "documentation":"<p> The status of a share. </p>"
+        },
+        "shareName":{
+          "shape":"ShareName",
+          "documentation":"<p> A name given to the share. </p>"
+        }
+      }
+    },
     "CreateVariantStoreRequest":{
       "type":"structure",
       "required":["reference"],
@@ -2491,11 +2920,11 @@
           "documentation":"<p>The genome reference for the store's variants.</p>"
         },
         "name":{
-          "shape":"CreateVariantStoreRequestNameString",
+          "shape":"StoreName",
           "documentation":"<p>A name for the store.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>A description for the store.</p>"
         },
         "tags":{
@@ -2507,10 +2936,6 @@
           "documentation":"<p>Server-side encryption (SSE) settings for the store.</p>"
         }
       }
-    },
-    "CreateVariantStoreRequestNameString":{
-      "type":"string",
-      "pattern":"([a-z]){1}([a-z0-9_]){2,254}"
     },
     "CreateVariantStoreResponse":{
       "type":"structure",
@@ -2660,6 +3085,40 @@
         }
       }
     },
+    "DeleteAnnotationStoreVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "versions"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name of the annotation store from which versions are being deleted. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versions":{
+          "shape":"VersionList",
+          "documentation":"<p> The versions of an annotation store to be deleted. </p>"
+        },
+        "force":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p> Forces the deletion of an annotation store version when imports are in-progress.. </p>",
+          "location":"querystring",
+          "locationName":"force"
+        }
+      }
+    },
+    "DeleteAnnotationStoreVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "errors":{
+          "shape":"VersionDeleteErrorList",
+          "documentation":"<p> Any errors that occur when attempting to delete an annotation store version. </p>"
+        }
+      }
+    },
     "DeleteReferenceRequest":{
       "type":"structure",
       "required":[
@@ -2744,6 +3203,27 @@
       "members":{
       }
     },
+    "DeleteShareRequest":{
+      "type":"structure",
+      "required":["shareId"],
+      "members":{
+        "shareId":{
+          "shape":"String",
+          "documentation":"<p> The ID for the share request to be deleted. </p>",
+          "location":"uri",
+          "locationName":"shareId"
+        }
+      }
+    },
+    "DeleteShareResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ShareStatus",
+          "documentation":"<p> The status of the share being deleted. </p>"
+        }
+      }
+    },
     "DeleteVariantStoreRequest":{
       "type":"structure",
       "required":["name"],
@@ -2783,6 +3263,11 @@
           "locationName":"id"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":500,
+      "min":0
     },
     "Encoding":{
       "type":"string",
@@ -2945,6 +3430,20 @@
         "CRAM"
       ]
     },
+    "Filter":{
+      "type":"structure",
+      "members":{
+        "resourceArns":{
+          "shape":"ArnList",
+          "documentation":"<p> The Amazon Resource Number (Arn) for an analytics store. </p>"
+        },
+        "status":{
+          "shape":"StatusList",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        }
+      },
+      "documentation":"<p> Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store. </p>"
+    },
     "FormatOptions":{
       "type":"structure",
       "members":{
@@ -3004,6 +3503,7 @@
       "required":[
         "id",
         "destinationName",
+        "versionName",
         "roleArn",
         "status",
         "statusMessage",
@@ -3022,6 +3522,10 @@
         "destinationName":{
           "shape":"StoreName",
           "documentation":"<p>The job's destination annotation store.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name of the annotation store version. </p>"
         },
         "roleArn":{
           "shape":"Arn",
@@ -3088,7 +3592,8 @@
         "updateTime",
         "tags",
         "statusMessage",
-        "storeSizeBytes"
+        "storeSizeBytes",
+        "numVersions"
       ],
       "members":{
         "id":{
@@ -3112,7 +3617,7 @@
           "documentation":"<p>The store's name.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "sseConfig":{
@@ -3146,6 +3651,102 @@
         "storeSizeBytes":{
           "shape":"Long",
           "documentation":"<p>The store's size in bytes.</p>"
+        },
+        "numVersions":{
+          "shape":"Integer",
+          "documentation":"<p> An integer indicating how many versions of an annotation store exist. </p>"
+        }
+      }
+    },
+    "GetAnnotationStoreVersionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "versionName"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from others. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionName":{
+          "shape":"String",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from others. </p>",
+          "location":"uri",
+          "locationName":"versionName"
+        }
+      }
+    },
+    "GetAnnotationStoreVersionResponse":{
+      "type":"structure",
+      "required":[
+        "storeId",
+        "id",
+        "status",
+        "versionArn",
+        "name",
+        "versionName",
+        "description",
+        "creationTime",
+        "updateTime",
+        "tags",
+        "statusMessage",
+        "versionSizeBytes"
+      ],
+      "members":{
+        "storeId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The store ID for annotation store version. </p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p> The annotation store version ID. </p>"
+        },
+        "status":{
+          "shape":"VersionStatus",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        },
+        "versionArn":{
+          "shape":"Arn",
+          "documentation":"<p> The Arn for the annotation store. </p>"
+        },
+        "name":{
+          "shape":"StoreName",
+          "documentation":"<p> The name of the annotation store. </p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version to distinguish it from others. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> The description for an annotation store version. </p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p> The time stamp for when an annotation store version was created. </p>"
+        },
+        "updateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p> The time stamp for when an annotation store version was updated. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p> Any tags associated with an annotation store version. </p>"
+        },
+        "versionOptions":{
+          "shape":"VersionOptions",
+          "documentation":"<p> The options for an annotation store version. </p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        },
+        "versionSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p> The size of the annotation store version in Bytes. </p>"
         }
       }
     },
@@ -4073,6 +4674,27 @@
         }
       }
     },
+    "GetShareRequest":{
+      "type":"structure",
+      "required":["shareId"],
+      "members":{
+        "shareId":{
+          "shape":"String",
+          "documentation":"<p> The generated ID for a share. </p>",
+          "location":"uri",
+          "locationName":"shareId"
+        }
+      }
+    },
+    "GetShareResponse":{
+      "type":"structure",
+      "members":{
+        "share":{
+          "shape":"ShareDetails",
+          "documentation":"<p> An analytic store share details object. contains status, resourceArn, ownerId, etc. </p>"
+        }
+      }
+    },
     "GetVariantImportRequest":{
       "type":"structure",
       "required":["jobId"],
@@ -4195,7 +4817,7 @@
           "documentation":"<p>The store's name.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "sseConfig":{
@@ -4548,6 +5170,10 @@
       "type":"list",
       "member":{"shape":"ImportReferenceSourceItem"}
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -4649,6 +5275,68 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Specifies the pagination token from a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListAnnotationStoreVersionsFilter":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"VersionStatus",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        }
+      },
+      "documentation":"<p> Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store. </p>"
+    },
+    "ListAnnotationStoreVersionsRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name of an annotation store. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "maxResults":{
+          "shape":"ListAnnotationStoreVersionsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of annotation store versions to return in one page of results. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"ListAnnotationStoreVersionsRequestNextTokenString",
+          "documentation":"<p> Specifies the pagination token from a previous request to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "filter":{
+          "shape":"ListAnnotationStoreVersionsFilter",
+          "documentation":"<p> A filter to apply to the list of annotation store versions. </p>"
+        }
+      }
+    },
+    "ListAnnotationStoreVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAnnotationStoreVersionsRequestNextTokenString":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
+    "ListAnnotationStoreVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "annotationStoreVersions":{
+          "shape":"AnnotationStoreVersionItems",
+          "documentation":"<p> Lists all versions of an annotation store. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> Specifies the pagination token from a previous request to retrieve the next page of results. </p>"
         }
       }
     },
@@ -5329,6 +6017,46 @@
         "sequenceStores":{
           "shape":"SequenceStoreDetailList",
           "documentation":"<p>A list of sequence stores.</p>"
+        }
+      }
+    },
+    "ListSharesRequest":{
+      "type":"structure",
+      "required":["resourceOwner"],
+      "members":{
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p> The account that owns the analytics store shared. </p>"
+        },
+        "filter":{
+          "shape":"Filter",
+          "documentation":"<p> Attributes used to filter for a specific subset of shares. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> Next token returned in the response of a previous ListReadSetUploadPartsRequest call. Used to get the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum number of shares to return in one page of results. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSharesResponse":{
+      "type":"structure",
+      "required":["shares"],
+      "members":{
+        "shares":{
+          "shape":"ShareDetailsList",
+          "documentation":"<p> The shares available and their meta details. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> Next token returned in the response of a previous ListSharesResponse call. Used to get the next page of results. </p>"
         }
       }
     },
@@ -6338,6 +7066,13 @@
       },
       "exception":true
     },
+    "ResourceOwner":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "OTHER"
+      ]
+    },
     "RoleArn":{
       "type":"string",
       "max":2048,
@@ -6784,6 +7519,69 @@
       },
       "exception":true
     },
+    "ShareDetails":{
+      "type":"structure",
+      "members":{
+        "shareId":{
+          "shape":"String",
+          "documentation":"<p> The ID for a share offer for an analytics store . </p>"
+        },
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p> The resource Arn of the analytics store being shared. </p>"
+        },
+        "principalSubscriber":{
+          "shape":"String",
+          "documentation":"<p> The principal subscriber is the account the analytics store data is being shared with. </p>"
+        },
+        "ownerId":{
+          "shape":"String",
+          "documentation":"<p> The account ID for the data owner. The owner creates the share offer. </p>"
+        },
+        "status":{
+          "shape":"ShareStatus",
+          "documentation":"<p> The status of a share. </p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p> The status message for a share. It provides more details on the status of the share. </p>"
+        },
+        "shareName":{
+          "shape":"ShareName",
+          "documentation":"<p> The name of the share. </p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p> The timestamp for when the share was created. </p>"
+        },
+        "updateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p> The timestamp of the share update. </p>"
+        }
+      },
+      "documentation":"<p> The details of a share. </p>"
+    },
+    "ShareDetailsList":{
+      "type":"list",
+      "member":{"shape":"ShareDetails"}
+    },
+    "ShareName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ShareStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ACTIVATING",
+        "ACTIVE",
+        "DELETING",
+        "DELETED",
+        "FAILED"
+      ]
+    },
     "SourceFiles":{
       "type":"structure",
       "required":["source1"],
@@ -6839,6 +7637,10 @@
         "items":{
           "shape":"AnnotationImportItemSources",
           "documentation":"<p>Items to import.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name of the annotation store version. </p>"
         },
         "formatOptions":{
           "shape":"FormatOptions",
@@ -7344,14 +8146,13 @@
         }
       }
     },
+    "StatusList":{
+      "type":"list",
+      "member":{"shape":"ShareStatus"}
+    },
     "StatusMessage":{
       "type":"string",
       "max":1000,
-      "min":0
-    },
-    "StoreDescription":{
-      "type":"string",
-      "max":500,
       "min":0
     },
     "StoreFormat":{
@@ -7618,6 +8419,30 @@
       "max":5000,
       "min":1
     },
+    "TsvVersionOptions":{
+      "type":"structure",
+      "members":{
+        "annotationType":{
+          "shape":"AnnotationType",
+          "documentation":"<p> The store version's annotation type. </p>"
+        },
+        "formatToHeader":{
+          "shape":"FormatToHeader",
+          "documentation":"<p> The annotation store version's header key to column name mapping. </p>"
+        },
+        "schema":{
+          "shape":"TsvVersionOptionsSchemaList",
+          "documentation":"<p> The TSV schema for an annotation store version. </p>"
+        }
+      },
+      "documentation":"<p> The options for a TSV file. </p>"
+    },
+    "TsvVersionOptionsSchemaList":{
+      "type":"list",
+      "member":{"shape":"SchemaItem"},
+      "max":5000,
+      "min":1
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -7655,7 +8480,7 @@
           "locationName":"name"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>A description for the store.</p>"
         }
       }
@@ -7689,7 +8514,7 @@
           "documentation":"<p>The store's name.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "creationTime":{
@@ -7707,6 +8532,78 @@
         "storeFormat":{
           "shape":"StoreFormat",
           "documentation":"<p>The annotation file format of the store.</p>"
+        }
+      }
+    },
+    "UpdateAnnotationStoreVersionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "versionName"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name of an annotation store. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionName":{
+          "shape":"String",
+          "documentation":"<p> The name of an annotation store version. </p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> The description of an annotation store. </p>"
+        }
+      }
+    },
+    "UpdateAnnotationStoreVersionResponse":{
+      "type":"structure",
+      "required":[
+        "storeId",
+        "id",
+        "status",
+        "name",
+        "versionName",
+        "description",
+        "creationTime",
+        "updateTime"
+      ],
+      "members":{
+        "storeId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The annotation store ID. </p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p> The annotation store version ID. </p>"
+        },
+        "status":{
+          "shape":"VersionStatus",
+          "documentation":"<p> The status of an annotation store version. </p>"
+        },
+        "name":{
+          "shape":"StoreName",
+          "documentation":"<p> The name of an annotation store. </p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name of an annotation store version. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> The description of an annotation store version. </p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p> The time stamp for when an annotation store version was created. </p>"
+        },
+        "updateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p> The time stamp for when an annotation store version was updated. </p>"
         }
       }
     },
@@ -7781,7 +8678,7 @@
           "locationName":"name"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>A description for the store.</p>"
         }
       }
@@ -7815,7 +8712,7 @@
           "documentation":"<p>The store's name.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "creationTime":{
@@ -8058,7 +8955,7 @@
           "documentation":"<p>The store's name.</p>"
         },
         "description":{
-          "shape":"StoreDescription",
+          "shape":"Description",
           "documentation":"<p>The store's description.</p>"
         },
         "sseConfig":{
@@ -8101,6 +8998,61 @@
         }
       },
       "documentation":"<p>Formatting options for a VCF file.</p>"
+    },
+    "VersionDeleteError":{
+      "type":"structure",
+      "required":[
+        "versionName",
+        "message"
+      ],
+      "members":{
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p> The name given to an annotation store version. </p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p> The message explaining the error in annotation store deletion. </p>"
+        }
+      },
+      "documentation":"<p> The error preventing deletion of the annotation store version. </p>"
+    },
+    "VersionDeleteErrorList":{
+      "type":"list",
+      "member":{"shape":"VersionDeleteError"}
+    },
+    "VersionList":{
+      "type":"list",
+      "member":{"shape":"VersionName"},
+      "max":10,
+      "min":1
+    },
+    "VersionName":{
+      "type":"string",
+      "max":255,
+      "min":3,
+      "pattern":"([a-z]){1}([a-z0-9_]){2,254}"
+    },
+    "VersionOptions":{
+      "type":"structure",
+      "members":{
+        "tsvVersionOptions":{
+          "shape":"TsvVersionOptions",
+          "documentation":"<p> File settings for a version of a TSV store. </p>"
+        }
+      },
+      "documentation":"<p> The options for an annotation store version. </p>",
+      "union":true
+    },
+    "VersionStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "ACTIVE",
+        "FAILED"
+      ]
     },
     "WorkflowArn":{
       "type":"string",

@@ -14,6 +14,36 @@
     "uid":"pi-2018-02-27"
   },
   "operations":{
+    "CreatePerformanceAnalysisReport":{
+      "name":"CreatePerformanceAnalysisReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePerformanceAnalysisReportRequest"},
+      "output":{"shape":"CreatePerformanceAnalysisReportResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Creates a new performance analysis report for a specific time period for the DB instance.</p>"
+    },
+    "DeletePerformanceAnalysisReport":{
+      "name":"DeletePerformanceAnalysisReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeletePerformanceAnalysisReportRequest"},
+      "output":{"shape":"DeletePerformanceAnalysisReportResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Deletes a performance analysis report.</p>"
+    },
     "DescribeDimensionKeys":{
       "name":"DescribeDimensionKeys",
       "http":{
@@ -43,6 +73,21 @@
         {"shape":"NotAuthorizedException"}
       ],
       "documentation":"<p>Get the attributes of the specified dimension group for a DB instance or data source. For example, if you specify a SQL ID, <code>GetDimensionKeyDetails</code> retrieves the full text of the dimension <code>db.sql.statement</code> associated with this ID. This operation is useful because <code>GetResourceMetrics</code> and <code>DescribeDimensionKeys</code> don't support retrieval of large SQL statement text.</p>"
+    },
+    "GetPerformanceAnalysisReport":{
+      "name":"GetPerformanceAnalysisReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetPerformanceAnalysisReportRequest"},
+      "output":{"shape":"GetPerformanceAnalysisReportResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Retrieves the report including the report ID, status, time details, and the insights with recommendations. The report status can be <code>RUNNING</code>, <code>SUCCEEDED</code>, or <code>FAILED</code>. The insights include the <code>description</code> and <code>recommendation</code> fields. </p>"
     },
     "GetResourceMetadata":{
       "name":"GetResourceMetadata",
@@ -103,9 +148,73 @@
         {"shape":"NotAuthorizedException"}
       ],
       "documentation":"<p>Retrieve metrics of the specified types that can be queried for a specified DB instance. </p>"
+    },
+    "ListPerformanceAnalysisReports":{
+      "name":"ListPerformanceAnalysisReports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPerformanceAnalysisReportsRequest"},
+      "output":{"shape":"ListPerformanceAnalysisReportsResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Lists all the analysis reports created for the DB instance. The reports are sorted based on the start time of each report.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Retrieves all the metadata tags associated with Amazon RDS Performance Insights resource.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Adds metadata tags to the Amazon RDS Performance Insights resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"NotAuthorizedException"}
+      ],
+      "documentation":"<p>Deletes the metadata tags from the Amazon RDS Performance Insights resource.</p>"
     }
   },
   "shapes":{
+    "AcceptLanguage":{
+      "type":"string",
+      "enum":["EN_US"]
+    },
     "AdditionalMetricsList":{
       "type":"list",
       "member":{"shape":"RequestString"},
@@ -116,6 +225,161 @@
       "type":"map",
       "key":{"shape":"RequestString"},
       "value":{"shape":"Double"}
+    },
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^arn:.*:pi:.*$"
+    },
+    "AnalysisReport":{
+      "type":"structure",
+      "required":["AnalysisReportId"],
+      "members":{
+        "AnalysisReportId":{
+          "shape":"AnalysisReportId",
+          "documentation":"<p>The name of the analysis report.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>The unique identifier of the analysis report.</p>"
+        },
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>List the tags for the Amazon Web Services service for which Performance Insights returns metrics. Valid values are as follows:</p> <ul> <li> <p> <code>RDS</code> </p> </li> <li> <p> <code>DOCDB</code> </p> </li> </ul>"
+        },
+        "CreateTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The time you created the analysis report.</p>"
+        },
+        "StartTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The analysis start time in the report.</p>"
+        },
+        "EndTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The analysis end time in the report.</p>"
+        },
+        "Status":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of the created analysis report.</p>"
+        },
+        "Insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of identified insights in the analysis report.</p>"
+        }
+      },
+      "documentation":"<p>Retrieves the summary of the performance analysis report created for a time period.</p>"
+    },
+    "AnalysisReportId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"report-[0-9a-f]{17}"
+    },
+    "AnalysisReportSummary":{
+      "type":"structure",
+      "members":{
+        "AnalysisReportId":{
+          "shape":"String",
+          "documentation":"<p>The name of the analysis report.</p>"
+        },
+        "CreateTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The time you created the analysis report.</p>"
+        },
+        "StartTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The start time of the analysis in the report.</p>"
+        },
+        "EndTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The end time of the analysis in the report.</p>"
+        },
+        "Status":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of the analysis report.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>List of all the tags added to the analysis report.</p>"
+        }
+      },
+      "documentation":"<p>Retrieves the details of the performance analysis report.</p>"
+    },
+    "AnalysisReportSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnalysisReportSummary"}
+    },
+    "AnalysisStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "Boolean":{"type":"boolean"},
+    "ContextType":{
+      "type":"string",
+      "enum":[
+        "CAUSAL",
+        "CONTEXTUAL"
+      ]
+    },
+    "CreatePerformanceAnalysisReportRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "Identifier",
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights will return metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>An immutable, Amazon Web Services Region-unique identifier for a data source. Performance Insights gathers metrics from this data source.</p> <p>To use an Amazon RDS instance as a data source, you specify its <code>DbiResourceId</code> value. For example, specify <code>db-ADECBTYHKTSAUMUZQYPDS2GW4A</code>.</p>"
+        },
+        "StartTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The start time defined for the analysis report.</p>"
+        },
+        "EndTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The end time defined for the analysis report.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata assigned to the analysis report consisting of a key-value pair.</p>"
+        }
+      }
+    },
+    "CreatePerformanceAnalysisReportResponse":{
+      "type":"structure",
+      "members":{
+        "AnalysisReportId":{
+          "shape":"AnalysisReportId",
+          "documentation":"<p>A unique identifier for the created analysis report.</p>"
+        }
+      }
+    },
+    "Data":{
+      "type":"structure",
+      "members":{
+        "PerformanceInsightsMetric":{
+          "shape":"PerformanceInsightsMetric",
+          "documentation":"<p>This field determines the Performance Insights metric to render for the insight. The <code>name</code> field refers to a Performance Insights metric. </p>"
+        }
+      },
+      "documentation":"<p>List of data objects which provide details about source metrics. This field can be used to determine the PI metric to render for the insight. This data type also includes static values for the metrics for the Insight that were calculated and included in text and annotations on the DB load chart.</p>"
+    },
+    "DataList":{
+      "type":"list",
+      "member":{"shape":"Data"}
     },
     "DataPoint":{
       "type":"structure",
@@ -139,6 +403,33 @@
       "type":"list",
       "member":{"shape":"DataPoint"}
     },
+    "DeletePerformanceAnalysisReportRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "Identifier",
+        "AnalysisReportId"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights will return metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as <i>ResourceID</i>. When you call <code>DescribeDBInstances</code>, the identifier is returned as <code>DbiResourceId</code>.</p> <p>To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>.</p>"
+        },
+        "AnalysisReportId":{
+          "shape":"AnalysisReportId",
+          "documentation":"<p>The unique identifier of the analysis report for deletion.</p>"
+        }
+      }
+    },
+    "DeletePerformanceAnalysisReportResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DescribeDimensionKeysRequest":{
       "type":"structure",
       "required":[
@@ -155,7 +446,7 @@
           "documentation":"<p>The Amazon Web Services service for which Performance Insights will return metrics. Valid values are as follows:</p> <ul> <li> <p> <code>RDS</code> </p> </li> <li> <p> <code>DOCDB</code> </p> </li> </ul>"
         },
         "Identifier":{
-          "shape":"RequestString",
+          "shape":"IdentifierString",
           "documentation":"<p>An immutable, Amazon Web Services Region-unique identifier for a data source. Performance Insights gathers metrics from this data source.</p> <p>To use an Amazon RDS instance as a data source, you specify its <code>DbiResourceId</code> value. For example, specify <code>db-FAIHNTYBKTGAUSUZQYPDS2GW4A</code>. </p>"
         },
         "StartTime":{
@@ -229,6 +520,17 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "DescriptiveMap":{
+      "type":"map",
+      "key":{"shape":"DescriptiveString"},
+      "value":{"shape":"DescriptiveString"}
+    },
+    "DescriptiveString":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"^.*$"
     },
     "DetailStatus":{
       "type":"string",
@@ -416,6 +718,45 @@
         }
       }
     },
+    "GetPerformanceAnalysisReportRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "Identifier",
+        "AnalysisReportId"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights will return metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as <i>ResourceID</i>. When you call <code>DescribeDBInstances</code>, the identifier is returned as <code>DbiResourceId</code>.</p> <p>To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>.</p>"
+        },
+        "AnalysisReportId":{
+          "shape":"AnalysisReportId",
+          "documentation":"<p>A unique identifier of the created analysis report. For example, <code>report-12345678901234567</code> </p>"
+        },
+        "TextFormat":{
+          "shape":"TextFormat",
+          "documentation":"<p>Indicates the text format in the report. The options are <code>PLAIN_TEXT</code> or <code>MARKDOWN</code>. The default value is <code>plain text</code>.</p>"
+        },
+        "AcceptLanguage":{
+          "shape":"AcceptLanguage",
+          "documentation":"<p>The text language in the report. The default language is <code>EN_US</code> (English). </p>"
+        }
+      }
+    },
+    "GetPerformanceAnalysisReportResponse":{
+      "type":"structure",
+      "members":{
+        "AnalysisReport":{
+          "shape":"AnalysisReport",
+          "documentation":"<p>The summary of the performance analysis report created for a time period.</p>"
+        }
+      }
+    },
     "GetResourceMetadataRequest":{
       "type":"structure",
       "required":[
@@ -428,7 +769,7 @@
           "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics.</p>"
         },
         "Identifier":{
-          "shape":"RequestString",
+          "shape":"IdentifierString",
           "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>. </p>"
         }
       }
@@ -461,7 +802,7 @@
           "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics. Valid values are as follows:</p> <ul> <li> <p> <code>RDS</code> </p> </li> <li> <p> <code>DOCDB</code> </p> </li> </ul>"
         },
         "Identifier":{
-          "shape":"RequestString",
+          "shape":"IdentifierString",
           "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as <i>ResourceID</i>. When you call <code>DescribeDBInstances</code>, the identifier is returned as <code>DbiResourceId</code>.</p> <p>To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>.</p>"
         },
         "MetricQueries":{
@@ -524,7 +865,62 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^db-[a-zA-Z0-9-]*$"
+      "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "Insight":{
+      "type":"structure",
+      "required":["InsightId"],
+      "members":{
+        "InsightId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the insight. For example, <code>insight-12345678901234567</code>.</p>"
+        },
+        "InsightType":{
+          "shape":"String",
+          "documentation":"<p>The type of insight. For example, <code>HighDBLoad</code>, <code>HighCPU</code>, or <code>DominatingSQLs</code>.</p>"
+        },
+        "Context":{
+          "shape":"ContextType",
+          "documentation":"<p>Indicates if the insight is causal or correlated insight.</p>"
+        },
+        "StartTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The start time of the insight. For example, <code>2018-10-30T00:00:00Z</code>.</p>"
+        },
+        "EndTime":{
+          "shape":"ISOTimestamp",
+          "documentation":"<p>The end time of the insight. For example, <code>2018-10-30T00:00:00Z</code>.</p>"
+        },
+        "Severity":{
+          "shape":"Severity",
+          "documentation":"<p>The severity of the insight. The values are: <code>Low</code>, <code>Medium</code>, or <code>High</code>.</p>"
+        },
+        "SupportingInsights":{
+          "shape":"InsightList",
+          "documentation":"<p>List of supporting insights that provide additional factors for the insight.</p>"
+        },
+        "Description":{
+          "shape":"MarkdownString",
+          "documentation":"<p>Description of the insight. For example: <code>A high severity Insight found between 02:00 to 02:30, where there was an unusually high DB load 600x above baseline. Likely performance impact</code>.</p>"
+        },
+        "Recommendations":{
+          "shape":"RecommendationList",
+          "documentation":"<p>List of recommendations for the insight. For example, <code>Investigate the following SQLs that contributed to 100% of the total DBLoad during that time period: sql-id</code>.</p>"
+        },
+        "InsightData":{
+          "shape":"DataList",
+          "documentation":"<p>List of data objects containing metrics and references from the time range while generating the insight.</p>"
+        },
+        "BaselineData":{
+          "shape":"DataList",
+          "documentation":"<p> Metric names and values from the timeframe used as baseline to generate the insight.</p>"
+        }
+      },
+      "documentation":"<p>Retrieves the list of performance issues which are identified.</p>"
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"}
     },
     "Integer":{"type":"integer"},
     "InternalServiceError":{
@@ -562,7 +958,7 @@
           "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics.</p>"
         },
         "Identifier":{
-          "shape":"RequestString",
+          "shape":"IdentifierString",
           "documentation":"<p>An immutable identifier for a data source that is unique within an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use an Amazon RDS DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VWZ</code>. </p>"
         },
         "Metrics":{
@@ -605,7 +1001,7 @@
           "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics.</p>"
         },
         "Identifier":{
-          "shape":"RequestString",
+          "shape":"IdentifierString",
           "documentation":"<p>An immutable identifier for a data source that is unique within an Amazon Web Services Region. Performance Insights gathers metrics from this data source. To use an Amazon RDS DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VWZ</code>. </p>"
         },
         "MetricTypes":{
@@ -634,6 +1030,81 @@
           "documentation":"<p>A pagination token that indicates the response didn’t return all available records because <code>MaxRecords</code> was specified in the previous request. To get the remaining records, specify <code>NextToken</code> in a separate request with this value. </p>"
         }
       }
+    },
+    "ListPerformanceAnalysisReportsRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "Identifier"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"IdentifierString",
+          "documentation":"<p>An immutable identifier for a data source that is unique for an Amazon Web Services Region. Performance Insights gathers metrics from this data source. In the console, the identifier is shown as <i>ResourceID</i>. When you call <code>DescribeDBInstances</code>, the identifier is returned as <code>DbiResourceId</code>.</p> <p>To use a DB instance as a data source, specify its <code>DbiResourceId</code> value. For example, specify <code>db-ABCDEFGHIJKLMNOPQRSTU1VW2X</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>MaxResults</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the response. If more items exist than the specified <code>MaxResults</code> value, a pagination token is included in the response so that the remaining results can be retrieved. </p>"
+        },
+        "ListTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether or not to include the list of tags in the response.</p>"
+        }
+      }
+    },
+    "ListPerformanceAnalysisReportsResponse":{
+      "type":"structure",
+      "members":{
+        "AnalysisReports":{
+          "shape":"AnalysisReportSummaryList",
+          "documentation":"<p>List of reports including the report identifier, start and end time, creation time, and status.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the token, up to the value specified by <code>MaxResults</code>.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "ResourceARN"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>List the tags for the Amazon Web Services service for which Performance Insights returns metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>Lists all the tags for the Amazon RDS Performance Insights resource. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing\"> Constructing an RDS Amazon Resource Name (ARN)</a>.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p>"
+        }
+      }
+    },
+    "MarkdownString":{
+      "type":"string",
+      "max":8000,
+      "min":0,
+      "pattern":"(.|\\n)*",
+      "sensitive":true
     },
     "MaxResults":{
       "type":"integer",
@@ -718,7 +1189,7 @@
       "type":"string",
       "max":8192,
       "min":1,
-      "pattern":"[\\s\\S]*"
+      "pattern":"^[a-zA-Z0-9_=-]+$"
     },
     "NotAuthorizedException":{
       "type":"structure",
@@ -728,12 +1199,52 @@
       "documentation":"<p>The user is not authorized to perform this request.</p>",
       "exception":true
     },
+    "PerformanceInsightsMetric":{
+      "type":"structure",
+      "members":{
+        "Metric":{
+          "shape":"DescriptiveString",
+          "documentation":"<p>The Performance Insights metric.</p>"
+        },
+        "DisplayName":{
+          "shape":"DescriptiveString",
+          "documentation":"<p>The Performance Insights metric name.</p>"
+        },
+        "Dimensions":{
+          "shape":"DescriptiveMap",
+          "documentation":"<p>A dimension map that contains the dimensions for this partition.</p>"
+        },
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The value of the metric. For example, <code>9</code> for <code>db.load.avg</code>.</p>"
+        }
+      },
+      "documentation":"<p>This data type helps to determine Performance Insights metric to render for the insight.</p>"
+    },
     "PeriodAlignment":{
       "type":"string",
       "enum":[
         "END_TIME",
         "START_TIME"
       ]
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the recommendation.</p>"
+        },
+        "RecommendationDescription":{
+          "shape":"MarkdownString",
+          "documentation":"<p>The recommendation details to help resolve the performance issue. For example, <code>Investigate the following SQLs that contributed to 100% of the total DBLoad during that time period: sql-id</code> </p>"
+        }
+      },
+      "documentation":"<p>The list of recommendations for the insight.</p>"
+    },
+    "RecommendationList":{
+      "type":"list",
+      "member":{"shape":"Recommendation"}
     },
     "RequestString":{
       "type":"string",
@@ -812,11 +1323,122 @@
         "DOCDB"
       ]
     },
+    "Severity":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
     "String":{
       "type":"string",
       "max":256,
       "min":0,
       "pattern":".*\\S.*"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>A key is the required name of the tag. The string value can be from 1 to 128 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: <code>\"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\"</code>).</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\").</p>"
+        }
+      },
+      "documentation":"<p>Metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^.*$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>The Amazon Web Services service for which Performance Insights returns metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon RDS Performance Insights resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing\"> Constructing an RDS Amazon Resource Name (ARN)</a>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "TextFormat":{
+      "type":"string",
+      "enum":[
+        "PLAIN_TEXT",
+        "MARKDOWN"
+      ]
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceType",
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ServiceType":{
+          "shape":"ServiceType",
+          "documentation":"<p>List the tags for the Amazon Web Services service for which Performance Insights returns metrics. Valid value is <code>RDS</code>.</p>"
+        },
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon RDS Performance Insights resource that the tags are added to. This value is an Amazon Resource Name (ARN). For information about creating an ARN, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.ARN.html#USER_Tagging.ARN.Constructing\"> Constructing an RDS Amazon Resource Name (ARN)</a>.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The metadata assigned to an Amazon RDS Performance Insights resource consisting of a key-value pair.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     }
   },
   "documentation":"<fullname>Amazon RDS Performance Insights</fullname> <p>Amazon RDS Performance Insights enables you to monitor and explore different dimensions of database load based on data captured from a running DB instance. The guide provides detailed information about Performance Insights data types, parameters and errors.</p> <p>When Performance Insights is enabled, the Amazon RDS Performance Insights API provides visibility into the performance of your DB instance. Amazon CloudWatch provides the authoritative source for Amazon Web Services service-vended monitoring metrics. Performance Insights offers a domain-specific view of DB load.</p> <p>DB load is measured as average active sessions. Performance Insights provides the data to API consumers as a two-dimensional time-series dataset. The time dimension provides DB load data for each time point in the queried time range. Each time point decomposes overall load in relation to the requested dimensions, measured at that time point. Examples include SQL, Wait event, User, and Host.</p> <ul> <li> <p>To learn more about Performance Insights and Amazon Aurora DB instances, go to the <i> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html\"> Amazon Aurora User Guide</a> </i>. </p> </li> <li> <p>To learn more about Performance Insights and Amazon RDS DB instances, go to the <i> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\"> Amazon RDS User Guide</a> </i>. </p> </li> <li> <p>To learn more about Performance Insights and Amazon DocumentDB clusters, go to the <i> <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/performance-insights.html\"> Amazon DocumentDB Developer Guide</a> </i>.</p> </li> </ul>"

@@ -2442,7 +2442,7 @@
         {"shape":"UnsupportedPricingPlanException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Starts an asynchronous job that generates a dashboard snapshot. You can request up to one paginated PDF and up to five CSVs per API call.</p> <p>Poll job descriptions with a <code>DescribeDashboardSnapshotJob</code> API call. Once the job succeeds, use the <code>DescribeDashboardSnapshotJobResult</code> API to obtain the download URIs that the job generates.</p>"
+      "documentation":"<p>Starts an asynchronous job that generates a dashboard snapshot. You can request one of the following format configurations per API call.</p> <ul> <li> <p>1 paginated PDF</p> </li> <li> <p>5 CSVs</p> </li> </ul> <p>Poll job descriptions with a <code>DescribeDashboardSnapshotJob</code> API call. Once the job succeeds, use the <code>DescribeDashboardSnapshotJobResult</code> API to obtain the download URIs that the job generates.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3081,9 +3081,19 @@
         "AccountSubscriptionStatus":{
           "shape":"String",
           "documentation":"<p>The status of your account subscription.</p>"
+        },
+        "IAMIdentityCenterInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center instance.</p>"
         }
       },
       "documentation":"<p>A structure that contains the following account information elements:</p> <ul> <li> <p>Your Amazon QuickSight account name.</p> </li> <li> <p>The edition of Amazon QuickSight that your account is using.</p> </li> <li> <p>The notification email address that is associated with the Amazon QuickSight account. </p> </li> <li> <p>The authentication type of the Amazon QuickSight account.</p> </li> <li> <p>The status of the Amazon QuickSight account's subscription.</p> </li> </ul>"
+    },
+    "AccountName":{
+      "type":"string",
+      "max":62,
+      "min":1,
+      "pattern":"^(?!D-|d-)([\\da-zA-Z]+)([-]*[\\da-zA-Z])*"
     },
     "AccountSettings":{
       "type":"structure",
@@ -4443,7 +4453,8 @@
       "enum":[
         "IAM_AND_QUICKSIGHT",
         "IAM_ONLY",
-        "ACTIVE_DIRECTORY"
+        "ACTIVE_DIRECTORY",
+        "IAM_IDENTITY_CENTER"
       ]
     },
     "AuthorSpecifiedAggregation":{
@@ -6451,7 +6462,7 @@
           "locationName":"AwsAccountId"
         },
         "AccountName":{
-          "shape":"String",
+          "shape":"AccountName",
           "documentation":"<p>The name of your Amazon QuickSight account. This name is unique over all of Amazon Web Services, and it appears only when users sign in. You can't change <code>AccountName</code> value after the Amazon QuickSight account is created.</p>"
         },
         "NotificationEmail":{
@@ -10010,7 +10021,12 @@
         "MIN",
         "COUNT",
         "DISTINCT_COUNT",
-        "AVERAGE"
+        "AVERAGE",
+        "MEDIAN",
+        "STDEV",
+        "STDEVP",
+        "VAR",
+        "VARP"
       ]
     },
     "DefaultFormatting":{
@@ -13666,7 +13682,7 @@
     "FieldOrderList":{
       "type":"list",
       "member":{"shape":"FieldId"},
-      "max":100
+      "max":200
     },
     "FieldSeriesItem":{
       "type":"structure",
@@ -16380,7 +16396,8 @@
       "type":"string",
       "enum":[
         "IAM",
-        "QUICKSIGHT"
+        "QUICKSIGHT",
+        "IAM_IDENTITY_CENTER"
       ]
     },
     "IdentityTypeNotSupportedException":{
@@ -21173,6 +21190,18 @@
         "CollapsedRowDimensionsVisibility":{
           "shape":"Visibility",
           "documentation":"<p>The visibility setting of a pivot table's collapsed row dimension fields. If the value of this structure is <code>HIDDEN</code>, all collapsed columns in a pivot table are automatically hidden. The default value is <code>VISIBLE</code>.</p>"
+        },
+        "RowsLayout":{
+          "shape":"PivotTableRowsLayout",
+          "documentation":"<p>The layout for the row dimension headers of a pivot table. Choose one of the following options.</p> <ul> <li> <p> <code>TABULAR</code>: (Default) Each row field is displayed in a separate column.</p> </li> <li> <p> <code>HIERARCHY</code>: All row fields are displayed in a single column. Indentation is used to differentiate row headers of different fields.</p> </li> </ul>"
+        },
+        "RowsLabelOptions":{
+          "shape":"PivotTableRowsLabelOptions",
+          "documentation":"<p>The options for the label that is located above the row headers. This option is only applicable when <code>RowsLayout</code> is set to <code>HIERARCHY</code>.</p>"
+        },
+        "DefaultCellWidth":{
+          "shape":"PixelLength",
+          "documentation":"<p>The default cell width of the pivot table.</p>"
         }
       },
       "documentation":"<p>The table options for a pivot table visual.</p>"
@@ -21190,6 +21219,32 @@
         }
       },
       "documentation":"<p>The paginated report options for a pivot table visual.</p>"
+    },
+    "PivotTableRowsLabelOptions":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility of the rows label.</p>"
+        },
+        "CustomLabel":{
+          "shape":"PivotTableRowsLabelText",
+          "documentation":"<p>The custom label string for the rows label.</p>"
+        }
+      },
+      "documentation":"<p>The options for the label thta is located above the row headers. This option is only applicable when <code>RowsLayout</code> is set to <code>HIERARCHY</code>.</p>"
+    },
+    "PivotTableRowsLabelText":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "PivotTableRowsLayout":{
+      "type":"string",
+      "enum":[
+        "TABULAR",
+        "HIERARCHY"
+      ]
     },
     "PivotTableSortBy":{
       "type":"structure",
@@ -22632,6 +22687,10 @@
         "RowAlternateColors":{
           "shape":"RowAlternateColorList",
           "documentation":"<p>Determines the list of row alternate colors.</p>"
+        },
+        "UsePrimaryBackgroundColor":{
+          "shape":"WidgetStatus",
+          "documentation":"<p>The primary background color options for alternate rows.</p>"
         }
       },
       "documentation":"<p>Determines the row alternate color options.</p>"
@@ -24343,7 +24402,7 @@
         },
         "FormatType":{
           "shape":"SnapshotFileFormatType",
-          "documentation":"<p>The format of the snapshot file to be generated. You can choose between <code>CSV</code> and <code>PDF</code>.</p>"
+          "documentation":"<p>The format of the snapshot file to be generated. You can choose between <code>CSV</code> or <code>PDF</code>.</p>"
         }
       },
       "documentation":"<p>A structure that contains the information for the snapshot that you want to generate. This information is provided by you when you start a new snapshot job.</p>"
@@ -24386,7 +24445,7 @@
       "members":{
         "SheetId":{
           "shape":"ShortRestrictiveResourceId",
-          "documentation":"<p>The sheet ID of the dashboard to generate the snapshot artifact from. This value is required for CSV or PDF format types.</p>"
+          "documentation":"<p>The sheet ID of the dashboard to generate the snapshot artifact from. This value is required for CSV and PDF format types.</p>"
         },
         "SelectionScope":{
           "shape":"SnapshotFileSheetSelectionScope",
@@ -24394,7 +24453,7 @@
         },
         "VisualIds":{
           "shape":"SnapshotFileSheetSelectionVisualIdList",
-          "documentation":"<p> A structure that lists the IDs of the visuals in the selected sheet. Supported visual types are table, pivot table visuals. This value is required if you are generating a CSV. This value supports a maximum of 1 visual ID. </p>"
+          "documentation":"<p> A list of visual IDs that are located in the selected sheet. This structure supports tables and pivot tables. This structure is required if you are generating a CSV. You can add a maximum of 1 visual ID to this structure. </p>"
         }
       },
       "documentation":"<p>A structure that contains information that identifies the snapshot that needs to be generated.</p>"
@@ -25007,6 +25066,14 @@
       },
       "documentation":"<p>The configuration that defines the default value of a <code>String</code> parameter when a value has not been set.</p>"
     },
+    "StyledCellType":{
+      "type":"string",
+      "enum":[
+        "TOTAL",
+        "METRIC_HEADER",
+        "VALUE"
+      ]
+    },
     "SubnetId":{
       "type":"string",
       "max":255,
@@ -25049,6 +25116,10 @@
         "MetricHeaderCellStyle":{
           "shape":"TableCellStyle",
           "documentation":"<p>The cell styling options for the subtotals of header cells.</p>"
+        },
+        "StyleTargets":{
+          "shape":"TableStyleTargetList",
+          "documentation":"<p>The style targets options for subtotals.</p>"
         }
       },
       "documentation":"<p>The subtotal options.</p>"
@@ -25506,6 +25577,22 @@
         }
       },
       "documentation":"<p>The sort configuration for a <code>TableVisual</code>.</p>"
+    },
+    "TableStyleTarget":{
+      "type":"structure",
+      "required":["CellType"],
+      "members":{
+        "CellType":{
+          "shape":"StyledCellType",
+          "documentation":"<p>The cell type of the table style target.</p>"
+        }
+      },
+      "documentation":"<p>The table style target.</p>"
+    },
+    "TableStyleTargetList":{
+      "type":"list",
+      "member":{"shape":"TableStyleTarget"},
+      "max":3
     },
     "TableTotalsPlacement":{
       "type":"string",
@@ -26735,6 +26822,10 @@
         "CellValueSynonyms":{
           "shape":"CellValueSynonyms",
           "documentation":"<p>The other names or aliases for the calculated field cell value.</p>"
+        },
+        "NonAdditive":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>The non additive for the table style target.</p>"
         }
       },
       "documentation":"<p>A structure that represents a calculated field.</p>"
@@ -26810,7 +26901,7 @@
         },
         "Aggregation":{
           "shape":"DefaultAggregation",
-          "documentation":"<p>The type of aggregation that is performed on the column data when it's queried. Valid values for this structure are <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, and <code>AVERAGE</code>.</p>"
+          "documentation":"<p>The type of aggregation that is performed on the column data when it's queried.</p>"
         },
         "IsIncludedInTopic":{
           "shape":"Boolean",
@@ -26851,6 +26942,10 @@
         "CellValueSynonyms":{
           "shape":"CellValueSynonyms",
           "documentation":"<p>The other names or aliases for the column cell value.</p>"
+        },
+        "NonAdditive":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>The non additive value for the column.</p>"
         }
       },
       "documentation":"<p>Represents a column in a dataset.</p>"
@@ -29657,7 +29752,8 @@
       "enum":[
         "TOP",
         "MIDDLE",
-        "BOTTOM"
+        "BOTTOM",
+        "AUTO"
       ]
     },
     "Visibility":{

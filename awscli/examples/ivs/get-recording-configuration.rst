@@ -18,10 +18,23 @@ Output::
             "name": "test-recording-config",
             "recordingReconnectWindowSeconds": 60,
             "state": "ACTIVE",
-            "tags": { "key1" : "value1" },
+            "tags": { 
+                "key1" : "value1", 
+                "key2" : "value2" 
+            },
             "thumbnailConfiguration": { 
                 "recordingMode": "INTERVAL",
-                "targetIntervalSeconds": 30
+                "targetIntervalSeconds": 1,
+                "resolution": "LOWEST_RESOLUTION",
+                "storage": [
+                    "LATEST"
+                ]
+            },
+            "renditionConfiguration": {
+                "renditionSelection": "CUSTOM",
+                "renditions": [
+                    "HD"
+                ]
             }
         }
     }

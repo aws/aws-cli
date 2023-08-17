@@ -15342,12 +15342,12 @@
         },
         "SubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to create an endpoint network interface. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
+          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to create endpoint network interfaces. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
           "locationName":"SubnetId"
         },
         "SecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interface. If this parameter is not specified, we use the default security group for the VPC.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interfaces. If this parameter is not specified, we use the default security group for the VPC.</p>",
           "locationName":"SecurityGroupId"
         },
         "IpAddressType":{
@@ -15370,6 +15370,11 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to associate with the endpoint.</p>",
           "locationName":"TagSpecification"
+        },
+        "SubnetConfigurations":{
+          "shape":"SubnetConfigurationsList",
+          "documentation":"<p>The subnet configurations for the endpoint.</p>",
+          "locationName":"SubnetConfiguration"
         }
       }
     },
@@ -41856,12 +41861,12 @@
         },
         "AddSecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the network interface.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interfaces.</p>",
           "locationName":"AddSecurityGroupId"
         },
         "RemoveSecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The IDs of the security groups to disassociate from the network interface.</p>",
+          "documentation":"<p>(Interface endpoint) The IDs of the security groups to disassociate from the endpoint network interfaces.</p>",
           "locationName":"RemoveSecurityGroupId"
         },
         "IpAddressType":{
@@ -41875,6 +41880,11 @@
         "PrivateDnsEnabled":{
           "shape":"Boolean",
           "documentation":"<p>(Interface endpoint) Indicates whether a private hosted zone is associated with the VPC.</p>"
+        },
+        "SubnetConfigurations":{
+          "shape":"SubnetConfigurationsList",
+          "documentation":"<p>The subnet configurations for the endpoint.</p>",
+          "locationName":"SubnetConfiguration"
         }
       }
     },
@@ -52492,6 +52502,31 @@
         "prefix",
         "explicit"
       ]
+    },
+    "SubnetConfiguration":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet.</p>"
+        },
+        "Ipv4":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 address to assign to the endpoint network interface in the subnet. You must provide an IPv4 address if the VPC endpoint supports IPv4.</p> <p>If you specify an IPv4 address when modifying a VPC endpoint, we replace the existing endpoint network interface with a new endpoint network interface with this IP address. This process temporarily disconnects the subnet and the VPC endpoint.</p>"
+        },
+        "Ipv6":{
+          "shape":"String",
+          "documentation":"<p>The IPv6 address to assign to the endpoint network interface in the subnet. You must provide an IPv6 address if the VPC endpoint supports IPv6.</p> <p>If you specify an IPv6 address when modifying a VPC endpoint, we replace the existing endpoint network interface with a new endpoint network interface with this IP address. This process temporarily disconnects the subnet and the VPC endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration of a subnet for a VPC endpoint.</p>"
+    },
+    "SubnetConfigurationsList":{
+      "type":"list",
+      "member":{
+        "shape":"SubnetConfiguration",
+        "locationName":"item"
+      }
     },
     "SubnetId":{"type":"string"},
     "SubnetIdStringList":{

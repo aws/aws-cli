@@ -5876,6 +5876,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.29
+=======
+
+* api-change:``ec2``: Adds support for SubnetConfigurations to allow users to select their own IPv4 and IPv6 addresses for Interface VPC endpoints
+* api-change:``gamelift``: Amazon GameLift updates its instance types support.
+
+
+1.29.28
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
 1.29.27
 =======
 

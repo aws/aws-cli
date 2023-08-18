@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.13.11
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``gamelift``: Amazon GameLift updates its instance types support.
+* api-change:``ec2``: Adds support for SubnetConfigurations to allow users to select their own IPv4 and IPv6 addresses for Interface VPC endpoints
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
 2.13.10
 =======
 

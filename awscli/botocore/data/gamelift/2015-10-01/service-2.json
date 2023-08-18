@@ -26,7 +26,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p>Registers a player's acceptance or rejection of a proposed FlexMatch match. A matchmaking configuration may require player acceptance; if so, then matches built with that configuration cannot be completed unless all players accept the proposed match within a specified time limit. </p> <p>When FlexMatch builds a match, all the matchmaking tickets involved in the proposed match are placed into status <code>REQUIRES_ACCEPTANCE</code>. This is a trigger for your game to get acceptance from all players in the ticket. Acceptances are only valid for tickets when they are in this status; all other acceptances result in an error.</p> <p>To register acceptance, specify the ticket ID, a response, and one or more players. Once all players have registered acceptance, the matchmaking tickets advance to status <code>PLACING</code>, where a new game session is created for the match. </p> <p>If any player rejects the match, or if acceptances are not received before a specified timeout, the proposed match is dropped. The matchmaking tickets are then handled in one of two ways: For tickets where one or more players rejected the match or failed to respond, the ticket status is set to <code>CANCELLED</code>, and processing is terminated. For tickets where players have accepted or not yet responded, the ticket status is returned to <code>SEARCHING</code> to find a new match. A new matchmaking request for these players can be submitted as needed. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-client.html\"> Add FlexMatch to a game client</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html\"> FlexMatch events</a> (reference)</p>"
+      "documentation":"<p>Registers a player's acceptance or rejection of a proposed FlexMatch match. A matchmaking configuration may require player acceptance; if so, then matches built with that configuration cannot be completed unless all players accept the proposed match within a specified time limit. </p> <p>When FlexMatch builds a match, all the matchmaking tickets involved in the proposed match are placed into status <code>REQUIRES_ACCEPTANCE</code>. This is a trigger for your game to get acceptance from all players in each ticket. Calls to this action are only valid for tickets that are in this status; calls for tickets not in this status result in an error.</p> <p>To register acceptance, specify the ticket ID, one or more players, and an acceptance response. When all players have accepted, Amazon GameLift advances the matchmaking tickets to status <code>PLACING</code>, and attempts to create a new game session for the match. </p> <p>If any player rejects the match, or if acceptances are not received before a specified timeout, the proposed match is dropped. Each matchmaking ticket in the failed match is handled as follows: </p> <ul> <li> <p>If the ticket has one or more players who rejected the match or failed to respond, the ticket status is set <code>CANCELLED</code> and processing is terminated.</p> </li> <li> <p>If all players in the ticket accepted the match, the ticket status is returned to <code>SEARCHING</code> to find a new match. </p> </li> </ul> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-client.html\"> Add FlexMatch to a game client</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html\"> FlexMatch events</a> (reference)</p>"
     },
     "ClaimGameServer":{
       "name":"ClaimGameServer",
@@ -159,7 +159,7 @@
         {"shape":"IdempotentParameterMismatchException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p>Creates a multiplayer game session for players in a specific fleet location. This operation prompts an available server process to start a game session and retrieves connection information for the new game session. As an alternative, consider using the Amazon GameLift game session placement feature with <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartGameSessionPlacement.html\">StartGameSessionPlacement</a> , which uses FleetIQ algorithms and queues to optimize the placement process.</p> <p>When creating a game session, you specify exactly where you want to place it and provide a set of game session configuration settings. The fleet must be in <code>ACTIVE</code> status before a game session can be created in it. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To create a game session on an instance in a fleet's home Region, provide a fleet or alias ID along with your game session configuration. </p> </li> <li> <p>To create a game session on an instance in a fleet's remote location, provide a fleet or alias ID and a location name, along with your game session configuration. </p> </li> </ul> <p>If successful, a workflow is initiated to start a new game session. A <code>GameSession</code> object is returned containing the game session configuration and status. When the status is <code>ACTIVE</code>, game session connection information is provided and player sessions can be created for the game session. By default, newly created game sessions are open to new players. You can restrict new player access by using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html\">UpdateGameSession</a> to change the game session's player session creation policy.</p> <p>Game session logs are retained for all active game sessions for 14 days. To access the logs, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetGameSessionLogUrl.html\">GetGameSessionLogUrl</a> to download the log files.</p> <p> <i>Available in Amazon GameLift Local.</i> </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession\">Start a game session</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p>Creates a multiplayer game session for players in a specific fleet location. This operation prompts an available server process to start a game session and retrieves connection information for the new game session. As an alternative, consider using the Amazon GameLift game session placement feature with <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartGameSessionPlacement.html\">StartGameSessionPlacement</a> , which uses the FleetIQ algorithm and queues to optimize the placement process.</p> <p>When creating a game session, you specify exactly where you want to place it and provide a set of game session configuration settings. The target fleet must be in <code>ACTIVE</code> status. </p> <p>You can use this operation in the following ways: </p> <ul> <li> <p>To create a game session on an instance in a fleet's home Region, provide a fleet or alias ID along with your game session configuration. </p> </li> <li> <p>To create a game session on an instance in a fleet's remote location, provide a fleet or alias ID and a location name, along with your game session configuration. </p> </li> <li> <p>To create a game session on an instance in an Anywhere fleet, specify the fleet's custom location.</p> </li> </ul> <p>If successful, Amazon GameLift initiates a workflow to start a new game session and returns a <code>GameSession</code> object containing the game session configuration and status. When the game session status is <code>ACTIVE</code>, it is updated with connection information and you can create player sessions for the game session. By default, newly created game sessions are open to new players. You can restrict new player access by using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html\">UpdateGameSession</a> to change the game session's player session creation policy.</p> <p>Amazon GameLift retains logs for active for 14 days. To access the logs, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetGameSessionLogUrl.html\">GetGameSessionLogUrl</a> to download the log files.</p> <p> <i>Available in Amazon GameLift Local.</i> </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession\">Start a game session</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "CreateGameSessionQueue":{
       "name":"CreateGameSessionQueue",
@@ -545,7 +545,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Removes a compute resource from the specified fleet. Deregister your compute resources before you delete the compute.</p>"
+      "documentation":"<p>Removes a compute resource from an Amazon GameLift Anywhere fleet. Deregistered computes can no longer host game sessions through Amazon GameLift.</p>"
     },
     "DeregisterGameServer":{
       "name":"DeregisterGameServer",
@@ -608,7 +608,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Retrieves properties for a compute resource. To request a compute resource specify the fleet ID and compute name. If successful, Amazon GameLift returns an object containing the build properties.</p>"
+      "documentation":"<p>Retrieves properties for a compute resource in an Amazon GameLift fleet. Call <a>ListCompute</a> to get a list of compute resources in a fleet. You can request information for computes in either managed EC2 fleets or Anywhere fleets. </p> <p>To request compute properties, specify the compute name and fleet ID.</p> <p>If successful, this operation returns details for the requested compute resource. For managed EC2 fleets, this operation returns the fleet's EC2 instances. For Anywhere fleets, this operation returns the fleet's registered computes. </p>"
     },
     "DescribeEC2InstanceLimits":{
       "name":"DescribeEC2InstanceLimits",
@@ -889,7 +889,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p>Retrieves information about a fleet's instances, including instance IDs, connection data, and status. </p> <p>This operation can be used in the following ways:</p> <ul> <li> <p>To get information on all instances that are deployed to a fleet's home Region, provide the fleet ID.</p> </li> <li> <p>To get information on all instances that are deployed to a fleet's remote location, provide the fleet ID and location name.</p> </li> <li> <p>To get information on a specific instance in a fleet, provide the fleet ID and instance ID.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, an <code>Instance</code> object is returned for each requested instance. Instances are not returned in any particular order. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely Access Fleet Instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug Fleet Issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p>Retrieves information about the EC2 instances in an Amazon GameLift managed fleet, including instance ID, connection data, and status. You can use this operation with a multi-location fleet to get location-specific instance information. As an alternative, use the operations <a>ListCompute</a> and <a>DescribeCompute</a> to retrieve information for compute resources, including EC2 and Anywhere fleets.</p> <p>You can call this operation in the following ways:</p> <ul> <li> <p>To get information on all instances in a fleet's home Region, specify the fleet ID.</p> </li> <li> <p>To get information on all instances in a fleet's remote location, specify the fleet ID and location name.</p> </li> <li> <p>To get information on a specific instance in a fleet, specify the fleet ID and instance ID.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, this operation returns <code>Instance</code> objects for each requested instance, listed in no particular order. If you call this operation for an Anywhere fleet, you receive an InvalidRequestException.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "DescribeMatchmaking":{
       "name":"DescribeMatchmaking",
@@ -951,7 +951,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Retrieves properties for one or more player sessions. </p> <p>This action can be used in the following ways: </p> <ul> <li> <p>To retrieve a specific player session, provide the player session ID only.</p> </li> <li> <p>To retrieve all player sessions in a game session, provide the game session ID only.</p> </li> <li> <p>To retrieve all player sessions for a specific player, provide a player ID only.</p> </li> </ul> <p>To request player sessions, specify either a player session ID, game session ID, or player ID. You can filter this request by player session status. Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>PlayerSession</code> object is returned for each session that matches the request.</p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p>Retrieves properties for one or more player sessions. </p> <p>This action can be used in the following ways: </p> <ul> <li> <p>To retrieve a specific player session, provide the player session ID only.</p> </li> <li> <p>To retrieve all player sessions in a game session, provide the game session ID only.</p> </li> <li> <p>To retrieve all player sessions for a specific player, provide a player ID only.</p> </li> </ul> <p>To request player sessions, specify either a player session ID, game session ID, or player ID. You can filter this request by player session status. If you provide a specific <code>PlayerSessionId</code> or <code>PlayerId</code>, Amazon GameLift ignores the filter criteria. Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>PlayerSession</code> object is returned for each session that matches the request.</p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "DescribeRuntimeConfiguration":{
       "name":"DescribeRuntimeConfiguration",
@@ -1047,7 +1047,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Requests remote access to a fleet instance. Remote access is useful for debugging, gathering benchmarking data, or observing activity in real time. </p> <p>To remotely access an instance, you need credentials that match the operating system of the instance. For a Windows instance, Amazon GameLift returns a user name and password as strings for use with a Windows Remote Desktop client. For a Linux instance, Amazon GameLift returns a user name and RSA private key, also as strings, for use with an SSH client. The private key must be saved in the proper format to a <code>.pem</code> file before using. If you're making this request using the CLI, saving the secret can be handled as part of the <code>GetInstanceAccess</code> request, as shown in one of the examples for this operation. </p> <p>To request access to a specific instance, specify the IDs of both the instance and the fleet it belongs to.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely Access Fleet Instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug Fleet Issues</a> </p>"
+      "documentation":"<p>Requests authorization to remotely connect to a compute resource in an Amazon GameLift fleet. Call this action to connect to an instance in a managed EC2 fleet if the fleet's game build uses Amazon GameLift server SDK 5.x or later. To connect to instances with game builds that use server SDK 4.x or earlier, call <a>GetInstanceAccess</a>.</p> <p>To request access to a compute, identify the specific EC2 instance and the fleet it belongs to. You can retrieve instances for a managed EC2 fleet by calling <a>ListCompute</a>. </p> <p>If successful, this operation returns a set of temporary Amazon Web Services credentials, including a two-part access key and a session token. Use these credentials with Amazon EC2 Systems Manager (SSM) to start a session with the compute. For more details, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-sessions-start.html#sessions-start-cli\"> Starting a session (CLI)</a> in the <i>Amazon EC2 Systems Manager User Guide</i>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p>"
     },
     "GetComputeAuthToken":{
       "name":"GetComputeAuthToken",
@@ -1063,7 +1063,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Requests an authentication token from Amazon GameLift. The authentication token is used by your game server to authenticate with Amazon GameLift. Each authentication token has an expiration time. To continue using the compute resource to host your game server, regularly retrieve a new authorization token.</p>"
+      "documentation":"<p>Requests an authentication token from Amazon GameLift for a registered compute in an Anywhere fleet. The game servers that are running on the compute use this token to authenticate with the Amazon GameLift service. Each server process must provide a valid authentication token in its call to the Amazon GameLift server SDK action <code>InitSDK()</code>.</p> <p>Authentication tokens are valid for a limited time span. Use a mechanism to regularly request a fresh authentication token before the current token expires.</p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html\">Server SDK reference guides</a> (for version 5.x)</p> </li> </ul>"
     },
     "GetGameSessionLogUrl":{
       "name":"GetGameSessionLogUrl",
@@ -1095,7 +1095,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Requests remote access to a fleet instance. Remote access is useful for debugging, gathering benchmarking data, or observing activity in real time. </p> <p>To remotely access an instance, you need credentials that match the operating system of the instance. For a Windows instance, Amazon GameLift returns a user name and password as strings for use with a Windows Remote Desktop client. For a Linux instance, Amazon GameLift returns a user name and RSA private key, also as strings, for use with an SSH client. The private key must be saved in the proper format to a <code>.pem</code> file before using. If you're making this request using the CLI, saving the secret can be handled as part of the <code>GetInstanceAccess</code> request, as shown in one of the examples for this operation. </p> <p>To request access to a specific instance, specify the IDs of both the instance and the fleet it belongs to. You can retrieve a fleet's instance IDs by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeInstances.html\">DescribeInstances</a>. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely Access Fleet Instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug Fleet Issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p>Requests authorization to remotely connect to an instance in an Amazon GameLift managed fleet. Use this operation to connect to instances with game servers that use Amazon GameLift server SDK 4.x or earlier. To connect to instances with game servers that use server SDK 5.x or later, call <a>GetComputeAccess</a>.</p> <p>To request access to an instance, specify IDs for the instance and the fleet it belongs to. You can retrieve instance IDs for a fleet by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeInstances.html\">DescribeInstances</a> with the fleet ID. </p> <p>If successful, this operation returns an IP address and credentials. The returned credentials match the operating system of the instance, as follows: </p> <ul> <li> <p>For a Windows instance: returns a user name and secret (password) for use with a Windows Remote Desktop client. </p> </li> <li> <p>For a Linux instance: returns a user name and secret (RSA private key) for use with an SSH client. You must save the secret to a <code>.pem</code> file. If you're using the CLI, see the example <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetInstanceAccess.html#API_GetInstanceAccess_Examples\"> Get credentials for a Linux instance</a> for tips on automatically saving the secret to a <code>.pem</code> file. </p> </li> </ul> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "ListAliases":{
       "name":"ListAliases",
@@ -1140,7 +1140,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Retrieves all compute resources registered to a fleet in your Amazon Web Services account. You can filter the result set by location.</p>"
+      "documentation":"<p>Retrieves the compute resources in an Amazon GameLift fleet. You can request information for either managed EC2 fleets or Anywhere fleets. </p> <p>To request a list of computes, specify the fleet ID. You can filter the result set by location. Use the pagination parameters to retrieve results in a set of sequential pages.</p> <p>If successful, this operation returns the compute resource for the requested fleet. For managed EC2 fleets, it returns a list of EC2 instances. For Anywhere fleets, it returns a list of registered compute names.</p>"
     },
     "ListFleets":{
       "name":"ListFleets",
@@ -1264,7 +1264,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Registers your compute resources in a fleet you previously created. After you register a compute to your fleet, you can monitor and manage your compute using Amazon GameLift. The operation returns the compute resource containing SDK endpoint you can use to connect your game server to Amazon GameLift.</p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> </ul>"
+      "documentation":"<p>Registers a compute resource to an Amazon GameLift Anywhere fleet. With Anywhere fleets you can incorporate your own computing hardware into an Amazon GameLift game hosting solution.</p> <p>To register a compute to a fleet, give the compute a name (must be unique within the fleet) and specify the compute resource's DNS name or IP address. Provide the Anywhere fleet ID and a fleet location to associate with the compute being registered. You can optionally include the path to a TLS certificate on the compute resource.</p> <p>If successful, this operation returns the compute details, including an Amazon GameLift SDK endpoint. Game server processes that run on the compute use this endpoint to communicate with the Amazon GameLift service. Each server process includes the SDK endpoint in its call to the Amazon GameLift server SDK action <code>InitSDK()</code>.</p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html\">Server SDK reference guides</a> (for version 5.x)</p> </li> </ul>"
     },
     "RegisterGameServer":{
       "name":"RegisterGameServer",
@@ -1616,7 +1616,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p> <b>This operation is used with the Amazon GameLift FleetIQ solution and game server groups.</b> </p> <p>Updates information about a registered game server to help Amazon GameLift FleetIQ to track game server availability. This operation is called by a game server process that is running on an instance in a game server group. </p> <p>Use this operation to update the following types of game server information. You can make all three types of updates in the same request:</p> <ul> <li> <p>To update the game server's utilization status, identify the game server and game server group and specify the current utilization status. Use this status to identify when game servers are currently hosting games and when they are available to be claimed.</p> </li> <li> <p>To report health status, identify the game server and game server group and set health check to <code>HEALTHY</code>. If a game server does not report health status for a certain length of time, the game server is no longer considered healthy. As a result, it will be eventually deregistered from the game server group to avoid affecting utilization metrics. The best practice is to report health every 60 seconds.</p> </li> <li> <p>To change game server metadata, provide updated game server data.</p> </li> </ul> <p>Once a game server is successfully updated, the relevant statuses and timestamps are updated.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/fleetiqguide/gsg-intro.html\">Amazon GameLift FleetIQ Guide</a> </p>"
+      "documentation":"<p> <b>This operation is used with the Amazon GameLift FleetIQ solution and game server groups.</b> </p> <p>Updates information about a registered game server to help Amazon GameLift FleetIQ track game server availability. This operation is called by a game server process that is running on an instance in a game server group. </p> <p>Use this operation to update the following types of game server information. You can make all three types of updates in the same request:</p> <ul> <li> <p>To update the game server's utilization status from <code>AVAILABLE</code> (when the game server is available to be claimed) to <code>UTILIZED</code> (when the game server is currently hosting games). Identify the game server and game server group and specify the new utilization status. You can't change the status from to <code>UTILIZED</code> to <code>AVAILABLE</code> .</p> </li> <li> <p>To report health status, identify the game server and game server group and set health check to <code>HEALTHY</code>. If a game server does not report health status for a certain length of time, the game server is no longer considered healthy. As a result, it will be eventually deregistered from the game server group to avoid affecting utilization metrics. The best practice is to report health every 60 seconds.</p> </li> <li> <p>To change game server metadata, provide updated game server data.</p> </li> </ul> <p>Once a game server is successfully updated, the relevant statuses and timestamps are updated.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/fleetiqguide/gsg-intro.html\">Amazon GameLift FleetIQ Guide</a> </p>"
     },
     "UpdateGameServerGroup":{
       "name":"UpdateGameServerGroup",
@@ -1873,18 +1873,18 @@
       "members":{
         "AccessKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Temporary key allowing access to the Amazon GameLift S3 account.</p>"
+          "documentation":"<p>The access key ID that identifies the temporary security credentials. </p>"
         },
         "SecretAccessKey":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Temporary secret key allowing access to the Amazon GameLift S3 account.</p>"
+          "documentation":"<p>The secret access key that can be used to sign requests.</p>"
         },
         "SessionToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Token used to associate a specific build ID with the files uploaded using these credentials.</p>"
+          "documentation":"<p>The token that users must pass to the service API to use the temporary credentials. </p>"
         }
       },
-      "documentation":"<p>Temporary access credentials used for uploading game build files to Amazon GameLift. They are valid for a limited time. If they expire before you upload your game build, get a new set by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_RequestUploadCredentials.html\">RequestUploadCredentials</a>.</p>",
+      "documentation":"<p>Amazon Web Services account security credentials that allow interactions with Amazon GameLift resources. The credentials are temporary and valid for a limited time span. You can request fresh credentials at any time. </p> <p> Amazon Web Services security credentials consist of three parts: an access key ID, a secret access key, and a session token. You must use all three parts together to authenticate your access requests.</p> <p>You need Amazon Web Services credentials for the following tasks: </p> <ul> <li> <p>To upload a game server build directly to Amazon GameLift S3 storage using <code>CreateBuild</code>. To get access for this task, call <a>RequestUploadCredentials</a>.</p> </li> <li> <p>To remotely connect to an active Amazon GameLift fleet instances. To get remote access, call <a>GetComputeAccess</a>.</p> </li> </ul>",
       "sensitive":true
     },
     "BackfillMode":{
@@ -2042,27 +2042,27 @@
       "members":{
         "FleetId":{
           "shape":"FleetId",
-          "documentation":"<p>A unique identifier for the fleet that the compute is registered to.</p>"
+          "documentation":"<p>A unique identifier for the fleet that the compute belongs to.</p>"
         },
         "FleetArn":{
           "shape":"FleetArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the fleet that the compute is registered to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the fleet that the compute belongs to.</p>"
         },
         "ComputeName":{
           "shape":"ComputeName",
-          "documentation":"<p>A descriptive label that is associated with the compute resource registered to your fleet.</p>"
+          "documentation":"<p>A descriptive label for the compute resource. For instances in a managed EC2 fleet, the compute name is an instance ID.</p>"
         },
         "ComputeArn":{
           "shape":"ComputeArn",
-          "documentation":"<p>The ARN that is assigned to the compute resource and uniquely identifies it. ARNs are unique across locations.</p>"
+          "documentation":"<p>The ARN that is assigned to a compute resource and uniquely identifies it. ARNs are unique across locations. Instances in managed EC2 fleets are not assigned a ComputeARN.</p>"
         },
         "IpAddress":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.</p>"
+          "documentation":"<p>The IP address of a compute resource. Amazon GameLift requires a DNS name or IP address for a compute.</p>"
         },
         "DnsName":{
           "shape":"DnsName",
-          "documentation":"<p>The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.</p>"
+          "documentation":"<p>The DNS name of a compute resource. Amazon GameLift requires a DNS name or IP address for a compute.</p>"
         },
         "ComputeStatus":{
           "shape":"ComputeStatus",
@@ -2078,18 +2078,18 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>The type of operating system on your compute resource.</p>"
+          "documentation":"<p>The type of operating system on the compute resource.</p>"
         },
         "Type":{
           "shape":"EC2InstanceType",
-          "documentation":"<p>The compute type that the fleet uses. A fleet can use Anywhere compute resources that you own, or use managed Amazon EC2 instances.</p>"
+          "documentation":"<p>The Amazon EC2 instance type that the fleet uses. For registered computes in an Amazon GameLift Anywhere fleet, this property is empty. </p>"
         },
         "GameLiftServiceSdkEndpoint":{
           "shape":"GameLiftServiceSdkEndpointOutput",
-          "documentation":"<p>The endpoint connection details of the Amazon GameLift SDK endpoint that your game server connects to.</p>"
+          "documentation":"<p>The Amazon GameLift SDK endpoint connection for a registered compute resource in an Anywhere fleet. The game servers on the compute use this endpoint to connect to the Amazon GameLift service.</p>"
         }
       },
-      "documentation":"<p>Resources used to host your game servers. A compute resource can be managed Amazon GameLift Amazon EC2 instances or your own resources.</p>"
+      "documentation":"<p>An Amazon GameLift compute resource for hosting your game servers. A compute can be an EC2instance in a managed EC2 fleet or a registered compute in an Anywhere fleet. </p>"
     },
     "ComputeArn":{
       "type":"string",
@@ -2469,7 +2469,7 @@
         },
         "Location":{
           "shape":"LocationStringModel",
-          "documentation":"<p>A fleet's remote location to place the new game session in. If this parameter is not set, the new game session is placed in the fleet's home Region. Specify a remote location with an Amazon Web Services Region code such as <code>us-west-2</code>. </p>"
+          "documentation":"<p>A fleet's remote location to place the new game session in. If this parameter is not set, the new game session is placed in the fleet's home Region. Specify a remote location with an Amazon Web Services Region code such as <code>us-west-2</code>. When using an Anywhere fleet, this parameter is required and must be set to the Anywhere fleet's custom location.</p>"
         }
       }
     },
@@ -3058,11 +3058,11 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>&gt;A unique identifier for the fleet the compute resource is registered to.</p>"
+          "documentation":"<p>A unique identifier for the fleet the compute resource is currently registered to.</p>"
         },
         "ComputeName":{
           "shape":"ComputeNameOrArn",
-          "documentation":"<p>The name of the compute resource you want to delete.</p>"
+          "documentation":"<p>The name of the compute resource to remove from the specified Anywhere fleet.</p>"
         }
       }
     },
@@ -3135,11 +3135,11 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>A unique identifier for the fleet the compute is registered to.</p>"
+          "documentation":"<p>A unique identifier for the fleet that the compute is registered to. You can use either the fleet ID or ARN value.</p>"
         },
         "ComputeName":{
           "shape":"ComputeNameOrArn",
-          "documentation":"<p>A descriptive label that is associated with the compute resource registered to your fleet.</p>"
+          "documentation":"<p>The unique identifier of the compute resource to retrieve properties for. For an Anywhere fleet compute, use the registered compute name. For a managed EC2 fleet instance, use the instance ID.</p>"
         }
       }
     },
@@ -3148,7 +3148,7 @@
       "members":{
         "Compute":{
           "shape":"Compute",
-          "documentation":"<p>The details of the compute resource you registered to the specified fleet.</p>"
+          "documentation":"<p>The set of properties for the requested compute resource.</p>"
         }
       }
     },
@@ -3226,7 +3226,7 @@
       "members":{
         "FleetCapacity":{
           "shape":"FleetCapacityList",
-          "documentation":"<p>A collection of objects that contains capacity information for each requested fleet ID. Capacity objects are returned only for fleets that currently exist.</p>"
+          "documentation":"<p>A collection of objects that contains capacity information for each requested fleet ID. Capacity objects are returned only for fleets that currently exist. Changes in desired instance value can take up to 1 minute to be reflected.</p>"
         },
         "NextToken":{
           "shape":"NonZeroAndMaxString",
@@ -3338,7 +3338,7 @@
       "members":{
         "FleetCapacity":{
           "shape":"FleetCapacity",
-          "documentation":"<p>Resource capacity information for the requested fleet location. Capacity objects are returned only for fleets and locations that currently exist.</p>"
+          "documentation":"<p>Resource capacity information for the requested fleet location. Capacity objects are returned only for fleets and locations that currently exist. Changes in desired instance value can take up to 1 minute to be reflected.</p>"
         }
       }
     },
@@ -3964,7 +3964,7 @@
       "members":{
         "DESIRED":{
           "shape":"WholeNumber",
-          "documentation":"<p>Ideal number of active instances. GameLift will always try to maintain the desired number of instances. Capacity is scaled up or down by changing the desired instances. </p>"
+          "documentation":"<p>Requested number of active instances. Amazon GameLift takes action as needed to maintain the desired number of instances. Capacity is scaled up or down by changing the desired instances. A change in the desired instances value can take up to 1 minute to be reflected when viewing a fleet's capacity settings. </p>"
         },
         "MINIMUM":{
           "shape":"WholeNumber",
@@ -4135,7 +4135,68 @@
         "r5d.8xlarge",
         "r5d.12xlarge",
         "r5d.16xlarge",
-        "r5d.24xlarge"
+        "r5d.24xlarge",
+        "m6g.medium",
+        "m6g.large",
+        "m6g.xlarge",
+        "m6g.2xlarge",
+        "m6g.4xlarge",
+        "m6g.8xlarge",
+        "m6g.12xlarge",
+        "m6g.16xlarge",
+        "c6g.medium",
+        "c6g.large",
+        "c6g.xlarge",
+        "c6g.2xlarge",
+        "c6g.4xlarge",
+        "c6g.8xlarge",
+        "c6g.12xlarge",
+        "c6g.16xlarge",
+        "r6g.medium",
+        "r6g.large",
+        "r6g.xlarge",
+        "r6g.2xlarge",
+        "r6g.4xlarge",
+        "r6g.8xlarge",
+        "r6g.12xlarge",
+        "r6g.16xlarge",
+        "c6gn.medium",
+        "c6gn.large",
+        "c6gn.xlarge",
+        "c6gn.2xlarge",
+        "c6gn.4xlarge",
+        "c6gn.8xlarge",
+        "c6gn.12xlarge",
+        "c6gn.16xlarge",
+        "c7g.medium",
+        "c7g.large",
+        "c7g.xlarge",
+        "c7g.2xlarge",
+        "c7g.4xlarge",
+        "c7g.8xlarge",
+        "c7g.12xlarge",
+        "c7g.16xlarge",
+        "r7g.medium",
+        "r7g.large",
+        "r7g.xlarge",
+        "r7g.2xlarge",
+        "r7g.4xlarge",
+        "r7g.8xlarge",
+        "r7g.12xlarge",
+        "r7g.16xlarge",
+        "m7g.medium",
+        "m7g.large",
+        "m7g.xlarge",
+        "m7g.2xlarge",
+        "m7g.4xlarge",
+        "m7g.8xlarge",
+        "m7g.12xlarge",
+        "m7g.16xlarge",
+        "g5g.xlarge",
+        "g5g.2xlarge",
+        "g5g.4xlarge",
+        "g5g.8xlarge",
+        "g5g.16xlarge"
       ]
     },
     "Event":{
@@ -4151,7 +4212,7 @@
         },
         "EventCode":{
           "shape":"EventCode",
-          "documentation":"<p>The type of event being logged. </p> <p> <b>Fleet state transition events:</b> </p> <ul> <li> <p>FLEET_CREATED -- A fleet resource was successfully created with a status of <code>NEW</code>. Event messaging includes the fleet ID.</p> </li> <li> <p>FLEET_STATE_DOWNLOADING -- Fleet status changed from <code>NEW</code> to <code>DOWNLOADING</code>. The compressed build has started downloading to a fleet instance for installation.</p> </li> <li> <p>FLEET_STATE_VALIDATING -- Fleet status changed from <code>DOWNLOADING</code> to <code>VALIDATING</code>. Amazon GameLift has successfully downloaded the build and is now validating the build files.</p> </li> <li> <p>FLEET_STATE_BUILDING -- Fleet status changed from <code>VALIDATING</code> to <code>BUILDING</code>. Amazon GameLift has successfully verified the build files and is now running the installation scripts.</p> </li> <li> <p>FLEET_STATE_ACTIVATING -- Fleet status changed from <code>BUILDING</code> to <code>ACTIVATING</code>. Amazon GameLift is trying to launch an instance and test the connectivity between the build and the Amazon GameLift Service via the Server SDK.</p> </li> <li> <p>FLEET_STATE_ACTIVE -- The fleet's status changed from <code>ACTIVATING</code> to <code>ACTIVE</code>. The fleet is now ready to host game sessions.</p> </li> <li> <p>FLEET_STATE_ERROR -- The Fleet's status changed to <code>ERROR</code>. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>Fleet creation events (ordered by fleet creation activity):</b> </p> <ul> <li> <p>FLEET_BINARY_DOWNLOAD_FAILED -- The build failed to download to the fleet instance.</p> </li> <li> <p>FLEET_CREATION_EXTRACTING_BUILD -- The game server build was successfully downloaded to an instance, and the build files are now being extracted from the uploaded build and saved to an instance. Failure at this stage prevents a fleet from moving to ACTIVE status. Logs for this stage display a list of the files that are extracted and saved on the instance. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_RUNNING_INSTALLER -- The game server build files were successfully extracted, and the GameLift is now running the build's install script (if one is included). Failure in this stage prevents a fleet from moving to ACTIVE status. Logs for this stage list the installation steps and whether or not the install completed successfully. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_VALIDATING_RUNTIME_CONFIG -- The build process was successful, and the GameLift is now verifying that the game server launch paths, which are specified in the fleet's runtime configuration, exist. If any listed launch path exists, Amazon GameLift tries to launch a game server process and waits for the process to report ready. Failures in this stage prevent a fleet from moving to <code>ACTIVE</code> status. Logs for this stage list the launch paths in the runtime configuration and indicate whether each is found. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_VALIDATION_LAUNCH_PATH_NOT_FOUND -- Validation of the runtime configuration failed because the executable specified in a launch path does not exist on the instance.</p> </li> <li> <p>FLEET_VALIDATION_EXECUTABLE_RUNTIME_FAILURE -- Validation of the runtime configuration failed because the executable specified in a launch path failed to run on the fleet instance.</p> </li> <li> <p>FLEET_VALIDATION_TIMED_OUT -- Validation of the fleet at the end of creation timed out. Try fleet creation again.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED -- The fleet failed to successfully complete one of the steps in the fleet activation process. This event code indicates that the game build was successfully downloaded to a fleet instance, built, and validated, but was not able to start a server process. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug Fleet Creation Issues</a>.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED_NO_INSTANCES -- Fleet creation was not able to obtain any instances based on the input fleet attributes. Try again at a different time or choose a different combination of fleet attributes such as fleet type, instance type, etc.</p> </li> <li> <p>FLEET_INITIALIZATION_FAILED -- A generic exception occurred during fleet creation. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>VPC peering events:</b> </p> <ul> <li> <p>FLEET_VPC_PEERING_SUCCEEDED -- A VPC peering connection has been established between the VPC for an Amazon GameLift fleet and a VPC in your Amazon Web Services account.</p> </li> <li> <p>FLEET_VPC_PEERING_FAILED -- A requested VPC peering connection has failed. Event details and status information provide additional detail. A common reason for peering failure is that the two VPCs have overlapping CIDR blocks of IPv4 addresses. To resolve this, change the CIDR block for the VPC in your Amazon Web Services account. For more information on VPC peering failures, see <a href=\"https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html\">https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html</a> </p> </li> <li> <p>FLEET_VPC_PEERING_DELETED -- A VPC peering connection has been successfully deleted.</p> </li> </ul> <p> <b>Spot instance events:</b> </p> <ul> <li> <p> INSTANCE_INTERRUPTED -- A spot instance was interrupted by EC2 with a two-minute notification.</p> </li> </ul> <p> <b>Server process events:</b> </p> <ul> <li> <p>SERVER_PROCESS_INVALID_PATH -- The game server executable or script could not be found based on the Fleet runtime configuration. Check that the launch path is correct based on the operating system of the Fleet.</p> </li> <li> <p>SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT -- The server process did not call InitSDK() within the time expected. Check your game session log to see why InitSDK() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_READY_TIMEOUT -- The server process did not call ProcessReady() within the time expected after calling InitSDK(). Check your game session log to see why ProcessReady() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_CRASHED -- The server process exited without calling ProcessEnding(). Check your game session log to see why ProcessEnding() was not called.</p> </li> <li> <p>SERVER_PROCESS_TERMINATED_UNHEALTHY -- The server process did not report a valid health check for too long and was therefore terminated by GameLift. Check your game session log to see if the thread became stuck processing a synchronous task for too long.</p> </li> <li> <p>SERVER_PROCESS_FORCE_TERMINATED -- The server process did not exit cleanly after OnProcessTerminate() was sent within the time expected. Check your game session log to see why termination took longer than expected.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_EXIT_TIMEOUT -- The server process did not exit cleanly within the time expected after calling ProcessEnding(). Check your game session log to see why termination took longer than expected.</p> </li> </ul> <p> <b>Game session events:</b> </p> <ul> <li> <p>GAME_SESSION_ACTIVATION_TIMEOUT -- GameSession failed to activate within the expected time. Check your game session log to see why ActivateGameSession() took longer to complete than expected.</p> </li> </ul> <p> <b>Other fleet events:</b> </p> <ul> <li> <p>FLEET_SCALING_EVENT -- A change was made to the fleet's capacity settings (desired instances, minimum/maximum scaling limits). Event messaging includes the new capacity settings.</p> </li> <li> <p>FLEET_NEW_GAME_SESSION_PROTECTION_POLICY_UPDATED -- A change was made to the fleet's game session protection policy setting. Event messaging includes both the old and new policy setting. </p> </li> <li> <p>FLEET_DELETED -- A request to delete a fleet was initiated.</p> </li> <li> <p> GENERIC_EVENT -- An unspecified event has occurred.</p> </li> </ul>"
+          "documentation":"<p>The type of event being logged. </p> <p> <b>Fleet state transition events:</b> </p> <ul> <li> <p>FLEET_CREATED -- A fleet resource was successfully created with a status of <code>NEW</code>. Event messaging includes the fleet ID.</p> </li> <li> <p>FLEET_STATE_DOWNLOADING -- Fleet status changed from <code>NEW</code> to <code>DOWNLOADING</code>. The compressed build has started downloading to a fleet instance for installation.</p> </li> <li> <p>FLEET_STATE_VALIDATING -- Fleet status changed from <code>DOWNLOADING</code> to <code>VALIDATING</code>. Amazon GameLift has successfully downloaded the build and is now validating the build files.</p> </li> <li> <p>FLEET_STATE_BUILDING -- Fleet status changed from <code>VALIDATING</code> to <code>BUILDING</code>. Amazon GameLift has successfully verified the build files and is now running the installation scripts.</p> </li> <li> <p>FLEET_STATE_ACTIVATING -- Fleet status changed from <code>BUILDING</code> to <code>ACTIVATING</code>. Amazon GameLift is trying to launch an instance and test the connectivity between the build and the Amazon GameLift Service via the Server SDK.</p> </li> <li> <p>FLEET_STATE_ACTIVE -- The fleet's status changed from <code>ACTIVATING</code> to <code>ACTIVE</code>. The fleet is now ready to host game sessions.</p> </li> <li> <p>FLEET_STATE_ERROR -- The Fleet's status changed to <code>ERROR</code>. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>Fleet creation events (ordered by fleet creation activity):</b> </p> <ul> <li> <p>FLEET_BINARY_DOWNLOAD_FAILED -- The build failed to download to the fleet instance.</p> </li> <li> <p>FLEET_CREATION_EXTRACTING_BUILD -- The game server build was successfully downloaded to an instance, and the build files are now being extracted from the uploaded build and saved to an instance. Failure at this stage prevents a fleet from moving to ACTIVE status. Logs for this stage display a list of the files that are extracted and saved on the instance. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_RUNNING_INSTALLER -- The game server build files were successfully extracted, and the GameLift is now running the build's install script (if one is included). Failure in this stage prevents a fleet from moving to ACTIVE status. Logs for this stage list the installation steps and whether or not the install completed successfully. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_CREATION_VALIDATING_RUNTIME_CONFIG -- The build process was successful, and the GameLift is now verifying that the game server launch paths, which are specified in the fleet's runtime configuration, exist. If any listed launch path exists, Amazon GameLift tries to launch a game server process and waits for the process to report ready. Failures in this stage prevent a fleet from moving to <code>ACTIVE</code> status. Logs for this stage list the launch paths in the runtime configuration and indicate whether each is found. Access the logs by using the URL in <i>PreSignedLogUrl</i>.</p> </li> <li> <p>FLEET_VALIDATION_LAUNCH_PATH_NOT_FOUND -- Validation of the runtime configuration failed because the executable specified in a launch path does not exist on the instance.</p> </li> <li> <p>FLEET_VALIDATION_EXECUTABLE_RUNTIME_FAILURE -- Validation of the runtime configuration failed because the executable specified in a launch path failed to run on the fleet instance.</p> </li> <li> <p>FLEET_VALIDATION_TIMED_OUT -- Validation of the fleet at the end of creation timed out. Try fleet creation again.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED -- The fleet failed to successfully complete one of the steps in the fleet activation process. This event code indicates that the game build was successfully downloaded to a fleet instance, built, and validated, but was not able to start a server process. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug Fleet Creation Issues</a>.</p> </li> <li> <p>FLEET_ACTIVATION_FAILED_NO_INSTANCES -- Fleet creation was not able to obtain any instances based on the input fleet attributes. Try again at a different time or choose a different combination of fleet attributes such as fleet type, instance type, etc.</p> </li> <li> <p>FLEET_INITIALIZATION_FAILED -- A generic exception occurred during fleet creation. Describe the fleet event message for more details.</p> </li> </ul> <p> <b>VPC peering events:</b> </p> <ul> <li> <p>FLEET_VPC_PEERING_SUCCEEDED -- A VPC peering connection has been established between the VPC for an Amazon GameLift fleet and a VPC in your Amazon Web Services account.</p> </li> <li> <p>FLEET_VPC_PEERING_FAILED -- A requested VPC peering connection has failed. Event details and status information provide additional detail. A common reason for peering failure is that the two VPCs have overlapping CIDR blocks of IPv4 addresses. To resolve this, change the CIDR block for the VPC in your Amazon Web Services account. For more information on VPC peering failures, see <a href=\"https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html\">https://docs.aws.amazon.com/AmazonVPC/latest/PeeringGuide/invalid-peering-configurations.html</a> </p> </li> <li> <p>FLEET_VPC_PEERING_DELETED -- A VPC peering connection has been successfully deleted.</p> </li> </ul> <p> <b>Spot instance events:</b> </p> <ul> <li> <p> INSTANCE_INTERRUPTED -- A spot instance was interrupted by EC2 with a two-minute notification.</p> </li> <li> <p>INSTANCE_RECYCLED -- A spot instance was determined to have a high risk of interruption and is scheduled to be recycled once it has no active game sessions.</p> </li> </ul> <p> <b>Server process events:</b> </p> <ul> <li> <p>SERVER_PROCESS_INVALID_PATH -- The game server executable or script could not be found based on the Fleet runtime configuration. Check that the launch path is correct based on the operating system of the Fleet.</p> </li> <li> <p>SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT -- The server process did not call InitSDK() within the time expected. Check your game session log to see why InitSDK() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_READY_TIMEOUT -- The server process did not call ProcessReady() within the time expected after calling InitSDK(). Check your game session log to see why ProcessReady() was not called in time.</p> </li> <li> <p>SERVER_PROCESS_CRASHED -- The server process exited without calling ProcessEnding(). Check your game session log to see why ProcessEnding() was not called.</p> </li> <li> <p>SERVER_PROCESS_TERMINATED_UNHEALTHY -- The server process did not report a valid health check for too long and was therefore terminated by GameLift. Check your game session log to see if the thread became stuck processing a synchronous task for too long.</p> </li> <li> <p>SERVER_PROCESS_FORCE_TERMINATED -- The server process did not exit cleanly after OnProcessTerminate() was sent within the time expected. Check your game session log to see why termination took longer than expected.</p> </li> <li> <p>SERVER_PROCESS_PROCESS_EXIT_TIMEOUT -- The server process did not exit cleanly within the time expected after calling ProcessEnding(). Check your game session log to see why termination took longer than expected.</p> </li> </ul> <p> <b>Game session events:</b> </p> <ul> <li> <p>GAME_SESSION_ACTIVATION_TIMEOUT -- GameSession failed to activate within the expected time. Check your game session log to see why ActivateGameSession() took longer to complete than expected.</p> </li> </ul> <p> <b>Other fleet events:</b> </p> <ul> <li> <p>FLEET_SCALING_EVENT -- A change was made to the fleet's capacity settings (desired instances, minimum/maximum scaling limits). Event messaging includes the new capacity settings.</p> </li> <li> <p>FLEET_NEW_GAME_SESSION_PROTECTION_POLICY_UPDATED -- A change was made to the fleet's game session protection policy setting. Event messaging includes both the old and new policy setting. </p> </li> <li> <p>FLEET_DELETED -- A request to delete a fleet was initiated.</p> </li> <li> <p> GENERIC_EVENT -- An unspecified event has occurred.</p> </li> </ul>"
         },
         "Message":{
           "shape":"NonEmptyString",
@@ -4876,7 +4937,7 @@
         },
         "FleetArn":{
           "shape":"FleetArn",
-          "documentation":"<p> The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) associated with the GameLift fleet that this game session is running on. </p>"
+          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) associated with the GameLift fleet that this game session is running on. </p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -4932,14 +4993,14 @@
         },
         "MatchmakerData":{
           "shape":"MatchmakerData",
-          "documentation":"<p>Information about the matchmaking process that was used to create the game session. It is in JSON syntax, formatted as a string. In addition the matchmaking configuration used, it contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data\">Match Data</a>. Matchmaker data is useful when requesting match backfills, and is updated whenever new players are added during a successful backfill (see <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchBackfill.html\">StartMatchBackfill</a>). </p>"
+          "documentation":"<p>Information about the matchmaking process that resulted in the game session, if matchmaking was used. Data is in JSON syntax, formatted as a string. Information includes the matchmaker ID as well as player attributes and team assignments. For more details on matchmaker data, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data\">Match Data</a>. Matchmaker data is updated whenever new players are added during a successful backfill (see <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartMatchBackfill.html\">StartMatchBackfill</a>). </p>"
         },
         "Location":{
           "shape":"LocationStringModel",
           "documentation":"<p>The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. </p>"
         }
       },
-      "documentation":"<p>Properties describing a game session.</p> <p>A game session in ACTIVE status can host players. When a game session ends, its status is set to <code>TERMINATED</code>. </p> <p>Once the session ends, the game session object is retained for 30 days. This means you can reuse idempotency token values after this time. Game session logs are retained for 14 days.</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p>Properties describing a game session.</p> <p>A game session in ACTIVE status can host players. When a game session ends, its status is set to <code>TERMINATED</code>. </p> <p>Amazon GameLift retains a game session resource for 30 days after the game session ends. You can reuse idempotency token values after this time. Game session logs are retained for 14 days.</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "GameSessionActivationTimeoutSeconds":{
       "type":"integer",
@@ -5020,7 +5081,7 @@
         },
         "Status":{
           "shape":"GameSessionPlacementState",
-          "documentation":"<p>Current status of the game session placement request.</p> <ul> <li> <p> <b>PENDING</b> -- The placement request is currently in the queue waiting to be processed.</p> </li> <li> <p> <b>FULFILLED</b> -- A new game session and player sessions (if requested) have been successfully created. Values for <i>GameSessionArn</i> and <i>GameSessionRegion</i> are available. </p> </li> <li> <p> <b>CANCELLED</b> -- The placement request was canceled.</p> </li> <li> <p> <b>TIMED_OUT</b> -- A new game session was not successfully created before the time limit expired. You can resubmit the placement request as needed.</p> </li> <li> <p> <b>FAILED</b> -- Amazon GameLift is not able to complete the process of placing the game session. Common reasons are the game session terminated before the placement process was completed, or an unexpected internal error.</p> </li> </ul>"
+          "documentation":"<p>Current status of the game session placement request.</p> <ul> <li> <p> <b>PENDING</b> -- The placement request is in the queue waiting to be processed. Game session properties are not yet final. </p> </li> <li> <p> <b>FULFILLED</b> -- A new game session has been successfully placed. Game session properties are now final.</p> </li> <li> <p> <b>CANCELLED</b> -- The placement request was canceled.</p> </li> <li> <p> <b>TIMED_OUT</b> -- A new game session was not successfully created before the time limit expired. You can resubmit the placement request as needed.</p> </li> <li> <p> <b>FAILED</b> -- Amazon GameLift is not able to complete the process of placing the game session. Common reasons are the game session terminated before the placement process was completed, or an unexpected internal error.</p> </li> </ul>"
         },
         "GameProperties":{
           "shape":"GamePropertyList",
@@ -5036,15 +5097,15 @@
         },
         "GameSessionId":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>A unique identifier for the game session. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).</p>"
+          "documentation":"<p>A unique identifier for the game session. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "GameSessionArn":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>Identifier for the game session created by this placement request. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). This identifier is unique across all Regions. You can use this value as a <code>GameSessionId</code> value as needed.</p>"
+          "documentation":"<p>Identifier for the game session created by this placement request. This identifier is unique across all Regions. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "GameSessionRegion":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>Name of the Region where the game session created by this placement request is running. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).</p>"
+          "documentation":"<p>Name of the Region where the game session created by this placement request is running. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "PlayerLatencies":{
           "shape":"PlayerLatencyList",
@@ -5060,7 +5121,7 @@
         },
         "IpAddress":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>). </p>"
+          "documentation":"<p>The IP address of the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value isn't final until placement status is <code>FULFILLED</code>. </p>"
         },
         "DnsName":{
           "shape":"DnsName",
@@ -5068,11 +5129,11 @@
         },
         "Port":{
           "shape":"PortNumber",
-          "documentation":"<p>The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value is set once the new game session is placed (placement status is <code>FULFILLED</code>).</p>"
+          "documentation":"<p>The port number for the game session. To connect to a Amazon GameLift game server, an app needs both the IP address and port number. This value isn't final until placement status is <code>FULFILLED</code>.</p>"
         },
         "PlacedPlayerSessions":{
           "shape":"PlacedPlayerSessionList",
-          "documentation":"<p>A collection of information on player sessions created in response to the game session placement request. These player sessions are created only once a new game session is successfully placed (placement status is <code>FULFILLED</code>). This information includes the player ID (as provided in the placement request) and the corresponding player session ID.</p>"
+          "documentation":"<p>A collection of information on player sessions created in response to the game session placement request. These player sessions are created only after a new game session is successfully placed (placement status is <code>FULFILLED</code>). This information includes the player ID, provided in the placement request, and a corresponding player session ID.</p>"
         },
         "GameSessionData":{
           "shape":"LargeGameSessionData",
@@ -5083,7 +5144,7 @@
           "documentation":"<p>Information on the matchmaking process for this game. Data is in JSON syntax, formatted as a string. It identifies the matchmaking configuration used to create the match, and contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data\">Match Data</a>.</p>"
         }
       },
-      "documentation":"<p>This object includes the full details of the original request plus the current status and start/end time stamps.</p>"
+      "documentation":"<p>Represents a potential game session placement, including the full details of the original placement request and the current status. </p> <note> <p>If the game session placement status is <code>PENDING</code>, the properties for game session ID/ARN, region, IP address/DNS, and port aren't final. A game session is not active and ready to accept players until placement status reaches <code>FULFILLED</code>. When the placement is in <code>PENDING</code> status, Amazon GameLift may attempt to place a game session multiple times before succeeding. With each attempt it creates a <a>GameSession</a> object and updates this placement object with the new game session properties..</p> </note>"
     },
     "GameSessionPlacementState":{
       "type":"string",
@@ -5200,11 +5261,11 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>A unique identifier for the fleet that the compute resource is registered to.</p>"
+          "documentation":"<p>A unique identifier for the fleet that contains the compute resource you want to connect to. You can use either the fleet ID or ARN value.</p>"
         },
         "ComputeName":{
           "shape":"ComputeNameOrArn",
-          "documentation":"<p>The name of the compute resource you are requesting credentials for.</p>"
+          "documentation":"<p>A unique identifier for the compute resource that you want to connect to. You can use either a registered compute name or an instance ID.</p>"
         }
       }
     },
@@ -5213,7 +5274,7 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>The fleet ID of compute resource.</p>"
+          "documentation":"<p>The ID of the fleet that contains the compute resource to be accessed.</p>"
         },
         "FleetArn":{
           "shape":"FleetArn",
@@ -5221,15 +5282,15 @@
         },
         "ComputeName":{
           "shape":"ComputeNameOrArn",
-          "documentation":"<p>The name of the compute resource you requested credentials for.</p>"
+          "documentation":"<p>The identifier of the compute resource to be accessed. This value might be either a compute name or an instance ID.</p>"
         },
         "ComputeArn":{
           "shape":"ComputeArn",
-          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to an Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.</p>"
         },
         "Credentials":{
           "shape":"AwsCredentials",
-          "documentation":"<p>The access credentials for the compute resource.</p>"
+          "documentation":"<p>A set of temporary Amazon Web Services credentials for use when connecting to the compute resource with Amazon EC2 Systems Manager (SSM).</p>"
         }
       }
     },
@@ -5263,19 +5324,19 @@
         },
         "ComputeName":{
           "shape":"ComputeNameOrArn",
-          "documentation":"<p>The name of the compute resource you are requesting the authentication token for.</p>"
+          "documentation":"<p>The name of the compute resource that the authentication token is issued to.</p>"
         },
         "ComputeArn":{
           "shape":"ComputeArn",
-          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to a Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code> </p>"
+          "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to an Amazon GameLift compute resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::compute/compute-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>.</p>"
         },
         "AuthToken":{
           "shape":"ComputeAuthToken",
-          "documentation":"<p>The authentication token that your game server uses to authenticate with Amazon GameLift.</p>"
+          "documentation":"<p>A valid temporary authentication token.</p>"
         },
         "ExpirationTimestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The amount of time until the authentication token is no longer valid. To continue using the compute resource for game server hosting, renew the authentication token by using this operation again.</p>"
+          "documentation":"<p>The amount of time until the authentication token is no longer valid.</p>"
         }
       }
     },
@@ -5307,11 +5368,11 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>A unique identifier for the fleet that contains the instance you want access to. You can use either the fleet ID or ARN value. The fleet can be in any of the following statuses: <code>ACTIVATING</code>, <code>ACTIVE</code>, or <code>ERROR</code>. Fleets with an <code>ERROR</code> status may be accessible for a short time before they are deleted.</p>"
+          "documentation":"<p>A unique identifier for the fleet that contains the instance you want to access. You can request access to instances in EC2 fleets with the following statuses: <code>ACTIVATING</code>, <code>ACTIVE</code>, or <code>ERROR</code>. Use either a fleet ID or an ARN value. </p> <note> <p>You can access fleets in <code>ERROR</code> status for a short period of time before Amazon GameLift deletes them.</p> </note>"
         },
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>A unique identifier for the instance you want to get access to. You can access an instance in any status.</p>"
+          "documentation":"<p>A unique identifier for the instance you want to access. You can access an instance in any status.</p>"
         }
       }
     },
@@ -5349,7 +5410,7 @@
       "members":{
         "FleetId":{
           "shape":"FleetId",
-          "documentation":"<p>A unique identifier for the fleet that the instance is in.</p>"
+          "documentation":"<p>A unique identifier for the fleet that the instance belongs to.</p>"
         },
         "FleetArn":{
           "shape":"FleetArn",
@@ -5365,15 +5426,15 @@
         },
         "DnsName":{
           "shape":"DnsName",
-          "documentation":"<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses\">Amazon EC2 Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>"
+          "documentation":"<p>The DNS identifier assigned to the instance that is running the game session. Values have the following format:</p> <ul> <li> <p>TLS-enabled fleets: <code>&lt;unique identifier&gt;.&lt;region identifier&gt;.amazongamelift.com</code>.</p> </li> <li> <p>Non-TLS-enabled fleets: <code>ec2-&lt;unique identifier&gt;.compute.amazonaws.com</code>. (See <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html#concepts-public-addresses\">Amazon Elastic Compute Cloud Instance IP Addressing</a>.)</p> </li> </ul> <p>When connecting to a game session that is running on a TLS-enabled fleet, you must use the DNS name, not the IP address.</p>"
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>Operating system that is running on this instance. </p>"
+          "documentation":"<p>Operating system that is running on this EC2 instance. </p>"
         },
         "Type":{
           "shape":"EC2InstanceType",
-          "documentation":"<p>Amazon EC2 instance type that defines the computing resources of this instance. </p>"
+          "documentation":"<p>EC2 instance type that defines the computing resources of this instance. </p>"
         },
         "Status":{
           "shape":"InstanceStatus",
@@ -5388,22 +5449,22 @@
           "documentation":"<p>The fleet location of the instance, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>. </p>"
         }
       },
-      "documentation":"<p>Represents an EC2 instance of virtual computing resources that hosts one or more game servers. In Amazon GameLift, a fleet can contain zero or more instances.</p> <p> <b>Related actions</b> </p>"
+      "documentation":"<p>Represents a virtual computing instance that runs game server processes and hosts game sessions. In Amazon GameLift, one or more instances make up a managed EC2 fleet.</p>"
     },
     "InstanceAccess":{
       "type":"structure",
       "members":{
         "FleetId":{
           "shape":"FleetId",
-          "documentation":"<p>A unique identifier for the fleet containing the instance being accessed.</p>"
+          "documentation":"<p>A unique identifier for the fleet containing the instance to be accessed.</p>"
         },
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>A unique identifier for the instance being accessed.</p>"
+          "documentation":"<p>A unique identifier for the instance to be accessed.</p>"
         },
         "IpAddress":{
           "shape":"IpAddress",
-          "documentation":"<p>IP address that is assigned to the instance.</p>"
+          "documentation":"<p>IP address assigned to the instance.</p>"
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
@@ -5411,24 +5472,24 @@
         },
         "Credentials":{
           "shape":"InstanceCredentials",
-          "documentation":"<p>Credentials required to access the instance.</p>"
+          "documentation":"<p>Security credentials that are required to access the instance.</p>"
         }
       },
-      "documentation":"<p>Information required to remotely connect to a fleet instance. </p>"
+      "documentation":"<p>Information and credentials that you can use to remotely connect to an instance in an EC2 managed fleet. This data type is returned in response to a call to <a>GetInstanceAccess</a>. </p>"
     },
     "InstanceCredentials":{
       "type":"structure",
       "members":{
         "UserName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>User login string.</p>"
+          "documentation":"<p>A user name for logging in.</p>"
         },
         "Secret":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Secret string. For Windows instances, the secret is a password for use with Windows Remote Desktop. For Linux instances, it is a private key (which must be saved as a <code>.pem</code> file) for use with SSH.</p>"
+          "documentation":"<p>Secret string. For Windows instances, the secret is a password for use with Windows Remote Desktop. For Linux instances, it's a private key for use with SSH.</p>"
         }
       },
-      "documentation":"<p>Set of credentials required to remotely access a fleet instance.</p>",
+      "documentation":"<p>A set of credentials that allow remote access to an instance in an EC2 managed fleet. These credentials are returned in response to a call to <a>GetInstanceAccess</a>, which requests access for instances that are running game servers with the Amazon GameLift server SDK version 4.x or earlier.</p>",
       "sensitive":true
     },
     "InstanceDefinition":{
@@ -5684,11 +5745,11 @@
       "members":{
         "FleetId":{
           "shape":"FleetIdOrArn",
-          "documentation":"<p>A unique identifier for the fleet the compute resources are registered to.</p>"
+          "documentation":"<p>A unique identifier for the fleet to retrieve compute resources for.</p>"
         },
         "Location":{
           "shape":"LocationStringModel",
-          "documentation":"<p>The name of the custom location that the compute resources are assigned to.</p>"
+          "documentation":"<p>The name of a location to retrieve compute resources for.</p>"
         },
         "Limit":{
           "shape":"PositiveInteger",
@@ -5705,7 +5766,7 @@
       "members":{
         "ComputeList":{
           "shape":"ComputeList",
-          "documentation":"<p>A list of compute resources registered to the fleet you specified.</p>"
+          "documentation":"<p>A list of compute resources in the specified fleet.</p>"
         },
         "NextToken":{
           "shape":"NonZeroAndMaxString",
@@ -6672,23 +6733,23 @@
         },
         "ComputeName":{
           "shape":"ComputeName",
-          "documentation":"<p>A descriptive label that is associated with the compute resource registered to your fleet.</p>"
+          "documentation":"<p>A descriptive label for the compute resource.</p>"
         },
         "CertificatePath":{
           "shape":"NonZeroAndMaxString",
-          "documentation":"<p>The path to the TLS certificate on your compute resource. The path and certificate are not validated by Amazon GameLift.</p>"
+          "documentation":"<p>The path to a TLS certificate on your compute resource. Amazon GameLift doesn't validate the path and certificate.</p>"
         },
         "DnsName":{
           "shape":"DnsNameInput",
-          "documentation":"<p>The DNS name of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.</p>"
+          "documentation":"<p>The DNS name of the compute resource. Amazon GameLift requires either a DNS name or IP address.</p>"
         },
         "IpAddress":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the compute resource. Amazon GameLift requires the DNS name or IP address to manage your compute resource.</p>"
+          "documentation":"<p>The IP address of the compute resource. Amazon GameLift requires either a DNS name or IP address.</p>"
         },
         "Location":{
           "shape":"LocationStringModel",
-          "documentation":"<p>The name of the custom location you added to the fleet you are registering this compute resource to.</p>"
+          "documentation":"<p>The name of a custom location to associate with the compute resource being registered. </p>"
         }
       }
     },
@@ -6697,7 +6758,7 @@
       "members":{
         "Compute":{
           "shape":"Compute",
-          "documentation":"<p>The details of the compute resource you registered to the specified fleet.</p>"
+          "documentation":"<p>The details of the compute resource you registered.</p>"
         }
       }
     },
@@ -7092,7 +7153,7 @@
       "members":{
         "LaunchPath":{
           "shape":"LaunchPathStringModel",
-          "documentation":"<p>The location of a game build executable or the Realtime script file that contains the <code>Init()</code> function. Game builds and Realtime scripts are installed on instances at the root: </p> <ul> <li> <p>Windows (custom game builds only): <code>C:\\game</code>. Example: \"<code>C:\\game\\MyGame\\server.exe</code>\" </p> </li> <li> <p>Linux: <code>/local/game</code>. Examples: \"<code>/local/game/MyGame/server.exe</code>\" or \"<code>/local/game/MyRealtimeScript.js</code>\"</p> </li> </ul>"
+          "documentation":"<p>The location of a game build executable or Realtime script. Game builds and Realtime scripts are installed on instances at the root: </p> <ul> <li> <p>Windows (custom game builds only): <code>C:\\game</code>. Example: \"<code>C:\\game\\MyGame\\server.exe</code>\" </p> </li> <li> <p>Linux: <code>/local/game</code>. Examples: \"<code>/local/game/MyGame/server.exe</code>\" or \"<code>/local/game/MyRealtimeScript.js</code>\"</p> </li> </ul> <note> <p>Amazon GameLift doesn't support the use of setup scripts that launch the game executable. For custom game builds, this parameter must indicate the executable that calls the server SDK operations <code>initSDK()</code> and <code>ProcessReady()</code>. </p> </note>"
         },
         "Parameters":{
           "shape":"LaunchParametersStringModel",
@@ -7593,7 +7654,7 @@
         },
         "NewGameSessionProtectionPolicy":{
           "shape":"ProtectionPolicy",
-          "documentation":"<p>The game session protection policy to apply to all new instances created in this fleet. Instances that already exist are not affected. You can set protection for individual instances using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html\">UpdateGameSession</a> .</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>"
+          "documentation":"<p>The game session protection policy to apply to all new game sessions created in this fleet. Game sessions that already exist are not affected. You can set protection for individual game sessions using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateGameSession.html\">UpdateGameSession</a> .</p> <ul> <li> <p> <b>NoProtection</b> -- The game session can be terminated during a scale-down event.</p> </li> <li> <p> <b>FullProtection</b> -- If the game session is in an <code>ACTIVE</code> status, it cannot be terminated during a scale-down event.</p> </li> </ul>"
         },
         "ResourceCreationLimitPolicy":{
           "shape":"ResourceCreationLimitPolicy",
@@ -7632,7 +7693,7 @@
         },
         "DesiredInstances":{
           "shape":"WholeNumber",
-          "documentation":"<p>The number of Amazon EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits.</p>"
+          "documentation":"<p>The number of Amazon EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits. Changes in desired instance value can take up to 1 minute to be reflected when viewing the fleet's capacity settings.</p>"
         },
         "MinSize":{
           "shape":"WholeNumber",
@@ -7752,7 +7813,7 @@
         },
         "UtilizationStatus":{
           "shape":"GameServerUtilizationStatus",
-          "documentation":"<p>Indicates whether the game server is available or is currently hosting gameplay.</p>"
+          "documentation":"<p>Indicates if the game server is available or is currently hosting gameplay. You can update a game server status from <code>AVAILABLE</code> to <code>UTILIZED</code>, but you can't change a the status from <code>UTILIZED</code> to <code>AVAILABLE</code>.</p>"
         },
         "HealthCheck":{
           "shape":"GameServerHealthCheck",

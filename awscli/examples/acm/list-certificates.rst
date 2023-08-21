@@ -41,7 +41,7 @@ Two certificate ARNs and a ``NextToken`` value will be displayed::
 
 To display the next two certificates in your account, set this ``NextToken`` value in your next call::
 
-  aws acm list-certificates --max-items 2 --next-token 9f4d9f69-275a-41fe-b58e-2b837bd9ba48
+  aws acm list-certificates --max-items 2 --starting-token 9f4d9f69-275a-41fe-b58e-2b837bd9ba48
 
 
 You can filter your output by using the ``certificate-statuses`` argument. The following command displays certificates that have a PENDING_VALIDATION status::

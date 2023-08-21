@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.31
+=======
+
+* api-change:``cloud9``: Doc only update to add Ubuntu 22.04 as an Image ID option for Cloud9
+* api-change:``ec2``: The DeleteKeyPair API has been updated to return the keyPairId when an existing key pair is deleted.
+* api-change:``finspace``: Allow customers to manage outbound traffic from their Kx Environment when attaching a transit gateway by providing network acl entries. Allow the customer to choose how they want to update the databases on a cluster allowing updates to possibly be faster than usual.
+* api-change:``rds``: Adding support for RDS Aurora Global Database Unplanned Failover
+* api-change:``route53domains``: Fixed typos in description fields
+
+
 1.29.30
 =======
 

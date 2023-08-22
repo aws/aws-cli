@@ -1611,7 +1611,7 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBClusterNotFoundFault"}
       ],
-      "documentation":"<p>Initiates the failover process for an Aurora global database (<a>GlobalCluster</a>).</p> <p>A failover for an Aurora global database promotes one of secondary read-only DB clusters to be the primary DB cluster and demotes the primary DB cluster to being a secondary (read-only) DB cluster. In other words, the role of the current primary DB cluster and the selected (target) DB cluster are switched. The selected secondary DB cluster assumes full read/write capabilities for the Aurora global database.</p> <p>For more information about failing over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Managed planned failover for Amazon Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action applies to <a>GlobalCluster</a> (Aurora global databases) only. Use this action only on healthy Aurora global databases with running Aurora DB clusters and no Region-wide outages, to test disaster recovery scenarios or to reconfigure your Aurora global database topology.</p> </note>"
+      "documentation":"<p>Promotes the specified secondary DB cluster to be the primary DB cluster in the global database cluster to fail over or switch over a global database. Switchover operations were previously called \"managed planned failovers.\"</p> <note> <p>Although this operation can be used either to fail over or to switch over a global database cluster, its intended use is for global database failover. To switch over a global database cluster, we recommend that you use the <a>SwitchoverGlobalCluster</a> operation instead.</p> </note> <p>How you use this operation depends on whether you are failing over or switching over your global database cluster:</p> <ul> <li> <p>Failing over - Specify the <code>AllowDataLoss</code> parameter and don't specify the <code>Switchover</code> parameter.</p> </li> <li> <p>Switching over - Specify the <code>Switchover</code> parameter or omit it, but don't specify the <code>AllowDataLoss</code> parameter.</p> </li> </ul> <p> <b>About failing over and switching over</b> </p> <p>While failing over and switching over a global database cluster both change the primary DB cluster, you use these operations for different reasons:</p> <ul> <li> <p> <i>Failing over</i> - Use this operation to respond to an unplanned event, such as a Regional disaster in the primary Region. Failing over can result in a loss of write transaction data that wasn't replicated to the chosen secondary before the failover event occurred. However, the recovery process that promotes a DB instance on the chosen seconday DB cluster to be the primary writer DB instance guarantees that the data is in a transactionally consistent state.</p> <p>For more information about failing over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-failover.managed-unplanned\">Performing managed failovers for Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> </li> <li> <p> <i>Switching over</i> - Use this operation on a healthy global database cluster for planned events, such as Regional rotation or to fail back to the original primary DB cluster after a failover operation. With this operation, there is no data loss.</p> <p>For more information about switching over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Performing switchovers for Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> </li> </ul>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1986,7 +1986,7 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBInstanceStateFault"}
       ],
-      "documentation":"<p>Modifies a setting for an Amazon Aurora global cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora global database clusters.</p> </note>"
+      "documentation":"<p>Modifies a setting for an Amazon Aurora global database cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora global database clusters.</p> </note>"
     },
     "ModifyOptionGroup":{
       "name":"ModifyOptionGroup",
@@ -2656,6 +2656,25 @@
         {"shape":"InvalidBlueGreenDeploymentStateFault"}
       ],
       "documentation":"<p>Switches over a blue/green deployment.</p> <p>Before you switch over, production traffic is routed to the databases in the blue environment. After you switch over, production traffic is routed to the databases in the green environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+    },
+    "SwitchoverGlobalCluster":{
+      "name":"SwitchoverGlobalCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SwitchoverGlobalClusterMessage"},
+      "output":{
+        "shape":"SwitchoverGlobalClusterResult",
+        "resultWrapper":"SwitchoverGlobalClusterResult"
+      },
+      "errors":[
+        {"shape":"GlobalClusterNotFoundFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
+      ],
+      "documentation":"<p>Switches over the specified secondary DB cluster to be the new primary DB cluster in the global database cluster. Switchover operations were previously called \"managed planned failovers.\"</p> <p>Aurora promotes the specified secondary cluster to assume full read/write capabilities and demotes the current primary cluster to a secondary (read-only) cluster, maintaining the orginal replication topology. All secondary clusters are synchronized with the primary at the beginning of the process so the new primary continues operations for the Aurora global database without losing any data. Your database is unavailable for a short time while the primary and selected secondary clusters are assuming their new roles. For more information about switching over an Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Performing switchovers for Amazon Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation is intended for controlled environments, for operations such as \"regional rotation\" or to fall back to the original primary after a global database failover.</p> </note>"
     },
     "SwitchoverReadReplica":{
       "name":"SwitchoverReadReplica",
@@ -3661,7 +3680,15 @@
           "shape":"CustomDBEngineVersionManifest",
           "documentation":"<p>The CEV manifest, which is a JSON document that describes the installation .zip files stored in Amazon S3. Specify the name/value pairs in a file or a quoted string. RDS Custom applies the patches in the order in which they are listed.</p> <p>The following JSON fields are valid:</p> <dl> <dt>MediaImportTemplateVersion</dt> <dd> <p>Version of the CEV manifest. The date is in the format <code>YYYY-MM-DD</code>.</p> </dd> <dt>databaseInstallationFileNames</dt> <dd> <p>Ordered list of installation files for the CEV.</p> </dd> <dt>opatchFileNames</dt> <dd> <p>Ordered list of OPatch installers used for the Oracle DB engine.</p> </dd> <dt>psuRuPatchFileNames</dt> <dd> <p>The PSU and RU patches for this CEV.</p> </dd> <dt>OtherPatchFileNames</dt> <dd> <p>The patches that are not in the list of PSU and RU patches. Amazon RDS applies these patches after applying the PSU and RU patches.</p> </dd> </dl> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.html#custom-cev.preparing.manifest\"> Creating the CEV manifest</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
-        "Tags":{"shape":"TagList"}
+        "Tags":{"shape":"TagList"},
+        "SourceCustomDbEngineVersionIdentifier":{
+          "shape":"String255",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "UseAwsProvidedLatestImage":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Reserved for future use.</p>"
+        }
       }
     },
     "CreateDBClusterEndpointMessage":{
@@ -3847,7 +3874,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html#aurora-storage-type\">Storage configurations for Amazon Aurora DB clusters</a>. For information on storage types for Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/create-multi-az-db-cluster.html#create-multi-az-db-cluster-settings\">Settings for creating Multi-AZ DB clusters</a>.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values:</p> <ul> <li> <p>Aurora DB clusters - <code>aurora | aurora-iopt1</code> </p> </li> <li> <p>Multi-AZ DB clusters - <code>io1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p>Aurora DB clusters - <code>aurora</code> </p> </li> <li> <p>Multi-AZ DB clusters - <code>io1</code> </p> </li> </ul>"
+          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html#aurora-storage-type\">Storage configurations for Amazon Aurora DB clusters</a>. For information on storage types for Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/create-multi-az-db-cluster.html#create-multi-az-db-cluster-settings\">Settings for creating Multi-AZ DB clusters</a>.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values:</p> <ul> <li> <p>Aurora DB clusters - <code>aurora | aurora-iopt1</code> </p> </li> <li> <p>Multi-AZ DB clusters - <code>io1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p>Aurora DB clusters - <code>aurora</code> </p> </li> <li> <p>Multi-AZ DB clusters - <code>io1</code> </p> </li> </ul> <note> <p>When you create an Aurora DB cluster with the storage type set to <code>aurora-iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>aurora</code>.</p> </note>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -9730,11 +9757,19 @@
       "members":{
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
-          "documentation":"<p>Identifier of the Aurora global database (<a>GlobalCluster</a>) that should be failed over. The identifier is the unique key assigned by the user when the Aurora global database was created. In other words, it's the name of the Aurora global database that you want to fail over.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing <a>GlobalCluster</a> (Aurora global database).</p> </li> </ul>"
+          "documentation":"<p>The identifier of the global database cluster (Aurora global database) this operation should apply to. The identifier is the unique key assigned by the user when the Aurora global database is created. In other words, it's the name of the Aurora global database.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing global database cluster.</p> </li> </ul>"
         },
         "TargetDbClusterIdentifier":{
           "shape":"DBClusterIdentifier",
-          "documentation":"<p>Identifier of the secondary Aurora DB cluster that you want to promote to primary for the Aurora global database (<a>GlobalCluster</a>.) Use the Amazon Resource Name (ARN) for the identifier so that Aurora can locate the cluster in its Amazon Web Services Region.</p>"
+          "documentation":"<p>The identifier of the secondary Aurora DB cluster that you want to promote to the primary for the global database cluster. Use the Amazon Resource Name (ARN) for the identifier so that Aurora can locate the cluster in its Amazon Web Services Region.</p>"
+        },
+        "AllowDataLoss":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to allow data loss for this global database cluster operation. Allowing data loss triggers a global failover operation.</p> <p>If you don't specify <code>AllowDataLoss</code>, the global database cluster operation defaults to a switchover.</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified together with the <code>Switchover</code> parameter.</p> </li> </ul>"
+        },
+        "Switchover":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to switch over this global database cluster.</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified together with the <code>AllowDataLoss</code> parameter.</p> </li> </ul>"
         }
       }
     },
@@ -9749,7 +9784,7 @@
       "members":{
         "Status":{
           "shape":"FailoverStatus",
-          "documentation":"<p>The current status of the Aurora global database (<a>GlobalCluster</a>). Possible values are as follows:</p> <ul> <li> <p>pending &#x96; A request to fail over the Aurora global database (<a>GlobalCluster</a>) has been received by the service. The <code>GlobalCluster</code>'s primary DB cluster and the specified secondary DB cluster are being verified before the failover process can start.</p> </li> <li> <p>failing-over &#x96; This status covers the range of Aurora internal operations that take place during the failover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB, and synchronizing replicas.</p> </li> <li> <p>cancelling &#x96; The request to fail over the Aurora global database (<a>GlobalCluster</a>) was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> </ul>"
+          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#x96; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#x96; This status covers the range of Aurora internal operations that take place during the switchover or failover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing replicas.</p> </li> <li> <p>cancelling &#x96; The request to switch over or fail over the global cluster was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> </ul>"
         },
         "FromDbClusterArn":{
           "shape":"String",
@@ -9758,9 +9793,13 @@
         "ToDbClusterArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Aurora DB cluster that is currently being promoted, and which is associated with this state.</p>"
+        },
+        "IsDataLossAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the operation is a global switchover or a global failover. If data loss is allowed, then the operation is a global failover. Otherwise, it's a switchover.</p>"
         }
       },
-      "documentation":"<p>Contains the state of scheduled or in-process failover operations on an Aurora global database (<a>GlobalCluster</a>). This Data type is empty unless a failover operation is scheduled or is currently underway on the Aurora global database.</p>",
+      "documentation":"<p>Contains the state of scheduled or in-process operations on a global cluster (Aurora global database). This data type is empty unless a switchover or failover operation is scheduled or is in progress on the Aurora global database.</p>",
       "wrapper":true
     },
     "FailoverStatus":{
@@ -9852,7 +9891,7 @@
         },
         "FailoverState":{
           "shape":"FailoverState",
-          "documentation":"<p>A data object containing all properties for the current state of an in-process or pending failover process for this Aurora global database. This object is empty unless the <a>FailoverGlobalCluster</a> API operation has been called on this Aurora global database (<a>GlobalCluster</a>).</p>"
+          "documentation":"<p>A data object containing all properties for the current state of an in-process or pending switchover or failover process for this global cluster (Aurora global database). This object is empty unless the <code>SwitchoverGlobalCluster</code> or <code>FailoverGlobalCluster</code> operation was called on this global cluster.</p>"
         }
       },
       "documentation":"<p>A data type representing an Aurora global database.</p>",
@@ -9888,22 +9927,26 @@
       "members":{
         "DBClusterArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) for each Aurora cluster.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for each Aurora DB cluster in the global cluster.</p>"
         },
         "Readers":{
           "shape":"ReadersArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the Aurora global database.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for each read-only secondary cluster associated with the global cluster.</p>"
         },
         "IsWriter":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the Aurora cluster is the primary cluster (that is, has read-write capability) for the Aurora global database with which it is associated.</p>"
+          "documentation":"<p>Specifies whether the Aurora DB cluster is the primary cluster (that is, has read-write capability) for the global cluster with which it is associated.</p>"
         },
         "GlobalWriteForwardingStatus":{
           "shape":"WriteForwardingStatus",
-          "documentation":"<p>Specifies whether a secondary cluster in an Aurora global database has write forwarding enabled, not enabled, or is in the process of enabling it.</p>"
+          "documentation":"<p>Specifies whether a secondary cluster in the global cluster has write forwarding enabled, not enabled, or is in the process of enabling it.</p>"
+        },
+        "SynchronizationStatus":{
+          "shape":"GlobalClusterMemberSynchronizationStatus",
+          "documentation":"<p>The status of synchronization of each Aurora DB cluster in the global cluster.</p>"
         }
       },
-      "documentation":"<p>A data structure with information about any primary and secondary clusters associated with an Aurora global database.</p>",
+      "documentation":"<p>A data structure with information about any primary and secondary clusters associated with a global cluster (Aurora global database).</p>",
       "wrapper":true
     },
     "GlobalClusterMemberList":{
@@ -9912,6 +9955,13 @@
         "shape":"GlobalClusterMember",
         "locationName":"GlobalClusterMember"
       }
+    },
+    "GlobalClusterMemberSynchronizationStatus":{
+      "type":"string",
+      "enum":[
+        "connected",
+        "pending-resync"
+      ]
     },
     "GlobalClusterNotFoundFault":{
       "type":"structure",
@@ -14565,6 +14615,29 @@
       "member":{"shape":"SwitchoverDetail"}
     },
     "SwitchoverDetailStatus":{"type":"string"},
+    "SwitchoverGlobalClusterMessage":{
+      "type":"structure",
+      "required":[
+        "GlobalClusterIdentifier",
+        "TargetDbClusterIdentifier"
+      ],
+      "members":{
+        "GlobalClusterIdentifier":{
+          "shape":"GlobalClusterIdentifier",
+          "documentation":"<p>The identifier of the global database cluster to switch over. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing global database cluster (Aurora global database).</p> </li> </ul>"
+        },
+        "TargetDbClusterIdentifier":{
+          "shape":"DBClusterIdentifier",
+          "documentation":"<p>The identifier of the secondary Aurora DB cluster to promote to the new primary for the global database cluster. Use the Amazon Resource Name (ARN) for the identifier so that Aurora can locate the cluster in its Amazon Web Services Region.</p>"
+        }
+      }
+    },
+    "SwitchoverGlobalClusterResult":{
+      "type":"structure",
+      "members":{
+        "GlobalCluster":{"shape":"GlobalCluster"}
+      }
+    },
     "SwitchoverReadReplicaMessage":{
       "type":"structure",
       "required":["DBInstanceIdentifier"],

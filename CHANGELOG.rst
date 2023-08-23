@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.33
+=======
+
+* api-change:``apigateway``: This release adds RootResourceId to GetRestApi response.
+* api-change:``ec2``: Marking fields as sensitive on BundleTask and GetPasswordData
+* api-change:``polly``: Amazon Polly adds 1 new voice - Zayd (ar-AE)
+
+
 1.29.32
 =======
 

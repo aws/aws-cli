@@ -5885,6 +5885,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.32
+=======
+
+* api-change:``ce``: This release adds the LastUpdatedDate and LastUsedDate timestamps to help you manage your cost allocation tags.
+* api-change:``globalaccelerator``: Global Accelerator now supports Client Ip Preservation for Network Load Balancer endpoints.
+* api-change:``rds``: Adding parameters to CreateCustomDbEngineVersion reserved for future use.
+* api-change:``verifiedpermissions``: Documentation updates for Amazon Verified Permissions. Increases max results per page for ListPolicyStores, ListPolicies, and ListPolicyTemplates APIs from 20 to 50.
+
+
+1.29.31
+=======
+
+* api-change:``cloud9``: Doc only update to add Ubuntu 22.04 as an Image ID option for Cloud9
+* api-change:``ec2``: The DeleteKeyPair API has been updated to return the keyPairId when an existing key pair is deleted.
+* api-change:``finspace``: Allow customers to manage outbound traffic from their Kx Environment when attaching a transit gateway by providing network acl entries. Allow the customer to choose how they want to update the databases on a cluster allowing updates to possibly be faster than usual.
+* api-change:``rds``: Adding support for RDS Aurora Global Database Unplanned Failover
+* api-change:``route53domains``: Fixed typos in description fields
+
+
+1.29.30
+=======
+
+* api-change:``codecommit``: Add new ListFileCommitHistory operation to retrieve commits which introduced changes to a specific file.
+* api-change:``securityhub``: Added Inspector Lambda code Vulnerability section to ASFF, including GeneratorDetails, EpssScore, ExploitAvailable, and CodeVulnerabilities.
+
+
 1.29.29
 =======
 

@@ -279,7 +279,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p> <important> <p>If you delete a Amazon Cognito user pool or user, tokens from that deleted pool or that deleted user continue to be usable until they expire.</p> </important>"
+      "documentation":"<p>Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a <a href=\"https://wikipedia.org/wiki/JSON_Web_Token\">JSON web token (JWT)</a>. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p> <important> <p>If you specify the <code>identityToken</code> parameter, then this operation derives the principal from that token. You must not also include that principal in the <code>entities</code> parameter or the operation fails and reports a conflict between the two entity sources.</p> <p>If you provide only an <code>accessToken</code>, then you can include the entity as part of the <code>entities</code> parameter to provide additional attributes.</p> </important> <p>At this time, Verified Permissions accepts tokens from only Amazon Cognito.</p> <p>Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature.</p> <important> <p>If you delete a Amazon Cognito user pool or user, tokens from that deleted pool or that deleted user continue to be usable until they expire.</p> </important>"
     },
     "ListIdentitySources":{
       "name":"ListIdentitySources",
@@ -404,7 +404,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Modifies a Cedar static policy in the specified policy store. You can change only certain elements of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyInput.html#amazonverifiedpermissions-UpdatePolicy-request-UpdatePolicyDefinition\">UpdatePolicyDefinition</a> parameter. You can directly update only static policies. To change a template-linked policy, you must update the template instead, using <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyTemplate.html\">UpdatePolicyTemplate</a>.</p> <note> <p>If policy validation is enabled in the policy store, then updating a static policy causes Verified Permissions to validate the policy against the schema in the policy store. If the updated static policy doesn't pass validation, the operation fails and the update isn't stored.</p> </note>",
+      "documentation":"<p>Modifies a Cedar static policy in the specified policy store. You can change only certain elements of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyInput.html#amazonverifiedpermissions-UpdatePolicy-request-UpdatePolicyDefinition\">UpdatePolicyDefinition</a> parameter. You can directly update only static policies. To change a template-linked policy, you must update the template instead, using <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyTemplate.html\">UpdatePolicyTemplate</a>.</p> <note> <ul> <li> <p>If policy validation is enabled in the policy store, then updating a static policy causes Verified Permissions to validate the policy against the schema in the policy store. If the updated static policy doesn't pass validation, the operation fails and the update isn't stored.</p> </li> <li> <p>When you edit a static policy, You can change only certain elements of a static policy:</p> <ul> <li> <p>The action referenced by the policy. </p> </li> <li> <p>A condition clause, such as when and unless. </p> </li> </ul> <p>You can't change these elements of a static policy: </p> <ul> <li> <p>Changing a policy from a static policy to a template-linked policy. </p> </li> <li> <p>Changing the effect of a static policy from permit or forbid. </p> </li> <li> <p>The principal referenced by a static policy. </p> </li> <li> <p>The resource referenced by a static policy. </p> </li> </ul> </li> <li> <p>To update a template-linked policy, you must update the template instead. </p> </li> </ul> </note>",
       "idempotent":true
     },
     "UpdatePolicyStore":{
@@ -460,7 +460,8 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "ActionIdentifier":{
       "type":"structure",
@@ -484,7 +485,8 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"Action$|^.+::Action"
+      "pattern":"Action$|^.+::Action",
+      "sensitive":true
     },
     "AttributeValue":{
       "type":"structure",
@@ -523,13 +525,15 @@
     },
     "BooleanAttribute":{
       "type":"boolean",
-      "box":true
+      "box":true,
+      "sensitive":true
     },
     "ClientId":{
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "ClientIds":{
       "type":"list",
@@ -593,8 +597,7 @@
     "ContextMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"AttributeValue"},
-      "min":0
+      "value":{"shape":"AttributeValue"}
     },
     "CreateIdentitySourceInput":{
       "type":"structure",
@@ -929,14 +932,14 @@
     "EntityAttributes":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"AttributeValue"},
-      "min":0
+      "value":{"shape":"AttributeValue"}
     },
     "EntityId":{
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "EntityIdentifier":{
       "type":"structure",
@@ -977,8 +980,7 @@
     },
     "EntityList":{
       "type":"list",
-      "member":{"shape":"EntityItem"},
-      "min":0
+      "member":{"shape":"EntityItem"}
     },
     "EntityReference":{
       "type":"structure",
@@ -999,7 +1001,8 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "EvaluationErrorItem":{
       "type":"structure",
@@ -1010,7 +1013,8 @@
           "documentation":"<p>The error description.</p>"
         }
       },
-      "documentation":"<p>Contains a description of an evaluation error.</p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>"
+      "documentation":"<p>Contains a description of an evaluation error.</p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
+      "sensitive":true
     },
     "EvaluationErrorList":{
       "type":"list",
@@ -1451,11 +1455,11 @@
         },
         "identityToken":{
           "shape":"Token",
-          "documentation":"<p>Specifies an identity token for the principal to be authorized. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an <code>AccessToken</code> or an <code>IdentityToken</code>, but not both.</p>"
+          "documentation":"<p>Specifies an identity token for the principal to be authorized. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an <code>AccessToken</code> or an <code>IdentityToken</code>, or both.</p>"
         },
         "accessToken":{
           "shape":"Token",
-          "documentation":"<p>Specifies an access token for the principal to be authorized. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an <code>AccessToken</code> or an <code>IdentityToken</code>, but not both.</p>"
+          "documentation":"<p>Specifies an access token for the principal to be authorized. This token is provided to you by the identity provider (IdP) associated with the specified identity source. You must specify either an <code>AccessToken</code>, or an <code>IdentityToken</code>, or both.</p>"
         },
         "action":{
           "shape":"ActionIdentifier",
@@ -1471,7 +1475,7 @@
         },
         "entities":{
           "shape":"EntitiesDefinition",
-          "documentation":"<p>Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
+          "documentation":"<p>Specifies the list of resources and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <note> <p>You can include only resource and action entities in this parameter; you can't include principals.</p> <ul> <li> <p>The <code>IsAuthorizedWithToken</code> operation takes principal attributes from <b> <i>only</i> </b> the <code>identityToken</code> or <code>accessToken</code> passed to the operation.</p> </li> <li> <p>For action entities, you can include only their <code>Identifier</code> and <code>EntityType</code>. </p> </li> </ul> </note>"
         }
       }
     },
@@ -1511,7 +1515,7 @@
         },
         "maxResults":{
           "shape":"ListIdentitySourcesMaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 identity sources per response. You can specify a maximum of 200 identity sources per response.</p>"
         },
         "filters":{
           "shape":"IdentitySourceFilters",
@@ -1553,7 +1557,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 policies per response. You can specify a maximum of 50 policies per response.</p>"
         },
         "filter":{
           "shape":"PolicyFilter",
@@ -1584,7 +1588,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 policy stores per response. You can specify a maximum of 50 policy stores per response.</p>"
         }
       }
     },
@@ -1616,7 +1620,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value that is specific to the operation. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 policy templates per response. You can specify a maximum of 50 policy templates per response.</p>"
         }
       }
     },
@@ -1636,19 +1640,21 @@
     },
     "LongAttribute":{
       "type":"long",
-      "box":true
+      "box":true,
+      "sensitive":true
     },
     "MaxResults":{
       "type":"integer",
       "box":true,
-      "max":20,
+      "max":50,
       "min":1
     },
     "Namespace":{
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "NamespaceList":{
       "type":"list",
@@ -1796,7 +1802,8 @@
     "PolicyStatement":{
       "type":"string",
       "max":10000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "PolicyStoreId":{
       "type":"string",
@@ -1834,7 +1841,8 @@
     "PolicyTemplateDescription":{
       "type":"string",
       "max":150,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "PolicyTemplateId":{
       "type":"string",
@@ -1889,7 +1897,8 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":".*"
+      "pattern":".*",
+      "sensitive":true
     },
     "PutSchemaInput":{
       "type":"structure",
@@ -2013,7 +2022,8 @@
     "SchemaJson":{
       "type":"string",
       "max":10000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -2090,10 +2100,14 @@
     "StaticPolicyDescription":{
       "type":"string",
       "max":150,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "String":{"type":"string"},
-    "StringAttribute":{"type":"string"},
+    "StringAttribute":{
+      "type":"string",
+      "sensitive":true
+    },
     "TemplateLinkedPolicyDefinition":{
       "type":"structure",
       "required":["policyTemplateId"],
@@ -2177,7 +2191,8 @@
       "type":"string",
       "max":131072,
       "min":1,
-      "pattern":"[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+"
+      "pattern":"[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+",
+      "sensitive":true
     },
     "UpdateCognitoUserPoolConfiguration":{
       "type":"structure",

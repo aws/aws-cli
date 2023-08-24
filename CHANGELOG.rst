@@ -5901,6 +5901,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.34
+=======
+
+* api-change:``ec2``: Amazon EC2 M7a instances, powered by 4th generation AMD EPYC processors, deliver up to 50% higher performance compared to M6a instances. Amazon EC2 Hpc7a instances, powered by 4th Gen AMD EPYC processors, deliver up to 2.5x better performance compared to Amazon EC2 Hpc6a instances.
+* api-change:``glue``: Added API attributes that help in the monitoring of sessions.
+* api-change:``mediaconvert``: This release includes additional audio channel tags in Quicktime outputs, support for film grain synthesis for AV1 outputs, ability to create audio-only FLAC outputs, and ability to specify Amazon S3 destination storage class.
+* api-change:``medialive``: MediaLive now supports passthrough of KLV data to a HLS output group with a TS container. MediaLive now supports setting an attenuation mode for AC3 audio when the coding mode is 3/2 LFE. MediaLive now supports specifying whether to include filler NAL units in RTMP output group settings.
+* api-change:``mediatailor``: Adds new source location AUTODETECT_SIGV4 access type.
+* api-change:``quicksight``: Excel support in Snapshot Export APIs. Removed Required trait for some insight Computations. Namespace-shared Folders support. Global Filters support. Table pin Column support.
+* api-change:``rds``: This release updates the supported versions for Percona XtraBackup in Aurora MySQL.
+* api-change:``s3control``: Updates to endpoint ruleset tests to address Smithy validation issues and standardize the capitalization of DualStack.
+* api-change:``verifiedpermissions``: Documentation updates for Amazon Verified Permissions.
+
+
+1.29.33
+=======
+
+* api-change:``apigateway``: This release adds RootResourceId to GetRestApi response.
+* api-change:``ec2``: Marking fields as sensitive on BundleTask and GetPasswordData
+* api-change:``polly``: Amazon Polly adds 1 new voice - Zayd (ar-AE)
+
+
 1.29.32
 =======
 

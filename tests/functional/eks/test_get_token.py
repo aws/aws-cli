@@ -25,6 +25,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         super(TestGetTokenCommand, self).setUp()
         self.cluster_name = 'MyCluster'
         self.role_arn = 'arn:aws:iam::012345678910:role/RoleArn'
+        self.external_id = 'MyExternalId12345678'
         self.access_key = 'ABCDEFGHIJKLMNOPQRST'
         self.secret_key = 'TSRQPONMLKJUHGFEDCBA'
         self.session_token = 'TOKENTOKENTOKENTOKEN'
@@ -157,6 +158,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
     def test_url_with_arn(self):
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         cmd += ' --role-arn %s' % self.role_arn
+        cmd += ' --external-id %s' % self.external_id
         self.parsed_responses = [
             {
                 "Credentials": {
@@ -171,7 +173,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assertEqual(assume_role_call[0].name, 'AssumeRole')
         self.assertEqual(
             assume_role_call[1],
-            {'RoleArn': self.role_arn, 'RoleSessionName': 'EKSGetTokenAuth'},
+            {'RoleArn': self.role_arn, 'RoleSessionName': 'EKSGetTokenAuth', 'ExternalId': self.external_id},
         )
         self.assert_url_correct(response, has_session_token=True)
 

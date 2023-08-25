@@ -543,7 +543,7 @@
           "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
         }
       ],
-      "documentation": "Retrieve the JSON for a specific completed transcoding job."
+      "documentation": "Retrieve the JSON for a specific transcoding job."
     },
     "GetJobTemplate": {
       "name": "GetJobTemplate",
@@ -1617,7 +1617,20 @@
         "TCS",
         "VHL",
         "VHC",
-        "VHR"
+        "VHR",
+        "TBL",
+        "TBC",
+        "TBR",
+        "RSL",
+        "RSR",
+        "LW",
+        "RW",
+        "LFE2",
+        "LT",
+        "RT",
+        "HI",
+        "NAR",
+        "M"
       ]
     },
     "AudioChannelTaggingSettings": {
@@ -1645,7 +1658,8 @@
         "EAC3_ATMOS",
         "VORBIS",
         "OPUS",
-        "PASSTHROUGH"
+        "PASSTHROUGH",
+        "FLAC"
       ]
     },
     "AudioCodecSettings": {
@@ -1680,6 +1694,11 @@
           "shape": "Eac3Settings",
           "locationName": "eac3Settings",
           "documentation": "Required when you set Codec to the value EAC3."
+        },
+        "FlacSettings": {
+          "shape": "FlacSettings",
+          "locationName": "flacSettings",
+          "documentation": "Required when you set Codec, under AudioDescriptions>CodecSettings, to the value FLAC."
         },
         "Mp2Settings": {
           "shape": "Mp2Settings",
@@ -2003,7 +2022,7 @@
         "MaxAbrBitrate": {
           "shape": "__integerMin100000Max100000000",
           "locationName": "maxAbrBitrate",
-          "documentation": "Optional. The maximum target bit rate used in your automated ABR stack. Use this value to set an upper limit on the bandwidth consumed by the highest-quality rendition. This is the rendition that is delivered to viewers with the fastest internet connections. If you don't specify a value, MediaConvert uses 8,000,000 (8 mb/s) by default."
+          "documentation": "Specify the maximum average bitrate for MediaConvert to use in your automated ABR stack. If you don't specify a value, MediaConvert uses 8,000,000 (8 mb/s) by default. The average bitrate of your highest-quality rendition will be equal to or below this value, depending on the quality, complexity, and resolution of your content. Note that the instantaneous maximum bitrate may vary above the value that you specify."
         },
         "MaxRenditions": {
           "shape": "__integerMin3Max15",
@@ -2013,7 +2032,7 @@
         "MinAbrBitrate": {
           "shape": "__integerMin100000Max100000000",
           "locationName": "minAbrBitrate",
-          "documentation": "Optional. The minimum target bitrate used in your automated ABR stack. Use this value to set a lower limit on the bitrate of video delivered to viewers with slow internet connections. If you don't specify a value, MediaConvert uses 600,000 (600 kb/s) by default."
+          "documentation": "Specify the minimum average bitrate for MediaConvert to use in your automated ABR stack. If you don't specify a value, MediaConvert uses 600,000 (600 kb/s) by default. The average bitrate of your lowest-quality rendition will be near this value. Note that the instantaneous minimum bitrate may vary below the value that you specify."
         },
         "Rules": {
           "shape": "__listOfAutomatedAbrRule",
@@ -2052,6 +2071,14 @@
       "enum": [
         "BIT_8",
         "BIT_10"
+      ]
+    },
+    "Av1FilmGrainSynthesis": {
+      "type": "string",
+      "documentation": "Film grain synthesis replaces film grain present in your content with similar quality synthesized AV1 film grain. We recommend that you choose Enabled to reduce the bandwidth of your QVBR quality level 5, 6, 7, or 8 outputs. For QVBR quality level 9 or 10 outputs we recommend that you keep the default value, Disabled. When you include Film grain synthesis, you cannot include the Noise reducer preprocessor.",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
       ]
     },
     "Av1FramerateControl": {
@@ -2106,6 +2133,11 @@
           "shape": "Av1BitDepth",
           "locationName": "bitDepth",
           "documentation": "Specify the Bit depth. You can choose 8-bit or 10-bit."
+        },
+        "FilmGrainSynthesis": {
+          "shape": "Av1FilmGrainSynthesis",
+          "locationName": "filmGrainSynthesis",
+          "documentation": "Film grain synthesis replaces film grain present in your content with similar quality synthesized AV1 film grain. We recommend that you choose Enabled to reduce the bandwidth of your QVBR quality level 5, 6, 7, or 8 outputs. For QVBR quality level 9 or 10 outputs we recommend that you keep the default value, Disabled. When you include Film grain synthesis, you cannot include the Noise reducer preprocessor."
         },
         "FramerateControl": {
           "shape": "Av1FramerateControl",
@@ -5409,6 +5441,27 @@
         "SECONDS",
         "MILLISECONDS"
       ]
+    },
+    "FlacSettings": {
+      "type": "structure",
+      "members": {
+        "BitDepth": {
+          "shape": "__integerMin16Max24",
+          "locationName": "bitDepth",
+          "documentation": "Specify Bit depth (BitDepth), in bits per sample, to choose the encoding quality for this audio track."
+        },
+        "Channels": {
+          "shape": "__integerMin1Max8",
+          "locationName": "channels",
+          "documentation": "Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are between 1 and 8."
+        },
+        "SampleRate": {
+          "shape": "__integerMin22050Max48000",
+          "locationName": "sampleRate",
+          "documentation": "Sample rate in hz."
+        }
+      },
+      "documentation": "Required when you set Codec, under AudioDescriptions>CodecSettings, to the value FLAC."
     },
     "FontScript": {
       "type": "string",
@@ -8868,6 +8921,16 @@
           "locationName": "programNumber",
           "documentation": "Use Program number to specify the program number used in the program map table (PMT) for this output. Default is 1. Program numbers and program map tables are parts of MPEG-2 transport stream containers, used for organizing data."
         },
+        "PtsOffset": {
+          "shape": "__integerMin0Max3600",
+          "locationName": "ptsOffset",
+          "documentation": "Manually specify the initial PTS offset, in seconds, when you set PTS offset to Seconds. Enter an integer from 0 to 3600. Leave blank to keep the default value 2."
+        },
+        "PtsOffsetMode": {
+          "shape": "TsPtsOffset",
+          "locationName": "ptsOffsetMode",
+          "documentation": "Specify the initial presentation timestamp (PTS) offset for your transport stream output. To let MediaConvert automatically determine the initial PTS offset: Keep the default value, Auto. We recommend that you choose Auto for the widest player compatibility. The initial PTS will be at least two seconds and vary depending on your output's bitrate, HRD buffer size and HRD buffer initial fill percentage. To manually specify an initial PTS offset: Choose Seconds. Then specify the number of seconds with PTS offset."
+        },
         "RateMode": {
           "shape": "M2tsRateMode",
           "locationName": "rateMode",
@@ -9028,6 +9091,16 @@
           "shape": "__integerMin0Max65535",
           "locationName": "programNumber",
           "documentation": "The value of the program number field in the Program Map Table."
+        },
+        "PtsOffset": {
+          "shape": "__integerMin0Max3600",
+          "locationName": "ptsOffset",
+          "documentation": "Manually specify the initial PTS offset, in seconds, when you set PTS offset to Seconds. Enter an integer from 0 to 3600. Leave blank to keep the default value 2."
+        },
+        "PtsOffsetMode": {
+          "shape": "TsPtsOffset",
+          "locationName": "ptsOffsetMode",
+          "documentation": "Specify the initial presentation timestamp (PTS) offset for your transport stream output. To let MediaConvert automatically determine the initial PTS offset: Keep the default value, Auto. We recommend that you choose Auto for the widest player compatibility. The initial PTS will be at least two seconds and vary depending on your output's bitrate, HRD buffer size and HRD buffer initial fill percentage. To manually specify an initial PTS offset: Choose Seconds. Then specify the number of seconds with PTS offset."
         },
         "Scte35Pid": {
           "shape": "__integerMin32Max8182",
@@ -11078,6 +11151,11 @@
           "shape": "S3EncryptionSettings",
           "locationName": "encryption",
           "documentation": "Settings for how your job outputs are encrypted as they are uploaded to Amazon S3."
+        },
+        "StorageClass": {
+          "shape": "S3StorageClass",
+          "locationName": "storageClass",
+          "documentation": "Specify the S3 storage class to use for this destination."
         }
       },
       "documentation": "Settings associated with S3 destination"
@@ -11119,6 +11197,19 @@
       "enum": [
         "SERVER_SIDE_ENCRYPTION_S3",
         "SERVER_SIDE_ENCRYPTION_KMS"
+      ]
+    },
+    "S3StorageClass": {
+      "type": "string",
+      "documentation": "Specify the S3 storage class to use for this destination.",
+      "enum": [
+        "STANDARD",
+        "REDUCED_REDUNDANCY",
+        "STANDARD_IA",
+        "ONEZONE_IA",
+        "INTELLIGENT_TIERING",
+        "GLACIER",
+        "DEEP_ARCHIVE"
       ]
     },
     "SampleRangeConversion": {
@@ -11488,6 +11579,14 @@
         }
       },
       "documentation": "Settings specific to caption sources that are specified by track number. Currently, this is only IMSC captions in an IMF package. If your caption source is IMSC 1.1 in a separate xml file, use FileSourceSettings instead of TrackSourceSettings."
+    },
+    "TsPtsOffset": {
+      "type": "string",
+      "documentation": "Specify the initial presentation timestamp (PTS) offset for your transport stream output. To let MediaConvert automatically determine the initial PTS offset: Keep the default value, Auto. We recommend that you choose Auto for the widest player compatibility. The initial PTS will be at least two seconds and vary depending on your output's bitrate, HRD buffer size and HRD buffer initial fill percentage. To manually specify an initial PTS offset: Choose Seconds. Then specify the number of seconds with PTS offset.",
+      "enum": [
+        "AUTO",
+        "SECONDS"
+      ]
     },
     "TtmlDestinationSettings": {
       "type": "structure",
@@ -13192,6 +13291,11 @@
       "type": "integer",
       "min": 1,
       "max": 64
+    },
+    "__integerMin1Max8": {
+      "type": "integer",
+      "min": 1,
+      "max": 8
     },
     "__integerMin22050Max48000": {
       "type": "integer",

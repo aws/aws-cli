@@ -3031,6 +3031,14 @@
         "MEDIUM_LOW"
       ]
     },
+    "Ac3AttenuationControl": {
+      "type": "string",
+      "documentation": "Ac3 Attenuation Control",
+      "enum": [
+        "ATTENUATE_3_DB",
+        "NONE"
+      ]
+    },
     "Ac3BitstreamMode": {
       "type": "string",
       "documentation": "Ac3 Bitstream Mode",
@@ -3116,6 +3124,11 @@
           "shape": "Ac3MetadataControl",
           "locationName": "metadataControl",
           "documentation": "When set to \"followInput\", encoder metadata will be sourced from the DD, DD+, or DolbyE decoder that supplied this audio data. If audio was not supplied from one of these streams, then the static metadata settings will be used."
+        },
+        "AttenuationControl": {
+          "shape": "Ac3AttenuationControl",
+          "locationName": "attenuationControl",
+          "documentation": "Applies a 3 dB attenuation to the surround channels. Applies only when the coding mode parameter is CODING_MODE_3_2_LFE."
         }
       },
       "documentation": "Ac3 Settings"
@@ -9491,6 +9504,15 @@
       },
       "documentation": "Settings to configure an action so that it occurs as soon as possible."
     },
+    "IncludeFillerNalUnits": {
+      "type": "string",
+      "documentation": "Include Filler Nal Units",
+      "enum": [
+        "AUTO",
+        "DROP",
+        "INCLUDE"
+      ]
+    },
     "Input": {
       "type": "structure",
       "members": {
@@ -11654,6 +11676,14 @@
         "PASSTHROUGH"
       ]
     },
+    "M3u8KlvBehavior": {
+      "type": "string",
+      "documentation": "M3u8 Klv Behavior",
+      "enum": [
+        "NO_PASSTHROUGH",
+        "PASSTHROUGH"
+      ]
+    },
     "M3u8NielsenId3Behavior": {
       "type": "string",
       "documentation": "M3u8 Nielsen Id3 Behavior",
@@ -11765,6 +11795,16 @@
           "shape": "__string",
           "locationName": "videoPid",
           "documentation": "Packet Identifier (PID) of the elementary video stream in the transport stream. Can be entered as a decimal or hexadecimal value."
+        },
+        "KlvBehavior": {
+          "shape": "M3u8KlvBehavior",
+          "locationName": "klvBehavior",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "KlvDataPids": {
+          "shape": "__string",
+          "locationName": "klvDataPids",
+          "documentation": "Packet Identifier (PID) for input source KLV data to this output. Multiple values are accepted, and can be entered in ranges and/or by comma separation. Can be entered as decimal or hexadecimal values.  Each PID specified must be in the range of 32 (or 0x20)..8182 (or 0x1ff6)."
         }
       },
       "documentation": "Settings information for the .m3u8 container"
@@ -13819,6 +13859,11 @@
           "shape": "__integerMin0",
           "locationName": "restartDelay",
           "documentation": "If a streaming output fails, number of seconds to wait until a restart is initiated. A value of 0 means never restart."
+        },
+        "IncludeFillerNalUnits": {
+          "shape": "IncludeFillerNalUnits",
+          "locationName": "includeFillerNalUnits",
+          "documentation": "Applies only when the rate control mode (in the codec settings) is CBR (constant bit rate). Controls whether the RTMP output stream is padded (with FILL NAL units) in order to achieve a constant bit rate that is truly constant. When there is no padding, the bandwidth varies (up to the bitrate value in the codec settings). We recommend that you choose Auto."
         }
       },
       "documentation": "Rtmp Group Settings"

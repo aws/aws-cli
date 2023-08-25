@@ -12788,6 +12788,10 @@
       "documentation":"<p>The same unique identifier was associated with two different records.</p>",
       "exception":true
     },
+    "IdleTimeout":{
+      "type":"integer",
+      "box":true
+    },
     "IllegalBlueprintStateException":{
       "type":"structure",
       "members":{
@@ -17811,6 +17815,30 @@
         "GlueVersion":{
           "shape":"GlueVersionString",
           "documentation":"<p>The Glue version determines the versions of Apache Spark and Python that Glue supports. The GlueVersion must be greater than 2.0.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of workers of a defined <code>WorkerType</code> to use for the session.</p>"
+        },
+        "WorkerType":{
+          "shape":"WorkerType",
+          "documentation":"<p>The type of predefined worker that is allocated when a session runs. Accepts a value of <code>G.1X</code>, <code>G.2X</code>, <code>G.4X</code>, or <code>G.8X</code> for Spark sessions. Accepts the value <code>Z.2X</code> for Ray sessions.</p>"
+        },
+        "CompletedOn":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The date and time that this session is completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The total time the session ran for.</p>"
+        },
+        "DPUSeconds":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The DPUs consumed by the session (formula: ExecutionTime * MaxCapacity).</p>"
+        },
+        "IdleTimeout":{
+          "shape":"IdleTimeout",
+          "documentation":"<p>The number of minutes when idle before the session times out.</p>"
         }
       },
       "documentation":"<p>The period in which a remote Spark runtime environment is running.</p>"

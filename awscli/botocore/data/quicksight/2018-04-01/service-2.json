@@ -1230,6 +1230,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InternalFailureException"}
       ],
@@ -1248,6 +1249,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InternalFailureException"}
       ],
@@ -2442,7 +2444,7 @@
         {"shape":"UnsupportedPricingPlanException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Starts an asynchronous job that generates a dashboard snapshot. You can request one of the following format configurations per API call.</p> <ul> <li> <p>1 paginated PDF</p> </li> <li> <p>5 CSVs</p> </li> </ul> <p>Poll job descriptions with a <code>DescribeDashboardSnapshotJob</code> API call. Once the job succeeds, use the <code>DescribeDashboardSnapshotJobResult</code> API to obtain the download URIs that the job generates.</p>"
+      "documentation":"<p>Starts an asynchronous job that generates a dashboard snapshot. You can request one of the following format configurations per API call.</p> <ul> <li> <p>1 paginated PDF</p> </li> <li> <p>1 Excel workbook</p> </li> <li> <p>5 CSVs</p> </li> </ul> <p>Poll job descriptions with a <code>DescribeDashboardSnapshotJob</code> API call. Once the job succeeds, use the <code>DescribeDashboardSnapshotJobResult</code> API to obtain the download URIs that the job generates.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3224,6 +3226,12 @@
       "max":2048,
       "min":1,
       "pattern":"[\\w\\-]+|(\\$LATEST)|(\\$PUBLISHED)"
+    },
+    "AllSheetsFilterScopeConfiguration":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The configuration for applying a filter to all sheets. You can apply this filter to all visuals on every sheet.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
     "AmazonElasticsearchParameters":{
       "type":"structure",
@@ -6907,13 +6915,13 @@
         },
         "MemberId":{
           "shape":"RestrictiveResourceId",
-          "documentation":"<p>The ID of the asset (the dashboard, analysis, or dataset).</p>",
+          "documentation":"<p>The ID of the asset that you want to add to the folder.</p>",
           "location":"uri",
           "locationName":"MemberId"
         },
         "MemberType":{
           "shape":"MemberType",
-          "documentation":"<p>The type of the member, including <code>DASHBOARD</code>, <code>ANALYSIS</code>, and <code>DATASET</code>.</p>",
+          "documentation":"<p>The member type of the asset that you want to add to a folder.</p>",
           "location":"uri",
           "locationName":"MemberType"
         }
@@ -6974,6 +6982,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags for the folder.</p>"
+        },
+        "SharingModel":{
+          "shape":"SharingModel",
+          "documentation":"<p>An optional parameter that determines the sharing scope of the folder. The default value for this parameter is <code>ACCOUNT</code>.</p>"
         }
       }
     },
@@ -10428,13 +10440,13 @@
         },
         "MemberId":{
           "shape":"RestrictiveResourceId",
-          "documentation":"<p>The ID of the asset (the dashboard, analysis, or dataset) that you want to delete.</p>",
+          "documentation":"<p>The ID of the asset that you want to delete.</p>",
           "location":"uri",
           "locationName":"MemberId"
         },
         "MemberType":{
           "shape":"MemberType",
-          "documentation":"<p>The type of the member, including <code>DASHBOARD</code>, <code>ANALYSIS</code>, and <code>DATASET</code> </p>",
+          "documentation":"<p>The member type of the asset that you want to delete from a folder.</p>",
           "location":"uri",
           "locationName":"MemberType"
         }
@@ -12124,6 +12136,25 @@
           "documentation":"<p>The ID of the folder.</p>",
           "location":"uri",
           "locationName":"FolderId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the folder whose permissions you want described.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
         }
       }
     },
@@ -12150,6 +12181,10 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token for the next set of results, or null if there are no more results.</p>"
         }
       }
     },
@@ -12192,6 +12227,25 @@
           "documentation":"<p>The ID of the folder.</p>",
           "location":"uri",
           "locationName":"FolderId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the folder whose permissions you want described.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
         }
       }
     },
@@ -12218,6 +12272,10 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token for the next set of results, or null if there are no more results.</p>"
         }
       }
     },
@@ -14267,6 +14325,10 @@
         "SelectedSheets":{
           "shape":"SelectedSheetsFilterScopeConfiguration",
           "documentation":"<p>The configuration for applying a filter to specific sheets.</p>"
+        },
+        "AllSheets":{
+          "shape":"AllSheetsFilterScopeConfiguration",
+          "documentation":"<p>The configuration for applying a filter to all sheets.</p>"
         }
       },
       "documentation":"<p>The scope configuration for a <code>FilterGroup</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -14427,6 +14489,10 @@
         "LastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the folder was last updated.</p>"
+        },
+        "SharingModel":{
+          "shape":"SharingModel",
+          "documentation":"<p>The sharing scope of the folder.</p>"
         }
       },
       "documentation":"<p>A folder in Amazon QuickSight.</p>"
@@ -14521,6 +14587,10 @@
         "LastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the folder was last updated.</p>"
+        },
+        "SharingModel":{
+          "shape":"SharingModel",
+          "documentation":"<p>The sharing scope of the folder.</p>"
         }
       },
       "documentation":"<p>A summary of information about an existing Amazon QuickSight folder. </p>"
@@ -14618,10 +14688,7 @@
     },
     "ForecastComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Time"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -15938,10 +16005,7 @@
     },
     "GrowthRateComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Time"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -19269,7 +19333,6 @@
       "type":"structure",
       "required":[
         "ComputationId",
-        "Time",
         "Type"
       ],
       "members":{
@@ -19354,12 +19417,7 @@
     },
     "MetricComparisonComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Time",
-        "FromValue",
-        "TargetValue"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -20636,10 +20694,7 @@
     },
     "PeriodOverPeriodComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Time"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -20662,10 +20717,7 @@
     },
     "PeriodToDateComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Time"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -23883,6 +23935,13 @@
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
     },
+    "SharingModel":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "NAMESPACE"
+      ]
+    },
     "Sheet":{
       "type":"structure",
       "members":{
@@ -24398,11 +24457,11 @@
       "members":{
         "SheetSelections":{
           "shape":"SnapshotFileSheetSelectionList",
-          "documentation":"<p>A list of <code>SnapshotFileSheetSelection</code> objects that contain information on the dashboard sheet that is exported. These objects provide information about the snapshot artifacts that are generated during the job. This structure can hold a maximum of 5 CSV configurations or 1 configuration for PDF.</p>"
+          "documentation":"<p>A list of <code>SnapshotFileSheetSelection</code> objects that contain information on the dashboard sheet that is exported. These objects provide information about the snapshot artifacts that are generated during the job. This structure can hold a maximum of 5 CSV configurations, 5 Excel configurations, or 1 configuration for PDF.</p>"
         },
         "FormatType":{
           "shape":"SnapshotFileFormatType",
-          "documentation":"<p>The format of the snapshot file to be generated. You can choose between <code>CSV</code> or <code>PDF</code>.</p>"
+          "documentation":"<p>The format of the snapshot file to be generated. You can choose between <code>CSV</code>, <code>Excel</code>, or <code>PDF</code>.</p>"
         }
       },
       "documentation":"<p>A structure that contains the information for the snapshot that you want to generate. This information is provided by you when you start a new snapshot job.</p>"
@@ -24411,7 +24470,8 @@
       "type":"string",
       "enum":[
         "CSV",
-        "PDF"
+        "PDF",
+        "EXCEL"
       ]
     },
     "SnapshotFileGroup":{
@@ -24427,7 +24487,7 @@
     "SnapshotFileGroupList":{
       "type":"list",
       "member":{"shape":"SnapshotFileGroup"},
-      "max":6,
+      "max":7,
       "min":1
     },
     "SnapshotFileList":{
@@ -24445,15 +24505,15 @@
       "members":{
         "SheetId":{
           "shape":"ShortRestrictiveResourceId",
-          "documentation":"<p>The sheet ID of the dashboard to generate the snapshot artifact from. This value is required for CSV and PDF format types.</p>"
+          "documentation":"<p>The sheet ID of the dashboard to generate the snapshot artifact from. This value is required for CSV, Excel, and PDF format types.</p>"
         },
         "SelectionScope":{
           "shape":"SnapshotFileSheetSelectionScope",
-          "documentation":"<p>The selection scope of the visuals on a sheet of a dashboard that you are generating a snapthot of. You can choose one of the following options.</p> <ul> <li> <p> <code>ALL_VISUALS</code> - Selects all visuals that are on the sheet. This value is required if the snapshot is a PDF.</p> </li> <li> <p> <code>SELECTED_VISUALS</code> - Select the visual that you want to add to the snapshot. This value is required if the snapshot is a CSV.</p> </li> </ul>"
+          "documentation":"<p>The selection scope of the visuals on a sheet of a dashboard that you are generating a snapthot of. You can choose one of the following options.</p> <ul> <li> <p> <code>ALL_VISUALS</code> - Selects all visuals that are on the sheet. This value is required if the snapshot is a PDF.</p> </li> <li> <p> <code>SELECTED_VISUALS</code> - Select the visual that you want to add to the snapshot. This value is required if the snapshot is a CSV or Excel workbook.</p> </li> </ul>"
         },
         "VisualIds":{
           "shape":"SnapshotFileSheetSelectionVisualIdList",
-          "documentation":"<p> A list of visual IDs that are located in the selected sheet. This structure supports tables and pivot tables. This structure is required if you are generating a CSV. You can add a maximum of 1 visual ID to this structure. </p>"
+          "documentation":"<p> A structure that lists the IDs of the visuals in the selected sheet. Supported visual types are table, pivot table visuals. This value is required if you are generating a CSV or Excel workbook. This value supports a maximum of 1 visual ID for CSV and 5 visual IDs across up to 5 sheet selections for Excel. If you are generating an Excel workbook, the order of the visual IDs provided in this structure determines the order of the worksheets in the Excel file. </p>"
         }
       },
       "documentation":"<p>A structure that contains information that identifies the snapshot that needs to be generated.</p>"
@@ -24461,7 +24521,7 @@
     "SnapshotFileSheetSelectionList":{
       "type":"list",
       "member":{"shape":"SnapshotFileSheetSelection"},
-      "max":1,
+      "max":5,
       "min":1
     },
     "SnapshotFileSheetSelectionScope":{
@@ -24474,7 +24534,7 @@
     "SnapshotFileSheetSelectionVisualIdList":{
       "type":"list",
       "member":{"shape":"ShortRestrictiveResourceId"},
-      "max":1,
+      "max":5,
       "min":1
     },
     "SnapshotJobErrorInfo":{
@@ -25425,14 +25485,24 @@
       "members":{
         "SelectedFieldOptions":{
           "shape":"TableFieldOptionList",
-          "documentation":"<p>The selected field options for the table field options.</p>"
+          "documentation":"<p>The field options to be configured to a table.</p>"
         },
         "Order":{
           "shape":"FieldOrderList",
-          "documentation":"<p>The order of field IDs of the field options for a table visual.</p>"
+          "documentation":"<p>The order of the field IDs that are configured as field options for a table visual.</p>"
+        },
+        "PinnedFieldOptions":{
+          "shape":"TablePinnedFieldOptions",
+          "documentation":"<p>The settings for the pinned columns of a table visual.</p>"
         }
       },
-      "documentation":"<p>The field options for a table visual.</p>"
+      "documentation":"<p>The field options of a table visual.</p>"
+    },
+    "TableFieldOrderList":{
+      "type":"list",
+      "member":{"shape":"FieldId"},
+      "documentation":"<p>A list of table field IDs.</p>",
+      "max":201
     },
     "TableFieldURLConfiguration":{
       "type":"structure",
@@ -25519,6 +25589,16 @@
         }
       },
       "documentation":"<p>The paginated report options for a table visual.</p>"
+    },
+    "TablePinnedFieldOptions":{
+      "type":"structure",
+      "members":{
+        "PinnedLeftFields":{
+          "shape":"TableFieldOrderList",
+          "documentation":"<p>A list of columns to be pinned to the left of a table visual.</p>"
+        }
+      },
+      "documentation":"<p>The settings for the pinned columns of a table visual.</p>"
     },
     "TableRowConditionalFormatting":{
       "type":"structure",
@@ -26660,8 +26740,6 @@
       "type":"structure",
       "required":[
         "ComputationId",
-        "Time",
-        "Category",
         "Type"
       ],
       "members":{
@@ -26709,7 +26787,6 @@
       "type":"structure",
       "required":[
         "ComputationId",
-        "Category",
         "Type"
       ],
       "members":{
@@ -27311,10 +27388,7 @@
     },
     "TotalAggregationComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Value"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",
@@ -27690,10 +27764,7 @@
     },
     "UniqueValuesComputation":{
       "type":"structure",
-      "required":[
-        "ComputationId",
-        "Category"
-      ],
+      "required":["ComputationId"],
       "members":{
         "ComputationId":{
           "shape":"ShortRestrictiveResourceId",

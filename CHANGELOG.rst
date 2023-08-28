@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.36
+=======
+
+* api-change:``backup``: Add support for customizing time zone for backup window in backup plan rules.
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate licensing optimization recommendations for sql server running on EC2 instances.
+* api-change:``organizations``: Documentation updates for permissions and links.
+* api-change:``securitylake``: Remove incorrect regex enforcement on pagination tokens.
+* api-change:``service-quotas``: Service Quotas now supports viewing the applied quota value and requesting a quota increase for a specific resource in an AWS account.
+* api-change:``workspaces-web``: WorkSpaces Web now enables Admins to configure which cookies are synchronized from an end-user's local browser to the in-session browser. In conjunction with a browser extension, this feature enables enhanced Single-Sign On capability by reducing the number of times an end-user has to authenticate.
+
+
 1.29.35
 =======
 

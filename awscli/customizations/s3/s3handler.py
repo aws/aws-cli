@@ -545,7 +545,10 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
         try:
             self._result_queue.put(QueuedResult(
                 total_transfer_size=0, **result_kwargs))
-            os.remove(fileinfo.src)
+            if os.path.isdir(src):
+                os.rmdir(src)
+            else:
+                os.remove(src)
             self._result_queue.put(SuccessResult(**result_kwargs))
         except Exception as e:
             self._result_queue.put(

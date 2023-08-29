@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.29.37
+=======
+
+* api-change:``cognito-idp``: Added API example requests and responses for several operations. Fixed the validation regex for user pools Identity Provider name.
+* api-change:``fsx``: Documentation updates for project quotas.
+* api-change:``omics``: Add RetentionMode support for Runs.
+* api-change:``sesv2``: Adds support for the new Export and Message Insights features: create, get, list and cancel export jobs; get message insights.
+
+
 1.29.36
 =======
 

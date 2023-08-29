@@ -5918,6 +5918,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.37
+=======
+
+* api-change:``cognito-idp``: Added API example requests and responses for several operations. Fixed the validation regex for user pools Identity Provider name.
+* api-change:``fsx``: Documentation updates for project quotas.
+* api-change:``omics``: Add RetentionMode support for Runs.
+* api-change:``sesv2``: Adds support for the new Export and Message Insights features: create, get, list and cancel export jobs; get message insights.
+
+
+1.29.36
+=======
+
+* api-change:``backup``: Add support for customizing time zone for backup window in backup plan rules.
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate licensing optimization recommendations for sql server running on EC2 instances.
+* api-change:``organizations``: Documentation updates for permissions and links.
+* api-change:``securitylake``: Remove incorrect regex enforcement on pagination tokens.
+* api-change:``service-quotas``: Service Quotas now supports viewing the applied quota value and requesting a quota increase for a specific resource in an AWS account.
+* api-change:``workspaces-web``: WorkSpaces Web now enables Admins to configure which cookies are synchronized from an end-user's local browser to the in-session browser. In conjunction with a browser extension, this feature enables enhanced Single-Sign On capability by reducing the number of times an end-user has to authenticate.
+
+
+1.29.35
+=======
+
+* api-change:``cloudtrail``: Add ThrottlingException with error code 429 to handle CloudTrail Delegated Admin request rate exceeded on organization resources.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``detective``: Added protections to interacting with fields containing customer information.
+
+
 1.29.34
 =======
 

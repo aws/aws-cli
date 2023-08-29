@@ -135,7 +135,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>This request creates a logical container where backups are stored.</p> <p>This request includes a name, optionally one or more resource tags, an encryption key, and a request ID.</p> <note> <p>Do not include sensitive data, such as passport numbers, in the name of a backup vault.</p> </note>",
+      "documentation":"<p>This request creates a logical container to where backups may be copied.</p> <p>This request includes a name, the Region, the maximum number of retention days, the minimum number of retention days, and optionally can include tags and a creator request ID.</p> <note> <p>Do not include sensitive data, such as passport numbers, in the name of a backup vault.</p> </note>",
       "idempotent":true
     },
     "CreateReportPlan":{
@@ -1580,6 +1580,10 @@
         "EnableContinuousBackup":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"Timezone",
+          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -1626,6 +1630,10 @@
         "EnableContinuousBackup":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"Timezone",
+          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -3279,7 +3287,7 @@
         },
         "ControlScope":{
           "shape":"ControlScope",
-          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans. For more information, see <a href=\"aws-backup/latest/devguide/API_ControlScope.html\"> <code>ControlScope</code>.</a> </p>"
+          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about all of the controls of a framework. Each framework must contain at least one control.</p>"
@@ -5486,6 +5494,7 @@
       "value":{"shape":"TagValue"},
       "sensitive":true
     },
+    "Timezone":{"type":"string"},
     "UntagResourceInput":{
       "type":"structure",
       "required":[

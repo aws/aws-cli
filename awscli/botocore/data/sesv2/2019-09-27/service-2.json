@@ -29,6 +29,21 @@
       ],
       "documentation":"<p>Retrieves batches of metric data collected based on your sending activity.</p> <p>You can execute this operation no more than 16 times per second, and with at most 160 queries from the batches per second (cumulative).</p>"
     },
+    "CancelExportJob":{
+      "name":"CancelExportJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/export-jobs/{JobId}/cancel"
+      },
+      "input":{"shape":"CancelExportJobRequest"},
+      "output":{"shape":"CancelExportJobResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Cancels an export job.</p>"
+    },
     "CreateConfigurationSet":{
       "name":"CreateConfigurationSet",
       "http":{
@@ -201,6 +216,22 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Creates an email template. Email templates enable you to send personalized email to one or more destinations in a single API operation. For more information, see the <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html\">Amazon SES Developer Guide</a>.</p> <p>You can execute this operation no more than once per second.</p>"
+    },
+    "CreateExportJob":{
+      "name":"CreateExportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/export-jobs"
+      },
+      "input":{"shape":"CreateExportJobRequest"},
+      "output":{"shape":"CreateExportJobResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotFoundException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates an export job for a data source and destination.</p> <p>You can execute this operation no more than once per second.</p>"
     },
     "CreateImportJob":{
       "name":"CreateImportJob",
@@ -625,6 +656,21 @@
       ],
       "documentation":"<p>Displays the template object (which includes the subject line, HTML part and text part) for the template you specify.</p> <p>You can execute this operation no more than once per second.</p>"
     },
+    "GetExportJob":{
+      "name":"GetExportJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/email/export-jobs/{JobId}"
+      },
+      "input":{"shape":"GetExportJobRequest"},
+      "output":{"shape":"GetExportJobResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Provides information about an export job.</p>"
+    },
     "GetImportJob":{
       "name":"GetImportJob",
       "http":{
@@ -639,6 +685,21 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Provides information about an import job.</p>"
+    },
+    "GetMessageInsights":{
+      "name":"GetMessageInsights",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/email/insights/{MessageId}/"
+      },
+      "input":{"shape":"GetMessageInsightsRequest"},
+      "output":{"shape":"GetMessageInsightsResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Provides information about a specific message, including the from address, the subject, the recipient address, email tags, as well as events associated with the message.</p> <p>You can execute this operation no more than once per second.</p>"
     },
     "GetSuppressedDestination":{
       "name":"GetSuppressedDestination",
@@ -783,6 +844,20 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Lists the email templates present in your Amazon SES account in the current Amazon Web Services Region.</p> <p>You can execute this operation no more than once per second.</p>"
+    },
+    "ListExportJobs":{
+      "name":"ListExportJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/list-export-jobs"
+      },
+      "input":{"shape":"ListExportJobsRequest"},
+      "output":{"shape":"ListExportJobsResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists all of the export jobs.</p>"
     },
     "ListImportJobs":{
       "name":"ListImportJobs",
@@ -1556,6 +1631,33 @@
       },
       "documentation":"<p>Represents the body of the email message.</p>"
     },
+    "Bounce":{
+      "type":"structure",
+      "members":{
+        "BounceType":{
+          "shape":"BounceType",
+          "documentation":"<p>The type of the bounce, as determined by SES. Can be one of <code>UNDETERMINED</code>, <code>TRANSIENT</code>, or <code>PERMANENT</code> </p>"
+        },
+        "BounceSubType":{
+          "shape":"BounceSubType",
+          "documentation":"<p>The subtype of the bounce, as determined by SES.</p>"
+        },
+        "DiagnosticCode":{
+          "shape":"DiagnosticCode",
+          "documentation":"<p>The status code issued by the reporting Message Transfer Authority (MTA). This field only appears if a delivery status notification (DSN) was attached to the bounce and the <code>Diagnostic-Code</code> was provided in the DSN. </p>"
+        }
+      },
+      "documentation":"<p>Information about a <code>Bounce</code> event.</p>"
+    },
+    "BounceSubType":{"type":"string"},
+    "BounceType":{
+      "type":"string",
+      "enum":[
+        "UNDETERMINED",
+        "TRANSIENT",
+        "PERMANENT"
+      ]
+    },
     "BulkEmailContent":{
       "type":"structure",
       "members":{
@@ -1632,6 +1734,25 @@
       ]
     },
     "CampaignId":{"type":"string"},
+    "CancelExportJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The export job ID.</p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      },
+      "documentation":"<p>Represents a request to cancel an export job using the export job ID.</p>"
+    },
+    "CancelExportJobResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
     "CaseId":{"type":"string"},
     "Charset":{"type":"string"},
     "CloudWatchDestination":{
@@ -1672,6 +1793,22 @@
       "type":"list",
       "member":{"shape":"CloudWatchDimensionConfiguration"}
     },
+    "Complaint":{
+      "type":"structure",
+      "members":{
+        "ComplaintSubType":{
+          "shape":"ComplaintSubType",
+          "documentation":"<p> Can either be <code>null</code> or <code>OnAccountSuppressionList</code>. If the value is <code>OnAccountSuppressionList</code>, SES accepted the message, but didn't attempt to send it because it was on the account-level suppression list. </p>"
+        },
+        "ComplaintFeedbackType":{
+          "shape":"ComplaintFeedbackType",
+          "documentation":"<p> The value of the <code>Feedback-Type</code> field from the feedback report received from the ISP. </p>"
+        }
+      },
+      "documentation":"<p>Information about a <code>Complaint</code> event.</p>"
+    },
+    "ComplaintFeedbackType":{"type":"string"},
+    "ComplaintSubType":{"type":"string"},
     "ConcurrentModificationException":{
       "type":"structure",
       "members":{
@@ -2133,6 +2270,34 @@
       },
       "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
     },
+    "CreateExportJobRequest":{
+      "type":"structure",
+      "required":[
+        "ExportDataSource",
+        "ExportDestination"
+      ],
+      "members":{
+        "ExportDataSource":{
+          "shape":"ExportDataSource",
+          "documentation":"<p>The data source for the export job.</p>"
+        },
+        "ExportDestination":{
+          "shape":"ExportDestination",
+          "documentation":"<p>The destination for the export job.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to create an export job from a data source to a data destination.</p>"
+    },
+    "CreateExportJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>A string that represents the export job ID.</p>"
+        }
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
     "CreateImportJobRequest":{
       "type":"structure",
       "required":[
@@ -2240,7 +2405,7 @@
     },
     "DataFormat":{
       "type":"string",
-      "documentation":"<p>The data format of the import job's data source.</p>",
+      "documentation":"<p>The data format of a file, can be one of the following:</p> <ul> <li> <p> <code>CSV</code> – A comma-separated values file.</p> </li> <li> <p> <code>JSON</code> – A JSON file.</p> </li> </ul>",
       "enum":[
         "CSV",
         "JSON"
@@ -2568,6 +2733,18 @@
       "type":"string",
       "documentation":"<p>The subject line for an email that you submitted in a predictive inbox placement test.</p>"
     },
+    "DeliveryEventType":{
+      "type":"string",
+      "documentation":"<p>The type of delivery events:</p> <ul> <li> <p> <code>SEND</code> - The send request was successful and SES will attempt to deliver the message to the recipient’s mail server. (If account-level or global suppression is being used, SES will still count it as a send, but delivery is suppressed.)</p> </li> <li> <p> <code>DELIVERY</code> - SES successfully delivered the email to the recipient's mail server. Excludes deliveries to the mailbox simulator and emails addressed to more than one recipient.</p> </li> <li> <p> <code>TRANSIENT_BOUNCE</code> - Feedback received for delivery failures excluding issues with non-existent mailboxes. Excludes bounces from the mailbox simulator, and those from emails addressed to more than one recipient.</p> </li> <li> <p> <code>PERMANENT_BOUNCE</code> - Feedback received for emails sent to non-existent mailboxes. Excludes bounces from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those from emails addressed to more than one recipient.</p> </li> <li> <p> <code>UNDETERMINED_BOUNCE</code> - SES was unable to determine the bounce reason.</p> </li> <li> <p> <code>COMPLAINT</code> - Complaint received for the email. This excludes complaints from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those from emails addressed to more than one recipient.</p> </li> </ul>",
+      "enum":[
+        "SEND",
+        "DELIVERY",
+        "TRANSIENT_BOUNCE",
+        "PERMANENT_BOUNCE",
+        "UNDETERMINED_BOUNCE",
+        "COMPLAINT"
+      ]
+    },
     "DeliveryOptions":{
       "type":"structure",
       "members":{
@@ -2601,6 +2778,7 @@
       },
       "documentation":"<p>An object that describes the recipients for an email.</p> <note> <p>Amazon SES does not support the SMTPUTF8 extension, as described in <a href=\"https://tools.ietf.org/html/rfc6531\">RFC6531</a>. For this reason, the <i>local part</i> of a destination email address (the part of the email address that precedes the @ sign) may only contain <a href=\"https://en.wikipedia.org/wiki/Email_address#Local-part\">7-bit ASCII characters</a>. If the <i>domain part</i> of an address (the part after the @ sign) contains non-ASCII characters, they must be encoded using Punycode, as described in <a href=\"https://tools.ietf.org/html/rfc3492.html\">RFC3492</a>.</p> </note>"
     },
+    "DiagnosticCode":{"type":"string"},
     "DimensionName":{
       "type":"string",
       "documentation":"<p>The name of an Amazon CloudWatch dimension associated with an email sending metric. The name has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a-z, A-Z), numbers (0-9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 256 characters.</p> </li> </ul>"
@@ -2826,6 +3004,11 @@
       "member":{"shape":"DomainIspPlacement"}
     },
     "EmailAddress":{"type":"string"},
+    "EmailAddressFilterList":{
+      "type":"list",
+      "member":{"shape":"InsightsEmailAddress"},
+      "max":5
+    },
     "EmailAddressList":{
       "type":"list",
       "member":{"shape":"EmailAddress"}
@@ -2847,6 +3030,39 @@
         }
       },
       "documentation":"<p>An object that defines the entire content of the email, including the message headers and the body content. You can create a simple email message, in which you specify the subject and the text and HTML versions of the message body. You can also create raw messages, in which you specify a complete MIME-formatted message. Raw messages can include attachments and custom headers.</p>"
+    },
+    "EmailInsights":{
+      "type":"structure",
+      "members":{
+        "Destination":{
+          "shape":"InsightsEmailAddress",
+          "documentation":"<p>The recipient of the email.</p>"
+        },
+        "Isp":{
+          "shape":"Isp",
+          "documentation":"<p>The recipient's ISP (e.g., <code>Gmail</code>, <code>Yahoo</code>, etc.).</p>"
+        },
+        "Events":{
+          "shape":"InsightsEvents",
+          "documentation":"<p>A list of events associated with the sent email.</p>"
+        }
+      },
+      "documentation":"<p>An email's insights contain metadata and delivery information about a specific email.</p>"
+    },
+    "EmailInsightsList":{
+      "type":"list",
+      "member":{"shape":"EmailInsights"}
+    },
+    "EmailSubject":{
+      "type":"string",
+      "max":998,
+      "min":1,
+      "sensitive":true
+    },
+    "EmailSubjectFilterList":{
+      "type":"list",
+      "member":{"shape":"EmailSubject"},
+      "max":1
     },
     "EmailTemplateContent":{
       "type":"structure",
@@ -2909,6 +3125,14 @@
     },
     "Enabled":{"type":"boolean"},
     "EnabledWrapper":{"type":"boolean"},
+    "EngagementEventType":{
+      "type":"string",
+      "documentation":"<p>The type of delivery events:</p> <ul> <li> <p> <code>OPEN</code> - Open event for emails including open trackers. Excludes opens for emails addressed to more than one recipient.</p> </li> <li> <p> <code>CLICK</code> - Click event for emails including wrapped links. Excludes clicks for emails addressed to more than one recipient.</p> </li> </ul>",
+      "enum":[
+        "OPEN",
+        "CLICK"
+      ]
+    },
     "ErrorMessage":{"type":"string"},
     "Esp":{"type":"string"},
     "Esps":{
@@ -2991,6 +3215,20 @@
       "type":"list",
       "member":{"shape":"EventDestination"}
     },
+    "EventDetails":{
+      "type":"structure",
+      "members":{
+        "Bounce":{
+          "shape":"Bounce",
+          "documentation":"<p>Information about a <code>Bounce</code> event.</p>"
+        },
+        "Complaint":{
+          "shape":"Complaint",
+          "documentation":"<p>Information about a <code>Complaint</code> event.</p>"
+        }
+      },
+      "documentation":"<p> Contains a <code>Bounce</code> object if the event type is <code>BOUNCE</code>. Contains a <code>Complaint</code> object if the event type is <code>COMPLAINT</code>. </p>"
+    },
     "EventType":{
       "type":"string",
       "documentation":"<p>An email sending event type. For example, email sends, opens, and bounces are all email events.</p>",
@@ -3011,6 +3249,110 @@
       "type":"list",
       "member":{"shape":"EventType"}
     },
+    "ExportDataSource":{
+      "type":"structure",
+      "members":{
+        "MetricsDataSource":{"shape":"MetricsDataSource"},
+        "MessageInsightsDataSource":{"shape":"MessageInsightsDataSource"}
+      },
+      "documentation":"<p>An object that contains details about the data source of the export job. It can only contain one of <code>MetricsDataSource</code> or <code>MessageInsightsDataSource</code> object.</p>"
+    },
+    "ExportDestination":{
+      "type":"structure",
+      "required":["DataFormat"],
+      "members":{
+        "DataFormat":{
+          "shape":"DataFormat",
+          "documentation":"<p>The data format of the final export job file, can be one of the following:</p> <ul> <li> <p> <code>CSV</code> - A comma-separated values file.</p> </li> <li> <p> <code>JSON</code> - A Json file.</p> </li> </ul>"
+        },
+        "S3Url":{
+          "shape":"S3Url",
+          "documentation":"<p>An Amazon S3 pre-signed URL that points to the generated export file.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the destination of the export job.</p>"
+    },
+    "ExportDimensionValue":{
+      "type":"list",
+      "member":{"shape":"MetricDimensionValue"},
+      "max":10,
+      "min":1
+    },
+    "ExportDimensions":{
+      "type":"map",
+      "key":{"shape":"MetricDimensionName"},
+      "value":{"shape":"ExportDimensionValue"},
+      "max":3,
+      "min":1
+    },
+    "ExportJobSummary":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The export job ID.</p>"
+        },
+        "ExportSourceType":{
+          "shape":"ExportSourceType",
+          "documentation":"<p>The source type of the export job.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the export job.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the export job was created.</p>"
+        },
+        "CompletedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the export job was completed.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the export job.</p>"
+    },
+    "ExportJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExportJobSummary"},
+      "documentation":"<p>A list of the export job summaries.</p>"
+    },
+    "ExportMetric":{
+      "type":"structure",
+      "members":{
+        "Name":{"shape":"Metric"},
+        "Aggregation":{"shape":"MetricAggregation"}
+      },
+      "documentation":"<p>An object that contains a mapping between a <code>Metric</code> and <code>MetricAggregation</code>.</p>"
+    },
+    "ExportMetrics":{
+      "type":"list",
+      "member":{"shape":"ExportMetric"},
+      "max":10,
+      "min":1
+    },
+    "ExportSourceType":{
+      "type":"string",
+      "documentation":"<p>The type of data source of an export, can be one of the following:</p> <ul> <li> <p> <code>METRICS_DATA</code> - The metrics export.</p> </li> <li> <p> <code>MESSAGE_INSIGHTS</code> - The Message Insights export.</p> </li> </ul>",
+      "enum":[
+        "METRICS_DATA",
+        "MESSAGE_INSIGHTS"
+      ]
+    },
+    "ExportStatistics":{
+      "type":"structure",
+      "members":{
+        "ProcessedRecordsCount":{
+          "shape":"ProcessedRecordsCount",
+          "documentation":"<p>The number of records that were processed to generate the final export file.</p>"
+        },
+        "ExportedRecordsCount":{
+          "shape":"ExportedRecordsCount",
+          "documentation":"<p>The number of records that were exported to the final export file.</p> <p>This value might not be available for all export source types</p>"
+        }
+      },
+      "documentation":"<p>Statistics about the execution of an export job.</p>"
+    },
+    "ExportedRecordsCount":{"type":"integer"},
     "FailedRecordsCount":{"type":"integer"},
     "FailedRecordsS3Url":{"type":"string"},
     "FailureInfo":{
@@ -3018,14 +3360,14 @@
       "members":{
         "FailedRecordsS3Url":{
           "shape":"FailedRecordsS3Url",
-          "documentation":"<p>An Amazon S3 presigned URL that contains all the failed records and related information.</p>"
+          "documentation":"<p>An Amazon S3 pre-signed URL that contains all the failed records and related information.</p>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p>A message about why the import job failed.</p>"
+          "documentation":"<p>A message about why the job failed.</p>"
         }
       },
-      "documentation":"<p>An object that contains the failure details about an import job.</p>"
+      "documentation":"<p>An object that contains the failure details about a job.</p>"
     },
     "FailureRedirectionURL":{
       "type":"string",
@@ -3665,6 +4007,61 @@
       },
       "documentation":"<p>The following element is returned by the service.</p>"
     },
+    "GetExportJobRequest":{
+      "type":"structure",
+      "required":["JobId"],
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The export job ID.</p>",
+          "location":"uri",
+          "locationName":"JobId"
+        }
+      },
+      "documentation":"<p>Represents a request to retrieve information about an export job using the export job ID.</p>"
+    },
+    "GetExportJobResponse":{
+      "type":"structure",
+      "members":{
+        "JobId":{
+          "shape":"JobId",
+          "documentation":"<p>The export job ID.</p>"
+        },
+        "ExportSourceType":{
+          "shape":"ExportSourceType",
+          "documentation":"<p>The type of source of the export job.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the export job.</p>"
+        },
+        "ExportDestination":{
+          "shape":"ExportDestination",
+          "documentation":"<p>The destination of the export job.</p>"
+        },
+        "ExportDataSource":{
+          "shape":"ExportDataSource",
+          "documentation":"<p>The data source of the export job.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the export job was created.</p>"
+        },
+        "CompletedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the export job was completed.</p>"
+        },
+        "FailureInfo":{
+          "shape":"FailureInfo",
+          "documentation":"<p>The failure details about an export job.</p>"
+        },
+        "Statistics":{
+          "shape":"ExportStatistics",
+          "documentation":"<p>The statistics about the export job.</p>"
+        }
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
     "GetImportJobRequest":{
       "type":"structure",
       "required":["JobId"],
@@ -3719,6 +4116,45 @@
         }
       },
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "GetMessageInsightsRequest":{
+      "type":"structure",
+      "required":["MessageId"],
+      "members":{
+        "MessageId":{
+          "shape":"OutboundMessageId",
+          "documentation":"<p> A <code>MessageId</code> is a unique identifier for a message, and is returned when sending emails through Amazon SES. </p>",
+          "location":"uri",
+          "locationName":"MessageId"
+        }
+      },
+      "documentation":"<p>A request to return information about a message.</p>"
+    },
+    "GetMessageInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"OutboundMessageId",
+          "documentation":"<p>A unique identifier for the message.</p>"
+        },
+        "FromEmailAddress":{
+          "shape":"InsightsEmailAddress",
+          "documentation":"<p>The from address used to send the message.</p>"
+        },
+        "Subject":{
+          "shape":"EmailSubject",
+          "documentation":"<p>The subject line of the message.</p>"
+        },
+        "EmailTags":{
+          "shape":"MessageTagList",
+          "documentation":"<p> A list of tags, in the form of name/value pairs, that were applied to the email you sent, along with Amazon SES <a href=\"https://docs.aws.amazon.com/ses/latest/dg/monitor-using-event-publishing.html\">Auto-Tags</a>. </p>"
+        },
+        "Insights":{
+          "shape":"EmailInsightsList",
+          "documentation":"<p>A set of insights associated with the message.</p>"
+        }
+      },
+      "documentation":"<p>Information about a message.</p>"
     },
     "GetSuppressedDestinationRequest":{
       "type":"structure",
@@ -3883,6 +4319,34 @@
       },
       "documentation":"<p>An object that contains information about the inbox placement data settings for a verified domain that’s associated with your Amazon Web Services account. This data is available only if you enabled the Deliverability dashboard for the domain.</p>"
     },
+    "InsightsEmailAddress":{
+      "type":"string",
+      "max":320,
+      "min":1,
+      "sensitive":true
+    },
+    "InsightsEvent":{
+      "type":"structure",
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the event.</p>"
+        },
+        "Type":{
+          "shape":"EventType",
+          "documentation":"<p>The type of event:</p> <ul> <li> <p> <code>SEND</code> - The send request was successful and SES will attempt to deliver the message to the recipient’s mail server. (If account-level or global suppression is being used, SES will still count it as a send, but delivery is suppressed.) </p> </li> <li> <p> <code>DELIVERY</code> - SES successfully delivered the email to the recipient's mail server. Excludes deliveries to the mailbox simulator, and those from emails addressed to more than one recipient. </p> </li> <li> <p> <code>BOUNCE</code> - Feedback received for delivery failures. Additional details about the bounce are provided in the <code>Details</code> object. Excludes bounces from the mailbox simulator, and those from emails addressed to more than one recipient. </p> </li> <li> <p> <code>COMPLAINT</code> - Complaint received for the email. Additional details about the complaint are provided in the <code>Details</code> object. This excludes complaints from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those from emails addressed to more than one recipient. </p> </li> <li> <p> <code>OPEN</code> - Open event for emails including open trackers. Excludes opens for emails addressed to more than one recipient.</p> </li> <li> <p> <code>CLICK</code> - Click event for emails including wrapped links. Excludes clicks for emails addressed to more than one recipient.</p> </li> </ul>"
+        },
+        "Details":{
+          "shape":"EventDetails",
+          "documentation":"<p>Details about bounce or complaint events.</p>"
+        }
+      },
+      "documentation":"<p>An object containing details about a specific event.</p>"
+    },
+    "InsightsEvents":{
+      "type":"list",
+      "member":{"shape":"InsightsEvent"}
+    },
     "InternalServiceErrorException":{
       "type":"structure",
       "members":{
@@ -3907,6 +4371,12 @@
     "IpList":{
       "type":"list",
       "member":{"shape":"Ip"}
+    },
+    "Isp":{"type":"string"},
+    "IspFilterList":{
+      "type":"list",
+      "member":{"shape":"Isp"},
+      "max":5
     },
     "IspName":{
       "type":"string",
@@ -3936,17 +4406,18 @@
     },
     "JobId":{
       "type":"string",
-      "documentation":"<p>A string that represents the import job ID.</p>",
+      "documentation":"<p>A string that represents a job ID.</p>",
       "min":1
     },
     "JobStatus":{
       "type":"string",
-      "documentation":"<p>The status of the import job.</p>",
+      "documentation":"<p>The status of a job.</p> <ul> <li> <p> <code>CREATED</code> – Job has just been created.</p> </li> <li> <p> <code>PROCESSING</code> – Job is processing.</p> </li> <li> <p> <code>ERROR</code> – An error occurred during processing.</p> </li> <li> <p> <code>COMPLETED</code> – Job has completed processing successfully.</p> </li> </ul>",
       "enum":[
         "CREATED",
         "PROCESSING",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "CANCELLED"
       ]
     },
     "KinesisFirehoseDestination":{
@@ -3966,6 +4437,16 @@
         }
       },
       "documentation":"<p>An object that defines an Amazon Kinesis Data Firehose destination for email events. You can use Amazon Kinesis Data Firehose to stream data to other services, such as Amazon S3 and Amazon Redshift.</p>"
+    },
+    "LastDeliveryEventList":{
+      "type":"list",
+      "member":{"shape":"DeliveryEventType"},
+      "max":5
+    },
+    "LastEngagementEventList":{
+      "type":"list",
+      "member":{"shape":"EngagementEventType"},
+      "max":2
     },
     "LastFreshStart":{
       "type":"timestamp",
@@ -4313,6 +4794,42 @@
       },
       "documentation":"<p>The following elements are returned by the service.</p>"
     },
+    "ListExportJobsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned from a previous call to <code>ListExportJobs</code> to indicate the position in the list of export jobs.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>Maximum number of export jobs to return at once. Use this parameter to paginate results. If additional export jobs exist beyond the specified limit, the <code>NextToken</code> element is sent in the response. Use the <code>NextToken</code> value in subsequent calls to <code>ListExportJobs</code> to retrieve additional export jobs.</p>"
+        },
+        "ExportSourceType":{
+          "shape":"ExportSourceType",
+          "documentation":"<p>A value used to list export jobs that have a certain <code>ExportSourceType</code>.</p>"
+        },
+        "JobStatus":{
+          "shape":"JobStatus",
+          "documentation":"<p>A value used to list export jobs that have a certain <code>JobStatus</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents a request to list all export jobs with filters.</p>"
+    },
+    "ListExportJobsResponse":{
+      "type":"structure",
+      "members":{
+        "ExportJobs":{
+          "shape":"ExportJobSummaryList",
+          "documentation":"<p>A list of the export job summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string token indicating that there might be additional export jobs available to be listed. Use this token to a subsequent call to <code>ListExportJobs</code> with the same parameters to retrieve the next page of export jobs.</p>"
+        }
+      },
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
     "ListImportJobsRequest":{
       "type":"structure",
       "members":{
@@ -4582,6 +5099,71 @@
       "documentation":"<p>The body of an email message.</p>"
     },
     "MessageData":{"type":"string"},
+    "MessageInsightsDataSource":{
+      "type":"structure",
+      "required":[
+        "StartDate",
+        "EndDate"
+      ],
+      "members":{
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the start date for the export interval as a timestamp. The start date is inclusive.</p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the end date for the export interval as a timestamp. The end date is inclusive.</p>"
+        },
+        "Include":{
+          "shape":"MessageInsightsFilters",
+          "documentation":"<p>Filters for results to be included in the export file.</p>"
+        },
+        "Exclude":{
+          "shape":"MessageInsightsFilters",
+          "documentation":"<p>Filters for results to be excluded from the export file.</p>"
+        },
+        "MaxResults":{
+          "shape":"MessageInsightsExportMaxResults",
+          "documentation":"<p>The maximum number of results.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains filters applied when performing the Message Insights export.</p>"
+    },
+    "MessageInsightsExportMaxResults":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
+    "MessageInsightsFilters":{
+      "type":"structure",
+      "members":{
+        "FromEmailAddress":{
+          "shape":"EmailAddressFilterList",
+          "documentation":"<p>The from address used to send the message.</p>"
+        },
+        "Destination":{
+          "shape":"EmailAddressFilterList",
+          "documentation":"<p>The recipient's email address.</p>"
+        },
+        "Subject":{
+          "shape":"EmailSubjectFilterList",
+          "documentation":"<p>The subject line of the message.</p>"
+        },
+        "Isp":{
+          "shape":"IspFilterList",
+          "documentation":"<p>The recipient's ISP (e.g., <code>Gmail</code>, <code>Yahoo</code>, etc.).</p>"
+        },
+        "LastDeliveryEvent":{
+          "shape":"LastDeliveryEventList",
+          "documentation":"<p> The last delivery-related event for the email, where the ordering is as follows: <code>SEND</code> &lt; <code>BOUNCE</code> &lt; <code>DELIVERY</code> &lt; <code>COMPLAINT</code>. </p>"
+        },
+        "LastEngagementEvent":{
+          "shape":"LastEngagementEventList",
+          "documentation":"<p> The last engagement-related event for the email, where the ordering is as follows: <code>OPEN</code> &lt; <code>CLICK</code>. </p> <p> Engagement events are only available if <a href=\"https://docs.aws.amazon.com/ses/latest/dg/vdm-settings.html\">Engagement tracking</a> is enabled. </p>"
+        }
+      },
+      "documentation":"<p>An object containing Message Insights filters.</p> <p>If you specify multiple filters, the filters are joined by AND.</p> <p>If you specify multiple values for a filter, the values are joined by OR. Filter values are case-sensitive.</p> <p> <code>FromEmailAddress</code>, <code>Destination</code>, and <code>Subject</code> filters support partial match. A partial match is performed by using the <code>*</code> wildcard character placed at the beginning (suffix match), the end (prefix match) or both ends of the string (contains match). In order to match the literal characters <code>*</code> or <code>\\</code>, they must be escaped using the <code>\\</code> character. If no wildcard character is present, an exact match is performed. </p>"
+    },
     "MessageRejected":{
       "type":"structure",
       "members":{
@@ -4623,6 +5205,7 @@
     },
     "Metric":{
       "type":"string",
+      "documentation":"<p>The metric to export, can be one of the following:</p> <ul> <li> <p> <code>SEND</code> - Emails sent eligible for tracking in the VDM dashboard. This excludes emails sent to the mailbox simulator and emails addressed to more than one recipient.</p> </li> <li> <p> <code>COMPLAINT</code> - Complaints received for your account. This excludes complaints from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those for emails addressed to more than one recipient</p> </li> <li> <p> <code>PERMANENT_BOUNCE</code> - Permanent bounces - i.e., feedback received for emails sent to non-existent mailboxes. Excludes bounces from the mailbox simulator, those originating from your account-level suppression list (if enabled), and those for emails addressed to more than one recipient.</p> </li> <li> <p> <code>TRANSIENT_BOUNCE</code> - Transient bounces - i.e., feedback received for delivery failures excluding issues with non-existent mailboxes. Excludes bounces from the mailbox simulator, and those for emails addressed to more than one recipient.</p> </li> <li> <p> <code>OPEN</code> - Unique open events for emails including open trackers. Excludes opens for emails addressed to more than one recipient.</p> </li> <li> <p> <code>CLICK</code> - Unique click events for emails including wrapped links. Excludes clicks for emails addressed to more than one recipient.</p> </li> <li> <p> <code>DELIVERY</code> - Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator and for emails addressed to more than one recipient.</p> </li> <li> <p> <code>DELIVERY_OPEN</code> - Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails without open trackers.</p> </li> <li> <p> <code>DELIVERY_CLICK</code> - Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails without click trackers.</p> </li> <li> <p> <code>DELIVERY_COMPLAINT</code> - Successful deliveries for email sending attempts. Excludes deliveries to the mailbox simulator, for emails addressed to more than one recipient, and emails addressed to recipients hosted by ISPs with which Amazon SES does not have a feedback loop agreement.</p> </li> </ul>",
       "enum":[
         "SEND",
         "COMPLAINT",
@@ -4634,6 +5217,14 @@
         "DELIVERY_OPEN",
         "DELIVERY_CLICK",
         "DELIVERY_COMPLAINT"
+      ]
+    },
+    "MetricAggregation":{
+      "type":"string",
+      "documentation":"<p>The aggregation to apply to a metric, can be one of the following:</p> <ul> <li> <p> <code>VOLUME</code> - The volume of events for this metric.</p> </li> <li> <p> <code>RATE</code> - The rate for this metric relative to the <code>SEND</code> metric volume.</p> </li> </ul>",
+      "enum":[
+        "RATE",
+        "VOLUME"
       ]
     },
     "MetricDataError":{
@@ -4689,7 +5280,10 @@
         "ISP"
       ]
     },
-    "MetricDimensionValue":{"type":"string"},
+    "MetricDimensionValue":{
+      "type":"string",
+      "documentation":"<p>A list of values associated with the <code>MetricDimensionName</code> to filter metrics by. Can either be <code>*</code> as a wildcard for all values or a list of up to 10 specific values. If one <code>Dimension</code> has the <code>*</code> value, other dimensions can only contain one value. </p>"
+    },
     "MetricNamespace":{
       "type":"string",
       "enum":["VDM"]
@@ -4697,6 +5291,39 @@
     "MetricValueList":{
       "type":"list",
       "member":{"shape":"Counter"}
+    },
+    "MetricsDataSource":{
+      "type":"structure",
+      "required":[
+        "Dimensions",
+        "Namespace",
+        "Metrics",
+        "StartDate",
+        "EndDate"
+      ],
+      "members":{
+        "Dimensions":{
+          "shape":"ExportDimensions",
+          "documentation":"<p>An object that contains a mapping between a <code>MetricDimensionName</code> and <code>MetricDimensionValue</code> to filter metrics by. Must contain a least 1 dimension but no more than 3 unique ones.</p>"
+        },
+        "Namespace":{
+          "shape":"MetricNamespace",
+          "documentation":"<p>The metrics namespace - e.g., <code>VDM</code>.</p>"
+        },
+        "Metrics":{
+          "shape":"ExportMetrics",
+          "documentation":"<p>A list of <code>ExportMetric</code> objects to export.</p>"
+        },
+        "StartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the start date for the export interval as a timestamp.</p>"
+        },
+        "EndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Represents the end date for the export interval as a timestamp.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the data source for the metrics export.</p>"
     },
     "NextToken":{"type":"string"},
     "NotFoundException":{
@@ -5465,7 +6092,7 @@
     },
     "S3Url":{
       "type":"string",
-      "documentation":"<p>An Amazon S3 URL in the format s3://<i>&lt;bucket_name&gt;</i>/<i>&lt;object&gt;</i>.</p>",
+      "documentation":"<p>An Amazon S3 URL in the format s3://<i>&lt;bucket_name&gt;</i>/<i>&lt;object&gt;</i> or a pre-signed URL.</p>",
       "pattern":"^s3:\\/\\/([^\\/]+)\\/(.*?([^\\/]+)\\/?)$"
     },
     "ScalingMode":{

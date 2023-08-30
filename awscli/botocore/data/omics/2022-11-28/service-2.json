@@ -1596,7 +1596,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Starts a run.</p>",
+      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>The total number of runs in your account is subject to a quota per Region. To avoid needing to delete runs manually, you can set the retention mode to <code>REMOVE</code>. Runs with this setting are deleted automatically when the run quoata is exceeded.</p>",
       "authtype":"v4",
       "endpoint":{"hostPrefix":"workflows-"}
     },
@@ -4520,6 +4520,10 @@
         "accelerators":{
           "shape":"Accelerators",
           "documentation":"<p> The computational accelerator used to run the workflow. </p>"
+        },
+        "retentionMode":{
+          "shape":"RunRetentionMode",
+          "documentation":"<p>The run's retention mode.</p>"
         }
       }
     },
@@ -7324,6 +7328,15 @@
       "key":{"shape":"RunResourceDigestKey"},
       "value":{"shape":"RunResourceDigest"}
     },
+    "RunRetentionMode":{
+      "type":"string",
+      "enum":[
+        "RETAIN",
+        "REMOVE"
+      ],
+      "max":64,
+      "min":1
+    },
     "RunRoleArn":{
       "type":"string",
       "max":128,
@@ -8024,11 +8037,11 @@
         },
         "workflowType":{
           "shape":"WorkflowType",
-          "documentation":"<p>The run's workflows type.</p>"
+          "documentation":"<p>The run's workflow type.</p>"
         },
         "runId":{
           "shape":"RunId",
-          "documentation":"<p>The run's ID.</p>"
+          "documentation":"<p>The ID of a run to duplicate.</p>"
         },
         "roleArn":{
           "shape":"RunRoleArn",
@@ -8070,6 +8083,10 @@
           "shape":"RunRequestId",
           "documentation":"<p>To ensure that requests don't run multiple times, specify a unique ID for each request.</p>",
           "idempotencyToken":true
+        },
+        "retentionMode":{
+          "shape":"RunRetentionMode",
+          "documentation":"<p>The retention mode for the run.</p>"
         }
       }
     },

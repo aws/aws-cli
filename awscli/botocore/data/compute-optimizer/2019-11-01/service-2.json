@@ -153,6 +153,26 @@
       ],
       "documentation":"<p>Exports optimization recommendations for Lambda functions.</p> <p>Recommendations are exported in a comma-separated values (.csv) file, and its metadata in a JavaScript Object Notation (JSON) (.json) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one Lambda function export job in progress per Amazon Web Services Region.</p>"
     },
+    "ExportLicenseRecommendations":{
+      "name":"ExportLicenseRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportLicenseRecommendationsRequest"},
+      "output":{"shape":"ExportLicenseRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Export optimization recommendations for your licenses. </p> <p>Recommendations are exported in a comma-separated values (CSV) file, and its metadata in a JavaScript Object Notation (JSON) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one license export job in progress per Amazon Web Services Region.</p>"
+    },
     "GetAutoScalingGroupRecommendations":{
       "name":"GetAutoScalingGroupRecommendations",
       "http":{
@@ -348,6 +368,26 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Returns Lambda function recommendations.</p> <p>Compute Optimizer generates recommendations for functions that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
+    "GetLicenseRecommendations":{
+      "name":"GetLicenseRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetLicenseRecommendationsRequest"},
+      "output":{"shape":"GetLicenseRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns license recommendations for Amazon EC2 instances that run on a specific license.</p> <p>Compute Optimizer generates recommendations for licenses that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
     "GetRecommendationPreferences":{
       "name":"GetRecommendationPreferences",
@@ -1346,6 +1386,43 @@
         "s3Destination":{"shape":"S3Destination"}
       }
     },
+    "ExportLicenseRecommendationsRequest":{
+      "type":"structure",
+      "required":["s3DestinationConfig"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>The IDs of the Amazon Web Services accounts for which to export license recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter is omitted, recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
+        },
+        "filters":{
+          "shape":"LicenseRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that exports a more specific set of license recommendations. </p>"
+        },
+        "fieldsToExport":{
+          "shape":"ExportableLicenseFields",
+          "documentation":"<p>The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files\">Exported files</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "s3DestinationConfig":{"shape":"S3DestinationConfig"},
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>The format of the export file.</p> <p>A CSV file is the only export format currently supported.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"IncludeMemberAccounts",
+          "documentation":"<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access\">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren't included in the export file .</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p>"
+        }
+      }
+    },
+    "ExportLicenseRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID.</p>"
+        },
+        "s3Destination":{"shape":"S3Destination"}
+      }
+    },
     "ExportableAutoScalingGroupField":{
       "type":"string",
       "enum":[
@@ -1543,6 +1620,36 @@
     "ExportableLambdaFunctionFields":{
       "type":"list",
       "member":{"shape":"ExportableLambdaFunctionField"}
+    },
+    "ExportableLicenseField":{
+      "type":"string",
+      "enum":[
+        "AccountId",
+        "ResourceArn",
+        "LookbackPeriodInDays",
+        "LastRefreshTimestamp",
+        "Finding",
+        "FindingReasonCodes",
+        "CurrentLicenseConfigurationNumberOfCores",
+        "CurrentLicenseConfigurationInstanceType",
+        "CurrentLicenseConfigurationOperatingSystem",
+        "CurrentLicenseConfigurationLicenseName",
+        "CurrentLicenseConfigurationLicenseEdition",
+        "CurrentLicenseConfigurationLicenseModel",
+        "CurrentLicenseConfigurationLicenseVersion",
+        "CurrentLicenseConfigurationMetricsSource",
+        "RecommendationOptionsOperatingSystem",
+        "RecommendationOptionsLicenseEdition",
+        "RecommendationOptionsLicenseModel",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "Tags"
+      ]
+    },
+    "ExportableLicenseFields":{
+      "type":"list",
+      "member":{"shape":"ExportableLicenseField"}
     },
     "ExportableVolumeField":{
       "type":"string",
@@ -2071,6 +2178,48 @@
         "lambdaFunctionRecommendations":{
           "shape":"LambdaFunctionRecommendations",
           "documentation":"<p>An array of objects that describe function recommendations.</p>"
+        }
+      }
+    },
+    "GetLicenseRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p> The ARN that identifies the Amazon EC2 instance. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ec2:region:aws_account_id:instance/instance-id</code> </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to advance to the next page of license recommendations. </p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of license recommendations to return with a single request. </p> <p> To retrieve the remaining results, make another request with the returned <code>nextToken</code> value. </p>"
+        },
+        "filters":{
+          "shape":"LicenseRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that returns a more specific list of license recommendations. </p>"
+        },
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>The ID of the Amazon Web Services account for which to return license recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return license recommendations.</p> <p>Only one account ID can be specified per request.</p>"
+        }
+      }
+    },
+    "GetLicenseRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to advance to the next page of license recommendations. </p>"
+        },
+        "licenseRecommendations":{
+          "shape":"LicenseRecommendations",
+          "documentation":"<p> An array of objects that describe license recommendations. </p>"
+        },
+        "errors":{
+          "shape":"GetRecommendationErrors",
+          "documentation":"<p> An array of objects that describe errors of the request. </p>"
         }
       }
     },
@@ -2625,6 +2774,185 @@
     },
     "LastRefreshTimestamp":{"type":"timestamp"},
     "LastUpdatedTimestamp":{"type":"timestamp"},
+    "LicenseConfiguration":{
+      "type":"structure",
+      "members":{
+        "numberOfCores":{
+          "shape":"NumberOfCores",
+          "documentation":"<p> The current number of cores associated with the instance. </p>"
+        },
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p> The instance type used in the license. </p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p> The operating system of the instance. </p>"
+        },
+        "licenseEdition":{
+          "shape":"LicenseEdition",
+          "documentation":"<p> The edition of the license for the application that runs on the instance. </p>"
+        },
+        "licenseName":{
+          "shape":"LicenseName",
+          "documentation":"<p> The name of the license for the application that runs on the instance. </p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p> The license type associated with the instance. </p>"
+        },
+        "licenseVersion":{
+          "shape":"LicenseVersion",
+          "documentation":"<p> The version of the license for the application that runs on the instance. </p>"
+        },
+        "metricsSource":{
+          "shape":"MetricsSource",
+          "documentation":"<p> The list of metric sources required to generate recommendations for commercial software licenses. </p>"
+        }
+      },
+      "documentation":"<p> Describes the configuration of a license for an Amazon EC2 instance. </p>"
+    },
+    "LicenseEdition":{
+      "type":"string",
+      "enum":[
+        "Enterprise",
+        "Standard",
+        "Free",
+        "NoLicenseEditionFound"
+      ]
+    },
+    "LicenseFinding":{
+      "type":"string",
+      "enum":[
+        "InsufficientMetrics",
+        "Optimized",
+        "NotOptimized"
+      ]
+    },
+    "LicenseFindingReasonCode":{
+      "type":"string",
+      "enum":[
+        "InvalidCloudWatchApplicationInsightsSetup",
+        "CloudWatchApplicationInsightsError",
+        "LicenseOverprovisioned",
+        "Optimized"
+      ]
+    },
+    "LicenseFindingReasonCodes":{
+      "type":"list",
+      "member":{"shape":"LicenseFindingReasonCode"}
+    },
+    "LicenseModel":{
+      "type":"string",
+      "enum":[
+        "LicenseIncluded",
+        "BringYourOwnLicense"
+      ]
+    },
+    "LicenseName":{
+      "type":"string",
+      "enum":["SQLServer"]
+    },
+    "LicenseRecommendation":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The ARN that identifies the Amazon EC2 instance. </p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID of the license. </p>"
+        },
+        "currentLicenseConfiguration":{
+          "shape":"LicenseConfiguration",
+          "documentation":"<p> An object that describes the current configuration of an instance that runs on a license. </p>"
+        },
+        "lookbackPeriodInDays":{
+          "shape":"LookBackPeriodInDays",
+          "documentation":"<p> The number of days for which utilization metrics were analyzed for an instance that runs on a license. </p>"
+        },
+        "lastRefreshTimestamp":{
+          "shape":"LastRefreshTimestamp",
+          "documentation":"<p> The timestamp of when the license recommendation was last generated. </p>"
+        },
+        "finding":{
+          "shape":"LicenseFinding",
+          "documentation":"<p> The finding classification for an instance that runs on a license. </p> <p>Findings include:</p> <ul> <li> <p> <code>InsufficentMetrics</code> — When Compute Optimizer detects that your CloudWatch Application Insights isn't enabled or is enabled with insufficient permissions. </p> </li> <li> <p> <code>NotOptimized</code> — When Compute Optimizer detects that your EC2 infrastructure isn't using any of the SQL server license features you're paying for, a license is considered not optimized.</p> </li> <li> <p> <code>Optimized</code> — When Compute Optimizer detects that all specifications of your license meet the performance requirements of your workload. </p> </li> </ul>"
+        },
+        "findingReasonCodes":{
+          "shape":"LicenseFindingReasonCodes",
+          "documentation":"<p> The reason for the finding classification for an instance that runs on a license. </p> <p>Finding reason codes include:</p> <ul> <li> <p> <code>Optimized</code> — All specifications of your license meet the performance requirements of your workload. </p> </li> <li> <p> <code>LicenseOverprovisioned</code> — A license is considered over-provisioned when your license can be downgraded while still meeting the performance requirements of your workload.</p> </li> <li> <p> <code>InvalidCloudwatchApplicationInsights</code> — CloudWatch Application Insights isn't configured properly.</p> </li> <li> <p> <code>CloudwatchApplicationInsightsError</code> — There is a CloudWatch Application Insights error. </p> </li> </ul>"
+        },
+        "licenseRecommendationOptions":{
+          "shape":"LicenseRecommendationOptions",
+          "documentation":"<p> An array of objects that describe the license recommendation options. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to an EC2 instance. </p>"
+        }
+      },
+      "documentation":"<p> Describes a license recommendation for an EC2 instance. </p>"
+    },
+    "LicenseRecommendationFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"LicenseRecommendationFilterName",
+          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification.</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code.</p> <p>You can filter your license recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your license recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all license recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your license recommendations. Use this filter to find all of your license recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your license recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>If you specify the <code>name</code> parameter as <code>Finding</code>, then specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>InsufficentMetrics</code>.</p> </li> <li> <p>If you specify the <code>name</code> parameter as <code>FindingReasonCode</code>, then specify <code>Optimized</code>, <code>LicenseOverprovisioned</code>, <code>InvalidCloudwatchApplicationInsights</code>, or <code>CloudwatchApplicationInsightsError</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> Describes a filter that returns a more specific list of license recommendations. Use this filter with the <code>GetLicenseRecommendation</code> action. </p>"
+    },
+    "LicenseRecommendationFilterName":{
+      "type":"string",
+      "enum":[
+        "Finding",
+        "FindingReasonCode",
+        "LicenseName"
+      ]
+    },
+    "LicenseRecommendationFilters":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendationFilter"}
+    },
+    "LicenseRecommendationOption":{
+      "type":"structure",
+      "members":{
+        "rank":{
+          "shape":"Rank",
+          "documentation":"<p> The rank of the license recommendation option. </p> <p> The top recommendation option is ranked as <code>1</code>. </p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p> The operating system of a license recommendation option. </p>"
+        },
+        "licenseEdition":{
+          "shape":"LicenseEdition",
+          "documentation":"<p> The recommended edition of the license for the application that runs on the instance. </p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p> The recommended license type associated with the instance. </p>"
+        },
+        "savingsOpportunity":{"shape":"SavingsOpportunity"}
+      },
+      "documentation":"<p> Describes the recommendation options for licenses. </p>"
+    },
+    "LicenseRecommendationOptions":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendationOption"}
+    },
+    "LicenseRecommendations":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendation"}
+    },
+    "LicenseVersion":{"type":"string"},
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -2682,6 +3010,25 @@
         "NETWORK_PACKETS_OUT_PER_SECOND"
       ]
     },
+    "MetricProviderArn":{"type":"string"},
+    "MetricSource":{
+      "type":"structure",
+      "members":{
+        "provider":{
+          "shape":"MetricSourceProvider",
+          "documentation":"<p> The name of the metric source provider. </p>"
+        },
+        "providerArn":{
+          "shape":"MetricProviderArn",
+          "documentation":"<p> The ARN of the metric source provider. </p>"
+        }
+      },
+      "documentation":"<p> The list of metric sources required to generate recommendations for commercial software licenses. </p>"
+    },
+    "MetricSourceProvider":{
+      "type":"string",
+      "enum":["CloudWatchApplicationInsights"]
+    },
     "MetricStatistic":{
       "type":"string",
       "enum":[
@@ -2693,6 +3040,10 @@
     "MetricValues":{
       "type":"list",
       "member":{"shape":"MetricValue"}
+    },
+    "MetricsSource":{
+      "type":"list",
+      "member":{"shape":"MetricSource"}
     },
     "MigrationEffort":{
       "type":"string",
@@ -2717,8 +3068,10 @@
     "NullableCpu":{"type":"integer"},
     "NullableMemory":{"type":"integer"},
     "NullableMemoryReservation":{"type":"integer"},
+    "NumberOfCores":{"type":"integer"},
     "NumberOfInvocations":{"type":"long"},
     "NumberOfMemberAccountsOptedIn":{"type":"integer"},
+    "OperatingSystem":{"type":"string"},
     "OptInRequiredException":{
       "type":"structure",
       "members":{
@@ -2941,7 +3294,8 @@
         "AutoScalingGroup",
         "EbsVolume",
         "LambdaFunction",
-        "EcsService"
+        "EcsService",
+        "License"
       ]
     },
     "RecommendationSources":{
@@ -3006,6 +3360,10 @@
       "member":{"shape":"RecommendedOptionProjectedMetric"}
     },
     "ResourceArn":{"type":"string"},
+    "ResourceArns":{
+      "type":"list",
+      "member":{"shape":"ResourceArn"}
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -3023,7 +3381,8 @@
         "EbsVolume",
         "LambdaFunction",
         "NotApplicable",
-        "EcsService"
+        "EcsService",
+        "License"
       ]
     },
     "RootVolume":{"type":"boolean"},

@@ -30,7 +30,7 @@
         {"shape":"TemplatesNotAvailableInRegionException"},
         {"shape":"NoAvailableOrganizationException"}
       ],
-      "documentation":"<p>Associates your quota request template with your organization. When a new account is created in your organization, the quota increase requests in the template are automatically applied to the account. You can add a quota increase request for any adjustable quota to your template.</p>"
+      "documentation":"<p>Associates your quota request template with your organization. When a new Amazon Web Services account is created in your organization, the quota increase requests in the template are automatically applied to the account. You can add a quota increase request for any adjustable quota to your template.</p>"
     },
     "DeleteServiceQuotaIncreaseRequestFromTemplate":{
       "name":"DeleteServiceQuotaIncreaseRequestFromTemplate",
@@ -71,7 +71,7 @@
         {"shape":"TemplatesNotAvailableInRegionException"},
         {"shape":"NoAvailableOrganizationException"}
       ],
-      "documentation":"<p>Disables your quota request template. After a template is disabled, the quota increase requests in the template are not applied to new accounts in your organization. Disabling a quota request template does not apply its quota increase requests.</p>"
+      "documentation":"<p>Disables your quota request template. After a template is disabled, the quota increase requests in the template are not applied to new Amazon Web Services accounts in your organization. Disabling a quota request template does not apply its quota increase requests.</p>"
     },
     "GetAWSDefaultServiceQuota":{
       "name":"GetAWSDefaultServiceQuota",
@@ -181,7 +181,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the default values for the quotas for the specified AWS service. A default value does not reflect any quota increases.</p>"
+      "documentation":"<p>Lists the default values for the quotas for the specified Amazon Web Service. A default value does not reflect any quota increases.</p>"
     },
     "ListRequestedServiceQuotaChangeHistory":{
       "name":"ListRequestedServiceQuotaChangeHistory",
@@ -199,7 +199,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Retrieves the quota increase requests for the specified service.</p>"
+      "documentation":"<p>Retrieves the quota increase requests for the specified Amazon Web Service.</p>"
     },
     "ListRequestedServiceQuotaChangeHistoryByQuota":{
       "name":"ListRequestedServiceQuotaChangeHistoryByQuota",
@@ -255,7 +255,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the applied quota values for the specified AWS service. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved.</p>"
+      "documentation":"<p>Lists the applied quota values for the specified Amazon Web Service. For some quotas, only the default values are available. If the applied quota value is not available for a quota, the quota is not retrieved.</p>"
     },
     "ListServices":{
       "name":"ListServices",
@@ -272,7 +272,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Lists the names and codes for the services integrated with Service Quotas.</p>"
+      "documentation":"<p>Lists the names and codes for the Amazon Web Services integrated with Service Quotas.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -394,6 +394,14 @@
       "min":1,
       "pattern":"arn:aws(-[\\w]+)*:*:.+:[0-9]{12}:.+"
     },
+    "AppliedLevelEnum":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "RESOURCE",
+        "ALL"
+      ]
+    },
     "AssociateServiceQuotaTemplateRequest":{
       "type":"structure",
       "members":{
@@ -422,15 +430,15 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "AwsRegion":{
           "shape":"AwsRegion",
-          "documentation":"<p>The AWS Region.</p>"
+          "documentation":"<p>Specifies the Amazon Web Services Region for which the request was made.</p>"
         }
       }
     },
@@ -472,7 +480,7 @@
       "members":{
         "ErrorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The service is throttling Service Quotas.</p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>"
+          "documentation":"<p>Service Quotas returns the following error values:</p> <ul> <li> <p> <code>DEPENDENCY_ACCESS_DENIED_ERROR</code> - The caller does not have the required permissions to complete the action. To resolve the error, you must have permission to access the Amazon Web Service or quota.</p> </li> <li> <p> <code>DEPENDENCY_THROTTLING_ERROR</code> - The Amazon Web Service is throttling Service Quotas. </p> </li> <li> <p> <code>DEPENDENCY_SERVICE_ERROR</code> - The Amazon Web Service is not available.</p> </li> <li> <p> <code>SERVICE_QUOTA_NOT_AVAILABLE_ERROR</code> - There was an error in Service Quotas.</p> </li> </ul>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
@@ -491,11 +499,11 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         }
       }
     },
@@ -518,7 +526,7 @@
       "members":{
         "ServiceQuotaTemplateAssociationStatus":{
           "shape":"ServiceQuotaTemplateAssociationStatus",
-          "documentation":"<p>The association status. If the status is <code>ASSOCIATED</code>, the quota increase requests in the template are automatically applied to new accounts in your organization.</p>"
+          "documentation":"<p>The association status. If the status is <code>ASSOCIATED</code>, the quota increase requests in the template are automatically applied to new Amazon Web Services accounts in your organization.</p>"
         }
       }
     },
@@ -528,7 +536,7 @@
       "members":{
         "RequestId":{
           "shape":"RequestId",
-          "documentation":"<p>The ID of the quota increase request.</p>"
+          "documentation":"<p>Specifies the ID of the quota increase request.</p>"
         }
       }
     },
@@ -551,15 +559,15 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "AwsRegion":{
           "shape":"AwsRegion",
-          "documentation":"<p>The AWS Region.</p>"
+          "documentation":"<p>Specifies the Amazon Web Services Region for which you made the request.</p>"
         }
       }
     },
@@ -581,11 +589,15 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
+        },
+        "ContextId":{
+          "shape":"QuotaContextId",
+          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
         }
       }
     },
@@ -638,15 +650,15 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
         }
       }
     },
@@ -655,7 +667,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         },
         "Quotas":{
           "shape":"ServiceQuotaListDefinition",
@@ -672,23 +684,27 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "Status":{
           "shape":"RequestStatus",
-          "documentation":"<p>The status value of the quota increase request.</p>"
+          "documentation":"<p>Specifies that you want to filter the results to only the requests with the matching status.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "QuotaRequestedAtLevel":{
+          "shape":"AppliedLevelEnum",
+          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
         }
       }
     },
@@ -697,7 +713,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         },
         "RequestedQuotas":{
           "shape":"RequestedServiceQuotaChangeHistoryListDefinition",
@@ -710,19 +726,23 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "Status":{
           "shape":"RequestStatus",
-          "documentation":"<p>The status of the quota increase request.</p>"
+          "documentation":"<p>Specifies that you want to filter the results to only the requests with the matching status.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "QuotaRequestedAtLevel":{
+          "shape":"AppliedLevelEnum",
+          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
         }
       }
     },
@@ -731,7 +751,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         },
         "RequestedQuotas":{
           "shape":"RequestedServiceQuotaChangeHistoryListDefinition",
@@ -744,19 +764,19 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "AwsRegion":{
           "shape":"AwsRegion",
-          "documentation":"<p>The AWS Region.</p>"
+          "documentation":"<p>Specifies the Amazon Web Services Region for which you made the request.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
         }
       }
     },
@@ -769,7 +789,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         }
       }
     },
@@ -779,15 +799,23 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "QuotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
+        },
+        "QuotaAppliedAtLevel":{
+          "shape":"AppliedLevelEnum",
+          "documentation":"<p>Specifies at which level of granularity that the quota value is applied.</p>"
         }
       }
     },
@@ -796,7 +824,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         },
         "Quotas":{
           "shape":"ServiceQuotaListDefinition",
@@ -809,11 +837,11 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next page of results.</p>"
+          "documentation":"<p>Specifies a value for receiving additional results after you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, if any, make another call with the token returned from this call.</p>"
+          "documentation":"<p>Specifies the maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
         }
       }
     },
@@ -822,11 +850,11 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
         },
         "Services":{
           "shape":"ServiceInfoListDefinition",
-          "documentation":"<p>Information about the services.</p>"
+          "documentation":"<p>The list of the Amazon Web Service names and service codes.</p>"
         }
       }
     },
@@ -836,7 +864,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota for which you want to list tags. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> AWS CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> AWS API operation.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota for which you want to list tags. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> Amazon Web Services API operation.</p>"
         }
       }
     },
@@ -894,7 +922,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The account making this call is not a member of an organization.</p>",
+      "documentation":"<p>The Amazon Web Services account making this call is not a member of an organization.</p>",
       "exception":true
     },
     "NoSuchResourceException":{
@@ -910,7 +938,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The organization that your account belongs to is not in All Features mode.</p>",
+      "documentation":"<p>The organization that your Amazon Web Services account belongs to is not in All Features mode.</p>",
       "exception":true
     },
     "OutputTags":{
@@ -942,19 +970,19 @@
       "members":{
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "AwsRegion":{
           "shape":"AwsRegion",
-          "documentation":"<p>The AWS Region.</p>"
+          "documentation":"<p>Specifies the Amazon Web Services Region to which the template applies.</p>"
         },
         "DesiredValue":{
           "shape":"QuotaValue",
-          "documentation":"<p>The new, increased value for the quota.</p>"
+          "documentation":"<p>Specifies the new, increased value for the quota.</p>"
         }
       }
     },
@@ -975,6 +1003,33 @@
       "min":1,
       "pattern":"[a-zA-Z][a-zA-Z0-9-]{1,128}"
     },
+    "QuotaContextId":{"type":"string"},
+    "QuotaContextInfo":{
+      "type":"structure",
+      "members":{
+        "ContextScope":{
+          "shape":"QuotaContextScope",
+          "documentation":"<p>Specifies whether the quota applies to an Amazon Web Services account, or to a resource.</p>"
+        },
+        "ContextScopeType":{
+          "shape":"QuotaContextScopeType",
+          "documentation":"<p>When the <code>ContextScope</code> is <code>RESOURCE</code>, then this specifies the resource type of the specified resource.</p>"
+        },
+        "ContextId":{
+          "shape":"QuotaContextId",
+          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the context for a service quota. The context identifies what the quota applies to.</p>"
+    },
+    "QuotaContextScope":{
+      "type":"string",
+      "enum":[
+        "RESOURCE",
+        "ACCOUNT"
+      ]
+    },
+    "QuotaContextScopeType":{"type":"string"},
     "QuotaExceededException":{
       "type":"structure",
       "members":{
@@ -991,7 +1046,7 @@
       "members":{
         "PeriodValue":{
           "shape":"PeriodValue",
-          "documentation":"<p>The value.</p>"
+          "documentation":"<p>The value associated with the reported <code>PeriodUnit</code>.</p>"
         },
         "PeriodUnit":{
           "shape":"PeriodUnit",
@@ -1022,15 +1077,19 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "DesiredValue":{
           "shape":"QuotaValue",
-          "documentation":"<p>The new, increased value for the quota.</p>"
+          "documentation":"<p>Specifies the new, increased value for the quota.</p>"
+        },
+        "ContextId":{
+          "shape":"QuotaContextId",
+          "documentation":"<p>Specifies the Amazon Web Services account or resource to which the quota applies. The value in this field depends on the context scope associated with the specified service quota.</p>"
         }
       }
     },
@@ -1050,7 +1109,9 @@
         "CASE_OPENED",
         "APPROVED",
         "DENIED",
-        "CASE_CLOSED"
+        "CASE_CLOSED",
+        "NOT_APPROVED",
+        "INVALID_REQUEST"
       ]
     },
     "RequestedServiceQuotaChange":{
@@ -1066,19 +1127,19 @@
         },
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>Specifies the service name.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "QuotaName":{
           "shape":"QuotaName",
-          "documentation":"<p>The quota name.</p>"
+          "documentation":"<p>Specifies the quota name.</p>"
         },
         "DesiredValue":{
           "shape":"QuotaValue",
@@ -1111,6 +1172,14 @@
         "Unit":{
           "shape":"QuotaUnit",
           "documentation":"<p>The unit of measurement.</p>"
+        },
+        "QuotaRequestedAtLevel":{
+          "shape":"AppliedLevelEnum",
+          "documentation":"<p>Specifies at which level within the Amazon Web Services account the quota request applies to.</p>"
+        },
+        "QuotaContext":{
+          "shape":"QuotaContextInfo",
+          "documentation":"<p>The context for this service quota.</p>"
         }
       },
       "documentation":"<p>Information about a quota increase request.</p>"
@@ -1148,14 +1217,14 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>Specifies the service name.</p>"
         }
       },
-      "documentation":"<p>Information about a service.</p>"
+      "documentation":"<p>Information about an Amazon Web Service.</p>"
     },
     "ServiceInfoListDefinition":{
       "type":"list",
@@ -1167,11 +1236,11 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>Specifies the service name.</p>"
         },
         "QuotaArn":{
           "shape":"QuotaArn",
@@ -1179,11 +1248,11 @@
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "QuotaName":{
           "shape":"QuotaName",
-          "documentation":"<p>The quota name.</p>"
+          "documentation":"<p>Specifies the quota name.</p>"
         },
         "Value":{
           "shape":"QuotaValue",
@@ -1212,6 +1281,14 @@
         "ErrorReason":{
           "shape":"ErrorReason",
           "documentation":"<p>The error code and error reason.</p>"
+        },
+        "QuotaAppliedAtLevel":{
+          "shape":"AppliedLevelEnum",
+          "documentation":"<p>Specifies at which level of granularity that the quota value is applied.</p>"
+        },
+        "QuotaContext":{
+          "shape":"QuotaContextInfo",
+          "documentation":"<p>The context for this service quota.</p>"
         }
       },
       "documentation":"<p>Information about a quota.</p>"
@@ -1221,19 +1298,19 @@
       "members":{
         "ServiceCode":{
           "shape":"ServiceCode",
-          "documentation":"<p>The service identifier.</p>"
+          "documentation":"<p>Specifies the service identifier. To find the service code value for an Amazon Web Services service, use the <a>ListServices</a> operation.</p>"
         },
         "ServiceName":{
           "shape":"ServiceName",
-          "documentation":"<p>The service name.</p>"
+          "documentation":"<p>Specifies the service name.</p>"
         },
         "QuotaCode":{
           "shape":"QuotaCode",
-          "documentation":"<p>The quota identifier.</p>"
+          "documentation":"<p>Specifies the quota identifier. To find the quota code for a specific quota, use the <a>ListServiceQuotas</a> operation, and look for the <code>QuotaCode</code> response in the output for the quota you want.</p>"
         },
         "QuotaName":{
           "shape":"QuotaName",
-          "documentation":"<p>The quota name.</p>"
+          "documentation":"<p>Specifies the quota name.</p>"
         },
         "DesiredValue":{
           "shape":"QuotaValue",
@@ -1241,7 +1318,7 @@
         },
         "AwsRegion":{
           "shape":"AwsRegion",
-          "documentation":"<p>The AWS Region.</p>"
+          "documentation":"<p>The Amazon Web Services Region.</p>"
         },
         "Unit":{
           "shape":"QuotaUnit",
@@ -1324,7 +1401,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> AWS CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> AWS API operation.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> Amazon Web Services API operation.</p>"
         },
         "Tags":{
           "shape":"InputTags",
@@ -1348,7 +1425,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The Service Quotas template is not available in this AWS Region.</p>",
+      "documentation":"<p>The Service Quotas template is not available in this Amazon Web Services Region.</p>",
       "exception":true
     },
     "TooManyRequestsException":{
@@ -1376,7 +1453,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota that you want to untag. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> AWS CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> AWS API operation.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the applied quota that you want to untag. You can get this information by using the Service Quotas console, or by listing the quotas using the <a href=\"https://docs.aws.amazon.com/cli/latest/reference/service-quotas/list-service-quotas.html\">list-service-quotas</a> CLI command or the <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_ListServiceQuotas.html\">ListServiceQuotas</a> Amazon Web Services API operation.</p>"
         },
         "TagKeys":{
           "shape":"InputTagKeys",
@@ -1390,5 +1467,5 @@
       }
     }
   },
-  "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your AWS workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your AWS account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p>"
+  "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your Amazon Web Services workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p>"
 }

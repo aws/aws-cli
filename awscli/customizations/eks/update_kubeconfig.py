@@ -47,6 +47,7 @@ class UpdateKubeconfigCommand(BasicCommand):
     ARG_TABLE = [
         {
             'name': 'name',
+            'dest': 'cluster_name',
             'help_text': ("The name of the cluster for which "
                           "to create a kubeconfig entry. "
                           "This cluster must exist in your account and in the "
@@ -119,9 +120,8 @@ class UpdateKubeconfigCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         client = EKSClient(self._session,
-                           parsed_args.name,
-                           parsed_args.role_arn,
-                           parsed_globals)
+                           parsed_args=parsed_args,
+                           parsed_globals=parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
 
@@ -235,12 +235,12 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, parsed_args, parsed_globals=None):
         self._session = session
-        self._cluster_name = cluster_name
-        self._role_arn = role_arn
+        self._cluster_name = parsed_args.cluster_name
         self._cluster_description = None
-        self._globals = parsed_globals
+        self._parsed_globals = parsed_globals
+        self._parsed_args = parsed_args
 
     @property
     def cluster_description(self):
@@ -250,14 +250,14 @@ class EKSClient(object):
         describe-cluster will only be called once.
         """
         if self._cluster_description is None:
-            if self._globals is None:
+            if self._parsed_globals is None:
                 client = self._session.create_client("eks")
             else:
                 client = self._session.create_client(
                     "eks",
-                    region_name=self._globals.region,
-                    endpoint_url=self._globals.endpoint_url,
-                    verify=self._globals.verify_ssl
+                    region_name=self._parsed_globals.region,
+                    endpoint_url=self._parsed_globals.endpoint_url,
+                    verify=self._parsed_globals.verify_ssl
                 )
             full_description = client.describe_cluster(name=self._cluster_name)
             self._cluster_description = full_description["cluster"]
@@ -326,10 +326,10 @@ class EKSClient(object):
             ]))
         ])
 
-        if self._role_arn is not None:
+        if self._parsed_args.role_arn is not None:
             generated_user["user"]["exec"]["args"].extend([
                 "--role",
-                self._role_arn
+                self._parsed_args.role_arn
             ])
 
         if self._session.profile:

@@ -61,7 +61,8 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ConnectorAuthenticationException"},
-        {"shape":"ConnectorServerException"}
+        {"shape":"ConnectorServerException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Enables your application to create a new flow using Amazon AppFlow. You must create a connector profile before calling this API. Please note that the Request Syntax below shows syntax for multiple destinations, however, you can only transfer data to one item in this list at a time. Amazon AppFlow does not currently support flows to multiple destinations at once. </p>"
     },
@@ -411,7 +412,8 @@
         {"shape":"ConflictException"},
         {"shape":"ConnectorAuthenticationException"},
         {"shape":"ConnectorServerException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Updates an existing flow. </p>"
     }
@@ -2675,6 +2677,14 @@
         "recordsProcessed":{
           "shape":"Long",
           "documentation":"<p> The number of records processed in the flow run. </p>"
+        },
+        "numParallelProcesses":{
+          "shape":"Long",
+          "documentation":"<p>The number of processes that Amazon AppFlow ran at the same time when it retrieved your data.</p>"
+        },
+        "maxPageSize":{
+          "shape":"Long",
+          "documentation":"<p>The maximum number of records that Amazon AppFlow receives in each page of the response from your SAP application.</p>"
         }
       },
       "documentation":"<p> Specifies the end result of the flow run. </p>"
@@ -4329,11 +4339,45 @@
       },
       "documentation":"<p>The properties that are applied when using SAPOData as a flow destination</p>"
     },
+    "SAPODataMaxPageSize":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
+    "SAPODataMaxParallelism":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
     "SAPODataMetadata":{
       "type":"structure",
       "members":{
       },
       "documentation":"<p> The connector metadata specific to SAPOData. </p>"
+    },
+    "SAPODataPaginationConfig":{
+      "type":"structure",
+      "required":["maxPageSize"],
+      "members":{
+        "maxPageSize":{
+          "shape":"SAPODataMaxPageSize",
+          "documentation":"<p>The maximum number of records that Amazon AppFlow receives in each page of the response from your SAP application. For transfers of OData records, the maximum page size is 3,000. For transfers of data that comes from an ODP provider, the maximum page size is 10,000.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Sets the page size for each <i>concurrent process</i> that transfers OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.</p>"
+    },
+    "SAPODataParallelismConfig":{
+      "type":"structure",
+      "required":["maxParallelism"],
+      "members":{
+        "maxParallelism":{
+          "shape":"SAPODataMaxParallelism",
+          "documentation":"<p>The maximum number of processes that Amazon AppFlow runs at the same time when it retrieves your data from your SAP application.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Sets the number of <i>concurrent processes</i> that transfer OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.</p>"
     },
     "SAPODataSourceProperties":{
       "type":"structure",
@@ -4341,6 +4385,14 @@
         "objectPath":{
           "shape":"Object",
           "documentation":"<p> The object path specified in the SAPOData flow source. </p>"
+        },
+        "parallelismConfig":{
+          "shape":"SAPODataParallelismConfig",
+          "documentation":"<p>Sets the number of concurrent processes that transfers OData records from your SAP instance.</p>"
+        },
+        "paginationConfig":{
+          "shape":"SAPODataPaginationConfig",
+          "documentation":"<p>Sets the page size for each concurrent process that transfers OData records from your SAP instance.</p>"
         }
       },
       "documentation":"<p> The properties that are applied when using SAPOData as a flow source. </p>"

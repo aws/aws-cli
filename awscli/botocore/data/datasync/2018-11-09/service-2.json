@@ -223,7 +223,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
+      "documentation":"<p>Configures a transfer task, which defines where and how DataSync moves your data.</p> <p>A task includes a source location, destination location, and the options for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
     },
     "DeleteAgent":{
       "name":"DeleteAgent",
@@ -265,7 +265,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Deletes an DataSync task.</p>"
+      "documentation":"<p>Deletes an DataSync transfer task.</p>"
     },
     "DescribeAgent":{
       "name":"DescribeAgent",
@@ -521,7 +521,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Provides information about an DataSync transfer task that's running.</p>"
+      "documentation":"<p>Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing transfer or check the results of the transfer.</p>"
     },
     "GenerateRecommendations":{
       "name":"GenerateRecommendations",
@@ -680,7 +680,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Starts an DataSync task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
+      "documentation":"<p>Starts an DataSync transfer task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
     },
     "StopDiscoveryJob":{
       "name":"StopDiscoveryJob",
@@ -851,7 +851,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates the metadata associated with a task.</p>"
+      "documentation":"<p>Updates the configuration of a DataSync transfer task.</p>"
     },
     "UpdateTaskExecution":{
       "name":"UpdateTaskExecution",
@@ -865,7 +865,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Modifies a running DataSync task.</p> <note> <p>Currently, the only <code>Option</code> that you can modify with <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>, which throttles bandwidth for a running or queued task.</p> </note>"
+      "documentation":"<p>Updates the configuration of a running DataSync task execution.</p> <note> <p>Currently, the only <code>Option</code> that you can modify with <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>, which throttles bandwidth for a running or queued task execution.</p> </note>"
     }
   },
   "shapes":{
@@ -999,7 +999,7 @@
       "members":{
         "Token":{
           "shape":"AzureBlobSasToken",
-          "documentation":"<p>Specifies a SAS token that provides permissions at the Azure storage account, container, or folder level.</p> <p>The token is part of the SAS URI string that comes after the storage resource URI and a question mark. A token looks something like this:</p> <p> <code>sp=r&amp;st=2023-12-20T14:54:52Z&amp;se=2023-12-20T22:54:52Z&amp;spr=https&amp;sv=2021-06-08&amp;sr=c&amp;sig=aBBKDWQvyuVcTPH9EBp%2FXTI9E%2F%2Fmq171%2BZU178wcwqU%3D</code> </p>"
+          "documentation":"<p>Specifies a SAS token that provides permissions to access your Azure Blob Storage.</p> <p>The token is part of the SAS URI string that comes after the storage resource URI and a question mark. A token looks something like this:</p> <p> <code>sp=r&amp;st=2023-12-20T14:54:52Z&amp;se=2023-12-20T22:54:52Z&amp;spr=https&amp;sv=2021-06-08&amp;sr=c&amp;sig=aBBKDWQvyuVcTPH9EBp%2FXTI9E%2F%2Fmq171%2BZU178wcwqU%3D</code> </p>"
         }
       },
       "documentation":"<p>The shared access signature (SAS) configuration that allows DataSync to access your Microsoft Azure Blob Storage.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-sas-tokens\">SAS tokens</a> for accessing your Azure Blob Storage.</p>"
@@ -1675,6 +1675,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>CreateTaskRequest</p>"
@@ -2456,7 +2460,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the transfer task that's running.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task execution that you want information about.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionRequest</p>"
@@ -2466,11 +2470,11 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution that was described. <code>TaskExecutionArn</code> is hierarchical and includes <code>TaskArn</code> for the task that was executed. </p> <p>For example, a <code>TaskExecution</code> value with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b</code> executed the task with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2</code>. </p>"
+          "documentation":"<p>The ARN of the task execution that you wanted information about. <code>TaskExecutionArn</code> is hierarchical and includes <code>TaskArn</code> for the task that was executed. </p> <p>For example, a <code>TaskExecution</code> value with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b</code> executed the task with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2</code>. </p>"
         },
         "Status":{
           "shape":"TaskExecutionStatus",
-          "documentation":"<p>The status of the task execution. </p> <p>For detailed information about task execution statuses, see Understanding Task Statuses in the <i>DataSync User Guide.</i> </p>"
+          "documentation":"<p>The status of the task execution. </p>"
         },
         "Options":{"shape":"Options"},
         "Excludes":{
@@ -2483,23 +2487,23 @@
         },
         "StartTime":{
           "shape":"Time",
-          "documentation":"<p>The time that the task execution was started.</p>"
+          "documentation":"<p>The time when the task execution started.</p>"
         },
         "EstimatedFilesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The expected number of files that is to be transferred over the network. This value is calculated during the <code>PREPARING</code> phase before the <code>TRANSFERRING</code> phase of the task execution. This value is the expected number of files to be transferred. It's calculated based on comparing the content of the source and destination locations and finding the delta that needs to be transferred. </p>"
+          "documentation":"<p>The expected number of files, objects, and directories that DataSync will transfer over the network. This value is calculated during the task execution's <code>PREPARING</code> phase before the <code>TRANSFERRING</code> phase. The calculation is based on comparing the content of the source and destination locations and finding the difference that needs to be transferred. </p>"
         },
         "EstimatedBytesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The estimated physical number of bytes that is to be transferred over the network.</p>"
+          "documentation":"<p>The estimated physical number of bytes that will transfer over the network.</p>"
         },
         "FilesTransferred":{
           "shape":"long",
-          "documentation":"<p>The actual number of files that was transferred over the network. This value is calculated and updated on an ongoing basis during the <code>TRANSFERRING</code> phase of the task execution. It's updated periodically when each file is read from the source and sent over the network. </p> <p>If failures occur during a transfer, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an indicator for a correct file number or to monitor your task execution.</p>"
+          "documentation":"<p>The actual number of files, objects, and directories that DataSync transferred over the network. This value is updated periodically during the task execution's <code>TRANSFERRING</code> phase when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what transferred or to monitor your task execution.</p>"
         },
         "BytesWritten":{
           "shape":"long",
-          "documentation":"<p>The number of logical bytes written to the destination Amazon Web Services storage resource.</p>"
+          "documentation":"<p>The number of logical bytes written to the destination location.</p>"
         },
         "BytesTransferred":{
           "shape":"long",
@@ -2512,6 +2516,30 @@
         "BytesCompressed":{
           "shape":"long",
           "documentation":"<p>The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than <code>BytesTransferred</code> unless the data isn't compressible.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>The configuration of your task report, which provides detailed information about for your DataSync transfer.</p>"
+        },
+        "FilesDeleted":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync deleted in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
+        },
+        "FilesSkipped":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync skipped during your transfer.</p>"
+        },
+        "FilesVerified":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync verified during your transfer.</p>"
+        },
+        "ReportResult":{
+          "shape":"ReportResult",
+          "documentation":"<p>Indicates whether DataSync generated a complete <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a> for your transfer.</p>"
+        },
+        "EstimatedFilesToDelete":{
+          "shape":"long",
+          "documentation":"<p>The expected number of files, objects, and directories that DataSync will delete in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionResponse</p>"
@@ -2593,6 +2621,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>A list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>The configuration of your task report. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Creating a task report</a>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskResponse</p>"
@@ -3744,6 +3776,13 @@
         "NONE"
       ]
     },
+    "ObjectVersionIds":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "NONE"
+      ]
+    },
     "OnPremConfig":{
       "type":"structure",
       "required":["AgentArns"],
@@ -3834,7 +3873,7 @@
           "documentation":"<p>Specifies whether object tags are preserved when transferring between object storage systems. If you want your DataSync task to ignore object tags, specify the <code>NONE</code> value.</p> <p>Default Value: <code>PRESERVE</code> </p>"
         }
       },
-      "documentation":"<p>Configures your DataSync task settings. These options include how DataSync handles files, objects, and their associated metadata. You also can specify how DataSync verifies data integrity, set bandwidth limits for your task, among other options.</p> <p>Each task setting has a default value. Unless you need to, you don't have to configure any of these <code>Options</code> before starting your task.</p>"
+      "documentation":"<p>Indicates how your transfer task is configured. These options include how DataSync handles files, objects, and their associated metadata during your transfer. You also can specify how to verify data integrity, set bandwidth limits for your task, among other options.</p> <p>Each option has a default value. Unless you need to, you don't have to configure any of these options before starting your task.</p>"
     },
     "OutputTagList":{
       "type":"list",
@@ -4016,6 +4055,102 @@
       "type":"structure",
       "members":{
       }
+    },
+    "ReportDestination":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"ReportDestinationS3",
+          "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your task report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies where DataSync uploads your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportDestinationS3":{
+      "type":"structure",
+      "required":[
+        "S3BucketArn",
+        "BucketAccessRoleArn"
+      ],
+      "members":{
+        "Subdirectory":{
+          "shape":"S3Subdirectory",
+          "documentation":"<p>Specifies a bucket prefix for your report.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>Specifies the ARN of the S3 bucket where DataSync uploads your report.</p>"
+        },
+        "BucketAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM policy that allows DataSync to upload a task report to your S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Allowing DataSync to upload a task report to an Amazon S3 bucket</a>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportLevel":{
+      "type":"string",
+      "enum":[
+        "ERRORS_ONLY",
+        "SUCCESSES_AND_ERRORS"
+      ]
+    },
+    "ReportOutputType":{
+      "type":"string",
+      "enum":[
+        "SUMMARY_ONLY",
+        "STANDARD"
+      ]
+    },
+    "ReportOverride":{
+      "type":"structure",
+      "members":{
+        "ReportLevel":{
+          "shape":"ReportLevel",
+          "documentation":"<p>Specifies whether your task report includes errors only or successes and errors.</p> <p>For example, your report might mostly include only what didn't go well in your transfer (<code>ERRORS_ONLY</code>). At the same time, you want to verify that your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">task filter</a> is working correctly. In this situation, you can get a list of what files DataSync successfully skipped and if something transferred that you didn't to transfer (<code>SUCCESSES_AND_ERRORS</code>).</p>"
+        }
+      },
+      "documentation":"<p>Specifies the level of detail for a particular aspect of your DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportOverrides":{
+      "type":"structure",
+      "members":{
+        "Transferred":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to transfer.</p>"
+        },
+        "Verified":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to verify at the end of your transfer. This only applies if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html\">configure your task</a> to verify data during and after the transfer (which DataSync does by default).</p>"
+        },
+        "Deleted":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to delete in your destination location. This only applies if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
+        },
+        "Skipped":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to skip during your transfer.</p>"
+        }
+      },
+      "documentation":"<p>The level of detail included in each aspect of your DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"PhaseStatus",
+          "documentation":"<p>Indicates whether DataSync is still working on your report, created a report, or can't create a complete report.</p>"
+        },
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>Indicates the code associated with the error if DataSync can't create a complete report.</p>"
+        },
+        "ErrorDetail":{
+          "shape":"string",
+          "documentation":"<p>Provides details about issues creating a report.</p>"
+        }
+      },
+      "documentation":"<p>Indicates whether DataSync created a complete <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a> for your transfer.</p>"
     },
     "ResourceDetails":{
       "type":"structure",
@@ -4234,6 +4369,10 @@
         "Tags":{
           "shape":"InputTagList",
           "documentation":"<p>Specifies the tags that you want to apply to the Amazon Resource Name (ARN) representing the task execution.</p> <p> <i>Tags</i> are key-value pairs that help you manage, filter, and search for your DataSync resources.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>StartTaskExecutionRequest</p>"
@@ -4504,6 +4643,32 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "TaskReportConfig":{
+      "type":"structure",
+      "members":{
+        "Destination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your task report. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html#task-report-access\">Task reports</a>.</p>"
+        },
+        "OutputType":{
+          "shape":"ReportOutputType",
+          "documentation":"<p>Specifies the type of task report that you want:</p> <ul> <li> <p> <code>SUMMARY_ONLY</code>: Provides necessary details about your task, including the number of files, objects, and directories transferred and transfer duration.</p> </li> <li> <p> <code>STANDARD</code>: Provides complete details about your task, including a full list of files, objects, and directories that were transferred, skipped, verified, and more.</p> </li> </ul>"
+        },
+        "ReportLevel":{
+          "shape":"ReportLevel",
+          "documentation":"<p>Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't.</p> <ul> <li> <p> <code>ERRORS_ONLY</code>: A report shows what DataSync was unable to transfer, skip, verify, and delete.</p> </li> <li> <p> <code>SUCCESSES_AND_ERRORS</code>: A report shows what DataSync was able and unable to transfer, skip, verify, and delete.</p> </li> </ul>"
+        },
+        "ObjectVersionIds":{
+          "shape":"ObjectVersionIds",
+          "documentation":"<p>Specifies whether your task report includes the new version of each object transferred into an S3 bucket. This only applies if you <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html\">enable versioning on your bucket</a>. Keep in mind that setting this to <code>INCLUDE</code> can increase the duration of your task execution.</p>"
+        },
+        "Overrides":{
+          "shape":"ReportOverrides",
+          "documentation":"<p>Customizes the reporting level for aspects of your task report. For example, your report might generally only include errors, but you could specify that you want a list of successes and errors just for the files that DataSync attempted to delete in your destination location.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Task reports</a>.</p>"
     },
     "TaskSchedule":{
       "type":"structure",
@@ -4915,6 +5080,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>UpdateTaskResponse</p>"

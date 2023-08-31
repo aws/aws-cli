@@ -47,6 +47,23 @@
       ],
       "documentation":"<p>Creates the participant's connection. </p> <note> <p> <code>ParticipantToken</code> is used for invoking this API instead of <code>ConnectionToken</code>.</p> </note> <p>The participant token is valid for the lifetime of the participant – until they are part of a contact.</p> <p>The response URL for <code>WEBSOCKET</code> Type has a connect expiry timeout of 100s. Clients must manually connect to the returned websocket URL and subscribe to the desired topic. </p> <p>For chat, you need to publish the following on the established websocket connection:</p> <p> <code>{\"topic\":\"aws/subscribe\",\"content\":{\"topics\":[\"aws/chat\"]}}</code> </p> <p>Upon websocket URL expiry, as specified in the response ConnectionExpiry parameter, clients need to call this API again to obtain a new websocket URL and perform the same steps as before.</p> <p> <b>Message streaming support</b>: This API can also be used together with the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a> API to create a participant connection for chat contacts that are not using a websocket. For more information about message streaming, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-message-streaming.html\">Enable real-time chat message streaming</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p> <b>Feature specifications</b>: For information about feature specifications, such as the allowed number of open websocket connections per participant, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#feature-limits\">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p> </note>"
     },
+    "DescribeView":{
+      "name":"DescribeView",
+      "http":{
+        "method":"GET",
+        "requestUri":"/participant/views/{ViewToken}"
+      },
+      "input":{"shape":"DescribeViewRequest"},
+      "output":{"shape":"DescribeViewResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the view for the specified view token.</p>"
+    },
     "DisconnectParticipant":{
       "name":"DisconnectParticipant",
       "http":{
@@ -146,6 +163,7 @@
     }
   },
   "shapes":{
+    "ARN":{"type":"string"},
     "AccessDeniedException":{
       "type":"structure",
       "required":["Message"],
@@ -329,7 +347,7 @@
       "members":{
         "Type":{
           "shape":"ConnectionTypeList",
-          "documentation":"<p>Type of connection information required. This can be omitted if <code>ConnectParticipant</code> is <code>true</code>.</p>"
+          "documentation":"<p>Type of connection information required. If you need <code>CONNECTION_CREDENTIALS</code> along with marking participant as connected, pass <code>CONNECTION_CREDENTIALS</code> in <code>Type</code>.</p>"
         },
         "ParticipantToken":{
           "shape":"ParticipantToken",
@@ -353,6 +371,36 @@
         "ConnectionCredentials":{
           "shape":"ConnectionCredentials",
           "documentation":"<p>Creates the participant's connection credentials. The authentication token associated with the participant's connection.</p>"
+        }
+      }
+    },
+    "DescribeViewRequest":{
+      "type":"structure",
+      "required":[
+        "ViewToken",
+        "ConnectionToken"
+      ],
+      "members":{
+        "ViewToken":{
+          "shape":"ViewToken",
+          "documentation":"<p>An encrypted token originating from the interactive message of a ShowView block operation. Represents the desired view.</p>",
+          "location":"uri",
+          "locationName":"ViewToken"
+        },
+        "ConnectionToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The connection token.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Bearer"
+        }
+      }
+    },
+    "DescribeViewResponse":{
+      "type":"structure",
+      "members":{
+        "View":{
+          "shape":"View",
+          "documentation":"<p>A view resource object. Contains metadata and content necessary to render the view.</p>"
         }
       }
     },
@@ -585,7 +633,8 @@
       "enum":[
         "AGENT",
         "CUSTOMER",
-        "SYSTEM"
+        "SYSTEM",
+        "CUSTOM_BOT"
       ]
     },
     "ParticipantToken":{
@@ -629,6 +678,36 @@
     "Receipts":{
       "type":"list",
       "member":{"shape":"Receipt"}
+    },
+    "ResourceId":{"type":"string"},
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"},
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of Amazon Connect resource.</p>"
+        }
+      },
+      "documentation":"<p>The resource was not found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":[
+        "CONTACT",
+        "CONTACT_FLOW",
+        "INSTANCE",
+        "PARTICIPANT",
+        "HIERARCHY_LEVEL",
+        "HIERARCHY_GROUP",
+        "USER"
+      ]
     },
     "ScanDirection":{
       "type":"string",
@@ -865,6 +944,88 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "View":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the view.</p>"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view.</p>"
+        },
+        "Version":{
+          "shape":"ViewVersion",
+          "documentation":"<p>The current version of the view.</p>"
+        },
+        "Content":{
+          "shape":"ViewContent",
+          "documentation":"<p>View content containing all content necessary to render a view except for runtime input data.</p>"
+        }
+      },
+      "documentation":"<p>A view resource object. Contains metadata and content necessary to render the view.</p>"
+    },
+    "ViewAction":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{N}_.:\\/=+\\-@()']+[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@()']*)$",
+      "sensitive":true
+    },
+    "ViewActions":{
+      "type":"list",
+      "member":{"shape":"ViewAction"}
+    },
+    "ViewContent":{
+      "type":"structure",
+      "members":{
+        "InputSchema":{
+          "shape":"ViewInputSchema",
+          "documentation":"<p>The schema representing the input data that the view template must be supplied to render.</p>"
+        },
+        "Template":{
+          "shape":"ViewTemplate",
+          "documentation":"<p>The view template representing the structure of the view.</p>"
+        },
+        "Actions":{
+          "shape":"ViewActions",
+          "documentation":"<p>A list of actions possible from the view</p>"
+        }
+      },
+      "documentation":"<p>View content containing all content necessary to render a view except for runtime input data.</p>"
+    },
+    "ViewId":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\_\\-:\\/$]+$"
+    },
+    "ViewInputSchema":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ViewName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{N}_.:\\/=+\\-@()']+[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@()']*)$",
+      "sensitive":true
+    },
+    "ViewTemplate":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ViewToken":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "ViewVersion":{"type":"integer"},
     "Websocket":{
       "type":"structure",
       "members":{

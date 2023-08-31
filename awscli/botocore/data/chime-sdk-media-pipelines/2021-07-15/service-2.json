@@ -1940,6 +1940,10 @@
         "CreatedTimestamp":{
           "shape":"Iso8601Timestamp",
           "documentation":"<p>The time at which the media insights pipeline was created.</p>"
+        },
+        "ElementStatuses":{
+          "shape":"MediaInsightsPipelineElementStatuses",
+          "documentation":"<p>The statuses that the elements in a media insights pipeline can have during data processing.</p>"
         }
       },
       "documentation":"<p>A media pipeline that streams call analytics data.</p>"
@@ -2021,6 +2025,10 @@
         "SnsTopicSinkConfiguration":{
           "shape":"SnsTopicSinkConfiguration",
           "documentation":"<p>The configuration settings for an SNS topic sink in a media insights pipeline configuration element.</p>"
+        },
+        "VoiceEnhancementSinkConfiguration":{
+          "shape":"VoiceEnhancementSinkConfiguration",
+          "documentation":"<p>The configuration settings for the <code>VoiceEnhancementSinkConfiguration</code> element.</p>"
         }
       },
       "documentation":"<p>An element in a media insights pipeline configuration.</p>"
@@ -2035,7 +2043,8 @@
         "LambdaFunctionSink",
         "SqsQueueSink",
         "SnsTopicSink",
-        "S3RecordingSink"
+        "S3RecordingSink",
+        "VoiceEnhancementSink"
       ]
     },
     "MediaInsightsPipelineConfigurationElements":{
@@ -2069,6 +2078,24 @@
     "MediaInsightsPipelineConfigurationSummaryList":{
       "type":"list",
       "member":{"shape":"MediaInsightsPipelineConfigurationSummary"}
+    },
+    "MediaInsightsPipelineElementStatus":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"MediaInsightsPipelineConfigurationElementType",
+          "documentation":"<p>The type of status.</p>"
+        },
+        "Status":{
+          "shape":"MediaPipelineElementStatus",
+          "documentation":"<p>The element's status.</p>"
+        }
+      },
+      "documentation":"<p>The status of the pipeline element.</p>"
+    },
+    "MediaInsightsPipelineElementStatuses":{
+      "type":"list",
+      "member":{"shape":"MediaInsightsPipelineElementStatus"}
     },
     "MediaInsightsRuntimeMetadata":{
       "type":"map",
@@ -2132,6 +2159,19 @@
       },
       "documentation":"<p>A pipeline consisting of a media capture, media concatenation, or live-streaming pipeline.</p>"
     },
+    "MediaPipelineElementStatus":{
+      "type":"string",
+      "enum":[
+        "NotStarted",
+        "NotSupported",
+        "Initializing",
+        "InProgress",
+        "Failed",
+        "Stopping",
+        "Stopped",
+        "Paused"
+      ]
+    },
     "MediaPipelineList":{
       "type":"list",
       "member":{"shape":"MediaPipelineSummary"}
@@ -2152,7 +2192,8 @@
         "Failed",
         "Stopping",
         "Stopped",
-        "Paused"
+        "Paused",
+        "NotStarted"
       ]
     },
     "MediaPipelineStatusUpdate":{
@@ -2831,7 +2872,7 @@
           "documentation":"<p>Sets the aspect ratio of the video tiles, such as 16:9.</p>"
         }
       },
-      "documentation":"<p>Defines the configuration settings for a vertial layout.</p>"
+      "documentation":"<p>Defines the configuration settings for a vertical layout.</p>"
     },
     "VerticalTilePosition":{
       "type":"string",
@@ -2944,6 +2985,16 @@
         }
       },
       "documentation":"<p>The configuration settings for a voice analytics processor.</p>"
+    },
+    "VoiceEnhancementSinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "Disabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Disables the <code>VoiceEnhancementSinkConfiguration</code> element.</p>"
+        }
+      },
+      "documentation":"<p>A static structure that contains the configuration data for a <code>VoiceEnhancementSinkConfiguration</code> element.</p>"
     }
   },
   "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines that capture, concatenate, or stream your Amazon Chime SDK meetings. For more information about media pipelines, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amazon Chime SDK media pipelines</a>. </p>"

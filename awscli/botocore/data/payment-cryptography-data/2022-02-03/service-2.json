@@ -670,8 +670,7 @@
       "type":"structure",
       "required":[
         "CipherText",
-        "KeyArn",
-        "KeyCheckValue"
+        "KeyArn"
       ],
       "members":{
         "CipherText":{
@@ -783,7 +782,7 @@
           "documentation":"<p>The length of a MAC under generation.</p>"
         },
         "MessageData":{
-          "shape":"HexLengthBetween2And4096",
+          "shape":"HexEvenLengthBetween2And4096",
           "documentation":"<p>The data for which a MAC is under generation.</p>"
         }
       }
@@ -884,6 +883,13 @@
         }
       }
     },
+    "HexEvenLengthBetween16And32":{
+      "type":"string",
+      "max":32,
+      "min":16,
+      "pattern":"^(?:[0-9a-fA-F][0-9a-fA-F])+$",
+      "sensitive":true
+    },
     "HexEvenLengthBetween16And4064":{
       "type":"string",
       "max":4064,
@@ -895,6 +901,20 @@
       "type":"string",
       "max":4096,
       "min":16,
+      "pattern":"^(?:[0-9a-fA-F][0-9a-fA-F])+$",
+      "sensitive":true
+    },
+    "HexEvenLengthBetween2And4096":{
+      "type":"string",
+      "max":4096,
+      "min":2,
+      "pattern":"^(?:[0-9a-fA-F][0-9a-fA-F])+$",
+      "sensitive":true
+    },
+    "HexEvenLengthBetween4And128":{
+      "type":"string",
+      "max":128,
+      "min":4,
       "pattern":"^(?:[0-9a-fA-F][0-9a-fA-F])+$",
       "sensitive":true
     },
@@ -938,12 +958,6 @@
     "HexLengthBetween2And4":{
       "type":"string",
       "max":4,
-      "min":2,
-      "pattern":"^[0-9a-fA-F]+$"
-    },
-    "HexLengthBetween2And4096":{
-      "type":"string",
-      "max":4096,
       "min":2,
       "pattern":"^[0-9a-fA-F]+$"
     },
@@ -1679,7 +1693,7 @@
       ],
       "members":{
         "EncryptedPinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"HexEvenLengthBetween16And32",
           "documentation":"<p>The encrypted PIN block data that Amazon Web Services Payment Cryptography translates.</p>"
         },
         "IncomingDukptAttributes":{
@@ -1949,7 +1963,7 @@
           "documentation":"<p>The <code>keyARN</code> of the encryption key that Amazon Web Services Payment Cryptography uses to verify MAC data.</p>"
         },
         "Mac":{
-          "shape":"HexLengthBetween4And128",
+          "shape":"HexEvenLengthBetween4And128",
           "documentation":"<p>The MAC being verified.</p>"
         },
         "MacLength":{
@@ -1957,7 +1971,7 @@
           "documentation":"<p>The length of the MAC.</p>"
         },
         "MessageData":{
-          "shape":"HexLengthBetween2And4096",
+          "shape":"HexEvenLengthBetween2And4096",
           "documentation":"<p>The data on for which MAC is under verification.</p>"
         },
         "VerificationAttributes":{

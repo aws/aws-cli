@@ -13,7 +13,6 @@
 
 import logging
 import os
-import sys
 import tempfile
 import zipfile
 import contextlib
@@ -23,7 +22,6 @@ from awscli.compat import six
 from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
-from colorama import Fore, Style
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
@@ -661,30 +659,29 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        non_dict_resources = []
+        def export_resources(resource_dict):
+            for resource_id, resource in resource_dict.items():
 
-        for resource_id, resource in self.template_dict["Resources"].items():
-
-            if not isinstance(resource, dict):
-                non_dict_resources.append(resource_id)
-                continue
-
-            resource_type = resource.get("Type", None)
-            resource_dict = resource.get("Properties", None)
-
-            for exporter_class in self.resources_to_export:
-                if exporter_class.RESOURCE_TYPE != resource_type:
+                if resource_id.startswith("Fn::ForEach"):
+                    if not isinstance(resource, list) or len(resource) < 3:
+                        raise ValueError("Fn::ForEach with name {0} has invalid format".format(resource_id))
+                    if isinstance(resource[2], dict):
+                        export_resources(resource[2])
                     continue
 
-                # Export code resources
-                exporter = exporter_class(self.uploader)
-                exporter.export(resource_id, resource_dict, self.template_dir)
+                resource_type = resource.get("Type", None)
+                if resource_type is None:
+                    continue
+                resource_dict = resource.get("Properties", None)
 
-        if non_dict_resources:
-            msg = (Fore.YELLOW +
-                   "WARNING: Ensure there are no local artifacts defined within Resources with the following logical "
-                   f"ID's: {non_dict_resources}" +
-                   Style.RESET_ALL)
-            sys.stdout.write(msg)
+                for exporter_class in self.resources_to_export:
+                    if exporter_class.RESOURCE_TYPE != resource_type:
+                        continue
+
+                    # Export code resources
+                    exporter = exporter_class(self.uploader)
+                    exporter.export(resource_id, resource_dict, self.template_dir)
+
+        export_resources(self.template_dict["Resources"])
 
         return self.template_dict

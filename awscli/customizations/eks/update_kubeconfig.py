@@ -47,6 +47,7 @@ class UpdateKubeconfigCommand(BasicCommand):
     ARG_TABLE = [
         {
             'name': 'name',
+            'dest': 'cluster_name',
             'help_text': ("The name of the cluster for which "
                           "to create a kubeconfig entry. "
                           "This cluster must exist in your account and in the "
@@ -119,9 +120,8 @@ class UpdateKubeconfigCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         client = EKSClient(self._session,
-                           parsed_args.name,
-                           parsed_args.role_arn,
-                           parsed_globals)
+                           parsed_args=parsed_args,
+                           parsed_globals=parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry(user_alias=parsed_args.user_alias)
 
@@ -235,28 +235,29 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, parsed_args, parsed_globals=None):
         self._session = session
-        self._cluster_name = cluster_name
-        self._role_arn = role_arn
+        self._cluster_name = parsed_args.cluster_name
         self._cluster_description = None
-        self._globals = parsed_globals
+        self._parsed_globals = parsed_globals
+        self._parsed_args = parsed_args
 
-    def _get_cluster_description(self):
+    @property
+    def cluster_description(self):
         """
         Use an eks describe-cluster call to get the cluster description
         Cache the response in self._cluster_description.
         describe-cluster will only be called once.
         """
         if self._cluster_description is None:
-            if self._globals is None:
+            if self._parsed_globals is None:
                 client = self._session.create_client("eks")
             else:
                 client = self._session.create_client(
                     "eks",
-                    region_name=self._globals.region,
-                    endpoint_url=self._globals.endpoint_url,
-                    verify=self._globals.verify_ssl
+                    region_name=self._parsed_globals.region,
+                    endpoint_url=self._parsed_globals.endpoint_url,
+                    verify=self._parsed_globals.verify_ssl
                 )
             full_description = client.describe_cluster(name=self._cluster_name)
             self._cluster_description = full_description["cluster"]
@@ -276,10 +277,9 @@ class EKSClient(object):
         the previously obtained description.
         """
 
-        cert_data = self._get_cluster_description().get("certificateAuthority",
-                                                        {"data": ""})["data"]
-        endpoint = self._get_cluster_description().get("endpoint")
-        arn = self._get_cluster_description().get("arn")
+        cert_data = self.cluster_description.get("certificateAuthority", {}).get("data", "")
+        endpoint = self.cluster_description.get("endpoint")
+        arn = self.cluster_description.get("arn")
 
         return OrderedDict([
             ("cluster", OrderedDict([
@@ -294,9 +294,8 @@ class EKSClient(object):
         Return a user entry generated using
         the previously obtained description.
         """
-        cluster_description = self._get_cluster_description()
-        region = cluster_description.get("arn").split(":")[3]
-        outpost_config = cluster_description.get("outpostConfig")
+        region = self.cluster_description.get("arn").split(":")[3]
+        outpost_config = self.cluster_description.get("outpostConfig")
 
         if outpost_config is None:
             cluster_identification_parameter = "--cluster-name"
@@ -304,10 +303,10 @@ class EKSClient(object):
         else:
             # If cluster contains outpostConfig, use id for identification
             cluster_identification_parameter = "--cluster-id"
-            cluster_identification_value = cluster_description.get("id")
+            cluster_identification_value = self.cluster_description.get("id")
 
         generated_user = OrderedDict([
-            ("name", user_alias or self._get_cluster_description().get("arn", "")),
+            ("name", user_alias or self.cluster_description.get("arn", "")),
             ("user", OrderedDict([
                 ("exec", OrderedDict([
                     ("apiVersion", API_VERSION),
@@ -327,10 +326,10 @@ class EKSClient(object):
             ]))
         ])
 
-        if self._role_arn is not None:
+        if self._parsed_args.role_arn is not None:
             generated_user["user"]["exec"]["args"].extend([
                 "--role",
-                self._role_arn
+                self._parsed_args.role_arn
             ])
 
         if self._session.profile:

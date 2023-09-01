@@ -674,7 +674,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a protected query that is started by Clean Rooms .</p>"
+      "documentation":"<p>Creates a protected query that is started by Clean Rooms.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -939,7 +939,7 @@
     "AllowedColumnList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
-      "max":100,
+      "max":225,
       "min":1
     },
     "AnalysisFormat":{
@@ -2426,6 +2426,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       }
     },
@@ -2990,7 +2994,9 @@
     },
     "KeyPrefix":{
       "type":"string",
-      "pattern":"[\\w!.*/-]*"
+      "max":512,
+      "min":0,
+      "pattern":"[\\w!.=*/-]*"
     },
     "ListAnalysisTemplatesInput":{
       "type":"structure",
@@ -3532,6 +3538,10 @@
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
           "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       },
       "documentation":"<p>The membership object.</p>"
@@ -3547,6 +3557,29 @@
       "max":36,
       "min":36,
       "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+    },
+    "MembershipProtectedQueryOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"ProtectedQueryS3OutputConfiguration"}
+      },
+      "documentation":"<p>Contains configurations for protected query results.</p>",
+      "union":true
+    },
+    "MembershipProtectedQueryResultConfiguration":{
+      "type":"structure",
+      "required":["outputConfiguration"],
+      "members":{
+        "outputConfiguration":{
+          "shape":"MembershipProtectedQueryOutputConfiguration",
+          "documentation":"<p>Configuration for protected query results.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The unique ARN for an IAM role that is used by Clean Rooms to write protected query results to the result location, given by the member who can receive results.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for protected query results.</p>"
     },
     "MembershipQueryLogStatus":{
       "type":"string",
@@ -3678,9 +3711,7 @@
         "membershipId",
         "membershipArn",
         "createTime",
-        "sqlParameters",
-        "status",
-        "resultConfiguration"
+        "status"
       ],
       "members":{
         "id":{
@@ -3750,12 +3781,20 @@
       "min":1,
       "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
     },
+    "ProtectedQueryMemberOutputList":{
+      "type":"list",
+      "member":{"shape":"ProtectedQuerySingleMemberOutput"}
+    },
     "ProtectedQueryOutput":{
       "type":"structure",
       "members":{
         "s3":{
           "shape":"ProtectedQueryS3Output",
           "documentation":"<p>If present, the output for a protected query with an `S3` output type.</p>"
+        },
+        "memberList":{
+          "shape":"ProtectedQueryMemberOutputList",
+          "documentation":"<p>The list of member Amazon Web Services account(s) that received the results of the query. </p>"
         }
       },
       "documentation":"<p>Contains details about the protected query output.</p>",
@@ -3856,6 +3895,17 @@
       "type":"string",
       "max":15000,
       "min":0
+    },
+    "ProtectedQuerySingleMemberOutput":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member in the collaboration who can receive results for the query.</p>"
+        }
+      },
+      "documentation":"<p>Details about the member who received the query result.</p>"
     },
     "ProtectedQueryStatistics":{
       "type":"structure",
@@ -4168,8 +4218,7 @@
       "required":[
         "type",
         "membershipIdentifier",
-        "sqlParameters",
-        "resultConfiguration"
+        "sqlParameters"
       ],
       "members":{
         "type":{
@@ -4510,6 +4559,10 @@
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
           "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       }
     },
@@ -4608,5 +4661,5 @@
       ]
     }
   },
-  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p>"
+  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>"
 }

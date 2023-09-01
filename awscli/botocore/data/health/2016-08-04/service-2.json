@@ -68,6 +68,17 @@
       "documentation":"<p>Returns the number of entities that are affected by each of the specified events.</p>",
       "idempotent":true
     },
+    "DescribeEntityAggregatesForOrganization":{
+      "name":"DescribeEntityAggregatesForOrganization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEntityAggregatesForOrganizationRequest"},
+      "output":{"shape":"DescribeEntityAggregatesForOrganizationResponse"},
+      "documentation":"<p>Returns a list of entity aggregates for your Organizations that are affected by each of the specified events.</p>",
+      "idempotent":true
+    },
     "DescribeEventAggregates":{
       "name":"DescribeEventAggregates",
       "http":{
@@ -191,6 +202,28 @@
     }
   },
   "shapes":{
+    "AccountEntityAggregate":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"eventArn",
+          "documentation":"<p>The 12-digit Amazon Web Services account numbers that contains the affected entities.</p>"
+        },
+        "count":{
+          "shape":"count",
+          "documentation":"<p>The number of entities that match the filter criteria for the specified events.</p>"
+        },
+        "statuses":{
+          "shape":"entityStatuses",
+          "documentation":"<p>The number of affected entities aggregated by the entity status codes.</p>"
+        }
+      },
+      "documentation":"<p>The number of entities in an account that are impacted by a specific event aggregated by the entity status codes.</p>"
+    },
+    "AccountEntityAggregatesList":{
+      "type":"list",
+      "member":{"shape":"AccountEntityAggregate"}
+    },
     "AffectedEntity":{
       "type":"structure",
       "members":{
@@ -292,11 +325,12 @@
     },
     "DescribeAffectedEntitiesForOrganizationRequest":{
       "type":"structure",
-      "required":["organizationEntityFilters"],
       "members":{
         "organizationEntityFilters":{
           "shape":"OrganizationEntityFiltersList",
-          "documentation":"<p>A JSON set of elements including the <code>awsAccountId</code> and the <code>eventArn</code>.</p>"
+          "documentation":"<p>A JSON set of elements including the <code>awsAccountId</code> and the <code>eventArn</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This property is deprecated, use organizationEntityAccountFilters instead."
         },
         "locale":{
           "shape":"locale",
@@ -309,6 +343,10 @@
         "maxResults":{
           "shape":"maxResultsLowerRange",
           "documentation":"<p>The maximum number of items to return in one batch, between 10 and 100, inclusive.</p>"
+        },
+        "organizationEntityAccountFilters":{
+          "shape":"OrganizationEntityAccountFiltersList",
+          "documentation":"<p>A JSON set of elements including the <code>awsAccountId</code>, <code>eventArn</code> and a set of <code>statusCodes</code>.</p>"
         }
       }
     },
@@ -361,6 +399,29 @@
         "nextToken":{
           "shape":"nextToken",
           "documentation":"<p>If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.</p>"
+        }
+      }
+    },
+    "DescribeEntityAggregatesForOrganizationRequest":{
+      "type":"structure",
+      "required":["eventArns"],
+      "members":{
+        "eventArns":{
+          "shape":"OrganizationEventArnsList",
+          "documentation":"<p>A list of event ARNs (unique identifiers). For example: <code>\"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456\", \"arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101\"</code> </p>"
+        },
+        "awsAccountIds":{
+          "shape":"OrganizationAccountIdsList",
+          "documentation":"<p>A list of 12-digit Amazon Web Services account numbers that contains the affected entities.</p>"
+        }
+      }
+    },
+    "DescribeEntityAggregatesForOrganizationResponse":{
+      "type":"structure",
+      "members":{
+        "organizationEntityAggregates":{
+          "shape":"OrganizationEntityAggregatesList",
+          "documentation":"<p>The list of entity aggregates for each of the specified accounts that are affected by each of the specified events.</p>"
         }
       }
     },
@@ -598,6 +659,25 @@
         }
       }
     },
+    "EntityAccountFilter":{
+      "type":"structure",
+      "required":["eventArn"],
+      "members":{
+        "eventArn":{
+          "shape":"eventArn",
+          "documentation":"<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>"
+        },
+        "awsAccountId":{
+          "shape":"accountId",
+          "documentation":"<p>The 12-digit Amazon Web Services account numbers that contains the affected entities.</p>"
+        },
+        "statusCodes":{
+          "shape":"entityStatusCodeList",
+          "documentation":"<p>A list of entity status codes.</p>"
+        }
+      },
+      "documentation":"<p>A JSON set of elements including the <code>awsAccountId</code>, <code>eventArn</code> and a set of <code>statusCodes</code>.</p>"
+    },
     "EntityAggregate":{
       "type":"structure",
       "members":{
@@ -608,6 +688,10 @@
         "count":{
           "shape":"count",
           "documentation":"<p>The number of entities that match the criteria for the specified events.</p>"
+        },
+        "statuses":{
+          "shape":"entityStatuses",
+          "documentation":"<p>The number of affected entities aggregated by the entity status codes.</p>"
         }
       },
       "documentation":"<p>The number of entities that are affected by one or more events. Returned by the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEntityAggregates.html\">DescribeEntityAggregates</a> operation.</p>"
@@ -908,6 +992,12 @@
       "documentation":"<p>The specified pagination token (<code>nextToken</code>) is not valid.</p>",
       "exception":true
     },
+    "OrganizationAccountIdsList":{
+      "type":"list",
+      "member":{"shape":"accountId"},
+      "max":25,
+      "min":1
+    },
     "OrganizationAffectedEntitiesErrorItem":{
       "type":"structure",
       "members":{
@@ -929,6 +1019,38 @@
         }
       },
       "documentation":"<p>Error information returned when a <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntitiesForOrganization.html\">DescribeAffectedEntitiesForOrganization</a> operation can't find or process a specific entity.</p>"
+    },
+    "OrganizationEntityAccountFiltersList":{
+      "type":"list",
+      "member":{"shape":"EntityAccountFilter"},
+      "max":10,
+      "min":1
+    },
+    "OrganizationEntityAggregate":{
+      "type":"structure",
+      "members":{
+        "eventArn":{
+          "shape":"eventArn",
+          "documentation":"<p>A list of event ARNs (unique identifiers). For example: <code>\"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456\", \"arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101\"</code> </p>"
+        },
+        "count":{
+          "shape":"count",
+          "documentation":"<p>The number of entities for the organization that match the filter criteria for the specified events.</p>"
+        },
+        "statuses":{
+          "shape":"entityStatuses",
+          "documentation":"<p>The number of affected entities aggregated by the entitiy status codes.</p>"
+        },
+        "accounts":{
+          "shape":"AccountEntityAggregatesList",
+          "documentation":"<p>A list of entity aggregates for each of the specified accounts in your organization that are affected by a specific event. If there are no <code>awsAccountIds</code> provided in the request, this field will be empty in the response.</p>"
+        }
+      },
+      "documentation":"<p>The aggregate results of entities affected by the specified event in your organization. The results are aggregated by the entity status codes for the specified set of accountsIDs.</p>"
+    },
+    "OrganizationEntityAggregatesList":{
+      "type":"list",
+      "member":{"shape":"OrganizationEntityAggregate"}
     },
     "OrganizationEntityFiltersList":{
       "type":"list",
@@ -981,6 +1103,12 @@
         }
       },
       "documentation":"<p>Summary information about an event, returned by the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventsForOrganization.html\">DescribeEventsForOrganization</a> operation.</p>"
+    },
+    "OrganizationEventArnsList":{
+      "type":"list",
+      "member":{"shape":"eventArn"},
+      "max":25,
+      "min":1
     },
     "OrganizationEventDetailFiltersList":{
       "type":"list",
@@ -1128,14 +1256,21 @@
       "enum":[
         "IMPAIRED",
         "UNIMPAIRED",
-        "UNKNOWN"
+        "UNKNOWN",
+        "PENDING",
+        "RESOLVED"
       ]
     },
     "entityStatusCodeList":{
       "type":"list",
       "member":{"shape":"entityStatusCode"},
-      "max":3,
+      "max":5,
       "min":1
+    },
+    "entityStatuses":{
+      "type":"map",
+      "key":{"shape":"entityStatusCode"},
+      "value":{"shape":"count"}
     },
     "entityUrl":{"type":"string"},
     "entityValue":{

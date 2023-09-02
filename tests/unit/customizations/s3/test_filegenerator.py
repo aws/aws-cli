@@ -108,7 +108,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 'local'},
                             'dest': {'path': 'bucket/text1.txt',
                                      'type': 's3'},
-                            'dir_op': False, 'use_src_name': False}
+                            'dir_op': False, 'use_src_name': False,
+                            'partial_prefix': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_file)
         result_list = []
@@ -132,7 +133,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': 'bucket/',
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'partial_prefix': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
@@ -317,7 +319,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'partial_prefix': False}
         file_stats = FileGenerator(self.client, '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
@@ -338,7 +341,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'partial_prefix': False}
         file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         file_gen = FileGenerator(self.client, '', True)
         file_stats = file_gen.call(input_local_dir)
@@ -362,7 +366,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'partial_prefix': False}
         file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
@@ -491,7 +496,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': False}
+                         'dir_op': False, 'use_src_name': False,
+                         'partial_prefix': False}
         params = {'region': 'us-east-1'}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
@@ -520,7 +526,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': False}
+                         'dir_op': False, 'use_src_name': False,
+                         'partial_prefix': False}
         params = {'region': 'us-east-1'}
         self.client = mock.Mock()
         self.client.head_object.side_effect = \
@@ -537,7 +544,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
     def test_s3_single_file_delete(self):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': True}
+                         'dir_op': False, 'use_src_name': True,
+                         'partial_prefix': False}
         self.client = mock.Mock()
         file_gen = FileGenerator(self.client, 'delete')
         result_list = list(file_gen.call(input_s3_file))
@@ -560,7 +568,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': True, 'use_src_name': True}
+                         'dir_op': True, 'use_src_name': True,
+                         'partial_prefix': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_s3_file)
 
@@ -595,6 +604,48 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         for i in range(len(result_list)):
             compare_files(result_list[i], ref_list[i])
 
+    def test_s3_partial_prefix(self):
+        """
+        Generates s3 files under a partial prefix. Also it ensures that
+        zero size files are ignored.
+        Note: Size and last update are not tested because s3 generates them.
+        """
+        input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
+                         'dest': {'path': '', 'type': 'local'},
+                         'dir_op': False, 'use_src_name': True,
+                         'partial_prefix': True}
+        files = FileGenerator(self.client, '').call(input_s3_file)
+
+        self.parsed_responses = [{
+            "CommonPrefixes": [], "Contents": [
+                {"Key": "another_directory/text2.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"},
+                {"Key": "text1.txt", "Size": 10,
+                 "LastModified": "2013-01-09T20:45:49.000Z"}]}]
+        self.patch_make_request()
+        result_list = [file for file in files]
+        file_stat = FileStat(src=self.file2,
+                             dest='another_directory' + os.sep +
+                                  'text2.txt',
+                             compare_key='another_directory/text2.txt',
+                             size=result_list[0].size,
+                             last_update=result_list[0].last_update,
+                             src_type='s3',
+                             dest_type='local', operation_name='')
+        file_stat2 = FileStat(src=self.file1,
+                              dest='text1.txt',
+                              compare_key='text1.txt',
+                              size=result_list[1].size,
+                              last_update=result_list[1].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+
+        ref_list = [file_stat, file_stat2]
+        self.assertEqual(len(result_list), len(ref_list))
+        for i in range(len(result_list)):
+            print(result_list[i].dest, ref_list[i].dest)
+            compare_files(result_list[i], ref_list[i])
+
     def test_s3_delete_directory(self):
         """
         Generates s3 files under a common prefix. Also it ensures that
@@ -603,7 +654,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': True, 'use_src_name': True}
+                         'dir_op': True, 'use_src_name': True,
+                         'partial_prefix': False}
         self.parsed_responses = [{
             "CommonPrefixes": [], "Contents": [
                 {"Key": "another_directory/", "Size": 0,

@@ -458,6 +458,20 @@ class CommandParametersTest(unittest.TestCase):
         CommandParameters('cp', params, '')
         self.assertFalse(params.get('is_move'))
 
+    def test_validate_recursive_and_partial_prefix(self):
+        params = {'dir_op': True, 'partial_prefix': True}
+        error_msg = 'Cannot specify --recursive and --partial-prefix together.'
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
+            CommandParameters('cp', params, '')
+
+    def test_validate_partial_prefix_with_local_src(self):
+        params = {'dir_op': False, 'partial_prefix': True}
+        error_msg = 'Cannot specify --partial-prefix with a local source.'
+        cmd = CommandParameters('cp', params, '')
+        paths = [self.file_creator.rootdir, 's3://bucket/foo']
+        with self.assertRaisesRegex(ParamValidationError, error_msg):
+            cmd.add_paths(paths)
+
 
 class HelpDocTest(BaseAWSHelpOutputTest):
     def setUp(self):

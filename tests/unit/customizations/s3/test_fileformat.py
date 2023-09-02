@@ -27,13 +27,13 @@ class FileFormatTest(unittest.TestCase):
         """
         src = '.' + os.sep
         dest = 's3://kyknapp/golfVid/'
-        parameters = {'dir_op': True}
+        parameters = {'dir_op': True, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_op_dir_noslash(self):
@@ -43,13 +43,13 @@ class FileFormatTest(unittest.TestCase):
         """
         src = '.'
         dest = 's3://kyknapp/golfVid'
-        parameters = {'dir_op': True}
+        parameters = {'dir_op': True, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_local_use_src_name(self):
@@ -59,14 +59,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = '.'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_local_noexist_file(self):
@@ -76,14 +76,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = 'someFile' + os.sep
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_local_keep_dest_name(self):
@@ -93,14 +93,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = 'hello.txt'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest),
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_s3_use_src_name(self):
@@ -110,13 +110,13 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 'fileformat_test.py'
         dest = 's3://kyknapp/golfVid/'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
 
     def test_s3_keep_dest_name(self):
@@ -126,14 +126,38 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 'fileformat_test.py'
         dest = 's3://kyknapp/golfVid/file.py'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'partial_prefix': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/file.py', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False, 'partial_prefix': False}
         self.assertEqual(files, ref_files)
+    def test_s3_partial_prefix_match_to_local(self):
+        src = 's3://kyknapp/golf'
+        dest = os.path.join('somedirectory', 'hello')
+        parameters = {'dir_op': False, 'partial_prefix': True}
+        files = self.file_format.format(src, dest, parameters)
+
+        ref_files = {'src': {'path': 'kyknapp/golf',
+                             'type': 's3'},
+                     'dest': {'path': os.path.abspath(dest) + os.path.sep, 'type': 'local'},
+                     'dir_op': False, 'use_src_name': False, 'partial_prefix': True}
+        self.assertEqual(files, ref_files)
+
+    def test_s3_partial_prefix_match_to_s3(self):
+        src = 's3://kyknapp/golf'
+        dest = 's3://aidand/hello-world'
+        parameters = {'dir_op': False, 'partial_prefix': True}
+        files = self.file_format.format(src, dest, parameters)
+
+        ref_files = {'src': {'path': 'kyknapp/golf',
+                             'type': 's3'},
+                     'dest': {'path': 'aidand/hello-world/', 'type': 's3'},
+                     'dir_op': False, 'use_src_name': True, 'partial_prefix': True}
+        self.assertEqual(files, ref_files)
+
 
 
 if __name__ == "__main__":

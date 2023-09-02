@@ -49,6 +49,10 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
                  "Command is performed on all files or objects "
                  "under the specified directory or prefix.")}
 
+PARTIAL_PREFIX = {'name': 'partial-prefix', 'action': 'store_true', 'dest': 'partial_prefix',
+                  'help_text': 'TODO. Works only for s3 to s3 and s3 to local copying. Cannot be used alongside '
+                               '--recursive option.'}
+
 
 HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
                   'help_text': "Displays file sizes in human readable format."}
@@ -775,7 +779,7 @@ class CpCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE,
-                 RECURSIVE]
+                 RECURSIVE, PARTIAL_PREFIX]
 
 
 class MvCommand(S3TransferCommand):
@@ -1165,6 +1169,7 @@ class CommandParameters(object):
         :param usage: A usage string
 
         """
+        self._validate_recursive_and_prefix_arg(parameters)
         self.cmd = cmd
         self.parameters = parameters
         self.usage = usage
@@ -1180,6 +1185,9 @@ class CommandParameters(object):
             self.parameters['is_move'] = True
         else:
             self.parameters['is_move'] = False
+
+        if 'partial_prefix' not in parameters:
+            self.parameters['partial_prefix'] = False
 
     def add_paths(self, paths):
         """
@@ -1233,6 +1241,12 @@ class CommandParameters(object):
         elif 's3local' == params['paths_type'] and params['dir_op']:
             if not os.path.exists(params['dest']):
                 os.makedirs(params['dest'])
+
+        if self.cmd == 'cp' and params['partial_prefix']:
+            if not params['src'].startswith('s3://'):
+                raise ParamValidationError(
+                    "Cannot specify --partial-prefix with a local source."
+                )
 
     def _same_path(self, src, dest):
         if not self.parameters['paths_type'] == 's3s3':
@@ -1301,6 +1315,12 @@ class CommandParameters(object):
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
+
+    def _validate_recursive_and_prefix_arg(self, parameters):
+        if parameters.get('dir_op') and parameters.get('partial_prefix'):
+            raise ParamValidationError(
+                "Cannot specify --recursive and --partial-prefix together."
+            )
 
     def _validate_sse_c_args(self):
         self._validate_sse_c_arg()

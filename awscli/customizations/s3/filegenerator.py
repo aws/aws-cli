@@ -134,11 +134,14 @@ class FileGenerator(object):
         ``dir_op`` and ``use_src_name`` flags affect which files are used and
         ensure the proper destination paths and compare keys are formed.
         """
-        function_table = {'s3': self.list_objects, 'local': self.list_files}
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        file_iterator = function_table[src_type](source, files['dir_op'])
+        if src_type == 's3':
+            file_iterator = self.list_objects(source, files['dir_op'], files['partial_prefix'])
+        else:
+            file_iterator = self.list_files(source, files['dir_op'])
+
         for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             file_stat_kwargs = {
@@ -281,7 +284,7 @@ class FileGenerator(object):
         This function checks the specific types and properties of a file.
         If the file would cause trouble, the function adds a
         warning to the result queue to be printed out and returns a boolean
-        value notify whether the file caused a warning to be generated.
+        value nfiltersotify whether the file caused a warning to be generated.
         Files that generate warnings are skipped.  Currently, this function
         checks for files that do not exist and files that the user does
         not have read access.
@@ -303,7 +306,7 @@ class FileGenerator(object):
             return True
         return False
 
-    def list_objects(self, s3_path, dir_op):
+    def list_objects(self, s3_path, dir_op, partial_prefix):
         """
         This function yields the appropriate object or objects under a
         common prefix depending if the operation is on objects under a
@@ -311,10 +314,11 @@ class FileGenerator(object):
         update.
         """
         # Short circuit path: if we are not recursing into the s3
-        # bucket and a specific path was given, we can just yield
-        # that path and not have to call any operation in s3.
+        # bucket and not listing out all prefix matches and a specific
+        # path was given, we can just yield that path and not have to
+        # call any operation in s3.
         bucket, prefix = find_bucket_key(s3_path)
-        if not dir_op and prefix:
+        if not dir_op and not partial_prefix and prefix:
             yield self._list_single_object(s3_path)
         else:
             lister = BucketLister(self._client)
@@ -332,7 +336,7 @@ class FileGenerator(object):
                         # exist locally.  But user should be able to
                         # delete them.
                         yield source_path, response_data
-                elif not dir_op and s3_path != source_path:
+                elif not dir_op and not partial_prefix and s3_path != source_path:
                     pass
                 else:
                     yield source_path, response_data

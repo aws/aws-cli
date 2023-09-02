@@ -32,9 +32,13 @@ class FileFormat(object):
             the operation is being performed on a local directory/
             all objects under a common prefix in s3 or false when
             it is on a single file/object.
+            The dictionary should also have the key 'partial_prefix'
+            which is a boolean value that is true when the operation is being
+            performed on all objects under a prefix (including partially completed
+            prefixes) in s3
 
         :returns: A dictionary that will be passed to a file generator.
-            The dictionary contains the keys src, dest, dir_op, and
+            The dictionary contains the keys src, dest, dir_op, partial_prefix and
             use_src_name. src is a dictionary containing the source path
             and whether its located locally or in s3. dest is a dictionary
             containing the destination path and whether its located
@@ -42,83 +46,78 @@ class FileFormat(object):
         """
         src_type, src_path = self.identify_type(src)
         dest_type, dest_path = self.identify_type(dest)
-        format_table = {'s3': self.s3_format, 'local': self.local_format}
         # :var dir_op: True when the operation being performed is on a
         #     directory/objects under a common prefix or false when it
         #     is a single file
         dir_op = parameters['dir_op']
-        src_path = format_table[src_type](src_path, dir_op)[0]
+        partial_prefix = parameters['partial_prefix']
+        if src_type == 'local':
+            src_path = self.local_format(src_path, dir_op)
+        else:
+            src_path = self.s3_format('src', src_path, dir_op, partial_prefix)
+
+        if dest_type == 'local':
+            dest_path = self.local_format(dest_path, dir_op)
+        else:
+            dest_path = self.s3_format('dest', dest_path, dir_op, partial_prefix)
         # :var use_src_name: True when the destination file/object will take on
         #     the name of the source file/object.  False when it
         #     will take on the name the user specified in the
         #     command line.
-        dest_path, use_src_name = format_table[dest_type](dest_path, dir_op)
+        use_src_name = self.should_use_src_name(dest_type, dest_path, dir_op)
         files = {'src': {'path': src_path, 'type': src_type},
                  'dest': {'path': dest_path, 'type': dest_type},
-                 'dir_op': dir_op, 'use_src_name': use_src_name}
+                 'dir_op': dir_op, 'use_src_name': use_src_name,
+                 'partial_prefix': partial_prefix}
         return files
 
     def local_format(self, path, dir_op):
         """
-        This function formats the path of local files and returns whether the
-        destination will keep its own name or take the source's name along with
-        the edited path.
-        Formatting Rules:
-            1) If a destination file is taking on a source name, it must end
-               with the appropriate operating system separator
-
-        General Options:
-            1) If the operation is on a directory, the destination file will
-               always use the name of the corresponding source file.
-            2) If the path of the destination exists and is a directory it
-               will always use the name of the source file.
-            3) If the destination path ends with the appropriate operating
-               system seperator but is not an existing directory, the
-               appropriate directories will be made and the file will use the
-               source's name.
-            4) If the destination path does not end with the appropriate
-               operating system seperator and is not an existing directory, the
-               appropriate directories will be created and the file name will
-               be of the one provided.
+        Formats the path of local files
         """
         full_path = os.path.abspath(path)
-        if (os.path.exists(full_path) and os.path.isdir(full_path)) or dir_op:
+        if dir_op or path.endswith(os.sep) or (os.path.exists(full_path) and os.path.isdir(full_path)):
             full_path += os.sep
-            return full_path, True
-        else:
-            if path.endswith(os.sep):
-                full_path += os.sep
-                return full_path, True
-            else:
-                return full_path, False
+            return full_path
+        return full_path
 
-    def s3_format(self, path, dir_op):
+    def s3_format(self, src_or_dest, path, dir_op, partial_prefix):
         """
-        This function formats the path of source files and returns whether the
-        destination will keep its own name or take the source's name along
-        with the edited path.
-        Formatting Rules:
-            1) If a destination file is taking on a source name, it must end
-               with a forward slash.
-        General Options:
-            1) If the operation is on objects under a common prefix,
-               the destination file will always use the name of the
-               corresponding source file.
-            2) If the path ends with a forward slash, the appropriate prefixes
-               will be formed and will use the name of the source.
-            3) If the path does not end with a forward slash, the appropriate
-               prefix will be formed but use the the name provided as opposed
-               to the source name.
+        Formats s3 paths.
         """
+        # If partial prefix match, do not modify the source path
+        if partial_prefix and src_or_dest == 'src':
+            return path
+
+        # If a directory or prefix operation, ensure the destination path ends with a '/'
+        if (dir_op or partial_prefix) and not path.endswith('/'):
+            path += '/'
+        return path
+
+    def should_use_src_name(self, path_type, dest, dir_op):
+        """
+        Determines whether the destination file will use the
+        name of the source file or the name of the destination.
+
+        :returns: true if the destination file will use the name of the source,
+            false if the destination file will use the name provided in the commandline
+        """
+        # If it's a directory operation, use the source name
         if dir_op:
-            if not path.endswith('/'):
-                path += '/'
-            return path, True
-        else:
-            if not path.endswith('/'):
-                return path, False
-            else:
-                return path, True
+            return True
+
+        # If destination path is a s3 common prefix, use the source name
+        if path_type == 's3' and dest.endswith('/'):
+            return True
+
+        # If the destination is a local directory, use the source name
+        if path_type == 'local':
+            full_path = os.path.abspath(dest)
+            if (os.path.exists(full_path) and os.path.isdir(full_path)) or dest.endswith(os.sep):
+                return True
+
+        return False
+
 
     def identify_type(self, path):
         """

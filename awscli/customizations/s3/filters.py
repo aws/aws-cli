@@ -31,31 +31,29 @@ def create_filter(parameters):
             real_filters.append((filter_type.lstrip('-'),
                                  filter_pattern))
         source_location = parameters['src']
+        include_key = parameters['dir_op'] or parameters['partial_prefix']
         if source_location.startswith('s3://'):
             # This gives us (bucket, keyname) and we want
             # the bucket to be the root dir.
-            src_rootdir = _get_s3_root(source_location,
-                                       parameters['dir_op'])
+            src_rootdir = _get_s3_root(source_location, include_key)
         else:
-            src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
+            src_rootdir = _get_local_root(parameters['src'], include_key)
 
         destination_location = parameters['dest']
         if destination_location.startswith('s3://'):
-            dst_rootdir = _get_s3_root(parameters['dest'],
-                                       parameters['dir_op'])
+            dst_rootdir = _get_s3_root(parameters['dest'], include_key)
         else:
-            dst_rootdir = _get_local_root(parameters['dest'],
-                                          parameters['dir_op'])
+            dst_rootdir = _get_local_root(parameters['dest'], include_key)
 
         return Filter(real_filters, src_rootdir, dst_rootdir)
     else:
         return Filter({}, None, None)
 
 
-def _get_s3_root(source_location, dir_op):
+def _get_s3_root(source_location, include_key):
     # Obtain the bucket and the key.
     bucket, key = split_s3_bucket_key(source_location)
-    if not dir_op and not key.endswith('/'):
+    if not include_key and not key.endswith('/'):
         # If we are not performing an operation on a directory and the key
         # is of the form: ``prefix/key``. We only want ``prefix`` included in
         # the the s3 root and not ``key``.
@@ -65,8 +63,8 @@ def _get_s3_root(source_location, dir_op):
     return s3_path
 
 
-def _get_local_root(source_location, dir_op):
-    if dir_op:
+def _get_local_root(source_location, include_file):
+    if include_file:
         rootdir = os.path.abspath(source_location)
     else:
         rootdir = os.path.abspath(os.path.dirname(source_location))

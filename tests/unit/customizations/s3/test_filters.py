@@ -194,7 +194,7 @@ class FiltersTest(unittest.TestCase):
         parameters = {'filters': [['--exclude', 'test.txt']],
                       'dir_op': False,
                       'src': 's3://bucket/test.txt',
-                      'dest': 'temp'}
+                      'dest': 'temp', 'partial_prefix': False}
         s3_filter = self.create_filter(parameters=parameters)
         s3_files = [
             self.file_stat('bucket/test.txt', src_type='s3'),
@@ -222,6 +222,34 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(len(filtered), 2)
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
+
+    def test_create_partial_prefix_filter(self):
+        parameters = {'filters': [['--exclude', 'test.txt']],
+                      'dir_op': False,
+                      'partial_prefix': True,
+                      'src': 's3://bucket/prefix/',
+                      'dest': 'prefix'}
+        s3_filter = self.create_filter(parameters=parameters)
+        s3_files = [
+            self.file_stat('bucket/prefix/test.txt', src_type='s3'),
+            self.file_stat('bucket/prefix/test2.txt', src_type='s3'),
+        ]
+        filtered = list(s3_filter.call(s3_files))
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0].src, 'bucket/prefix/test2.txt')
+        pass
+
+    def test_create_partial_prefix_filter_local_files(self):
+        parameters = {'filters': [['--exclude', 'baz.txt']],
+                      'dir_op': False,
+                      'partial_prefix': True,
+                      'src': 'foo/bar/',
+                      'dest': 's3://bucket/prefix/'}
+        p = platform_path
+        local_files = [self.file_stat(os.path.abspath(p('foo/bar/baz.txt')), src_type='local')]
+        local_filter = self.create_filter(parameters=parameters)
+        filtered = list(local_filter.call(local_files))
+        self.assertEqual(filtered, [])
 
 if __name__ == "__main__":
     unittest.main()

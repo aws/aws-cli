@@ -48,7 +48,7 @@ def register_removals(event_handler):
                          remove_commands=['invoke-with-response-stream'])
     cmd_remover.remove(on_event='building-command-table.sagemaker-runtime',
                          remove_commands=['invoke-endpoint-with-response-stream'])
-    cmd_remover.remove(on_event='building-command-table.bedrock',
+    cmd_remover.remove(on_event='building-command-table.bedrock-runtime',
                          remove_commands=['invoke-model-with-response-stream'])
 
 

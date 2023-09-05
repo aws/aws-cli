@@ -593,6 +593,10 @@
         "inferredWorkloadTypes":{
           "shape":"InferredWorkloadTypes",
           "documentation":"<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> <li> <p> <code>SQLServer</code> - Infers that SQLServer might be running on the instance.</p> </li> </ul>"
+        },
+        "currentInstanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the current instance type of the Auto Scaling group. </p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group recommendation.</p>"
@@ -623,6 +627,10 @@
         "migrationEffort":{
           "shape":"MigrationEffort",
           "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
+        },
+        "instanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type of the Auto Scaling group. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Auto Scaling group.</p>"
@@ -1479,7 +1487,13 @@
         "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
         "EffectiveRecommendationPreferencesInferredWorkloadTypes",
         "InferredWorkloadTypes",
-        "RecommendationOptionsMigrationEffort"
+        "RecommendationOptionsMigrationEffort",
+        "CurrentInstanceGpuInfo",
+        "RecommendationOptionsInstanceGpuInfo",
+        "UtilizationMetricsGpuPercentageMaximum",
+        "UtilizationMetricsGpuMemoryPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum"
       ]
     },
     "ExportableAutoScalingGroupFields":{
@@ -1578,7 +1592,14 @@
         "InstanceState",
         "Tags",
         "ExternalMetricStatusCode",
-        "ExternalMetricStatusReason"
+        "ExternalMetricStatusReason",
+        "CurrentInstanceGpuInfo",
+        "RecommendationOptionsInstanceGpuInfo",
+        "UtilizationMetricsGpuPercentageMaximum",
+        "UtilizationMetricsGpuMemoryPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
+        "Idle"
       ]
     },
     "ExportableInstanceFields":{
@@ -1683,7 +1704,8 @@
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
         "RecommendationOptionsEstimatedMonthlySavingsValue",
         "RootVolume",
-        "Tags"
+        "Tags",
+        "CurrentConfigurationRootVolume"
       ]
     },
     "ExportableVolumeFields":{
@@ -2310,6 +2332,36 @@
         }
       }
     },
+    "Gpu":{
+      "type":"structure",
+      "members":{
+        "gpuCount":{
+          "shape":"GpuCount",
+          "documentation":"<p> The number of GPUs for the instance type. </p>"
+        },
+        "gpuMemorySizeInMiB":{
+          "shape":"GpuMemorySizeInMiB",
+          "documentation":"<p> The total size of the memory for the GPU accelerators for the instance type, in MiB. </p>"
+        }
+      },
+      "documentation":"<p> Describes the GPU accelerators for the instance type. </p>"
+    },
+    "GpuCount":{"type":"integer"},
+    "GpuInfo":{
+      "type":"structure",
+      "members":{
+        "gpus":{
+          "shape":"Gpus",
+          "documentation":"<p> Describes the GPU accelerators for the instance type. </p>"
+        }
+      },
+      "documentation":"<p> Describes the GPU accelerator settings for the instance type. </p>"
+    },
+    "GpuMemorySizeInMiB":{"type":"integer"},
+    "Gpus":{
+      "type":"list",
+      "member":{"shape":"Gpu"}
+    },
     "High":{"type":"long"},
     "Identifier":{"type":"string"},
     "IncludeMemberAccounts":{"type":"boolean"},
@@ -2360,6 +2412,13 @@
     "InstanceArns":{
       "type":"list",
       "member":{"shape":"InstanceArn"}
+    },
+    "InstanceIdle":{
+      "type":"string",
+      "enum":[
+        "True",
+        "False"
+      ]
     },
     "InstanceName":{"type":"string"},
     "InstanceRecommendation":{
@@ -2432,6 +2491,14 @@
         "externalMetricStatus":{
           "shape":"ExternalMetricStatus",
           "documentation":"<p> An object that describes Compute Optimizer's integration status with your external metrics provider. </p>"
+        },
+        "currentInstanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the current instance type. </p>"
+        },
+        "idle":{
+          "shape":"InstanceIdle",
+          "documentation":"<p> Describes if an Amazon EC2 instance is idle. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon EC2 instance recommendation.</p>"
@@ -2454,7 +2521,11 @@
         "DiskIOPSOverprovisioned",
         "DiskIOPSUnderprovisioned",
         "DiskThroughputOverprovisioned",
-        "DiskThroughputUnderprovisioned"
+        "DiskThroughputUnderprovisioned",
+        "GPUUnderprovisioned",
+        "GPUOverprovisioned",
+        "GPUMemoryUnderprovisioned",
+        "GPUMemoryOverprovisioned"
       ]
     },
     "InstanceRecommendationFindingReasonCodes":{
@@ -2491,6 +2562,10 @@
         "migrationEffort":{
           "shape":"MigrationEffort",
           "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
+        },
+        "instanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon EC2 instance.</p>"
@@ -3007,7 +3082,9 @@
         "NETWORK_IN_BYTES_PER_SECOND",
         "NETWORK_OUT_BYTES_PER_SECOND",
         "NETWORK_PACKETS_IN_PER_SECOND",
-        "NETWORK_PACKETS_OUT_PER_SECOND"
+        "NETWORK_PACKETS_OUT_PER_SECOND",
+        "GPU_PERCENTAGE",
+        "GPU_MEMORY_PERCENTAGE"
       ]
     },
     "MetricProviderArn":{"type":"string"},
@@ -3107,7 +3184,7 @@
       "members":{
         "name":{
           "shape":"MetricName",
-          "documentation":"<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>"
+          "documentation":"<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is only returned for resources with the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>GPU</code> - The projected percentage of allocated GPUs if you adjust your configurations to Compute Optimizer's recommendation option.</p> </li> <li> <p> <code>GPU_MEMORY</code> - The projected percentage of total GPU memory if you adjust your configurations to Compute Optimizer's recommendation option.</p> <note> <p>The <code>GPU</code> and <code>GPU_MEMORY</code> metrics are only returned for resources with the unified CloudWatch Agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>"
         },
         "timestamps":{
           "shape":"Timestamps",
@@ -3118,7 +3195,7 @@
           "documentation":"<p>The values of the projected utilization metrics.</p>"
         }
       },
-      "documentation":"<p>Describes a projected utilization metric of a recommendation option, such as an Amazon EC2 instance. This represents the projected utilization of a recommendation option had you used that resource during the analyzed period.</p> <p>Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned when you run the <a>GetEC2RecommendationProjectedMetrics</a> action. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>"
+      "documentation":"<p>Describes a projected utilization metric of a recommendation option, such as an Amazon EC2 instance. This represents the projected utilization of a recommendation option had you used that resource during the analyzed period.</p> <p>Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.</p> <note> <p>The <code>Cpu</code>, <code>Memory</code>, <code>GPU</code>, and <code>GPU_MEMORY</code> metrics are the only projected utilization metrics returned when you run the <a>GetEC2RecommendationProjectedMetrics</a> action. Additionally, these metrics are only returned for resources with the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a> and <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note>"
     },
     "ProjectedMetrics":{
       "type":"list",
@@ -3331,7 +3408,7 @@
         },
         "inferredWorkloadSavings":{
           "shape":"InferredWorkloadSavings",
-          "documentation":"<p> An array of objects that describes the estimated monthly saving amounts for the instances running on the specified <code>inferredWorkloadTypes</code>. The array contains the top three savings opportunites for the instances running inferred workload types. </p>"
+          "documentation":"<p> An array of objects that describes the estimated monthly saving amounts for the instances running on the specified <code>inferredWorkloadTypes</code>. The array contains the top five savings opportunites for the instances that run inferred workload types. </p>"
         }
       },
       "documentation":"<p>A summary of a recommendation.</p>"
@@ -3598,7 +3675,7 @@
       "members":{
         "name":{
           "shape":"MetricName",
-          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>"
+          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>GPU</code> - The percentage of allocated GPUs that currently run on the instance.</p> </li> <li> <p> <code>GPU_MEMORY</code> - The percentage of total GPU memory that currently runs on the instance.</p> <note> <p>The <code>GPU</code> and <code>GPU_MEMORY</code> metrics are only returned for resources with the unified CloudWatch Agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>"
         },
         "statistic":{
           "shape":"MetricStatistic",

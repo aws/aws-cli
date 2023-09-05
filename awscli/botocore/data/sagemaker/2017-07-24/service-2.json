@@ -10852,6 +10852,16 @@
         }
       }
     },
+    "DerivedInformation":{
+      "type":"structure",
+      "members":{
+        "DerivedDataInputConfig":{
+          "shape":"DataInputConfig",
+          "documentation":"<p>The data input configuration that SageMaker Neo automatically derived for the model. When SageMaker Neo derives this information, you don't need to specify the data input configuration when you create a compilation job.</p>"
+        }
+      },
+      "documentation":"<p>Information that SageMaker Neo automatically derived about the model.</p>"
+    },
     "DescribeActionRequest":{
       "type":"structure",
       "required":["ActionName"],
@@ -11500,6 +11510,10 @@
         "VpcConfig":{
           "shape":"NeoVpcConfig",
           "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html\">VpcConfig</a> object that specifies the VPC that you want your compilation job to connect to. Control access to your models by configuring the VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-vpc.html\">Protect Compilation Jobs by Using an Amazon Virtual Private Cloud</a>.</p>"
+        },
+        "DerivedInformation":{
+          "shape":"DerivedInformation",
+          "documentation":"<p>Information that SageMaker Neo automatically derived about the model.</p>"
         }
       }
     },
@@ -19173,7 +19187,6 @@
       "type":"structure",
       "required":[
         "S3Uri",
-        "DataInputConfig",
         "Framework"
       ],
       "members":{
@@ -24767,7 +24780,7 @@
       "members":{
         "Percentile":{
           "shape":"String64",
-          "documentation":"<p>The model latency percentile threshold. For custom load tests, specify the value as <code>P95</code>.</p>"
+          "documentation":"<p>The model latency percentile threshold. Acceptable values are <code>P95</code> and <code>P99</code>. For custom load tests, specify the value as <code>P95</code>.</p>"
         },
         "ValueInMilliseconds":{
           "shape":"Integer",

@@ -427,7 +427,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates a new queue for the specified Amazon Connect instance.</p> <important> <p>If the number being used in the input is claimed to a traffic distribution group, and you are calling this API using an instance in the Amazon Web Services Region where the traffic distribution group was created, you can use either a full phone number ARN or UUID value for the <code>OutboundCallerIdNumberId</code> value of the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_OutboundCallerConfig\">OutboundCallerConfig</a> request body parameter. However, if the number is claimed to a traffic distribution group and you are calling this API using an instance in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates a new queue for the specified Amazon Connect instance.</p> <important> <ul> <li> <p>If the phone number is claimed to a traffic distribution group that was created in the same Region as the Amazon Connect instance where you are calling this API, then you can use a full phone number ARN or a UUID for <code>OutboundCallerIdNumberId</code>. However, if the phone number is claimed to a traffic distribution group that is in one Region, and you are calling this API from an instance in another Amazon Web Services Region that is associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </li> <li> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </li> <li> <p>If you plan to use IAM policies to allow/deny access to this API for phone number resources claimed to a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_resource-level-policy-examples.html#allow-deny-queue-actions-replica-region\">Allow or Deny queue API actions for phone numbers in a replica Region</a>.</p> </li> </ul> </important>"
     },
     "CreateQuickConnect":{
       "name":"CreateQuickConnect",
@@ -541,7 +541,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p>Creates a traffic distribution group given an Amazon Connect instance that has been replicated. </p> <p>For more information about creating traffic distribution groups, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-traffic-distribution-groups.html\">Set up traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+      "documentation":"<p>Creates a traffic distribution group given an Amazon Connect instance that has been replicated. </p> <note> <p>You can change the <code>SignInConfig</code> distribution only for a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about creating traffic distribution groups, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-traffic-distribution-groups.html\">Set up traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
     "CreateUseCase":{
       "name":"CreateUseCase",
@@ -597,6 +597,49 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Creates a new user hierarchy group.</p>"
+    },
+    "CreateView":{
+      "name":"CreateView",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/views/{InstanceId}"
+      },
+      "input":{"shape":"CreateViewRequest"},
+      "output":{"shape":"CreateViewResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Creates a new view with the possible status of <code>SAVED</code> or <code>PUBLISHED</code>.</p> <p>The views will have a unique name for each connect instance.</p> <p>It performs basic content validation if the status is <code>SAVED</code> or full content validation if the status is set to <code>PUBLISHED</code>. An error is returned if validation fails. It associates either the <code>$SAVED</code> qualifier or both of the <code>$SAVED</code> and <code>$LATEST</code> qualifiers with the provided view content based on the status. The view is idempotent if ClientToken is provided.</p>",
+      "idempotent":true
+    },
+    "CreateViewVersion":{
+      "name":"CreateViewVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/views/{InstanceId}/{ViewId}/versions"
+      },
+      "input":{"shape":"CreateViewVersionRequest"},
+      "output":{"shape":"CreateViewVersionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Publishes a new version of the view identifier.</p> <p>Versions are immutable and monotonically increasing.</p> <p>It returns the highest version if there is no change in content compared to that version. An error is displayed if the supplied ViewContentSha256 is different from the ViewContentSha256 of the <code>$LATEST</code> alias.</p>",
+      "idempotent":true
     },
     "CreateVocabulary":{
       "name":"CreateVocabulary",
@@ -930,6 +973,44 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes an existing user hierarchy group. It must not be associated with any agents or have any active child groups.</p>"
+    },
+    "DeleteView":{
+      "name":"DeleteView",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/views/{InstanceId}/{ViewId}"
+      },
+      "input":{"shape":"DeleteViewRequest"},
+      "output":{"shape":"DeleteViewResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes the view entirely. It deletes the view and all associated qualifiers (versions and aliases).</p>"
+    },
+    "DeleteViewVersion":{
+      "name":"DeleteViewVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/views/{InstanceId}/{ViewId}/versions/{ViewVersion}"
+      },
+      "input":{"shape":"DeleteViewVersionRequest"},
+      "output":{"shape":"DeleteViewVersionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes the particular version specified in <code>ViewVersion</code> identifier.</p>"
     },
     "DeleteVocabulary":{
       "name":"DeleteVocabulary",
@@ -1303,6 +1384,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the hierarchy structure of the specified Amazon Connect instance.</p>"
+    },
+    "DescribeView":{
+      "name":"DescribeView",
+      "http":{
+        "method":"GET",
+        "requestUri":"/views/{InstanceId}/{ViewId}"
+      },
+      "input":{"shape":"DescribeViewRequest"},
+      "output":{"shape":"DescribeViewResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Retrieves the view for the specified Amazon Connect instance and view identifier.</p> <p>The view identifier can be supplied as a ViewId or ARN.</p> <p> <code>$SAVED</code> needs to be supplied if a view is unpublished.</p> <p>The view identifier can contain an optional qualifier, for example, <code>&lt;view-id&gt;:$SAVED</code>, which is either an actual version number or an Amazon Connect managed qualifier <code>$SAVED | $LATEST</code>. If it is not supplied, then <code>$LATEST</code> is assumed for customer managed views and an error is returned if there is no published content available. Version 1 is assumed for Amazon Web Services managed views.</p>"
     },
     "DescribeVocabulary":{
       "name":"DescribeVocabulary",
@@ -1949,7 +2048,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Provides information about the phone numbers for the specified Amazon Connect instance. </p> <p>For more information about phone numbers, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html\">Set Up Phone Numbers for Your Contact Center</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <important> <p>The phone number <code>Arn</code> value that is returned from each of the items in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbers.html#connect-ListPhoneNumbers-response-PhoneNumberSummaryList\">PhoneNumberSummaryList</a> cannot be used to tag phone number resources. It will fail with a <code>ResourceNotFoundException</code>. Instead, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API. It returns the new phone number ARN that can be used to tag phone number resources.</p> </important>"
+      "documentation":"<p>Provides information about the phone numbers for the specified Amazon Connect instance. </p> <p>For more information about phone numbers, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html\">Set Up Phone Numbers for Your Contact Center</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <important> <ul> <li> <p>We recommend using <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> to return phone number types. ListPhoneNumbers doesn't support number types <code>UIFN</code>, <code>SHARED</code>, <code>THIRD_PARTY_TF</code>, and <code>THIRD_PARTY_DID</code>. While it returns numbers of those types, it incorrectly lists them as <code>TOLL_FREE</code> or <code>DID</code>. </p> </li> <li> <p>The phone number <code>Arn</code> value that is returned from each of the items in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbers.html#connect-ListPhoneNumbers-response-PhoneNumberSummaryList\">PhoneNumberSummaryList</a> cannot be used to tag phone number resources. It will fail with a <code>ResourceNotFoundException</code>. Instead, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API. It returns the new phone number ARN that can be used to tag phone number resources.</p> </li> </ul> </important>"
     },
     "ListPhoneNumbersV2":{
       "name":"ListPhoneNumbersV2",
@@ -2254,6 +2353,42 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Provides summary information about the users for the specified Amazon Connect instance.</p>"
+    },
+    "ListViewVersions":{
+      "name":"ListViewVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/views/{InstanceId}/{ViewId}/versions"
+      },
+      "input":{"shape":"ListViewVersionsRequest"},
+      "output":{"shape":"ListViewVersionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns all the available versions for the specified Amazon Connect instance and view identifier.</p> <p>Results will be sorted from highest to lowest.</p>"
+    },
+    "ListViews":{
+      "name":"ListViews",
+      "http":{
+        "method":"GET",
+        "requestUri":"/views/{InstanceId}"
+      },
+      "input":{"shape":"ListViewsRequest"},
+      "output":{"shape":"ListViewsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns views in the given instance.</p> <p>Results are sorted primarily by type, and secondarily by name.</p>"
     },
     "MonitorContact":{
       "name":"MonitorContact",
@@ -2635,7 +2770,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Ends the specified contact. This call does not work for the following initiation methods:</p> <ul> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> </ul>"
+      "documentation":"<p>Ends the specified contact. This call does not work for voice contacts that use the following initiation methods:</p> <ul> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> </ul> <p>Chat and task contacts, however, can be terminated in any state, regardless of initiation method.</p>"
     },
     "StopContactRecording":{
       "name":"StopContactRecording",
@@ -3113,7 +3248,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates the outbound caller ID name, number, and outbound whisper flow for a specified queue.</p> <important> <p>If the number being used in the input is claimed to a traffic distribution group, and you are calling this API using an instance in the Amazon Web Services Region where the traffic distribution group was created, you can use either a full phone number ARN or UUID value for the <code>OutboundCallerIdNumberId</code> value of the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_OutboundCallerConfig\">OutboundCallerConfig</a> request body parameter. However, if the number is claimed to a traffic distribution group and you are calling this API using an instance in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </important>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates the outbound caller ID name, number, and outbound whisper flow for a specified queue.</p> <important> <ul> <li> <p>If the phone number is claimed to a traffic distribution group that was created in the same Region as the Amazon Connect instance where you are calling this API, then you can use a full phone number ARN or a UUID for <code>OutboundCallerIdNumberId</code>. However, if the phone number is claimed to a traffic distribution group that is in one Region, and you are calling this API from an instance in another Amazon Web Services Region that is associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </li> <li> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </li> <li> <p>If you plan to use IAM policies to allow/deny access to this API for phone number resources claimed to a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_resource-level-policy-examples.html#allow-deny-queue-actions-replica-region\">Allow or Deny queue API actions for phone numbers in a replica Region</a>.</p> </li> </ul> </important>"
     },
     "UpdateQueueStatus":{
       "name":"UpdateQueueStatus",
@@ -3311,7 +3446,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <note> <p>You can change the <code>SignInConfig</code> only for a default <code>TrafficDistributionGroup</code>. If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+      "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <note> <p>You can change the <code>SignInConfig</code> distribution only for a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
     "UpdateUserHierarchy":{
       "name":"UpdateUserHierarchy",
@@ -3426,6 +3561,45 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Assigns the specified security profiles to the specified user.</p>"
+    },
+    "UpdateViewContent":{
+      "name":"UpdateViewContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/views/{InstanceId}/{ViewId}"
+      },
+      "input":{"shape":"UpdateViewContentRequest"},
+      "output":{"shape":"UpdateViewContentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Updates the view content of the given view identifier in the specified Amazon Connect instance.</p> <p>It performs content validation if <code>Status</code> is set to <code>SAVED</code> and performs full content validation if <code>Status</code> is <code>PUBLISHED</code>. Note that the <code>$SAVED</code> alias' content will always be updated, but the <code>$LATEST</code> alias' content will only be updated if <code>Status</code> is <code>PUBLISHED</code>.</p>"
+    },
+    "UpdateViewMetadata":{
+      "name":"UpdateViewMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/views/{InstanceId}/{ViewId}/metadata"
+      },
+      "input":{"shape":"UpdateViewMetadataRequest"},
+      "output":{"shape":"UpdateViewMetadataResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Updates the view metadata. Note that either <code>Name</code> or <code>Description</code> must be provided.</p>"
     }
   },
   "shapes":{
@@ -4645,7 +4819,7 @@
           "documentation":"<p>The message.</p>"
         }
       },
-      "documentation":"<p>The contact with the specified ID is not active or does not exist. Applies to Voice calls only, not to Chat, Task, or Voice Callback.</p>",
+      "documentation":"<p>The contact with the specified ID is not active or does not exist. Applies to Voice calls only, not to Chat or Task contacts.</p>",
       "error":{"httpStatusCode":410},
       "exception":true
     },
@@ -5675,6 +5849,94 @@
         }
       }
     },
+    "CreateViewRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Status",
+        "Content",
+        "Name"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"ViewsClientToken",
+          "documentation":"<p>A unique Id for each create view request to avoid duplicate view creation. For example, the view is idempotent ClientToken is provided.</p>"
+        },
+        "Status":{
+          "shape":"ViewStatus",
+          "documentation":"<p>Indicates the view status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content.</p>"
+        },
+        "Content":{
+          "shape":"ViewInputContent",
+          "documentation":"<p>View content containing all content necessary to render a view except for runtime input data.</p> <p>The total uncompressed content has a maximum file size of 400kB.</p>"
+        },
+        "Description":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view.</p>"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the view resource (not specific to view version).These tags can be used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "CreateViewResponse":{
+      "type":"structure",
+      "members":{
+        "View":{
+          "shape":"View",
+          "documentation":"<p>A view resource object. Contains metadata and content necessary to render the view.</p>"
+        }
+      }
+    },
+    "CreateViewVersionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        },
+        "VersionDescription":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description for the version being published.</p>"
+        },
+        "ViewContentSha256":{
+          "shape":"ViewContentSha256",
+          "documentation":"<p>Indicates the checksum value of the latest published view content.</p>"
+        }
+      }
+    },
+    "CreateViewVersionResponse":{
+      "type":"structure",
+      "members":{
+        "View":{
+          "shape":"View",
+          "documentation":"<p>All view data is contained within the View object.</p>"
+        }
+      }
+    },
     "CreateVocabularyRequest":{
       "type":"structure",
       "required":[
@@ -6351,6 +6613,65 @@
         }
       }
     },
+    "DeleteViewRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        }
+      }
+    },
+    "DeleteViewResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteViewVersionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId",
+        "ViewVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        },
+        "ViewVersion":{
+          "shape":"ViewVersion",
+          "documentation":"<p>The version number of the view.</p>",
+          "location":"uri",
+          "locationName":"ViewVersion"
+        }
+      }
+    },
+    "DeleteViewVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteVocabularyRequest":{
       "type":"structure",
       "required":[
@@ -7008,6 +7329,36 @@
         "User":{
           "shape":"User",
           "documentation":"<p>Information about the user account and configuration settings.</p>"
+        }
+      }
+    },
+    "DescribeViewRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The ViewId of the view. This must be an ARN for Amazon Web Services managed views.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        }
+      }
+    },
+    "DescribeViewResponse":{
+      "type":"structure",
+      "members":{
+        "View":{
+          "shape":"View",
+          "documentation":"<p>All view data is contained within the View object.</p>"
         }
       }
     },
@@ -11332,6 +11683,97 @@
         }
       }
     },
+    "ListViewVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        },
+        "NextToken":{
+          "shape":"ViewsNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListViewVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "ViewVersionSummaryList":{
+          "shape":"ViewVersionSummaryList",
+          "documentation":"<p>A list of view version summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"ViewsNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListViewsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Type":{
+          "shape":"ViewType",
+          "documentation":"<p>The type of the view.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "NextToken":{
+          "shape":"ViewsNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListViewsResponse":{
+      "type":"structure",
+      "members":{
+        "ViewsSummaryList":{
+          "shape":"ViewsSummaryList",
+          "documentation":"<p>A list of view summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"ViewsNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "Long":{"type":"long"},
     "MaxResult10":{
       "type":"integer",
@@ -11366,6 +11808,11 @@
     "MaxResult7":{
       "type":"integer",
       "max":7,
+      "min":1
+    },
+    "MaxResults":{
+      "type":"integer",
+      "max":100,
       "min":1
     },
     "MaximumResultReturnedException":{
@@ -15148,6 +15595,15 @@
       ]
     },
     "Timestamp":{"type":"timestamp"},
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>Displayed when rate-related API limits are exceeded.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "TrafficDistributionGroup":{
       "type":"structure",
       "members":{
@@ -15181,7 +15637,7 @@
         },
         "IsDefault":{
           "shape":"Boolean",
-          "documentation":"<p>Whether this is the default traffic distribution group created during instance replication. The default traffic distribution group cannot be deleted by the <code>DeleteTrafficDistributionGroup</code> API. The default traffic distribution group is deleted as part of the process for deleting a replica.</p> <note> <p>You can change the <code>SignInConfig</code> only for a default <code>TrafficDistributionGroup</code>. If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note>"
+          "documentation":"<p>Whether this is the default traffic distribution group created during instance replication. The default traffic distribution group cannot be deleted by the <code>DeleteTrafficDistributionGroup</code> API. The default traffic distribution group is deleted as part of the process for deleting a replica.</p> <note> <p>You can change the <code>SignInConfig</code> distribution only for a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note>"
         }
       },
       "documentation":"<p>Information about a traffic distribution group.</p>"
@@ -16714,6 +17170,80 @@
         }
       }
     },
+    "UpdateViewContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId",
+        "Status",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        },
+        "Status":{
+          "shape":"ViewStatus",
+          "documentation":"<p>Indicates the view status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content.</p>"
+        },
+        "Content":{
+          "shape":"ViewInputContent",
+          "documentation":"<p>View content containing all content necessary to render a view except for runtime input data and the runtime input schema, which is auto-generated by this operation.</p> <p>The total uncompressed content has a maximum file size of 400kB.</p>"
+        }
+      }
+    },
+    "UpdateViewContentResponse":{
+      "type":"structure",
+      "members":{
+        "View":{
+          "shape":"View",
+          "documentation":"<p>A view resource object. Contains metadata and content necessary to render the view.</p>"
+        }
+      }
+    },
+    "UpdateViewMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ViewId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ViewsInstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instanceId in the ARN of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ViewId":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view. Both <code>ViewArn</code> and <code>ViewId</code> can be used.</p>",
+          "location":"uri",
+          "locationName":"ViewId"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view.</p>"
+        },
+        "Description":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view.</p>"
+        }
+      }
+    },
+    "UpdateViewMetadataResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Url":{"type":"string"},
     "UrlReference":{
       "type":"structure",
@@ -17108,6 +17638,241 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "View":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the view.</p>"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view.</p>"
+        },
+        "Status":{
+          "shape":"ViewStatus",
+          "documentation":"<p>Indicates the view status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content.</p>"
+        },
+        "Type":{
+          "shape":"ViewType",
+          "documentation":"<p>The type of the view - <code>CUSTOMER_MANAGED</code>.</p>"
+        },
+        "Description":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view.</p>"
+        },
+        "Version":{
+          "shape":"ViewVersion",
+          "documentation":"<p>Current version of the view.</p>"
+        },
+        "VersionDescription":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the version.</p>"
+        },
+        "Content":{
+          "shape":"ViewContent",
+          "documentation":"<p>View content containing all content necessary to render a view except for runtime input data.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the view resource (not specific to view version).</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the view was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Latest timestamp of the <code>UpdateViewContent</code> or <code>CreateViewVersion</code> operations.</p>"
+        },
+        "ViewContentSha256":{
+          "shape":"ViewContentSha256",
+          "documentation":"<p>Indicates the checksum value of the latest published view content.</p>"
+        }
+      },
+      "documentation":"<p>A view resource object. Contains metadata and content necessary to render the view.</p>"
+    },
+    "ViewAction":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{N}_.:\\/=+\\-@()']+[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@()']*)$",
+      "sensitive":true
+    },
+    "ViewActions":{
+      "type":"list",
+      "member":{"shape":"ViewAction"}
+    },
+    "ViewContent":{
+      "type":"structure",
+      "members":{
+        "InputSchema":{
+          "shape":"ViewInputSchema",
+          "documentation":"<p>The data schema matching data that the view template must be provided to render.</p>"
+        },
+        "Template":{
+          "shape":"ViewTemplate",
+          "documentation":"<p>The view template representing the structure of the view.</p>"
+        },
+        "Actions":{
+          "shape":"ViewActions",
+          "documentation":"<p>A list of possible actions from the view.</p>"
+        }
+      },
+      "documentation":"<p>View content containing all content necessary to render a view except for runtime input data.</p>"
+    },
+    "ViewContentSha256":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]$"
+    },
+    "ViewDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{N}_.:\\/=+\\-@,()']+[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@,()']*)$"
+    },
+    "ViewId":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\_\\-:\\/$]+$"
+    },
+    "ViewInputContent":{
+      "type":"structure",
+      "members":{
+        "Template":{
+          "shape":"ViewTemplate",
+          "documentation":"<p>The view template representing the structure of the view.</p>"
+        },
+        "Actions":{
+          "shape":"ViewActions",
+          "documentation":"<p>A list of possible actions from the view.</p>"
+        }
+      },
+      "documentation":"<p>View content containing all content necessary to render a view except for runtime input data and the runtime input schema, which is auto-generated by this operation.</p>"
+    },
+    "ViewInputSchema":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ViewName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{N}_.:\\/=+\\-@()']+[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@()']*)$",
+      "sensitive":true
+    },
+    "ViewStatus":{
+      "type":"string",
+      "enum":[
+        "PUBLISHED",
+        "SAVED"
+      ]
+    },
+    "ViewSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the view.</p>"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view.</p>"
+        },
+        "Type":{
+          "shape":"ViewType",
+          "documentation":"<p>The type of the view.</p>"
+        },
+        "Status":{
+          "shape":"ViewStatus",
+          "documentation":"<p>Indicates the view status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content.</p>"
+        },
+        "Description":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a view's metadata.</p>"
+    },
+    "ViewTemplate":{"type":"string"},
+    "ViewType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED",
+        "AWS_MANAGED"
+      ]
+    },
+    "ViewVersion":{"type":"integer"},
+    "ViewVersionSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ViewId",
+          "documentation":"<p>The identifier of the view version.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the view version.</p>"
+        },
+        "Description":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view version.</p>"
+        },
+        "Name":{
+          "shape":"ViewName",
+          "documentation":"<p>The name of the view version.</p>"
+        },
+        "Type":{
+          "shape":"ViewType",
+          "documentation":"<p>The type of the view version.</p>"
+        },
+        "Version":{
+          "shape":"ViewVersion",
+          "documentation":"<p>The sequentially incremented version of the view version.</p>"
+        },
+        "VersionDescription":{
+          "shape":"ViewDescription",
+          "documentation":"<p>The description of the view version.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a view version's metadata.</p>"
+    },
+    "ViewVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ViewVersionSummary"}
+    },
+    "ViewsClientToken":{
+      "type":"string",
+      "max":500,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)$"
+    },
+    "ViewsInstanceId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\_\\-:\\/]+$"
+    },
+    "ViewsNextToken":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9=\\/+_.-]+$"
+    },
+    "ViewsSummaryList":{
+      "type":"list",
+      "member":{"shape":"ViewSummary"}
     },
     "Vocabulary":{
       "type":"structure",

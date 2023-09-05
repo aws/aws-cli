@@ -659,29 +659,29 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        def export_resources(resource_dict):
-            for resource_id, resource in resource_dict.items():
-
-                if resource_id.startswith("Fn::ForEach"):
-                    if not isinstance(resource, list) or len(resource) < 3:
-                        raise ValueError("Fn::ForEach with name {0} has invalid format".format(resource_id))
-                    if isinstance(resource[2], dict):
-                        export_resources(resource[2])
-                    continue
-
-                resource_type = resource.get("Type", None)
-                if resource_type is None:
-                    continue
-                resource_dict = resource.get("Properties", None)
-
-                for exporter_class in self.resources_to_export:
-                    if exporter_class.RESOURCE_TYPE != resource_type:
-                        continue
-
-                    # Export code resources
-                    exporter = exporter_class(self.uploader)
-                    exporter.export(resource_id, resource_dict, self.template_dir)
-
-        export_resources(self.template_dict["Resources"])
+        self.export_resources(self.template_dict["Resources"])
 
         return self.template_dict
+
+    def export_resources(self, resource_dict):
+        for resource_id, resource in resource_dict.items():
+
+            if resource_id.startswith("Fn::ForEach"):
+                if not isinstance(resource, list) or len(resource) < 3:
+                    raise ValueError("Fn::ForEach with name {0} has invalid format".format(resource_id))
+                if isinstance(resource[2], dict):
+                    self.export_resources(resource[2])
+                continue
+
+            resource_type = resource.get("Type", None)
+            if resource_type is None:
+                continue
+            resource_dict = resource.get("Properties", None)
+
+            for exporter_class in self.resources_to_export:
+                if exporter_class.RESOURCE_TYPE != resource_type:
+                    continue
+
+                # Export code resources
+                exporter = exporter_class(self.uploader)
+                exporter.export(resource_id, resource_dict, self.template_dir)

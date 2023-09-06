@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.13.16
+=======
+
+* api-change:``vpc-lattice``: This release adds Lambda event structure version config support for LAMBDA target groups. It also adds newline support for auth policies.
+* api-change:``billingconductor``: This release adds support for line item filtering in for the custom line item resource.
+* api-change:``cloud9``: Added support for Ubuntu 22.04 that was not picked up in a previous Trebuchet request. Doc-only update.
+* api-change:``identitystore``: New Identity Store content for China Region launch
+* api-change:``sagemaker``: SageMaker Neo now supports data input shape derivation for Pytorch 2.0  and XGBoost compilation job for cloud instance targets. You can skip DataInputConfig field during compilation job creation. You can also access derived information from model in DescribeCompilationJob response.
+* api-change:``connect``: Amazon Connect adds the ability to read, create, update, delete, and list view resources, and adds the ability to read, create, delete, and list view versions.
+* api-change:``rds``: Add support for feature integration with AWS Backup.
+* api-change:``ecs``: Documentation only update for Amazon ECS.
+* api-change:``ec2``: Introducing Amazon EC2 C7gd, M7gd, and R7gd Instances with up to 3.8 TB of local NVMe-based SSD block-level storage. These instances are powered by AWS Graviton3 processors, delivering up to 25% better performance over Graviton2-based instances.
+* api-change:``chime-sdk-media-pipelines``: This release adds support for the Voice Analytics feature for customer-owned KVS streams as part of the Amazon Chime SDK call analytics.
+* api-change:``compute-optimizer``: This release adds support to provide recommendations for G4dn and P3 instances that use NVIDIA GPUs.
+* enhancement:Python: Update bundled Python interpreter to 3.11.5
+* api-change:``neptunedata``: Removed the descriptive text in the introduction.
+* api-change:``events``: Update events command to latest version
+
+
 2.13.15
 =======
 

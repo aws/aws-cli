@@ -2284,6 +2284,7 @@
         {"shape":"InvalidDBClusterSnapshotStateFault"},
         {"shape":"StorageQuotaExceededFault"},
         {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
         {"shape":"InvalidRestoreFault"},
         {"shape":"DBSubnetGroupNotFoundFault"},
         {"shape":"InvalidSubnet"},
@@ -5144,6 +5145,10 @@
         "LocalWriteForwardingStatus":{
           "shape":"LocalWriteForwardingStatus",
           "documentation":"<p>Specifies whether an Aurora DB cluster has in-cluster write forwarding enabled, not enabled, requested, or is in the process of enabling it.</p>"
+        },
+        "AwsBackupRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -5252,6 +5257,10 @@
         "Iops":{
           "shape":"IntegerOptional",
           "documentation":"<p>The IOPS (I/O operations per second) value for the automated backup.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        },
+        "AwsBackupRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
         }
       },
       "documentation":"<p>An automated backup of a DB cluster. It consists of system backups, transaction logs, and the database cluster properties that existed at the time you deleted the source cluster.</p>",
@@ -6529,6 +6538,10 @@
         "StorageThroughput":{
           "shape":"IntegerOptional",
           "documentation":"<p>Specifies the storage throughput for the automated backup.</p>"
+        },
+        "AwsBackupRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
         }
       },
       "documentation":"<p>An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.</p>",
@@ -10834,6 +10847,10 @@
         "EnableLocalWriteForwarding":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
+        },
+        "AwsBackupRecoveryPointArn":{
+          "shape":"AwsBackupRecoveryPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
         }
       },
       "documentation":"<p/>"

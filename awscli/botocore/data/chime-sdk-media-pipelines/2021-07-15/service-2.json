@@ -166,6 +166,7 @@
         {"shape":"ThrottledClientException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedClientException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
@@ -230,6 +231,46 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Gets an existing media pipeline.</p>"
+    },
+    "GetSpeakerSearchTask":{
+      "name":"GetSpeakerSearchTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSpeakerSearchTaskRequest"},
+      "output":{"shape":"GetSpeakerSearchTaskResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves the details of the specified speaker search task.</p>"
+    },
+    "GetVoiceToneAnalysisTask":{
+      "name":"GetVoiceToneAnalysisTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVoiceToneAnalysisTaskRequest"},
+      "output":{"shape":"GetVoiceToneAnalysisTaskResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves the details of a voice tone analysis task.</p>"
     },
     "ListMediaCapturePipelines":{
       "name":"ListMediaCapturePipelines",
@@ -310,6 +351,88 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Lists the tags available for a media pipeline.</p>"
+    },
+    "StartSpeakerSearchTask":{
+      "name":"StartSpeakerSearchTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipelines/{identifier}/speaker-search-tasks?operation=start",
+        "responseCode":201
+      },
+      "input":{"shape":"StartSpeakerSearchTaskRequest"},
+      "output":{"shape":"StartSpeakerSearchTaskResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Starts a speaker search task.</p> <important> <p>Before starting any speaker search tasks, you must provide all notices and obtain all consents from the speaker as required under applicable privacy and biometrics laws, and as required under the <a href=\"https://aws.amazon.com/service-terms/\">AWS service terms</a> for the Amazon Chime SDK.</p> </important>"
+    },
+    "StartVoiceToneAnalysisTask":{
+      "name":"StartVoiceToneAnalysisTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks?operation=start",
+        "responseCode":201
+      },
+      "input":{"shape":"StartVoiceToneAnalysisTaskRequest"},
+      "output":{"shape":"StartVoiceToneAnalysisTaskResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Starts a voice tone analysis task. For more information about voice tone analysis, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/voice-analytics.html\">Using Amazon Chime SDK voice analytics</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p> <important> <p>Before starting any voice tone analysis tasks, you must provide all notices and obtain all consents from the speaker as required under applicable privacy and biometrics laws, and as required under the <a href=\"https://aws.amazon.com/service-terms/\">AWS service terms</a> for the Amazon Chime SDK.</p> </important>"
+    },
+    "StopSpeakerSearchTask":{
+      "name":"StopSpeakerSearchTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}?operation=stop",
+        "responseCode":204
+      },
+      "input":{"shape":"StopSpeakerSearchTaskRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Stops a speaker search task.</p>"
+    },
+    "StopVoiceToneAnalysisTask":{
+      "name":"StopVoiceToneAnalysisTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}?operation=stop",
+        "responseCode":204
+      },
+      "input":{"shape":"StopVoiceToneAnalysisTaskRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ConflictException"},
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Stops a voice tone analysis task.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1303,7 +1426,7 @@
       "members":{
         "FragmentSelectorType":{
           "shape":"FragmentSelectorType",
-          "documentation":"<p>The origin of the timestamps to use, <code>Server</code> or <code>Producer</code>. For more information, see <a href=\"kinesisvideostreams/latest/dg/API_dataplane_StartSelector.html#KinesisVideo-Type-dataplane_StartSelector-StartSelectorType\">StartSelectorType</a> in the <i>Amazon Kinesis Video Streams Developer Guide</i>.</p>"
+          "documentation":"<p>The origin of the timestamps to use, <code>Server</code> or <code>Producer</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_dataplane_StartSelector.html\">StartSelectorType</a> in the <i>Amazon Kinesis Video Streams Developer Guide</i>.</p>"
         },
         "TimestampRange":{
           "shape":"TimestampRange",
@@ -1379,6 +1502,66 @@
         "MediaPipeline":{
           "shape":"MediaPipeline",
           "documentation":"<p>The media pipeline object.</p>"
+        }
+      }
+    },
+    "GetSpeakerSearchTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "SpeakerSearchTaskId"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "SpeakerSearchTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the speaker search task.</p>",
+          "location":"uri",
+          "locationName":"speakerSearchTaskId"
+        }
+      }
+    },
+    "GetSpeakerSearchTaskResponse":{
+      "type":"structure",
+      "members":{
+        "SpeakerSearchTask":{
+          "shape":"SpeakerSearchTask",
+          "documentation":"<p>The details of the speaker search task.</p>"
+        }
+      }
+    },
+    "GetVoiceToneAnalysisTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "VoiceToneAnalysisTaskId"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "VoiceToneAnalysisTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the voice tone anlysis task.</p>",
+          "location":"uri",
+          "locationName":"voiceToneAnalysisTaskId"
+        }
+      }
+    },
+    "GetVoiceToneAnalysisTaskResponse":{
+      "type":"structure",
+      "members":{
+        "VoiceToneAnalysisTask":{
+          "shape":"VoiceToneAnalysisTask",
+          "documentation":"<p>The details of the voice tone analysis task.</p>"
         }
       }
     },
@@ -1568,6 +1751,28 @@
         }
       },
       "documentation":"<p>The runtime configuration settings for the Kinesis video stream source.</p>"
+    },
+    "KinesisVideoStreamSourceTaskConfiguration":{
+      "type":"structure",
+      "required":[
+        "StreamArn",
+        "ChannelId"
+      ],
+      "members":{
+        "StreamArn":{
+          "shape":"KinesisVideoStreamArn",
+          "documentation":"<p>The ARN of the stream.</p>"
+        },
+        "ChannelId":{
+          "shape":"ChannelId",
+          "documentation":"<p>The channel ID.</p>"
+        },
+        "FragmentNumber":{
+          "shape":"FragmentNumberString",
+          "documentation":"<p>The unique identifier of the fragment to begin processing.</p>"
+        }
+      },
+      "documentation":"<p>The task configuration settings for the Kinesis video stream source.</p>"
     },
     "LambdaFunctionSinkConfiguration":{
       "type":"structure",
@@ -2028,7 +2233,7 @@
         },
         "VoiceEnhancementSinkConfiguration":{
           "shape":"VoiceEnhancementSinkConfiguration",
-          "documentation":"<p>The configuration settings for the <code>VoiceEnhancementSinkConfiguration</code> element.</p>"
+          "documentation":"<p>The configuration settings for voice enhancement sink in a media insights pipeline configuration element.</p>"
         }
       },
       "documentation":"<p>An element in a media insights pipeline configuration.</p>"
@@ -2216,6 +2421,17 @@
         }
       },
       "documentation":"<p>The summary of the media pipeline.</p>"
+    },
+    "MediaPipelineTaskStatus":{
+      "type":"string",
+      "enum":[
+        "NotStarted",
+        "Initializing",
+        "InProgress",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
     },
     "MediaSampleRateHertz":{
       "type":"integer",
@@ -2580,6 +2796,28 @@
       },
       "documentation":"<p>Source configuration for a specified media pipeline.</p>"
     },
+    "SpeakerSearchTask":{
+      "type":"structure",
+      "members":{
+        "SpeakerSearchTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The speaker search task ID.</p>"
+        },
+        "SpeakerSearchTaskStatus":{
+          "shape":"MediaPipelineTaskStatus",
+          "documentation":"<p>The status of the speaker search task.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which a speaker search task was created.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which a speaker search task was updated.</p>"
+        }
+      },
+      "documentation":"<p>A representation of an asynchronous request to perform speaker search analysis on a media insights pipeline.</p>"
+    },
     "SqsQueueSinkConfiguration":{
       "type":"structure",
       "members":{
@@ -2589,6 +2827,122 @@
         }
       },
       "documentation":"<p>The configuration settings for the SQS sink.</p>"
+    },
+    "StartSpeakerSearchTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "VoiceProfileDomainArn"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "VoiceProfileDomainArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the voice profile domain that will store the voice profile.</p>"
+        },
+        "KinesisVideoStreamSourceTaskConfiguration":{
+          "shape":"KinesisVideoStreamSourceTaskConfiguration",
+          "documentation":"<p>The task configuration for the Kinesis video stream source of the media insights pipeline.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique identifier for the client request. Use a different token for different speaker search tasks.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartSpeakerSearchTaskResponse":{
+      "type":"structure",
+      "members":{
+        "SpeakerSearchTask":{
+          "shape":"SpeakerSearchTask",
+          "documentation":"<p>The details of the speaker search task.</p>"
+        }
+      }
+    },
+    "StartVoiceToneAnalysisTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "LanguageCode"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "LanguageCode":{
+          "shape":"VoiceAnalyticsLanguageCode",
+          "documentation":"<p>The language code.</p>"
+        },
+        "KinesisVideoStreamSourceTaskConfiguration":{
+          "shape":"KinesisVideoStreamSourceTaskConfiguration",
+          "documentation":"<p>The task configuration for the Kinesis video stream source of the media insights pipeline.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>The unique identifier for the client request. Use a different token for different voice tone analysis tasks.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartVoiceToneAnalysisTaskResponse":{
+      "type":"structure",
+      "members":{
+        "VoiceToneAnalysisTask":{
+          "shape":"VoiceToneAnalysisTask",
+          "documentation":"<p>The details of the voice tone analysis task.</p>"
+        }
+      }
+    },
+    "StopSpeakerSearchTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "SpeakerSearchTaskId"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "SpeakerSearchTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The speaker search task ID.</p>",
+          "location":"uri",
+          "locationName":"speakerSearchTaskId"
+        }
+      }
+    },
+    "StopVoiceToneAnalysisTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "VoiceToneAnalysisTaskId"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the resource to be updated. Valid values include the ID and ARN of the media insights pipeline.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "VoiceToneAnalysisTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the voice tone analysis task.</p>",
+          "location":"uri",
+          "locationName":"voiceToneAnalysisTaskId"
+        }
+      }
     },
     "StreamChannelDefinition":{
       "type":"structure",
@@ -2972,6 +3326,10 @@
         "Disabled"
       ]
     },
+    "VoiceAnalyticsLanguageCode":{
+      "type":"string",
+      "enum":["en-US"]
+    },
     "VoiceAnalyticsProcessorConfiguration":{
       "type":"structure",
       "members":{
@@ -2995,6 +3353,28 @@
         }
       },
       "documentation":"<p>A static structure that contains the configuration data for a <code>VoiceEnhancementSinkConfiguration</code> element.</p>"
+    },
+    "VoiceToneAnalysisTask":{
+      "type":"structure",
+      "members":{
+        "VoiceToneAnalysisTaskId":{
+          "shape":"GuidString",
+          "documentation":"<p>The ID of the voice tone analysis task.</p>"
+        },
+        "VoiceToneAnalysisTaskStatus":{
+          "shape":"MediaPipelineTaskStatus",
+          "documentation":"<p>The status of a voice tone analysis task.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which a voice tone analysis task was created.</p>"
+        },
+        "UpdatedTimestamp":{
+          "shape":"Iso8601Timestamp",
+          "documentation":"<p>The time at which a voice tone analysis task was updated.</p>"
+        }
+      },
+      "documentation":"<p>A representation of an asynchronous request to perform voice tone analysis on a media insights pipeline.</p>"
     }
   },
   "documentation":"<p>The Amazon Chime SDK media pipeline APIs in this section allow software developers to create Amazon Chime SDK media pipelines that capture, concatenate, or stream your Amazon Chime SDK meetings. For more information about media pipelines, see <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_Operations_Amazon_Chime_SDK_Media_Pipelines.html\">Amazon Chime SDK media pipelines</a>. </p>"

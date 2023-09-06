@@ -1342,6 +1342,10 @@
         "Type":{
           "shape":"CustomLineItemType",
           "documentation":"<p>The type of the custom line item that indicates whether the charge is a fee or credit.</p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
       "documentation":"<p>The charge details of a custom line item. It should contain only one of <code>Flat</code> or <code>Percentage</code>.</p>"
@@ -1707,6 +1711,49 @@
       "exception":true,
       "fault":true
     },
+    "LineItemFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "MatchOption",
+        "Values"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"LineItemFilterAttributeName",
+          "documentation":"<p>The attribute of the line item filter. This specifies what attribute that you can filter on.</p>"
+        },
+        "MatchOption":{
+          "shape":"MatchOption",
+          "documentation":"<p>The match criteria of the line item filter. This parameter specifies whether not to include the resource value from the billing group total cost.</p>"
+        },
+        "Values":{
+          "shape":"LineItemFilterValuesList",
+          "documentation":"<p>The values of the line item filter. This specifies the values to filter on. Currently, you can only exclude Savings Plan discounts.</p>"
+        }
+      },
+      "documentation":"<p>A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plan discounts, you can update <code>LineItemFilter</code> to exclude it.</p>"
+    },
+    "LineItemFilterAttributeName":{
+      "type":"string",
+      "enum":["LINE_ITEM_TYPE"]
+    },
+    "LineItemFilterValue":{
+      "type":"string",
+      "enum":["SAVINGS_PLAN_NEGATION"]
+    },
+    "LineItemFilterValuesList":{
+      "type":"list",
+      "member":{"shape":"LineItemFilterValue"},
+      "max":1,
+      "min":1
+    },
+    "LineItemFiltersList":{
+      "type":"list",
+      "member":{"shape":"LineItemFilter"},
+      "max":1,
+      "min":0
+    },
     "ListAccountAssociationsFilter":{
       "type":"structure",
       "members":{
@@ -1880,6 +1927,10 @@
         "Type":{
           "shape":"CustomLineItemType",
           "documentation":"<p> The type of the custom line item that indicates whether the charge is a <code>fee</code> or <code>credit</code>. </p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
       "documentation":"<p> A representation of the charge details of a custom line item. </p>"
@@ -2297,6 +2348,10 @@
     },
     "Margin":{"type":"string"},
     "MarginPercentage":{"type":"string"},
+    "MatchOption":{
+      "type":"string",
+      "enum":["NOT_EQUAL"]
+    },
     "MaxBillingGroupResults":{
       "type":"integer",
       "box":true,
@@ -2797,6 +2852,10 @@
         "Percentage":{
           "shape":"UpdateCustomLineItemPercentageChargeDetails",
           "documentation":"<p> An <code>UpdateCustomLineItemPercentageChargeDetails</code> that describes the new charge details of a percentage custom line item. </p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
       "documentation":"<p> A representation of the new charge details of a custom line item. This should contain only one of <code>Flat</code> or <code>Percentage</code>. </p>"

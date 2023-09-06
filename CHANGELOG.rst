@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.42
+=======
+
+* api-change:``appflow``: Adding OAuth2.0 support for servicenow connector.
+* api-change:``ec2``: This release adds 'outpost' location type to the DescribeInstanceTypeOfferings API, allowing customers that have been allowlisted for outpost to query their offerings in the API.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``medialive``: Adds advanced Output Locking options for Epoch Locking: Custom Epoch and Jam Sync Time
+* api-change:``wafv2``: The targeted protection level of the Bot Control managed rule group now provides optional, machine-learning analysis of traffic statistics to detect some bot-related activity. You can enable or disable the machine learning functionality through the API.
+
+
 1.29.41
 =======
 

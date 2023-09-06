@@ -11,7 +11,7 @@ The output for each event entry returned by the command resembles the following 
         "ServerEvents": [ 
             { 
                 "CreatedAt": 2016-07-29T13:38:47.520Z,
-                "LogUrl": "https://s3.amazonaws.com/automate-06/automate-06-20160729133847520",
+                "LogUrl": "https://s3.amazonaws.com/<bucket-name>/automate-06-20160729133847520",
                 "Message": "Updates successfully installed.",
                 "ServerName": "automate-06"
             }

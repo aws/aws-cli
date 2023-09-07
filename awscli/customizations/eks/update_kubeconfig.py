@@ -287,23 +287,19 @@ class EKSClient(object):
         endpoint = self.cluster_description.get("endpoint")
         arn = self.cluster_description.get("arn")
 
-        if self._proxy_url is None:
-            return OrderedDict([
-                ("cluster", OrderedDict([
-                    ("certificate-authority-data", cert_data),
-                    ("server", endpoint)
-                ])),
-                ("name", arn)
-            ])
-        else:
-            return OrderedDict([
-                ("cluster", OrderedDict([
-                    ("certificate-authority-data", cert_data),
-                    ("proxy-url", self._proxy_url),
-                    ("server", endpoint)
-                ])),
-                ("name", arn)
-            ])
+        generated_cluster = OrderedDict([
+            ("cluster", OrderedDict([
+                ("certificate-authority-data", cert_data),
+                ("server", endpoint)
+            ])),
+            ("name", arn)
+        ])
+
+        if hasattr(self._parsed_args, "proxy_url"):
+            if self._parsed_args.proxy_url is not None:
+                generated_cluster["cluster"]["proxy-url"] = self._parsed_args.proxy_url
+
+        return generated_cluster
 
     def get_user_entry(self, user_alias=None):
         """

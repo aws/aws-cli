@@ -159,11 +159,21 @@ class TestKubeconfigSelector(unittest.TestCase):
 
 class TestEKSClient(unittest.TestCase):
     def setUp(self):
+        self._proxy_url = "https://myproxy.com"
         self._correct_cluster_entry = OrderedDict([
             ("cluster", OrderedDict([
                 ("certificate-authority-data", describe_cluster_response()\
                     ["cluster"]["certificateAuthority"]["data"]),
                 ("server", describe_cluster_response()["cluster"]["endpoint"])
+            ])),
+            ("name", describe_cluster_response()["cluster"]["arn"])
+        ])
+        self._correct_cluster_entry_with_proxy_url = OrderedDict([
+            ("cluster", OrderedDict([
+                ("certificate-authority-data", describe_cluster_response()\
+                    ["cluster"]["certificateAuthority"]["data"]),
+                ("server", describe_cluster_response()["cluster"]["endpoint"]),
+                ("proxy-url", self._proxy_url)
             ])),
             ("name", describe_cluster_response()["cluster"]["arn"])
         ])
@@ -242,6 +252,17 @@ class TestEKSClient(unittest.TestCase):
                          self._correct_cluster_entry)
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
+
+    def test_get_cluster_entry_with_proxy_url_passed(self):
+        client = EKSClient(self._session, parsed_args=Namespace(cluster_name="ProxiedCluster", 
+                                                                role_arn=None, 
+                                                                proxy_url=self._proxy_url))        
+        self.assertEqual(client.get_cluster_entry(),
+                         self._correct_cluster_entry_with_proxy_url)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ProxiedCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 

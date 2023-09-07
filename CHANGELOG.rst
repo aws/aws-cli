@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.43
+=======
+
+* api-change:``neptunedata``: Minor changes to send unsigned requests to Neptune clusters
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``simspaceweaver``: BucketName and ObjectKey are now required for the S3Location data type. BucketName is now required for the S3Destination data type.
+
+
 1.29.42
 =======
 

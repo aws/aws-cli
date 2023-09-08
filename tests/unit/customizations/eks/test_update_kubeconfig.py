@@ -217,7 +217,7 @@ class TestEKSClient(unittest.TestCase):
         self._session.create_client.return_value = self._mock_client
         self._session.profile = None
 
-        self._client = EKSClient(self._session, parsed_args=Namespace(cluster_name="ExampleCluster", role_arn=None))
+        self._client = EKSClient(self._session, parsed_args=Namespace(cluster_name="ExampleCluster", role_arn=None, exclude_profile=False))
 
     def test_get_cluster_description(self):
         self.assertEqual(self._client.cluster_description,

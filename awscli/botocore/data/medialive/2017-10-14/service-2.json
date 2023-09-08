@@ -7500,6 +7500,22 @@
         "TimecodeConfig"
       ]
     },
+    "EpochLockingSettings": {
+      "type": "structure",
+      "members": {
+        "CustomEpoch": {
+          "shape": "__string",
+          "locationName": "customEpoch",
+          "documentation": "Optional. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00."
+        },
+        "JamSyncTime": {
+          "shape": "__string",
+          "locationName": "jamSyncTime",
+          "documentation": "Optional. Enter a time for the jam sync. The default is midnight UTC. When epoch locking is enabled, MediaLive performs a daily jam sync on every output encode to ensure timecodes don\u2019t diverge from the wall clock. The jam sync applies only to encodes with frame rate of 29.97 or 59.94 FPS. To override, enter a time in HH:MM:SS in UTC. Always set the MM:SS portion to 00:00."
+        }
+      },
+      "documentation": "Epoch Locking Settings"
+    },
     "Esam": {
       "type": "structure",
       "members": {
@@ -7945,6 +7961,11 @@
           "shape": "GlobalConfigurationLowFramerateInputs",
           "locationName": "supportLowFramerateInputs",
           "documentation": "Adjusts video input buffer for streams with very low video framerates. This is commonly set to enabled for music channels with less than one video frame per second."
+        },
+        "OutputLockingSettings": {
+          "shape": "OutputLockingSettings",
+          "locationName": "outputLockingSettings",
+          "documentation": "Advanced output locking settings"
         }
       },
       "documentation": "Global Configuration"
@@ -13192,6 +13213,20 @@
       },
       "documentation": "Reference to an OutputDestination ID defined in the channel"
     },
+    "OutputLockingSettings": {
+      "type": "structure",
+      "members": {
+        "EpochLockingSettings": {
+          "shape": "EpochLockingSettings",
+          "locationName": "epochLockingSettings"
+        },
+        "PipelineLockingSettings": {
+          "shape": "PipelineLockingSettings",
+          "locationName": "pipelineLockingSettings"
+        }
+      },
+      "documentation": "Output Locking Settings"
+    },
     "OutputSettings": {
       "type": "structure",
       "members": {
@@ -13284,6 +13319,12 @@
         "PIPELINE_0",
         "PIPELINE_1"
       ]
+    },
+    "PipelineLockingSettings": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
       "type": "structure",

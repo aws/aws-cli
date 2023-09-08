@@ -188,6 +188,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceConflictException"},
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Deletes an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-invocation-modes.html\">event source mapping</a>. You can get the identifier of a mapping from the output of <a>ListEventSourceMappings</a>.</p> <p>When you delete an event source mapping, it enters a <code>Deleting</code> state and might not be completely deleted for several seconds.</p>"
@@ -207,7 +208,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Deletes a Lambda function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted.</p> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>"
+      "documentation":"<p>Deletes a Lambda function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for <a>DeleteAlias</a>.</p> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>"
     },
     "DeleteFunctionCodeSigningConfig":{
       "name":"DeleteFunctionCodeSigningConfig",
@@ -615,7 +616,8 @@
         {"shape":"KMSNotFoundException"},
         {"shape":"InvalidRuntimeException"},
         {"shape":"ResourceConflictException"},
-        {"shape":"ResourceNotReadyException"}
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"RecursiveInvocationException"}
       ],
       "documentation":"<p>Invokes a Lambda function. You can invoke a function synchronously (and wait for the response), or asynchronously. To invoke a function asynchronously, set <code>InvocationType</code> to <code>Event</code>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html\">synchronous invocation</a>, details about the function response, including errors, are included in the response body and headers. For either invocation type, you can find more information in the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions.html\">execution log</a> and <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html\">trace</a>.</p> <p>When an error occurs, your function may be invoked multiple times. Retry behavior varies by error type, client, event source, and invocation type. For example, if you invoke a function asynchronously and it returns an error, Lambda executes the function up to two more times. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html\">Error handling and automatic retries in Lambda</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html\">asynchronous invocation</a>, Lambda adds events to a queue before sending them to your function. If your function does not have enough capacity to keep up with the queue, events may be lost. Occasionally, your function may receive the same event multiple times, even if no error occurs. To retain events that were not processed, configure your function with a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq\">dead-letter queue</a>.</p> <p>The status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your function from executing, such as permissions errors, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">quota</a> errors, or issues with your function's code and configuration. For example, Lambda returns <code>TooManyRequestsException</code> if running the function would cause you to exceed a concurrency limit at either the account level (<code>ConcurrentInvocationLimitExceeded</code>) or function level (<code>ReservedFunctionConcurrentInvocationLimitExceeded</code>).</p> <p>For functions with a long timeout, your client might disconnect during synchronous invocation while it waits for a response. Configure your HTTP client, SDK, firewall, proxy, or operating system to allow for long connections with timeout or keep-alive settings.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
     },
@@ -675,7 +677,8 @@
         {"shape":"KMSNotFoundException"},
         {"shape":"InvalidRuntimeException"},
         {"shape":"ResourceConflictException"},
-        {"shape":"ResourceNotReadyException"}
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"RecursiveInvocationException"}
       ],
       "documentation":"<p>Configure your Lambda functions to stream response payloads back to clients. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html\">Configuring a Lambda function to stream responses</a>.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
     },
@@ -1756,11 +1759,11 @@
         },
         "StartingPosition":{
           "shape":"EventSourcePosition",
-          "documentation":"<p>The position in a stream from which to start reading. Required for Amazon Kinesis, Amazon DynamoDB, and Amazon MSK Streams sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams and Amazon DocumentDB.</p>"
+          "documentation":"<p>The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.</p>"
         },
         "StartingPositionTimestamp":{
           "shape":"Date",
-          "documentation":"<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading.</p>"
+          "documentation":"<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.</p>"
         },
         "DestinationConfig":{
           "shape":"DestinationConfig",
@@ -1882,7 +1885,7 @@
         },
         "KMSKeyArn":{
           "shape":"KMSKeyArn",
-          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, this key is also used to encrypt your function's snapshot. If you don't provide a customer managed key, Lambda uses a default service key.</p>"
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.</p>"
         },
         "TracingConfig":{
           "shape":"TracingConfig",
@@ -2403,11 +2406,11 @@
         },
         "StartingPosition":{
           "shape":"EventSourcePosition",
-          "documentation":"<p>The position in a stream from which to start reading. Required for Amazon Kinesis, Amazon DynamoDB, and Amazon MSK stream sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams and Amazon DocumentDB.</p>"
+          "documentation":"<p>The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Stream event sources. <code>AT_TIMESTAMP</code> is supported only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed Apache Kafka.</p>"
         },
         "StartingPositionTimestamp":{
           "shape":"Date",
-          "documentation":"<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading.</p>"
+          "documentation":"<p>With <code>StartingPosition</code> set to <code>AT_TIMESTAMP</code>, the time from which to start reading. <code>StartingPositionTimestamp</code> cannot be in the future.</p>"
         },
         "BatchSize":{
           "shape":"BatchSize",
@@ -2471,7 +2474,7 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records.</p> <note> <p>The minimum value that can be set is 60 seconds.</p> </note>"
+          "documentation":"<p>(Kinesis and DynamoDB Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, Lambda never discards old records.</p> <note> <p>The minimum valid value for maximum record age is 60s. Although values less than 60 and greater than -1 fall within the parameter's absolute range, they are not allowed</p> </note>"
         },
         "BisectBatchOnFunctionError":{
           "shape":"BisectBatchOnFunctionError",
@@ -3255,7 +3258,7 @@
         },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
-          "documentation":"<p>The layer's compatible runtimes.</p>"
+          "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "LicenseInfo":{
           "shape":"LicenseInfo",
@@ -3970,7 +3973,7 @@
         },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
-          "documentation":"<p>The layer's compatible runtimes.</p>"
+          "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "LicenseInfo":{
           "shape":"LicenseInfo",
@@ -4289,7 +4292,7 @@
       "members":{
         "CompatibleRuntime":{
           "shape":"Runtime",
-          "documentation":"<p>A runtime identifier. For example, <code>go1.x</code>.</p>",
+          "documentation":"<p>A runtime identifier. For example, <code>go1.x</code>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>",
           "location":"querystring",
           "locationName":"CompatibleRuntime"
         },
@@ -4337,7 +4340,7 @@
       "members":{
         "CompatibleRuntime":{
           "shape":"Runtime",
-          "documentation":"<p>A runtime identifier. For example, <code>go1.x</code>.</p>",
+          "documentation":"<p>A runtime identifier. For example, <code>go1.x</code>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>",
           "location":"querystring",
           "locationName":"CompatibleRuntime"
         },
@@ -4744,7 +4747,7 @@
         },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
-          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">function runtimes</a>. Used for filtering with <a>ListLayers</a> and <a>ListLayerVersions</a>.</p>"
+          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">function runtimes</a>. Used for filtering with <a>ListLayers</a> and <a>ListLayerVersions</a>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "LicenseInfo":{
           "shape":"LicenseInfo",
@@ -4785,7 +4788,7 @@
         },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
-          "documentation":"<p>The layer's compatible runtimes.</p>"
+          "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
         },
         "LicenseInfo":{
           "shape":"LicenseInfo",
@@ -5029,6 +5032,22 @@
       "max":1,
       "min":1
     },
+    "RecursiveInvocationException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>Lambda has detected your function being invoked in a recursive loop with other Amazon Web Services resources and stopped your function's invocation.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "RemoveLayerVersionPermissionRequest":{
       "type":"structure",
       "required":[
@@ -5208,7 +5227,10 @@
         "provided",
         "provided.al2",
         "nodejs18.x",
-        "python3.10"
+        "python3.10",
+        "java17",
+        "ruby3.2",
+        "python3.11"
       ]
     },
     "RuntimeVersionArn":{
@@ -5325,7 +5347,7 @@
           "documentation":"<p>Set to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.</p>"
         }
       },
-      "documentation":"<p>The function's Lambda SnapStart setting. Set <code>ApplyOn</code> to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.</p> <p>SnapStart is supported with the <code>java11</code> runtime. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">Improving startup performance with Lambda SnapStart</a>.</p>"
+      "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">Lambda SnapStart</a> setting. Set <code>ApplyOn</code> to <code>PublishedVersions</code> to create a snapshot of the initialized execution environment when you publish a function version.</p>"
     },
     "SnapStartApplyOn":{
       "type":"string",
@@ -5877,7 +5899,7 @@
         },
         "KMSKeyArn":{
           "shape":"KMSKeyArn",
-          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, this key is also used to encrypt your function's snapshot. If you don't provide a customer managed key, Lambda uses a default service key.</p>"
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption\">environment variables</a>. When <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html\">Lambda SnapStart</a> is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.</p>"
         },
         "TracingConfig":{
           "shape":"TracingConfig",

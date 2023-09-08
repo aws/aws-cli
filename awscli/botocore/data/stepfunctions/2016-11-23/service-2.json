@@ -47,10 +47,31 @@
         {"shape":"StateMachineDeleting"},
         {"shape":"StateMachineLimitExceeded"},
         {"shape":"StateMachineTypeNotSupported"},
-        {"shape":"TooManyTags"}
+        {"shape":"TooManyTags"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the Step Functions User Guide.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code> and <code>TracingConfiguration</code>. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
+      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the Step Functions User Guide.</p> <p>If you set the <code>publish</code> parameter of this API action to <code>true</code>, it publishes version <code>1</code> as the first revision of the state machine.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code>, and <code>TracingConfiguration</code>. The check is also based on the <code>publish</code> and <code>versionDescription</code> parameters. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
       "idempotent":true
+    },
+    "CreateStateMachineAlias":{
+      "name":"CreateStateMachineAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateStateMachineAliasInput"},
+      "output":{"shape":"CreateStateMachineAliasOutput"},
+      "errors":[
+        {"shape":"InvalidArn"},
+        {"shape":"InvalidName"},
+        {"shape":"ValidationException"},
+        {"shape":"StateMachineDeleting"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> for a state machine that points to one or two <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">versions</a> of the same state machine. You can set your application to call <a>StartExecution</a> with an alias and update the version the alias uses without changing the client's code.</p> <p>You can also map an alias to split <a>StartExecution</a> requests between two versions of a state machine. To do this, add a second <code>RoutingConfig</code> object in the <code>routingConfiguration</code> parameter. You must also specify the percentage of execution run requests each version should receive in both <code>RoutingConfig</code> objects. Step Functions randomly chooses which version runs a given execution based on the percentage you specify.</p> <p>To create an alias that points to a single version, specify a single <code>RoutingConfig</code> object with a <code>weight</code> set to 100.</p> <p>You can create up to 100 aliases for each state machine. You must delete unused aliases using the <a>DeleteStateMachineAlias</a> API action.</p> <p> <code>CreateStateMachineAlias</code> is an idempotent API. Step Functions bases the idempotency check on the <code>stateMachineArn</code>, <code>description</code>, <code>name</code>, and <code>routingConfiguration</code> parameters. Requests that contain the same values for these parameters return a successful idempotent response without creating a duplicate resource.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>UpdateStateMachineAlias</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
     },
     "DeleteActivity":{
       "name":"DeleteActivity",
@@ -77,7 +98,38 @@
         {"shape":"InvalidArn"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <p>If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>For <code>EXPRESS</code> state machines, the deletion will happen eventually (usually less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
+      "documentation":"<p>Deletes a state machine. This is an asynchronous operation: It sets the state machine's status to <code>DELETING</code> and begins the deletion process. </p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine</code> </p> </li> </ul> <p>This API action also deletes all <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">versions</a> and <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">aliases</a> associated with a state machine.</p> <note> <p>For <code>EXPRESS</code> state machines, the deletion happens eventually (usually in less than a minute). Running executions may emit logs after <code>DeleteStateMachine</code> API is called.</p> </note>"
+    },
+    "DeleteStateMachineAlias":{
+      "name":"DeleteStateMachineAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteStateMachineAliasInput"},
+      "output":{"shape":"DeleteStateMachineAliasOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidArn"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a>.</p> <p>After you delete a state machine alias, you can't use it to start executions. When you delete a state machine alias, Step Functions doesn't delete the state machine versions that alias references.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>UpdateStateMachineAlias</a> </p> </li> </ul>"
+    },
+    "DeleteStateMachineVersion":{
+      "name":"DeleteStateMachineVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteStateMachineVersionInput"},
+      "output":{"shape":"DeleteStateMachineVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidArn"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>. After you delete a version, you can't call <a>StartExecution</a> using that version's ARN or use the version with a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a>.</p> <note> <p>Deleting a state machine version won't terminate its in-progress executions.</p> </note> <note> <p>You can't delete a state machine version currently referenced by one or more aliases. Before you delete a version, you must either delete the aliases or update them to point to another state machine version.</p> </note> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>PublishStateMachineVersion</a> </p> </li> <li> <p> <a>ListStateMachineVersions</a> </p> </li> </ul>"
     },
     "DescribeActivity":{
       "name":"DescribeActivity",
@@ -105,7 +157,7 @@
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Provides all information about a state machine execution, such as the state machine associated with the execution, the execution input and output, and relevant execution metadata. Use this API action to return the Map Run ARN if the execution was dispatched by a Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machine executions unless they were dispatched by a Map Run.</p>"
+      "documentation":"<p>Provides information about a state machine execution, such as the state machine associated with the execution, the execution input and output, and relevant execution metadata. Use this API action to return the Map Run Amazon Resource Name (ARN) if the execution was dispatched by a Map Run.</p> <p>If you specify a version or alias ARN when you call the <a>StartExecution</a> API action, <code>DescribeExecution</code> returns that ARN.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>Executions of an <code>EXPRESS</code> state machinearen't supported by <code>DescribeExecution</code> unless a Map Run dispatched them.</p>"
     },
     "DescribeMapRun":{
       "name":"DescribeMapRun",
@@ -133,7 +185,22 @@
         {"shape":"InvalidArn"},
         {"shape":"StateMachineDoesNotExist"}
       ],
-      "documentation":"<p>Provides information about a state machine's definition, its IAM role Amazon Resource Name (ARN), and configuration. If the state machine ARN is a qualified state machine ARN, the response returned includes the <code>Map</code> state's label.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
+      "documentation":"<p>Provides information about a state machine's definition, its IAM role Amazon Resource Name (ARN), and configuration.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>This API action returns the details for a state machine version if the <code>stateMachineArn</code> you specify is a state machine version ARN.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
+    },
+    "DescribeStateMachineAlias":{
+      "name":"DescribeStateMachineAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStateMachineAliasInput"},
+      "output":{"shape":"DescribeStateMachineAliasOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidArn"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details about a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a>.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>UpdateStateMachineAlias</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
     },
     "DescribeStateMachineForExecution":{
       "name":"DescribeStateMachineForExecution",
@@ -147,7 +214,7 @@
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Provides information about a state machine's definition, its execution role ARN, and configuration. If an execution was dispatched by a Map Run, the Map Run is returned in the response. Additionally, the state machine returned will be the state machine associated with the Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Provides information about a state machine's definition, its execution role ARN, and configuration. If a Map Run dispatched the execution, this action returns the Map Run Amazon Resource Name (ARN) in the response. The state machine returned is the state machine associated with the Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
     "GetActivityTask":{
       "name":"GetActivityTask",
@@ -208,7 +275,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Lists all executions of a state machine or a Map Run. You can list all executions related to a state machine by specifying a state machine Amazon Resource Name (ARN), or those related to a Map Run by specifying a Map Run ARN.</p> <p>Results are sorted by time, with the most recent execution first.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Lists all executions of a state machine or a Map Run. You can list all executions related to a state machine by specifying a state machine Amazon Resource Name (ARN), or those related to a Map Run by specifying a Map Run ARN.</p> <p>You can also provide a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> ARN or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a> ARN to list the executions associated with a specific alias or version.</p> <p>Results are sorted by time, with the most recent execution first.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
     "ListMapRuns":{
       "name":"ListMapRuns",
@@ -224,6 +291,38 @@
         {"shape":"InvalidToken"}
       ],
       "documentation":"<p>Lists all Map Runs that were started by a given state machine execution. Use this API action to obtain Map Run ARNs, and then call <code>DescribeMapRun</code> to obtain more information, if needed.</p>"
+    },
+    "ListStateMachineAliases":{
+      "name":"ListStateMachineAliases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStateMachineAliasesInput"},
+      "output":{"shape":"ListStateMachineAliasesOutput"},
+      "errors":[
+        {"shape":"InvalidArn"},
+        {"shape":"InvalidToken"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"StateMachineDoesNotExist"},
+        {"shape":"StateMachineDeleting"}
+      ],
+      "documentation":"<p>Lists <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">aliases</a> for a specified state machine ARN. Results are sorted by time, with the most recently created aliases listed first. </p> <p>To list aliases that reference a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>, you can specify the version ARN in the <code>stateMachineArn</code> parameter.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>UpdateStateMachineAlias</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
+    },
+    "ListStateMachineVersions":{
+      "name":"ListStateMachineVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStateMachineVersionsInput"},
+      "output":{"shape":"ListStateMachineVersionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidArn"},
+        {"shape":"InvalidToken"}
+      ],
+      "documentation":"<p>Lists <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">versions</a> for the specified state machine Amazon Resource Name (ARN).</p> <p>The results are sorted in descending order of the version creation time.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>PublishStateMachineVersion</a> </p> </li> <li> <p> <a>DeleteStateMachineVersion</a> </p> </li> </ul>"
     },
     "ListStateMachines":{
       "name":"ListStateMachines",
@@ -251,6 +350,25 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>List tags for a given resource.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+    },
+    "PublishStateMachineVersion":{
+      "name":"PublishStateMachineVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PublishStateMachineVersionInput"},
+      "output":{"shape":"PublishStateMachineVersionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"StateMachineDeleting"},
+        {"shape":"StateMachineDoesNotExist"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidArn"}
+      ],
+      "documentation":"<p>Creates a <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a> from the current revision of a state machine. Use versions to create immutable snapshots of your state machine. You can start executions from versions either directly or with an alias. To create an alias, use <a>CreateStateMachineAlias</a>.</p> <p>You can publish up to 1000 versions for each state machine. You must manually delete unused versions using the <a>DeleteStateMachineVersion</a> API action.</p> <p> <code>PublishStateMachineVersion</code> is an idempotent API. It doesn't create a duplicate state machine version if it already exists for the current revision. Step Functions bases <code>PublishStateMachineVersion</code>'s idempotency check on the <code>stateMachineArn</code>, <code>name</code>, and <code>revisionId</code> parameters. Requests with the same parameters return a successful idempotent response. If you don't specify a <code>revisionId</code>, Step Functions checks for a previously published version of the state machine's current revision.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>DeleteStateMachineVersion</a> </p> </li> <li> <p> <a>ListStateMachineVersions</a> </p> </li> </ul>",
+      "idempotent":true
     },
     "SendTaskFailure":{
       "name":"SendTaskFailure",
@@ -316,7 +434,7 @@
         {"shape":"StateMachineDeleting"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Starts a state machine execution. If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if <code>StartExecution</code> is called with the same name and input as a running execution, the call will succeed and return the same response as the original request. If the execution is closed or if the input is different, it will return a <code>400 ExecutionAlreadyExists</code> error. Names can be reused after 90 days. </p> <p> <code>StartExecution</code> is not idempotent for <code>EXPRESS</code> workflows. </p> </note>",
+      "documentation":"<p>Starts a state machine execution.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>If you start an execution with an unqualified state machine ARN, Step Functions uses the latest revision of the state machine for the execution.</p> <p>To start executions of a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>, call <code>StartExecution</code> and provide the version ARN or the ARN of an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> that points to the version.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if you call <code>StartExecution</code> with the same name and input as a running execution, the call succeeds and return the same response as the original request. If the execution is closed or if the input is different, it returns a <code>400 ExecutionAlreadyExists</code> error. You can reuse names after 90 days. </p> <p> <code>StartExecution</code> isn't idempotent for <code>EXPRESS</code> workflows. </p> </note>",
       "idempotent":true
     },
     "StartSyncExecution":{
@@ -413,10 +531,28 @@
         {"shape":"MissingRequiredParameter"},
         {"shape":"StateMachineDeleting"},
         {"shape":"StateMachineDoesNotExist"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, or <code>loggingConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <p>If the given state machine Amazon Resource Name (ARN) is a qualified state machine ARN, it will fail with ValidationException.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <note> <p>All <code>StartExecution</code> calls within a few seconds will use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after calling <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
+      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, or <code>loggingConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>After you update your state machine, you can set the <code>publish</code> parameter to <code>true</code> in the same action to publish a new <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>. This way, you can opt-in to strict versioning of your state machine.</p> <note> <p>Step Functions assigns monotonically increasing integers for state machine versions, starting at version number 1.</p> </note> <note> <p>All <code>StartExecution</code> calls within a few seconds use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after you call <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
       "idempotent":true
+    },
+    "UpdateStateMachineAlias":{
+      "name":"UpdateStateMachineAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateStateMachineAliasInput"},
+      "output":{"shape":"UpdateStateMachineAliasOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidArn"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> by modifying its <code>description</code> or <code>routingConfiguration</code>.</p> <p>You must specify at least one of the <code>description</code> or <code>routingConfiguration</code> parameters to update a state machine alias.</p> <note> <p> <code>UpdateStateMachineAlias</code> is an idempotent API. Step Functions bases the idempotency check on the <code>stateMachineAliasArn</code>, <code>description</code>, and <code>routingConfiguration</code> parameters. Requests with the same parameters return an idempotent response.</p> </note> <note> <p>This operation is eventually consistent. All <a>StartExecution</a> requests made within a few seconds use the latest alias configuration. Executions started immediately after calling <code>UpdateStateMachineAlias</code> may use the previous routing configuration.</p> </note> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
     }
   },
   "shapes":{
@@ -566,6 +702,11 @@
       "documentation":"<p>The maximum number of workers concurrently polling for activity tasks has been reached.</p>",
       "exception":true
     },
+    "AliasDescription":{
+      "type":"string",
+      "max":256,
+      "sensitive":true
+    },
     "Arn":{
       "type":"string",
       "max":256,
@@ -593,6 +734,12 @@
       },
       "documentation":"<p>An object that describes workflow billing details.</p>"
     },
+    "CharacterRestrictedName":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "pattern":"^(?=.*[a-zA-Z_\\-\\.])[a-zA-Z0-9_\\-\\.]+$"
+    },
     "CloudWatchEventsExecutionDataDetails":{
       "type":"structure",
       "members":{
@@ -612,6 +759,14 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state. This error occurs when there're concurrent requests for <a>DeleteStateMachineVersion</a>, <a>PublishStateMachineVersion</a>, or <a>UpdateStateMachine</a> with the <code>publish</code> parameter set to <code>true</code>.</p> <p>HTTP Status Code: 409</p>",
+      "exception":true
     },
     "ConnectorParameters":{
       "type":"string",
@@ -650,6 +805,44 @@
         }
       }
     },
+    "CreateStateMachineAliasInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "routingConfiguration"
+      ],
+      "members":{
+        "description":{
+          "shape":"AliasDescription",
+          "documentation":"<p>A description for the state machine alias.</p>"
+        },
+        "name":{
+          "shape":"CharacterRestrictedName",
+          "documentation":"<p>The name of the state machine alias.</p> <p>To avoid conflict with version ARNs, don't use an integer in the name of the alias.</p>"
+        },
+        "routingConfiguration":{
+          "shape":"RoutingConfigurationList",
+          "documentation":"<p>The routing configuration of a state machine alias. The routing configuration shifts execution traffic between two state machine versions. <code>routingConfiguration</code> contains an array of <code>RoutingConfig</code> objects that specify up to two state machine versions. Step Functions then randomly choses which version to run an execution with based on the weight assigned to each <code>RoutingConfig</code>.</p>"
+        }
+      }
+    },
+    "CreateStateMachineAliasOutput":{
+      "type":"structure",
+      "required":[
+        "stateMachineAliasArn",
+        "creationDate"
+      ],
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the created state machine alias.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the state machine alias was created.</p>"
+        }
+      }
+    },
     "CreateStateMachineInput":{
       "type":"structure",
       "required":[
@@ -685,6 +878,14 @@
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
           "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
+        },
+        "publish":{
+          "shape":"Publish",
+          "documentation":"<p>Set to <code>true</code> to publish the first version of the state machine during creation. The default is <code>false</code>.</p>"
+        },
+        "versionDescription":{
+          "shape":"VersionDescription",
+          "documentation":"<p>Sets description about the state machine version. You can only set the description if the <code>publish</code> parameter is set to <code>true</code>. Otherwise, if you set <code>versionDescription</code>, but <code>publish</code> to <code>false</code>, this API action throws <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -702,6 +903,10 @@
         "creationDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date the state machine is created.</p>"
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the created state machine version. If you do not set the <code>publish</code> parameter to <code>true</code>, this field returns null value.</p>"
         }
       }
     },
@@ -726,6 +931,21 @@
       "members":{
       }
     },
+    "DeleteStateMachineAliasInput":{
+      "type":"structure",
+      "required":["stateMachineAliasArn"],
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias to delete.</p>"
+        }
+      }
+    },
+    "DeleteStateMachineAliasOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteStateMachineInput":{
       "type":"structure",
       "required":["stateMachineArn"],
@@ -737,6 +957,21 @@
       }
     },
     "DeleteStateMachineOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteStateMachineVersionInput":{
+      "type":"structure",
+      "required":["stateMachineVersionArn"],
+      "members":{
+        "stateMachineVersionArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine version to delete.</p>"
+        }
+      }
+    },
+    "DeleteStateMachineVersionOutput":{
       "type":"structure",
       "members":{
       }
@@ -814,7 +1049,7 @@
         },
         "stopDate":{
           "shape":"Timestamp",
-          "documentation":"<p>If the execution has already ended, the date the execution stopped.</p>"
+          "documentation":"<p>If the execution ended, the date the execution stopped.</p>"
         },
         "input":{
           "shape":"SensitiveData",
@@ -841,6 +1076,14 @@
         "cause":{
           "shape":"SensitiveCause",
           "documentation":"<p>The cause string if the state machine execution failed.</p>"
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request without specifying a state machine version or alias ARN, Step Functions returns a null value.</p>"
+        },
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias associated with the execution. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request with a state machine version ARN, this field will be null.</p>"
         }
       }
     },
@@ -910,6 +1153,45 @@
         }
       }
     },
+    "DescribeStateMachineAliasInput":{
+      "type":"structure",
+      "required":["stateMachineAliasArn"],
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias.</p>"
+        }
+      }
+    },
+    "DescribeStateMachineAliasOutput":{
+      "type":"structure",
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the state machine alias.</p>"
+        },
+        "description":{
+          "shape":"AliasDescription",
+          "documentation":"<p>A description of the alias.</p>"
+        },
+        "routingConfiguration":{
+          "shape":"RoutingConfigurationList",
+          "documentation":"<p>The routing configuration of the alias.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the state machine alias was created.</p>"
+        },
+        "updateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the state machine alias was last updated.</p> <p>For a newly created state machine, this is the same as the creation date.</p>"
+        }
+      }
+    },
     "DescribeStateMachineForExecutionInput":{
       "type":"structure",
       "required":["executionArn"],
@@ -962,6 +1244,10 @@
         "label":{
           "shape":"MapRunLabel",
           "documentation":"<p>A user-defined or an auto-generated string that identifies a <code>Map</code> state. This ﬁeld is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier for the state machine. The first revision ID when you create the state machine is null.</p> <p>Use the state machine <code>revisionId</code> parameter to compare the revision of a state machine with the configuration of the state machine used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>"
         }
       }
     },
@@ -971,7 +1257,7 @@
       "members":{
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine to describe.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine for which you want the information.</p> <p>If you specify a state machine version ARN, this API returns details about that version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>"
         }
       }
     },
@@ -988,7 +1274,7 @@
       "members":{
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the state machine.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the state machine.</p> <p>If you specified a state machine version ARN in your request, the API returns the version ARN. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>"
         },
         "name":{
           "shape":"Name",
@@ -1012,7 +1298,7 @@
         },
         "creationDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The date the state machine is created.</p>"
+          "documentation":"<p>The date the state machine is created.</p> <p>For a state machine version, <code>creationDate</code> is the date the version was created.</p>"
         },
         "loggingConfiguration":{"shape":"LoggingConfiguration"},
         "tracingConfiguration":{
@@ -1022,6 +1308,14 @@
         "label":{
           "shape":"MapRunLabel",
           "documentation":"<p>A user-defined or an auto-generated string that identifies a <code>Map</code> state. This parameter is present only if the <code>stateMachineArn</code> specified in input is a qualified state machine ARN.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier for the state machine.</p> <p>Use the <code>revisionId</code> parameter to compare between versions of a state machine configuration used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>"
+        },
+        "description":{
+          "shape":"VersionDescription",
+          "documentation":"<p>The description of the state machine version.</p>"
         }
       }
     },
@@ -1100,7 +1394,7 @@
         },
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the executed state machine.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine that ran the execution.</p>"
         },
         "name":{
           "shape":"Name",
@@ -1126,6 +1420,14 @@
           "shape":"UnsignedInteger",
           "documentation":"<p>The total number of items processed in a child workflow execution. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>itemCount</code> field isn't returned.</p>",
           "box":true
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution.</p> <p>If the state machine execution was started with an unqualified ARN, it returns null.</p> <p>If the execution was started using a <code>stateMachineAliasArn</code>, both the <code>stateMachineAliasArn</code> and <code>stateMachineVersionArn</code> parameters contain the respective values.</p>"
+        },
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias used to start an execution.</p> <p>If the state machine execution was started with an unqualified ARN or a version ARN, it returns null.</p>"
         }
       },
       "documentation":"<p>Contains details about an execution.</p>"
@@ -1144,6 +1446,14 @@
         "roleArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for executing Lambda tasks.</p>"
+        },
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a state machine alias used for starting the state machine execution.</p>"
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a state machine version used for starting the state machine execution.</p>"
         }
       },
       "documentation":"<p>Contains details about the start of the execution.</p>"
@@ -1650,7 +1960,7 @@
       "members":{
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p> <p>You can also return a list of executions associated with a specific <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>, by specifying an alias ARN or a version ARN in the <code>stateMachineArn</code> parameter.</p>"
         },
         "statusFilter":{
           "shape":"ExecutionStatus",
@@ -1714,6 +2024,70 @@
         "mapRuns":{
           "shape":"MapRunList",
           "documentation":"<p>An array that lists information related to a Map Run, such as the Amazon Resource Name (ARN) of the Map Run and the ARN of the state machine that started the Map Run.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        }
+      }
+    },
+    "ListStateMachineAliasesInput":{
+      "type":"structure",
+      "required":["stateMachineArn"],
+      "members":{
+        "stateMachineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine for which you want to list aliases.</p> <p>If you specify a state machine version ARN, this API returns a list of aliases for that version.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>"
+        }
+      }
+    },
+    "ListStateMachineAliasesOutput":{
+      "type":"structure",
+      "required":["stateMachineAliases"],
+      "members":{
+        "stateMachineAliases":{
+          "shape":"StateMachineAliasList",
+          "documentation":"<p>Aliases for the state machine.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        }
+      }
+    },
+    "ListStateMachineVersionsInput":{
+      "type":"structure",
+      "required":["stateMachineArn"],
+      "members":{
+        "stateMachineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>"
+        }
+      }
+    },
+    "ListStateMachineVersionsOutput":{
+      "type":"structure",
+      "required":["stateMachineVersions"],
+      "members":{
+        "stateMachineVersions":{
+          "shape":"StateMachineVersionList",
+          "documentation":"<p>Versions for the state machine.</p>"
         },
         "nextToken":{
           "shape":"PageToken",
@@ -2027,16 +2401,77 @@
       "max":1024,
       "min":1
     },
+    "Publish":{"type":"boolean"},
+    "PublishStateMachineVersionInput":{
+      "type":"structure",
+      "required":["stateMachineArn"],
+      "members":{
+        "stateMachineArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>Only publish the state machine version if the current state machine's revision ID matches the specified ID.</p> <p>Use this option to avoid publishing a version if the state machine changed since you last updated it. If the specified revision ID doesn't match the state machine's current revision ID, the API returns <code>ConflictException</code>.</p> <note> <p>To specify an initial revision ID for a state machine with no revision ID assigned, specify the string <code>INITIAL</code> for the <code>revisionId</code> parameter. For example, you can specify a <code>revisionID</code> of <code>INITIAL</code> when you create a state machine using the <a>CreateStateMachine</a> API action.</p> </note>"
+        },
+        "description":{
+          "shape":"VersionDescription",
+          "documentation":"<p>An optional description of the state machine version.</p>"
+        }
+      }
+    },
+    "PublishStateMachineVersionOutput":{
+      "type":"structure",
+      "required":[
+        "creationDate",
+        "stateMachineVersionArn"
+      ],
+      "members":{
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the version was created.</p>"
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) (ARN) that identifies the state machine version.</p>"
+        }
+      }
+    },
     "ResourceNotFound":{
       "type":"structure",
       "members":{
         "message":{"shape":"ErrorMessage"},
         "resourceName":{"shape":"Arn"}
       },
-      "documentation":"<p>Could not find the referenced resource. Only state machine and activity ARNs are supported.</p>",
+      "documentation":"<p>Could not find the referenced resource.</p>",
       "exception":true
     },
     "ReverseOrder":{"type":"boolean"},
+    "RevisionId":{"type":"string"},
+    "RoutingConfigurationList":{
+      "type":"list",
+      "member":{"shape":"RoutingConfigurationListItem"},
+      "max":2,
+      "min":1
+    },
+    "RoutingConfigurationListItem":{
+      "type":"structure",
+      "required":[
+        "stateMachineVersionArn",
+        "weight"
+      ],
+      "members":{
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration.</p> <p>If you specify the ARN of a second version, it must belong to the same state machine as the first version.</p>"
+        },
+        "weight":{
+          "shape":"VersionWeight",
+          "documentation":"<p>The percentage of traffic you want to route to the second state machine version. The sum of the weights in the routing configuration must be equal to 100.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the routing configuration of a state machine alias. In a routing configuration, you define an array of objects that specify up to two state machine versions. You also specify the percentage of traffic to be routed to each version.</p>"
+    },
     "SendTaskFailureInput":{
       "type":"structure",
       "required":["taskToken"],
@@ -2119,17 +2554,25 @@
       "min":0,
       "sensitive":true
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request would cause a service quota to be exceeded.</p> <p>HTTP Status Code: 402</p>",
+      "exception":true
+    },
     "StartExecutionInput":{
       "type":"structure",
       "required":["stateMachineArn"],
       "members":{
         "stateMachineArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine to execute.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine to execute.</p> <p>The <code>stateMachineArn</code> parameter accepts one of the following inputs:</p> <ul> <li> <p> <b>An unqualified state machine ARN</b> – Refers to a state machine ARN that isn't qualified with a version or alias ARN. The following is an example of an unqualified state machine ARN.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> <p>Step Functions doesn't associate state machine executions that you start with an unqualified ARN with a version. This is true even if that version uses the same revision that the execution used.</p> </li> <li> <p> <b>A state machine version ARN</b> – Refers to a version ARN, which is a combination of state machine ARN and the version number separated by a colon (:). The following is an example of the ARN for version 10. </p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;:10</code> </p> <p>Step Functions doesn't associate executions that you start with a version ARN with any aliases that point to that version.</p> </li> <li> <p> <b>A state machine alias ARN</b> – Refers to an alias ARN, which is a combination of state machine ARN and the alias name separated by a colon (:). The following is an example of the ARN for an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <p>Step Functions associates executions that you start with an alias ARN with that alias and the state machine version used for that execution.</p> </li> </ul>"
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The name of the execution. This name must be unique for your Amazon Web Services account, region, and state machine for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
+          "documentation":"<p>Optional name of the execution. This name must be unique for your Amazon Web Services account, Region, and state machine for 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions\"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>\" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>"
         },
         "input":{
           "shape":"SensitiveData",
@@ -2279,6 +2722,28 @@
       },
       "documentation":"<p>Contains details about an exit from a state during an execution.</p>"
     },
+    "StateMachineAliasList":{
+      "type":"list",
+      "member":{"shape":"StateMachineAliasListItem"}
+    },
+    "StateMachineAliasListItem":{
+      "type":"structure",
+      "required":[
+        "stateMachineAliasArn",
+        "creationDate"
+      ],
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a state machine alias. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date of a state machine alias.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific state machine alias.</p>"
+    },
     "StateMachineAlreadyExists":{
       "type":"structure",
       "members":{
@@ -2364,6 +2829,28 @@
       },
       "documentation":"<p/>",
       "exception":true
+    },
+    "StateMachineVersionList":{
+      "type":"list",
+      "member":{"shape":"StateMachineVersionListItem"}
+    },
+    "StateMachineVersionListItem":{
+      "type":"structure",
+      "required":[
+        "stateMachineVersionArn",
+        "creationDate"
+      ],
+      "members":{
+        "stateMachineVersionArn":{
+          "shape":"LongArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies a state machine version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date of a state machine version.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific state machine version.</p>"
     },
     "StopExecutionInput":{
       "type":"structure",
@@ -2796,6 +3283,34 @@
       "members":{
       }
     },
+    "UpdateStateMachineAliasInput":{
+      "type":"structure",
+      "required":["stateMachineAliasArn"],
+      "members":{
+        "stateMachineAliasArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the state machine alias.</p>"
+        },
+        "description":{
+          "shape":"AliasDescription",
+          "documentation":"<p>A description of the state machine alias.</p>"
+        },
+        "routingConfiguration":{
+          "shape":"RoutingConfigurationList",
+          "documentation":"<p>The routing configuration of the state machine alias.</p> <p>An array of <code>RoutingConfig</code> objects that specifies up to two state machine versions that the alias starts executions for.</p>"
+        }
+      }
+    },
+    "UpdateStateMachineAliasOutput":{
+      "type":"structure",
+      "required":["updateDate"],
+      "members":{
+        "updateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the state machine alias was updated.</p>"
+        }
+      }
+    },
     "UpdateStateMachineInput":{
       "type":"structure",
       "required":["stateMachineArn"],
@@ -2814,11 +3329,19 @@
         },
         "loggingConfiguration":{
           "shape":"LoggingConfiguration",
-          "documentation":"<p>The <code>LoggingConfiguration</code> data type is used to set CloudWatch Logs options.</p>"
+          "documentation":"<p>Use the <code>LoggingConfiguration</code> data type to set CloudWatch Logs options.</p>"
         },
         "tracingConfiguration":{
           "shape":"TracingConfiguration",
           "documentation":"<p>Selects whether X-Ray tracing is enabled.</p>"
+        },
+        "publish":{
+          "shape":"Publish",
+          "documentation":"<p>Specifies whether the state machine version is published. The default is <code>false</code>. To publish a version after updating the state machine, set <code>publish</code> to <code>true</code>.</p>"
+        },
+        "versionDescription":{
+          "shape":"VersionDescription",
+          "documentation":"<p>An optional description of the state machine version to publish.</p> <p>You can only specify the <code>versionDescription</code> parameter if you've set <code>publish</code> to <code>true</code>.</p>"
         }
       }
     },
@@ -2829,6 +3352,14 @@
         "updateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time the state machine was updated.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision identifier for the updated state machine.</p>"
+        },
+        "stateMachineVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the published state machine version.</p> <p>If the <code>publish</code> parameter isn't set to <code>true</code>, this field returns null.</p>"
         }
       }
     },
@@ -2849,8 +3380,19 @@
       "enum":[
         "API_DOES_NOT_SUPPORT_LABELED_ARNS",
         "MISSING_REQUIRED_PARAMETER",
-        "CANNOT_UPDATE_COMPLETED_MAP_RUN"
+        "CANNOT_UPDATE_COMPLETED_MAP_RUN",
+        "INVALID_ROUTING_CONFIGURATION"
       ]
+    },
+    "VersionDescription":{
+      "type":"string",
+      "max":256,
+      "sensitive":true
+    },
+    "VersionWeight":{
+      "type":"integer",
+      "max":100,
+      "min":0
     },
     "includedDetails":{"type":"boolean"},
     "truncated":{"type":"boolean"}

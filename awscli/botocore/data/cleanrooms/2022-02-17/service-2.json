@@ -12,6 +12,24 @@
     "uid":"cleanrooms-2022-02-17"
   },
   "operations":{
+    "BatchGetCollaborationAnalysisTemplate":{
+      "name":"BatchGetCollaborationAnalysisTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/collaborations/{collaborationIdentifier}/batch-analysistemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCollaborationAnalysisTemplateInput"},
+      "output":{"shape":"BatchGetCollaborationAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves multiple analysis templates within a collaboration by their Amazon Resource Names (ARNs).</p>"
+    },
     "BatchGetSchema":{
       "name":"BatchGetSchema",
       "http":{
@@ -29,6 +47,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves multiple schemas by their identifiers.</p>"
+    },
+    "CreateAnalysisTemplate":{
+      "name":"CreateAnalysisTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/analysistemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAnalysisTemplateInput"},
+      "output":{"shape":"CreateAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a new analysis template.</p>"
     },
     "CreateCollaboration":{
       "name":"CreateCollaboration",
@@ -128,6 +166,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a membership for a specific collaboration identifier and joins the collaboration.</p>"
+    },
+    "DeleteAnalysisTemplate":{
+      "name":"DeleteAnalysisTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAnalysisTemplateInput"},
+      "output":{"shape":"DeleteAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an analysis template.</p>",
+      "idempotent":true
     },
     "DeleteCollaboration":{
       "name":"DeleteCollaboration",
@@ -247,6 +304,24 @@
       "documentation":"<p>Deletes a specified membership. All resources under a membership must be deleted.</p>",
       "idempotent":true
     },
+    "GetAnalysisTemplate":{
+      "name":"GetAnalysisTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAnalysisTemplateInput"},
+      "output":{"shape":"GetAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an analysis template.</p>"
+    },
     "GetCollaboration":{
       "name":"GetCollaboration",
       "http":{
@@ -263,6 +338,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns metadata about a collaboration.</p>"
+    },
+    "GetCollaborationAnalysisTemplate":{
+      "name":"GetCollaborationAnalysisTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/analysistemplates/{analysisTemplateArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationAnalysisTemplateInput"},
+      "output":{"shape":"GetCollaborationAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an analysis template within a collaboration.</p>"
     },
     "GetConfiguredTable":{
       "name":"GetConfiguredTable",
@@ -389,6 +482,42 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a schema analysis rule.</p>"
+    },
+    "ListAnalysisTemplates":{
+      "name":"ListAnalysisTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/analysistemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnalysisTemplatesInput"},
+      "output":{"shape":"ListAnalysisTemplatesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists analysis templates that the caller owns.</p>"
+    },
+    "ListCollaborationAnalysisTemplates":{
+      "name":"ListCollaborationAnalysisTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/analysistemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationAnalysisTemplatesInput"},
+      "output":{"shape":"ListCollaborationAnalysisTemplatesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists analysis templates within a collaboration.</p>"
     },
     "ListCollaborations":{
       "name":"ListCollaborations",
@@ -545,7 +674,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a protected query that is started by AWS Clean Rooms.</p>"
+      "documentation":"<p>Creates a protected query that is started by Clean Rooms.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -576,6 +705,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Removes a tag or list of tags from a resource.</p>"
+    },
+    "UpdateAnalysisTemplate":{
+      "name":"UpdateAnalysisTemplate",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAnalysisTemplateInput"},
+      "output":{"shape":"UpdateAnalysisTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the analysis template metadata.</p>"
     },
     "UpdateCollaboration":{
       "name":"UpdateCollaboration",
@@ -792,12 +939,45 @@
     "AllowedColumnList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
-      "max":100,
+      "max":225,
       "min":1
+    },
+    "AnalysisFormat":{
+      "type":"string",
+      "enum":["SQL"]
     },
     "AnalysisMethod":{
       "type":"string",
       "enum":["DIRECT_QUERY"]
+    },
+    "AnalysisParameter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"ParameterName",
+          "documentation":"<p>The name of the parameter. The name must use only alphanumeric, underscore (_), or hyphen (-) characters but cannot start or end with a hyphen.</p>"
+        },
+        "type":{
+          "shape":"ParameterType",
+          "documentation":"<p>The type of parameter.</p>"
+        },
+        "defaultValue":{
+          "shape":"ParameterValue",
+          "documentation":"<p>Optional. The default value that is applied in the analysis template. The member who can query can override this value in the query editor.</p>"
+        }
+      },
+      "documentation":"<p>Optional. The member who can query can provide this placeholder for a literal data value in an analysis template.</p>",
+      "sensitive":true
+    },
+    "AnalysisParameterList":{
+      "type":"list",
+      "member":{"shape":"AnalysisParameter"},
+      "max":10,
+      "min":0
     },
     "AnalysisRule":{
       "type":"structure",
@@ -816,7 +996,7 @@
         },
         "type":{
           "shape":"AnalysisRuleType",
-          "documentation":"<p>The type of analysis rule. Valid values are `AGGREGATION` and `LIST`.</p>"
+          "documentation":"<p>The type of analysis rule.</p>"
         },
         "name":{
           "shape":"TableAlias",
@@ -857,7 +1037,11 @@
         },
         "joinRequired":{
           "shape":"JoinRequiredOption",
-          "documentation":"<p>Control that requires member who runs query to do a join with their configured table and/or other configured table in query</p>"
+          "documentation":"<p>Control that requires member who runs query to do a join with their configured table and/or other configured table in query.</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p>Which logical operators (if any) are to be used in an INNER JOIN match condition. Default is <code>AND</code>.</p>"
         },
         "dimensionColumns":{
           "shape":"AnalysisRuleColumnList",
@@ -872,7 +1056,7 @@
           "documentation":"<p>Columns that must meet a specific threshold value (after an aggregation function is applied to it) for each output row to be returned.</p>"
         }
       },
-      "documentation":"<p>Enables query structure and specified queries that product aggregate statistics.</p>"
+      "documentation":"<p>A type of analysis rule that enables query structure and specified queries that produce aggregate statistics.</p>"
     },
     "AnalysisRuleAggregationAggregateColumnsList":{
       "type":"list",
@@ -889,6 +1073,31 @@
       "min":1,
       "pattern":"[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?"
     },
+    "AnalysisRuleCustom":{
+      "type":"structure",
+      "required":["allowedAnalyses"],
+      "members":{
+        "allowedAnalyses":{
+          "shape":"AnalysisRuleCustomAllowedAnalysesList",
+          "documentation":"<p>The analysis templates that are allowed by the custom analysis rule.</p>"
+        },
+        "allowedAnalysisProviders":{
+          "shape":"AnalysisRuleCustomAllowedAnalysisProvidersList",
+          "documentation":"<p>The Amazon Web Services accounts that are allowed to query by the custom analysis rule. Required when <code>allowedAnalyses</code> is <code>ANY_QUERY</code>.</p>"
+        }
+      },
+      "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables.</p>"
+    },
+    "AnalysisRuleCustomAllowedAnalysesList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateArnOrQueryWildcard"},
+      "min":0
+    },
+    "AnalysisRuleCustomAllowedAnalysisProvidersList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "min":0
+    },
     "AnalysisRuleList":{
       "type":"structure",
       "required":[
@@ -898,7 +1107,11 @@
       "members":{
         "joinColumns":{
           "shape":"AnalysisRuleListJoinColumnsList",
-          "documentation":"<p>Columns that can be used to join a configured table with the table of the member who can query and another members' configured tables.</p>"
+          "documentation":"<p>Columns that can be used to join a configured table with the table of the member who can query and other members' configured tables.</p>"
+        },
+        "allowedJoinOperators":{
+          "shape":"JoinOperatorsList",
+          "documentation":"<p>The logical operators (if any) that are to be used in an INNER JOIN match condition. Default is <code>AND</code>.</p>"
         },
         "listColumns":{
           "shape":"AnalysisRuleColumnList",
@@ -917,10 +1130,10 @@
       "members":{
         "v1":{
           "shape":"AnalysisRulePolicyV1",
-          "documentation":"<p>Controls on the query specifications that can be run on configured table..</p>"
+          "documentation":"<p>Controls on the query specifications that can be run on configured table.</p>"
         }
       },
-      "documentation":"<p>Controls on the query specifications that can be run on configured table..</p>",
+      "documentation":"<p>Controls on the query specifications that can be run on configured table.</p>",
       "union":true
     },
     "AnalysisRulePolicyV1":{
@@ -933,21 +1146,279 @@
         "aggregation":{
           "shape":"AnalysisRuleAggregation",
           "documentation":"<p>Analysis rule type that enables only aggregation queries on a configured table.</p>"
+        },
+        "custom":{
+          "shape":"AnalysisRuleCustom",
+          "documentation":"<p>Analysis rule type that enables custom SQL queries on a configured table.</p>"
         }
       },
-      "documentation":"<p>Controls on the query specifications that can be run on configured table..</p>",
+      "documentation":"<p>Controls on the query specifications that can be run on configured table.</p>",
       "union":true
     },
     "AnalysisRuleType":{
       "type":"string",
       "enum":[
         "AGGREGATION",
-        "LIST"
+        "LIST",
+        "CUSTOM"
       ]
     },
     "AnalysisRuleTypeList":{
       "type":"list",
       "member":{"shape":"AnalysisRuleType"}
+    },
+    "AnalysisSchema":{
+      "type":"structure",
+      "members":{
+        "referencedTables":{
+          "shape":"QueryTables",
+          "documentation":"<p>The tables referenced in the analysis schema.</p>"
+        }
+      },
+      "documentation":"<p>A relation within an analysis.</p>"
+    },
+    "AnalysisSource":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"AnalysisTemplateText",
+          "documentation":"<p>The query text.</p>"
+        }
+      },
+      "documentation":"<p>The structure that defines the body of the analysis template.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "AnalysisTemplate":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "membershipId",
+        "membershipArn",
+        "name",
+        "createTime",
+        "updateTime",
+        "schema",
+        "format",
+        "source"
+      ],
+      "members":{
+        "id":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier for the analysis template.</p>"
+        },
+        "arn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique ID for the associated collaboration of the analysis template.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the analysis template’s associated collaboration.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier of a member who created the analysis template.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member who created the analysis template.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the analysis template.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of the analysis template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template was last updated.</p>"
+        },
+        "schema":{
+          "shape":"AnalysisSchema",
+          "documentation":"<p>The entire schema object.</p>"
+        },
+        "format":{
+          "shape":"AnalysisFormat",
+          "documentation":"<p>The format of the analysis template.</p>"
+        },
+        "source":{
+          "shape":"AnalysisSource",
+          "documentation":"<p>The source of the analysis template.</p>"
+        },
+        "analysisParameters":{
+          "shape":"AnalysisParameterList",
+          "documentation":"<p>The parameters of the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The analysis template.</p>"
+    },
+    "AnalysisTemplateArn":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+"
+    },
+    "AnalysisTemplateArnList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateArn"},
+      "max":10,
+      "min":1
+    },
+    "AnalysisTemplateArnOrQueryWildcard":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"(ANY_QUERY|arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+)"
+    },
+    "AnalysisTemplateIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+    },
+    "AnalysisTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createTime",
+        "id",
+        "name",
+        "updateTime",
+        "membershipArn",
+        "membershipId",
+        "collaborationArn",
+        "collaborationId"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template summary was created.</p>"
+        },
+        "id":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier of the analysis template.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of the analysis template. </p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template summary was last updated.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member who created the analysis template.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier for a membership resource.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the analysis template summary’s associated collaboration.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis template summary belongs to. Currently accepts collaboration ID.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The metadata of the analysis template.</p>"
+    },
+    "AnalysisTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateSummary"}
+    },
+    "AnalysisTemplateText":{
+      "type":"string",
+      "max":15000,
+      "min":0
+    },
+    "BatchGetCollaborationAnalysisTemplateError":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "code",
+        "message"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>An error code for the error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of why the call failed.</p>"
+        }
+      },
+      "documentation":"<p>Details of errors thrown by the call to retrieve multiple analysis templates within a collaboration by their identifiers.</p>"
+    },
+    "BatchGetCollaborationAnalysisTemplateErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetCollaborationAnalysisTemplateError"},
+      "max":10,
+      "min":0
+    },
+    "BatchGetCollaborationAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "analysisTemplateArns"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis templates belong to. Currently accepts collaboration ID.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "analysisTemplateArns":{
+          "shape":"AnalysisTemplateArnList",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the analysis template within a collaboration.</p>"
+        }
+      }
+    },
+    "BatchGetCollaborationAnalysisTemplateOutput":{
+      "type":"structure",
+      "required":[
+        "collaborationAnalysisTemplates",
+        "errors"
+      ],
+      "members":{
+        "collaborationAnalysisTemplates":{
+          "shape":"CollaborationAnalysisTemplateList",
+          "documentation":"<p>The retrieved list of analysis templates within a collaboration.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetCollaborationAnalysisTemplateErrorList",
+          "documentation":"<p>Error reasons for collaboration analysis templates that could not be retrieved. One error is returned for every collaboration analysis template that could not be retrieved.</p>"
+        }
+      }
     },
     "BatchGetSchemaError":{
       "type":"structure",
@@ -1056,7 +1527,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "creatorDisplayName":{
           "shape":"DisplayName",
@@ -1092,6 +1563,139 @@
         }
       },
       "documentation":"<p>The multi-party data share environment. The collaboration contains metadata about its purpose and participants.</p>"
+    },
+    "CollaborationAnalysisTemplate":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "creatorAccountId",
+        "name",
+        "createTime",
+        "updateTime",
+        "schema",
+        "format",
+        "source"
+      ],
+      "members":{
+        "id":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier of the analysis template.</p>"
+        },
+        "arn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis templates belong to. Currently accepts collaboration ID.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the analysis template’s associated collaboration.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the analysis template.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of the analysis template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template within a collaboration was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the analysis template in the collaboration was last updated.</p>"
+        },
+        "schema":{
+          "shape":"AnalysisSchema",
+          "documentation":"<p>The entire schema object.</p>"
+        },
+        "format":{
+          "shape":"AnalysisFormat",
+          "documentation":"<p>The format of the analysis template in the collaboration.</p>"
+        },
+        "source":{
+          "shape":"AnalysisSource",
+          "documentation":"<p>The source of the analysis template within a collaboration.</p>"
+        },
+        "analysisParameters":{
+          "shape":"AnalysisParameterList",
+          "documentation":"<p>The analysis parameters that have been specified in the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The analysis template within a collaboration.</p>"
+    },
+    "CollaborationAnalysisTemplateList":{
+      "type":"list",
+      "member":{"shape":"CollaborationAnalysisTemplate"},
+      "max":10,
+      "min":0
+    },
+    "CollaborationAnalysisTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createTime",
+        "id",
+        "name",
+        "updateTime",
+        "collaborationArn",
+        "collaborationId",
+        "creatorAccountId"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the analysis template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the summary of the analysis template in a collaboration was created.</p>"
+        },
+        "id":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier of the analysis template.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of the analysis template.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the summary of the analysis template in the collaboration was last updated.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the analysis template’s associated collaboration.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis templates belong to. Currently accepts collaboration ID.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the analysis template.</p>"
+        }
+      },
+      "documentation":"<p>The metadata of the analysis template within a collaboration.</p>"
+    },
+    "CollaborationAnalysisTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"CollaborationAnalysisTemplateSummary"}
     },
     "CollaborationArn":{
       "type":"string",
@@ -1151,7 +1755,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "creatorDisplayName":{
           "shape":"DisplayName",
@@ -1200,7 +1804,7 @@
           "documentation":"<p>The type of the column.</p>"
         }
       },
-      "documentation":"<p>A column within a schema relation, derived from the underlying AWS Glue table.</p>"
+      "documentation":"<p>A column within a schema relation, derived from the underlying Glue table.</p>"
     },
     "ColumnList":{
       "type":"list",
@@ -1250,7 +1854,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>The AWS Glue table that this configured table represents.</p>"
+          "documentation":"<p>The Glue table that this configured table represents.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -1262,7 +1866,7 @@
         },
         "analysisRuleTypes":{
           "shape":"ConfiguredTableAnalysisRuleTypeList",
-          "documentation":"<p>The types of analysis rules associated with this configured table. Valid values are `AGGREGATION` and `LIST`. Currently, only one analysis rule may be associated with a configured table.</p>"
+          "documentation":"<p>The types of analysis rules associated with this configured table. Currently, only one analysis rule may be associated with a configured table.</p>"
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
@@ -1270,7 +1874,7 @@
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
-          "documentation":"<p>The columns within the underlying AWS Glue table that can be utilized within collaborations.</p>"
+          "documentation":"<p>The columns within the underlying Glue table that can be utilized within collaborations.</p>"
         }
       },
       "documentation":"<p>A table that has been configured for use in a collaboration.</p>"
@@ -1300,7 +1904,7 @@
         },
         "type":{
           "shape":"ConfiguredTableAnalysisRuleType",
-          "documentation":"<p>The type of configured table analysis rule. Valid values are `AGGREGATION` and `LIST`.</p>"
+          "documentation":"<p>The type of configured table analysis rule.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -1334,7 +1938,8 @@
         "aggregation":{
           "shape":"AnalysisRuleAggregation",
           "documentation":"<p>Analysis rule type that enables only aggregation queries on a configured table.</p>"
-        }
+        },
+        "custom":{"shape":"AnalysisRuleCustom"}
       },
       "documentation":"<p>Controls on the query specifications that can be run on a configured table.</p>",
       "union":true
@@ -1343,7 +1948,8 @@
       "type":"string",
       "enum":[
         "AGGREGATION",
-        "LIST"
+        "LIST",
+        "CUSTOM"
       ]
     },
     "ConfiguredTableAnalysisRuleTypeList":{
@@ -1354,7 +1960,7 @@
       "type":"string",
       "max":100,
       "min":0,
-      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:configuredTable/[\\d\\w-]+"
+      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:configuredtable/[\\d\\w-]+"
     },
     "ConfiguredTableAssociation":{
       "type":"structure",
@@ -1422,7 +2028,7 @@
       "type":"string",
       "max":100,
       "min":0,
-      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:configuredTableAssociation/[\\d\\w-]+/[\\d\\w-]+"
+      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:configuredtableassociation/[\\d\\w-]+/[\\d\\w-]+"
     },
     "ConfiguredTableAssociationIdentifier":{
       "type":"string",
@@ -1570,6 +2176,57 @@
         "INVALID_STATE"
       ]
     },
+    "CreateAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "name",
+        "format",
+        "source"
+      ],
+      "members":{
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the analysis template.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"TableAlias",
+          "documentation":"<p>The name of the analysis template.</p>"
+        },
+        "format":{
+          "shape":"AnalysisFormat",
+          "documentation":"<p>The format of the analysis template.</p>"
+        },
+        "source":{
+          "shape":"AnalysisSource",
+          "documentation":"<p>The information in the analysis template. Currently supports <code>text</code>, the query text for the analysis template.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "analysisParameters":{
+          "shape":"AnalysisParameterList",
+          "documentation":"<p>The parameters of the analysis template.</p>"
+        }
+      }
+    },
+    "CreateAnalysisTemplateOutput":{
+      "type":"structure",
+      "required":["analysisTemplate"],
+      "members":{
+        "analysisTemplate":{
+          "shape":"AnalysisTemplate",
+          "documentation":"<p>The analysis template.</p>"
+        }
+      }
+    },
     "CreateCollaborationInput":{
       "type":"structure",
       "required":[
@@ -1641,7 +2298,7 @@
         },
         "analysisRuleType":{
           "shape":"ConfiguredTableAnalysisRuleType",
-          "documentation":"<p>The type of analysis rule. Valid values are AGGREGATION and LIST.</p>"
+          "documentation":"<p>The type of analysis rule.</p>"
         },
         "analysisRulePolicy":{
           "shape":"ConfiguredTableAnalysisRulePolicy",
@@ -1725,7 +2382,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>A reference to the AWS Glue table being configured.</p>"
+          "documentation":"<p>A reference to the Glue table being configured.</p>"
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
@@ -1769,6 +2426,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       }
     },
@@ -1809,6 +2470,32 @@
         }
       },
       "documentation":"<p>The settings for client-side encryption for cryptographic computing.</p>"
+    },
+    "DeleteAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "analysisTemplateIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisTemplateIdentifier":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier for the analysis template resource.</p>",
+          "location":"uri",
+          "locationName":"analysisTemplateIdentifier"
+        }
+      }
+    },
+    "DeleteAnalysisTemplateOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteCollaborationInput":{
       "type":"structure",
@@ -1957,6 +2644,68 @@
         "INVITED",
         "ACTIVE"
       ]
+    },
+    "GetAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "analysisTemplateIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisTemplateIdentifier":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier for the analysis template resource.</p>",
+          "location":"uri",
+          "locationName":"analysisTemplateIdentifier"
+        }
+      }
+    },
+    "GetAnalysisTemplateOutput":{
+      "type":"structure",
+      "required":["analysisTemplate"],
+      "members":{
+        "analysisTemplate":{
+          "shape":"AnalysisTemplate",
+          "documentation":"<p>The analysis template.</p>"
+        }
+      }
+    },
+    "GetCollaborationAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "analysisTemplateArn"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis templates belong to. Currently accepts collaboration ID.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "analysisTemplateArn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the analysis template within a collaboration.</p>",
+          "location":"uri",
+          "locationName":"analysisTemplateArn"
+        }
+      }
+    },
+    "GetCollaborationAnalysisTemplateOutput":{
+      "type":"structure",
+      "required":["collaborationAnalysisTemplate"],
+      "members":{
+        "collaborationAnalysisTemplate":{
+          "shape":"CollaborationAnalysisTemplate",
+          "documentation":"<p>The analysis template within a collaboration.</p>"
+        }
+      }
     },
     "GetCollaborationInput":{
       "type":"structure",
@@ -2186,7 +2935,13 @@
         }
       }
     },
-    "GlueResourceName":{
+    "GlueDatabaseName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_]+-)*([a-zA-Z0-9_]+))?"
+    },
+    "GlueTableName":{
       "type":"string",
       "max":128,
       "min":0,
@@ -2200,15 +2955,15 @@
       ],
       "members":{
         "tableName":{
-          "shape":"GlueResourceName",
-          "documentation":"<p>The name of the AWS Glue table.</p>"
+          "shape":"GlueTableName",
+          "documentation":"<p>The name of the Glue table.</p>"
         },
         "databaseName":{
-          "shape":"GlueResourceName",
-          "documentation":"<p>The name of the database the AWS Glue table belongs to.</p>"
+          "shape":"GlueDatabaseName",
+          "documentation":"<p>The name of the database the Glue table belongs to.</p>"
         }
       },
-      "documentation":"<p>A reference to a table within an AWS Glue data catalog.</p>"
+      "documentation":"<p>A reference to a table within an Glue data catalog.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -2220,13 +2975,104 @@
       "exception":true,
       "fault":true
     },
+    "JoinOperator":{
+      "type":"string",
+      "enum":[
+        "OR",
+        "AND"
+      ]
+    },
+    "JoinOperatorsList":{
+      "type":"list",
+      "member":{"shape":"JoinOperator"},
+      "max":2,
+      "min":0
+    },
     "JoinRequiredOption":{
       "type":"string",
       "enum":["QUERY_RUNNER"]
     },
     "KeyPrefix":{
       "type":"string",
-      "pattern":"[\\w!.*/-]*"
+      "max":512,
+      "min":0,
+      "pattern":"[\\w!.=*/-]*"
+    },
+    "ListAnalysisTemplatesInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAnalysisTemplatesOutput":{
+      "type":"structure",
+      "required":["analysisTemplateSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        },
+        "analysisTemplateSummaries":{
+          "shape":"AnalysisTemplateSummaryList",
+          "documentation":"<p>Lists analysis template metadata.</p>"
+        }
+      }
+    },
+    "ListCollaborationAnalysisTemplatesInput":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for the collaboration that the analysis templates belong to. Currently accepts collaboration ID.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCollaborationAnalysisTemplatesOutput":{
+      "type":"structure",
+      "required":["collaborationAnalysisTemplateSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        },
+        "collaborationAnalysisTemplateSummaries":{
+          "shape":"CollaborationAnalysisTemplateSummaryList",
+          "documentation":"<p>The metadata of the analysis template within a collaboration.</p>"
+        }
+      }
     },
     "ListCollaborationsInput":{
       "type":"structure",
@@ -2556,7 +3402,7 @@
       "members":{
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "memberAbilities":{
           "shape":"MemberAbilities",
@@ -2591,7 +3437,7 @@
       "members":{
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS Account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "status":{
           "shape":"MemberStatus",
@@ -2663,7 +3509,7 @@
         },
         "collaborationCreatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "collaborationCreatorDisplayName":{
           "shape":"DisplayName",
@@ -2692,6 +3538,10 @@
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
           "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       },
       "documentation":"<p>The membership object.</p>"
@@ -2707,6 +3557,29 @@
       "max":36,
       "min":36,
       "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+    },
+    "MembershipProtectedQueryOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{"shape":"ProtectedQueryS3OutputConfiguration"}
+      },
+      "documentation":"<p>Contains configurations for protected query results.</p>",
+      "union":true
+    },
+    "MembershipProtectedQueryResultConfiguration":{
+      "type":"structure",
+      "required":["outputConfiguration"],
+      "members":{
+        "outputConfiguration":{
+          "shape":"MembershipProtectedQueryOutputConfiguration",
+          "documentation":"<p>Configuration for protected query results.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The unique ARN for an IAM role that is used by Clean Rooms to write protected query results to the result location, given by the member who can receive results.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for protected query results.</p>"
     },
     "MembershipQueryLogStatus":{
       "type":"string",
@@ -2757,7 +3630,7 @@
         },
         "collaborationCreatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier of the AWS principal that created the collaboration. Currently only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier of the Amazon Web Services principal that created the collaboration. Currently only supports Amazon Web Services account ID.</p>"
         },
         "collaborationCreatorDisplayName":{
           "shape":"DisplayName",
@@ -2795,6 +3668,42 @@
       "max":10240,
       "min":0
     },
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"ParameterName"},
+      "value":{"shape":"ParameterValue"}
+    },
+    "ParameterName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9a-zA-Z_]+"
+    },
+    "ParameterType":{
+      "type":"string",
+      "enum":[
+        "SMALLINT",
+        "INTEGER",
+        "BIGINT",
+        "DECIMAL",
+        "REAL",
+        "DOUBLE_PRECISION",
+        "BOOLEAN",
+        "CHAR",
+        "VARCHAR",
+        "DATE",
+        "TIMESTAMP",
+        "TIMESTAMPTZ",
+        "TIME",
+        "TIMETZ",
+        "VARBYTE"
+      ]
+    },
+    "ParameterValue":{
+      "type":"string",
+      "max":250,
+      "min":0
+    },
     "ProtectedQuery":{
       "type":"structure",
       "required":[
@@ -2802,9 +3711,7 @@
         "membershipId",
         "membershipArn",
         "createTime",
-        "sqlParameters",
-        "status",
-        "resultConfiguration"
+        "status"
       ],
       "members":{
         "id":{
@@ -2848,7 +3755,7 @@
           "documentation":"<p>An error thrown by the protected query.</p>"
         }
       },
-      "documentation":"<p>The parameters for an AWS Clean Rooms protected query.</p>"
+      "documentation":"<p>The parameters for an Clean Rooms protected query.</p>"
     },
     "ProtectedQueryError":{
       "type":"structure",
@@ -2874,12 +3781,20 @@
       "min":1,
       "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
     },
+    "ProtectedQueryMemberOutputList":{
+      "type":"list",
+      "member":{"shape":"ProtectedQuerySingleMemberOutput"}
+    },
     "ProtectedQueryOutput":{
       "type":"structure",
       "members":{
         "s3":{
           "shape":"ProtectedQueryS3Output",
           "documentation":"<p>If present, the output for a protected query with an `S3` output type.</p>"
+        },
+        "memberList":{
+          "shape":"ProtectedQueryMemberOutputList",
+          "documentation":"<p>The list of member Amazon Web Services account(s) that received the results of the query. </p>"
         }
       },
       "documentation":"<p>Contains details about the protected query output.</p>",
@@ -2959,11 +3874,18 @@
     },
     "ProtectedQuerySQLParameters":{
       "type":"structure",
-      "required":["queryString"],
       "members":{
         "queryString":{
           "shape":"ProtectedQuerySQLParametersQueryStringString",
           "documentation":"<p>The query string to be submitted.</p>"
+        },
+        "analysisTemplateArn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the analysis template within a collaboration.</p>"
+        },
+        "parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>The protected query SQL parameters.</p>"
         }
       },
       "documentation":"<p>The parameters for the SQL type Protected Query.</p>",
@@ -2973,6 +3895,17 @@
       "type":"string",
       "max":15000,
       "min":0
+    },
+    "ProtectedQuerySingleMemberOutput":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the member in the collaboration who can receive results for the query.</p>"
+        }
+      },
+      "documentation":"<p>Details about the member who received the query result.</p>"
     },
     "ProtectedQueryStatistics":{
       "type":"structure",
@@ -3036,6 +3969,22 @@
     "ProtectedQueryType":{
       "type":"string",
       "enum":["SQL"]
+    },
+    "QueryTables":{
+      "type":"list",
+      "member":{"shape":"TableAlias"}
+    },
+    "ResourceAlias":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?"
+    },
+    "ResourceDescription":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3132,7 +4081,7 @@
         },
         "analysisRuleTypes":{
           "shape":"AnalysisRuleTypeList",
-          "documentation":"<p>The analysis rule types associated with the schema. Valued values are LIST and AGGREGATION. Currently, only one entry is present.</p>"
+          "documentation":"<p>The analysis rule types associated with the schema. Currently, only one entry is present.</p>"
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
@@ -3140,7 +4089,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The unique account ID for the AWS account that owns the schema.</p>"
+          "documentation":"<p>The unique account ID for the Amazon Web Services account that owns the schema.</p>"
         },
         "name":{
           "shape":"TableAlias",
@@ -3202,7 +4151,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The unique account ID for the AWS account that owns the schema.</p>"
+          "documentation":"<p>The unique account ID for the Amazon Web Services account that owns the schema.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -3269,8 +4218,7 @@
       "required":[
         "type",
         "membershipIdentifier",
-        "sqlParameters",
-        "resultConfiguration"
+        "sqlParameters"
       ],
       "members":{
         "type":{
@@ -3327,17 +4275,16 @@
       "members":{
         "glue":{
           "shape":"GlueTableReference",
-          "documentation":"<p>If present, a reference to the AWS Glue table referred to by this table reference.</p>"
+          "documentation":"<p>If present, a reference to the Glue table referred to by this table reference.</p>"
         }
       },
-      "documentation":"<p>A pointer to the dataset that underlies this table. Currently, this can only be an AWS Glue table.</p>",
+      "documentation":"<p>A pointer to the dataset that underlies this table. Currently, this can only be an Glue table.</p>",
       "union":true
     },
     "TagKey":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"(?!aws:).{1,128}"
+      "min":1
     },
     "TagKeys":{
       "type":"list",
@@ -3427,6 +4374,41 @@
     "UntagResourceOutput":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAnalysisTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "analysisTemplateIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisTemplateIdentifier":{
+          "shape":"AnalysisTemplateIdentifier",
+          "documentation":"<p>The identifier for the analysis template resource.</p>",
+          "location":"uri",
+          "locationName":"analysisTemplateIdentifier"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A new description for the analysis template.</p>"
+        }
+      }
+    },
+    "UpdateAnalysisTemplateOutput":{
+      "type":"structure",
+      "required":["analysisTemplate"],
+      "members":{
+        "analysisTemplate":{
+          "shape":"AnalysisTemplate",
+          "documentation":"<p>The analysis template.</p>"
+        }
       }
     },
     "UpdateCollaborationInput":{
@@ -3577,6 +4559,10 @@
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
           "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+        },
+        "defaultResultConfiguration":{
+          "shape":"MembershipProtectedQueryResultConfiguration",
+          "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
         }
       }
     },
@@ -3670,9 +4656,10 @@
       "enum":[
         "FIELD_VALIDATION_FAILED",
         "INVALID_CONFIGURATION",
-        "INVALID_QUERY"
+        "INVALID_QUERY",
+        "IAM_SYNCHRONIZATION_DELAY"
       ]
     }
   },
-  "documentation":"<p>Welcome to the <i>AWS Clean Rooms API Reference</i>.</p> <p>AWS Clean Rooms is an AWS service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about AWS Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">AWS Clean Rooms User Guide</a>.</p>"
+  "documentation":"<p>Welcome to the <i>Clean Rooms API Reference</i>.</p> <p>Clean Rooms is an Amazon Web Services service that helps multiple parties to join their data together in a secure collaboration workspace. In the collaboration, members who can query and receive results can get insights into the collective datasets without either party getting access to the other party's raw data.</p> <p>To learn more about Clean Rooms concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/what-is.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>"
 }

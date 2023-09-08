@@ -131,7 +131,7 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Lists agents or connectors as specified by ID or other filters. All agents/connectors associated with your user account can be listed if you call <code>DescribeAgents</code> as is without passing any parameters.</p>"
+      "documentation":"<p>Lists agents or collectors as specified by ID or other filters. All agents/collectors associated with your user can be listed if you call <code>DescribeAgents</code> as is without passing any parameters.</p>"
     },
     "DescribeConfigurations":{
       "name":"DescribeConfigurations",
@@ -167,7 +167,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Lists exports as specified by ID. All continuous exports associated with your user account can be listed if you call <code>DescribeContinuousExports</code> as is without passing any parameters.</p>"
+      "documentation":"<p>Lists exports as specified by ID. All continuous exports associated with your user can be listed if you call <code>DescribeContinuousExports</code> as is without passing any parameters.</p>"
     },
     "DescribeExportConfigurations":{
       "name":"DescribeExportConfigurations",
@@ -238,7 +238,7 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Retrieves a list of configuration items that have tags as specified by the key-value pairs, name and value, passed to the optional parameter <code>filters</code>.</p> <p>There are three valid tag filter names:</p> <ul> <li> <p>tagKey</p> </li> <li> <p>tagValue</p> </li> <li> <p>configurationId</p> </li> </ul> <p>Also, all configuration items associated with your user account that have tags can be listed if you call <code>DescribeTags</code> as is without passing any parameters.</p>"
+      "documentation":"<p>Retrieves a list of configuration items that have tags as specified by the key-value pairs, name and value, passed to the optional parameter <code>filters</code>.</p> <p>There are three valid tag filter names:</p> <ul> <li> <p>tagKey</p> </li> <li> <p>tagValue</p> </li> <li> <p>configurationId</p> </li> </ul> <p>Also, all configuration items associated with your user that have tags can be listed if you call <code>DescribeTags</code> as is without passing any parameters.</p>"
     },
     "DisassociateConfigurationItemsFromApplication":{
       "name":"DisassociateConfigurationItemsFromApplication",
@@ -362,7 +362,7 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Instructs the specified agents or connectors to start collecting data.</p>"
+      "documentation":"<p>Instructs the specified agents to start collecting data.</p>"
     },
     "StartExportTask":{
       "name":"StartExportTask",
@@ -380,7 +380,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p> Begins the export of discovered data to an S3 bucket.</p> <p> If you specify <code>agentIds</code> in a filter, the task exports up to 72 hours of detailed data collected by the identified Application Discovery Agent, including network, process, and performance details. A time range for exported agent data may be set by using <code>startTime</code> and <code>endTime</code>. Export of detailed agent data is limited to five concurrently running exports. </p> <p> If you do not include an <code>agentIds</code> filter, summary data is exported that includes both Amazon Web Services Agentless Discovery Connector data and summary data from Amazon Web Services Discovery Agents. Export of summary data is limited to two exports per day. </p>"
+      "documentation":"<p>Begins the export of a discovered data report to an Amazon S3 bucket managed by Amazon Web Services.</p> <note> <p>Exports might provide an estimate of fees and savings based on certain information that you provide. Fee estimates do not include any taxes that might apply. Your actual fees and savings depend on a variety of factors, including your actual usage of Amazon Web Services services, which might vary from the estimates provided in this report.</p> </note> <p>If you do not specify <code>preferences</code> or <code>agentIds</code> in the filter, a summary of all servers, applications, tags, and performance is generated. This data is an aggregation of all server data collected through on-premises tooling, file import, application grouping and applying tags.</p> <p>If you specify <code>agentIds</code> in a filter, the task exports up to 72 hours of detailed data collected by the identified Application Discovery Agent, including network, process, and performance details. A time range for exported agent data may be set by using <code>startTime</code> and <code>endTime</code>. Export of detailed agent data is limited to five concurrently running exports. Export of detailed agent data is limited to two exports per day.</p> <p>If you enable <code>ec2RecommendationsPreferences</code> in <code>preferences</code> , an Amazon EC2 instance matching the characteristics of each server in Application Discovery Service is generated. Changing the attributes of the <code>ec2RecommendationsPreferences</code> changes the criteria of the recommendation.</p>"
     },
     "StartImportTask":{
       "name":"StartImportTask",
@@ -398,7 +398,7 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Starts an import task, which allows you to import details of your on-premises environment directly into Amazon Web Services Migration Hub without having to use the Application Discovery Service (ADS) tools such as the Discovery Connector or Discovery Agent. This gives you the option to perform migration assessment and planning directly from your imported data, including the ability to group your devices as applications and track their migration status.</p> <p>To start an import request, do this:</p> <ol> <li> <p>Download the specially formatted comma separated value (CSV) import template, which you can find here: <a href=\"https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv\">https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv</a>.</p> </li> <li> <p>Fill out the template with your server and application data.</p> </li> <li> <p>Upload your import file to an Amazon S3 bucket, and make a note of it's Object URL. Your import file must be in the CSV format.</p> </li> <li> <p>Use the console or the <code>StartImportTask</code> command with the Amazon Web Services CLI or one of the Amazon Web Services SDKs to import the records from your file.</p> </li> </ol> <p>For more information, including step-by-step procedures, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-import.html\">Migration Hub Import</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p> <note> <p>There are limits to the number of import tasks you can create (and delete) in an Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/ads_service_limits.html\">Amazon Web Services Application Discovery Service Limits</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p> </note>"
+      "documentation":"<p>Starts an import task, which allows you to import details of your on-premises environment directly into Amazon Web Services Migration Hub without having to use the Amazon Web Services Application Discovery Service (Application Discovery Service) tools such as the Amazon Web Services Application Discovery Service Agentless Collector or Application Discovery Agent. This gives you the option to perform migration assessment and planning directly from your imported data, including the ability to group your devices as applications and track their migration status.</p> <p>To start an import request, do this:</p> <ol> <li> <p>Download the specially formatted comma separated value (CSV) import template, which you can find here: <a href=\"https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv\">https://s3.us-west-2.amazonaws.com/templates-7cffcf56-bd96-4b1c-b45b-a5b42f282e46/import_template.csv</a>.</p> </li> <li> <p>Fill out the template with your server and application data.</p> </li> <li> <p>Upload your import file to an Amazon S3 bucket, and make a note of it's Object URL. Your import file must be in the CSV format.</p> </li> <li> <p>Use the console or the <code>StartImportTask</code> command with the Amazon Web Services CLI or one of the Amazon Web Services SDKs to import the records from your file.</p> </li> </ol> <p>For more information, including step-by-step procedures, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-import.html\">Migration Hub Import</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p> <note> <p>There are limits to the number of import tasks you can create (and delete) in an Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/ads_service_limits.html\">Amazon Web Services Application Discovery Service Limits</a> in the <i>Amazon Web Services Application Discovery Service User Guide</i>.</p> </note>"
     },
     "StopContinuousExport":{
       "name":"StopContinuousExport",
@@ -435,7 +435,7 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"}
       ],
-      "documentation":"<p>Instructs the specified agents or connectors to stop collecting data.</p>"
+      "documentation":"<p>Instructs the specified agents to stop collecting data.</p>"
     },
     "UpdateApplication":{
       "name":"UpdateApplication",
@@ -461,18 +461,18 @@
       "members":{
         "agentId":{
           "shape":"String",
-          "documentation":"<p>The agent/connector ID.</p>"
+          "documentation":"<p>The agent ID.</p>"
         },
         "operationSucceeded":{
           "shape":"Boolean",
-          "documentation":"<p>Information about the status of the <code>StartDataCollection</code> and <code>StopDataCollection</code> operations. The system has recorded the data collection operation. The agent/connector receives this command the next time it polls for a new command. </p>"
+          "documentation":"<p>Information about the status of the <code>StartDataCollection</code> and <code>StopDataCollection</code> operations. The system has recorded the data collection operation. The agent receives this command the next time it polls for a new command. </p>"
         },
         "description":{
           "shape":"String",
           "documentation":"<p>A description of the operation performed.</p>"
         }
       },
-      "documentation":"<p>Information about agents or connectors that were instructed to start collecting data. Information includes the agent/connector ID, a description of the operation, and whether the agent/connector configuration was updated.</p>"
+      "documentation":"<p>Information about agents that were instructed to start collecting data. Information includes the agent ID, a description of the operation, and whether the agent configuration was updated.</p>"
     },
     "AgentConfigurationStatusList":{
       "type":"list",
@@ -493,15 +493,15 @@
       "members":{
         "agentId":{
           "shape":"AgentId",
-          "documentation":"<p>The agent or connector ID.</p>"
+          "documentation":"<p>The agent or collector ID.</p>"
         },
         "hostName":{
           "shape":"String",
-          "documentation":"<p>The name of the host where the agent or connector resides. The host can be a server or virtual machine.</p>"
+          "documentation":"<p>The name of the host where the agent or collector resides. The host can be a server or virtual machine.</p>"
         },
         "agentNetworkInfoList":{
           "shape":"AgentNetworkInfoList",
-          "documentation":"<p>Network details about the host where the agent or connector resides.</p>"
+          "documentation":"<p>Network details about the host where the agent or collector resides.</p>"
         },
         "connectorId":{
           "shape":"String",
@@ -509,19 +509,19 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The agent or connector version.</p>"
+          "documentation":"<p>The agent or collector version.</p>"
         },
         "health":{
           "shape":"AgentStatus",
-          "documentation":"<p>The health of the agent or connector.</p>"
+          "documentation":"<p>The health of the agent.</p>"
         },
         "lastHealthPingTime":{
           "shape":"String",
-          "documentation":"<p>Time since agent or connector health was reported.</p>"
+          "documentation":"<p>Time since agent health was reported.</p>"
         },
         "collectionStatus":{
           "shape":"String",
-          "documentation":"<p>Status of the collection process for an agent or connector.</p>"
+          "documentation":"<p>Status of the collection process for an agent.</p>"
         },
         "agentType":{
           "shape":"String",
@@ -532,21 +532,21 @@
           "documentation":"<p>Agent's first registration timestamp in UTC.</p>"
         }
       },
-      "documentation":"<p>Information about agents or connectors associated with the user’s Amazon Web Services account. Information includes agent or connector IDs, IP addresses, media access control (MAC) addresses, agent or connector health, hostname where the agent or connector resides, and agent version for each agent.</p>"
+      "documentation":"<p>Information about agents associated with the user’s Amazon Web Services account. Information includes agent IDs, IP addresses, media access control (MAC) addresses, agent or collector status, hostname where the agent resides, and agent version for each agent.</p>"
     },
     "AgentNetworkInfo":{
       "type":"structure",
       "members":{
         "ipAddress":{
           "shape":"String",
-          "documentation":"<p>The IP address for the host where the agent/connector resides.</p>"
+          "documentation":"<p>The IP address for the host where the agent/collector resides.</p>"
         },
         "macAddress":{
           "shape":"String",
-          "documentation":"<p>The MAC address for the host where the agent/connector resides.</p>"
+          "documentation":"<p>The MAC address for the host where the agent/collector resides.</p>"
         }
       },
-      "documentation":"<p>Network details about the host where the agent/connector resides.</p>"
+      "documentation":"<p>Network details about the host where the agent/collector resides.</p>"
     },
     "AgentNetworkInfoList":{
       "type":"list",
@@ -613,7 +613,7 @@
       "members":{
         "message":{"shape":"Message"}
       },
-      "documentation":"<p>The Amazon Web Services user account does not have permission to perform the action. Check the IAM policy associated with this account.</p>",
+      "documentation":"<p>The user does not have permission to perform the action. Check the IAM policy associated with this user.</p>",
       "exception":true
     },
     "BatchDeleteImportDataError":{
@@ -765,7 +765,7 @@
         },
         "statusDetail":{
           "shape":"StringMax255",
-          "documentation":"<p>Contains information about any errors that have occurred. This data type can have the following values:</p> <ul> <li> <p>ACCESS_DENIED - You don’t have permission to start Data Exploration in Amazon Athena. Contact your Amazon Web Services administrator for help. For more information, see <a href=\"http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html\">Setting Up Amazon Web Services Application Discovery Service</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>DELIVERY_STREAM_LIMIT_FAILURE - You reached the limit for Amazon Kinesis Data Firehose delivery streams. Reduce the number of streams or request a limit increase and try again. For more information, see <a href=\"http://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html\">Kinesis Data Streams Limits</a> in the Amazon Kinesis Data Streams Developer Guide.</p> </li> <li> <p>FIREHOSE_ROLE_MISSING - The Data Exploration feature is in an error state because your IAM User is missing the AWSApplicationDiscoveryServiceFirehose role. Turn on Data Exploration in Amazon Athena and try again. For more information, see <a href=\"http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html#setting-up-user-policy\">Step 3: Provide Application Discovery Service Access to Non-Administrator Users by Attaching Policies</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>FIREHOSE_STREAM_DOES_NOT_EXIST - The Data Exploration feature is in an error state because your IAM User is missing one or more of the Kinesis data delivery streams.</p> </li> <li> <p>INTERNAL_FAILURE - The Data Exploration feature is in an error state because of an internal failure. Try again later. If this problem persists, contact Amazon Web Services Support.</p> </li> <li> <p>LAKE_FORMATION_ACCESS_DENIED - You don't have sufficient lake formation permissions to start continuous export. For more information, see <a href=\"http://docs.aws.amazon.com/lake-formation/latest/dg/upgrade-glue-lake-formation.html\"> Upgrading Amazon Web Services Glue Data Permissions to the Amazon Web Services Lake Formation Model </a> in the Amazon Web Services <i>Lake Formation Developer Guide</i>. </p> <p>You can use one of the following two ways to resolve this issue.</p> <ol> <li> <p>If you don’t want to use the Lake Formation permission model, you can change the default Data Catalog settings to use only Amazon Web Services Identity and Access Management (IAM) access control for new databases. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#setup-change-cat-settings\">Change Data Catalog Settings</a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>You can give the service-linked IAM roles AWSServiceRoleForApplicationDiscoveryServiceContinuousExport and AWSApplicationDiscoveryServiceFirehose the required Lake Formation permissions. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/granting-database-permissions.html\"> Granting Database Permissions</a> in the <i>Lake Formation Developer Guide</i>. </p> <ol> <li> <p>AWSServiceRoleForApplicationDiscoveryServiceContinuousExport - Grant database creator permissions, which gives the role database creation ability and implicit permissions for any created tables. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/implicit-permissions.html\"> Implicit Lake Formation Permissions </a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>AWSApplicationDiscoveryServiceFirehose - Grant describe permissions for all tables in the database.</p> </li> </ol> </li> </ol> </li> <li> <p>S3_BUCKET_LIMIT_FAILURE - You reached the limit for Amazon S3 buckets. Reduce the number of S3 buckets or request a limit increase and try again. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html\">Bucket Restrictions and Limitations</a> in the Amazon Simple Storage Service Developer Guide.</p> </li> <li> <p>S3_NOT_SIGNED_UP - Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href=\"https://aws.amazon.com/s3\">https://aws.amazon.com/s3</a>.</p> </li> </ul>"
+          "documentation":"<p>Contains information about any errors that have occurred. This data type can have the following values:</p> <ul> <li> <p>ACCESS_DENIED - You don’t have permission to start Data Exploration in Amazon Athena. Contact your Amazon Web Services administrator for help. For more information, see <a href=\"http://docs.aws.amazon.com/application-discovery/latest/userguide/setting-up.html\">Setting Up Amazon Web Services Application Discovery Service</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>DELIVERY_STREAM_LIMIT_FAILURE - You reached the limit for Amazon Kinesis Data Firehose delivery streams. Reduce the number of streams or request a limit increase and try again. For more information, see <a href=\"http://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html\">Kinesis Data Streams Limits</a> in the Amazon Kinesis Data Streams Developer Guide.</p> </li> <li> <p>FIREHOSE_ROLE_MISSING - The Data Exploration feature is in an error state because your user is missing the Amazon Web ServicesApplicationDiscoveryServiceFirehose role. Turn on Data Exploration in Amazon Athena and try again. For more information, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-create-firehose-role\">Creating the Amazon Web ServicesApplicationDiscoveryServiceFirehose Role</a> in the Application Discovery Service User Guide.</p> </li> <li> <p>FIREHOSE_STREAM_DOES_NOT_EXIST - The Data Exploration feature is in an error state because your user is missing one or more of the Kinesis data delivery streams.</p> </li> <li> <p>INTERNAL_FAILURE - The Data Exploration feature is in an error state because of an internal failure. Try again later. If this problem persists, contact Amazon Web Services Support.</p> </li> <li> <p>LAKE_FORMATION_ACCESS_DENIED - You don't have sufficient lake formation permissions to start continuous export. For more information, see <a href=\"http://docs.aws.amazon.com/lake-formation/latest/dg/upgrade-glue-lake-formation.html\"> Upgrading Amazon Web Services Glue Data Permissions to the Amazon Web Services Lake Formation Model </a> in the Amazon Web Services <i>Lake Formation Developer Guide</i>. </p> <p>You can use one of the following two ways to resolve this issue.</p> <ol> <li> <p>If you don’t want to use the Lake Formation permission model, you can change the default Data Catalog settings to use only Amazon Web Services Identity and Access Management (IAM) access control for new databases. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#setup-change-cat-settings\">Change Data Catalog Settings</a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>You can give the service-linked IAM roles AWSServiceRoleForApplicationDiscoveryServiceContinuousExport and AWSApplicationDiscoveryServiceFirehose the required Lake Formation permissions. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/granting-database-permissions.html\"> Granting Database Permissions</a> in the <i>Lake Formation Developer Guide</i>. </p> <ol> <li> <p>AWSServiceRoleForApplicationDiscoveryServiceContinuousExport - Grant database creator permissions, which gives the role database creation ability and implicit permissions for any created tables. For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/implicit-permissions.html\"> Implicit Lake Formation Permissions </a> in the <i>Lake Formation Developer Guide</i>.</p> </li> <li> <p>AWSApplicationDiscoveryServiceFirehose - Grant describe permissions for all tables in the database.</p> </li> </ol> </li> </ol> </li> <li> <p>S3_BUCKET_LIMIT_FAILURE - You reached the limit for Amazon S3 buckets. Reduce the number of S3 buckets or request a limit increase and try again. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html\">Bucket Restrictions and Limitations</a> in the Amazon Simple Storage Service Developer Guide.</p> </li> <li> <p>S3_NOT_SIGNED_UP - Your account is not signed up for the Amazon S3 service. You must sign up before you can use Amazon S3. You can sign up at the following URL: <a href=\"https://aws.amazon.com/s3\">https://aws.amazon.com/s3</a>.</p> </li> </ul>"
         },
         "s3Bucket":{
           "shape":"S3Bucket",
@@ -910,14 +910,36 @@
         "unknownAgentlessCollectors"
       ],
       "members":{
-        "activeAgentlessCollectors":{"shape":"Integer"},
-        "healthyAgentlessCollectors":{"shape":"Integer"},
-        "denyListedAgentlessCollectors":{"shape":"Integer"},
-        "shutdownAgentlessCollectors":{"shape":"Integer"},
-        "unhealthyAgentlessCollectors":{"shape":"Integer"},
-        "totalAgentlessCollectors":{"shape":"Integer"},
-        "unknownAgentlessCollectors":{"shape":"Integer"}
-      }
+        "activeAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active Agentless Collector collectors. </p>"
+        },
+        "healthyAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p>The number of healthy Agentless Collector collectors. </p>"
+        },
+        "denyListedAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p>The number of deny-listed Agentless Collector collectors. </p>"
+        },
+        "shutdownAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p>The number of Agentless Collector collectors with <code>SHUTDOWN</code> status. </p>"
+        },
+        "unhealthyAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p> The number of unhealthy Agentless Collector collectors. </p>"
+        },
+        "totalAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p> The total number of Agentless Collector collectors. </p>"
+        },
+        "unknownAgentlessCollectors":{
+          "shape":"Integer",
+          "documentation":"<p> The number of unknown Agentless Collector collectors. </p>"
+        }
+      },
+      "documentation":"<p>The inventory data for installed Agentless Collector collectors. </p>"
     },
     "CustomerConnectorInfo":{
       "type":"structure",
@@ -1053,7 +1075,7 @@
       "members":{
         "agentIds":{
           "shape":"AgentIds",
-          "documentation":"<p>The agent or the Connector IDs for which you want information. If you specify no IDs, the system returns information about all agents/Connectors associated with your Amazon Web Services user account.</p>"
+          "documentation":"<p>The agent or the collector IDs for which you want information. If you specify no IDs, the system returns information about all agents/collectors associated with your user.</p>"
         },
         "filters":{
           "shape":"Filters",
@@ -1061,7 +1083,7 @@
         },
         "maxResults":{
           "shape":"Integer",
-          "documentation":"<p>The total number of agents/Connectors to return in a single page of output. The maximum value is 100.</p>"
+          "documentation":"<p>The total number of agents/collectors to return in a single page of output. The maximum value is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1074,7 +1096,7 @@
       "members":{
         "agentsInfo":{
           "shape":"AgentsInfo",
-          "documentation":"<p>Lists agents or the Connector by ID or lists all agents/Connectors associated with your user account if you did not specify an agent/Connector ID. The output includes agent/Connector IDs, IP addresses, media access control (MAC) addresses, agent/Connector health, host name where the agent/Connector resides, and the version number of each agent/Connector.</p>"
+          "documentation":"<p>Lists agents or the collector by ID or lists all agents/collectors associated with your user, if you did not specify an agent/collector ID. The output includes agent/collector IDs, IP addresses, media access control (MAC) addresses, agent/collector health, host name where the agent/collector resides, and the version number of each agent/collector.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1302,6 +1324,50 @@
       "members":{
       }
     },
+    "EC2InstanceType":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\d\\.\\-]+"
+    },
+    "Ec2RecommendationsExportPreferences":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"ExportEnabled",
+          "documentation":"<p> If set to true, the export <a href=\"https://docs.aws.amazon.com/application-discovery/latest/APIReference/API_StartExportTask.html#API_StartExportTask_RequestSyntax\">preferences</a> is set to <code>Ec2RecommendationsExportPreferences</code>. </p>"
+        },
+        "cpuPerformanceMetricBasis":{
+          "shape":"UsageMetricBasis",
+          "documentation":"<p> The recommended EC2 instance type that matches the CPU usage metric of server performance data. </p>"
+        },
+        "ramPerformanceMetricBasis":{
+          "shape":"UsageMetricBasis",
+          "documentation":"<p> The recommended EC2 instance type that matches the Memory usage metric of server performance data. </p>"
+        },
+        "tenancy":{
+          "shape":"Tenancy",
+          "documentation":"<p> The target tenancy to use for your recommended EC2 instances. </p>"
+        },
+        "excludedInstanceTypes":{
+          "shape":"ExcludedInstanceTypes",
+          "documentation":"<p> An array of instance types to exclude from recommendations. </p>"
+        },
+        "preferredRegion":{
+          "shape":"UserPreferredRegion",
+          "documentation":"<p> The target Amazon Web Services Region for the recommendations. You can use any of the Region codes available for the chosen service, as listed in <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html\">Amazon Web Services service endpoints</a> in the <i>Amazon Web Services General Reference</i>. </p>"
+        },
+        "reservedInstanceOptions":{
+          "shape":"ReservedInstanceOptions",
+          "documentation":"<p> The contract type for a reserved instance. If blank, we assume an On-Demand instance is preferred. </p>"
+        }
+      },
+      "documentation":"<p> Indicates that the exported data must include EC2 instance type matches for on-premises servers that are discovered through Amazon Web Services Application Discovery Service. </p>"
+    },
+    "ExcludedInstanceTypes":{
+      "type":"list",
+      "member":{"shape":"EC2InstanceType"}
+    },
     "ExportConfigurationsResponse":{
       "type":"structure",
       "members":{
@@ -1313,15 +1379,13 @@
     },
     "ExportDataFormat":{
       "type":"string",
-      "enum":[
-        "CSV",
-        "GRAPHML"
-      ]
+      "enum":["CSV"]
     },
     "ExportDataFormats":{
       "type":"list",
       "member":{"shape":"ExportDataFormat"}
     },
+    "ExportEnabled":{"type":"boolean"},
     "ExportFilter":{
       "type":"structure",
       "required":[
@@ -1396,6 +1460,17 @@
         }
       },
       "documentation":"<p>Information regarding the export status of discovered data. The value is an array of objects.</p>"
+    },
+    "ExportPreferences":{
+      "type":"structure",
+      "members":{
+        "ec2RecommendationsPreferences":{
+          "shape":"Ec2RecommendationsExportPreferences",
+          "documentation":"<p> If enabled, exported data includes EC2 instance type matches for on-premises servers discovered through Amazon Web Services Application Discovery Service. </p>"
+        }
+      },
+      "documentation":"<p> Indicates the type of data that is being exported. Only one <code>ExportPreferences</code> can be enabled for a <a href=\"https://docs.aws.amazon.com/application-discovery/latest/APIReference/API_StartExportTask.html\">StartExportTask</a> action. </p>",
+      "union":true
     },
     "ExportRequestTime":{"type":"timestamp"},
     "ExportStatus":{
@@ -1488,7 +1563,10 @@
           "shape":"CustomerMeCollectorInfo",
           "documentation":"<p> Details about Migration Evaluator collectors, including collector status and health. </p>"
         },
-        "agentlessCollectorSummary":{"shape":"CustomerAgentlessCollectorInfo"}
+        "agentlessCollectorSummary":{
+          "shape":"CustomerAgentlessCollectorInfo",
+          "documentation":"<p> Details about Agentless Collector collectors, including status. </p>"
+        }
       }
     },
     "HomeRegionNotSetException":{
@@ -1496,7 +1574,7 @@
       "members":{
         "message":{"shape":"Message"}
       },
-      "documentation":"<p>The home region is not set. Set the home region to continue.</p>",
+      "documentation":"<p>The home Region is not set. Set the home Region to continue.</p>",
       "exception":true
     },
     "ImportStatus":{
@@ -1765,6 +1843,13 @@
       "member":{"shape":"NeighborConnectionDetail"}
     },
     "NextToken":{"type":"string"},
+    "OfferingClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "CONVERTIBLE"
+      ]
+    },
     "OperationNotPermittedException":{
       "type":"structure",
       "members":{
@@ -1796,6 +1881,37 @@
     "OrderByList":{
       "type":"list",
       "member":{"shape":"OrderByElement"}
+    },
+    "PurchasingOption":{
+      "type":"string",
+      "enum":[
+        "ALL_UPFRONT",
+        "PARTIAL_UPFRONT",
+        "NO_UPFRONT"
+      ]
+    },
+    "ReservedInstanceOptions":{
+      "type":"structure",
+      "required":[
+        "purchasingOption",
+        "offeringClass",
+        "termLength"
+      ],
+      "members":{
+        "purchasingOption":{
+          "shape":"PurchasingOption",
+          "documentation":"<p> The payment plan to use for your Reserved Instance. </p>"
+        },
+        "offeringClass":{
+          "shape":"OfferingClass",
+          "documentation":"<p> The flexibility to change the instance types needed for your Reserved Instance. </p>"
+        },
+        "termLength":{
+          "shape":"TermLength",
+          "documentation":"<p> The preferred duration of the Reserved Instance term. </p>"
+        }
+      },
+      "documentation":"<p> Used to provide Reserved Instance preferences for the recommendation. </p>"
     },
     "ResourceInUseException":{
       "type":"structure",
@@ -1865,7 +1981,7 @@
       "members":{
         "agentIds":{
           "shape":"AgentIds",
-          "documentation":"<p>The IDs of the agents or connectors from which to start collecting data. If you send a request to an agent/connector ID that you do not have permission to contact, according to your Amazon Web Services account, the service does not throw an exception. Instead, it returns the error in the <i>Description</i> field. If you send a request to multiple agents/connectors and you do not have permission to contact some of those agents/connectors, the system does not throw an exception. Instead, the system shows <code>Failed</code> in the <i>Description</i> field.</p>"
+          "documentation":"<p>The IDs of the agents from which to start collecting data. If you send a request to an agent ID that you do not have permission to contact, according to your Amazon Web Services account, the service does not throw an exception. Instead, it returns the error in the <i>Description</i> field. If you send a request to multiple agents and you do not have permission to contact some of those agents, the system does not throw an exception. Instead, the system shows <code>Failed</code> in the <i>Description</i> field.</p>"
         }
       }
     },
@@ -1874,7 +1990,7 @@
       "members":{
         "agentsConfigurationStatus":{
           "shape":"AgentConfigurationStatusList",
-          "documentation":"<p>Information about agents or the connector that were instructed to start collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.</p>"
+          "documentation":"<p>Information about agents that were instructed to start collecting data. Information includes the agent ID, a description of the operation performed, and whether the agent configuration was updated.</p>"
         }
       }
     },
@@ -1887,7 +2003,7 @@
         },
         "filters":{
           "shape":"ExportFilters",
-          "documentation":"<p>If a filter is present, it selects the single <code>agentId</code> of the Application Discovery Agent for which data is exported. The <code>agentId</code> can be found in the results of the <code>DescribeAgents</code> API or CLI. If no filter is present, <code>startTime</code> and <code>endTime</code> are ignored and exported data includes both Agentless Discovery Connector data and summary data from Application Discovery agents. </p>"
+          "documentation":"<p>If a filter is present, it selects the single <code>agentId</code> of the Application Discovery Agent for which data is exported. The <code>agentId</code> can be found in the results of the <code>DescribeAgents</code> API or CLI. If no filter is present, <code>startTime</code> and <code>endTime</code> are ignored and exported data includes both Amazon Web Services Application Discovery Service Agentless Collector collectors data and summary data from Application Discovery Agent agents. </p>"
         },
         "startTime":{
           "shape":"TimeStamp",
@@ -1896,6 +2012,10 @@
         "endTime":{
           "shape":"TimeStamp",
           "documentation":"<p>The end timestamp for exported data from the single Application Discovery Agent selected in the filters. If no value is specified, exported data includes the most recent data collected by the agent.</p>"
+        },
+        "preferences":{
+          "shape":"ExportPreferences",
+          "documentation":"<p> Indicates the type of data that needs to be exported. Only one <a href=\"https://docs.aws.amazon.com/application-discovery/latest/APIReference/API_ExportPreferences.html\">ExportPreferences</a> can be enabled at any time. </p>"
         }
       }
     },
@@ -1968,7 +2088,7 @@
       "members":{
         "agentIds":{
           "shape":"AgentIds",
-          "documentation":"<p>The IDs of the agents or connectors from which to stop collecting data.</p>"
+          "documentation":"<p>The IDs of the agents from which to stop collecting data.</p>"
         }
       }
     },
@@ -1977,7 +2097,7 @@
       "members":{
         "agentsConfigurationStatus":{
           "shape":"AgentConfigurationStatusList",
-          "documentation":"<p>Information about the agents or connector that were instructed to stop collecting data. Information includes the agent/connector ID, a description of the operation performed, and whether the agent/connector configuration was updated.</p>"
+          "documentation":"<p>Information about the agents that were instructed to stop collecting data. Information includes the agent ID, a description of the operation performed, and whether the agent configuration was updated.</p>"
         }
       }
     },
@@ -2038,6 +2158,20 @@
       "member":{"shape":"Tag"}
     },
     "TagValue":{"type":"string"},
+    "Tenancy":{
+      "type":"string",
+      "enum":[
+        "DEDICATED",
+        "SHARED"
+      ]
+    },
+    "TermLength":{
+      "type":"string",
+      "enum":[
+        "ONE_YEAR",
+        "THREE_YEAR"
+      ]
+    },
     "TimeStamp":{"type":"timestamp"},
     "ToDeleteIdentifierList":{
       "type":"list",
@@ -2068,6 +2202,35 @@
       "members":{
       }
     },
+    "UsageMetricBasis":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"UsageMetricBasisName",
+          "documentation":"<p> A utilization metric that is used by the recommendations. </p>"
+        },
+        "percentageAdjust":{
+          "shape":"UsageMetricPercentageAdjust",
+          "documentation":"<p> Specifies the percentage of the specified utilization metric that is used by the recommendations. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the performance metrics to use for the server that is used for recommendations. </p>"
+    },
+    "UsageMetricBasisName":{
+      "type":"string",
+      "pattern":"^(p(\\d{1,2}|100)|AVG|SPEC|MAX)$"
+    },
+    "UsageMetricPercentageAdjust":{
+      "type":"double",
+      "max":100.0,
+      "min":0.0
+    },
+    "UserPreferredRegion":{
+      "type":"string",
+      "max":30,
+      "min":1,
+      "pattern":"[a-z]{2}-[a-z\\-]+-[0-9]+"
+    },
     "orderString":{
       "type":"string",
       "enum":[
@@ -2076,5 +2239,5 @@
       ]
     }
   },
-  "documentation":"<fullname>Amazon Web Services Application Discovery Service</fullname> <p>Amazon Web Services Application Discovery Service helps you plan application migration projects. It automatically identifies servers, virtual machines (VMs), and network dependencies in your on-premises data centers. For more information, see the <a href=\"http://aws.amazon.com/application-discovery/faqs/\">Amazon Web Services Application Discovery Service FAQ</a>. Application Discovery Service offers three ways of performing discovery and collecting data about your on-premises servers:</p> <ul> <li> <p> <b>Agentless discovery</b> is recommended for environments that use VMware vCenter Server. This mode doesn't require you to install an agent on each host. It does not work in non-VMware environments.</p> <ul> <li> <p>Agentless discovery gathers server information regardless of the operating systems, which minimizes the time required for initial on-premises infrastructure assessment.</p> </li> <li> <p>Agentless discovery doesn't collect information about network dependencies, only agent-based discovery collects that information.</p> </li> </ul> </li> </ul> <ul> <li> <p> <b>Agent-based discovery</b> collects a richer set of data than agentless discovery by using the Amazon Web Services Application Discovery Agent, which you install on one or more hosts in your data center.</p> <ul> <li> <p> The agent captures infrastructure and application information, including an inventory of running processes, system performance information, resource utilization, and network dependencies.</p> </li> <li> <p>The information collected by agents is secured at rest and in transit to the Application Discovery Service database in the cloud. </p> </li> </ul> </li> </ul> <ul> <li> <p> <b>Amazon Web Services Partner Network (APN) solutions</b> integrate with Application Discovery Service, enabling you to import details of your on-premises environment directly into Migration Hub without using the discovery connector or discovery agent.</p> <ul> <li> <p>Third-party application discovery tools can query Amazon Web Services Application Discovery Service, and they can write to the Application Discovery Service database using the public API.</p> </li> <li> <p>In this way, you can import data into Migration Hub and view it, so that you can associate applications with servers and track migrations.</p> </li> </ul> </li> </ul> <p> <b>Recommendations</b> </p> <p>We recommend that you use agent-based discovery for non-VMware environments, and whenever you want to collect information about network dependencies. You can run agent-based and agentless discovery simultaneously. Use agentless discovery to complete the initial infrastructure assessment quickly, and then install agents on select hosts to collect additional information.</p> <p> <b>Working With This Guide</b> </p> <p>This API reference provides descriptions, syntax, and usage examples for each of the actions and data types for Application Discovery Service. The topic for each action shows the API request parameters and the response. Alternatively, you can use one of the Amazon Web Services SDKs to access an API that is tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <note> <ul> <li> <p>Remember that you must set your Migration Hub home region before you call any of these APIs.</p> </li> <li> <p>You must make API calls for write actions (create, notify, associate, disassociate, import, or put) while in your home region, or a <code>HomeRegionNotSetException</code> error is returned.</p> </li> <li> <p>API calls for read actions (list, describe, stop, and delete) are permitted outside of your home region.</p> </li> <li> <p>Although it is unlikely, the Migration Hub home region could change. If you call APIs outside the home region, an <code>InvalidInputException</code> is returned.</p> </li> <li> <p>You must call <code>GetHomeRegion</code> to obtain the latest Migration Hub home region.</p> </li> </ul> </note> <p>This guide is intended for use with the <a href=\"http://docs.aws.amazon.com/application-discovery/latest/userguide/\">Amazon Web Services Application Discovery Service User Guide</a>.</p> <important> <p>All data is handled according to the <a href=\"http://aws.amazon.com/privacy/\">Amazon Web Services Privacy Policy</a>. You can operate Application Discovery Service offline to inspect collected data before it is shared with the service.</p> </important>"
+  "documentation":"<fullname>Amazon Web Services Application Discovery Service</fullname> <p>Amazon Web Services Application Discovery Service (Application Discovery Service) helps you plan application migration projects. It automatically identifies servers, virtual machines (VMs), and network dependencies in your on-premises data centers. For more information, see the <a href=\"http://aws.amazon.com/application-discovery/faqs/\">Amazon Web Services Application Discovery Service FAQ</a>. </p> <p>Application Discovery Service offers three ways of performing discovery and collecting data about your on-premises servers:</p> <ul> <li> <p> <b>Agentless discovery</b> using Amazon Web Services Application Discovery Service Agentless Collector (Agentless Collector), which doesn't require you to install an agent on each host.</p> <ul> <li> <p>Agentless Collector gathers server information regardless of the operating systems, which minimizes the time required for initial on-premises infrastructure assessment.</p> </li> <li> <p>Agentless Collector doesn't collect information about network dependencies, only agent-based discovery collects that information. </p> </li> </ul> </li> </ul> <ul> <li> <p> <b>Agent-based discovery</b> using the Amazon Web Services Application Discovery Agent (Application Discovery Agent) collects a richer set of data than agentless discovery, which you install on one or more hosts in your data center.</p> <ul> <li> <p> The agent captures infrastructure and application information, including an inventory of running processes, system performance information, resource utilization, and network dependencies.</p> </li> <li> <p>The information collected by agents is secured at rest and in transit to the Application Discovery Service database in the Amazon Web Services cloud. For more information, see <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/discovery-agent.html\">Amazon Web Services Application Discovery Agent</a>.</p> </li> </ul> </li> </ul> <ul> <li> <p> <b>Amazon Web Services Partner Network (APN) solutions</b> integrate with Application Discovery Service, enabling you to import details of your on-premises environment directly into Amazon Web Services Migration Hub (Migration Hub) without using Agentless Collector or Application Discovery Agent.</p> <ul> <li> <p>Third-party application discovery tools can query Amazon Web Services Application Discovery Service, and they can write to the Application Discovery Service database using the public API.</p> </li> <li> <p>In this way, you can import data into Migration Hub and view it, so that you can associate applications with servers and track migrations.</p> </li> </ul> </li> </ul> <p> <b>Working With This Guide</b> </p> <p>This API reference provides descriptions, syntax, and usage examples for each of the actions and data types for Application Discovery Service. The topic for each action shows the API request parameters and the response. Alternatively, you can use one of the Amazon Web Services SDKs to access an API that is tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <note> <ul> <li> <p>Remember that you must set your Migration Hub home Region before you call any of these APIs.</p> </li> <li> <p>You must make API calls for write actions (create, notify, associate, disassociate, import, or put) while in your home Region, or a <code>HomeRegionNotSetException</code> error is returned.</p> </li> <li> <p>API calls for read actions (list, describe, stop, and delete) are permitted outside of your home Region.</p> </li> <li> <p>Although it is unlikely, the Migration Hub home Region could change. If you call APIs outside the home Region, an <code>InvalidInputException</code> is returned.</p> </li> <li> <p>You must call <code>GetHomeRegion</code> to obtain the latest Migration Hub home Region.</p> </li> </ul> </note> <p>This guide is intended for use with the <a href=\"https://docs.aws.amazon.com/application-discovery/latest/userguide/\">Amazon Web Services Application Discovery Service User Guide</a>.</p> <important> <p>All data is handled according to the <a href=\"https://aws.amazon.com/privacy/\">Amazon Web Services Privacy Policy</a>. You can operate Application Discovery Service offline to inspect collected data before it is shared with the service.</p> </important>"
 }

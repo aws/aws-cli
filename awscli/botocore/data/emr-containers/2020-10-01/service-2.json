@@ -173,6 +173,22 @@
       ],
       "documentation":"<p>Displays detailed information about a specified virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
     },
+    "GetManagedEndpointSessionCredentials":{
+      "name":"GetManagedEndpointSessionCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/virtualclusters/{virtualClusterId}/endpoints/{endpointId}/credentials"
+      },
+      "input":{"shape":"GetManagedEndpointSessionCredentialsRequest"},
+      "output":{"shape":"GetManagedEndpointSessionCredentialsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"RequestThrottledException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Generate a session token to connect to a managed endpoint. </p>"
+    },
     "ListJobRuns":{
       "name":"ListJobRuns",
       "http":{
@@ -426,6 +442,24 @@
       "documentation":"<p>The information about the container used for a job run or a managed endpoint.</p>",
       "union":true
     },
+    "ContainerLogRotationConfiguration":{
+      "type":"structure",
+      "required":[
+        "rotationSize",
+        "maxFilesToKeep"
+      ],
+      "members":{
+        "rotationSize":{
+          "shape":"RotationSize",
+          "documentation":"<p>The file size at which to rotate logs. Minimum of 2KB, Maximum of 2GB.</p>"
+        },
+        "maxFilesToKeep":{
+          "shape":"MaxFilesToKeep",
+          "documentation":"<p>The number of files to keep in container after rotation.</p>"
+        }
+      },
+      "documentation":"<p>The settings for container log rotation.</p>"
+    },
     "ContainerProvider":{
       "type":"structure",
       "required":[
@@ -622,6 +656,23 @@
           "documentation":"<p>This output contains the ARN of virtual cluster.</p>"
         }
       }
+    },
+    "CredentialType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
+    "Credentials":{
+      "type":"structure",
+      "members":{
+        "token":{
+          "shape":"Token",
+          "documentation":"<p>The actual session token being returned.</p>"
+        }
+      },
+      "documentation":"<p>The structure containing the session token being returned.</p>",
+      "union":true
     },
     "Date":{
       "type":"timestamp",
@@ -958,6 +1009,67 @@
         "CLUSTER_UNAVAILABLE"
       ]
     },
+    "GetManagedEndpointSessionCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "executionRoleArn",
+        "credentialType",
+        "endpointIdentifier",
+        "virtualClusterIdentifier"
+      ],
+      "members":{
+        "endpointIdentifier":{
+          "shape":"String2048",
+          "documentation":"<p>The ARN of the managed endpoint for which the request is submitted. </p>",
+          "location":"uri",
+          "locationName":"endpointId"
+        },
+        "virtualClusterIdentifier":{
+          "shape":"String2048",
+          "documentation":"<p>The ARN of the Virtual Cluster which the Managed Endpoint belongs to. </p>",
+          "location":"uri",
+          "locationName":"virtualClusterId"
+        },
+        "executionRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The IAM Execution Role ARN that will be used by the job run. </p>"
+        },
+        "credentialType":{
+          "shape":"CredentialType",
+          "documentation":"<p>Type of the token requested. Currently supported and default value of this field is “TOKEN.”</p>"
+        },
+        "durationInSeconds":{
+          "shape":"JavaInteger",
+          "documentation":"<p>Duration in seconds for which the session token is valid. The default duration is 15 minutes and the maximum is 12 hours.</p>"
+        },
+        "logContext":{
+          "shape":"LogContext",
+          "documentation":"<p>String identifier used to separate sections of the execution logs uploaded to S3.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client idempotency token of the job run request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "GetManagedEndpointSessionCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The identifier of the session token returned.</p>"
+        },
+        "credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>The structure containing the session credentials.</p>"
+        },
+        "expiresAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time when the session token will expire.</p>"
+        }
+      }
+    },
     "IAMRoleArn":{
       "type":"string",
       "max":2048,
@@ -1182,7 +1294,7 @@
       "type":"string",
       "max":2048,
       "min":3,
-      "pattern":"^(arn:(aws[a-zA-Z0-9-]*):kms:([a-zA-Z0-9]+-?)+:(\\d{12})?:key\\/[(0-9a-zA-Z)-?]+|\\$\\{[a-zA-Z]\\w*\\})$"
+      "pattern":"^(arn:(aws[a-zA-Z0-9-]*):kms:.+:(\\d{12})?:key\\/[(0-9a-zA-Z)-?]+|\\$\\{[a-zA-Z]\\w*\\})$"
     },
     "KubernetesNamespace":{
       "type":"string",
@@ -1435,11 +1547,22 @@
         }
       }
     },
+    "LogContext":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^((?!.*-s3alias)(?!xn--.*)[a-z0-9][-a-z0-9.]*)?[a-z0-9]$"
+    },
     "LogGroupName":{
       "type":"string",
       "max":512,
       "min":1,
       "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "MaxFilesToKeep":{
+      "type":"integer",
+      "max":50,
+      "min":1
     },
     "MonitoringConfiguration":{
       "type":"structure",
@@ -1455,6 +1578,10 @@
         "s3MonitoringConfiguration":{
           "shape":"S3MonitoringConfiguration",
           "documentation":"<p>Amazon S3 configuration for monitoring log publishing.</p>"
+        },
+        "containerLogRotationConfiguration":{
+          "shape":"ContainerLogRotationConfiguration",
+          "documentation":"<p>Enable or disable container log rotation.</p>"
         }
       },
       "documentation":"<p>Configuration setting for monitoring.</p>"
@@ -1552,6 +1679,15 @@
       "min":20,
       "pattern":"^arn:(aws[a-zA-Z0-9-]*):(iam|sts)::(\\d{12})?:[\\w/+=,.@-]+$"
     },
+    "RequestThrottledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String1024"}
+      },
+      "documentation":"<p>The request throttled.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "ResourceIdString":{
       "type":"string",
       "max":64,
@@ -1594,6 +1730,12 @@
         }
       },
       "documentation":"<p>The current status of the retry policy executed on the job.</p>"
+    },
+    "RotationSize":{
+      "type":"string",
+      "max":12,
+      "min":3,
+      "pattern":"^\\d+(\\.\\d+)?[KMG][Bb]?$"
     },
     "RsiArn":{
       "type":"string",
@@ -1858,6 +2000,12 @@
       "max":512,
       "min":1,
       "pattern":"[\\.\\-_\\#A-Za-z0-9]+"
+    },
+    "Token":{
+      "type":"string",
+      "min":1,
+      "pattern":"^.*\\S.*$",
+      "sensitive":true
     },
     "UntagResourceRequest":{
       "type":"structure",

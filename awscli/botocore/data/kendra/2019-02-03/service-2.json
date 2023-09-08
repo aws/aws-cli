@@ -271,7 +271,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a block list to exlcude certain queries from suggestions.</p> <p>Any query that contains words or phrases specified in the block list is blocked or filtered out from being shown as a suggestion.</p> <p>You need to provide the file location of your block list text file in your S3 bucket. In your text file, enter each block word or phrase on a separate line.</p> <p>For information on the current quota limits for block lists, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/quotas.html\">Quotas for Amazon Kendra</a>.</p> <p> <code>CreateQuerySuggestionsBlockList</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p> <p>For an example of creating a block list for query suggestions using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/query-suggestions.html#suggestions-block-list\">Query suggestions block list</a>.</p>"
+      "documentation":"<p>Creates a block list to exlcude certain queries from suggestions.</p> <p>Any query that contains words or phrases specified in the block list is blocked or filtered out from being shown as a suggestion.</p> <p>You need to provide the file location of your block list text file in your S3 bucket. In your text file, enter each block word or phrase on a separate line.</p> <p>For information on the current quota limits for block lists, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/quotas.html\">Quotas for Amazon Kendra</a>.</p> <p> <code>CreateQuerySuggestionsBlockList</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p> <p>For an example of creating a block list for query suggestions using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/query-suggestions.html#query-suggestions-blocklist\">Query suggestions block list</a>.</p>"
     },
     "CreateThesaurus":{
       "name":"CreateThesaurus",
@@ -926,7 +926,26 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Searches an active index. Use this API to search your documents using query. The <code>Query</code> API enables to do faceted search and to filter results based on document attributes.</p> <p>It also enables you to provide user context that Amazon Kendra uses to enforce document access control in the search results.</p> <p>Amazon Kendra searches your index for text content and question and answer (FAQ) content. By default the response contains three types of results.</p> <ul> <li> <p>Relevant passages</p> </li> <li> <p>Matching FAQs</p> </li> <li> <p>Relevant documents</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeFilter</code> parameter.</p> <p>Each query returns the 100 most relevant results. </p>"
+      "documentation":"<p>Searches an index given an input query.</p> <p>You can configure boosting or relevance tuning at the query level to override boosting at the index level, filter based on document fields/attributes and faceted search, and filter based on the user or their group access to documents. You can also include certain fields in the response that might provide useful additional information.</p> <p>A query response contains three types of results.</p> <ul> <li> <p>Relevant suggested answers. The answers can be either a text excerpt or table excerpt. The answer can be highlighted in the excerpt.</p> </li> <li> <p>Matching FAQs or questions-answer from your FAQ file.</p> </li> <li> <p>Relevant documents. This result type includes an excerpt of the document with the document title. The searched terms can be highlighted in the excerpt.</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeFilter</code> parameter. Each query returns the 100 most relevant results. If you filter result type to only question-answers, a maximum of four results are returned. If you filter result type to only answers, a maximum of three results are returned.</p>"
+    },
+    "Retrieve":{
+      "name":"Retrieve",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RetrieveRequest"},
+      "output":{"shape":"RetrieveResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves relevant passages or text excerpts given an input query.</p> <p>This API is similar to the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html\">Query</a> API. However, by default, the <code>Query</code> API only returns excerpt passages of up to 100 token words. With the <code>Retrieve</code> API, you can retrieve longer passages of up to 200 token words and up to 100 semantically relevant passages. This doesn't include question-answer or FAQ type responses from your index. The passages are text excerpts that can be semantically extracted from multiple documents and multiple parts of the same document. If in extreme cases your documents produce no relevant passages using the <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API.</p> <p>You can also do the following:</p> <ul> <li> <p>Override boosting at the index level</p> </li> <li> <p>Filter based on document fields or attributes</p> </li> <li> <p>Filter based on the user or their group access to documents</p> </li> </ul> <p>You can also include certain fields in the response that might provide useful additional information.</p>"
     },
     "StartDataSourceSyncJob":{
       "name":"StartDataSourceSyncJob",
@@ -1135,7 +1154,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the settings of query suggestions for an index.</p> <p>Amazon Kendra supports partial updates, so you only need to provide the fields you want to update.</p> <p>If an update is currently processing (i.e. 'happening'), you need to wait for the update to finish before making another update.</p> <p>Updates to query suggestions settings might not take effect right away. The time for your updated settings to take effect depends on the updates made and the number of search queries in your index.</p> <p>You can still enable/disable query suggestions at any time.</p> <p> <code>UpdateQuerySuggestionsConfig</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
+      "documentation":"<p>Updates the settings of query suggestions for an index.</p> <p>Amazon Kendra supports partial updates, so you only need to provide the fields you want to update.</p> <p>If an update is currently processing, you need to wait for the update to finish before making another update.</p> <p>Updates to query suggestions settings might not take effect right away. The time for your updated settings to take effect depends on the updates made and the number of search queries in your index.</p> <p>You can still enable/disable query suggestions at any time.</p> <p> <code>UpdateQuerySuggestionsConfig</code> is currently not supported in the Amazon Web Services GovCloud (US-West) region.</p>"
     },
     "UpdateThesaurus":{
       "name":"UpdateThesaurus",
@@ -1315,7 +1334,7 @@
           "documentation":"<p>Configuration information for an Amazon Virtual Private Cloud to connect to your Alfresco. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/vpc-configuration.html\">Configuring a VPC</a>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p> <note> <p>Alfresco data source connector is currently in preview mode. Basic authentication is currently supported. If you would like to use Alfresco connector in production, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a>.</p> </note>"
+      "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p> <note> <p>Support for <code>AlfrescoConfiguration</code> ended May 2023. We recommend migrating to or using the Alfresco data source template schema / <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_TemplateConfiguration.html\">TemplateConfiguration</a> API.</p> </note>"
     },
     "AlfrescoEntity":{
       "type":"string",
@@ -1453,6 +1472,63 @@
     "AttributeFilterList":{
       "type":"list",
       "member":{"shape":"AttributeFilter"}
+    },
+    "AttributeSuggestionsDescribeConfig":{
+      "type":"structure",
+      "members":{
+        "SuggestableConfigList":{
+          "shape":"SuggestableConfigList",
+          "documentation":"<p>The list of fields/attributes that you want to set as suggestible for query suggestions.</p>"
+        },
+        "AttributeSuggestionsMode":{
+          "shape":"AttributeSuggestionsMode",
+          "documentation":"<p>The mode is set to either <code>ACTIVE</code> or <code>INACTIVE</code>. If the <code>Mode</code> for query history is set to <code>ENABLED</code> when calling <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateQuerySuggestionsConfig.html\">UpdateQuerySuggestionsConfig</a> and <code>AttributeSuggestionsMode</code> to use fields/attributes is set to <code>ACTIVE</code>, and you haven't set your <code>SuggestionTypes</code> preference to <code>DOCUMENT_ATTRIBUTES</code>, then Amazon Kendra uses the query history.</p>"
+        }
+      },
+      "documentation":"<p>Gets information on the configuration of document fields/attributes that you want to base query suggestions on. To change your configuration, use <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_AttributeSuggestionsUpdateConfig.html\">AttributeSuggestionsUpdateConfig</a> and then call <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateQuerySuggestionsConfig.html\">UpdateQuerySuggestionsConfig</a>.</p>"
+    },
+    "AttributeSuggestionsGetConfig":{
+      "type":"structure",
+      "members":{
+        "SuggestionAttributes":{
+          "shape":"DocumentAttributeKeyList",
+          "documentation":"<p>The list of document field/attribute keys or field names to use for query suggestions. If the content within any of the fields match what your user starts typing as their query, then the field content is returned as a query suggestion.</p>"
+        },
+        "AdditionalResponseAttributes":{
+          "shape":"DocumentAttributeKeyList",
+          "documentation":"<p>The list of additional document field/attribute keys or field names to include in the response. You can use additional fields to provide extra information in the response. Additional fields are not used to based suggestions on.</p>"
+        },
+        "AttributeFilter":{
+          "shape":"AttributeFilter",
+          "documentation":"<p>Filters the search results based on document fields/attributes.</p>"
+        },
+        "UserContext":{
+          "shape":"UserContext",
+          "documentation":"<p>Applies user context filtering so that only users who are given access to certain documents see these document in their search results.</p>"
+        }
+      },
+      "documentation":"<p>Provides the configuration information for the document fields/attributes that you want to base query suggestions on.</p>"
+    },
+    "AttributeSuggestionsMode":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "AttributeSuggestionsUpdateConfig":{
+      "type":"structure",
+      "members":{
+        "SuggestableConfigList":{
+          "shape":"SuggestableConfigList",
+          "documentation":"<p>The list of fields/attributes that you want to set as suggestible for query suggestions.</p>"
+        },
+        "AttributeSuggestionsMode":{
+          "shape":"AttributeSuggestionsMode",
+          "documentation":"<p>You can set the mode to <code>ACTIVE</code> or <code>INACTIVE</code>. You must also set <code>SuggestionTypes</code> as either <code>QUERY</code> or <code>DOCUMENT_ATTRIBUTES</code> and then call <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_GetQuerySuggestions.html\">GetQuerySuggestions</a>. If <code>Mode</code> to use query history is set to <code>ENABLED</code> when calling <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateQuerySuggestionsConfig.html\">UpdateQuerySuggestionsConfig</a> and <code>AttributeSuggestionsMode</code> to use fields/attributes is set to <code>ACTIVE</code>, and you haven't set your <code>SuggestionTypes</code> preference to <code>DOCUMENT_ATTRIBUTES</code>, then Amazon Kendra uses the query history.</p>"
+        }
+      },
+      "documentation":"<p>Updates the configuration information for the document fields/attributes that you want to base query suggestions on.</p> <p>To deactivate using documents fields for query suggestions, set the mode to <code>INACTIVE</code>. You must also set <code>SuggestionTypes</code> as either <code>QUERY</code> or <code>DOCUMENT_ATTRIBUTES</code> and then call <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_GetQuerySuggestions.html\">GetQuerySuggestions</a>. If you set to <code>QUERY</code>, then Amazon Kendra uses the query history to base suggestions on. If you set to <code>DOCUMENT_ATTRIBUTES</code>, then Amazon Kendra uses the contents of document fields to base suggestions on.</p>"
     },
     "AuthenticationConfiguration":{
       "type":"structure",
@@ -2247,6 +2323,7 @@
       },
       "documentation":"<p>Provides the configuration information that's required to connect to a database.</p>"
     },
+    "Content":{"type":"string"},
     "ContentSourceConfiguration":{
       "type":"structure",
       "members":{
@@ -2505,7 +2582,7 @@
         },
         "FileFormat":{
           "shape":"FaqFileFormat",
-          "documentation":"<p>The format of the FAQ input file. You can choose between a basic CSV format, a CSV format that includes customs attributes in a header, and a JSON format that includes custom attributes.</p> <p>The format must match the format of the file stored in the S3 bucket identified in the <code>S3Path</code> parameter.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html\">Adding questions and answers</a>.</p>"
+          "documentation":"<p>The format of the FAQ input file. You can choose between a basic CSV format, a CSV format that includes customs attributes in a header, and a JSON format that includes custom attributes.</p> <p>The default format is CSV.</p> <p>The format must match the format of the file stored in the S3 bucket identified in the <code>S3Path</code> parameter.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html\">Adding questions and answers</a>.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenName",
@@ -2822,7 +2899,9 @@
         },
         "AlfrescoConfiguration":{
           "shape":"AlfrescoConfiguration",
-          "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p>"
+          "documentation":"<p>Provides the configuration information to connect to Alfresco as your data source.</p> <p>Support for <code>AlfrescoConfiguration</code> ended May 2023. We recommend migrating to or using the Alfresco data source template schema / <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_TemplateConfiguration.html\">TemplateConfiguration</a> API.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Deprecated AlfrescoConfiguration in favor of TemplateConfiguration"
         },
         "TemplateConfiguration":{
           "shape":"TemplateConfiguration",
@@ -2882,12 +2961,12 @@
     "DataSourceInclusionsExclusionsStrings":{
       "type":"list",
       "member":{"shape":"DataSourceInclusionsExclusionsStringsMember"},
-      "max":100,
+      "max":250,
       "min":0
     },
     "DataSourceInclusionsExclusionsStringsMember":{
       "type":"string",
-      "max":150,
+      "max":300,
       "min":1
     },
     "DataSourceName":{
@@ -3865,7 +3944,7 @@
         },
         "LastSuggestionsBuildTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The Unix timestamp when query suggestions for an index was last updated.</p>"
+          "documentation":"<p>The Unix timestamp when query suggestions for an index was last updated.</p> <p>Amazon Kendra automatically updates suggestions every 24 hours, after you change a setting or after you apply a <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/query-suggestions.html#query-suggestions-blocklist\">block list</a>.</p>"
         },
         "LastClearTime":{
           "shape":"Timestamp",
@@ -3873,7 +3952,11 @@
         },
         "TotalSuggestionsCount":{
           "shape":"Integer",
-          "documentation":"<p>The current total count of query suggestions for an index.</p> <p>This count can change when you update your query suggestions settings, if you filter out certain queries from suggestions using a block list, and as the query log accumulates more queries for Amazon Kendra to learn from.</p>"
+          "documentation":"<p>The current total count of query suggestions for an index.</p> <p>This count can change when you update your query suggestions settings, if you filter out certain queries from suggestions using a block list, and as the query log accumulates more queries for Amazon Kendra to learn from.</p> <p>If the count is much lower than you expected, it could be because Amazon Kendra needs more queries in the query history to learn from or your current query suggestions settings are too strict.</p>"
+        },
+        "AttributeSuggestionsConfig":{
+          "shape":"AttributeSuggestionsDescribeConfig",
+          "documentation":"<p>Configuration information for the document fields/attributes that you want to base query suggestions on.</p>"
         }
       }
     },
@@ -4053,7 +4136,7 @@
         },
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p>The file type of the document in the <code>Blob</code> field.</p>"
+          "documentation":"<p>The file type of the document in the <code>Blob</code> field.</p> <p>If you want to index snippets or subsets of HTML documents instead of the entirety of the HTML documents, you must add the <code>HTML</code> start and closing tags (<code>&lt;HTML&gt;content&lt;/HTML&gt;</code>) around the content.</p>"
         },
         "AccessControlConfigurationId":{
           "shape":"AccessControlConfigurationId",
@@ -4313,6 +4396,7 @@
       "type":"list",
       "member":{"shape":"Status"}
     },
+    "DocumentTitle":{"type":"string"},
     "DocumentsMetadataConfiguration":{
       "type":"structure",
       "members":{
@@ -5023,6 +5107,14 @@
         "MaxSuggestionsCount":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of query suggestions you want to show to your users.</p>"
+        },
+        "SuggestionTypes":{
+          "shape":"SuggestionTypes",
+          "documentation":"<p>The suggestions type to base query suggestions on. The suggestion types are query history or document fields/attributes. You can set one type or the other.</p> <p>If you set query history as your suggestions type, Amazon Kendra suggests queries relevant to your users based on popular queries in the query history.</p> <p>If you set document fields/attributes as your suggestions type, Amazon Kendra suggests queries relevant to your users based on the contents of document fields.</p>"
+        },
+        "AttributeSuggestionsConfig":{
+          "shape":"AttributeSuggestionsGetConfig",
+          "documentation":"<p>Configuration information for the document fields/attributes that you want to base query suggestions on.</p>"
         }
       }
     },
@@ -6657,7 +6749,7 @@
       "members":{
         "IndexId":{
           "shape":"IndexId",
-          "documentation":"<p>The identifier of the index to search. The identifier is returned in the response from the <code>CreateIndex</code> API.</p>"
+          "documentation":"<p>The identifier of the index for the search.</p>"
         },
         "QueryText":{
           "shape":"QueryText",
@@ -6665,23 +6757,23 @@
         },
         "AttributeFilter":{
           "shape":"AttributeFilter",
-          "documentation":"<p>Enables filtered searches based on document attributes. You can only provide one attribute filter; however, the <code>AndAllFilters</code>, <code>NotFilter</code>, and <code>OrAllFilters</code> parameters contain a list of other filters.</p> <p>The <code>AttributeFilter</code> parameter enables you to create a set of filtering rules that a document must satisfy to be included in the query results.</p>"
+          "documentation":"<p>Filters search results by document fields/attributes. You can only provide one attribute filter; however, the <code>AndAllFilters</code>, <code>NotFilter</code>, and <code>OrAllFilters</code> parameters contain a list of other filters.</p> <p>The <code>AttributeFilter</code> parameter means you can create a set of filtering rules that a document must satisfy to be included in the query results.</p>"
         },
         "Facets":{
           "shape":"FacetList",
-          "documentation":"<p>An array of documents attributes. Amazon Kendra returns a count for each attribute key specified. This helps your users narrow their search.</p>"
+          "documentation":"<p>An array of documents fields/attributes for faceted search. Amazon Kendra returns a count for each field key specified. This helps your users narrow their search.</p>"
         },
         "RequestedDocumentAttributes":{
           "shape":"DocumentAttributeKeyList",
-          "documentation":"<p>An array of document attributes to include in the response. You can limit the response to include certain document attributes. By default all document attributes are included in the response.</p>"
+          "documentation":"<p>An array of document fields/attributes to include in the response. You can limit the response to include certain document fields. By default, all document attributes are included in the response.</p>"
         },
         "QueryResultTypeFilter":{
           "shape":"QueryResultType",
-          "documentation":"<p>Sets the type of query. Only results for the specified query type are returned.</p>"
+          "documentation":"<p>Sets the type of query result or response. Only results for the specified type are returned.</p>"
         },
         "DocumentRelevanceOverrideConfigurations":{
           "shape":"DocumentRelevanceOverrideConfigurationList",
-          "documentation":"<p>Overrides relevance tuning configurations of fields or attributes set at the index level.</p> <p>If you use this API to override the relevance tuning configured at the index level, but there is no relevance tuning configured at the index level, then Amazon Kendra does not apply any relevance tuning.</p> <p>If there is relevance tuning configured at the index level, but you do not use this API to override any relevance tuning in the index, then Amazon Kendra uses the relevance tuning that is configured at the index level.</p> <p>If there is relevance tuning configured for fields at the index level, but you use this API to override only some of these fields, then for the fields you did not override, the importance is set to 1.</p>"
+          "documentation":"<p>Overrides relevance tuning configurations of fields/attributes set at the index level.</p> <p>If you use this API to override the relevance tuning configured at the index level, but there is no relevance tuning configured at the index level, then Amazon Kendra does not apply any relevance tuning.</p> <p>If there is relevance tuning configured for fields at the index level, and you use this API to override only some of these fields, then for the fields you did not override, the importance is set to 1.</p>"
         },
         "PageNumber":{
           "shape":"Integer",
@@ -6714,7 +6806,7 @@
       "members":{
         "QueryId":{
           "shape":"QueryId",
-          "documentation":"<p>The identifier for the search. You use <code>QueryId</code> to identify the search when using the feedback API.</p>"
+          "documentation":"<p>The identifier for the search. You also use <code>QueryId</code> to identify the search when using the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_SubmitFeedback.html\">SubmitFeedback</a> API.</p>"
         },
         "ResultItems":{
           "shape":"QueryResultItemList",
@@ -6722,11 +6814,11 @@
         },
         "FacetResults":{
           "shape":"FacetResultList",
-          "documentation":"<p>Contains the facet results. A <code>FacetResult</code> contains the counts for each attribute key that was specified in the <code>Facets</code> input parameter.</p>"
+          "documentation":"<p>Contains the facet results. A <code>FacetResult</code> contains the counts for each field/attribute key that was specified in the <code>Facets</code> input parameter.</p>"
         },
         "TotalNumberOfResults":{
           "shape":"Integer",
-          "documentation":"<p>The total number of items found by the search; however, you can only retrieve up to 100 items. For example, if the search found 192 items, you can only retrieve the first 100 of the items.</p>"
+          "documentation":"<p>The total number of items found by the search. However, you can only retrieve up to 100 items. For example, if the search found 192 items, you can only retrieve the first 100 of the items.</p>"
         },
         "Warnings":{
           "shape":"WarningList",
@@ -6766,7 +6858,7 @@
         },
         "AdditionalAttributes":{
           "shape":"AdditionalResultAttributeList",
-          "documentation":"<p>One or more additional attributes associated with the query result.</p>"
+          "documentation":"<p>One or more additional fields/attributes associated with the query result.</p>"
         },
         "DocumentId":{
           "shape":"DocumentId",
@@ -6786,15 +6878,15 @@
         },
         "DocumentAttributes":{
           "shape":"DocumentAttributeList",
-          "documentation":"<p>An array of document attributes assigned to a document in the search results. For example, the document author (<code>_author</code>) or the source URI (<code>_source_uri</code>) of the document.</p>"
+          "documentation":"<p>An array of document fields/attributes assigned to a document in the search results. For example, the document author (<code>_author</code>) or the source URI (<code>_source_uri</code>) of the document.</p>"
         },
         "ScoreAttributes":{
           "shape":"ScoreAttributes",
-          "documentation":"<p>Indicates the confidence that Amazon Kendra has that a result matches the query that you provided. Each result is placed into a bin that indicates the confidence, <code>VERY_HIGH</code>, <code>HIGH</code>, <code>MEDIUM</code> and <code>LOW</code>. You can use the score to determine if a response meets the confidence needed for your application.</p> <p>The field is only set to <code>LOW</code> when the <code>Type</code> field is set to <code>DOCUMENT</code> and Amazon Kendra is not confident that the result matches the query.</p>"
+          "documentation":"<p>Indicates the confidence level of Amazon Kendra providing a relevant result for the query. Each result is placed into a bin that indicates the confidence, <code>VERY_HIGH</code>, <code>HIGH</code>, <code>MEDIUM</code> and <code>LOW</code>. You can use the score to determine if a response meets the confidence needed for your application.</p> <p>The field is only set to <code>LOW</code> when the <code>Type</code> field is set to <code>DOCUMENT</code> and Amazon Kendra is not confident that the result is relevant to the query.</p>"
         },
         "FeedbackToken":{
           "shape":"FeedbackToken",
-          "documentation":"<p>A token that identifies a particular result from a particular query. Use this token to provide click-through feedback for the result. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/submitting-feedback.html\">Submitting feedback </a>.</p>"
+          "documentation":"<p>A token that identifies a particular result from a particular query. Use this token to provide click-through feedback for the result. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/submitting-feedback.html\">Submitting feedback</a>.</p>"
         },
         "TableExcerpt":{
           "shape":"TableExcerpt",
@@ -6884,11 +6976,7 @@
         "UPDATING"
       ]
     },
-    "QueryText":{
-      "type":"string",
-      "max":1000,
-      "min":1
-    },
+    "QueryText":{"type":"string"},
     "QueryTextList":{
       "type":"list",
       "member":{"shape":"QueryText"},
@@ -7061,6 +7149,94 @@
       "type":"string",
       "max":73,
       "min":1
+    },
+    "RetrieveRequest":{
+      "type":"structure",
+      "required":[
+        "IndexId",
+        "QueryText"
+      ],
+      "members":{
+        "IndexId":{
+          "shape":"IndexId",
+          "documentation":"<p>The identifier of the index to retrieve relevant passages for the search.</p>"
+        },
+        "QueryText":{
+          "shape":"QueryText",
+          "documentation":"<p>The input query text to retrieve relevant passages for the search. Amazon Kendra truncates queries at 30 token words, which excludes punctuation and stop words. Truncation still applies if you use Boolean or more advanced, complex queries.</p>"
+        },
+        "AttributeFilter":{
+          "shape":"AttributeFilter",
+          "documentation":"<p>Filters search results by document fields/attributes. You can only provide one attribute filter; however, the <code>AndAllFilters</code>, <code>NotFilter</code>, and <code>OrAllFilters</code> parameters contain a list of other filters.</p> <p>The <code>AttributeFilter</code> parameter means you can create a set of filtering rules that a document must satisfy to be included in the query results.</p>"
+        },
+        "RequestedDocumentAttributes":{
+          "shape":"DocumentAttributeKeyList",
+          "documentation":"<p>A list of document fields/attributes to include in the response. You can limit the response to include certain document fields. By default, all document fields are included in the response.</p>"
+        },
+        "DocumentRelevanceOverrideConfigurations":{
+          "shape":"DocumentRelevanceOverrideConfigurationList",
+          "documentation":"<p>Overrides relevance tuning configurations of fields/attributes set at the index level.</p> <p>If you use this API to override the relevance tuning configured at the index level, but there is no relevance tuning configured at the index level, then Amazon Kendra does not apply any relevance tuning.</p> <p>If there is relevance tuning configured for fields at the index level, and you use this API to override only some of these fields, then for the fields you did not override, the importance is set to 1.</p>"
+        },
+        "PageNumber":{
+          "shape":"Integer",
+          "documentation":"<p>Retrieved relevant passages are returned in pages the size of the <code>PageSize</code> parameter. By default, Amazon Kendra returns the first page of results. Use this parameter to get result pages after the first one.</p>"
+        },
+        "PageSize":{
+          "shape":"Integer",
+          "documentation":"<p>Sets the number of retrieved relevant passages that are returned in each page of results. The default page size is 10. The maximum number of results returned is 100. If you ask for more than 100 results, only 100 are returned.</p>"
+        },
+        "UserContext":{
+          "shape":"UserContext",
+          "documentation":"<p>The user context token or user and group information.</p>"
+        }
+      }
+    },
+    "RetrieveResult":{
+      "type":"structure",
+      "members":{
+        "QueryId":{
+          "shape":"QueryId",
+          "documentation":"<p>The identifier of query used for the search. You also use <code>QueryId</code> to identify the search when using the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_SubmitFeedback.html\">Submitfeedback</a> API.</p>"
+        },
+        "ResultItems":{
+          "shape":"RetrieveResultItemList",
+          "documentation":"<p>The results of the retrieved relevant passages for the search.</p>"
+        }
+      }
+    },
+    "RetrieveResultItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ResultId",
+          "documentation":"<p>The identifier of the relevant passage result.</p>"
+        },
+        "DocumentId":{
+          "shape":"DocumentId",
+          "documentation":"<p>The identifier of the document.</p>"
+        },
+        "DocumentTitle":{
+          "shape":"DocumentTitle",
+          "documentation":"<p>The title of the document.</p>"
+        },
+        "Content":{
+          "shape":"Content",
+          "documentation":"<p>The contents of the relevant passage.</p>"
+        },
+        "DocumentURI":{
+          "shape":"Url",
+          "documentation":"<p>The URI of the original location of the document.</p>"
+        },
+        "DocumentAttributes":{
+          "shape":"DocumentAttributeList",
+          "documentation":"<p>An array of document fields/attributes assigned to a document in the search results. For example, the document author (<code>_author</code>) or the source URI (<code>_source_uri</code>) of the document.</p>"
+        }
+      },
+      "documentation":"<p>A single retrieved relevant passage result.</p>"
+    },
+    "RetrieveResultItemList":{
+      "type":"list",
+      "member":{"shape":"RetrieveResultItem"}
     },
     "RoleArn":{
       "type":"string",
@@ -7389,10 +7565,10 @@
       "members":{
         "ScoreConfidence":{
           "shape":"ScoreConfidence",
-          "documentation":"<p>A relative ranking for how well the response matches the query.</p>"
+          "documentation":"<p>A relative ranking for how relevant the response is to the query.</p>"
         }
       },
-      "documentation":"<p>Provides a relative ranking that indicates how confident Amazon Kendra is that the response matches the query.</p>"
+      "documentation":"<p>Provides a relative ranking that indicates how confident Amazon Kendra is that the response is relevant to the query.</p>"
     },
     "ScoreConfidence":{
       "type":"string",
@@ -7455,7 +7631,7 @@
         },
         "WebCrawlerMode":{
           "shape":"WebCrawlerMode",
-          "documentation":"<p>You can choose one of the following modes:</p> <ul> <li> <p> <code>HOST_ONLY</code> – crawl only the website host names. For example, if the seed URL is \"abc.example.com\", then only URLs with host name \"abc.example.com\" are crawled.</p> </li> <li> <p> <code>SUBDOMAINS</code> – crawl the website host names with subdomains. For example, if the seed URL is \"abc.example.com\", then \"a.abc.example.com\" and \"b.abc.example.com\" are also crawled.</p> </li> <li> <p> <code>EVERYTHING</code> – crawl the website host names with subdomains and other domains that the web pages link to.</p> </li> </ul> <p>The default mode is set to <code>HOST_ONLY</code>.</p>"
+          "documentation":"<p>You can choose one of the following modes:</p> <ul> <li> <p> <code>HOST_ONLY</code>—crawl only the website host names. For example, if the seed URL is \"abc.example.com\", then only URLs with host name \"abc.example.com\" are crawled.</p> </li> <li> <p> <code>SUBDOMAINS</code>—crawl the website host names with subdomains. For example, if the seed URL is \"abc.example.com\", then \"a.abc.example.com\" and \"b.abc.example.com\" are also crawled.</p> </li> <li> <p> <code>EVERYTHING</code>—crawl the website host names with subdomains and other domains that the web pages link to.</p> </li> </ul> <p>The default mode is set to <code>HOST_ONLY</code>.</p>"
         }
       },
       "documentation":"<p>Provides the configuration information for the seed or starting point URLs to crawl.</p> <p> <i>When selecting websites to index, you must adhere to the <a href=\"https://aws.amazon.com/aup/\">Amazon Acceptable Use Policy</a> and all other Amazon terms. Remember that you must only use Amazon Kendra Web Crawler to index your own web pages, or web pages that you have authorization to index.</i> </p>"
@@ -7541,11 +7717,11 @@
         },
         "IncludeAttachmentFilePatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
-          "documentation":"<p>A list of regular expression patterns to include certain attachments of knowledge articles in your ServiceNow. Item that match the patterns are included in the index. Items that don't match the patterns are excluded from the index. If an item matches both an inclusion and exclusion pattern, the exclusion pattern takes precedence and the item isn't included in the index.</p> <p>The regex is applied to the field specified in the <code>PatternTargetField</code>.</p>"
+          "documentation":"<p>A list of regular expression patterns applied to include knowledge article attachments. Attachments that match the patterns are included in the index. Items that don't match the patterns are excluded from the index. If an item matches both an inclusion and exclusion pattern, the exclusion pattern takes precedence and the item isn't included in the index.</p>"
         },
         "ExcludeAttachmentFilePatterns":{
           "shape":"DataSourceInclusionsExclusionsStrings",
-          "documentation":"<p>A list of regular expression patterns to exclude certain attachments of knowledge articles in your ServiceNow. Item that match the patterns are excluded from the index. Items that don't match the patterns are included in the index. If an item matches both an inclusion and exclusion pattern, the exclusion pattern takes precedence and the item isn't included in the index.</p> <p>The regex is applied to the field specified in the <code>PatternTargetField</code>.</p>"
+          "documentation":"<p>A list of regular expression patterns applied to exclude certain knowledge article attachments. Attachments that match the patterns are excluded from the index. Items that don't match the patterns are included in the index. If an item matches both an inclusion and exclusion pattern, the exclusion pattern takes precedence and the item isn't included in the index.</p>"
         },
         "DocumentDataFieldName":{
           "shape":"DataSourceFieldName",
@@ -7867,6 +8043,28 @@
       },
       "documentation":"<p>Specifies the document attribute to use to sort the response to a Amazon Kendra query. You can specify a single attribute for sorting. The attribute must have the <code>Sortable</code> flag set to <code>true</code>, otherwise Amazon Kendra returns an exception.</p> <p>You can sort attributes of the following types.</p> <ul> <li> <p>Date value</p> </li> <li> <p>Long value</p> </li> <li> <p>String value</p> </li> </ul> <p>You can't sort attributes of the following type.</p> <ul> <li> <p>String list value</p> </li> </ul>"
     },
+    "SourceDocument":{
+      "type":"structure",
+      "members":{
+        "DocumentId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the document used for a query suggestion.</p>"
+        },
+        "SuggestionAttributes":{
+          "shape":"DocumentAttributeKeyList",
+          "documentation":"<p>The document fields/attributes used for a query suggestion.</p>"
+        },
+        "AdditionalAttributes":{
+          "shape":"DocumentAttributeList",
+          "documentation":"<p>The additional fields/attributes to include in the response. You can use additional fields to provide extra information in the response. Additional fields are not used to based suggestions on.</p>"
+        }
+      },
+      "documentation":"<p>The document ID and its fields/attributes that are used for a query suggestion, if document fields set to use for query suggestions.</p>"
+    },
+    "SourceDocuments":{
+      "type":"list",
+      "member":{"shape":"SourceDocument"}
+    },
     "SpellCorrectedQuery":{
       "type":"structure",
       "members":{
@@ -8021,6 +8219,24 @@
       "max":6,
       "min":1
     },
+    "SuggestableConfig":{
+      "type":"structure",
+      "members":{
+        "AttributeName":{
+          "shape":"DocumentAttributeKey",
+          "documentation":"<p>The name of the document field/attribute.</p>"
+        },
+        "Suggestable":{
+          "shape":"ObjectBoolean",
+          "documentation":"<p> <code>TRUE</code> means the document field/attribute is suggestible, so the contents within the field can be used for query suggestions.</p>"
+        }
+      },
+      "documentation":"<p>Provides the configuration information for a document field/attribute that you want to base query suggestions on.</p>"
+    },
+    "SuggestableConfigList":{
+      "type":"list",
+      "member":{"shape":"SuggestableConfig"}
+    },
     "SuggestedQueryText":{
       "type":"string",
       "max":1000,
@@ -8036,6 +8252,10 @@
         "Value":{
           "shape":"SuggestionValue",
           "documentation":"<p>The value for the UUID (universally unique identifier) of a single query suggestion.</p> <p>The value is the text string of a suggestion.</p>"
+        },
+        "SourceDocuments":{
+          "shape":"SourceDocuments",
+          "documentation":"<p>The list of document IDs and their fields/attributes that are used for a single query suggestion, if document fields set to use for query suggestions.</p>"
         }
       },
       "documentation":"<p>A single query suggestion.</p>"
@@ -8079,6 +8299,17 @@
         }
       },
       "documentation":"<p>Provides text and information about where to highlight the query suggestion text.</p>"
+    },
+    "SuggestionType":{
+      "type":"string",
+      "enum":[
+        "QUERY",
+        "DOCUMENT_ATTRIBUTES"
+      ]
+    },
+    "SuggestionTypes":{
+      "type":"list",
+      "member":{"shape":"SuggestionType"}
     },
     "SuggestionValue":{
       "type":"structure",
@@ -8523,7 +8754,7 @@
         },
         "FeaturedResultsSetId":{
           "shape":"FeaturedResultsSetId",
-          "documentation":"<p>The identifier of the index used for featuring results.</p>"
+          "documentation":"<p>The identifier of the set of featured results that you want to update.</p>"
         },
         "FeaturedResultsSetName":{
           "shape":"FeaturedResultsSetName",
@@ -8658,6 +8889,10 @@
         "MinimumQueryCount":{
           "shape":"MinimumQueryCount",
           "documentation":"<p>The the minimum number of times a query must be searched in order to be eligible to suggest to your users.</p> <p>Decreasing this number increases the number of suggestions. However, this affects the quality of suggestions as it sets a low bar for a query to be considered popular to suggest to users.</p> <p>How you tune this setting depends on your specific needs.</p>"
+        },
+        "AttributeSuggestionsConfig":{
+          "shape":"AttributeSuggestionsUpdateConfig",
+          "documentation":"<p>Configuration information for the document fields/attributes that you want to base query suggestions on.</p>"
         }
       }
     },
@@ -8875,7 +9110,7 @@
         },
         "CrawlDepth":{
           "shape":"CrawlDepth",
-          "documentation":"<p>Specifies the number of levels in a website that you want to crawl.</p> <p>The first level begins from the website seed or starting point URL. For example, if a website has three levels—index level (the seed in this example), sections level, and subsections level—and you are only interested in crawling information up to the sections level (levels 0-1), you can set your depth to 1.</p> <p>The default crawl depth is set to 2.</p>"
+          "documentation":"<p>The 'depth' or number of levels from the seed level to crawl. For example, the seed URL page is depth 1 and any hyperlinks on this page that are also crawled are depth 2.</p>"
         },
         "MaxLinksPerPage":{
           "shape":"MaxLinksPerPage",

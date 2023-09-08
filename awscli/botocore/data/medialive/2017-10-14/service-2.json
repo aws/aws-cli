@@ -1508,6 +1508,98 @@
       ],
       "documentation": "Get a channel schedule"
     },
+    "DescribeAccountConfiguration": {
+      "name": "DescribeAccountConfiguration",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "DescribeAccountConfigurationResponse",
+        "documentation": "An array of account configuration options."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to describe the account configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe account configuration calls."
+        }
+      ],
+      "documentation": "Get account configuration"
+    },
+    "DescribeThumbnails": {
+      "name": "DescribeThumbnails",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/channels/{channelId}/thumbnails",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeThumbnailsRequest"
+      },
+      "output": {
+        "shape": "DescribeThumbnailsResponse",
+        "documentation": "An array of thumbnails for the channel. Each member contains the thumbnail data for one pipeline."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error.."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to get thumbnails."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "There are no thumbnails for this channel."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe thumbnails calls to channel service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "Service do not have permission to customer's KMS key."
+        }
+      ],
+      "documentation": "Describe the latest thumbnails data."
+    },
     "ListChannels": {
       "name": "ListChannels",
       "http": {
@@ -2081,6 +2173,52 @@
         }
       ],
       "documentation": "Reject the transfer of the specified input device to your AWS account."
+    },
+    "UpdateAccountConfiguration": {
+      "name": "UpdateAccountConfiguration",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "UpdateAccountConfigurationResponse",
+        "documentation": "Successful update of the account configuration."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The update account configuration request failed validation."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to update the account's configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update account configuration calls."
+        }
+      ],
+      "documentation": "Update account configuration"
     },
     "StartChannel": {
       "name": "StartChannel",
@@ -2893,6 +3031,14 @@
         "MEDIUM_LOW"
       ]
     },
+    "Ac3AttenuationControl": {
+      "type": "string",
+      "documentation": "Ac3 Attenuation Control",
+      "enum": [
+        "ATTENUATE_3_DB",
+        "NONE"
+      ]
+    },
     "Ac3BitstreamMode": {
       "type": "string",
       "documentation": "Ac3 Bitstream Mode",
@@ -2978,6 +3124,11 @@
           "shape": "Ac3MetadataControl",
           "locationName": "metadataControl",
           "documentation": "When set to \"followInput\", encoder metadata will be sourced from the DD, DD+, or DolbyE decoder that supplied this audio data. If audio was not supplied from one of these streams, then the static metadata settings will be used."
+        },
+        "AttenuationControl": {
+          "shape": "Ac3AttenuationControl",
+          "locationName": "attenuationControl",
+          "documentation": "Applies a 3 dB attenuation to the surround channels. Applies only when the coding mode parameter is CODING_MODE_3_2_LFE."
         }
       },
       "documentation": "Ac3 Settings"
@@ -3020,6 +3171,17 @@
         "DOES_NOT_IMPLEMENT_ACCESSIBILITY_FEATURES",
         "IMPLEMENTS_ACCESSIBILITY_FEATURES"
       ]
+    },
+    "AccountConfiguration": {
+      "type": "structure",
+      "members": {
+        "KmsKeyId": {
+          "shape": "__string",
+          "locationName": "kmsKeyId",
+          "documentation": "Specifies the KMS key to use for all features that use key encryption. Specify the ARN of a KMS key that you have created. Or leave blank to use the key that MediaLive creates and manages for you."
+        }
+      },
+      "documentation": "Placeholder documentation for AccountConfiguration"
     },
     "AfdSignaling": {
       "type": "string",
@@ -5988,10 +6150,15 @@
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
         },
-	 "Tags": {
+        "Tags": {
           "shape": "Tags",
           "locationName": "tags",
           "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputDeviceResponse"
@@ -7318,6 +7485,11 @@
         "VideoDescriptions": {
           "shape": "__listOfVideoDescription",
           "locationName": "videoDescriptions"
+        },
+        "ThumbnailConfiguration": {
+          "shape": "ThumbnailConfiguration",
+          "locationName": "thumbnailConfiguration",
+          "documentation": "Thumbnail configuration settings."
         }
       },
       "documentation": "Encoder Settings",
@@ -7327,6 +7499,22 @@
         "OutputGroups",
         "TimecodeConfig"
       ]
+    },
+    "EpochLockingSettings": {
+      "type": "structure",
+      "members": {
+        "CustomEpoch": {
+          "shape": "__string",
+          "locationName": "customEpoch",
+          "documentation": "Optional. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00."
+        },
+        "JamSyncTime": {
+          "shape": "__string",
+          "locationName": "jamSyncTime",
+          "documentation": "Optional. Enter a time for the jam sync. The default is midnight UTC. When epoch locking is enabled, MediaLive performs a daily jam sync on every output encode to ensure timecodes don\u2019t diverge from the wall clock. The jam sync applies only to encodes with frame rate of 29.97 or 59.94 FPS. To override, enter a time in HH:MM:SS in UTC. Always set the MM:SS portion to 00:00."
+        }
+      },
+      "documentation": "Epoch Locking Settings"
     },
     "Esam": {
       "type": "structure",
@@ -7666,6 +7854,81 @@
       },
       "documentation": "Placeholder documentation for GatewayTimeoutException"
     },
+    "DescribeAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationRequest"
+    },
+    "DescribeAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationResponse"
+    },
+    "DescribeAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's configuration."
+    },
+    "DescribeThumbnailsRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "Unique ID of the channel"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID (\"0\" or \"1\")"
+        },
+        "ThumbnailType": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "thumbnailType",
+          "documentation": "thumbnail type"
+        }
+      },
+      "required": [
+        "ThumbnailType",
+        "PipelineId",
+        "ChannelId"
+      ],
+      "documentation": "Placeholder documentation for DescribeThumbnailsRequest"
+    },
+    "DescribeThumbnailsResponse": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeThumbnailsResponse"
+    },
+    "DescribeThumbnailsResultModel": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Thumbnail details for all the pipelines of a running channel."
+    },
     "GlobalConfiguration": {
       "type": "structure",
       "members": {
@@ -7698,6 +7961,11 @@
           "shape": "GlobalConfigurationLowFramerateInputs",
           "locationName": "supportLowFramerateInputs",
           "documentation": "Adjusts video input buffer for streams with very low video framerates. This is commonly set to enabled for music channels with less than one video frame per second."
+        },
+        "OutputLockingSettings": {
+          "shape": "OutputLockingSettings",
+          "locationName": "outputLockingSettings",
+          "documentation": "Advanced output locking settings"
         }
       },
       "documentation": "Global Configuration"
@@ -9257,6 +9525,15 @@
       },
       "documentation": "Settings to configure an action so that it occurs as soon as possible."
     },
+    "IncludeFillerNalUnits": {
+      "type": "string",
+      "documentation": "Include Filler Nal Units",
+      "enum": [
+        "AUTO",
+        "DROP",
+        "INCLUDE"
+      ]
+    },
     "Input": {
       "type": "structure",
       "members": {
@@ -9559,10 +9836,15 @@
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
         },
-	"Tags": {
+        "Tags": {
           "shape": "Tags",
           "locationName": "tags",
           "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
         }
       },
       "documentation": "An input device."
@@ -9820,10 +10102,15 @@
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
         },
-	"Tags": {
+        "Tags": {
           "shape": "Tags",
           "locationName": "tags",
           "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
         }
       },
       "documentation": "Details of the input device."
@@ -11410,6 +11697,14 @@
         "PASSTHROUGH"
       ]
     },
+    "M3u8KlvBehavior": {
+      "type": "string",
+      "documentation": "M3u8 Klv Behavior",
+      "enum": [
+        "NO_PASSTHROUGH",
+        "PASSTHROUGH"
+      ]
+    },
     "M3u8NielsenId3Behavior": {
       "type": "string",
       "documentation": "M3u8 Nielsen Id3 Behavior",
@@ -11521,6 +11816,16 @@
           "shape": "__string",
           "locationName": "videoPid",
           "documentation": "Packet Identifier (PID) of the elementary video stream in the transport stream. Can be entered as a decimal or hexadecimal value."
+        },
+        "KlvBehavior": {
+          "shape": "M3u8KlvBehavior",
+          "locationName": "klvBehavior",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "KlvDataPids": {
+          "shape": "__string",
+          "locationName": "klvDataPids",
+          "documentation": "Packet Identifier (PID) for input source KLV data to this output. Multiple values are accepted, and can be entered in ranges and/or by comma separation. Can be entered as decimal or hexadecimal values.  Each PID specified must be in the range of 32 (or 0x20)..8182 (or 0x1ff6)."
         }
       },
       "documentation": "Settings information for the .m3u8 container"
@@ -12908,6 +13213,20 @@
       },
       "documentation": "Reference to an OutputDestination ID defined in the channel"
     },
+    "OutputLockingSettings": {
+      "type": "structure",
+      "members": {
+        "EpochLockingSettings": {
+          "shape": "EpochLockingSettings",
+          "locationName": "epochLockingSettings"
+        },
+        "PipelineLockingSettings": {
+          "shape": "PipelineLockingSettings",
+          "locationName": "pipelineLockingSettings"
+        }
+      },
+      "documentation": "Output Locking Settings"
+    },
     "OutputSettings": {
       "type": "structure",
       "members": {
@@ -13000,6 +13319,12 @@
         "PIPELINE_0",
         "PIPELINE_1"
       ]
+    },
+    "PipelineLockingSettings": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
       "type": "structure",
@@ -13575,6 +13900,11 @@
           "shape": "__integerMin0",
           "locationName": "restartDelay",
           "documentation": "If a streaming output fails, number of seconds to wait until a restart is initiated. A value of 0 means never restart."
+        },
+        "IncludeFillerNalUnits": {
+          "shape": "IncludeFillerNalUnits",
+          "locationName": "includeFillerNalUnits",
+          "documentation": "Applies only when the rate control mode (in the codec settings) is CBR (constant bit rate). Controls whether the RTMP output stream is padded (with FILL NAL units) in order to achieve a constant bit rate that is truly constant. When there is no padding, the bandwidth varies (up to the bitrate value in the codec settings). We recommend that you choose Auto."
         }
       },
       "documentation": "Rtmp Group Settings"
@@ -14147,6 +14477,46 @@
         "WEB_DELIVERY_NOT_ALLOWED",
         "WEB_DELIVERY_ALLOWED"
       ]
+    },
+    "UpdateAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "List of account configuration parameters to update."
+    },
+    "UpdateAccountConfigurationRequestModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The desired new account configuration."
+    },
+    "UpdateAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateAccountConfigurationResponse"
+    },
+    "UpdateAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's updated configuration."
     },
     "SmoothGroupAudioOnlyTimecodeControl": {
       "type": "string",
@@ -14838,6 +15208,46 @@
         "STRENGTH_16"
       ]
     },
+    "Thumbnail": {
+      "type": "structure",
+      "members": {
+        "Body": {
+          "shape": "__string",
+          "locationName": "body",
+          "documentation": "The binary data for the latest thumbnail."
+        },
+        "ContentType": {
+          "shape": "__string",
+          "locationName": "contentType",
+          "documentation": "The content type for the latest thumbnail."
+        },
+        "ThumbnailType": {
+          "shape": "ThumbnailType",
+          "locationName": "thumbnailType",
+          "documentation": "Thumbnail Type"
+        },
+        "TimeStamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "timeStamp",
+          "documentation": "Time stamp for the latest thumbnail."
+        }
+      },
+      "documentation": "Details of a single thumbnail"
+    },
+    "ThumbnailConfiguration": {
+      "type": "structure",
+      "members": {
+        "State": {
+          "shape": "ThumbnailState",
+          "locationName": "state",
+          "documentation": "Whether Thumbnail is enabled."
+        }
+      },
+      "documentation": "Thumbnail Configuration",
+      "required": [
+        "State"
+      ]
+    },
     "ThumbnailData": {
       "type": "structure",
       "members": {
@@ -14848,6 +15258,44 @@
         }
       },
       "documentation": "The binary data for the thumbnail that the Link device has most recently sent to MediaLive."
+    },
+    "ThumbnailDetail": {
+      "type": "structure",
+      "members": {
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID"
+        },
+        "Thumbnails": {
+          "shape": "__listOfThumbnail",
+          "locationName": "thumbnails",
+          "documentation": "thumbnails of a single pipeline"
+        }
+      },
+      "documentation": "Thumbnail details for one pipeline of a running channel."
+    },
+    "ThumbnailNoData": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Response when thumbnail has no data. It should have no message."
+    },
+    "ThumbnailState": {
+      "type": "string",
+      "documentation": "Thumbnail State",
+      "enum": [
+        "AUTO",
+        "DISABLED"
+      ]
+    },
+    "ThumbnailType": {
+      "type": "string",
+      "documentation": "Thumbnail type.",
+      "enum": [
+        "UNSPECIFIED",
+        "CURRENT_ACTIVE"
+      ]
     },
     "TimecodeBurninFontSize": {
       "type": "string",
@@ -15374,6 +15822,11 @@
           "shape": "InputDeviceConfigurableSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "The settings that you want to apply to the UHD input device."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone you want associated with this input device."
         }
       },
       "documentation": "Updates an input device."
@@ -15401,6 +15854,11 @@
           "shape": "InputDeviceConfigurableSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "The settings that you want to apply to the UHD input device."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone you want associated with this input device."
         }
       },
       "documentation": "A request to update an input device.",
@@ -15471,10 +15929,15 @@
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
         },
-	  "Tags": {
+        "Tags": {
           "shape": "Tags",
           "locationName": "tags",
           "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
         }
       },
       "documentation": "Placeholder documentation for UpdateInputDeviceResponse"
@@ -16731,6 +17194,20 @@
         "shape": "Scte35Descriptor"
       },
       "documentation": "Placeholder documentation for __listOfScte35Descriptor"
+    },
+    "__listOfThumbnail": {
+      "type": "list",
+      "member": {
+        "shape": "Thumbnail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnail"
+    },
+    "__listOfThumbnailDetail": {
+      "type": "list",
+      "member": {
+        "shape": "ThumbnailDetail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnailDetail"
     },
     "__listOfTransferringInputDeviceSummary": {
       "type": "list",

@@ -137,7 +137,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates an Autopilot job.</p> <p>Find the best-performing model after you run an Autopilot job by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html\">DescribeAutoMLJob</a>.</p> <p>For information about how to use Autopilot, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html\">Automate Model Development with Amazon SageMaker Autopilot</a>.</p>"
+      "documentation":"<p>Creates an Autopilot job also referred to as Autopilot experiment or AutoML job.</p> <note> <p>We recommend using the new versions <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a>, which offer backward compatibility.</p> <p> <code>CreateAutoMLJobV2</code> can manage tabular problem types identical to those of its previous version <code>CreateAutoMLJob</code>, as well as non-tabular problem types such as image or text classification.</p> <p>Find guidelines about how to migrate a <code>CreateAutoMLJob</code> to <code>CreateAutoMLJobV2</code> in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-create-experiment-api.html#autopilot-create-experiment-api-migrate-v1-v2\">Migrate a CreateAutoMLJob to CreateAutoMLJobV2</a>.</p> </note> <p>You can find the best-performing model after you run an AutoML job by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a> (recommended) or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html\">DescribeAutoMLJob</a>.</p>"
     },
     "CreateAutoMLJobV2":{
       "name":"CreateAutoMLJobV2",
@@ -151,7 +151,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates an Amazon SageMaker AutoML job that uses non-tabular data such as images or text for Computer Vision or Natural Language Processing problems.</p> <p>Find the resulting model after you run an AutoML job V2 by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a>.</p> <p>To create an <code>AutoMLJob</code> using tabular data, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a>.</p> <note> <p>This API action is callable through SageMaker Canvas only. Calling it directly from the CLI or an SDK results in an error.</p> </note>"
+      "documentation":"<p>Creates an Autopilot job also referred to as Autopilot experiment or AutoML job V2.</p> <note> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a> are new versions of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html\">DescribeAutoMLJob</a> which offer backward compatibility.</p> <p> <code>CreateAutoMLJobV2</code> can manage tabular problem types identical to those of its previous version <code>CreateAutoMLJob</code>, as well as non-tabular problem types such as image or text classification.</p> <p>Find guidelines about how to migrate a <code>CreateAutoMLJob</code> to <code>CreateAutoMLJobV2</code> in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-create-experiment-api.html#autopilot-create-experiment-api-migrate-v1-v2\">Migrate a CreateAutoMLJob to CreateAutoMLJobV2</a>.</p> </note> <p>For the list of available problem types supported by <code>CreateAutoMLJobV2</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLProblemTypeConfig.html\">AutoMLProblemTypeConfig</a>.</p> <p>You can find the best-performing model after you run an AutoML job V2 by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a>.</p>"
     },
     "CreateCodeRepository":{
       "name":"CreateCodeRepository",
@@ -279,7 +279,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates an endpoint using the endpoint configuration specified in the request. SageMaker uses the endpoint to provision resources and deploy models. You create the endpoint configuration with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html\">CreateEndpointConfig</a> API. </p> <p> Use this API to deploy models using SageMaker hosting services. </p> <p>For an example that calls this method when deploying a model to SageMaker hosting services, see the <a href=\"https://github.com/aws/amazon-sagemaker-examples/blob/master/sagemaker-fundamentals/create-endpoint/create_endpoint.ipynb\">Create Endpoint example notebook.</a> </p> <note> <p> You must not delete an <code>EndpointConfig</code> that is in use by an endpoint that is live or while the <code>UpdateEndpoint</code> or <code>CreateEndpoint</code> operations are being performed on the endpoint. To update an endpoint, you must create a new <code>EndpointConfig</code>.</p> </note> <p>The endpoint name must be unique within an Amazon Web Services Region in your Amazon Web Services account. </p> <p>When it receives the request, SageMaker creates the endpoint, launches the resources (ML compute instances), and deploys the model(s) on them. </p> <note> <p>When you call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a>, a load call is made to DynamoDB to verify that your endpoint configuration exists. When you read data from a DynamoDB table supporting <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <code>Eventually Consistent Reads</code> </a>, the response might not reflect the results of a recently completed write operation. The response might include some stale data. If the dependent entities are not yet in DynamoDB, this causes a validation error. If you repeat your read request after a short time, the response should return the latest data. So retry logic is recommended to handle these possible issues. We also recommend that customers call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpointConfig.html\">DescribeEndpointConfig</a> before calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> to minimize the potential impact of a DynamoDB eventually consistent read.</p> </note> <p>When SageMaker receives the request, it sets the endpoint status to <code>Creating</code>. After it creates the endpoint, it sets the status to <code>InService</code>. SageMaker can then process incoming requests for inferences. To check the status of an endpoint, use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html\">DescribeEndpoint</a> API.</p> <p>If any of the models hosted at this endpoint get model data from an Amazon S3 location, SageMaker uses Amazon Web Services Security Token Service to download model artifacts from the S3 path you provided. Amazon Web Services STS is activated in your Amazon Web Services account by default. If you previously deactivated Amazon Web Services STS for a region, you need to reactivate Amazon Web Services STS for that region. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html\">Activating and Deactivating Amazon Web Services STS in an Amazon Web Services Region</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p> <note> <p> To add the IAM role policies for using this API operation, go to the <a href=\"https://console.aws.amazon.com/iam/\">IAM console</a>, and choose Roles in the left navigation pane. Search the IAM role that you want to grant access to use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html\">CreateEndpointConfig</a> API operations, add the following policies to the role. </p> <ul> <li> <p>Option 1: For a full SageMaker access, search and attach the <code>AmazonSageMakerFullAccess</code> policy.</p> </li> <li> <p>Option 2: For granting a limited access to an IAM role, paste the following Action elements manually into the JSON file of the IAM role: </p> <p> <code>\"Action\": [\"sagemaker:CreateEndpoint\", \"sagemaker:CreateEndpointConfig\"]</code> </p> <p> <code>\"Resource\": [</code> </p> <p> <code>\"arn:aws:sagemaker:region:account-id:endpoint/endpointName\"</code> </p> <p> <code>\"arn:aws:sagemaker:region:account-id:endpoint-config/endpointConfigName\"</code> </p> <p> <code>]</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/api-permissions-reference.html\">SageMaker API Permissions: Actions, Permissions, and Resources Reference</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Creates an endpoint using the endpoint configuration specified in the request. SageMaker uses the endpoint to provision resources and deploy models. You create the endpoint configuration with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html\">CreateEndpointConfig</a> API. </p> <p> Use this API to deploy models using SageMaker hosting services. </p> <note> <p> You must not delete an <code>EndpointConfig</code> that is in use by an endpoint that is live or while the <code>UpdateEndpoint</code> or <code>CreateEndpoint</code> operations are being performed on the endpoint. To update an endpoint, you must create a new <code>EndpointConfig</code>.</p> </note> <p>The endpoint name must be unique within an Amazon Web Services Region in your Amazon Web Services account. </p> <p>When it receives the request, SageMaker creates the endpoint, launches the resources (ML compute instances), and deploys the model(s) on them. </p> <note> <p>When you call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a>, a load call is made to DynamoDB to verify that your endpoint configuration exists. When you read data from a DynamoDB table supporting <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <code>Eventually Consistent Reads</code> </a>, the response might not reflect the results of a recently completed write operation. The response might include some stale data. If the dependent entities are not yet in DynamoDB, this causes a validation error. If you repeat your read request after a short time, the response should return the latest data. So retry logic is recommended to handle these possible issues. We also recommend that customers call <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpointConfig.html\">DescribeEndpointConfig</a> before calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> to minimize the potential impact of a DynamoDB eventually consistent read.</p> </note> <p>When SageMaker receives the request, it sets the endpoint status to <code>Creating</code>. After it creates the endpoint, it sets the status to <code>InService</code>. SageMaker can then process incoming requests for inferences. To check the status of an endpoint, use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html\">DescribeEndpoint</a> API.</p> <p>If any of the models hosted at this endpoint get model data from an Amazon S3 location, SageMaker uses Amazon Web Services Security Token Service to download model artifacts from the S3 path you provided. Amazon Web Services STS is activated in your Amazon Web Services account by default. If you previously deactivated Amazon Web Services STS for a region, you need to reactivate Amazon Web Services STS for that region. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html\">Activating and Deactivating Amazon Web Services STS in an Amazon Web Services Region</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p> <note> <p> To add the IAM role policies for using this API operation, go to the <a href=\"https://console.aws.amazon.com/iam/\">IAM console</a>, and choose Roles in the left navigation pane. Search the IAM role that you want to grant access to use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html\">CreateEndpointConfig</a> API operations, add the following policies to the role. </p> <ul> <li> <p>Option 1: For a full SageMaker access, search and attach the <code>AmazonSageMakerFullAccess</code> policy.</p> </li> <li> <p>Option 2: For granting a limited access to an IAM role, paste the following Action elements manually into the JSON file of the IAM role: </p> <p> <code>\"Action\": [\"sagemaker:CreateEndpoint\", \"sagemaker:CreateEndpointConfig\"]</code> </p> <p> <code>\"Resource\": [</code> </p> <p> <code>\"arn:aws:sagemaker:region:account-id:endpoint/endpointName\"</code> </p> <p> <code>\"arn:aws:sagemaker:region:account-id:endpoint-config/endpointConfigName\"</code> </p> <p> <code>]</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/api-permissions-reference.html\">SageMaker API Permissions: Actions, Permissions, and Resources Reference</a>.</p> </li> </ul> </note>"
     },
     "CreateEndpointConfig":{
       "name":"CreateEndpointConfig",
@@ -1406,7 +1406,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Returns information about an Amazon SageMaker AutoML job.</p>"
+      "documentation":"<p>Returns information about an AutoML job created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a>.</p> <note> <p>AutoML jobs created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> cannot be described by <code>DescribeAutoMLJob</code>.</p> </note>"
     },
     "DescribeAutoMLJobV2":{
       "name":"DescribeAutoMLJobV2",
@@ -1419,7 +1419,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Returns information about an Amazon SageMaker AutoML V2 job.</p> <note> <p>This API action is callable through SageMaker Canvas only. Calling it directly from the CLI or an SDK results in an error.</p> </note>"
+      "documentation":"<p>Returns information about an AutoML job created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a>.</p>"
     },
     "DescribeCodeRepository":{
       "name":"DescribeCodeRepository",
@@ -1657,7 +1657,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Gets a description of a hyperparameter tuning job.</p>"
+      "documentation":"<p>Returns a description of a hyperparameter tuning job, depending on the fields selected. These fields can include the name, Amazon Resource Name (ARN), job status of your tuning job and more.</p>"
     },
     "DescribeImage":{
       "name":"DescribeImage",
@@ -2123,6 +2123,19 @@
       "input":{"shape":"GetSagemakerServicecatalogPortfolioStatusInput"},
       "output":{"shape":"GetSagemakerServicecatalogPortfolioStatusOutput"},
       "documentation":"<p>Gets the status of Service Catalog in SageMaker. Service Catalog is used to create SageMaker projects.</p>"
+    },
+    "GetScalingConfigurationRecommendation":{
+      "name":"GetScalingConfigurationRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetScalingConfigurationRecommendationRequest"},
+      "output":{"shape":"GetScalingConfigurationRecommendationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Starts an Amazon SageMaker Inference Recommender autoscaling recommendation job. Returns recommendations for autoscaling policies that you can apply to your SageMaker endpoint.</p>"
     },
     "GetSearchSuggestions":{
       "name":"GetSearchSuggestions",
@@ -2780,6 +2793,16 @@
       "output":{"shape":"ListProjectsOutput"},
       "documentation":"<p>Gets a list of the projects in an Amazon Web Services account.</p>"
     },
+    "ListResourceCatalogs":{
+      "name":"ListResourceCatalogs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceCatalogsRequest"},
+      "output":{"shape":"ListResourceCatalogsResponse"},
+      "documentation":"<p> Lists Amazon SageMaker Catalogs based on given filters and orders. The maximum number of <code>ResourceCatalog</code>s viewable is 1000. </p>"
+    },
     "ListSpaces":{
       "name":"ListSpaces",
       "http":{
@@ -3398,7 +3421,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Updates the feature group.</p>"
+      "documentation":"<p>Updates the feature group by either adding features or updating the online store configuration. Use one of the following request parameters at a time while using the <code>UpdateFeatureGroup</code> API.</p> <p>You can add features for your feature group using the <code>FeatureAdditions</code> request parameter. Features cannot be removed from a feature group.</p> <p>You can update the online store configuration by using the <code>OnlineStoreConfig</code> request parameter. If a <code>TtlDuration</code> is specified, the default <code>TtlDuration</code> applies for all records added to the feature group <i>after the feature group is updated</i>. If a record level <code>TtlDuration</code> exists from using the <code>PutRecord</code> API, the record level <code>TtlDuration</code> applies to that record instead of the default <code>TtlDuration</code>.</p>"
     },
     "UpdateFeatureMetadata":{
       "name":"UpdateFeatureMetadata",
@@ -3894,6 +3917,23 @@
       "type":"list",
       "member":{"shape":"AgentVersion"}
     },
+    "AggregationTransformationValue":{
+      "type":"string",
+      "enum":[
+        "sum",
+        "avg",
+        "first",
+        "min",
+        "max"
+      ]
+    },
+    "AggregationTransformations":{
+      "type":"map",
+      "key":{"shape":"TransformationAttributeName"},
+      "value":{"shape":"AggregationTransformationValue"},
+      "max":50,
+      "min":1
+    },
     "Alarm":{
       "type":"structure",
       "members":{
@@ -4260,7 +4300,9 @@
         "ml.g5.12xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
-        "ml.geospatial.interactive"
+        "ml.geospatial.interactive",
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge"
       ]
     },
     "AppList":{
@@ -4785,7 +4827,7 @@
         },
         "InferenceContainerDefinitions":{
           "shape":"AutoMLInferenceContainerDefinitions",
-          "documentation":"<p>The mapping of all supported processing unit (CPU, GPU, etc...) to inference container definitions for the candidate. This field is populated for the V2 API only (for example, for jobs created by calling <code>CreateAutoMLJobV2</code>).</p>"
+          "documentation":"<p>The mapping of all supported processing unit (CPU, GPU, etc...) to inference container definitions for the candidate. This field is populated for the AutoML jobs V2 (for example, for jobs created by calling <code>CreateAutoMLJobV2</code>) related to image or text classification problem types only.</p>"
         }
       },
       "documentation":"<p>Information about a candidate produced by an AutoML training job, including its status, steps, and other properties.</p>"
@@ -4857,6 +4899,10 @@
         "ChannelType":{
           "shape":"AutoMLChannelType",
           "documentation":"<p>The channel type (optional) is an <code>enum</code> string. The default value is <code>training</code>. Channels for training and validation must share the same <code>ContentType</code> and <code>TargetAttributeName</code>. For information on specifying training and validation channel types, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html#autopilot-data-sources-training-or-validation\">How to specify training and validation datasets</a>.</p>"
+        },
+        "SampleWeightAttributeName":{
+          "shape":"SampleWeightAttributeName",
+          "documentation":"<p>If specified, this column name indicates which column of the dataset should be treated as sample weights for use by the objective metric during the training, evaluation, and the selection of the best model. This column is not considered as a predictive feature. For more information on Autopilot metrics, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html\">Metrics and validation</a>.</p> <p>Sample weights should be numeric, non-negative, with larger values indicating which rows are more important than others. Data points that have invalid or no weight value are excluded.</p> <p>Support for sample weights is available in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\">Ensembling</a> mode only.</p>"
         }
       },
       "documentation":"<p>A channel is a named input source that training algorithms can consume. The validation dataset size is limited to less than 2 GB. The training dataset size must be less than 100 GB. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Channel.html\"> Channel</a>.</p> <note> <p>A validation dataset must contain the same headers as the training dataset.</p> </note> <p/>"
@@ -4914,7 +4960,7 @@
           "documentation":"<p>The validation fraction (optional) is a float that specifies the portion of the training dataset to be used for validation. The default value is 0.2, and values must be greater than 0 and less than 1. We recommend setting this value to be less than 0.5.</p>"
         }
       },
-      "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>If you are using the V1 API (for example <code>CreateAutoMLJob</code>) or the V2 API for Natural Language Processing problems (for example <code>CreateAutoMLJobV2</code> with a <code>TextClassificationJobConfig</code> problem type), the validation and training datasets must contain the same headers. Also, for V1 API jobs, the validation dataset must be less than 2 GB in size.</p>"
+      "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>The validation and training datasets must contain the same headers. For jobs created by calling <code>CreateAutoMLJob</code>, the validation dataset must be less than 2 GB in size.</p>"
     },
     "AutoMLFailureReason":{
       "type":"string",
@@ -4964,33 +5010,33 @@
       "members":{
         "ChannelType":{
           "shape":"AutoMLChannelType",
-          "documentation":"<p>The type of channel. Defines whether the data are used for training or validation. The default value is <code>training</code>. Channels for <code>training</code> and <code>validation</code> must share the same <code>ContentType</code> </p>"
+          "documentation":"<p>The type of channel. Defines whether the data are used for training or validation. The default value is <code>training</code>. Channels for <code>training</code> and <code>validation</code> must share the same <code>ContentType</code> </p> <note> <p>The type of channel defaults to <code>training</code> for the time-series forecasting problem type.</p> </note>"
         },
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>ImageClassification: <code>image/png</code>, <code>image/jpeg</code>, <code>image/*</code> </p> </li> <li> <p>TextClassification: <code>text/csv;header=present</code> </p> </li> </ul>"
+          "documentation":"<p>The content type of the data from the input source. The following are the allowed content types for different problems:</p> <ul> <li> <p>For tabular problem types: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> <li> <p>For image classification: <code>image/png</code>, <code>image/jpeg</code>, or <code>image/*</code>. The default value is <code>image/*</code>.</p> </li> <li> <p>For text classification: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> <li> <p>For time-series forecasting: <code>text/csv;header=present</code> or <code>x-application/vnd.amazon+parquet</code>. The default value is <code>text/csv;header=present</code>.</p> </li> </ul>"
         },
         "CompressionType":{
           "shape":"CompressionType",
-          "documentation":"<p>The allowed compression types depend on the input format. We allow the compression type <code>Gzip</code> for <code>S3Prefix</code> inputs only. For all other inputs, the compression type should be <code>None</code>. If no compression type is provided, we default to <code>None</code>.</p>"
+          "documentation":"<p>The allowed compression types depend on the input format and problem type. We allow the compression type <code>Gzip</code> for <code>S3Prefix</code> inputs on tabular data only. For all other inputs, the compression type should be <code>None</code>. If no compression type is provided, we default to <code>None</code>.</p>"
         },
         "DataSource":{
           "shape":"AutoMLDataSource",
-          "documentation":"<p>The data source for an AutoML channel.</p>"
+          "documentation":"<p>The data source for an AutoML channel (Required).</p>"
         }
       },
-      "documentation":"<p>A channel is a named input source that training algorithms can consume. This channel is used for the non tabular training data of an AutoML job using the V2 API. For tabular training data, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLChannel.html\"> AutoMLChannel</a>. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Channel.html\"> Channel</a>.</p>"
+      "documentation":"<p>A channel is a named input source that training algorithms can consume. This channel is used for AutoML jobs V2 (jobs created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a>).</p>"
     },
     "AutoMLJobCompletionCriteria":{
       "type":"structure",
       "members":{
         "MaxCandidates":{
           "shape":"MaxCandidates",
-          "documentation":"<p>The maximum number of times a training job is allowed to run.</p> <p>For V2 jobs (jobs created by calling <code>CreateAutoMLJobV2</code>), the supported value is 1.</p>"
+          "documentation":"<p>The maximum number of times a training job is allowed to run.</p> <p>For text and image classification, as well as time-series forecasting problem types, the supported value is 1. For tabular problem types, the maximum value is 750.</p>"
         },
         "MaxRuntimePerTrainingJobInSeconds":{
           "shape":"MaxRuntimePerTrainingJobInSeconds",
-          "documentation":"<p>The maximum time, in seconds, that each training job executed inside hyperparameter tuning is allowed to run as part of a hyperparameter tuning job. For more information, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StoppingCondition.html\">StoppingCondition</a> used by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> action.</p> <p>For V2 jobs (jobs created by calling <code>CreateAutoMLJobV2</code>), this field controls the runtime of the job candidate.</p>"
+          "documentation":"<p>The maximum time, in seconds, that each training job executed inside hyperparameter tuning is allowed to run as part of a hyperparameter tuning job. For more information, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StoppingCondition.html\">StoppingCondition</a> used by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> action.</p> <p>For job V2s (jobs created by calling <code>CreateAutoMLJobV2</code>), this field controls the runtime of the job candidate.</p>"
         },
         "MaxAutoMLJobRuntimeInSeconds":{
           "shape":"MaxAutoMLJobRuntimeInSeconds",
@@ -5020,7 +5066,7 @@
         },
         "Mode":{
           "shape":"AutoMLMode",
-          "documentation":"<p>The method that Autopilot uses to train the data. You can either specify the mode manually or let Autopilot choose for you based on the dataset size by selecting <code>AUTO</code>. In <code>AUTO</code> mode, Autopilot chooses <code>ENSEMBLING</code> for datasets smaller than 100 MB, and <code>HYPERPARAMETER_TUNING</code> for larger ones.</p> <p>The <code>ENSEMBLING</code> mode uses a multi-stack ensemble model to predict classification and regression tasks directly from your dataset. This machine learning mode combines several base models to produce an optimal predictive model. It then uses a stacking ensemble method to combine predictions from contributing members. A multi-stack ensemble model can provide better performance over a single model by combining the predictive capabilities of multiple models. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-suppprt\">Autopilot algorithm support</a> for a list of algorithms supported by <code>ENSEMBLING</code> mode.</p> <p>The <code>HYPERPARAMETER_TUNING</code> (HPO) mode uses the best hyperparameters to train the best version of a model. HPO automatically selects an algorithm for the type of problem you want to solve. Then HPO finds the best hyperparameters according to your objective metric. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-suppprt\">Autopilot algorithm support</a> for a list of algorithms supported by <code>HYPERPARAMETER_TUNING</code> mode.</p>"
+          "documentation":"<p>The method that Autopilot uses to train the data. You can either specify the mode manually or let Autopilot choose for you based on the dataset size by selecting <code>AUTO</code>. In <code>AUTO</code> mode, Autopilot chooses <code>ENSEMBLING</code> for datasets smaller than 100 MB, and <code>HYPERPARAMETER_TUNING</code> for larger ones.</p> <p>The <code>ENSEMBLING</code> mode uses a multi-stack ensemble model to predict classification and regression tasks directly from your dataset. This machine learning mode combines several base models to produce an optimal predictive model. It then uses a stacking ensemble method to combine predictions from contributing members. A multi-stack ensemble model can provide better performance over a single model by combining the predictive capabilities of multiple models. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Autopilot algorithm support</a> for a list of algorithms supported by <code>ENSEMBLING</code> mode.</p> <p>The <code>HYPERPARAMETER_TUNING</code> (HPO) mode uses the best hyperparameters to train the best version of a model. HPO automatically selects an algorithm for the type of problem you want to solve. Then HPO finds the best hyperparameters according to your objective metric. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Autopilot algorithm support</a> for a list of algorithms supported by <code>HYPERPARAMETER_TUNING</code> mode.</p>"
         }
       },
       "documentation":"<p>A collection of settings used for an AutoML job.</p>"
@@ -5043,10 +5089,10 @@
       "members":{
         "MetricName":{
           "shape":"AutoMLMetricEnum",
-          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. This metric is optimized during training to provide the best estimate for model parameter values from data.</p> <p>Here are the options:</p> <dl> <dt>Accuracy</dt> <dd> <p>The ratio of the number of correctly classified items to the total number of (correctly and incorrectly) classified items. It is used for both binary and multiclass classification. Accuracy measures how close the predicted class values are to the actual values. Values for accuracy metrics vary between zero (0) and one (1). A value of 1 indicates perfect accuracy, and 0 indicates perfect inaccuracy.</p> </dd> <dt>AUC</dt> <dd> <p>The area under the curve (AUC) metric is used to compare and evaluate binary classification by algorithms that return probabilities, such as logistic regression. To map the probabilities into classifications, these are compared against a threshold value. </p> <p>The relevant curve is the receiver operating characteristic curve (ROC curve). The ROC curve plots the true positive rate (TPR) of predictions (or recall) against the false positive rate (FPR) as a function of the threshold value, above which a prediction is considered positive. Increasing the threshold results in fewer false positives, but more false negatives. </p> <p>AUC is the area under this ROC curve. Therefore, AUC provides an aggregated measure of the model performance across all possible classification thresholds. AUC scores vary between 0 and 1. A score of 1 indicates perfect accuracy, and a score of one half (0.5) indicates that the prediction is not better than a random classifier. </p> </dd> <dt>BalancedAccuracy</dt> <dd> <p> <code>BalancedAccuracy</code> is a metric that measures the ratio of accurate predictions to all predictions. This ratio is calculated after normalizing true positives (TP) and true negatives (TN) by the total number of positive (P) and negative (N) values. It is used in both binary and multiclass classification and is defined as follows: 0.5*((TP/P)+(TN/N)), with values ranging from 0 to 1. <code>BalancedAccuracy</code> gives a better measure of accuracy when the number of positives or negatives differ greatly from each other in an imbalanced dataset. For example, when only 1% of email is spam. </p> </dd> <dt>F1</dt> <dd> <p>The <code>F1</code> score is the harmonic mean of the precision and recall, defined as follows: F1 = 2 * (precision * recall) / (precision + recall). It is used for binary classification into classes traditionally referred to as positive and negative. Predictions are said to be true when they match their actual (correct) class, and false when they do not. </p> <p>Precision is the ratio of the true positive predictions to all positive predictions, and it includes the false positives in a dataset. Precision measures the quality of the prediction when it predicts the positive class. </p> <p>Recall (or sensitivity) is the ratio of the true positive predictions to all actual positive instances. Recall measures how completely a model predicts the actual class members in a dataset. </p> <p>F1 scores vary between 0 and 1. A score of 1 indicates the best possible performance, and 0 indicates the worst.</p> </dd> <dt>F1macro</dt> <dd> <p>The <code>F1macro</code> score applies F1 scoring to multiclass classification problems. It does this by calculating the precision and recall, and then taking their harmonic mean to calculate the F1 score for each class. Lastly, the F1macro averages the individual scores to obtain the <code>F1macro</code> score. <code>F1macro</code> scores vary between 0 and 1. A score of 1 indicates the best possible performance, and 0 indicates the worst.</p> </dd> <dt>MAE</dt> <dd> <p>The mean absolute error (MAE) is a measure of how different the predicted and actual values are, when they're averaged over all values. MAE is commonly used in regression analysis to understand model prediction error. If there is linear regression, MAE represents the average distance from a predicted line to the actual value. MAE is defined as the sum of absolute errors divided by the number of observations. Values range from 0 to infinity, with smaller numbers indicating a better model fit to the data.</p> </dd> <dt>MSE</dt> <dd> <p>The mean squared error (MSE) is the average of the squared differences between the predicted and actual values. It is used for regression. MSE values are always positive. The better a model is at predicting the actual values, the smaller the MSE value is</p> </dd> <dt>Precision</dt> <dd> <p>Precision measures how well an algorithm predicts the true positives (TP) out of all of the positives that it identifies. It is defined as follows: Precision = TP/(TP+FP), with values ranging from zero (0) to one (1), and is used in binary classification. Precision is an important metric when the cost of a false positive is high. For example, the cost of a false positive is very high if an airplane safety system is falsely deemed safe to fly. A false positive (FP) reflects a positive prediction that is actually negative in the data.</p> </dd> <dt>PrecisionMacro</dt> <dd> <p>The precision macro computes precision for multiclass classification problems. It does this by calculating precision for each class and averaging scores to obtain precision for several classes. <code>PrecisionMacro</code> scores range from zero (0) to one (1). Higher scores reflect the model's ability to predict true positives (TP) out of all of the positives that it identifies, averaged across multiple classes.</p> </dd> <dt>R2</dt> <dd> <p>R2, also known as the coefficient of determination, is used in regression to quantify how much a model can explain the variance of a dependent variable. Values range from one (1) to negative one (-1). Higher numbers indicate a higher fraction of explained variability. <code>R2</code> values close to zero (0) indicate that very little of the dependent variable can be explained by the model. Negative values indicate a poor fit and that the model is outperformed by a constant function. For linear regression, this is a horizontal line.</p> </dd> <dt>Recall</dt> <dd> <p>Recall measures how well an algorithm correctly predicts all of the true positives (TP) in a dataset. A true positive is a positive prediction that is also an actual positive value in the data. Recall is defined as follows: Recall = TP/(TP+FN), with values ranging from 0 to 1. Higher scores reflect a better ability of the model to predict true positives (TP) in the data, and is used in binary classification. </p> <p>Recall is important when testing for cancer because it's used to find all of the true positives. A false positive (FP) reflects a positive prediction that is actually negative in the data. It is often insufficient to measure only recall, because predicting every output as a true positive yield a perfect recall score.</p> </dd> <dt>RecallMacro</dt> <dd> <p>The RecallMacro computes recall for multiclass classification problems by calculating recall for each class and averaging scores to obtain recall for several classes. RecallMacro scores range from 0 to 1. Higher scores reflect the model's ability to predict true positives (TP) in a dataset. Whereas, a true positive reflects a positive prediction that is also an actual positive value in the data. It is often insufficient to measure only recall, because predicting every output as a true positive yields a perfect recall score.</p> </dd> <dt>RMSE</dt> <dd> <p>Root mean squared error (RMSE) measures the square root of the squared difference between predicted and actual values, and it's averaged over all values. It is used in regression analysis to understand model prediction error. It's an important metric to indicate the presence of large model errors and outliers. Values range from zero (0) to infinity, with smaller numbers indicating a better model fit to the data. RMSE is dependent on scale, and should not be used to compare datasets of different sizes.</p> </dd> </dl> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p> <code>MSE</code>: for regression.</p> </li> <li> <p> <code>F1</code>: for binary classification</p> </li> <li> <p> <code>Accuracy</code>: for multiclass classification.</p> </li> </ul>"
+          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>For the list of all available metrics supported by Autopilot, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics\">Autopilot metrics</a>.</p> <p>If you do not specify a metric explicitly, the default behavior is to automatically use:</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> <li> <p>For image or text classification problem types: <code>Accuracy</code> </p> </li> <li> <p>For time-series forecasting problem types: <code>AverageWeightedQuantileLoss</code> </p> </li> </ul>"
         }
       },
-      "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job. V2 API jobs (for example jobs created by calling <code>CreateAutoMLJobV2</code>), support <code>Accuracy</code> only.</p>"
+      "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job.</p>"
     },
     "AutoMLJobObjectiveType":{
       "type":"string",
@@ -5075,7 +5121,8 @@
         "ModelDeploymentError",
         "GeneratingModelInsightsReport",
         "ModelInsightsError",
-        "TrainingModels"
+        "TrainingModels",
+        "PreTraining"
       ]
     },
     "AutoMLJobStatus":{
@@ -5172,7 +5219,11 @@
         "Precision",
         "PrecisionMacro",
         "Recall",
-        "RecallMacro"
+        "RecallMacro",
+        "MAPE",
+        "MASE",
+        "WAPE",
+        "AverageWeightedQuantileLoss"
       ]
     },
     "AutoMLMetricExtendedEnum":{
@@ -5192,7 +5243,11 @@
         "Recall",
         "RecallMacro",
         "LogLoss",
-        "InferenceLatency"
+        "InferenceLatency",
+        "MAPE",
+        "MASE",
+        "WAPE",
+        "AverageWeightedQuantileLoss"
       ]
     },
     "AutoMLMode":{
@@ -5244,14 +5299,42 @@
       "members":{
         "ImageClassificationJobConfig":{
           "shape":"ImageClassificationJobConfig",
-          "documentation":"<p>Settings used to configure an AutoML job using the V2 API for the image classification problem type.</p>"
+          "documentation":"<p>Settings used to configure an AutoML job V2 for the image classification problem type.</p>"
         },
         "TextClassificationJobConfig":{
           "shape":"TextClassificationJobConfig",
-          "documentation":"<p>Settings used to configure an AutoML job using the V2 API for the text classification problem type.</p>"
+          "documentation":"<p>Settings used to configure an AutoML job V2 for the text classification problem type.</p>"
+        },
+        "TabularJobConfig":{
+          "shape":"TabularJobConfig",
+          "documentation":"<p>Settings used to configure an AutoML job V2 for a tabular problem type (regression, classification).</p>"
+        },
+        "TimeSeriesForecastingJobConfig":{
+          "shape":"TimeSeriesForecastingJobConfig",
+          "documentation":"<p>Settings used to configure an AutoML job V2 for a time-series forecasting problem type.</p> <note> <p>The <code>TimeSeriesForecastingJobConfig</code> problem type is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges.</p> </note>"
         }
       },
-      "documentation":"<p>A collection of settings specific to the problem type used to configure an AutoML job using the V2 API. There must be one and only one config of the following type.</p>",
+      "documentation":"<p>A collection of settings specific to the problem type used to configure an AutoML job V2. There must be one and only one config of the following type.</p>",
+      "union":true
+    },
+    "AutoMLProblemTypeConfigName":{
+      "type":"string",
+      "enum":[
+        "ImageClassification",
+        "TextClassification",
+        "Tabular",
+        "TimeSeriesForecasting"
+      ]
+    },
+    "AutoMLProblemTypeResolvedAttributes":{
+      "type":"structure",
+      "members":{
+        "TabularResolvedAttributes":{
+          "shape":"TabularResolvedAttributes",
+          "documentation":"<p>Defines the resolved attributes for the <code>TABULAR</code> problem type.</p>"
+        }
+      },
+      "documentation":"<p>The resolved attributes specific to the problem type of an AutoML job V2.</p>",
       "union":true
     },
     "AutoMLProcessingUnit":{
@@ -5260,6 +5343,18 @@
         "CPU",
         "GPU"
       ]
+    },
+    "AutoMLResolvedAttributes":{
+      "type":"structure",
+      "members":{
+        "AutoMLJobObjective":{"shape":"AutoMLJobObjective"},
+        "CompletionCriteria":{"shape":"AutoMLJobCompletionCriteria"},
+        "AutoMLProblemTypeResolvedAttributes":{
+          "shape":"AutoMLProblemTypeResolvedAttributes",
+          "documentation":"<p>Defines the resolved attributes specific to a problem type.</p>"
+        }
+      },
+      "documentation":"<p>The resolved attributes used to configure an AutoML job V2.</p>"
     },
     "AutoMLS3DataSource":{
       "type":"structure",
@@ -5320,6 +5415,30 @@
         "Descending"
       ]
     },
+    "AutoParameter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ValueHint"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ParameterKey",
+          "documentation":"<p>The name of the hyperparameter to optimize using Autotune.</p>"
+        },
+        "ValueHint":{
+          "shape":"ParameterValue",
+          "documentation":"<p>An example value of the hyperparameter to optimize using Autotune.</p>"
+        }
+      },
+      "documentation":"<p>The name and an example value of the hyperparameter that you want to use in Autotune. If Automatic model tuning (AMT) determines that your hyperparameter is eligible for Autotune, an optimal hyperparameter range is selected for you.</p>"
+    },
+    "AutoParameters":{
+      "type":"list",
+      "member":{"shape":"AutoParameter"},
+      "max":100,
+      "min":0
+    },
     "AutoRollbackConfig":{
       "type":"structure",
       "members":{
@@ -5330,12 +5449,31 @@
       },
       "documentation":"<p>Automatic rollback configuration for handling endpoint deployment failures and recovery.</p>"
     },
+    "Autotune":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"AutotuneMode",
+          "documentation":"<p>Set <code>Mode</code> to <code>Enabled</code> if you want to use Autotune.</p>"
+        }
+      },
+      "documentation":"<p>A flag to indicate if you want to use Autotune to automatically find optimal values for the following fields:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges\">ParameterRanges</a>: The names and ranges of parameters that a hyperparameter tuning job can optimize.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html\">ResourceLimits</a>: The maximum resources that can be used for a training job. These resources include the maximum number of training jobs, the maximum runtime of a tuning job, and the maximum number of training jobs to run at the same time.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType\">TrainingJobEarlyStoppingType</a>: A flag that specifies whether or not to use early stopping for training jobs launched by a hyperparameter tuning job.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy\">RetryStrategy</a>: The number of times to retry a training job.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html\">Strategy</a>: Specifies how hyperparameter tuning chooses the combinations of hyperparameter values to use for the training jobs that it launches.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html\">ConvergenceDetected</a>: A flag to indicate that Automatic model tuning (AMT) has detected model convergence.</p> </li> </ul>"
+    },
+    "AutotuneMode":{
+      "type":"string",
+      "enum":["Enabled"]
+    },
     "AwsManagedHumanLoopRequestSource":{
       "type":"string",
       "enum":[
         "AWS/Rekognition/DetectModerationLabels/Image/V3",
         "AWS/Textract/AnalyzeDocument/Forms/V1"
       ]
+    },
+    "BacktestResultsLocation":{
+      "type":"string",
+      "min":1
     },
     "BatchDataCaptureConfig":{
       "type":"structure",
@@ -5501,7 +5639,7 @@
         },
         "EndTimeOffset":{
           "shape":"MonitoringTimeOffsetString",
-          "documentation":"<p>If specified, monitoring jobs substract this time from the end time. For information about using offsets for scheduling monitoring jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-model-quality-schedule.html\">Schedule Model Quality Monitoring Jobs</a>.</p>"
+          "documentation":"<p>If specified, monitoring jobs subtract this time from the end time. For information about using offsets for scheduling monitoring jobs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-model-quality-schedule.html\">Schedule Model Quality Monitoring Jobs</a>.</p>"
         }
       },
       "documentation":"<p>Input object for the batch transform job.</p>"
@@ -5626,6 +5764,10 @@
         "ModelInsights":{
           "shape":"ModelInsightsLocation",
           "documentation":"<p>The Amazon S3 prefix to the model insight artifacts generated for the AutoML candidate.</p>"
+        },
+        "BacktestResults":{
+          "shape":"BacktestResultsLocation",
+          "documentation":"<p>The Amazon S3 prefix to the accuracy metrics and the inference results observed over the testing window. Available only for the time-series forecasting problem type.</p>"
         }
       },
       "documentation":"<p>The location of artifacts for an AutoML candidate job.</p>"
@@ -5633,6 +5775,16 @@
     "CandidateDefinitionNotebookLocation":{
       "type":"string",
       "min":1
+    },
+    "CandidateGenerationConfig":{
+      "type":"structure",
+      "members":{
+        "AlgorithmsConfig":{
+          "shape":"AutoMLAlgorithmsConfig",
+          "documentation":"<p>Stores the configuration information for the selection of algorithms used to train model candidates on tabular data.</p> <p>The list of available algorithms to choose from depends on the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TabularJobConfig.html\"> <code>TabularJobConfig.Mode</code> </a>.</p> <ul> <li> <p> <code>AlgorithmsConfig</code> should not be set in <code>AUTO</code> training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> </ul> <p>For the list of all algorithms per problem type and training mode, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AutoMLAlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Algorithm support</a> section in Autopilot developer guide.</p>"
+        }
+      },
+      "documentation":"<p>Stores the configuration information for how model candidates are generated using an AutoML job V2.</p>"
     },
     "CandidateName":{
       "type":"string",
@@ -5704,6 +5856,14 @@
         "ModelRegisterSettings":{
           "shape":"ModelRegisterSettings",
           "documentation":"<p>The model registry settings for the SageMaker Canvas application.</p>"
+        },
+        "WorkspaceSettings":{
+          "shape":"WorkspaceSettings",
+          "documentation":"<p>The workspace settings for the SageMaker Canvas application.</p>"
+        },
+        "IdentityProviderOAuthSettings":{
+          "shape":"IdentityProviderOAuthSettings",
+          "documentation":"<p>The settings for connecting to an external data source with OAuth.</p>"
         }
       },
       "documentation":"<p>The SageMaker Canvas application settings.</p>"
@@ -5724,7 +5884,7 @@
           "documentation":"<p>Defines the capacity size, either as a number of instances or a capacity percentage.</p>"
         }
       },
-      "documentation":"<p>Specifies the endpoint capacity to activate for production.</p>"
+      "documentation":"<p>Specifies the type and size of the endpoint capacity to activate for a blue/green deployment, a rolling deployment, or a rollback strategy. You can specify your batches as either instance count or the overall percentage or your fleet.</p> <p>For a rollback strategy, if you don't specify the fields in this object, or if you set the <code>Value</code> to 100%, then SageMaker uses a blue/green rollback strategy and rolls all traffic back to the blue fleet.</p>"
     },
     "CapacitySizeType":{
       "type":"string",
@@ -6687,6 +6847,10 @@
         "MultiModelConfig":{
           "shape":"MultiModelConfig",
           "documentation":"<p>Specifies additional configuration for multi-model endpoints.</p>"
+        },
+        "ModelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>Specifies the location of ML model data to deploy.</p> <note> <p>Currently you cannot use <code>ModelDataSource</code> in conjunction with SageMaker batch transform, SageMaker serverless endpoints, SageMaker multi-model endpoints, and SageMaker Marketplace.</p> </note>"
         }
       },
       "documentation":"<p>Describes the container, as part of model definition.</p>"
@@ -7109,7 +7273,7 @@
         },
         "AutoMLJobObjective":{
           "shape":"AutoMLJobObjective",
-          "documentation":"<p>Defines the objective metric used to measure the predictive quality of an AutoML job. You provide an <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobObjective.html\">AutoMLJobObjective$MetricName</a> and Autopilot infers whether to minimize or maximize it. For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a>, only <code>Accuracy</code> is supported.</p>"
+          "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job. If not specified, the default objective metric depends on the problem type. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobObjective.html\">AutoMLJobObjective</a> for the default values.</p>"
         },
         "AutoMLJobConfig":{
           "shape":"AutoMLJobConfig",
@@ -7159,7 +7323,7 @@
         },
         "AutoMLJobInputDataConfig":{
           "shape":"AutoMLJobInputDataConfig",
-          "documentation":"<p>An array of channel objects describing the input data and their location. Each channel is a named input source. Similar to <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig\">InputDataConfig</a> supported by <code>CreateAutoMLJob</code>. The supported formats depend on the problem type:</p> <ul> <li> <p>ImageClassification: S3Prefix, <code>ManifestFile</code>, <code>AugmentedManifestFile</code> </p> </li> <li> <p>TextClassification: S3Prefix</p> </li> </ul>"
+          "documentation":"<p>An array of channel objects describing the input data and their location. Each channel is a named input source. Similar to the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig\">InputDataConfig</a> attribute in the <code>CreateAutoMLJob</code> input parameters. The supported formats depend on the problem type:</p> <ul> <li> <p>For tabular problem types: <code>S3Prefix</code>, <code>ManifestFile</code>.</p> </li> <li> <p>For image classification: <code>S3Prefix</code>, <code>ManifestFile</code>, <code>AugmentedManifestFile</code>.</p> </li> <li> <p>For text classification: <code>S3Prefix</code>.</p> </li> <li> <p>For time-series forecasting: <code>S3Prefix</code>.</p> </li> </ul>"
         },
         "OutputDataConfig":{
           "shape":"AutoMLOutputDataConfig",
@@ -7183,7 +7347,7 @@
         },
         "AutoMLJobObjective":{
           "shape":"AutoMLJobObjective",
-          "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job. For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a>, only <code>Accuracy</code> is supported.</p>"
+          "documentation":"<p>Specifies a metric to minimize or maximize as the objective of a job. If not specified, the default objective metric depends on the problem type. For the list of default values per problem type, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobObjective.html\">AutoMLJobObjective</a>.</p> <note> <p>For tabular problem types, you must either provide both the <code>AutoMLJobObjective</code> and indicate the type of supervised learning problem in <code>AutoMLProblemTypeConfig</code> (<code>TabularJobConfig.ProblemType</code>), or none at all.</p> </note>"
         },
         "ModelDeployConfig":{
           "shape":"ModelDeployConfig",
@@ -7191,7 +7355,7 @@
         },
         "DataSplitConfig":{
           "shape":"AutoMLDataSplitConfig",
-          "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>If you are using the V1 API (for example <code>CreateAutoMLJob</code>) or the V2 API for Natural Language Processing problems (for example <code>CreateAutoMLJobV2</code> with a <code>TextClassificationJobConfig</code> problem type), the validation and training datasets must contain the same headers. Also, for V1 API jobs, the validation dataset must be less than 2 GB in size.</p>"
+          "documentation":"<p>This structure specifies how to split the data into train and validation datasets.</p> <p>The validation and training datasets must contain the same headers. For jobs created by calling <code>CreateAutoMLJob</code>, the validation dataset must be less than 2 GB in size.</p> <note> <p>This attribute must not be set for the time-series forecasting problem type, as Autopilot automatically splits the input dataset into training and validation sets.</p> </note>"
         }
       }
     },
@@ -7469,7 +7633,7 @@
         },
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
-          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         },
         "DomainSettings":{
           "shape":"DomainSettings",
@@ -7914,6 +8078,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs. You can use tags to categorize your Amazon Web Services resources in different ways, for example, by purpose, owner, or environment. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p> <p>Tags that you specify for the tuning job are also added to all training jobs that the tuning job launches.</p>"
+        },
+        "Autotune":{
+          "shape":"Autotune",
+          "documentation":"<p>Configures SageMaker Automatic model tuning (AMT) to automatically find optimal parameters for the following fields:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges\">ParameterRanges</a>: The names and ranges of parameters that a hyperparameter tuning job can optimize.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html\">ResourceLimits</a>: The maximum resources that can be used for a training job. These resources include the maximum number of training jobs, the maximum runtime of a tuning job, and the maximum number of training jobs to run at the same time.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType\">TrainingJobEarlyStoppingType</a>: A flag that specifies whether or not to use early stopping for training jobs launched by a hyperparameter tuning job.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy\">RetryStrategy</a>: The number of times to retry a training job.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html\">Strategy</a>: Specifies how hyperparameter tuning chooses the combinations of hyperparameter values to use for the training jobs that it launches.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html\">ConvergenceDetected</a>: A flag to indicate that Automatic model tuning (AMT) has detected model convergence.</p> </li> </ul>"
         }
       }
     },
@@ -8275,8 +8443,8 @@
       ],
       "members":{
         "ModelCardName":{
-          "shape":"EntityName",
-          "documentation":"<p>The name of the model card to export.</p>"
+          "shape":"ModelCardNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model card to export.</p>"
         },
         "ModelCardVersion":{
           "shape":"Integer",
@@ -8508,7 +8676,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>A list of key value pairs associated with the model. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+          "documentation":"<p>A list of key value pairs associated with the model. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p> <p>If you supply <code>ModelPackageGroupName</code>, your model package belongs to the model group you specify and uses the tags associated with the model group. In this case, you cannot supply a <code>tag</code> argument. </p>"
         },
         "ModelApprovalStatus":{
           "shape":"ModelApprovalStatus",
@@ -8773,7 +8941,7 @@
         },
         "PipelineDefinition":{
           "shape":"PipelineDefinition",
-          "documentation":"<p>The JSON pipeline definition of the pipeline.</p>"
+          "documentation":"<p>The <a href=\"https://aws-sagemaker-mlops.github.io/sagemaker-model-building-pipeline-definition-JSON-schema/\">JSON pipeline definition</a> of the pipeline.</p>"
         },
         "PipelineDefinitionS3Location":{
           "shape":"PipelineDefinitionS3Location",
@@ -9074,7 +9242,7 @@
         },
         "InputDataConfig":{
           "shape":"InputDataConfig",
-          "documentation":"<p>An array of <code>Channel</code> objects. Each channel is a named input source. <code>InputDataConfig</code> describes the input data and its location. </p> <p>Algorithms can accept input data from one or more channels. For example, an algorithm might have two channels of input data, <code>training_data</code> and <code>validation_data</code>. The configuration for each channel provides the S3, EFS, or FSx location where the input data is stored. It also provides information about the stored data: the MIME type, compression method, and whether the data is wrapped in RecordIO format. </p> <p>Depending on the input mode that the algorithm supports, SageMaker either copies input data files from an S3 bucket to a local directory in the Docker container, or makes it available as input streams. For example, if you specify an EFS location, input data files are available as input streams. They do not need to be downloaded.</p>"
+          "documentation":"<p>An array of <code>Channel</code> objects. Each channel is a named input source. <code>InputDataConfig</code> describes the input data and its location. </p> <p>Algorithms can accept input data from one or more channels. For example, an algorithm might have two channels of input data, <code>training_data</code> and <code>validation_data</code>. The configuration for each channel provides the S3, EFS, or FSx location where the input data is stored. It also provides information about the stored data: the MIME type, compression method, and whether the data is wrapped in RecordIO format. </p> <p>Depending on the input mode that the algorithm supports, SageMaker either copies input data files from an S3 bucket to a local directory in the Docker container, or makes it available as input streams. For example, if you specify an EFS location, input data files are available as input streams. They do not need to be downloaded.</p> <p>Your input must be in the same Amazon Web Services region as your training job.</p>"
         },
         "OutputDataConfig":{
           "shape":"OutputDataConfig",
@@ -9429,6 +9597,13 @@
       }
     },
     "CreationTime":{"type":"timestamp"},
+    "CrossAccountFilterOption":{
+      "type":"string",
+      "enum":[
+        "SameAccount",
+        "CrossAccount"
+      ]
+    },
     "CsvContentType":{
       "type":"string",
       "max":256,
@@ -9491,6 +9666,24 @@
       "max":256,
       "min":1,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)${1,256}"
+    },
+    "CustomizedMetricSpecification":{
+      "type":"structure",
+      "members":{
+        "MetricName":{
+          "shape":"String",
+          "documentation":"<p>The name of the customized metric.</p>"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the customized metric.</p>"
+        },
+        "Statistic":{
+          "shape":"Statistic",
+          "documentation":"<p>The statistic of the customized metric.</p>"
+        }
+      },
+      "documentation":"<p>A customized metric.</p>"
     },
     "DataCaptureConfig":{
       "type":"structure",
@@ -9685,6 +9878,13 @@
         }
       },
       "documentation":"<p>Describes the location of the channel data.</p>"
+    },
+    "DataSourceName":{
+      "type":"string",
+      "enum":[
+        "SalesforceGenie",
+        "Snowflake"
+      ]
     },
     "Database":{
       "type":"string",
@@ -10542,7 +10742,6 @@
     },
     "DeploymentConfig":{
       "type":"structure",
-      "required":["BlueGreenUpdatePolicy"],
       "members":{
         "BlueGreenUpdatePolicy":{
           "shape":"BlueGreenUpdatePolicy",
@@ -10551,9 +10750,28 @@
         "AutoRollbackConfiguration":{
           "shape":"AutoRollbackConfig",
           "documentation":"<p>Automatic rollback configuration for handling endpoint deployment failures and recovery.</p>"
+        },
+        "RollingUpdatePolicy":{
+          "shape":"RollingUpdatePolicy",
+          "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker endpoint.</p>"
         }
       },
       "documentation":"<p>The deployment configuration for an endpoint, which contains the desired deployment strategy and rollback configurations.</p>"
+    },
+    "DeploymentRecommendation":{
+      "type":"structure",
+      "required":["RecommendationStatus"],
+      "members":{
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Status of the deployment recommendation. The status <code>NOT_APPLICABLE</code> means that SageMaker is unable to provide a default recommendation for the model using the information provided. If the deployment status is <code>IN_PROGRESS</code>, retry your API call after a few seconds to get a <code>COMPLETED</code> deployment recommendation.</p>"
+        },
+        "RealTimeInferenceRecommendations":{
+          "shape":"RealTimeInferenceRecommendations",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_RealTimeInferenceRecommendation.html\">RealTimeInferenceRecommendation</a> items.</p>"
+        }
+      },
+      "documentation":"<p>A set of recommended deployment configurations for the model. To get more advanced recommendations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateInferenceRecommendationsJob.html\">CreateInferenceRecommendationsJob</a> to create an inference recommendation job.</p>"
     },
     "DeploymentStage":{
       "type":"structure",
@@ -10633,6 +10851,16 @@
           "documentation":"<p>The unique IDs of the devices.</p>"
         }
       }
+    },
+    "DerivedInformation":{
+      "type":"structure",
+      "members":{
+        "DerivedDataInputConfig":{
+          "shape":"DataInputConfig",
+          "documentation":"<p>The data input configuration that SageMaker Neo automatically derived for the model. When SageMaker Neo derives this information, you don't need to specify the data input configuration when you create a compilation job.</p>"
+        }
+      },
+      "documentation":"<p>Information that SageMaker Neo automatically derived about the model.</p>"
     },
     "DescribeActionRequest":{
       "type":"structure",
@@ -11025,7 +11253,7 @@
         },
         "ResolvedAttributes":{
           "shape":"ResolvedAttributes",
-          "documentation":"<p>Contains <code>ProblemType</code>, <code>AutoMLJobObjective</code>, and <code>CompletionCriteria</code>. If you do not provide these values, they are auto-inferred. If you do provide them, the values used are the ones you provide.</p>"
+          "documentation":"<p>Contains <code>ProblemType</code>, <code>AutoMLJobObjective</code>, and <code>CompletionCriteria</code>. If you do not provide these values, they are inferred.</p>"
         },
         "ModelDeployConfig":{
           "shape":"ModelDeployConfig",
@@ -11043,7 +11271,7 @@
       "members":{
         "AutoMLJobName":{
           "shape":"AutoMLJobName",
-          "documentation":"<p>Requests information about an AutoML V2 job using its unique name.</p>"
+          "documentation":"<p>Requests information about an AutoML job V2 using its unique name.</p>"
         }
       }
     },
@@ -11063,11 +11291,11 @@
       "members":{
         "AutoMLJobName":{
           "shape":"AutoMLJobName",
-          "documentation":"<p>Returns the name of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the name of the AutoML job V2.</p>"
         },
         "AutoMLJobArn":{
           "shape":"AutoMLJobArn",
-          "documentation":"<p>Returns the Amazon Resource Name (ARN) of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the Amazon Resource Name (ARN) of the AutoML job V2.</p>"
         },
         "AutoMLJobInputDataConfig":{
           "shape":"AutoMLJobInputDataConfig",
@@ -11087,15 +11315,15 @@
         },
         "AutoMLProblemTypeConfig":{
           "shape":"AutoMLProblemTypeConfig",
-          "documentation":"<p>Returns the configuration settings of the problem type set for the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the configuration settings of the problem type set for the AutoML job V2.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Returns the creation time of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the creation time of the AutoML job V2.</p>"
         },
         "EndTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Returns the end time of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the end time of the AutoML job V2.</p>"
         },
         "LastModifiedTime":{
           "shape":"Timestamp",
@@ -11103,11 +11331,11 @@
         },
         "FailureReason":{
           "shape":"AutoMLFailureReason",
-          "documentation":"<p>Returns the reason for the failure of the AutoML V2 job, when applicable.</p>"
+          "documentation":"<p>Returns the reason for the failure of the AutoML job V2, when applicable.</p>"
         },
         "PartialFailureReasons":{
           "shape":"AutoMLPartialFailureReasons",
-          "documentation":"<p>Returns a list of reasons for partial failures within an AutoML V2 job.</p>"
+          "documentation":"<p>Returns a list of reasons for partial failures within an AutoML job V2.</p>"
         },
         "BestCandidate":{
           "shape":"AutoMLCandidate",
@@ -11115,11 +11343,11 @@
         },
         "AutoMLJobStatus":{
           "shape":"AutoMLJobStatus",
-          "documentation":"<p>Returns the status of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the status of the AutoML job V2.</p>"
         },
         "AutoMLJobSecondaryStatus":{
           "shape":"AutoMLJobSecondaryStatus",
-          "documentation":"<p>Returns the secondary status of the AutoML V2 job.</p>"
+          "documentation":"<p>Returns the secondary status of the AutoML job V2.</p>"
         },
         "ModelDeployConfig":{
           "shape":"ModelDeployConfig",
@@ -11136,6 +11364,15 @@
         "SecurityConfig":{
           "shape":"AutoMLSecurityConfig",
           "documentation":"<p>Returns the security configuration for traffic encryption or Amazon VPC settings.</p>"
+        },
+        "AutoMLJobArtifacts":{"shape":"AutoMLJobArtifacts"},
+        "ResolvedAttributes":{
+          "shape":"AutoMLResolvedAttributes",
+          "documentation":"<p>Returns the resolved attributes used by the AutoML job V2.</p>"
+        },
+        "AutoMLProblemTypeConfigName":{
+          "shape":"AutoMLProblemTypeConfigName",
+          "documentation":"<p>Returns the name of the problem type configuration set for the AutoML job V2.</p>"
         }
       }
     },
@@ -11273,6 +11510,10 @@
         "VpcConfig":{
           "shape":"NeoVpcConfig",
           "documentation":"<p>A <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html\">VpcConfig</a> object that specifies the VPC that you want your compilation job to connect to. Control access to your models by configuring the VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/neo-vpc.html\">Protect Compilation Jobs by Using an Amazon Virtual Private Cloud</a>.</p>"
+        },
+        "DerivedInformation":{
+          "shape":"DerivedInformation",
+          "documentation":"<p>Information that SageMaker Neo automatically derived about the model.</p>"
         }
       }
     },
@@ -11867,7 +12108,7 @@
         "DataCaptureConfig":{"shape":"DataCaptureConfigSummary"},
         "EndpointStatus":{
           "shape":"EndpointStatus",
-          "documentation":"<p>The status of the endpoint.</p> <ul> <li> <p> <code>OutOfService</code>: Endpoint is not available to take incoming requests.</p> </li> <li> <p> <code>Creating</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> is executing.</p> </li> <li> <p> <code>Updating</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html\">UpdateEndpoint</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> is executing.</p> </li> <li> <p> <code>SystemUpdating</code>: Endpoint is undergoing maintenance and cannot be updated or deleted or re-scaled until it has completed. This maintenance operation does not change any customer-specified values such as VPC config, KMS encryption, model, instance type, or instance count.</p> </li> <li> <p> <code>RollingBack</code>: Endpoint fails to scale up or down or change its variant weight and is in the process of rolling back to its previous configuration. Once the rollback completes, endpoint returns to an <code>InService</code> status. This transitional status only applies to an endpoint that has autoscaling enabled and is undergoing variant weight or capacity changes as part of an <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> call or when the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> operation is called explicitly.</p> </li> <li> <p> <code>InService</code>: Endpoint is available to process incoming requests.</p> </li> <li> <p> <code>Deleting</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html\">DeleteEndpoint</a> is executing.</p> </li> <li> <p> <code>Failed</code>: Endpoint could not be created, updated, or re-scaled. Use the <code>FailureReason</code> value returned by <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html\">DescribeEndpoint</a> for information about the failure. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html\">DeleteEndpoint</a> is the only operation that can be performed on a failed endpoint.</p> </li> </ul>"
+          "documentation":"<p>The status of the endpoint.</p> <ul> <li> <p> <code>OutOfService</code>: Endpoint is not available to take incoming requests.</p> </li> <li> <p> <code>Creating</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> is executing.</p> </li> <li> <p> <code>Updating</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html\">UpdateEndpoint</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> is executing.</p> </li> <li> <p> <code>SystemUpdating</code>: Endpoint is undergoing maintenance and cannot be updated or deleted or re-scaled until it has completed. This maintenance operation does not change any customer-specified values such as VPC config, KMS encryption, model, instance type, or instance count.</p> </li> <li> <p> <code>RollingBack</code>: Endpoint fails to scale up or down or change its variant weight and is in the process of rolling back to its previous configuration. Once the rollback completes, endpoint returns to an <code>InService</code> status. This transitional status only applies to an endpoint that has autoscaling enabled and is undergoing variant weight or capacity changes as part of an <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> call or when the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html\">UpdateEndpointWeightsAndCapacities</a> operation is called explicitly.</p> </li> <li> <p> <code>InService</code>: Endpoint is available to process incoming requests.</p> </li> <li> <p> <code>Deleting</code>: <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html\">DeleteEndpoint</a> is executing.</p> </li> <li> <p> <code>Failed</code>: Endpoint could not be created, updated, or re-scaled. Use the <code>FailureReason</code> value returned by <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html\">DescribeEndpoint</a> for information about the failure. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html\">DeleteEndpoint</a> is the only operation that can be performed on a failed endpoint.</p> </li> <li> <p> <code>UpdateRollbackFailed</code>: Both the rolling deployment and auto-rollback failed. Your endpoint is in service with a mix of the old and new endpoint configurations. For information about how to remedy this issue and restore the endpoint's status to <code>InService</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html\">Rolling Deployments</a>.</p> </li> </ul>"
         },
         "FailureReason":{
           "shape":"FailureReason",
@@ -11959,8 +12200,8 @@
       "required":["FeatureGroupName"],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the <code>FeatureGroup</code> you want described. </p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the <code>FeatureGroup</code> you want described. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -12058,8 +12299,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group containing the feature.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group containing the feature.</p>"
         },
         "FeatureName":{
           "shape":"FeatureName",
@@ -12407,7 +12648,7 @@
       "members":{
         "HyperParameterTuningJobName":{
           "shape":"HyperParameterTuningJobName",
-          "documentation":"<p>The name of the tuning job.</p>"
+          "documentation":"<p>The name of the hyperparameter tuning job.</p>"
         },
         "HyperParameterTuningJobArn":{
           "shape":"HyperParameterTuningJobArn",
@@ -12469,7 +12710,11 @@
           "shape":"HyperParameterTuningJobCompletionDetails",
           "documentation":"<p>Tuning job completion information returned as the response from a hyperparameter tuning job. This information tells if your tuning job has or has not converged. It also includes the number of training jobs that have not improved model performance as evaluated against the objective function.</p>"
         },
-        "ConsumedResources":{"shape":"HyperParameterTuningJobConsumedResources"}
+        "ConsumedResources":{"shape":"HyperParameterTuningJobConsumedResources"},
+        "Autotune":{
+          "shape":"Autotune",
+          "documentation":"<p>A flag to indicate if autotune is enabled for the hyperparameter tuning job.</p>"
+        }
       }
     },
     "DescribeImageRequest":{
@@ -13016,7 +13261,7 @@
         },
         "ModelCardName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the model card that the model export job exports.</p>"
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model card that the model export job exports.</p>"
         },
         "ModelCardVersion":{
           "shape":"Integer",
@@ -13049,8 +13294,8 @@
       "required":["ModelCardName"],
       "members":{
         "ModelCardName":{
-          "shape":"EntityName",
-          "documentation":"<p>The name of the model card to describe.</p>"
+          "shape":"ModelCardNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model card to describe.</p>"
         },
         "ModelCardVersion":{
           "shape":"Integer",
@@ -13224,6 +13469,10 @@
         "EnableNetworkIsolation":{
           "shape":"Boolean",
           "documentation":"<p>If <code>True</code>, no inbound or outbound network calls can be made to or from the model container.</p>"
+        },
+        "DeploymentRecommendation":{
+          "shape":"DeploymentRecommendation",
+          "documentation":"<p>A set of recommended deployment configurations for the model.</p>"
         }
       }
     },
@@ -13722,6 +13971,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>The parallelism configuration applied to the pipeline.</p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       }
     },
@@ -13731,7 +13984,7 @@
       "members":{
         "PipelineName":{
           "shape":"PipelineNameOrArn",
-          "documentation":"<p>The name of the pipeline to describe.</p>"
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the pipeline to describe.</p>"
         }
       }
     },
@@ -14609,6 +14862,10 @@
         "DesiredInstanceCount":{
           "shape":"TaskCount",
           "documentation":"<p>The variant's capacity.</p>"
+        },
+        "ServerlessUpdateConfig":{
+          "shape":"ProductionVariantServerlessUpdateConfig",
+          "documentation":"<p>Specifies the serverless update concurrency configuration for an endpoint variant.</p>"
         }
       },
       "documentation":"<p>Specifies weight and capacity values for a production variant.</p>"
@@ -15053,7 +15310,7 @@
       "members":{
         "RStudioServerProDomainSettingsForUpdate":{
           "shape":"RStudioServerProDomainSettingsForUpdate",
-          "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update.</p>"
+          "documentation":"<p>A collection of <code>RStudioServerPro</code> Domain-level app settings to update. A single <code>RStudioServerPro</code> application is created for a domain.</p>"
         },
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
@@ -15078,6 +15335,7 @@
         "Delete_Failed"
       ]
     },
+    "Double":{"type":"double"},
     "DoubleParameterValue":{"type":"double"},
     "DriftCheckBaselines":{
       "type":"structure",
@@ -15160,6 +15418,32 @@
         }
       },
       "documentation":"<p>Represents the drift check model quality baselines that can be used when the model monitor is set using the model package. </p>"
+    },
+    "DynamicScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended minimum capacity to specify for your autoscaling policy.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended maximum capacity to specify for your autoscaling policy.</p>"
+        },
+        "ScaleInCooldown":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended scale in cooldown time for your autoscaling policy.</p>"
+        },
+        "ScaleOutCooldown":{
+          "shape":"Integer",
+          "documentation":"<p>The recommended scale out cooldown time for your autoscaling policy.</p>"
+        },
+        "ScalingPolicies":{
+          "shape":"ScalingPolicies",
+          "documentation":"<p>An object of the scaling policies for each metric.</p>"
+        }
+      },
+      "documentation":"<p>An object with the recommended values for you to specify when creating an autoscaling policy.</p>"
     },
     "EMRStepMetadata":{
       "type":"structure",
@@ -15751,7 +16035,6 @@
     },
     "EndpointInputConfiguration":{
       "type":"structure",
-      "required":["InstanceType"],
       "members":{
         "InstanceType":{
           "shape":"ProductionVariantInstanceType",
@@ -15764,7 +16047,8 @@
         "EnvironmentParameterRanges":{
           "shape":"EnvironmentParameterRanges",
           "documentation":"<p> The parameter you want to benchmark against.</p>"
-        }
+        },
+        "ServerlessConfig":{"shape":"ProductionVariantServerlessConfig"}
       },
       "documentation":"<p>The endpoint configuration for the load test.</p>"
     },
@@ -15811,9 +16095,7 @@
       "type":"structure",
       "required":[
         "EndpointName",
-        "VariantName",
-        "InstanceType",
-        "InitialInstanceCount"
+        "VariantName"
       ],
       "members":{
         "EndpointName":{
@@ -15829,9 +16111,10 @@
           "documentation":"<p>The instance type recommended by Amazon SageMaker Inference Recommender.</p>"
         },
         "InitialInstanceCount":{
-          "shape":"Integer",
+          "shape":"InitialInstanceCount",
           "documentation":"<p>The number of instances recommended to launch initially.</p>"
-        }
+        },
+        "ServerlessConfig":{"shape":"ProductionVariantServerlessConfig"}
       },
       "documentation":"<p>The endpoint configuration made by Inference Recommender during a recommendation job.</p>"
     },
@@ -15873,7 +16156,8 @@
         "RollingBack",
         "InService",
         "Deleting",
-        "Failed"
+        "Failed",
+        "UpdateRollbackFailed"
       ]
     },
     "EndpointSummary":{
@@ -16307,6 +16591,12 @@
       "max":64,
       "min":1
     },
+    "FeatureGroupNameOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:feature-group\\/)?([a-zA-Z0-9]([_-]*[a-zA-Z0-9]){0,63})"
+    },
     "FeatureGroupSortBy":{
       "type":"string",
       "enum":[
@@ -16366,7 +16656,7 @@
           "documentation":"<p>Notifies you if replicating data into the <code>OfflineStore</code> has failed. Returns either: <code>Active</code> or <code>Blocked</code>.</p>"
         }
       },
-      "documentation":"<p>The name, Arn, <code>CreationTime</code>, <code>FeatureGroup</code> values, <code>LastUpdatedTime</code> and <code>EnableOnlineStorage</code> status of a <code>FeatureGroup</code>.</p>"
+      "documentation":"<p>The name, ARN, <code>CreationTime</code>, <code>FeatureGroup</code> values, <code>LastUpdatedTime</code> and <code>EnableOnlineStorage</code> status of a <code>FeatureGroup</code>.</p>"
     },
     "FeatureMetadata":{
       "type":"structure",
@@ -16555,6 +16845,39 @@
         "FSxLustre"
       ]
     },
+    "FillingTransformationMap":{
+      "type":"map",
+      "key":{"shape":"FillingType"},
+      "value":{"shape":"FillingTransformationValue"},
+      "max":6,
+      "min":1
+    },
+    "FillingTransformationValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\_\\-]+$"
+    },
+    "FillingTransformations":{
+      "type":"map",
+      "key":{"shape":"TransformationAttributeName"},
+      "value":{"shape":"FillingTransformationMap"},
+      "max":50,
+      "min":1
+    },
+    "FillingType":{
+      "type":"string",
+      "enum":[
+        "frontfill",
+        "middlefill",
+        "backfill",
+        "futurefill",
+        "frontfill_value",
+        "middlefill_value",
+        "backfill_value",
+        "futurefill_value"
+      ]
+    },
     "Filter":{
       "type":"structure",
       "required":["Name"],
@@ -16639,6 +16962,13 @@
       "member":{"shape":"MetricData"},
       "max":40,
       "min":0
+    },
+    "FlatInvocations":{
+      "type":"string",
+      "enum":[
+        "Continue",
+        "Stop"
+      ]
     },
     "Float":{"type":"float"},
     "FlowDefinitionArn":{
@@ -16750,6 +17080,28 @@
       "max":128,
       "min":1,
       "pattern":"^[\\t\\n\\r -\\uD7FF\\uE000-\\uFFFD]*$"
+    },
+    "ForecastFrequency":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"^1Y|Y|([1-9]|1[0-1])M|M|[1-4]W|W|[1-6]D|D|([1-9]|1[0-9]|2[0-3])H|H|([1-9]|[1-5][0-9])min$"
+    },
+    "ForecastHorizon":{
+      "type":"integer",
+      "min":1
+    },
+    "ForecastQuantile":{
+      "type":"string",
+      "max":4,
+      "min":2,
+      "pattern":"(^p[1-9]\\d?$)"
+    },
+    "ForecastQuantiles":{
+      "type":"list",
+      "member":{"shape":"ForecastQuantile"},
+      "max":5,
+      "min":1
     },
     "Framework":{
       "type":"string",
@@ -16880,6 +17232,65 @@
         }
       }
     },
+    "GetScalingConfigurationRecommendationRequest":{
+      "type":"structure",
+      "required":["InferenceRecommendationsJobName"],
+      "members":{
+        "InferenceRecommendationsJobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of a previously completed Inference Recommender job.</p>"
+        },
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID of a previously completed inference recommendation. This ID should come from one of the recommendations returned by the job specified in the <code>InferenceRecommendationsJobName</code> field.</p> <p>Specify either this field or the <code>EndpointName</code> field.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of an endpoint benchmarked during a previously completed inference recommendation job. This name should come from one of the recommendations returned by the job specified in the <code>InferenceRecommendationsJobName</code> field.</p> <p>Specify either this field or the <code>RecommendationId</code> field.</p>"
+        },
+        "TargetCpuUtilizationPerCore":{
+          "shape":"UtilizationPercentagePerCore",
+          "documentation":"<p>The percentage of how much utilization you want an instance to use before autoscaling. The default value is 50%.</p>"
+        },
+        "ScalingPolicyObjective":{
+          "shape":"ScalingPolicyObjective",
+          "documentation":"<p>An object where you specify the anticipated traffic pattern for an endpoint.</p>"
+        }
+      }
+    },
+    "GetScalingConfigurationRecommendationResponse":{
+      "type":"structure",
+      "members":{
+        "InferenceRecommendationsJobName":{
+          "shape":"RecommendationJobName",
+          "documentation":"<p>The name of a previously completed Inference Recommender job.</p>"
+        },
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID of a previously completed inference recommendation.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of an endpoint benchmarked during a previously completed Inference Recommender job.</p>"
+        },
+        "TargetCpuUtilizationPerCore":{
+          "shape":"UtilizationPercentagePerCore",
+          "documentation":"<p>The percentage of how much utilization you want an instance to use before autoscaling, which you specified in the request. The default value is 50%.</p>"
+        },
+        "ScalingPolicyObjective":{
+          "shape":"ScalingPolicyObjective",
+          "documentation":"<p>An object representing the anticipated traffic pattern for an endpoint that you specified in the request.</p>"
+        },
+        "Metric":{
+          "shape":"ScalingPolicyMetric",
+          "documentation":"<p>An object with a list of metrics that were benchmarked during the previously completed Inference Recommender job.</p>"
+        },
+        "DynamicScalingConfiguration":{
+          "shape":"DynamicScalingConfiguration",
+          "documentation":"<p>An object with the recommended values for you to specify when creating an autoscaling policy.</p>"
+        }
+      }
+    },
     "GetSearchSuggestionsRequest":{
       "type":"structure",
       "required":["Resource"],
@@ -16941,6 +17352,17 @@
       "max":63,
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+"
+    },
+    "GroupingAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GroupingAttributeNames":{
+      "type":"list",
+      "member":{"shape":"GroupingAttributeName"},
+      "max":5,
+      "min":1
     },
     "Groups":{
       "type":"list",
@@ -17667,7 +18089,7 @@
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
-          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/data-parallel-use-api.html\">SageMaker distributed training jobs</a> for more information.</p>"
+          "documentation":"<p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/data-parallel-use-api.html\">Step 2: Launch a SageMaker Distributed Training Job Using the SageMaker Python SDK</a> for more information.</p>"
         },
         "VolumeSizeInGB":{
           "shape":"VolumeSizeInGB",
@@ -17977,7 +18399,7 @@
       "members":{
         "InstanceType":{
           "shape":"TrainingInstanceType",
-          "documentation":"<p>The instance type used to run hyperparameter optimization tuning jobs. See <a href=\"https://docs.aws.amazon.com/notebooks-available-instance-types.html\"> descriptions of instance types</a> for more information.</p>"
+          "documentation":"<p>The instance type used to run hyperparameter optimization tuning jobs. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebooks-available-instance-types.html\"> descriptions of instance types</a> for more information.</p>"
         },
         "InstanceCount":{
           "shape":"TrainingInstanceCount",
@@ -18059,6 +18481,29 @@
       "max":128,
       "min":32
     },
+    "IdentityProviderOAuthSetting":{
+      "type":"structure",
+      "members":{
+        "DataSourceName":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source that you're connecting to. Canvas currently supports OAuth for Snowflake and Salesforce Data Cloud.</p>"
+        },
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Describes whether OAuth for a data source is enabled or disabled in the Canvas application.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of an Amazon Web Services Secrets Manager secret that stores the credentials from your identity provider, such as the client ID and secret, authorization URL, and token URL. </p>"
+        }
+      },
+      "documentation":"<p>The Amazon SageMaker Canvas app setting where you configure OAuth for connecting to an external data source, such as Snowflake.</p>"
+    },
+    "IdentityProviderOAuthSettings":{
+      "type":"list",
+      "member":{"shape":"IdentityProviderOAuthSetting"},
+      "max":20
+    },
     "Image":{
       "type":"structure",
       "required":[
@@ -18123,7 +18568,7 @@
           "documentation":"<p>How long a job is allowed to run, or how many candidates a job is allowed to generate.</p>"
         }
       },
-      "documentation":"<p>Stores the configuration information for the image classification problem of an AutoML job using the V2 API.</p>"
+      "documentation":"<p>Stores the configuration information for the image classification problem of an AutoML job V2.</p>"
     },
     "ImageConfig":{
       "type":"structure",
@@ -18568,6 +19013,14 @@
         "RecommendationId":{
           "shape":"String",
           "documentation":"<p>The recommendation ID which uniquely identifies each recommendation.</p>"
+        },
+        "InvocationEndTime":{
+          "shape":"InvocationEndTime",
+          "documentation":"<p>A timestamp that shows when the benchmark completed.</p>"
+        },
+        "InvocationStartTime":{
+          "shape":"InvocationStartTime",
+          "documentation":"<p>A timestamp that shows when the benchmark started.</p>"
         }
       },
       "documentation":"<p>A list of recommendations made by Amazon SageMaker Inference Recommender.</p>"
@@ -18630,6 +19083,18 @@
         "FailureReason":{
           "shape":"FailureReason",
           "documentation":"<p>If the job fails, provides information why the job failed.</p>"
+        },
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the created model.</p>"
+        },
+        "SamplePayloadUrl":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) path where the sample payload is stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+        },
+        "ModelPackageVersionArn":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a versioned model package.</p>"
         }
       },
       "documentation":"<p>A structure that contains a list of recommendation jobs.</p>"
@@ -18706,6 +19171,10 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
     },
+    "InitialInstanceCount":{
+      "type":"integer",
+      "min":1
+    },
     "InitialNumberOfUsers":{
       "type":"integer",
       "min":1
@@ -18718,7 +19187,6 @@
       "type":"structure",
       "required":[
         "S3Uri",
-        "DataInputConfig",
         "Framework"
       ],
       "members":{
@@ -18880,7 +19348,13 @@
         "ml.g5.16xlarge",
         "ml.g5.12xlarge",
         "ml.g5.24xlarge",
-        "ml.g5.48xlarge"
+        "ml.g5.48xlarge",
+        "ml.inf1.xlarge",
+        "ml.inf1.2xlarge",
+        "ml.inf1.6xlarge",
+        "ml.inf1.24xlarge",
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge"
       ]
     },
     "Integer":{"type":"integer"},
@@ -18936,6 +19410,8 @@
       "min":0
     },
     "IntegerValue":{"type":"integer"},
+    "InvocationEndTime":{"type":"timestamp"},
+    "InvocationStartTime":{"type":"timestamp"},
     "InvocationsMaxRetries":{
       "type":"integer",
       "max":3,
@@ -18949,6 +19425,11 @@
     "IotRoleAlias":{
       "type":"string",
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:rolealias/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "ItemIdentifierAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "JobDurationInSeconds":{
       "type":"integer",
@@ -19664,7 +20145,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of AppImageConfigs to return in the response. The default value is 10. </p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -19722,7 +20203,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Returns a list up to a specified limit.</p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -20317,7 +20798,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Returns a list up to a specified limit.</p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         }
       }
     },
@@ -21261,6 +21742,14 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of recommendations to return in the response.</p>"
+        },
+        "ModelNameEquals":{
+          "shape":"ModelName",
+          "documentation":"<p>A filter that returns only jobs that were created for this model.</p>"
+        },
+        "ModelPackageVersionArnEquals":{
+          "shape":"ModelPackageArn",
+          "documentation":"<p>A filter that returns only jobs that were created for this versioned model package.</p>"
         }
       }
     },
@@ -21578,8 +22067,8 @@
           "documentation":"<p>The maximum number of model card versions to list.</p>"
         },
         "ModelCardName":{
-          "shape":"EntityName",
-          "documentation":"<p>List model card versions for the model card with the specified name.</p>"
+          "shape":"ModelCardNameOrArn",
+          "documentation":"<p>List model card versions for the model card with the specified name or Amazon Resource Name (ARN).</p>"
         },
         "ModelCardStatus":{
           "shape":"ModelCardStatus",
@@ -22349,7 +22838,7 @@
       "members":{
         "PipelineName":{
           "shape":"PipelineNameOrArn",
-          "documentation":"<p>The name of the pipeline.</p>"
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the pipeline.</p>"
         },
         "CreatedAfter":{
           "shape":"Timestamp",
@@ -22574,6 +23063,52 @@
         }
       }
     },
+    "ListResourceCatalogsRequest":{
+      "type":"structure",
+      "members":{
+        "NameContains":{
+          "shape":"ResourceCatalogName",
+          "documentation":"<p> A string that partially matches one or more <code>ResourceCatalog</code>s names. Filters <code>ResourceCatalog</code> by name. </p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p> Use this parameter to search for <code>ResourceCatalog</code>s created after a specific date and time. </p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p> Use this parameter to search for <code>ResourceCatalog</code>s created before a specific date and time. </p>"
+        },
+        "SortOrder":{
+          "shape":"ResourceCatalogSortOrder",
+          "documentation":"<p> The order in which the resource catalogs are listed. </p>"
+        },
+        "SortBy":{
+          "shape":"ResourceCatalogSortBy",
+          "documentation":"<p> The value on which the resource catalog list is sorted. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of results returned by <code>ListResourceCatalogs</code>. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of <code>ListResourceCatalogs</code> results. </p>"
+        }
+      }
+    },
+    "ListResourceCatalogsResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceCatalogs":{
+          "shape":"ResourceCatalogList",
+          "documentation":"<p> A list of the requested <code>ResourceCatalog</code>s. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A token to resume pagination of <code>ListResourceCatalogs</code> results. </p>"
+        }
+      }
+    },
     "ListSpacesRequest":{
       "type":"structure",
       "members":{
@@ -22583,7 +23118,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Returns a list up to a specified limit.</p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -22665,7 +23200,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of Studio Lifecycle Configurations to return in the response. The default value is 10.</p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -22710,7 +23245,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token for getting the next set of actions, if there are any.</p>"
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
         },
         "StudioLifecycleConfigs":{
           "shape":"StudioLifecycleConfigsList",
@@ -23070,7 +23605,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Returns a list up to a specified limit.</p>"
+          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -23283,7 +23818,7 @@
     },
     "MaximumExecutionTimeoutInSeconds":{
       "type":"integer",
-      "max":14400,
+      "max":28800,
       "min":600
     },
     "MaximumRetryAttempts":{
@@ -23433,6 +23968,21 @@
         "Test"
       ]
     },
+    "MetricSpecification":{
+      "type":"structure",
+      "members":{
+        "Predefined":{
+          "shape":"PredefinedMetricSpecification",
+          "documentation":"<p>Information about a predefined metric.</p>"
+        },
+        "Customized":{
+          "shape":"CustomizedMetricSpecification",
+          "documentation":"<p>Information about a customized metric.</p>"
+        }
+      },
+      "documentation":"<p>An object containing information about a metric.</p>",
+      "union":true
+    },
     "MetricValue":{"type":"float"},
     "MetricsSource":{
       "type":"structure",
@@ -23494,6 +24044,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pairs associated with the model. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "DeploymentRecommendation":{
+          "shape":"DeploymentRecommendation",
+          "documentation":"<p>A set of recommended deployment configurations for the model.</p>"
         }
       },
       "documentation":"<p>The properties of a model as returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API.</p>"
@@ -23627,6 +24181,10 @@
         "RiskRating":{
           "shape":"String",
           "documentation":"<p>The risk rating of the model. Different organizations might have different criteria for model card risk ratings. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-cards-risk-rating.html\">Risk ratings</a>.</p>"
+        },
+        "ModelPackageGroupName":{
+          "shape":"String",
+          "documentation":"<p>The model package group that contains the model package. Only relevant for model cards created for model packages in the Amazon SageMaker Model Registry. </p>"
         }
       },
       "documentation":"<p>An Amazon SageMaker Model Card.</p>"
@@ -23740,6 +24298,12 @@
         }
       },
       "documentation":"<p>Configure the export output details for an Amazon SageMaker Model Card.</p>"
+    },
+    "ModelCardNameOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:model-card/.*)?([a-zA-Z0-9](-*[a-zA-Z0-9]){0,62})"
     },
     "ModelCardProcessingStatus":{
       "type":"string",
@@ -23879,6 +24443,13 @@
         }
       },
       "documentation":"<p>Configures the timeout and maximum number of retries for processing a transform job invocation.</p>"
+    },
+    "ModelCompressionType":{
+      "type":"string",
+      "enum":[
+        "None",
+        "Gzip"
+      ]
     },
     "ModelConfiguration":{
       "type":"structure",
@@ -24078,6 +24649,17 @@
       },
       "documentation":"<p>Data quality constraints and statistics for a model.</p>"
     },
+    "ModelDataSource":{
+      "type":"structure",
+      "required":["S3DataSource"],
+      "members":{
+        "S3DataSource":{
+          "shape":"S3ModelDataSource",
+          "documentation":"<p>Specifies the S3 location of ML model data to deploy.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the location of ML model data to deploy. If specified, you must specify one and only one of the available data sources.</p>"
+    },
     "ModelDeployConfig":{
       "type":"structure",
       "members":{
@@ -24198,7 +24780,7 @@
       "members":{
         "Percentile":{
           "shape":"String64",
-          "documentation":"<p>The model latency percentile threshold.</p>"
+          "documentation":"<p>The model latency percentile threshold. Acceptable values are <code>P95</code> and <code>P99</code>. For custom load tests, specify the value as <code>P95</code>.</p>"
         },
         "ValueInMilliseconds":{
           "shape":"Integer",
@@ -24847,10 +25429,14 @@
         },
         "CrossAccountModelRegisterRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker model registry account. Required only to register model versions created by a different SageMaker Canvas AWS account than the AWS account in which SageMaker model registry is set up.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker model registry account. Required only to register model versions created by a different SageMaker Canvas Amazon Web Services account than the Amazon Web Services account in which SageMaker model registry is set up.</p>"
         }
       },
       "documentation":"<p>The model registry settings for the SageMaker Canvas application.</p>"
+    },
+    "ModelSetupTime":{
+      "type":"integer",
+      "min":0
     },
     "ModelSortKey":{
       "type":"string",
@@ -26039,6 +26625,10 @@
       "max":9,
       "min":1
     },
+    "NumberOfSteps":{
+      "type":"integer",
+      "min":1
+    },
     "ObjectiveStatus":{
       "type":"string",
       "enum":[
@@ -26223,9 +26813,23 @@
         "EnableOnlineStore":{
           "shape":"Boolean",
           "documentation":"<p>Turn <code>OnlineStore</code> off by specifying <code>False</code> for the <code>EnableOnlineStore</code> flag. Turn <code>OnlineStore</code> on by specifying <code>True</code> for the <code>EnableOnlineStore</code> flag. </p> <p>The default value is <code>False</code>.</p>"
+        },
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>Time to live duration, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
         }
       },
       "documentation":"<p>Use this to specify the Amazon Web Services Key Management Service (KMS) Key ID, or <code>KMSKeyId</code>, for at rest data encryption. You can turn <code>OnlineStore</code> on or off by specifying the <code>EnableOnlineStore</code> flag at General Assembly.</p> <p>The default value is <code>False</code>.</p>"
+    },
+    "OnlineStoreConfigUpdate":{
+      "type":"structure",
+      "members":{
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>Time to live duration, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
+        }
+      },
+      "documentation":"<p>Updates the feature group online store configuration.</p>"
     },
     "OnlineStoreSecurityConfig":{
       "type":"structure",
@@ -26266,6 +26870,13 @@
         "Descending"
       ]
     },
+    "OutputCompressionType":{
+      "type":"string",
+      "enum":[
+        "GZIP",
+        "NONE"
+      ]
+    },
     "OutputConfig":{
       "type":"structure",
       "required":["S3OutputLocation"],
@@ -26276,7 +26887,7 @@
         },
         "TargetDevice":{
           "shape":"TargetDevice",
-          "documentation":"<p>Identifies the target device or the machine learning instance that you want to run your model on after the compilation has completed. Alternatively, you can specify OS, architecture, and accelerator using <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TargetPlatform.html\">TargetPlatform</a> fields. It can be used instead of <code>TargetPlatform</code>.</p>"
+          "documentation":"<p>Identifies the target device or the machine learning instance that you want to run your model on after the compilation has completed. Alternatively, you can specify OS, architecture, and accelerator using <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TargetPlatform.html\">TargetPlatform</a> fields. It can be used instead of <code>TargetPlatform</code>.</p> <note> <p>Currently <code>ml_trn1</code> is available only in US East (N. Virginia) Region, and <code>ml_inf2</code> is available only in US East (Ohio) Region.</p> </note>"
         },
         "TargetPlatform":{
           "shape":"TargetPlatform",
@@ -26284,7 +26895,7 @@
         },
         "CompilerOptions":{
           "shape":"CompilerOptions",
-          "documentation":"<p>Specifies additional parameters for compiler options in JSON format. The compiler options are <code>TargetPlatform</code> specific. It is required for NVIDIA accelerators and highly recommended for CPU compilations. For any other cases, it is optional to specify <code>CompilerOptions.</code> </p> <ul> <li> <p> <code>DTYPE</code>: Specifies the data type for the input. When compiling for <code>ml_*</code> (except for <code>ml_inf</code>) instances using PyTorch framework, provide the data type (dtype) of the model's input. <code>\"float32\"</code> is used if <code>\"DTYPE\"</code> is not specified. Options for data type are:</p> <ul> <li> <p>float32: Use either <code>\"float\"</code> or <code>\"float32\"</code>.</p> </li> <li> <p>int64: Use either <code>\"int64\"</code> or <code>\"long\"</code>.</p> </li> </ul> <p> For example, <code>{\"dtype\" : \"float32\"}</code>.</p> </li> <li> <p> <code>CPU</code>: Compilation for CPU supports the following compiler options.</p> <ul> <li> <p> <code>mcpu</code>: CPU micro-architecture. For example, <code>{'mcpu': 'skylake-avx512'}</code> </p> </li> <li> <p> <code>mattr</code>: CPU flags. For example, <code>{'mattr': ['+neon', '+vfpv4']}</code> </p> </li> </ul> </li> <li> <p> <code>ARM</code>: Details of ARM CPU compilations.</p> <ul> <li> <p> <code>NEON</code>: NEON is an implementation of the Advanced SIMD extension used in ARMv7 processors.</p> <p>For example, add <code>{'mattr': ['+neon']}</code> to the compiler options if compiling for ARM 32-bit platform with the NEON support.</p> </li> </ul> </li> <li> <p> <code>NVIDIA</code>: Compilation for NVIDIA GPU supports the following compiler options.</p> <ul> <li> <p> <code>gpu_code</code>: Specifies the targeted architecture.</p> </li> <li> <p> <code>trt-ver</code>: Specifies the TensorRT versions in x.y.z. format.</p> </li> <li> <p> <code>cuda-ver</code>: Specifies the CUDA version in x.y format.</p> </li> </ul> <p>For example, <code>{'gpu-code': 'sm_72', 'trt-ver': '6.0.1', 'cuda-ver': '10.1'}</code> </p> </li> <li> <p> <code>ANDROID</code>: Compilation for the Android OS supports the following compiler options:</p> <ul> <li> <p> <code>ANDROID_PLATFORM</code>: Specifies the Android API levels. Available levels range from 21 to 29. For example, <code>{'ANDROID_PLATFORM': 28}</code>.</p> </li> <li> <p> <code>mattr</code>: Add <code>{'mattr': ['+neon']}</code> to compiler options if compiling for ARM 32-bit platform with NEON support.</p> </li> </ul> </li> <li> <p> <code>INFERENTIA</code>: Compilation for target ml_inf1 uses compiler options passed in as a JSON string. For example, <code>\"CompilerOptions\": \"\\\"--verbose 1 --num-neuroncores 2 -O2\\\"\"</code>. </p> <p>For information about supported compiler options, see <a href=\"https://github.com/aws/aws-neuron-sdk/blob/master/docs/neuron-cc/command-line-reference.md\"> Neuron Compiler CLI</a>. </p> </li> <li> <p> <code>CoreML</code>: Compilation for the CoreML <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OutputConfig.html\">OutputConfig</a> <code>TargetDevice</code> supports the following compiler options:</p> <ul> <li> <p> <code>class_labels</code>: Specifies the classification labels file name inside input tar.gz file. For example, <code>{\"class_labels\": \"imagenet_labels_1000.txt\"}</code>. Labels inside the txt file should be separated by newlines.</p> </li> </ul> </li> <li> <p> <code>EIA</code>: Compilation for the Elastic Inference Accelerator supports the following compiler options:</p> <ul> <li> <p> <code>precision_mode</code>: Specifies the precision of compiled artifacts. Supported values are <code>\"FP16\"</code> and <code>\"FP32\"</code>. Default is <code>\"FP32\"</code>.</p> </li> <li> <p> <code>signature_def_key</code>: Specifies the signature to use for models in SavedModel format. Defaults is TensorFlow's default signature def key.</p> </li> <li> <p> <code>output_names</code>: Specifies a list of output tensor names for models in FrozenGraph format. Set at most one API field, either: <code>signature_def_key</code> or <code>output_names</code>.</p> </li> </ul> <p>For example: <code>{\"precision_mode\": \"FP32\", \"output_names\": [\"output:0\"]}</code> </p> </li> </ul>"
+          "documentation":"<p>Specifies additional parameters for compiler options in JSON format. The compiler options are <code>TargetPlatform</code> specific. It is required for NVIDIA accelerators and highly recommended for CPU compilations. For any other cases, it is optional to specify <code>CompilerOptions.</code> </p> <ul> <li> <p> <code>DTYPE</code>: Specifies the data type for the input. When compiling for <code>ml_*</code> (except for <code>ml_inf</code>) instances using PyTorch framework, provide the data type (dtype) of the model's input. <code>\"float32\"</code> is used if <code>\"DTYPE\"</code> is not specified. Options for data type are:</p> <ul> <li> <p>float32: Use either <code>\"float\"</code> or <code>\"float32\"</code>.</p> </li> <li> <p>int64: Use either <code>\"int64\"</code> or <code>\"long\"</code>.</p> </li> </ul> <p> For example, <code>{\"dtype\" : \"float32\"}</code>.</p> </li> <li> <p> <code>CPU</code>: Compilation for CPU supports the following compiler options.</p> <ul> <li> <p> <code>mcpu</code>: CPU micro-architecture. For example, <code>{'mcpu': 'skylake-avx512'}</code> </p> </li> <li> <p> <code>mattr</code>: CPU flags. For example, <code>{'mattr': ['+neon', '+vfpv4']}</code> </p> </li> </ul> </li> <li> <p> <code>ARM</code>: Details of ARM CPU compilations.</p> <ul> <li> <p> <code>NEON</code>: NEON is an implementation of the Advanced SIMD extension used in ARMv7 processors.</p> <p>For example, add <code>{'mattr': ['+neon']}</code> to the compiler options if compiling for ARM 32-bit platform with the NEON support.</p> </li> </ul> </li> <li> <p> <code>NVIDIA</code>: Compilation for NVIDIA GPU supports the following compiler options.</p> <ul> <li> <p> <code>gpu_code</code>: Specifies the targeted architecture.</p> </li> <li> <p> <code>trt-ver</code>: Specifies the TensorRT versions in x.y.z. format.</p> </li> <li> <p> <code>cuda-ver</code>: Specifies the CUDA version in x.y format.</p> </li> </ul> <p>For example, <code>{'gpu-code': 'sm_72', 'trt-ver': '6.0.1', 'cuda-ver': '10.1'}</code> </p> </li> <li> <p> <code>ANDROID</code>: Compilation for the Android OS supports the following compiler options:</p> <ul> <li> <p> <code>ANDROID_PLATFORM</code>: Specifies the Android API levels. Available levels range from 21 to 29. For example, <code>{'ANDROID_PLATFORM': 28}</code>.</p> </li> <li> <p> <code>mattr</code>: Add <code>{'mattr': ['+neon']}</code> to compiler options if compiling for ARM 32-bit platform with NEON support.</p> </li> </ul> </li> <li> <p> <code>INFERENTIA</code>: Compilation for target ml_inf1 uses compiler options passed in as a JSON string. For example, <code>\"CompilerOptions\": \"\\\"--verbose 1 --num-neuroncores 2 -O2\\\"\"</code>. </p> <p>For information about supported compiler options, see <a href=\"https://awsdocs-neuron.readthedocs-hosted.com/en/latest/compiler/neuronx-cc/api-reference-guide/neuron-compiler-cli-reference-guide.html\"> Neuron Compiler CLI Reference Guide</a>. </p> </li> <li> <p> <code>CoreML</code>: Compilation for the CoreML <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OutputConfig.html\">OutputConfig</a> <code>TargetDevice</code> supports the following compiler options:</p> <ul> <li> <p> <code>class_labels</code>: Specifies the classification labels file name inside input tar.gz file. For example, <code>{\"class_labels\": \"imagenet_labels_1000.txt\"}</code>. Labels inside the txt file should be separated by newlines.</p> </li> </ul> </li> <li> <p> <code>EIA</code>: Compilation for the Elastic Inference Accelerator supports the following compiler options:</p> <ul> <li> <p> <code>precision_mode</code>: Specifies the precision of compiled artifacts. Supported values are <code>\"FP16\"</code> and <code>\"FP32\"</code>. Default is <code>\"FP32\"</code>.</p> </li> <li> <p> <code>signature_def_key</code>: Specifies the signature to use for models in SavedModel format. Defaults is TensorFlow's default signature def key.</p> </li> <li> <p> <code>output_names</code>: Specifies a list of output tensor names for models in FrozenGraph format. Set at most one API field, either: <code>signature_def_key</code> or <code>output_names</code>.</p> </li> </ul> <p>For example: <code>{\"precision_mode\": \"FP32\", \"output_names\": [\"output:0\"]}</code> </p> </li> </ul>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -26304,6 +26915,10 @@
         "S3OutputPath":{
           "shape":"S3Uri",
           "documentation":"<p>Identifies the S3 path where you want SageMaker to store the model artifacts. For example, <code>s3://bucket-name/key-name-prefix</code>. </p>"
+        },
+        "CompressionType":{
+          "shape":"OutputCompressionType",
+          "documentation":"<p>The model output compression type. Select <code>None</code> to output an uncompressed model, recommended for large model outputs. Defaults to gzip.</p>"
         }
       },
       "documentation":"<p>Provides information about how to store model training results (model artifacts).</p>"
@@ -26414,6 +27029,10 @@
         "CategoricalParameterRanges":{
           "shape":"CategoricalParameterRanges",
           "documentation":"<p>The array of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CategoricalParameterRange.html\">CategoricalParameterRange</a> objects that specify ranges of categorical hyperparameters that a hyperparameter tuning job searches.</p>"
+        },
+        "AutoParameters":{
+          "shape":"AutoParameters",
+          "documentation":"<p>A list containing hyperparameter names and example values to be used by Autotune to determine optimal ranges for your tuning job.</p>"
         }
       },
       "documentation":"<p>Specifies ranges of integer, continuous, and categorical hyperparameters that a hyperparameter tuning job searches. The hyperparameter tuning job launches training jobs with hyperparameter values within these ranges to find the combination of values that result in the training job with the best performance as measured by the objective metric of the hyperparameter tuning job.</p> <note> <p>The maximum number of items specified for <code>Array Members</code> refers to the maximum number of hyperparameters for each range and also the maximum for the hyperparameter tuning job itself. That is, the sum of the number of hyperparameters for all the ranges can't exceed the maximum number specified.</p> </note>"
@@ -26560,7 +27179,7 @@
       "members":{
         "InitialNumberOfUsers":{
           "shape":"InitialNumberOfUsers",
-          "documentation":"<p>Specifies how many concurrent users to start with.</p>"
+          "documentation":"<p>Specifies how many concurrent users to start with. The value should be between 1 and 3.</p>"
         },
         "SpawnRate":{
           "shape":"SpawnRate",
@@ -26568,7 +27187,7 @@
         },
         "DurationInSeconds":{
           "shape":"TrafficDurationInSeconds",
-          "documentation":"<p>Specifies how long traffic phase should be.</p>"
+          "documentation":"<p>Specifies how long a traffic phase should be. For custom load tests, the value should be between 120 and 3600. This value should not exceed <code>JobDurationInSeconds</code>.</p>"
         }
       },
       "documentation":"<p>Defines the traffic pattern.</p>"
@@ -26714,6 +27333,10 @@
         "PipelineParameters":{
           "shape":"ParameterList",
           "documentation":"<p>Contains a list of pipeline parameters. This list can be empty. </p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       },
       "documentation":"<p>An execution of a pipeline.</p>"
@@ -26792,6 +27415,10 @@
         "Metadata":{
           "shape":"PipelineExecutionStepMetadata",
           "documentation":"<p>Metadata to run the pipeline step.</p>"
+        },
+        "SelectiveExecutionResult":{
+          "shape":"SelectiveExecutionResult",
+          "documentation":"<p>The ARN from an execution of the current pipeline from which results are reused for this step.</p>"
         }
       },
       "documentation":"<p>An execution of a step in a pipeline.</p>"
@@ -26990,6 +27617,16 @@
       "max":20480,
       "min":1,
       "pattern":".*"
+    },
+    "PredefinedMetricSpecification":{
+      "type":"structure",
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"String",
+          "documentation":"<p>The metric type. You can only apply SageMaker metric types to SageMaker endpoints.</p>"
+        }
+      },
+      "documentation":"<p>A specification for a predefined metric.</p>"
     },
     "PresignedDomainUrl":{"type":"string"},
     "ProbabilityThresholdAttribute":{"type":"double"},
@@ -27714,7 +28351,13 @@
         "ml.r6gd.8xlarge",
         "ml.r6gd.12xlarge",
         "ml.r6gd.16xlarge",
-        "ml.p4de.24xlarge"
+        "ml.p4de.24xlarge",
+        "ml.trn1.2xlarge",
+        "ml.trn1.32xlarge",
+        "ml.inf2.xlarge",
+        "ml.inf2.8xlarge",
+        "ml.inf2.24xlarge",
+        "ml.inf2.48xlarge"
       ]
     },
     "ProductionVariantList":{
@@ -27743,9 +28386,27 @@
         "MaxConcurrency":{
           "shape":"ServerlessMaxConcurrency",
           "documentation":"<p>The maximum number of concurrent invocations your serverless endpoint can process.</p>"
+        },
+        "ProvisionedConcurrency":{
+          "shape":"ServerlessProvisionedConcurrency",
+          "documentation":"<p>The amount of provisioned concurrency to allocate for the serverless endpoint. Should be less than or equal to <code>MaxConcurrency</code>.</p> <note> <p>This field is not supported for serverless endpoint recommendations for Inference Recommender jobs. For more information about creating an Inference Recommender job, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateInferenceRecommendationsJob.html\">CreateInferenceRecommendationsJobs</a>.</p> </note>"
         }
       },
       "documentation":"<p>Specifies the serverless configuration for an endpoint variant.</p>"
+    },
+    "ProductionVariantServerlessUpdateConfig":{
+      "type":"structure",
+      "members":{
+        "MaxConcurrency":{
+          "shape":"ServerlessMaxConcurrency",
+          "documentation":"<p>The updated maximum number of concurrent invocations your serverless endpoint can process.</p>"
+        },
+        "ProvisionedConcurrency":{
+          "shape":"ServerlessProvisionedConcurrency",
+          "documentation":"<p>The updated amount of provisioned concurrency to allocate for the serverless endpoint. Should be less than or equal to <code>MaxConcurrency</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the serverless update concurrency configuration for an endpoint variant.</p>"
     },
     "ProductionVariantStatus":{
       "type":"structure",
@@ -28390,7 +29051,7 @@
           "documentation":"<p>The level of permissions that the user has within the <code>RStudioServerPro</code> app. This value defaults to `User`. The `Admin` value allows the user access to the RStudio Administrative Dashboard.</p>"
         }
       },
-      "documentation":"<p>A collection of settings that configure user interaction with the <code>RStudioServerPro</code> app. <code>RStudioServerProAppSettings</code> cannot be updated. The <code>RStudioServerPro</code> app must be deleted and a new one created to make any changes.</p>"
+      "documentation":"<p>A collection of settings that configure user interaction with the <code>RStudioServerPro</code> app.</p>"
     },
     "RStudioServerProDomainSettings":{
       "type":"structure",
@@ -28461,6 +29122,34 @@
       },
       "documentation":"<p>The infrastructure configuration for deploying the model to a real-time inference endpoint.</p>"
     },
+    "RealTimeInferenceRecommendation":{
+      "type":"structure",
+      "required":[
+        "RecommendationId",
+        "InstanceType"
+      ],
+      "members":{
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation ID which uniquely identifies each recommendation.</p>"
+        },
+        "InstanceType":{
+          "shape":"ProductionVariantInstanceType",
+          "documentation":"<p>The recommended instance type for Real-Time Inference.</p>"
+        },
+        "Environment":{
+          "shape":"EnvironmentMap",
+          "documentation":"<p>The recommended environment variables to set in the model container for Real-Time Inference.</p>"
+        }
+      },
+      "documentation":"<p>The recommended configuration to use for Real-Time Inference.</p>"
+    },
+    "RealTimeInferenceRecommendations":{
+      "type":"list",
+      "member":{"shape":"RealTimeInferenceRecommendation"},
+      "max":3,
+      "min":0
+    },
     "RealtimeInferenceInstanceTypes":{
       "type":"list",
       "member":{"shape":"ProductionVariantInstanceType"}
@@ -28521,6 +29210,14 @@
         "DataInputConfig":{
           "shape":"RecommendationJobDataInputConfig",
           "documentation":"<p>Specifies the name and shape of the expected data inputs for your trained model with a JSON dictionary form. This field is used for optimizing your model using SageMaker Neo. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_InputConfig.html#sagemaker-Type-InputConfig-DataInputConfig\">DataInputConfig</a>.</p>"
+        },
+        "SupportedEndpointType":{
+          "shape":"RecommendationJobSupportedEndpointType",
+          "documentation":"<p>The endpoint type to receive recommendations for. By default this is null, and the results of the inference recommendation job return a combined list of both real-time and serverless benchmarks. By specifying a value for this field, you can receive a longer list of benchmarks for the desired endpoint type.</p>"
+        },
+        "SupportedResponseMIMETypes":{
+          "shape":"RecommendationJobSupportedResponseMIMETypes",
+          "documentation":"<p>The supported MIME types for the output data.</p>"
         }
       },
       "documentation":"<p>Specifies mandatory fields for running an Inference Recommender job directly in the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateInferenceRecommendationsJob.html\">CreateInferenceRecommendationsJob</a> API. The fields specified in <code>ContainerConfig</code> override the corresponding fields in the model package. Use <code>ContainerConfig</code> if you want to specify these fields for the recommendation job but don't want to edit them in your model package.</p>"
@@ -28546,7 +29243,15 @@
           "shape":"RecommendationFailureReason",
           "documentation":"<p>The reason why a benchmark failed.</p>"
         },
-        "EndpointMetrics":{"shape":"InferenceMetrics"}
+        "EndpointMetrics":{"shape":"InferenceMetrics"},
+        "InvocationEndTime":{
+          "shape":"InvocationEndTime",
+          "documentation":"<p>A timestamp that shows when the benchmark completed.</p>"
+        },
+        "InvocationStartTime":{
+          "shape":"InvocationStartTime",
+          "documentation":"<p>A timestamp that shows when the benchmark started.</p>"
+        }
       },
       "documentation":"<p>The details for a specific benchmark from an Inference Recommender job.</p>"
     },
@@ -28559,7 +29264,7 @@
         },
         "JobDurationInSeconds":{
           "shape":"JobDurationInSeconds",
-          "documentation":"<p>Specifies the maximum duration of the job, in seconds.&gt;</p>"
+          "documentation":"<p>Specifies the maximum duration of the job, in seconds. The maximum value is 18,000 seconds.</p>"
         },
         "TrafficPattern":{
           "shape":"TrafficPattern",
@@ -28665,6 +29370,10 @@
         "ModelLatencyThresholds":{
           "shape":"ModelLatencyThresholds",
           "documentation":"<p>The interval of time taken by a model to respond as viewed from SageMaker. The interval includes the local communication time taken to send the request and to fetch the response from the container of a model and the time taken to complete the inference in the container.</p>"
+        },
+        "FlatInvocations":{
+          "shape":"FlatInvocations",
+          "documentation":"<p>Stops a load test when the number of invocations (TPS) peaks and flattens, which means that the instance has reached capacity. The default value is <code>Stop</code>. If you want the load test to continue after invocations have flattened, set the value to <code>Continue</code>.</p>"
         }
       },
       "documentation":"<p>Specifies conditions for stopping a job. When a job reaches a stopping condition limit, SageMaker ends the job.</p>"
@@ -28673,9 +29382,25 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "RecommendationJobSupportedEndpointType":{
+      "type":"string",
+      "enum":[
+        "RealTime",
+        "Serverless"
+      ]
+    },
     "RecommendationJobSupportedInstanceTypes":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "RecommendationJobSupportedResponseMIMEType":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^[-\\w]+\\/.+$"
+    },
+    "RecommendationJobSupportedResponseMIMETypes":{
+      "type":"list",
+      "member":{"shape":"RecommendationJobSupportedResponseMIMEType"}
     },
     "RecommendationJobType":{
       "type":"string",
@@ -28756,9 +29481,22 @@
         "MemoryUtilization":{
           "shape":"UtilizationMetric",
           "documentation":"<p>The expected memory utilization at maximum invocations per minute for the instance.</p> <p> <code>NaN</code> indicates that the value is not available.</p>"
+        },
+        "ModelSetupTime":{
+          "shape":"ModelSetupTime",
+          "documentation":"<p>The time it takes to launch new compute resources for a serverless endpoint. The time can vary depending on the model size, how long it takes to download the model, and the start-up time of the container.</p> <p> <code>NaN</code> indicates that the value is not available.</p>"
         }
       },
       "documentation":"<p>The metrics of recommendations.</p>"
+    },
+    "RecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "NOT_APPLICABLE"
+      ]
     },
     "RecommendationStepType":{
       "type":"string",
@@ -29009,6 +29747,63 @@
       "max":256,
       "pattern":"arn:aws[a-z-]*:sagemaker:[a-z0-9-]*:[0-9]{12}:.+"
     },
+    "ResourceCatalog":{
+      "type":"structure",
+      "required":[
+        "ResourceCatalogArn",
+        "ResourceCatalogName",
+        "Description",
+        "CreationTime"
+      ],
+      "members":{
+        "ResourceCatalogArn":{
+          "shape":"ResourceCatalogArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the <code>ResourceCatalog</code>. </p>"
+        },
+        "ResourceCatalogName":{
+          "shape":"ResourceCatalogName",
+          "documentation":"<p> The name of the <code>ResourceCatalog</code>. </p>"
+        },
+        "Description":{
+          "shape":"ResourceCatalogDescription",
+          "documentation":"<p> A free form description of the <code>ResourceCatalog</code>. </p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time the <code>ResourceCatalog</code> was created. </p>"
+        }
+      },
+      "documentation":"<p> A resource catalog containing all of the resources of a specific resource type within a resource owner account. For an example on sharing the Amazon SageMaker Feature Store <code>DefaultFeatureGroupCatalog</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/feature-store-cross-account-discoverability-share-sagemaker-catalog.html\">Share Amazon SageMaker Catalog resource type</a> in the Amazon SageMaker Developer Guide. </p>"
+    },
+    "ResourceCatalogArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:sagemaker-catalog/.*"
+    },
+    "ResourceCatalogDescription":{
+      "type":"string",
+      "max":256
+    },
+    "ResourceCatalogList":{
+      "type":"list",
+      "member":{"shape":"ResourceCatalog"}
+    },
+    "ResourceCatalogName":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ResourceCatalogSortBy":{
+      "type":"string",
+      "enum":["CreationTime"]
+    },
+    "ResourceCatalogSortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
     "ResourceConfig":{
       "type":"structure",
       "required":["VolumeSizeInGB"],
@@ -29229,6 +30024,32 @@
       "min":20,
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
     },
+    "RollingUpdatePolicy":{
+      "type":"structure",
+      "required":[
+        "MaximumBatchSize",
+        "WaitIntervalInSeconds"
+      ],
+      "members":{
+        "MaximumBatchSize":{
+          "shape":"CapacitySize",
+          "documentation":"<p>Batch size for each rolling step to provision capacity and turn on traffic on the new endpoint fleet, and terminate capacity on the old endpoint fleet. Value must be between 5% to 50% of the variant's total instance count.</p>"
+        },
+        "WaitIntervalInSeconds":{
+          "shape":"WaitIntervalInSeconds",
+          "documentation":"<p>The length of the baking period, during which SageMaker monitors alarms for each batch on the new fleet.</p>"
+        },
+        "MaximumExecutionTimeoutInSeconds":{
+          "shape":"MaximumExecutionTimeoutInSeconds",
+          "documentation":"<p>The time limit for the total deployment. Exceeding this limit causes a timeout.</p>"
+        },
+        "RollbackMaximumBatchSize":{
+          "shape":"CapacitySize",
+          "documentation":"<p>Batch size for rollback to the old endpoint fleet. Each rolling step to provision capacity and turn on traffic on the old endpoint fleet, and terminate capacity on the new endpoint fleet. If this field is absent, the default value will be set to 100% of total capacity which means to bring up the whole capacity of the old fleet at once during rollback.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker endpoint.</p>"
+    },
     "RootAccess":{
       "type":"string",
       "enum":[
@@ -29280,7 +30101,7 @@
         },
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>Depending on the value specified for the <code>S3DataType</code>, identifies either a key name prefix or a manifest. For example: </p> <ul> <li> <p> A key name prefix might look like this: <code>s3://bucketname/exampleprefix</code> </p> </li> <li> <p> A manifest might look like this: <code>s3://bucketname/example.manifest</code> </p> <p> A manifest is an S3 object which is a JSON file consisting of an array of elements. The first element is a prefix which is followed by one or more suffixes. SageMaker appends the suffix elements to the prefix to get a full set of <code>S3Uri</code>. Note that the prefix must be a valid non-empty <code>S3Uri</code> that precludes users from specifying a manifest whose individual <code>S3Uri</code> is sourced from different S3 buckets.</p> <p> The following code example shows a valid manifest format: </p> <p> <code>[ {\"prefix\": \"s3://customer_bucket/some/prefix/\"},</code> </p> <p> <code> \"relative/path/to/custdata-1\",</code> </p> <p> <code> \"relative/path/custdata-2\",</code> </p> <p> <code> ...</code> </p> <p> <code> \"relative/path/custdata-N\"</code> </p> <p> <code>]</code> </p> <p> This JSON is equivalent to the following <code>S3Uri</code> list:</p> <p> <code>s3://customer_bucket/some/prefix/relative/path/to/custdata-1</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-2</code> </p> <p> <code>...</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-N</code> </p> <p>The complete set of <code>S3Uri</code> in this manifest is the input data for the channel for this data source. The object that each <code>S3Uri</code> points to must be readable by the IAM role that SageMaker uses to perform tasks on your behalf. </p> </li> </ul>"
+          "documentation":"<p>Depending on the value specified for the <code>S3DataType</code>, identifies either a key name prefix or a manifest. For example: </p> <ul> <li> <p> A key name prefix might look like this: <code>s3://bucketname/exampleprefix</code> </p> </li> <li> <p> A manifest might look like this: <code>s3://bucketname/example.manifest</code> </p> <p> A manifest is an S3 object which is a JSON file consisting of an array of elements. The first element is a prefix which is followed by one or more suffixes. SageMaker appends the suffix elements to the prefix to get a full set of <code>S3Uri</code>. Note that the prefix must be a valid non-empty <code>S3Uri</code> that precludes users from specifying a manifest whose individual <code>S3Uri</code> is sourced from different S3 buckets.</p> <p> The following code example shows a valid manifest format: </p> <p> <code>[ {\"prefix\": \"s3://customer_bucket/some/prefix/\"},</code> </p> <p> <code> \"relative/path/to/custdata-1\",</code> </p> <p> <code> \"relative/path/custdata-2\",</code> </p> <p> <code> ...</code> </p> <p> <code> \"relative/path/custdata-N\"</code> </p> <p> <code>]</code> </p> <p> This JSON is equivalent to the following <code>S3Uri</code> list:</p> <p> <code>s3://customer_bucket/some/prefix/relative/path/to/custdata-1</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-2</code> </p> <p> <code>...</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-N</code> </p> <p>The complete set of <code>S3Uri</code> in this manifest is the input data for the channel for this data source. The object that each <code>S3Uri</code> points to must be readable by the IAM role that SageMaker uses to perform tasks on your behalf. </p> </li> </ul> <p>Your input bucket must be located in same Amazon Web Services region as your training job.</p>"
         },
         "S3DataDistributionType":{
           "shape":"S3DataDistribution",
@@ -29295,7 +30116,7 @@
           "documentation":"<p>A list of names of instance groups that get data from the S3 data source.</p>"
         }
       },
-      "documentation":"<p>Describes the S3 data source.</p>"
+      "documentation":"<p>Describes the S3 data source.</p> <p>Your input bucket must be in the same Amazon Web Services region as your training job.</p>"
     },
     "S3DataType":{
       "type":"string",
@@ -29304,6 +30125,41 @@
         "S3Prefix",
         "AugmentedManifestFile"
       ]
+    },
+    "S3ModelDataSource":{
+      "type":"structure",
+      "required":[
+        "S3Uri",
+        "S3DataType",
+        "CompressionType"
+      ],
+      "members":{
+        "S3Uri":{
+          "shape":"S3ModelUri",
+          "documentation":"<p>Specifies the S3 path of ML model data to deploy.</p>"
+        },
+        "S3DataType":{
+          "shape":"S3ModelDataType",
+          "documentation":"<p>Specifies the type of ML model data to deploy.</p> <p>If you choose <code>S3Prefix</code>, <code>S3Uri</code> identifies a key name prefix. SageMaker uses all objects that match the specified key name prefix as part of the ML model data to deploy. A valid key name prefix identified by <code>S3Uri</code> always ends with a forward slash (/).</p> <p>If you choose <code>S3Object</code>, <code>S3Uri</code> identifies an object that is the ML model data to deploy.</p>"
+        },
+        "CompressionType":{
+          "shape":"ModelCompressionType",
+          "documentation":"<p>Specifies how the ML model data is prepared.</p> <p>If you choose <code>Gzip</code> and choose <code>S3Object</code> as the value of <code>S3DataType</code>, <code>S3Uri</code> identifies an object that is a gzip-compressed TAR archive. SageMaker will attempt to decompress and untar the object during model deployment.</p> <p>If you choose <code>None</code> and chooose <code>S3Object</code> as the value of <code>S3DataType</code>, <code>S3Uri</code> identifies an object that represents an uncompressed ML model to deploy.</p> <p>If you choose None and choose <code>S3Prefix</code> as the value of <code>S3DataType</code>, <code>S3Uri</code> identifies a key name prefix, under which all objects represents the uncompressed ML model to deploy.</p> <p>If you choose None, then SageMaker will follow rules below when creating model data files under /opt/ml/model directory for use by your inference code:</p> <ul> <li> <p>If you choose <code>S3Object</code> as the value of <code>S3DataType</code>, then SageMaker will split the key of the S3 object referenced by <code>S3Uri</code> by slash (/), and use the last part as the filename of the file holding the content of the S3 object.</p> </li> <li> <p>If you choose <code>S3Prefix</code> as the value of <code>S3DataType</code>, then for each S3 object under the key name pefix referenced by <code>S3Uri</code>, SageMaker will trim its key by the prefix, and use the remainder as the path (relative to <code>/opt/ml/model</code>) of the file holding the content of the S3 object. SageMaker will split the remainder by slash (/), using intermediate parts as directory names and the last part as filename of the file holding the content of the S3 object.</p> </li> <li> <p>Do not use any of the following as file names or directory names:</p> <ul> <li> <p>An empty or blank string</p> </li> <li> <p>A string which contains null bytes</p> </li> <li> <p>A string longer than 255 bytes</p> </li> <li> <p>A single dot (<code>.</code>)</p> </li> <li> <p>A double dot (<code>..</code>)</p> </li> </ul> </li> <li> <p>Ambiguous file names will result in model deployment failure. For example, if your uncompressed ML model consists of two S3 objects <code>s3://mybucket/model/weights</code> and <code>s3://mybucket/model/weights/part1</code> and you specify <code>s3://mybucket/model/</code> as the value of <code>S3Uri</code> and <code>S3Prefix</code> as the value of <code>S3DataType</code>, then it will result in name clash between <code>/opt/ml/model/weights</code> (a regular file) and <code>/opt/ml/model/weights/</code> (a directory).</p> </li> <li> <p>Do not organize the model artifacts in <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-folders.html\">S3 console using folders</a>. When you create a folder in S3 console, S3 creates a 0-byte object with a key set to the folder name you provide. They key of the 0-byte object ends with a slash (/) which violates SageMaker restrictions on model artifact file names, leading to model deployment failure. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the S3 location of ML model data to deploy.</p>"
+    },
+    "S3ModelDataType":{
+      "type":"string",
+      "enum":[
+        "S3Prefix",
+        "S3Object"
+      ]
+    },
+    "S3ModelUri":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(https|s3)://([^/]+)/?(.*)$"
     },
     "S3OutputPath":{
       "type":"string",
@@ -29351,10 +30207,59 @@
         "Disabled"
       ]
     },
+    "SampleWeightAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
+    },
     "SamplingPercentage":{
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "ScalingPolicies":{
+      "type":"list",
+      "member":{"shape":"ScalingPolicy"}
+    },
+    "ScalingPolicy":{
+      "type":"structure",
+      "members":{
+        "TargetTracking":{
+          "shape":"TargetTrackingScalingPolicyConfiguration",
+          "documentation":"<p>A target tracking scaling policy. Includes support for predefined or customized metrics.</p>"
+        }
+      },
+      "documentation":"<p>An object containing a recommended scaling policy.</p>",
+      "union":true
+    },
+    "ScalingPolicyMetric":{
+      "type":"structure",
+      "members":{
+        "InvocationsPerInstance":{
+          "shape":"Integer",
+          "documentation":"<p>The number of invocations sent to a model, normalized by <code>InstanceCount</code> in each ProductionVariant. <code>1/numberOfInstances</code> is sent as the value on each request, where <code>numberOfInstances</code> is the number of active instances for the ProductionVariant behind the endpoint at the time of the request.</p>"
+        },
+        "ModelLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The interval of time taken by a model to respond as viewed from SageMaker. This interval includes the local communication times taken to send the request and to fetch the response from the container of a model and the time taken to complete the inference in the container.</p>"
+        }
+      },
+      "documentation":"<p>The metric for a scaling policy.</p>"
+    },
+    "ScalingPolicyObjective":{
+      "type":"structure",
+      "members":{
+        "MinInvocationsPerMinute":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of expected requests to your endpoint per minute.</p>"
+        },
+        "MaxInvocationsPerMinute":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of expected requests to your endpoint per minute.</p>"
+        }
+      },
+      "documentation":"<p>An object where you specify the anticipated traffic pattern for an endpoint.</p>"
     },
     "ScheduleConfig":{
       "type":"structure",
@@ -29482,6 +30387,10 @@
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return.</p>",
           "box":true
+        },
+        "CrossAccountFilterOption":{
+          "shape":"CrossAccountFilterOption",
+          "documentation":"<p> A cross account filter option. When the value is <code>\"CrossAccount\"</code> the search results will only include resources made discoverable to you from other accounts. When the value is <code>\"SameAccount\"</code> or <code>null</code> the search results will only include resources from your account. Default is <code>null</code>. For more information on searching for resources made discoverable to your account, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-cross-account-discoverability-use.html\"> Search discoverable resources</a> in the SageMaker Developer Guide. The maximum number of <code>ResourceCatalog</code>s viewable is 1000. </p>"
         }
       }
     },
@@ -29577,6 +30486,51 @@
       "max":5
     },
     "Seed":{"type":"long"},
+    "SelectedStep":{
+      "type":"structure",
+      "required":["StepName"],
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the pipeline step.</p>"
+        }
+      },
+      "documentation":"<p>A step selected to run in selective execution mode.</p>"
+    },
+    "SelectedStepList":{
+      "type":"list",
+      "member":{"shape":"SelectedStep"},
+      "max":50,
+      "min":1
+    },
+    "SelectiveExecutionConfig":{
+      "type":"structure",
+      "required":[
+        "SourcePipelineExecutionArn",
+        "SelectedSteps"
+      ],
+      "members":{
+        "SourcePipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p>"
+        },
+        "SelectedSteps":{
+          "shape":"SelectedStepList",
+          "documentation":"<p>A list of pipeline steps to run. All step(s) in all path(s) between two selected steps should be included.</p>"
+        }
+      },
+      "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
+    },
+    "SelectiveExecutionResult":{
+      "type":"structure",
+      "members":{
+        "SourcePipelineExecutionArn":{
+          "shape":"PipelineExecutionArn",
+          "documentation":"<p>The ARN from an execution of the current pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The ARN from an execution of the current pipeline.</p>"
+    },
     "SendPipelineExecutionStepFailureRequest":{
       "type":"structure",
       "required":["CallbackToken"],
@@ -29642,6 +30596,11 @@
       "type":"integer",
       "max":6144,
       "min":1024
+    },
+    "ServerlessProvisionedConcurrency":{
+      "type":"integer",
+      "max":200,
+      "min":1
     },
     "ServiceCatalogEntityId":{
       "type":"string",
@@ -29884,7 +30843,7 @@
       "members":{
         "ModelDataUrl":{
           "shape":"Url",
-          "documentation":"<p>The Amazon S3 path where the model artifacts, which result from model training, are stored. This path must point to a single <code>gzip</code> compressed tar archive (<code>.tar.gz</code> suffix).</p> <note> <p>The model artifacts must be in an S3 bucket that is in the same region as the algorithm.</p> </note>"
+          "documentation":"<p>The Amazon S3 path where the model artifacts, which result from model training, are stored. This path must point to a single <code>gzip</code> compressed tar archive (<code>.tar.gz</code> suffix).</p> <note> <p>The model artifacts must be in an S3 bucket that is in the same Amazon Web Services region as the algorithm.</p> </note>"
         },
         "AlgorithmName":{
           "shape":"ArnOrName",
@@ -30023,6 +30982,24 @@
         "STOPPED"
       ]
     },
+    "Stairs":{
+      "type":"structure",
+      "members":{
+        "DurationInSeconds":{
+          "shape":"TrafficDurationInSeconds",
+          "documentation":"<p>Defines how long each traffic step should be.</p>"
+        },
+        "NumberOfSteps":{
+          "shape":"NumberOfSteps",
+          "documentation":"<p>Specifies how many steps to perform during traffic.</p>"
+        },
+        "UsersPerStep":{
+          "shape":"UsersPerStep",
+          "documentation":"<p>Specifies how many new users to spawn in each step.</p>"
+        }
+      },
+      "documentation":"<p>Defines the stairs traffic pattern for an Inference Recommender load test. This pattern type consists of multiple steps where the number of users increases at each step.</p> <p>Specify either the stairs or phases traffic pattern.</p>"
+    },
     "StartEdgeDeploymentStageRequest":{
       "type":"structure",
       "required":[
@@ -30089,7 +31066,7 @@
       "members":{
         "PipelineName":{
           "shape":"PipelineNameOrArn",
-          "documentation":"<p>The name of the pipeline.</p>"
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the pipeline.</p>"
         },
         "PipelineExecutionDisplayName":{
           "shape":"PipelineExecutionName",
@@ -30111,6 +31088,10 @@
         "ParallelismConfiguration":{
           "shape":"ParallelismConfiguration",
           "documentation":"<p>This configuration, if specified, overrides the parallelism configuration of the parent pipeline for this specific run.</p>"
+        },
+        "SelectiveExecutionConfig":{
+          "shape":"SelectiveExecutionConfig",
+          "documentation":"<p>The selective execution configuration applied to the pipeline run.</p>"
         }
       }
     },
@@ -30122,6 +31103,16 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the pipeline execution.</p>"
         }
       }
+    },
+    "Statistic":{
+      "type":"string",
+      "enum":[
+        "Average",
+        "Minimum",
+        "Maximum",
+        "SampleCount",
+        "Sum"
+      ]
     },
     "StatusDetails":{
       "type":"string",
@@ -30535,6 +31526,52 @@
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "TabularJobConfig":{
+      "type":"structure",
+      "required":["TargetAttributeName"],
+      "members":{
+        "CandidateGenerationConfig":{
+          "shape":"CandidateGenerationConfig",
+          "documentation":"<p>The configuration information of how model candidates are generated.</p>"
+        },
+        "CompletionCriteria":{"shape":"AutoMLJobCompletionCriteria"},
+        "FeatureSpecificationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>A URL to the Amazon S3 data source containing selected features from the input data source to run an Autopilot job V2. You can input <code>FeatureAttributeNames</code> (optional) in JSON format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>You can also specify the data type of the feature (optional) in the format shown below:</p> <p> <code>{ \"FeatureDataTypes\":{\"col1\":\"numeric\", \"col2\":\"categorical\" ... } }</code> </p> <note> <p>These column keys may not include the target column.</p> </note> <p>In ensembling mode, Autopilot only supports the following data types: <code>numeric</code>, <code>categorical</code>, <code>text</code>, and <code>datetime</code>. In HPO mode, Autopilot can support <code>numeric</code>, <code>categorical</code>, <code>text</code>, <code>datetime</code>, and <code>sequence</code>.</p> <p>If only <code>FeatureDataTypes</code> is provided, the column keys (<code>col1</code>, <code>col2</code>,..) should be a subset of the column names in the input data. </p> <p>If both <code>FeatureDataTypes</code> and <code>FeatureAttributeNames</code> are provided, then the column keys should be a subset of the column names provided in <code>FeatureAttributeNames</code>. </p> <p>The key name <code>FeatureAttributeNames</code> is fixed. The values listed in <code>[\"col1\", \"col2\", ...]</code> are case sensitive and should be a list of strings containing unique values that are a subset of the column names in the input data. The list of columns provided must not include the target column.</p>"
+        },
+        "Mode":{
+          "shape":"AutoMLMode",
+          "documentation":"<p>The method that Autopilot uses to train the data. You can either specify the mode manually or let Autopilot choose for you based on the dataset size by selecting <code>AUTO</code>. In <code>AUTO</code> mode, Autopilot chooses <code>ENSEMBLING</code> for datasets smaller than 100 MB, and <code>HYPERPARAMETER_TUNING</code> for larger ones.</p> <p>The <code>ENSEMBLING</code> mode uses a multi-stack ensemble model to predict classification and regression tasks directly from your dataset. This machine learning mode combines several base models to produce an optimal predictive model. It then uses a stacking ensemble method to combine predictions from contributing members. A multi-stack ensemble model can provide better performance over a single model by combining the predictive capabilities of multiple models. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Autopilot algorithm support</a> for a list of algorithms supported by <code>ENSEMBLING</code> mode.</p> <p>The <code>HYPERPARAMETER_TUNING</code> (HPO) mode uses the best hyperparameters to train the best version of a model. HPO automatically selects an algorithm for the type of problem you want to solve. Then HPO finds the best hyperparameters according to your objective metric. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Autopilot algorithm support</a> for a list of algorithms supported by <code>HYPERPARAMETER_TUNING</code> mode.</p>"
+        },
+        "GenerateCandidateDefinitionsOnly":{
+          "shape":"GenerateCandidateDefinitionsOnly",
+          "documentation":"<p>Generates possible candidates without training the models. A model candidate is a combination of data preprocessors, algorithms, and algorithm parameter settings.</p>"
+        },
+        "ProblemType":{
+          "shape":"ProblemType",
+          "documentation":"<p>The type of supervised learning problem available for the model candidates of the AutoML job V2. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html#autopilot-problem-types\"> Amazon SageMaker Autopilot problem types</a>.</p> <note> <p>You must either specify the type of supervised learning problem in <code>ProblemType</code> and provide the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html#sagemaker-CreateAutoMLJobV2-request-AutoMLJobObjective\">AutoMLJobObjective</a> metric, or none at all.</p> </note>"
+        },
+        "TargetAttributeName":{
+          "shape":"TargetAttributeName",
+          "documentation":"<p>The name of the target variable in supervised learning, usually represented by 'y'.</p>"
+        },
+        "SampleWeightAttributeName":{
+          "shape":"SampleWeightAttributeName",
+          "documentation":"<p>If specified, this column name indicates which column of the dataset should be treated as sample weights for use by the objective metric during the training, evaluation, and the selection of the best model. This column is not considered as a predictive feature. For more information on Autopilot metrics, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html\">Metrics and validation</a>.</p> <p>Sample weights should be numeric, non-negative, with larger values indicating which rows are more important than others. Data points that have invalid or no weight value are excluded.</p> <p>Support for sample weights is available in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\">Ensembling</a> mode only.</p>"
+        }
+      },
+      "documentation":"<p>The collection of settings used by an AutoML job V2 for the <code>TABULAR</code> problem type.</p>"
+    },
+    "TabularResolvedAttributes":{
+      "type":"structure",
+      "members":{
+        "ProblemType":{
+          "shape":"ProblemType",
+          "documentation":"<p>The type of supervised learning problem available for the model candidates of the AutoML job V2 (Binary Classification, Multiclass Classification, Regression). For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html#autopilot-problem-types\"> Amazon SageMaker Autopilot problem types</a>.</p>"
+        }
+      },
+      "documentation":"<p>The resolved attributes specific to the <code>TABULAR</code> problem type.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -30593,6 +31630,8 @@
         "ml_p3",
         "ml_g4dn",
         "ml_inf1",
+        "ml_inf2",
+        "ml_trn1",
         "ml_eia2",
         "jetson_tx1",
         "jetson_tx2",
@@ -30671,6 +31710,20 @@
         "ANDROID",
         "LINUX"
       ]
+    },
+    "TargetTrackingScalingPolicyConfiguration":{
+      "type":"structure",
+      "members":{
+        "MetricSpecification":{
+          "shape":"MetricSpecification",
+          "documentation":"<p>An object containing information about a metric.</p>"
+        },
+        "TargetValue":{
+          "shape":"Double",
+          "documentation":"<p>The recommended target value to specify for the metric when creating a scaling policy.</p>"
+        }
+      },
+      "documentation":"<p>A target tracking scaling policy. Includes support for predefined or customized metrics.</p> <p>When using the <a href=\"https://docs.aws.amazon.com/autoscaling/application/APIReference/API_PutScalingPolicy.html\">PutScalingPolicy</a> API, this parameter is required when you are creating a policy with the policy type <code>TargetTrackingScaling</code>.</p>"
     },
     "TaskAvailabilityLifetimeInSeconds":{
       "type":"integer",
@@ -30767,6 +31820,10 @@
     },
     "TextClassificationJobConfig":{
       "type":"structure",
+      "required":[
+        "ContentColumn",
+        "TargetLabelColumn"
+      ],
       "members":{
         "CompletionCriteria":{
           "shape":"AutoMLJobCompletionCriteria",
@@ -30781,12 +31838,75 @@
           "documentation":"<p>The name of the column used to provide the class labels. It should not be same as the content column.</p>"
         }
       },
-      "documentation":"<p>Stores the configuration information for the text classification problem of an AutoML job using the V2 API.</p>"
+      "documentation":"<p>Stores the configuration information for the text classification problem of an AutoML job V2.</p>"
     },
     "ThingName":{
       "type":"string",
       "max":128,
       "pattern":"[a-zA-Z0-9:_-]+"
+    },
+    "TimeSeriesConfig":{
+      "type":"structure",
+      "required":[
+        "TargetAttributeName",
+        "TimestampAttributeName",
+        "ItemIdentifierAttributeName"
+      ],
+      "members":{
+        "TargetAttributeName":{
+          "shape":"TargetAttributeName",
+          "documentation":"<p>The name of the column representing the target variable that you want to predict for each item in your dataset. The data type of the target variable must be numerical.</p>"
+        },
+        "TimestampAttributeName":{
+          "shape":"TimestampAttributeName",
+          "documentation":"<p>The name of the column indicating a point in time at which the target value of a given item is recorded.</p>"
+        },
+        "ItemIdentifierAttributeName":{
+          "shape":"ItemIdentifierAttributeName",
+          "documentation":"<p>The name of the column that represents the set of item identifiers for which you want to predict the target value.</p>"
+        },
+        "GroupingAttributeNames":{
+          "shape":"GroupingAttributeNames",
+          "documentation":"<p>A set of columns names that can be grouped with the item identifier column to create a composite key for which a target value is predicted.</p>"
+        }
+      },
+      "documentation":"<p>The collection of components that defines the time-series.</p>"
+    },
+    "TimeSeriesForecastingJobConfig":{
+      "type":"structure",
+      "required":[
+        "ForecastFrequency",
+        "ForecastHorizon",
+        "TimeSeriesConfig"
+      ],
+      "members":{
+        "FeatureSpecificationS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>A URL to the Amazon S3 data source containing additional selected features that complement the target, itemID, timestamp, and grouped columns set in <code>TimeSeriesConfig</code>. When not provided, the AutoML job V2 includes all the columns from the original dataset that are not already declared in <code>TimeSeriesConfig</code>. If provided, the AutoML job V2 only considers these additional columns as a complement to the ones declared in <code>TimeSeriesConfig</code>.</p> <p>You can input <code>FeatureAttributeNames</code> (optional) in JSON format as shown below: </p> <p> <code>{ \"FeatureAttributeNames\":[\"col1\", \"col2\", ...] }</code>.</p> <p>You can also specify the data type of the feature (optional) in the format shown below:</p> <p> <code>{ \"FeatureDataTypes\":{\"col1\":\"numeric\", \"col2\":\"categorical\" ... } }</code> </p> <p>Autopilot supports the following data types: <code>numeric</code>, <code>categorical</code>, <code>text</code>, and <code>datetime</code>.</p> <note> <p>These column keys must not include any column set in <code>TimeSeriesConfig</code>.</p> </note>"
+        },
+        "CompletionCriteria":{"shape":"AutoMLJobCompletionCriteria"},
+        "ForecastFrequency":{
+          "shape":"ForecastFrequency",
+          "documentation":"<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, <code>1D</code> indicates every day and <code>15min</code> indicates every 15 minutes. The value of a frequency must not overlap with the next larger frequency. For example, you must use a frequency of <code>1H</code> instead of <code>60min</code>.</p> <p>The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul>"
+        },
+        "ForecastHorizon":{
+          "shape":"ForecastHorizon",
+          "documentation":"<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length. The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the time-steps in the dataset.</p>"
+        },
+        "ForecastQuantiles":{
+          "shape":"ForecastQuantiles",
+          "documentation":"<p>The quantiles used to train the model for forecasts at a specified quantile. You can specify quantiles from <code>0.01</code> (p1) to <code>0.99</code> (p99), by increments of 0.01 or higher. Up to five forecast quantiles can be specified. When <code>ForecastQuantiles</code> is not provided, the AutoML job uses the quantiles p10, p50, and p90 as default.</p>"
+        },
+        "Transformations":{
+          "shape":"TimeSeriesTransformations",
+          "documentation":"<p>The transformations modifying specific attributes of the time-series, such as filling strategies for missing values.</p>"
+        },
+        "TimeSeriesConfig":{
+          "shape":"TimeSeriesConfig",
+          "documentation":"<p>The collection of components that defines the time-series.</p>"
+        }
+      },
+      "documentation":"<p>The collection of settings used by an AutoML job V2 for the time-series forecasting problem type.</p> <note> <p>The <code>TimeSeriesForecastingJobConfig</code> problem type is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges.</p> </note>"
     },
     "TimeSeriesForecastingSettings":{
       "type":"structure",
@@ -30802,7 +31922,26 @@
       },
       "documentation":"<p>Time series forecast settings for the SageMaker Canvas application.</p>"
     },
+    "TimeSeriesTransformations":{
+      "type":"structure",
+      "members":{
+        "Filling":{
+          "shape":"FillingTransformations",
+          "documentation":"<p>A key value pair defining the filling method for a column, where the key is the column name and the value is an object which defines the filling logic. You can specify multiple filling methods for a single column.</p> <p>The supported filling methods and their corresponding options are:</p> <ul> <li> <p> <code>frontfill</code>: <code>none</code> (Supported only for target column)</p> </li> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to the chosen filling method value (for example <code>\"backfill\" : \"value\"</code>), and define the filling value in an additional parameter prefixed with \"_value\". For example, to set <code>backfill</code> to a value of <code>2</code>, you must include two parameters: <code>\"backfill\": \"value\"</code> and <code>\"backfill_value\":\"2\"</code>.</p>"
+        },
+        "Aggregation":{
+          "shape":"AggregationTransformations",
+          "documentation":"<p>A key value pair defining the aggregation method for a column, where the key is the column name and the value is the aggregation method.</p> <p>The supported aggregation methods are <code>sum</code> (default), <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code>.</p> <note> <p>Aggregation is only supported for the target column.</p> </note>"
+        }
+      },
+      "documentation":"<p>Transformations allowed on the dataset. Supported transformations are <code>Filling</code> and <code>Aggregation</code>. <code>Filling</code> specifies how to add values to missing values in the dataset. <code>Aggregation</code> defines how to aggregate data that does not align with forecast frequency.</p>"
+    },
     "Timestamp":{"type":"timestamp"},
+    "TimestampAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "TrafficDurationInSeconds":{
       "type":"integer",
       "min":1
@@ -30812,11 +31951,15 @@
       "members":{
         "TrafficType":{
           "shape":"TrafficType",
-          "documentation":"<p>Defines the traffic patterns.</p>"
+          "documentation":"<p>Defines the traffic patterns. Choose either <code>PHASES</code> or <code>STAIRS</code>.</p>"
         },
         "Phases":{
           "shape":"Phases",
           "documentation":"<p>Defines the phases traffic specification.</p>"
+        },
+        "Stairs":{
+          "shape":"Stairs",
+          "documentation":"<p>Defines the stairs traffic pattern.</p>"
         }
       },
       "documentation":"<p>Defines the traffic pattern of the load test.</p>"
@@ -30857,7 +32000,10 @@
     },
     "TrafficType":{
       "type":"string",
-      "enum":["PHASES"]
+      "enum":[
+        "PHASES",
+        "STAIRS"
+      ]
     },
     "TrainingContainerArgument":{
       "type":"string",
@@ -30976,7 +32122,9 @@
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
         "ml.trn1.2xlarge",
-        "ml.trn1.32xlarge"
+        "ml.trn1.32xlarge",
+        "ml.trn1n.32xlarge",
+        "ml.p5.48xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -31036,7 +32184,7 @@
         },
         "InputDataConfig":{
           "shape":"InputDataConfig",
-          "documentation":"<p>An array of <code>Channel</code> objects that describes each data input channel.</p>"
+          "documentation":"<p>An array of <code>Channel</code> objects that describes each data input channel.</p> <p>Your input must be in the same Amazon Web Services region as your training job.</p>"
         },
         "OutputDataConfig":{
           "shape":"OutputDataConfig",
@@ -31110,6 +32258,7 @@
           "shape":"DebugRuleEvaluationStatuses",
           "documentation":"<p>Information about the evaluation status of the rules for the training job.</p>"
         },
+        "ProfilerConfig":{"shape":"ProfilerConfig"},
         "Environment":{
           "shape":"TrainingEnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container.</p>"
@@ -31515,7 +32664,8 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags associated with the transform job.</p>"
-        }
+        },
+        "DataCaptureConfig":{"shape":"BatchDataCaptureConfig"}
       },
       "documentation":"<p>A batch transform job. For information about SageMaker batch transform, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html\">Use Batch Transform</a>.</p>"
     },
@@ -31695,6 +32845,11 @@
         }
       },
       "documentation":"<p>Describes the S3 data source.</p>"
+    },
+    "TransformationAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Trial":{
       "type":"structure",
@@ -32135,6 +33290,34 @@
       },
       "documentation":"<p>A summary of the properties of a trial. To get the complete set of properties, call the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrial.html\">DescribeTrial</a> API and provide the <code>TrialName</code>.</p>"
     },
+    "TtlDuration":{
+      "type":"structure",
+      "members":{
+        "Unit":{
+          "shape":"TtlDurationUnit",
+          "documentation":"<p> <code>TtlDuration</code> time unit.</p>"
+        },
+        "Value":{
+          "shape":"TtlDurationValue",
+          "documentation":"<p> <code>TtlDuration</code> time value.</p>"
+        }
+      },
+      "documentation":"<p>Time to live duration, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
+    },
+    "TtlDurationUnit":{
+      "type":"string",
+      "enum":[
+        "Seconds",
+        "Minutes",
+        "Hours",
+        "Days",
+        "Weeks"
+      ]
+    },
+    "TtlDurationValue":{
+      "type":"integer",
+      "min":1
+    },
     "TuningJobCompletionCriteria":{
       "type":"structure",
       "members":{
@@ -32432,7 +33615,7 @@
         },
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
-          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+          "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         }
       }
     },
@@ -32547,12 +33730,16 @@
       "required":["FeatureGroupName"],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group that you're updating.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group that you're updating.</p>"
         },
         "FeatureAdditions":{
           "shape":"FeatureAdditions",
           "documentation":"<p>Updates the feature group. Updating a feature group is an asynchronous operation. When you get an HTTP 200 response, you've made a valid request. It takes some time after you've made a valid request for Feature Store to update the feature group.</p>"
+        },
+        "OnlineStoreConfig":{
+          "shape":"OnlineStoreConfigUpdate",
+          "documentation":"<p>Updates the feature group online store configuration.</p>"
         }
       }
     },
@@ -32574,8 +33761,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group containing the feature that you're updating.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group containing the feature that you're updating.</p>"
         },
         "FeatureName":{
           "shape":"FeatureName",
@@ -32770,8 +33957,8 @@
       "required":["ModelCardName"],
       "members":{
         "ModelCardName":{
-          "shape":"EntityName",
-          "documentation":"<p>The name of the model card to update.</p>"
+          "shape":"ModelCardNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the model card to update.</p>"
         },
         "Content":{
           "shape":"ModelCardContent",
@@ -33463,9 +34650,19 @@
       },
       "documentation":"<p>A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"
     },
+    "UsersPerStep":{
+      "type":"integer",
+      "max":3,
+      "min":1
+    },
     "UtilizationMetric":{
       "type":"float",
       "min":0.0
+    },
+    "UtilizationPercentagePerCore":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "ValidationFraction":{
       "type":"float",
@@ -33791,6 +34988,20 @@
     "Workforces":{
       "type":"list",
       "member":{"shape":"Workforce"}
+    },
+    "WorkspaceSettings":{
+      "type":"structure",
+      "members":{
+        "S3ArtifactPath":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 bucket used to store artifacts generated by Canvas. Updating the Amazon S3 location impacts existing configuration settings, and Canvas users no longer have access to their artifacts. Canvas users must log out and log back in to apply the new location.</p>"
+        },
+        "S3KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) encryption key ID that is used to encrypt artifacts generated by Canvas in the Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>The workspace settings for the SageMaker Canvas application.</p>"
     },
     "Workteam":{
       "type":"structure",

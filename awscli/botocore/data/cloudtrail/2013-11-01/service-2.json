@@ -24,6 +24,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"ChannelARNInvalidException"},
         {"shape":"ResourceTypeNotSupportedException"},
         {"shape":"TagsLimitExceededException"},
         {"shape":"InvalidTrailNameException"},
@@ -37,7 +39,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds one or more tags to a trail, event data store, or channel, up to a limit of 50. Overwrites an existing tag's value when a new value is specified for an existing tag key. Tag key names must be unique; you cannot have two keys with the same name but different values. If you specify a key without a value, the tag will be created with the specified key and a value of null. You can tag a trail or event data store that applies to all Amazon Web Services Regions only from the Region in which the trail or event data store was created (also known as its home region).</p>",
+      "documentation":"<p>Adds one or more tags to a trail, event data store, or channel, up to a limit of 50. Overwrites an existing tag's value when a new value is specified for an existing tag key. Tag key names must be unique; you cannot have two keys with the same name but different values. If you specify a key without a value, the tag will be created with the specified key and a value of null. You can tag a trail or event data store that applies to all Amazon Web Services Regions only from the Region in which the trail or event data store was created (also known as its home Region).</p>",
       "idempotent":true
     },
     "CancelQuery":{
@@ -156,7 +158,8 @@
         {"shape":"OrganizationNotInAllFeaturesModeException"},
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"CloudTrailInvalidClientTokenIdException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a trail that specifies the settings for delivery of log data to an Amazon S3 bucket. </p>",
       "idempotent":true
@@ -233,6 +236,7 @@
         {"shape":"InvalidTrailNameException"},
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InvalidHomeRegionException"},
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
@@ -240,7 +244,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Deletes a trail. This operation must be called from the region in which the trail was created. <code>DeleteTrail</code> cannot be called on the shadow trails (replicated trails in other regions) of a trail that is enabled in all regions.</p>",
+      "documentation":"<p>Deletes a trail. This operation must be called from the Region in which the trail was created. <code>DeleteTrail</code> cannot be called on the shadow trails (replicated trails in other Regions) of a trail that is enabled in all Regions.</p>",
       "idempotent":true
     },
     "DeregisterOrganizationDelegatedAdmin":{
@@ -285,7 +289,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Returns metadata about a query, including query run time in milliseconds, number of events scanned and matched, and query status. You must specify an ARN for <code>EventDataStore</code>, and a value for <code>QueryID</code>.</p>",
+      "documentation":"<p>Returns metadata about a query, including query run time in milliseconds, number of events scanned and matched, and query status. If the query results were delivered to an S3 bucket, the response also provides the S3 URI and the delivery status.</p> <p>You must specify either a <code>QueryID</code> or a <code>QueryAlias</code>. Specifying the <code>QueryAlias</code> parameter returns information about the last query run for the alias.</p>",
       "idempotent":true
     },
     "DescribeTrails":{
@@ -302,7 +306,7 @@
         {"shape":"InvalidTrailNameException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Retrieves settings for one or more trails associated with the current region for your account.</p>",
+      "documentation":"<p>Retrieves settings for one or more trails associated with the current Region for your account.</p>",
       "idempotent":true
     },
     "GetChannel":{
@@ -357,7 +361,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Describes the settings for the event selectors that you configured for your trail. The information returned for your event selectors includes the following:</p> <ul> <li> <p>If your event selector includes read-only events, write-only events, or all events. This applies to both management events and data events.</p> </li> <li> <p>If your event selector includes management events.</p> </li> <li> <p>If your event selector includes data events, the resources on which you are logging data events.</p> </li> </ul> <p>For more information about logging management and data events, see the following topics in the <i>CloudTrail User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events for trails </a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails </a> </p> </li> </ul>",
+      "documentation":"<p>Describes the settings for the event selectors that you configured for your trail. The information returned for your event selectors includes the following:</p> <ul> <li> <p>If your event selector includes read-only events, write-only events, or all events. This applies to both management events and data events.</p> </li> <li> <p>If your event selector includes management events.</p> </li> <li> <p>If your event selector includes data events, the resources on which you are logging data events.</p> </li> </ul> <p>For more information about logging management and data events, see the following topics in the <i>CloudTrail User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a> </p> </li> </ul>",
       "idempotent":true
     },
     "GetImport":{
@@ -391,7 +395,8 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"InsightNotEnabledException"},
-        {"shape":"NoManagementAccountSLRExistsException"}
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Describes the settings for the Insights event selectors that you configured for your trail. <code>GetInsightSelectors</code> shows if CloudTrail Insights event logging is enabled on the trail, and if it is, which insight types are enabled. If you run <code>GetInsightSelectors</code> on a trail that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Logging CloudTrail Insights Events for Trails </a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
@@ -417,7 +422,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Gets event data results of a query. You must specify the <code>QueryID</code> value returned by the <code>StartQuery</code> operation, and an ARN for <code>EventDataStore</code>.</p>"
+      "documentation":"<p>Gets event data results of a query. You must specify the <code>QueryID</code> value returned by the <code>StartQuery</code> operation.</p>"
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -471,7 +476,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Returns a JSON-formatted list of information about the specified trail. Fields include information on delivery errors, Amazon SNS and Amazon S3 errors, and start and stop logging times for each trail. This operation returns trail status from a single region. To return trail status from all regions, you must call the operation on each region.</p>",
+      "documentation":"<p>Returns a JSON-formatted list of information about the specified trail. Fields include information on delivery errors, Amazon SNS and Amazon S3 errors, and start and stop logging times for each trail. This operation returns trail status from a single Region. To return trail status from all Regions, you must call the operation on each Region.</p>",
       "idempotent":true
     },
     "ListChannels":{
@@ -505,7 +510,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Returns information about all event data stores in the account, in the current region.</p>",
+      "documentation":"<p>Returns information about all event data stores in the account, in the current Region.</p>",
       "idempotent":true
     },
     "ListImportFailures":{
@@ -556,7 +561,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns all public keys whose private keys were used to sign the digest files within the specified time range. The public key is needed to validate digest files that were signed with its corresponding private key.</p> <note> <p>CloudTrail uses different private and public key pairs per region. Each digest file is signed with a private key unique to its region. When you validate a digest file from a specific region, you must look in the same region for its corresponding public key.</p> </note>",
+      "documentation":"<p>Returns all public keys whose private keys were used to sign the digest files within the specified time range. The public key is needed to validate digest files that were signed with its corresponding private key.</p> <note> <p>CloudTrail uses different private and public key pairs per Region. Each digest file is signed with a private key unique to its Region. When you validate a digest file from a specific Region, you must look in the same Region for its corresponding public key.</p> </note>",
       "idempotent":true
     },
     "ListQueries":{
@@ -594,6 +599,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"ChannelARNInvalidException"},
         {"shape":"ResourceTypeNotSupportedException"},
         {"shape":"InvalidTrailNameException"},
         {"shape":"InactiveEventDataStoreException"},
@@ -603,7 +610,7 @@
         {"shape":"InvalidTokenException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Lists the tags for the trail, event data store, or channel in the current region.</p>",
+      "documentation":"<p>Lists the tags for the specified trails, event data stores, or channels in the current Region.</p>",
       "idempotent":true
     },
     "ListTrails":{
@@ -638,7 +645,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Looks up <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-management-events\">management events</a> or <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-insights-events\">CloudTrail Insights events</a> that are captured by CloudTrail. You can look up events that occurred in a region within the last 90 days. Lookup supports the following attributes for management events:</p> <ul> <li> <p>Amazon Web Services access key</p> </li> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> <li> <p>Read only</p> </li> <li> <p>Resource name</p> </li> <li> <p>Resource type</p> </li> <li> <p>User name</p> </li> </ul> <p>Lookup supports the following attributes for Insights events:</p> <ul> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> </ul> <p>All attributes are optional. The default number of results returned is 50, with a maximum of 50 possible. The response includes a token that you can use to get the next page of results.</p> <important> <p>The rate of lookup requests is limited to two per second, per account, per region. If this limit is exceeded, a throttling error occurs.</p> </important>",
+      "documentation":"<p>Looks up <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-management-events\">management events</a> or <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-concepts.html#cloudtrail-concepts-insights-events\">CloudTrail Insights events</a> that are captured by CloudTrail. You can look up events that occurred in a Region within the last 90 days. Lookup supports the following attributes for management events:</p> <ul> <li> <p>Amazon Web Services access key</p> </li> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> <li> <p>Read only</p> </li> <li> <p>Resource name</p> </li> <li> <p>Resource type</p> </li> <li> <p>User name</p> </li> </ul> <p>Lookup supports the following attributes for Insights events:</p> <ul> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> </ul> <p>All attributes are optional. The default number of results returned is 50, with a maximum of 50 possible. The response includes a token that you can use to get the next page of results.</p> <important> <p>The rate of lookup requests is limited to two per second, per account, per Region. If this limit is exceeded, a throttling error occurs.</p> </important>",
       "idempotent":true
     },
     "PutEventSelectors":{
@@ -655,13 +662,15 @@
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"InvalidHomeRegionException"},
         {"shape":"InvalidEventSelectorsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Configures an event selector or advanced event selectors for your trail. Use event selectors or advanced event selectors to specify management and data event settings for your trail. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events for trails </a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails </a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Configures an event selector or advanced event selectors for your trail. Use event selectors or advanced event selectors to specify management and data event settings for your trail. If you want your trail to log Insights events, be sure the event selector enables logging of the Insights event types you want configured for your trail. For more information about logging Insights events, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Logging Insights events for trails</a> in the <i>CloudTrail User Guide</i>. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the Region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "PutInsightSelectors":{
@@ -685,9 +694,10 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"NotOrganizationMasterAccountException"},
-        {"shape":"NoManagementAccountSLRExistsException"}
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing trail. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of insight types. The valid Insights event types in this release are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p>",
+      "documentation":"<p>Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing trail. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of insight types. The valid Insights event types in this release are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p> <p>To log CloudTrail Insights events on API call volume, the trail must log <code>write</code> management events. To log CloudTrail Insights events on API error rate, the trail must log <code>read</code> or <code>write</code> management events. You can call <code>GetEventSelectors</code> on a trail to check whether the trail logs management events.</p>",
       "idempotent":true
     },
     "PutResourcePolicy":{
@@ -746,6 +756,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"ChannelARNInvalidException"},
         {"shape":"ResourceTypeNotSupportedException"},
         {"shape":"InvalidTrailNameException"},
         {"shape":"InvalidTagParameterException"},
@@ -785,6 +797,28 @@
       ],
       "documentation":"<p>Restores a deleted event data store specified by <code>EventDataStore</code>, which accepts an event data store ARN. You can only restore a deleted event data store within the seven-day wait period after deletion. Restoring an event data store can take several minutes, depending on the size of the event data store.</p>"
     },
+    "StartEventDataStoreIngestion":{
+      "name":"StartEventDataStoreIngestion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartEventDataStoreIngestionRequest"},
+      "output":{"shape":"StartEventDataStoreIngestionResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidEventDataStoreStatusException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidEventDataStoreCategoryException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"NotOrganizationMasterAccountException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"}
+      ],
+      "documentation":"<p>Starts the ingestion of live events on an event data store specified as either an ARN or the ID portion of the ARN. To start ingestion, the event data store <code>Status</code> must be <code>STOPPED_INGESTION</code> and the <code>eventCategory</code> must be <code>Management</code>, <code>Data</code>, or <code>ConfigurationItem</code>.</p>"
+    },
     "StartImport":{
       "name":"StartImport",
       "http":{
@@ -822,6 +856,7 @@
       "errors":[
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
         {"shape":"TrailNotFoundException"},
         {"shape":"InvalidTrailNameException"},
         {"shape":"InvalidHomeRegionException"},
@@ -831,7 +866,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Starts the recording of Amazon Web Services API calls and log file delivery for a trail. For a trail that is enabled in all regions, this operation must be called from the region in which the trail was created. This operation cannot be called on the shadow trails (replicated trails in other regions) of a trail that is enabled in all regions.</p>",
+      "documentation":"<p>Starts the recording of Amazon Web Services API calls and log file delivery for a trail. For a trail that is enabled in all Regions, this operation must be called from the Region in which the trail was created. This operation cannot be called on the shadow trails (replicated trails in other Regions) of a trail that is enabled in all Regions.</p>",
       "idempotent":true
     },
     "StartQuery":{
@@ -858,8 +893,30 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"NoManagementAccountSLRExistsException"}
       ],
-      "documentation":"<p>Starts a CloudTrail Lake query. The required <code>QueryStatement</code> parameter provides your SQL query, enclosed in single quotation marks. Use the optional <code>DeliveryS3Uri</code> parameter to deliver the query results to an S3 bucket.</p>",
+      "documentation":"<p>Starts a CloudTrail Lake query. Use the <code>QueryStatement</code> parameter to provide your SQL query, enclosed in single quotation marks. Use the optional <code>DeliveryS3Uri</code> parameter to deliver the query results to an S3 bucket.</p> <p> <code>StartQuery</code> requires you specify either the <code>QueryStatement</code> parameter, or a <code>QueryAlias</code> and any <code>QueryParameters</code>. In the current release, the <code>QueryAlias</code> and <code>QueryParameters</code> parameters are used only for the queries that populate the CloudTrail Lake dashboards.</p>",
       "idempotent":true
+    },
+    "StopEventDataStoreIngestion":{
+      "name":"StopEventDataStoreIngestion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopEventDataStoreIngestionRequest"},
+      "output":{"shape":"StopEventDataStoreIngestionResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidEventDataStoreStatusException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidEventDataStoreCategoryException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"NotOrganizationMasterAccountException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"}
+      ],
+      "documentation":"<p>Stops the ingestion of live events on an event data store specified as either an ARN or the ID portion of the ARN. To stop ingestion, the event data store <code>Status</code> must be <code>ENABLED</code> and the <code>eventCategory</code> must be <code>Management</code>, <code>Data</code>, or <code>ConfigurationItem</code>.</p>"
     },
     "StopImport":{
       "name":"StopImport",
@@ -890,6 +947,7 @@
         {"shape":"InvalidTrailNameException"},
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InvalidHomeRegionException"},
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
@@ -897,7 +955,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Suspends the recording of Amazon Web Services API calls and log file delivery for the specified trail. Under most circumstances, there is no need to use this action. You can update a trail without stopping it first. This action is the only way to stop recording. For a trail enabled in all regions, this operation must be called from the region in which the trail was created, or an <code>InvalidHomeRegionException</code> will occur. This operation cannot be called on the shadow trails (replicated trails in other regions) of a trail enabled in all regions.</p>",
+      "documentation":"<p>Suspends the recording of Amazon Web Services API calls and log file delivery for the specified trail. Under most circumstances, there is no need to use this action. You can update a trail without stopping it first. This action is the only way to stop recording. For a trail enabled in all Regions, this operation must be called from the Region in which the trail was created, or an <code>InvalidHomeRegionException</code> will occur. This operation cannot be called on the shadow trails (replicated trails in other Regions) of a trail enabled in all Regions.</p>",
       "idempotent":true
     },
     "UpdateChannel":{
@@ -932,6 +990,7 @@
       "input":{"shape":"UpdateEventDataStoreRequest"},
       "output":{"shape":"UpdateEventDataStoreResponse"},
       "errors":[
+        {"shape":"EventDataStoreAlreadyExistsException"},
         {"shape":"EventDataStoreARNInvalidException"},
         {"shape":"EventDataStoreNotFoundException"},
         {"shape":"InvalidEventSelectorsException"},
@@ -951,7 +1010,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"OrganizationNotInAllFeaturesModeException"}
       ],
-      "documentation":"<p>Updates an event data store. The required <code>EventDataStore</code> value is an ARN or the ID portion of the ARN. Other parameters are optional, but at least one optional parameter must be specified, or CloudTrail throws an error. <code>RetentionPeriod</code> is in days, and valid values are integers between 90 and 2557. By default, <code>TerminationProtection</code> is enabled.</p> <p>For event data stores for CloudTrail events, <code>AdvancedEventSelectors</code> includes or excludes management and data events in your event data store. For more information about <code>AdvancedEventSelectors</code>, see <a>PutEventSelectorsRequest$AdvancedEventSelectors</a>. </p> <p> For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, <code>AdvancedEventSelectors</code> includes events of that type in your event data store.</p>",
+      "documentation":"<p>Updates an event data store. The required <code>EventDataStore</code> value is an ARN or the ID portion of the ARN. Other parameters are optional, but at least one optional parameter must be specified, or CloudTrail throws an error. <code>RetentionPeriod</code> is in days, and valid values are integers between 90 and 2557. By default, <code>TerminationProtection</code> is enabled.</p> <p>For event data stores for CloudTrail events, <code>AdvancedEventSelectors</code> includes or excludes management and data events in your event data store. For more information about <code>AdvancedEventSelectors</code>, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html\">AdvancedEventSelectors</a>.</p> <p> For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, <code>AdvancedEventSelectors</code> includes events of that type in your event data store.</p>",
       "idempotent":true
     },
     "UpdateTrail":{
@@ -977,6 +1036,7 @@
         {"shape":"InvalidEventSelectorsException"},
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InvalidParameterCombinationException"},
         {"shape":"InvalidHomeRegionException"},
         {"shape":"KmsKeyNotFoundException"},
@@ -996,7 +1056,7 @@
         {"shape":"CloudTrailInvalidClientTokenIdException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Updates trail settings that control what events you are logging, and how to handle log files. Changes to a trail do not require stopping the CloudTrail service. Use this action to designate an existing bucket for log delivery. If the existing bucket has previously been a target for CloudTrail log files, an IAM policy exists for the bucket. <code>UpdateTrail</code> must be called from the region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> is thrown.</p>",
+      "documentation":"<p>Updates trail settings that control what events you are logging, and how to handle log files. Changes to a trail do not require stopping the CloudTrail service. Use this action to designate an existing bucket for log delivery. If the existing bucket has previously been a target for CloudTrail log files, an IAM policy exists for the bucket. <code>UpdateTrail</code> must be called from the Region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> is thrown.</p>",
       "idempotent":true
     }
   },
@@ -1044,7 +1104,7 @@
       "members":{
         "ResourceId":{
           "shape":"String",
-          "documentation":"<p>Specifies the ARN of the trail, event data store, or channel to which one or more tags will be added.</p> <p>The format of a trail ARN is: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>The format of an event data store ARN is: <code>arn:aws:cloudtrail:us-east-2:12345678910:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The format of a channel ARN is: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>"
+          "documentation":"<p>Specifies the ARN of the trail, event data store, or channel to which one or more tags will be added.</p> <p>The format of a trail ARN is: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>The format of an event data store ARN is: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The format of a channel ARN is: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>"
         },
         "TagsList":{
           "shape":"TagsList",
@@ -1072,7 +1132,7 @@
           "documentation":"<p>Contains all selector statements in an advanced event selector.</p>"
         }
       },
-      "documentation":"<p>Advanced event selectors let you create fine-grained selectors for the following CloudTrail event record ﬁelds. They help you control costs by logging only those events that are important to you. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails</a> in the <i>CloudTrail User Guide</i>.</p> <ul> <li> <p> <code>readOnly</code> </p> </li> <li> <p> <code>eventSource</code> </p> </li> <li> <p> <code>eventName</code> </p> </li> <li> <p> <code>eventCategory</code> </p> </li> <li> <p> <code>resources.type</code> </p> </li> <li> <p> <code>resources.ARN</code> </p> </li> </ul> <p>You cannot apply both event selectors and advanced event selectors to a trail.</p>"
+      "documentation":"<p>Advanced event selectors let you create fine-grained selectors for the following CloudTrail event record ﬁelds. They help you control costs by logging only those events that are important to you. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a> in the <i>CloudTrail User Guide</i>.</p> <ul> <li> <p> <code>readOnly</code> </p> </li> <li> <p> <code>eventSource</code> </p> </li> <li> <p> <code>eventName</code> </p> </li> <li> <p> <code>eventCategory</code> </p> </li> <li> <p> <code>resources.type</code> </p> </li> <li> <p> <code>resources.ARN</code> </p> </li> </ul> <p>You cannot apply both event selectors and advanced event selectors to a trail.</p>"
     },
     "AdvancedEventSelectors":{
       "type":"list",
@@ -1084,7 +1144,7 @@
       "members":{
         "Field":{
           "shape":"SelectorField",
-          "documentation":"<p> A field in a CloudTrail event record on which to filter events to be logged. For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, the field is used only for selecting events as filtering is not supported. </p> <p> For CloudTrail event records, supported fields include <code>readOnly</code>, <code>eventCategory</code>, <code>eventSource</code> (for management events), <code>eventName</code>, <code>resources.type</code>, and <code>resources.ARN</code>. </p> <p> For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, the only supported field is <code>eventCategory</code>. </p> <ul> <li> <p> <b> <code>readOnly</code> </b> - Optional. Can be set to <code>Equals</code> a value of <code>true</code> or <code>false</code>. If you do not add this field, CloudTrail logs both <code>read</code> and <code>write</code> events. A value of <code>true</code> logs only <code>read</code> events. A value of <code>false</code> logs only <code>write</code> events.</p> </li> <li> <p> <b> <code>eventSource</code> </b> - For filtering management events only. This can be set only to <code>NotEquals</code> <code>kms.amazonaws.com</code>.</p> </li> <li> <p> <b> <code>eventName</code> </b> - Can use any operator. You can use it to ﬁlter in or ﬁlter out any data event logged to CloudTrail, such as <code>PutBucket</code> or <code>GetSnapshotBlock</code>. You can have multiple values for this ﬁeld, separated by commas.</p> </li> <li> <p> <b> <code>eventCategory</code> </b> - This is required and must be set to <code>Equals</code>. </p> <ul> <li> <p> For CloudTrail event records, the value must be <code>Management</code> or <code>Data</code>. </p> </li> <li> <p> For Config configuration items, the value must be <code>ConfigurationItem</code>. </p> </li> <li> <p> For Audit Manager evidence, the value must be <code>Evidence</code>. </p> </li> <li> <p> For non-Amazon Web Services events, the value must be <code>ActivityAuditLog</code>. </p> </li> </ul> </li> <li> <p> <b> <code>resources.type</code> </b> - This ﬁeld is required for CloudTrail data events. <code>resources.type</code> can only use the <code>Equals</code> operator, and the value can be one of the following:</p> <ul> <li> <p> <code>AWS::CloudTrail::Channel</code> </p> </li> <li> <p> <code>AWS::S3::Object</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::S3Outposts::Object</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Node</code> </p> </li> <li> <p> <code>AWS::S3ObjectLambda::AccessPoint</code> </p> </li> <li> <p> <code>AWS::EC2::Snapshot</code> </p> </li> <li> <p> <code>AWS::S3::AccessPoint</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Stream</code> </p> </li> <li> <p> <code>AWS::Glue::Table</code> </p> </li> <li> <p> <code>AWS::FinSpace::Environment</code> </p> </li> <li> <p> <code>AWS::SageMaker::ExperimentTrialComponent</code> </p> </li> <li> <p> <code>AWS::SageMaker::FeatureGroup</code> </p> </li> </ul> <p> You can have only one <code>resources.type</code> ﬁeld per selector. To log data events on more than one resource type, add another selector.</p> </li> <li> <p> <b> <code>resources.ARN</code> </b> - You can use any operator with <code>resources.ARN</code>, but if you use <code>Equals</code> or <code>NotEquals</code>, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. For example, if resources.type equals <code>AWS::S3::Object</code>, the ARN must be in one of the following formats. To log all data events for all objects in a specific S3 bucket, use the <code>StartsWith</code> operator, and include only the bucket ARN as the matching value.</p> <p>The trailing slash is intentional; do not exclude it. Replace the text between less than and greater than symbols (&lt;&gt;) with resource-specific information. </p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3:::&lt;bucket_name&gt;/</code> </p> </li> <li> <p> <code>arn:&lt;partition&gt;:s3:::&lt;bucket_name&gt;/&lt;object_path&gt;/</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3::AccessPoint</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in one of the following formats. To log events on all objects in an S3 access point, we recommend that you use only the access point ARN, don’t include the object path, and use the <code>StartsWith</code> or <code>NotStartsWith</code> operators.</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;</code> </p> </li> <li> <p> <code>arn:&lt;partition&gt;:s3:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;/object/&lt;object_path&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::Lambda::Function</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:lambda:&lt;region&gt;:&lt;account_ID&gt;:function:&lt;function_name&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::DynamoDB::Table</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:dynamodb:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;table_name&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::CloudTrail::Channel</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:cloudtrail:&lt;region&gt;:&lt;account_ID&gt;:channel/&lt;channel_UUID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3Outposts::Object</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3-outposts:&lt;region&gt;:&lt;account_ID&gt;:&lt;object_path&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::ManagedBlockchain::Node</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:managedblockchain:&lt;region&gt;:&lt;account_ID&gt;:nodes/&lt;node_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3ObjectLambda::AccessPoint</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3-object-lambda:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::EC2::Snapshot</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:ec2:&lt;region&gt;::snapshot/&lt;snapshot_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::DynamoDB::Stream</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:dynamodb:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;table_name&gt;/stream/&lt;date_time&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::Glue::Table</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:glue:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;database_name&gt;/&lt;table_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::FinSpace::Environment</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:finspace:&lt;region&gt;:&lt;account_ID&gt;:environment/&lt;environment_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::SageMaker::ExperimentTrialComponent</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:sagemaker:&lt;region&gt;:&lt;account_ID&gt;:experiment-trial-component/&lt;experiment_trial_component_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::SageMaker::FeatureGroup</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:sagemaker:&lt;region&gt;:&lt;account_ID&gt;:feature-group/&lt;feature_group_name&gt;</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p> A field in a CloudTrail event record on which to filter events to be logged. For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, the field is used only for selecting events as filtering is not supported. </p> <p> For CloudTrail event records, supported fields include <code>readOnly</code>, <code>eventCategory</code>, <code>eventSource</code> (for management events), <code>eventName</code>, <code>resources.type</code>, and <code>resources.ARN</code>. </p> <p> For event data stores for Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, the only supported field is <code>eventCategory</code>. </p> <ul> <li> <p> <b> <code>readOnly</code> </b> - Optional. Can be set to <code>Equals</code> a value of <code>true</code> or <code>false</code>. If you do not add this field, CloudTrail logs both <code>read</code> and <code>write</code> events. A value of <code>true</code> logs only <code>read</code> events. A value of <code>false</code> logs only <code>write</code> events.</p> </li> <li> <p> <b> <code>eventSource</code> </b> - For filtering management events only. This can be set only to <code>NotEquals</code> <code>kms.amazonaws.com</code>.</p> </li> <li> <p> <b> <code>eventName</code> </b> - Can use any operator. You can use it to ﬁlter in or ﬁlter out any data event logged to CloudTrail, such as <code>PutBucket</code> or <code>GetSnapshotBlock</code>. You can have multiple values for this ﬁeld, separated by commas.</p> </li> <li> <p> <b> <code>eventCategory</code> </b> - This is required and must be set to <code>Equals</code>. </p> <ul> <li> <p> For CloudTrail event records, the value must be <code>Management</code> or <code>Data</code>. </p> </li> <li> <p> For Config configuration items, the value must be <code>ConfigurationItem</code>. </p> </li> <li> <p> For Audit Manager evidence, the value must be <code>Evidence</code>. </p> </li> <li> <p> For non-Amazon Web Services events, the value must be <code>ActivityAuditLog</code>. </p> </li> </ul> </li> <li> <p> <b> <code>resources.type</code> </b> - This ﬁeld is required for CloudTrail data events. <code>resources.type</code> can only use the <code>Equals</code> operator, and the value can be one of the following:</p> <ul> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::S3::Object</code> </p> </li> <li> <p> <code>AWS::CloudTrail::Channel</code> </p> </li> <li> <p> <code>AWS::CodeWhisperer::Profile</code> </p> </li> <li> <p> <code>AWS::Cognito::IdentityPool</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Stream</code> </p> </li> <li> <p> <code>AWS::EC2::Snapshot</code> </p> </li> <li> <p> <code>AWS::EMRWAL::Workspace</code> </p> </li> <li> <p> <code>AWS::FinSpace::Environment</code> </p> </li> <li> <p> <code>AWS::Glue::Table</code> </p> </li> <li> <p> <code>AWS::GuardDuty::Detector</code> </p> </li> <li> <p> <code>AWS::KendraRanking::ExecutionPlan</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Network</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Node</code> </p> </li> <li> <p> <code>AWS::MedicalImaging::Datastore</code> </p> </li> <li> <p> <code>AWS::SageMaker::ExperimentTrialComponent</code> </p> </li> <li> <p> <code>AWS::SageMaker::FeatureGroup</code> </p> </li> <li> <p> <code>AWS::S3::AccessPoint</code> </p> </li> <li> <p> <code>AWS::S3ObjectLambda::AccessPoint</code> </p> </li> <li> <p> <code>AWS::S3Outposts::Object</code> </p> </li> <li> <p> <code>AWS::SSMMessages::ControlChannel</code> </p> </li> <li> <p> <code>AWS::VerifiedPermissions::PolicyStore</code> </p> </li> </ul> <p> You can have only one <code>resources.type</code> ﬁeld per selector. To log data events on more than one resource type, add another selector.</p> </li> <li> <p> <b> <code>resources.ARN</code> </b> - You can use any operator with <code>resources.ARN</code>, but if you use <code>Equals</code> or <code>NotEquals</code>, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. For example, if resources.type equals <code>AWS::S3::Object</code>, the ARN must be in one of the following formats. To log all data events for all objects in a specific S3 bucket, use the <code>StartsWith</code> operator, and include only the bucket ARN as the matching value.</p> <p>The trailing slash is intentional; do not exclude it. Replace the text between less than and greater than symbols (&lt;&gt;) with resource-specific information. </p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3:::&lt;bucket_name&gt;/</code> </p> </li> <li> <p> <code>arn:&lt;partition&gt;:s3:::&lt;bucket_name&gt;/&lt;object_path&gt;/</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::DynamoDB::Table</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:dynamodb:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;table_name&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::Lambda::Function</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:lambda:&lt;region&gt;:&lt;account_ID&gt;:function:&lt;function_name&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::CloudTrail::Channel</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:cloudtrail:&lt;region&gt;:&lt;account_ID&gt;:channel/&lt;channel_UUID&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::CodeWhisperer::Profile</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:codewhisperer:&lt;region&gt;:&lt;account_ID&gt;:profile/&lt;profile_ID&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::Cognito::IdentityPool</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:cognito-identity:&lt;region&gt;:&lt;account_ID&gt;:identitypool/&lt;identity_pool_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::DynamoDB::Stream</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:dynamodb:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;table_name&gt;/stream/&lt;date_time&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::EC2::Snapshot</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:ec2:&lt;region&gt;::snapshot/&lt;snapshot_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::EMRWAL::Workspace</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:emrwal:&lt;region&gt;::workspace/&lt;workspace_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::FinSpace::Environment</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:finspace:&lt;region&gt;:&lt;account_ID&gt;:environment/&lt;environment_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::Glue::Table</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:glue:&lt;region&gt;:&lt;account_ID&gt;:table/&lt;database_name&gt;/&lt;table_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::GuardDuty::Detector</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:guardduty:&lt;region&gt;:&lt;account_ID&gt;:detector/&lt;detector_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::KendraRanking::ExecutionPlan</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:kendra-ranking:&lt;region&gt;:&lt;account_ID&gt;:rescore-execution-plan/&lt;rescore_execution_plan_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::ManagedBlockchain::Network</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:managedblockchain:::networks/&lt;network_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::ManagedBlockchain::Node</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:managedblockchain:&lt;region&gt;:&lt;account_ID&gt;:nodes/&lt;node_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::MedicalImaging::Datastore</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:medical-imaging:&lt;region&gt;:&lt;account_ID&gt;:datastore/&lt;data_store_ID&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::SageMaker::ExperimentTrialComponent</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:sagemaker:&lt;region&gt;:&lt;account_ID&gt;:experiment-trial-component/&lt;experiment_trial_component_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::SageMaker::FeatureGroup</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:sagemaker:&lt;region&gt;:&lt;account_ID&gt;:feature-group/&lt;feature_group_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3::AccessPoint</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in one of the following formats. To log events on all objects in an S3 access point, we recommend that you use only the access point ARN, don’t include the object path, and use the <code>StartsWith</code> or <code>NotStartsWith</code> operators.</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;</code> </p> </li> <li> <p> <code>arn:&lt;partition&gt;:s3:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;/object/&lt;object_path&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3ObjectLambda::AccessPoint</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3-object-lambda:&lt;region&gt;:&lt;account_ID&gt;:accesspoint/&lt;access_point_name&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::S3Outposts::Object</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:s3-outposts:&lt;region&gt;:&lt;account_ID&gt;:&lt;object_path&gt;</code> </p> </li> </ul> <p>When <code>resources.type</code> equals <code>AWS::SSMMessages::ControlChannel</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:ssmmessages:&lt;region&gt;:&lt;account_ID&gt;:control-channel/&lt;channel_ID&gt;</code> </p> </li> </ul> <p>When resources.type equals <code>AWS::VerifiedPermissions::PolicyStore</code>, and the operator is set to <code>Equals</code> or <code>NotEquals</code>, the ARN must be in the following format:</p> <ul> <li> <p> <code>arn:&lt;partition&gt;:verifiedpermissions:&lt;region&gt;:&lt;account_ID&gt;:policy-store/&lt;policy_store_UUID&gt;</code> </p> </li> </ul> </li> </ul>"
         },
         "Equals":{
           "shape":"Operator",
@@ -1229,7 +1289,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when an operation is called with a trail ARN that is not valid. The following is the format of a trail ARN.</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>This exception is also thrown when you call <code>AddTags</code> or <code>RemoveTags</code> on a trail, event data store, or channel with a resource ARN that is not valid.</p> <p>The following is the format of an event data store ARN: <code>arn:aws:cloudtrail:us-east-2:12345678910:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The following is the format of a channel ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>",
+      "documentation":"<p>This exception is thrown when an operation is called with a trail ARN that is not valid. The following is the format of a trail ARN.</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>This exception is also thrown when you call <code>AddTags</code> or <code>RemoveTags</code> on a trail, event data store, or channel with a resource ARN that is not valid.</p> <p>The following is the format of an event data store ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>The following is the format of a channel ARN: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>",
       "exception":true
     },
     "CloudTrailAccessNotEnabledException":{
@@ -1250,7 +1310,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>Cannot set a CloudWatch Logs delivery for this region.</p>",
+      "documentation":"<p>Cannot set a CloudWatch Logs delivery for this Region.</p>",
       "exception":true
     },
     "ConflictException":{
@@ -1319,7 +1379,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the event data store includes events from all regions, or only from the region in which the event data store is created.</p>"
+          "documentation":"<p>Specifies whether the event data store includes events from all Regions, or only from the Region in which the event data store is created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -1327,7 +1387,7 @@
         },
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>The retention period of the event data store, in days. You can set a retention period of up to 2557 days, the equivalent of seven years.</p>"
+          "documentation":"<p>The retention period of the event data store, in days. You can set a retention period of up to 2557 days, the equivalent of seven years. CloudTrail Lake determines whether to retain an event by checking if the <code>eventTime</code> of the event is within the specified retention period. For example, if you set a retention period of 90 days, CloudTrail will remove events when the <code>eventTime</code> is older than 90 days.</p> <note> <p>If you plan to copy trail events to this event data store, we recommend that you consider both the age of the events that you want to copy as well as how long you want to keep the copied events in your event data store. For example, if you copy trail events that are 5 years old and specify a retention period of 7 years, the event data store will retain those events for two years.</p> </note>"
         },
         "TerminationProtectionEnabled":{
           "shape":"TerminationProtectionEnabled",
@@ -1337,6 +1397,10 @@
         "KmsKeyId":{
           "shape":"EventDataStoreKmsKeyId",
           "documentation":"<p>Specifies the KMS key ID to use to encrypt the events delivered by CloudTrail. The value can be an alias name prefixed by <code>alias/</code>, a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.</p> <important> <p>Disabling or deleting the KMS key, or removing CloudTrail permissions on the key, prevents CloudTrail from logging events to the event data store, and prevents users from querying the data in the event data store that was encrypted with the key. After you associate an event data store with a KMS key, the KMS key cannot be removed or changed. Before you disable or delete a KMS key that you are using with an event data store, delete or back up your event data store.</p> </important> <p>CloudTrail also supports KMS multi-Region keys. For more information about multi-Region keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html\">Using multi-Region keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>Examples:</p> <ul> <li> <p> <code>alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p> <code>12345678-1234-1234-1234-123456789012</code> </p> </li> </ul>"
+        },
+        "StartIngestion":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the event data store should start ingesting live events. The default is true.</p>"
         }
       }
     },
@@ -1361,7 +1425,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store collects events from all regions, or only from the region in which it was created.</p>"
+          "documentation":"<p>Indicates whether the event data store collects events from all Regions, or only from the Region in which it was created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -1419,7 +1483,7 @@
         },
         "IsMultiRegionTrail":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trail is created in the current region or in all regions. The default is false, which creates a trail only in the region where you are signed in. As a best practice, consider creating trails that log events in all regions.</p>"
+          "documentation":"<p>Specifies whether the trail is created in the current Region or in all Regions. The default is false, which creates a trail only in the Region where you are signed in. As a best practice, consider creating trails that log events in all Regions.</p>"
         },
         "EnableLogFileValidation":{
           "shape":"Boolean",
@@ -1462,7 +1526,7 @@
         },
         "SnsTopicName":{
           "shape":"String",
-          "documentation":"<p>This field is no longer in use. Use SnsTopicARN.</p>",
+          "documentation":"<p>This field is no longer in use. Use <code>SnsTopicARN</code>.</p>",
           "deprecated":true
         },
         "SnsTopicARN":{
@@ -1475,7 +1539,7 @@
         },
         "IsMultiRegionTrail":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trail exists in one region or in all regions.</p>"
+          "documentation":"<p>Specifies whether the trail exists in one Region or in all Regions.</p>"
         },
         "TrailARN":{
           "shape":"String",
@@ -1509,7 +1573,7 @@
       "members":{
         "Type":{
           "shape":"String",
-          "documentation":"<p>The resource type in which you want to log data events. You can specify the following <i>basic</i> event selector resource types:</p> <ul> <li> <p> <code>AWS::S3::Object</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> </ul> <p>The following resource types are also available through <i>advanced</i> event selectors. Basic event selector resource types are valid in advanced event selectors, but advanced event selector resource types are not valid in basic event selectors. For more information, see <a>AdvancedFieldSelector$Field</a>.</p> <ul> <li> <p> <code>AWS::CloudTrail::Channel</code> </p> </li> <li> <p> <code>AWS::S3Outposts::Object</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Node</code> </p> </li> <li> <p> <code>AWS::S3ObjectLambda::AccessPoint</code> </p> </li> <li> <p> <code>AWS::EC2::Snapshot</code> </p> </li> <li> <p> <code>AWS::S3::AccessPoint</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Stream</code> </p> </li> <li> <p> <code>AWS::Glue::Table</code> </p> </li> <li> <p> <code>AWS::FinSpace::Environment</code> </p> </li> <li> <p> <code>AWS::SageMaker::ExperimentTrialComponent</code> </p> </li> <li> <p> <code>AWS::SageMaker::FeatureGroup</code> </p> </li> </ul>"
+          "documentation":"<p>The resource type in which you want to log data events. You can specify the following <i>basic</i> event selector resource types:</p> <ul> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::S3::Object</code> </p> </li> </ul> <p>The following resource types are also available through <i>advanced</i> event selectors. Basic event selector resource types are valid in advanced event selectors, but advanced event selector resource types are not valid in basic event selectors. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedFieldSelector.html\">AdvancedFieldSelector</a>.</p> <ul> <li> <p> <code>AWS::CloudTrail::Channel</code> </p> </li> <li> <p> <code>AWS::CodeWhisperer::Profile</code> </p> </li> <li> <p> <code>AWS::Cognito::IdentityPool</code> </p> </li> <li> <p> <code>AWS::DynamoDB::Stream</code> </p> </li> <li> <p> <code>AWS::EC2::Snapshot</code> </p> </li> <li> <p> <code>AWS::EMRWAL::Workspace</code> </p> </li> <li> <p> <code>AWS::FinSpace::Environment</code> </p> </li> <li> <p> <code>AWS::Glue::Table</code> </p> </li> <li> <p> <code>AWS::GuardDuty::Detector</code> </p> </li> <li> <p> <code>AWS::KendraRanking::ExecutionPlan</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Network</code> </p> </li> <li> <p> <code>AWS::ManagedBlockchain::Node</code> </p> </li> <li> <p> <code>AWS::MedicalImaging::Datastore</code> </p> </li> <li> <p> <code>AWS::SageMaker::ExperimentTrialComponent</code> </p> </li> <li> <p> <code>AWS::SageMaker::FeatureGroup</code> </p> </li> <li> <p> <code>AWS::S3::AccessPoint</code> </p> </li> <li> <p> <code>AWS::S3ObjectLambda::AccessPoint</code> </p> </li> <li> <p> <code>AWS::S3Outposts::Object</code> </p> </li> <li> <p> <code>AWS::SSMMessages::ControlChannel</code> </p> </li> <li> <p> <code>AWS::VerifiedPermissions::PolicyStore</code> </p> </li> </ul>"
         },
         "Values":{
           "shape":"DataResourceValues",
@@ -1634,7 +1698,6 @@
     },
     "DescribeQueryRequest":{
       "type":"structure",
-      "required":["QueryId"],
       "members":{
         "EventDataStore":{
           "shape":"EventDataStoreArn",
@@ -1645,6 +1708,10 @@
         "QueryId":{
           "shape":"UUID",
           "documentation":"<p>The query ID.</p>"
+        },
+        "QueryAlias":{
+          "shape":"QueryAlias",
+          "documentation":"<p> The alias that identifies a query template. </p>"
         }
       }
     },
@@ -1686,11 +1753,11 @@
       "members":{
         "trailNameList":{
           "shape":"TrailNameList",
-          "documentation":"<p>Specifies a list of trail names, trail ARNs, or both, of the trails to describe. The format of a trail ARN is:</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>If an empty list is specified, information for the trail in the current region is returned.</p> <ul> <li> <p>If an empty list is specified and <code>IncludeShadowTrails</code> is false, then information for all trails in the current region is returned.</p> </li> <li> <p>If an empty list is specified and IncludeShadowTrails is null or true, then information for all trails in the current region and any associated shadow trails in other regions is returned.</p> </li> </ul> <note> <p>If one or more trail names are specified, information is returned only if the names match the names of trails belonging only to the current region and current account. To return information about a trail in another region, you must specify its trail ARN.</p> </note>"
+          "documentation":"<p>Specifies a list of trail names, trail ARNs, or both, of the trails to describe. The format of a trail ARN is:</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>If an empty list is specified, information for the trail in the current Region is returned.</p> <ul> <li> <p>If an empty list is specified and <code>IncludeShadowTrails</code> is false, then information for all trails in the current Region is returned.</p> </li> <li> <p>If an empty list is specified and IncludeShadowTrails is null or true, then information for all trails in the current Region and any associated shadow trails in other Regions is returned.</p> </li> </ul> <note> <p>If one or more trail names are specified, information is returned only if the names match the names of trails belonging only to the current Region and current account. To return information about a trail in another Region, you must specify its trail ARN.</p> </note>"
         },
         "includeShadowTrails":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether to include shadow trails in the response. A shadow trail is the replication in a region of a trail that was created in a different region, or in the case of an organization trail, the replication of an organization trail in member accounts. If you do not include shadow trails, organization trails in a member account and region replication trails will not be returned. The default is true.</p>"
+          "documentation":"<p>Specifies whether to include shadow trails in the response. A shadow trail is the replication in a Region of a trail that was created in a different Region, or in the case of an organization trail, the replication of an organization trail in member accounts. If you do not include shadow trails, organization trails in a member account and Region replication trails will not be returned. The default is true.</p>"
         }
       },
       "documentation":"<p>Returns information about the trail.</p>"
@@ -1807,7 +1874,7 @@
         },
         "Status":{
           "shape":"EventDataStoreStatus",
-          "documentation":"<p>The status of an event data store. Values are <code>ENABLED</code> and <code>PENDING_DELETION</code>.</p>",
+          "documentation":"<p>The status of an event data store.</p>",
           "deprecated":true,
           "deprecatedMessage":"Status is no longer returned by ListEventDataStores"
         },
@@ -1819,7 +1886,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store includes events from all regions, or only from the region in which it was created.</p>",
+          "documentation":"<p>Indicates whether the event data store includes events from all Regions, or only from the Region in which it was created.</p>",
           "deprecated":true,
           "deprecatedMessage":"MultiRegionEnabled is no longer returned by ListEventDataStores"
         },
@@ -1908,7 +1975,10 @@
       "enum":[
         "CREATED",
         "ENABLED",
-        "PENDING_DELETION"
+        "PENDING_DELETION",
+        "STARTING_INGESTION",
+        "STOPPING_INGESTION",
+        "STOPPED_INGESTION"
       ]
     },
     "EventDataStoreTerminationProtectedException":{
@@ -1931,7 +2001,7 @@
         },
         "IncludeManagementEvents":{
           "shape":"Boolean",
-          "documentation":"<p>Specify if you want your event selector to include management events for your trail.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Management Events</a> in the <i>CloudTrail User Guide</i>.</p> <p>By default, the value is <code>true</code>.</p> <p>The first copy of management events is free. You are charged for additional copies of management events that you are logging on any subsequent trail in the same region. For more information about CloudTrail pricing, see <a href=\"http://aws.amazon.com/cloudtrail/pricing/\">CloudTrail Pricing</a>.</p>"
+          "documentation":"<p>Specify if you want your event selector to include management events for your trail.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Management Events</a> in the <i>CloudTrail User Guide</i>.</p> <p>By default, the value is <code>true</code>.</p> <p>The first copy of management events is free. You are charged for additional copies of management events that you are logging on any subsequent trail in the same Region. For more information about CloudTrail pricing, see <a href=\"http://aws.amazon.com/cloudtrail/pricing/\">CloudTrail Pricing</a>.</p>"
         },
         "DataResources":{
           "shape":"DataResources",
@@ -1939,7 +2009,7 @@
         },
         "ExcludeManagementEventSources":{
           "shape":"ExcludeManagementEventSources",
-          "documentation":"<p>An optional list of service event sources from which you do not want management events to be logged on your trail. In this release, the list can be empty (disables the filter), or it can filter out Key Management Service or Amazon RDS Data API events by containing <code>kms.amazonaws.com</code> or <code>rdsdata.amazonaws.com</code>. By default, <code>ExcludeManagementEventSources</code> is empty, and KMS and Amazon RDS Data API events are logged to your trail. You can exclude management event sources only in regions that support the event source.</p>"
+          "documentation":"<p>An optional list of service event sources from which you do not want management events to be logged on your trail. In this release, the list can be empty (disables the filter), or it can filter out Key Management Service or Amazon RDS Data API events by containing <code>kms.amazonaws.com</code> or <code>rdsdata.amazonaws.com</code>. By default, <code>ExcludeManagementEventSources</code> is empty, and KMS and Amazon RDS Data API events are logged to your trail. You can exclude management event sources only in Regions that support the event source.</p>"
         }
       },
       "documentation":"<p>Use event selectors to further specify the management and data event settings for your trail. By default, trails created without specific event selectors will be configured to log all read and write management events, and no data events. When an event occurs in your account, CloudTrail evaluates the event selector for all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>You can configure up to five event selectors for a trail.</p> <p>You cannot apply both event selectors and advanced event selectors to a trail.</p>"
@@ -1983,7 +2053,7 @@
         },
         "SourceConfig":{
           "shape":"SourceConfig",
-          "documentation":"<p> Provides information about the advanced event selectors configured for the channel, and whether the channel applies to all regions or a single region. </p>"
+          "documentation":"<p> Provides information about the advanced event selectors configured for the channel, and whether the channel applies to all Regions or a single Region. </p>"
         },
         "Destinations":{
           "shape":"Destinations",
@@ -2018,7 +2088,7 @@
         },
         "Status":{
           "shape":"EventDataStoreStatus",
-          "documentation":"<p>The status of an event data store. Values can be <code>ENABLED</code> and <code>PENDING_DELETION</code>.</p>"
+          "documentation":"<p>The status of an event data store.</p>"
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
@@ -2026,7 +2096,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store includes events from all regions, or only from the region in which it was created.</p>"
+          "documentation":"<p>Indicates whether the event data store includes events from all Regions, or only from the Region in which it was created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -2249,7 +2319,7 @@
       "members":{
         "Name":{
           "shape":"String",
-          "documentation":"<p>Specifies the name or the CloudTrail ARN of the trail for which you are requesting status. To get the status of a shadow trail (a replication of the trail in another region), you must specify its ARN. The following is the format of a trail ARN.</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
+          "documentation":"<p>Specifies the name or the CloudTrail ARN of the trail for which you are requesting status. To get the status of a shadow trail (a replication of the trail in another Region), you must specify its ARN. The following is the format of a trail ARN.</p> <p> <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p>"
         }
       },
       "documentation":"<p>The name of a trail about which you want the current status.</p>"
@@ -2508,10 +2578,10 @@
       "members":{
         "InsightType":{
           "shape":"InsightType",
-          "documentation":"<p>The type of insights to log on a trail. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid insight types.</p>"
+          "documentation":"<p>The type of Insights events to log on a trail. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
         }
       },
-      "documentation":"<p>A JSON string that contains a list of insight types that are logged on a trail.</p>"
+      "documentation":"<p>A JSON string that contains a list of Insights types that are logged on a trail.</p>"
     },
     "InsightSelectors":{
       "type":"list",
@@ -2528,7 +2598,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when the IAM user or role that is used to create the organization resource lacks one or more required permissions for creating an organization resource in a required service.</p>",
+      "documentation":"<p>This exception is thrown when the IAM identity that is used to create the organization resource lacks one or more required permissions for creating an organization resource in a required service.</p>",
       "exception":true
     },
     "InsufficientEncryptionPolicyException":{
@@ -2606,7 +2676,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when an operation is called on a trail from a region other than the region in which the trail was created.</p>",
+      "documentation":"<p>This exception is thrown when an operation is called on a trail from a Region other than the Region in which the trail was created.</p>",
       "exception":true
     },
     "InvalidImportSourceException":{
@@ -2754,7 +2824,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>This exception is thrown when the KMS key does not exist, when the S3 bucket and the KMS key are not in the same region, or when the KMS key associated with the Amazon SNS topic either does not exist or is not in the same region.</p>",
+      "documentation":"<p>This exception is thrown when the KMS key does not exist, when the S3 bucket and the KMS key are not in the same Region, or when the KMS key associated with the Amazon SNS topic either does not exist or is not in the same Region.</p>",
       "exception":true
     },
     "ListChannelsMaxResultsCount":{
@@ -2811,7 +2881,7 @@
       "members":{
         "EventDataStores":{
           "shape":"EventDataStores",
-          "documentation":"<p>Contains information about event data stores in the account, in the current region.</p>"
+          "documentation":"<p>Contains information about event data stores in the account, in the current Region.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
@@ -2980,7 +3050,7 @@
       "members":{
         "ResourceIdList":{
           "shape":"ResourceIdList",
-          "documentation":"<p>Specifies a list of trail, event data store, or channel ARNs whose tags will be listed. The list has a limit of 20 ARNs.</p>"
+          "documentation":"<p>Specifies a list of trail, event data store, or channel ARNs whose tags will be listed. The list has a limit of 20 ARNs.</p> <p> Example trail ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>Example event data store ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>Example channel ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>"
         },
         "NextToken":{
           "shape":"String",
@@ -3017,7 +3087,7 @@
       "members":{
         "Trails":{
           "shape":"Trails",
-          "documentation":"<p>Returns the name, ARN, and home region of trails in the current account.</p>"
+          "documentation":"<p>Returns the name, ARN, and home Region of trails in the current account.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -3120,7 +3190,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>You are already running the maximum number of concurrent queries. Wait a minute for some queries to finish, and then run the query again.</p>",
+      "documentation":"<p>You are already running the maximum number of concurrent queries. The maximum number of concurrent queries is 10. Wait a minute for some queries to finish, and then run the query again.</p>",
       "exception":true
     },
     "MaxQueryResults":{
@@ -3240,7 +3310,7 @@
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
-          "documentation":"<p> Specifies the settings for advanced event selectors. You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events for trails</a> in the <i>CloudTrail User Guide</i>. </p>"
+          "documentation":"<p> Specifies the settings for advanced event selectors. You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten. For more information about advanced event selectors, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a> in the <i>CloudTrail User Guide</i>. </p>"
         }
       }
     },
@@ -3274,7 +3344,7 @@
         },
         "InsightSelectors":{
           "shape":"InsightSelectors",
-          "documentation":"<p>A JSON string that contains the insight types you want to log on a trail. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid insight types.</p>"
+          "documentation":"<p>A JSON string that contains the insight types you want to log on a trail. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
         }
       }
     },
@@ -3343,12 +3413,30 @@
       },
       "documentation":"<p>A SQL string of criteria about events that you want to collect in an event data store.</p>"
     },
+    "QueryAlias":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9._\\-]*$"
+    },
     "QueryIdNotFoundException":{
       "type":"structure",
       "members":{
       },
       "documentation":"<p>The query ID does not exist or does not map to a query.</p>",
       "exception":true
+    },
+    "QueryParameter":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".*"
+    },
+    "QueryParameters":{
+      "type":"list",
+      "member":{"shape":"QueryParameter"},
+      "max":10,
+      "min":1
     },
     "QueryResultColumn":{
       "type":"map",
@@ -3460,7 +3548,7 @@
       "members":{
         "ResourceId":{
           "shape":"String",
-          "documentation":"<p>Specifies the ARN of the trail, event data store, or channel from which tags should be removed.</p> <p> Example trail ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>Example event data store ARN format: <code>arn:aws:cloudtrail:us-east-2:12345678910:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>Example channel ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>"
+          "documentation":"<p>Specifies the ARN of the trail, event data store, or channel from which tags should be removed.</p> <p> Example trail ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail</code> </p> <p>Example event data store ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:eventdatastore/EXAMPLE-f852-4e8f-8bd1-bcf6cEXAMPLE</code> </p> <p>Example channel ARN format: <code>arn:aws:cloudtrail:us-east-2:123456789012:channel/01234567890</code> </p>"
         },
         "TagsList":{
           "shape":"TagsList",
@@ -3593,7 +3681,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store is collecting events from all regions, or only from the region in which the event data store was created.</p>"
+          "documentation":"<p>Indicates whether the event data store is collecting events from all Regions, or only from the Region in which the event data store was created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -3647,7 +3735,7 @@
         },
         "S3BucketRegion":{
           "shape":"String",
-          "documentation":"<p> The region associated with the source S3 bucket. </p>"
+          "documentation":"<p> The Region associated with the source S3 bucket. </p>"
         },
         "S3BucketAccessRoleArn":{
           "shape":"String",
@@ -3679,7 +3767,7 @@
       "members":{
         "ApplyToAllRegions":{
           "shape":"Boolean",
-          "documentation":"<p> Specifies whether the channel applies to a single region or to all regions.</p>"
+          "documentation":"<p> Specifies whether the channel applies to a single Region or to all Regions.</p>"
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
@@ -3687,6 +3775,21 @@
         }
       },
       "documentation":"<p> Contains configuration information about the channel. </p>"
+    },
+    "StartEventDataStoreIngestionRequest":{
+      "type":"structure",
+      "required":["EventDataStore"],
+      "members":{
+        "EventDataStore":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p>The ARN (or ID suffix of the ARN) of the event data store for which you want to start ingestion.</p>"
+        }
+      }
+    },
+    "StartEventDataStoreIngestionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "StartImportRequest":{
       "type":"structure",
@@ -3769,7 +3872,6 @@
     },
     "StartQueryRequest":{
       "type":"structure",
-      "required":["QueryStatement"],
       "members":{
         "QueryStatement":{
           "shape":"QueryStatement",
@@ -3778,6 +3880,14 @@
         "DeliveryS3Uri":{
           "shape":"DeliveryS3Uri",
           "documentation":"<p> The URI for the S3 bucket where CloudTrail delivers the query results. </p>"
+        },
+        "QueryAlias":{
+          "shape":"QueryAlias",
+          "documentation":"<p> The alias that identifies a query template. </p>"
+        },
+        "QueryParameters":{
+          "shape":"QueryParameters",
+          "documentation":"<p> The query parameters for the specified <code>QueryAlias</code>. </p>"
         }
       }
     },
@@ -3788,6 +3898,21 @@
           "shape":"UUID",
           "documentation":"<p>The ID of the started query.</p>"
         }
+      }
+    },
+    "StopEventDataStoreIngestionRequest":{
+      "type":"structure",
+      "required":["EventDataStore"],
+      "members":{
+        "EventDataStore":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p>The ARN (or ID suffix of the ARN) of the event data store for which you want to stop ingestion.</p>"
+        }
+      }
+    },
+    "StopEventDataStoreIngestionResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "StopImportRequest":{
@@ -3898,6 +4023,13 @@
       "max":200
     },
     "TerminationProtectionEnabled":{"type":"boolean"},
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> This exception is thrown when the request rate exceeds the limit. </p>",
+      "exception":true
+    },
     "Trail":{
       "type":"structure",
       "members":{
@@ -3915,7 +4047,7 @@
         },
         "SnsTopicName":{
           "shape":"String",
-          "documentation":"<p>This field is no longer in use. Use SnsTopicARN.</p>",
+          "documentation":"<p>This field is no longer in use. Use <code>SnsTopicARN</code>.</p>",
           "deprecated":true
         },
         "SnsTopicARN":{
@@ -3928,11 +4060,11 @@
         },
         "IsMultiRegionTrail":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trail exists only in one region or exists in all regions.</p>"
+          "documentation":"<p>Specifies whether the trail exists only in one Region or exists in all Regions.</p>"
         },
         "HomeRegion":{
           "shape":"String",
-          "documentation":"<p>The region in which the trail was created.</p>"
+          "documentation":"<p>The Region in which the trail was created.</p>"
         },
         "TrailARN":{
           "shape":"String",
@@ -3992,7 +4124,7 @@
           "documentation":"<p>The Amazon Web Services Region in which a trail was created.</p>"
         }
       },
-      "documentation":"<p>Information about a CloudTrail trail, including the trail's name, home region, and Amazon Resource Name (ARN).</p>"
+      "documentation":"<p>Information about a CloudTrail trail, including the trail's name, home Region, and Amazon Resource Name (ARN).</p>"
     },
     "TrailList":{
       "type":"list",
@@ -4090,7 +4222,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether an event data store collects events from all regions, or only from the region in which it was created.</p>"
+          "documentation":"<p>Specifies whether an event data store collects events from all Regions, or only from the Region in which it was created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -4098,7 +4230,7 @@
         },
         "RetentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>The retention period, in days.</p>"
+          "documentation":"<p>The retention period of the event data store, in days. You can set a retention period of up to 2557 days, the equivalent of seven years. CloudTrail Lake determines whether to retain an event by checking if the <code>eventTime</code> of the event is within the specified retention period. For example, if you set a retention period of 90 days, CloudTrail will remove events when the <code>eventTime</code> is older than 90 days.</p> <note> <p>If you decrease the retention period of an event data store, CloudTrail will remove any events with an <code>eventTime</code> older than the new retention period. For example, if the previous retention period was 365 days and you decrease it to 100 days, CloudTrail will remove events with an <code>eventTime</code> older than 100 days.</p> </note>"
         },
         "TerminationProtectionEnabled":{
           "shape":"TerminationProtectionEnabled",
@@ -4123,7 +4255,7 @@
         },
         "Status":{
           "shape":"EventDataStoreStatus",
-          "documentation":"<p>The status of an event data store. Values can be <code>ENABLED</code> and <code>PENDING_DELETION</code>.</p>"
+          "documentation":"<p>The status of an event data store.</p>"
         },
         "AdvancedEventSelectors":{
           "shape":"AdvancedEventSelectors",
@@ -4131,7 +4263,7 @@
         },
         "MultiRegionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the event data store includes events from all regions, or only from the region in which it was created.</p>"
+          "documentation":"<p>Indicates whether the event data store includes events from all Regions, or only from the Region in which it was created.</p>"
         },
         "OrganizationEnabled":{
           "shape":"Boolean",
@@ -4185,7 +4317,7 @@
         },
         "IsMultiRegionTrail":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trail applies only to the current region or to all regions. The default is false. If the trail exists only in the current region and this value is set to true, shadow trails (replications of the trail) will be created in the other regions. If the trail exists in all regions and this value is set to false, the trail will remain in the region where it was created, and its shadow trails in other regions will be deleted. As a best practice, consider using trails that log events in all regions.</p>"
+          "documentation":"<p>Specifies whether the trail applies only to the current Region or to all Regions. The default is false. If the trail exists only in the current Region and this value is set to true, shadow trails (replications of the trail) will be created in the other Regions. If the trail exists in all Regions and this value is set to false, the trail will remain in the Region where it was created, and its shadow trails in other Regions will be deleted. As a best practice, consider using trails that log events in all Regions.</p>"
         },
         "EnableLogFileValidation":{
           "shape":"Boolean",
@@ -4227,7 +4359,7 @@
         },
         "SnsTopicName":{
           "shape":"String",
-          "documentation":"<p>This field is no longer in use. Use <a>UpdateTrailResponse$SnsTopicARN</a>.</p>",
+          "documentation":"<p>This field is no longer in use. Use <code>SnsTopicARN</code>.</p>",
           "deprecated":true
         },
         "SnsTopicARN":{
@@ -4240,7 +4372,7 @@
         },
         "IsMultiRegionTrail":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trail exists in one region or in all regions.</p>"
+          "documentation":"<p>Specifies whether the trail exists in one Region or in all Regions.</p>"
         },
         "TrailARN":{
           "shape":"String",

@@ -371,7 +371,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an update of the specified network resource.</p> <p>After you submit a request to replace or return a network resource, the status of the network resource is <code>CREATING_SHIPPING_LABEL</code>. The shipping label is available when the status of the network resource is <code>PENDING_RETURN</code>. After the network resource is successfully returned, its status is <code>DELETED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/private-networks/latest/userguide/radio-units.html#return-radio-unit\">Return a radio unit</a>.</p>",
+      "documentation":"<p>Use this action to do the following tasks:</p> <ul> <li> <p>Update the duration and renewal status of the commitment period for a radio unit. The update goes into effect immediately.</p> </li> <li> <p>Request a replacement for a network resource.</p> </li> <li> <p>Request that you return a network resource.</p> </li> </ul> <p>After you submit a request to replace or return a network resource, the status of the network resource changes to <code>CREATING_SHIPPING_LABEL</code>. The shipping label is available when the status of the network resource is <code>PENDING_RETURN</code>. After the network resource is successfully returned, its status changes to <code>DELETED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/private-networks/latest/userguide/radio-units.html#return-radio-unit\">Return a radio unit</a>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -525,6 +525,10 @@
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>"
         },
+        "commitmentConfiguration":{
+          "shape":"CommitmentConfiguration",
+          "documentation":"<p>Determines the duration and renewal status of the commitment period for all pending radio units.</p> <p>If you include <code>commitmentConfiguration</code> in the <code>ActivateNetworkSiteRequest</code> action, you must specify the following:</p> <ul> <li> <p>The commitment period for the radio unit. You can choose a 60-day, 1-year, or 3-year period.</p> </li> <li> <p>Whether you want your commitment period to automatically renew for one more year after your current commitment period expires.</p> </li> </ul> <p>For pricing, see <a href=\"http://aws.amazon.com/private5g/pricing\">Amazon Web Services Private 5G Pricing</a>.</p> <p>If you do not include <code>commitmentConfiguration</code> in the <code>ActivateNetworkSiteRequest</code> action, the commitment period is set to 60-days.</p>"
+        },
         "networkSiteArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the network site.</p>"
@@ -567,13 +571,17 @@
           "shape":"AddressContent",
           "documentation":"<p>The country for this address.</p>"
         },
+        "emailAddress":{
+          "shape":"AddressContent",
+          "documentation":"<p>The recipient's email address.</p>"
+        },
         "name":{
           "shape":"AddressContent",
           "documentation":"<p>The recipient's name for this address.</p>"
         },
         "phoneNumber":{
           "shape":"AddressContent",
-          "documentation":"<p>The phone number for this address.</p>"
+          "documentation":"<p>The recipient's phone number.</p>"
         },
         "postalCode":{
           "shape":"AddressContent",
@@ -608,10 +616,59 @@
       "type":"string",
       "pattern":"^arn:aws:private-networks:[a-z0-9-]+:[^:]*:.*$"
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ClientToken":{
       "type":"string",
       "max":100,
       "min":1
+    },
+    "CommitmentConfiguration":{
+      "type":"structure",
+      "required":[
+        "automaticRenewal",
+        "commitmentLength"
+      ],
+      "members":{
+        "automaticRenewal":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the commitment period for a radio unit is set to automatically renew for an additional 1 year after your current commitment period expires.</p> <p>Set to <code>True</code>, if you want your commitment period to automatically renew. Set to <code>False</code> if you do not want your commitment to automatically renew.</p> <p>You can do the following:</p> <ul> <li> <p>Set a 1-year commitment to automatically renew for an additional 1 year. The hourly rate for the additional year will continue to be the same as your existing 1-year rate.</p> </li> <li> <p>Set a 3-year commitment to automatically renew for an additional 1 year. The hourly rate for the additional year will continue to be the same as your existing 3-year rate.</p> </li> <li> <p>Turn off a previously-enabled automatic renewal on a 1-year or 3-year commitment.</p> </li> </ul> <p>You cannot use the automatic-renewal option for a 60-day commitment.</p>"
+        },
+        "commitmentLength":{
+          "shape":"CommitmentLength",
+          "documentation":"<p>The duration of the commitment period for the radio unit. You can choose a 60-day, 1-year, or 3-year period.</p>"
+        }
+      },
+      "documentation":"<p>Determines the duration and renewal status of the commitment period for a radio unit.</p> <p>For pricing, see <a href=\"http://aws.amazon.com/private5g/pricing\">Amazon Web Services Private 5G Pricing</a>.</p>"
+    },
+    "CommitmentInformation":{
+      "type":"structure",
+      "required":["commitmentConfiguration"],
+      "members":{
+        "commitmentConfiguration":{
+          "shape":"CommitmentConfiguration",
+          "documentation":"<p>The duration and renewal status of the commitment period for the radio unit.</p>"
+        },
+        "expiresOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the commitment period ends. If you do not cancel or renew the commitment before the expiration date, you will be billed at the 60-day-commitment rate.</p>"
+        },
+        "startAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the commitment period started.</p>"
+        }
+      },
+      "documentation":"<p>Shows the duration, the date and time that the contract started and ends, and the renewal status of the commitment period for the radio unit.</p>"
+    },
+    "CommitmentLength":{
+      "type":"string",
+      "enum":[
+        "SIXTY_DAYS",
+        "ONE_YEAR",
+        "THREE_YEARS"
+      ]
     },
     "ConfigureAccessPointRequest":{
       "type":"structure",
@@ -1420,6 +1477,10 @@
           "shape":"NameValuePairs",
           "documentation":"<p>The attributes of the network resource.</p>"
         },
+        "commitmentInformation":{
+          "shape":"CommitmentInformation",
+          "documentation":"<p>Information about the commitment period for the radio unit. Shows the duration, the date and time that the contract started and ends, and the renewal status of the commitment period.</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The creation time of the network resource.</p>"
@@ -1679,6 +1740,10 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the order.</p>"
         },
+        "orderedResources":{
+          "shape":"OrderedResourceDefinitions",
+          "documentation":"<p>A list of the network resources placed in the order.</p>"
+        },
         "shippingAddress":{
           "shape":"Address",
           "documentation":"<p>The shipping address of the order.</p>"
@@ -1709,6 +1774,37 @@
     "OrderList":{
       "type":"list",
       "member":{"shape":"Order"}
+    },
+    "OrderedResourceDefinition":{
+      "type":"structure",
+      "required":[
+        "count",
+        "type"
+      ],
+      "members":{
+        "commitmentConfiguration":{
+          "shape":"CommitmentConfiguration",
+          "documentation":"<p>The duration and renewal status of the commitment period for each radio unit in the order. Does not show details if the resource type is DEVICE_IDENTIFIER.</p>"
+        },
+        "count":{
+          "shape":"OrderedResourceDefinitionCountInteger",
+          "documentation":"<p>The number of network resources in the order.</p>"
+        },
+        "type":{
+          "shape":"NetworkResourceDefinitionType",
+          "documentation":"<p>The type of network resource in the order.</p>"
+        }
+      },
+      "documentation":"<p>Details of the network resources in the order.</p>"
+    },
+    "OrderedResourceDefinitionCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "OrderedResourceDefinitions":{
+      "type":"list",
+      "member":{"shape":"OrderedResourceDefinition"}
     },
     "PaginationToken":{"type":"string"},
     "PingResponse":{
@@ -1817,6 +1913,10 @@
         "updateType"
       ],
       "members":{
+        "commitmentConfiguration":{
+          "shape":"CommitmentConfiguration",
+          "documentation":"<p>Use this action to extend and automatically renew the commitment period for the radio unit. You can do the following:</p> <ul> <li> <p>Change a 60-day commitment to a 1-year or 3-year commitment. The change is immediate and the hourly rate decreases to the rate for the new commitment period.</p> </li> <li> <p>Change a 1-year commitment to a 3-year commitment. The change is immediate and the hourly rate decreases to the rate for the 3-year commitment period.</p> </li> <li> <p>Set a 1-year commitment to automatically renew for an additional 1 year. The hourly rate for the additional year will continue to be the same as your existing 1-year rate.</p> </li> <li> <p>Set a 3-year commitment to automatically renew for an additional 1 year. The hourly rate for the additional year will continue to be the same as your existing 3-year rate.</p> </li> <li> <p>Turn off a previously-enabled automatic renewal on a 1-year or 3-year commitment. You cannot use the automatic-renewal option for a 60-day commitment.</p> </li> </ul> <p>For pricing, see <a href=\"http://aws.amazon.com/private5g/pricing\">Amazon Web Services Private 5G Pricing</a>.</p>"
+        },
         "networkResourceArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the network resource.</p>"
@@ -1831,7 +1931,7 @@
         },
         "updateType":{
           "shape":"UpdateType",
-          "documentation":"<p>The update type.</p> <ul> <li> <p> <code>REPLACE</code> - Submits a request to replace a defective radio unit. We provide a shipping label that you can use for the return process and we ship a replacement radio unit to you.</p> </li> <li> <p> <code>RETURN</code> - Submits a request to replace a radio unit that you no longer need. We provide a shipping label that you can use for the return process.</p> </li> </ul>"
+          "documentation":"<p>The update type.</p> <ul> <li> <p> <code>REPLACE</code> - Submits a request to replace a defective radio unit. We provide a shipping label that you can use for the return process and we ship a replacement radio unit to you.</p> </li> <li> <p> <code>RETURN</code> - Submits a request to return a radio unit that you no longer need. We provide a shipping label that you can use for the return process.</p> </li> <li> <p> <code>COMMITMENT</code> - Submits a request to change or renew the commitment period. If you choose this value, then you must set <a href=\"https://docs.aws.amazon.com/private-networks/latest/APIReference/API_StartNetworkResourceUpdate.html#privatenetworks-StartNetworkResourceUpdate-request-commitmentConfiguration\"> <code>commitmentConfiguration</code> </a>.</p> </li> </ul>"
         }
       }
     },
@@ -2014,7 +2114,8 @@
       "type":"string",
       "enum":[
         "REPLACE",
-        "RETURN"
+        "RETURN",
+        "COMMITMENT"
       ]
     },
     "ValidationException":{

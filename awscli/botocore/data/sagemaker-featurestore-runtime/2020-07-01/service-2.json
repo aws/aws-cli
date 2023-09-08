@@ -41,7 +41,7 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"AccessForbidden"}
       ],
-      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the <code>OnlineStore</code>. Feature Store supports both <code>SOFT_DELETE</code> and <code>HARD_DELETE</code>. For <code>SOFT_DELETE</code> (default), feature columns are set to <code>null</code> and the record is no longer retrievable by <code>GetRecord</code> or <code>BatchGetRecord</code>. For<code> HARD_DELETE</code>, the complete <code>Record</code> is removed from the <code>OnlineStore</code>. In both cases, Feature Store appends the deleted record marker to the <code>OfflineStore</code> with feature values set to <code>null</code>, <code>is_deleted</code> value set to <code>True</code>, and <code>EventTime</code> set to the delete input <code>EventTime</code>.</p> <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of the existing record in the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p> <ul> <li> <p>For <code>SOFT_DELETE</code>, the existing (undeleted) record remains in the <code>OnlineStore</code>, though the delete record marker is still written to the <code>OfflineStore</code>.</p> </li> <li> <p> <code>HARD_DELETE</code> returns <code>EventTime</code>: <code>400 ValidationException</code> to indicate that the delete operation failed. No delete record marker is written to the <code>OfflineStore</code>.</p> </li> </ul>"
+      "documentation":"<p>Deletes a <code>Record</code> from a <code>FeatureGroup</code> in the <code>OnlineStore</code>. Feature Store supports both <code>SoftDelete</code> and <code>HardDelete</code>. For <code>SoftDelete</code> (default), feature columns are set to <code>null</code> and the record is no longer retrievable by <code>GetRecord</code> or <code>BatchGetRecord</code>. For <code>HardDelete</code>, the complete <code>Record</code> is removed from the <code>OnlineStore</code>. In both cases, Feature Store appends the deleted record marker to the <code>OfflineStore</code> with feature values set to <code>null</code>, <code>is_deleted</code> value set to <code>True</code>, and <code>EventTime</code> set to the delete input <code>EventTime</code>.</p> <p>Note that the <code>EventTime</code> specified in <code>DeleteRecord</code> should be set later than the <code>EventTime</code> of the existing record in the <code>OnlineStore</code> for that <code>RecordIdentifer</code>. If it is not, the deletion does not occur:</p> <ul> <li> <p>For <code>SoftDelete</code>, the existing (undeleted) record remains in the <code>OnlineStore</code>, though the delete record marker is still written to the <code>OfflineStore</code>.</p> </li> <li> <p> <code>HardDelete</code> returns <code>EventTime</code>: <code>400 ValidationException</code> to indicate that the delete operation failed. No delete record marker is written to the <code>OfflineStore</code>.</p> </li> </ul>"
     },
     "GetRecord":{
       "name":"GetRecord",
@@ -73,7 +73,7 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"AccessForbidden"}
       ],
-      "documentation":"<p>Used for data ingestion into the <code>FeatureStore</code>. The <code>PutRecord</code> API writes to both the <code>OnlineStore</code> and <code>OfflineStore</code>. If the record is the latest record for the <code>recordIdentifier</code>, the record is written to both the <code>OnlineStore</code> and <code>OfflineStore</code>. If the record is a historic record, it is written only to the <code>OfflineStore</code>.</p>"
+      "documentation":"<p>The <code>PutRecord</code> API is used to ingest a list of <code>Records</code> into your feature group. </p> <p>If a new record’s <code>EventTime</code> is greater, the new record is written to both the <code>OnlineStore</code> and <code>OfflineStore</code>. Otherwise, the record is a historic record and it is written only to the <code>OfflineStore</code>. </p> <p>You can specify the ingestion to be applied to the <code>OnlineStore</code>, <code>OfflineStore</code>, or both by using the <code>TargetStores</code> request parameter. </p> <p>You can set the ingested record to expire at a given time to live (TTL) duration after the record’s event time, <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>, by specifying the <code>TtlDuration</code> parameter. A record level <code>TtlDuration</code> is set when specifying the <code>TtlDuration</code> parameter using the <code>PutRecord</code> API call. If the input <code>TtlDuration</code> is <code>null</code> or unspecified, <code>TtlDuration</code> is set to the default feature group level <code>TtlDuration</code>. A record level <code>TtlDuration</code> supersedes the group level <code>TtlDuration</code>.</p>"
     }
   },
   "shapes":{
@@ -128,8 +128,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>A <code>FeatureGroupName</code> containing Records you are retrieving in a batch.</p>"
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the <code>FeatureGroup</code> containing the records you are retrieving in a batch.</p>"
         },
         "RecordIdentifiersValueAsString":{
           "shape":"RecordIdentifiers",
@@ -154,7 +154,11 @@
       "members":{
         "Identifiers":{
           "shape":"BatchGetRecordIdentifiers",
-          "documentation":"<p>A list of <code>FeatureGroup</code> names, with their corresponding <code>RecordIdentifier</code> value, and Feature name that have been requested to be retrieved in batch.</p>"
+          "documentation":"<p>A list containing the name or Amazon Resource Name (ARN) of the <code>FeatureGroup</code>, the list of names of <code>Feature</code>s to be retrieved, and the corresponding <code>RecordIdentifier</code> values as strings.</p>"
+        },
+        "ExpirationTimeResponse":{
+          "shape":"ExpirationTimeResponse",
+          "documentation":"<p>Parameter to request <code>ExpiresAt</code> in response. If <code>Enabled</code>, <code>BatchGetRecord</code> will return the value of <code>ExpiresAt</code>, if it is not null. If <code>Disabled</code> and null, <code>BatchGetRecord</code> will return null.</p>"
         }
       }
     },
@@ -199,9 +203,13 @@
         "Record":{
           "shape":"Record",
           "documentation":"<p>The <code>Record</code> retrieved.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"ExpiresAt",
+          "documentation":"<p>The <code>ExpiresAt</code> ISO string of the requested record.</p>"
         }
       },
-      "documentation":"<p>The output of Records that have been retrieved in a batch.</p>"
+      "documentation":"<p>The output of records that have been retrieved in a batch.</p>"
     },
     "BatchGetRecordResultDetails":{
       "type":"list",
@@ -217,8 +225,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group to delete the record from. </p>",
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group to delete the record from. </p>",
           "location":"uri",
           "locationName":"FeatureGroupName"
         },
@@ -255,11 +263,19 @@
         "HardDelete"
       ]
     },
-    "FeatureGroupName":{
+    "ExpirationTimeResponse":{
       "type":"string",
-      "max":64,
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "ExpiresAt":{"type":"string"},
+    "FeatureGroupNameOrArn":{
+      "type":"string",
+      "max":150,
       "min":1,
-      "pattern":"^[a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63}"
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:feature-group/)?([a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63})"
     },
     "FeatureName":{
       "type":"string",
@@ -298,8 +314,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group from which you want to retrieve a record.</p>",
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group from which you want to retrieve a record.</p>",
           "location":"uri",
           "locationName":"FeatureGroupName"
         },
@@ -314,6 +330,12 @@
           "documentation":"<p>List of names of Features to be retrieved. If not specified, the latest value for all the Features are returned.</p>",
           "location":"querystring",
           "locationName":"FeatureName"
+        },
+        "ExpirationTimeResponse":{
+          "shape":"ExpirationTimeResponse",
+          "documentation":"<p>Parameter to request <code>ExpiresAt</code> in response. If <code>Enabled</code>, <code>GetRecord</code> will return the value of <code>ExpiresAt</code>, if it is not null. If <code>Disabled</code> and null, <code>GetRecord</code> will return null.</p>",
+          "location":"querystring",
+          "locationName":"ExpirationTimeResponse"
         }
       }
     },
@@ -323,6 +345,10 @@
         "Record":{
           "shape":"Record",
           "documentation":"<p>The record you requested. A list of <code>FeatureValues</code>.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"ExpiresAt",
+          "documentation":"<p>The <code>ExpiresAt</code> ISO string of the requested record.</p>"
         }
       }
     },
@@ -349,8 +375,8 @@
       ],
       "members":{
         "FeatureGroupName":{
-          "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the feature group that you want to insert the record into.</p>",
+          "shape":"FeatureGroupNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the feature group that you want to insert the record into.</p>",
           "location":"uri",
           "locationName":"FeatureGroupName"
         },
@@ -361,6 +387,10 @@
         "TargetStores":{
           "shape":"TargetStores",
           "documentation":"<p>A list of stores to which you're adding the record. By default, Feature Store adds the record to all of the stores that you're using for the <code>FeatureGroup</code>.</p>"
+        },
+        "TtlDuration":{
+          "shape":"TtlDuration",
+          "documentation":"<p>Time to live duration, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
         }
       }
     },
@@ -406,6 +436,38 @@
       "type":"list",
       "member":{"shape":"TargetStore"},
       "max":2,
+      "min":1
+    },
+    "TtlDuration":{
+      "type":"structure",
+      "required":[
+        "Unit",
+        "Value"
+      ],
+      "members":{
+        "Unit":{
+          "shape":"TtlDurationUnit",
+          "documentation":"<p> <code>TtlDuration</code> time unit.</p>"
+        },
+        "Value":{
+          "shape":"TtlDurationValue",
+          "documentation":"<p> <code>TtlDuration</code> time value.</p>"
+        }
+      },
+      "documentation":"<p>Time to live duration, where the record is hard deleted after the expiration time is reached; <code>ExpiresAt</code> = <code>EventTime</code> + <code>TtlDuration</code>. For information on HardDelete, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html\">DeleteRecord</a> API in the Amazon SageMaker API Reference guide.</p>"
+    },
+    "TtlDurationUnit":{
+      "type":"string",
+      "enum":[
+        "Seconds",
+        "Minutes",
+        "Hours",
+        "Days",
+        "Weeks"
+      ]
+    },
+    "TtlDurationValue":{
+      "type":"integer",
       "min":1
     },
     "UnprocessedIdentifiers":{

@@ -97,6 +97,7 @@
         {"shape":"TooManyDistributionsAssociatedToFieldLevelEncryptionConfig"},
         {"shape":"NoSuchCachePolicy"},
         {"shape":"TooManyDistributionsAssociatedToCachePolicy"},
+        {"shape":"TooManyDistributionsAssociatedToOriginAccessControl"},
         {"shape":"NoSuchResponseHeadersPolicy"},
         {"shape":"TooManyDistributionsAssociatedToResponseHeadersPolicy"},
         {"shape":"NoSuchOriginRequestPolicy"},
@@ -107,7 +108,7 @@
         {"shape":"NoSuchRealtimeLogConfig"},
         {"shape":"RealtimeLogConfigOwnerMismatch"}
       ],
-      "documentation":"<p>Creates a staging distribution using the configuration of the provided primary distribution. A staging distribution is a copy of an existing distribution (called the primary distribution) that you can use in a continuous deployment workflow.</p> <p>After you create a staging distribution, you can use <code>UpdateDistribution</code> to modify the staging distribution's configuration. Then you can use <code>CreateContinuousDeploymentPolicy</code> to incrementally move traffic to the staging distribution.</p>"
+      "documentation":"<p>Creates a staging distribution using the configuration of the provided primary distribution. A staging distribution is a copy of an existing distribution (called the primary distribution) that you can use in a continuous deployment workflow.</p> <p>After you create a staging distribution, you can use <code>UpdateDistribution</code> to modify the staging distribution's configuration. Then you can use <code>CreateContinuousDeploymentPolicy</code> to incrementally move traffic to the staging distribution.</p> <p>This API operation requires the following IAM permissions:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html\">GetDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html\">CreateDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CopyDistribution.html\">CopyDistribution</a> </p> </li> </ul>"
     },
     "CreateCachePolicy":{
       "name":"CreateCachePolicy2020_05_31",
@@ -260,6 +261,7 @@
         {"shape":"InvalidOrigin"},
         {"shape":"InvalidOriginAccessIdentity"},
         {"shape":"InvalidOriginAccessControl"},
+        {"shape":"IllegalOriginAccessConfiguration"},
         {"shape":"AccessDenied"},
         {"shape":"TooManyTrustedSigners"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -307,6 +309,7 @@
         {"shape":"TooManyDistributionsAssociatedToFieldLevelEncryptionConfig"},
         {"shape":"NoSuchCachePolicy"},
         {"shape":"TooManyDistributionsAssociatedToCachePolicy"},
+        {"shape":"TooManyDistributionsAssociatedToOriginAccessControl"},
         {"shape":"NoSuchResponseHeadersPolicy"},
         {"shape":"TooManyDistributionsAssociatedToResponseHeadersPolicy"},
         {"shape":"NoSuchOriginRequestPolicy"},
@@ -320,7 +323,7 @@
         {"shape":"NoSuchContinuousDeploymentPolicy"},
         {"shape":"InvalidDomainNameForOriginAccessControl"}
       ],
-      "documentation":"<p>Create a new distribution with tags.</p>"
+      "documentation":"<p>Create a new distribution with tags. This API operation requires the following IAM permissions:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html\">CreateDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_TagResource.html\">TagResource</a> </p> </li> </ul>"
     },
     "CreateFieldLevelEncryptionConfig":{
       "name":"CreateFieldLevelEncryptionConfig2020_05_31",
@@ -1780,6 +1783,7 @@
         {"shape":"TooManyDistributionsAssociatedToFieldLevelEncryptionConfig"},
         {"shape":"NoSuchCachePolicy"},
         {"shape":"TooManyDistributionsAssociatedToCachePolicy"},
+        {"shape":"TooManyDistributionsAssociatedToOriginAccessControl"},
         {"shape":"NoSuchResponseHeadersPolicy"},
         {"shape":"TooManyDistributionsAssociatedToResponseHeadersPolicy"},
         {"shape":"NoSuchOriginRequestPolicy"},
@@ -1857,6 +1861,7 @@
         {"shape":"TooManyDistributionsAssociatedToFieldLevelEncryptionConfig"},
         {"shape":"NoSuchCachePolicy"},
         {"shape":"TooManyDistributionsAssociatedToCachePolicy"},
+        {"shape":"TooManyDistributionsAssociatedToOriginAccessControl"},
         {"shape":"NoSuchResponseHeadersPolicy"},
         {"shape":"TooManyDistributionsAssociatedToResponseHeadersPolicy"},
         {"shape":"NoSuchOriginRequestPolicy"},
@@ -1867,7 +1872,7 @@
         {"shape":"NoSuchRealtimeLogConfig"},
         {"shape":"RealtimeLogConfigOwnerMismatch"}
       ],
-      "documentation":"<p>Copies the staging distribution's configuration to its corresponding primary distribution. The primary distribution retains its <code>Aliases</code> (also known as alternate domain names or CNAMEs) and <code>ContinuousDeploymentPolicyId</code> value, but otherwise its configuration is overwritten to match the staging distribution.</p> <p>You can use this operation in a continuous deployment workflow after you have tested configuration changes on the staging distribution. After using a continuous deployment policy to move a portion of your domain name's traffic to the staging distribution and verifying that it works as intended, you can use this operation to copy the staging distribution's configuration to the primary distribution. This action will disable the continuous deployment policy and move your domain's traffic back to the primary distribution.</p>"
+      "documentation":"<p>Copies the staging distribution's configuration to its corresponding primary distribution. The primary distribution retains its <code>Aliases</code> (also known as alternate domain names or CNAMEs) and <code>ContinuousDeploymentPolicyId</code> value, but otherwise its configuration is overwritten to match the staging distribution.</p> <p>You can use this operation in a continuous deployment workflow after you have tested configuration changes on the staging distribution. After using a continuous deployment policy to move a portion of your domain name's traffic to the staging distribution and verifying that it works as intended, you can use this operation to copy the staging distribution's configuration to the primary distribution. This action will disable the continuous deployment policy and move your domain's traffic back to the primary distribution.</p> <p>This API operation requires the following IAM permissions:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html\">GetDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a> </p> </li> </ul>"
     },
     "UpdateFieldLevelEncryptionConfig":{
       "name":"UpdateFieldLevelEncryptionConfig2020_05_31",
@@ -2155,7 +2160,7 @@
       "members":{
         "Enabled":{
           "shape":"boolean",
-          "documentation":"<p>This field is <code>true</code> if any of the Amazon Web Services accounts in the list have active CloudFront key pairs that CloudFront can use to verify the signatures of signed URLs and signed cookies. If not, this field is <code>false</code>.</p>"
+          "documentation":"<p>This field is <code>true</code> if any of the Amazon Web Services accounts in the list are configured as trusted signers. If not, this field is <code>false</code>.</p>"
         },
         "Quantity":{
           "shape":"integer",
@@ -3058,6 +3063,10 @@
         "CallerReference":{
           "shape":"string",
           "documentation":"<p>A value that uniquely identifies a request to create a resource. This helps to prevent CloudFront from creating a duplicate resource if you accidentally resubmit an identical request.</p>"
+        },
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean flag to specify the state of the staging distribution when it's created. When you set this value to <code>True</code>, the staging distribution is enabled. When you set this value to <code>False</code>, the staging distribution is disabled.</p> <p>If you omit this field, the default value is <code>True</code>.</p>"
         }
       }
     },
@@ -5072,7 +5081,7 @@
         },
         "Runtime":{
           "shape":"FunctionRuntime",
-          "documentation":"<p>The function's runtime environment. The only valid value is <code>cloudfront-js-1.0</code>.</p>"
+          "documentation":"<p>The function's runtime environment verion.</p>"
         }
       },
       "documentation":"<p>Contains configuration information about a CloudFront function.</p>"
@@ -5156,7 +5165,10 @@
     },
     "FunctionRuntime":{
       "type":"string",
-      "enum":["cloudfront-js-1.0"]
+      "enum":[
+        "cloudfront-js-1.0",
+        "cloudfront-js-2.0"
+      ]
     },
     "FunctionSizeLimitExceeded":{
       "type":"structure",
@@ -10342,7 +10354,7 @@
       "members":{
         "Enabled":{
           "shape":"boolean",
-          "documentation":"<p>This field is <code>true</code> if any of the Amazon Web Services accounts have public keys that CloudFront can use to verify the signatures of signed URLs and signed cookies. If not, this field is <code>false</code>.</p>"
+          "documentation":"<p>This field is <code>true</code> if any of the Amazon Web Services accounts in the list are configured as trusted signers. If not, this field is <code>false</code>.</p>"
         },
         "Quantity":{
           "shape":"integer",

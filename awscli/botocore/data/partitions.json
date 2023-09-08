@@ -8,7 +8,7 @@
       "supportsDualStack" : true,
       "supportsFIPS" : true
     },
-    "regionRegex" : "^(us|eu|ap|sa|ca|me|af)\\-\\w+\\-\\d+$",
+    "regionRegex" : "^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$",
     "regions" : {
       "af-south-1" : {
         "description" : "Africa (Cape Town)"
@@ -72,6 +72,9 @@
       },
       "eu-west-3" : {
         "description" : "Europe (Paris)"
+      },
+      "il-central-1" : {
+        "description" : "Israel (Tel Aviv)"
       },
       "me-central-1" : {
         "description" : "Middle East (UAE)"
@@ -176,6 +179,28 @@
         "description" : "US ISOB East (Ohio)"
       }
     }
+  }, {
+    "id" : "aws-iso-e",
+    "outputs" : {
+      "dnsSuffix" : "cloud.adc-e.uk",
+      "dualStackDnsSuffix" : "cloud.adc-e.uk",
+      "name" : "aws-iso-e",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^eu\\-isoe\\-\\w+\\-\\d+$",
+    "regions" : { }
+  }, {
+    "id" : "aws-iso-f",
+    "outputs" : {
+      "dnsSuffix" : "csp.hci.ic.gov",
+      "dualStackDnsSuffix" : "csp.hci.ic.gov",
+      "name" : "aws-iso-f",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^us\\-isof\\-\\w+\\-\\d+$",
+    "regions" : { }
   } ],
   "version" : "1.1"
 }

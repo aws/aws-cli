@@ -117,7 +117,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates member accounts of the current Amazon Web Services account by specifying a list of Amazon Web Services account IDs. This step is a prerequisite for managing the associated member accounts either by invitation or through an organization.</p> <p>When using <code>Create Members</code> as an organizations delegated administrator this action will enable GuardDuty in the added member accounts, with the exception of the organization delegated administrator account, which must enable GuardDuty prior to being added as a member.</p> <p>If you are adding accounts by invitation, use this action after GuardDuty has bee enabled in potential member accounts and before using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a>.</p>"
+      "documentation":"<p>Creates member accounts of the current Amazon Web Services account by specifying a list of Amazon Web Services account IDs. This step is a prerequisite for managing the associated member accounts either by invitation or through an organization.</p> <p>As a delegated administrator, using <code>CreateMembers</code> will enable GuardDuty in the added member accounts, with the exception of the organization delegated administrator account. A delegated administrator must enable GuardDuty prior to being added as a member.</p> <p>If you are adding accounts by invitation, before using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a>, use <code>CreateMembers</code> after GuardDuty has been enabled in potential member accounts.</p> <p>If you disassociate a member from a GuardDuty delegated administrator, the member account details obtained from this API, including the associated email addresses, will be retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API. </p>"
     },
     "CreatePublishingDestination":{
       "name":"CreatePublishingDestination",
@@ -357,7 +357,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p> <p>With <code>autoEnableOrganizationMembers</code> configuration for your organization set to <code>ALL</code>, you'll receive an error if you attempt to disable GuardDuty in a member account.</p>"
+      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p> <p>When you disassociate an invited member from a GuardDuty delegated administrator, the member account details obtained from the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> API, including the associated email addresses, are retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API. </p> <p>With <code>autoEnableOrganizationMembers</code> configuration for your organization set to <code>ALL</code>, you'll receive an error if you attempt to disable GuardDuty in a member account.</p>"
     },
     "DisassociateFromMasterAccount":{
       "name":"DisassociateFromMasterAccount",
@@ -372,7 +372,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p>",
+      "documentation":"<p>Disassociates the current GuardDuty member account from its administrator account.</p> <p>When you disassociate an invited member from a GuardDuty delegated administrator, the member account details obtained from the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> API, including the associated email addresses, are retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API.</p>",
       "deprecated":true,
       "deprecatedMessage":"This operation is deprecated, use DisassociateFromAdministratorAccount instead"
     },
@@ -389,7 +389,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Disassociates GuardDuty member accounts (to the current administrator account) specified by the account IDs.</p> <p>With <code>autoEnableOrganizationMembers</code> configuration for your organization set to <code>ALL</code>, you'll receive an error if you attempt to disassociate a member account before removing them from your Amazon Web Services organization.</p>"
+      "documentation":"<p>Disassociates GuardDuty member accounts (from the current administrator account) specified by the account IDs.</p> <p>When you disassociate an invited member from a GuardDuty delegated administrator, the member account details obtained from the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> API, including the associated email addresses, are retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API. </p> <p>With <code>autoEnableOrganizationMembers</code> configuration for your organization set to <code>ALL</code>, you'll receive an error if you attempt to disassociate a member account before removing them from your Amazon Web Services organization.</p>"
     },
     "EnableOrganizationAdminAccount":{
       "name":"EnableOrganizationAdminAccount",
@@ -646,7 +646,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Invites other Amazon Web Services accounts (created as members of the current Amazon Web Services account by CreateMembers) to enable GuardDuty, and allow the current Amazon Web Services account to view and manage these accounts' findings on their behalf as the GuardDuty administrator account.</p>"
+      "documentation":"<p>Invites Amazon Web Services accounts to become members of an organization administered by the Amazon Web Services account that invokes this API. If you are using Amazon Web Services Organizations to manager your GuardDuty environment, this step is not needed. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_organizations.html\">Managing accounts with Amazon Web Services Organizations</a>.</p> <p>To invite Amazon Web Services accounts, the first step is to ensure that GuardDuty has been enabled in the potential member accounts. You can now invoke this API to add accounts by invitation. The invited accounts can either accept or decline the invitation from their GuardDuty accounts. Each invited Amazon Web Services account can choose to accept the invitation from only one Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html\">Managing GuardDuty accounts by invitation</a>.</p> <p>After the invite has been accepted and you choose to disassociate a member account (by using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DisassociateMembers.html\">DisassociateMembers</a>) from your account, the details of the member account obtained by invoking <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a>, including the associated email addresses, will be retained. This is done so that you can invoke InviteMembers without the need to invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> again. To remove the details associated with a member account, you must also invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a>. </p>"
     },
     "ListCoverage":{
       "name":"ListCoverage",
@@ -794,9 +794,10 @@
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, and threat intel sets, with a limit of 50 tags per resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
+      "documentation":"<p>Lists tags for a resource. Tagging is currently supported for detectors, finding filters, IP sets, threat intel sets, and publishing destination, with a limit of 50 tags per each resource. When invoked, this operation returns all assigned tags for a given resource.</p>"
     },
     "ListThreatIntelSets":{
       "name":"ListThreatIntelSets",
@@ -812,6 +813,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID. If you use this operation from a member account, the ThreatIntelSets associated with the administrator account are returned.</p>"
+    },
+    "StartMalwareScan":{
+      "name":"StartMalwareScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/malware-scan/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMalwareScanRequest"},
+      "output":{"shape":"StartMalwareScanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Initiates the malware scan. Invoking this API will automatically create the <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/slr-permissions-malware-protection.html\">Service-linked role </a> in the corresponding account.</p>"
     },
     "StartMonitoringMembers":{
       "name":"StartMonitoringMembers",
@@ -854,6 +871,7 @@
       "output":{"shape":"TagResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Adds tags to a resource.</p>"
@@ -884,6 +902,7 @@
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
@@ -1106,6 +1125,24 @@
         }
       },
       "documentation":"<p>Contains information on the current access control policies for the bucket.</p>"
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>An access denied exception object.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
     },
     "AccessKeyDetails":{
       "type":"structure",
@@ -1593,6 +1630,24 @@
       },
       "documentation":"<p>Contains information about the condition.</p>"
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>A request conflict exception object.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "Container":{
       "type":"structure",
       "members":{
@@ -1966,7 +2021,7 @@
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
-          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.userAgent</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> </ul>",
+          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>id</p> </li> <li> <p>region</p> </li> <li> <p>severity</p> <p>To filter on the basis of severity, the API and CLI use the following input list for the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html\">FindingCriteria</a> condition:</p> <ul> <li> <p> <b>Low</b>: <code>[\"1\", \"2\", \"3\"]</code> </p> </li> <li> <p> <b>Medium</b>: <code>[\"4\", \"5\", \"6\"]</code> </p> </li> <li> <p> <b>High</b>: <code>[\"7\", \"8\", \"9\"]</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity\">Severity levels for GuardDuty findings</a>.</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.affiliated</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.kubernetesApiCallAction.requestUri</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.accountId</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>resource.eksClusterDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.namespace</p> </li> <li> <p>resource.kubernetesDetails.kubernetesUserDetails.username</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.image</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.imagePrefix</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.name</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.severity</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.filePaths.hash</p> </li> <li> <p>resource.ecsClusterDetails.name</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.containers.image</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.definitionArn</p> </li> <li> <p>resource.containerDetails.image</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbInstanceIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbClusterIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.engine</p> </li> <li> <p>resource.rdsDbUserDetails.user</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.key</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.value</p> </li> <li> <p>service.runtimeDetails.process.executableSha256</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>resource.lambdaDetails.functionName</p> </li> <li> <p>resource.lambdaDetails.functionArn</p> </li> <li> <p>resource.lambdaDetails.tags.key</p> </li> <li> <p>resource.lambdaDetails.tags.value</p> </li> </ul>",
           "locationName":"findingCriteria"
         },
         "ClientToken":{
@@ -2222,7 +2277,8 @@
         "ACCOUNT_ID",
         "GUARDDUTY_FINDING_ID",
         "SCAN_START_TIME",
-        "SCAN_STATUS"
+        "SCAN_STATUS",
+        "SCAN_TYPE"
       ]
     },
     "DNSLogsConfigurationResult":{
@@ -3040,7 +3096,7 @@
       "members":{
         "Domain":{
           "shape":"String",
-          "documentation":"<p>The domain information for the API request.</p>",
+          "documentation":"<p>The domain information for the DNS query.</p>",
           "locationName":"domain"
         },
         "Protocol":{
@@ -3123,6 +3179,11 @@
           "shape":"ScanDetections",
           "documentation":"<p>Contains a complete view providing malware scan result details.</p>",
           "locationName":"scanDetections"
+        },
+        "ScanType":{
+          "shape":"ScanType",
+          "documentation":"<p>Specifies the scan type that invoked the malware scan.</p>",
+          "locationName":"scanType"
         }
       },
       "documentation":"<p>Contains details from the malware scan that created a finding.</p>"
@@ -4652,6 +4713,11 @@
           "shape":"Groups",
           "documentation":"<p>The groups that include the user who called the Kubernetes API.</p>",
           "locationName":"groups"
+        },
+        "SessionName":{
+          "shape":"SessionNameList",
+          "documentation":"<p>Entity that assumes the IAM role when Kubernetes RBAC permissions are assigned to that role.</p>",
+          "locationName":"sessionName"
         }
       },
       "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>"
@@ -5698,7 +5764,8 @@
       "type":"string",
       "enum":[
         "NEW",
-        "NONE"
+        "NONE",
+        "ALL"
       ]
     },
     "Organization":{
@@ -6417,6 +6484,10 @@
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
     },
+    "ResourceArn":{
+      "type":"string",
+      "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9-]*$"
+    },
     "ResourceDetails":{
       "type":"structure",
       "members":{
@@ -6704,6 +6775,11 @@
           "shape":"VolumeDetails",
           "documentation":"<p>List of volumes that were attached to the original instance to be scanned.</p>",
           "locationName":"attachedVolumes"
+        },
+        "ScanType":{
+          "shape":"ScanType",
+          "documentation":"<p>Specifies the scan type that invoked the malware scan.</p>",
+          "locationName":"scanType"
         }
       },
       "documentation":"<p>Contains information about a malware scan.</p>"
@@ -6861,7 +6937,8 @@
       "enum":[
         "RUNNING",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "SKIPPED"
       ]
     },
     "ScanThreatName":{
@@ -6893,6 +6970,13 @@
     "ScanThreatNames":{
       "type":"list",
       "member":{"shape":"ScanThreatName"}
+    },
+    "ScanType":{
+      "type":"string",
+      "enum":[
+        "GUARDDUTY_INITIATED",
+        "ON_DEMAND"
+      ]
     },
     "ScannedItemCount":{
       "type":"structure",
@@ -7042,6 +7126,10 @@
       },
       "documentation":"<p>Additional information about the generated finding.</p>"
     },
+    "SessionNameList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "SortCriteria":{
       "type":"structure",
       "members":{
@@ -7065,6 +7153,27 @@
     "Sources":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "StartMalwareScanRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource for which you invoked the API.</p>",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "StartMalwareScanResponse":{
+      "type":"structure",
+      "members":{
+        "ScanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A unique identifier that gets generated when you invoke the API without any error. Each malware scan has a corresponding scan ID. Using this scan ID, you can monitor the status of your malware scan.</p>",
+          "locationName":"scanId"
+        }
+      }
     },
     "StartMonitoringMembersRequest":{
       "type":"structure",

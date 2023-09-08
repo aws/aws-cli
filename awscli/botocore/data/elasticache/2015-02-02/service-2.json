@@ -1329,6 +1329,25 @@
         {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p>Represents the input of a <code>TestFailover</code> operation which test automatic failover on a specified node group (called shard in the console) in a replication group (called cluster in the console).</p> <p>This API is designed for testing the behavior of your application in case of ElastiCache failover. It is not designed to be an operational tool for initiating a failover to overcome a problem you may have with the cluster. Moreover, in certain conditions such as large-scale operational events, Amazon may block this API. </p> <p class=\"title\"> <b>Note the following</b> </p> <ul> <li> <p>A customer can use this operation to test automatic failover on up to 5 shards (called node groups in the ElastiCache API and Amazon CLI) in any rolling 24-hour period.</p> </li> <li> <p>If calling this operation on shards in different clusters (called replication groups in the API and CLI), the calls can be made concurrently.</p> <p> </p> </li> <li> <p>If calling this operation multiple times on different shards in the same Redis (cluster mode enabled) replication group, the first node replacement must complete before a subsequent call can be made.</p> </li> <li> <p>To determine whether the node replacement is complete you can check Events using the Amazon ElastiCache console, the Amazon CLI, or the ElastiCache API. Look for the following automatic failover related events, listed here in order of occurrance:</p> <ol> <li> <p>Replication group message: <code>Test Failover API called for node group &lt;node-group-id&gt;</code> </p> </li> <li> <p>Cache cluster message: <code>Failover from primary node &lt;primary-node-id&gt; to replica node &lt;node-id&gt; completed</code> </p> </li> <li> <p>Replication group message: <code>Failover from primary node &lt;primary-node-id&gt; to replica node &lt;node-id&gt; completed</code> </p> </li> <li> <p>Cache cluster message: <code>Recovering cache nodes &lt;node-id&gt;</code> </p> </li> <li> <p>Cache cluster message: <code>Finished recovery for cache nodes &lt;node-id&gt;</code> </p> </li> </ol> <p>For more information see:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/ECEvents.Viewing.html\">Viewing ElastiCache Events</a> in the <i>ElastiCache User Guide</i> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_DescribeEvents.html\">DescribeEvents</a> in the ElastiCache API Reference</p> </li> </ul> </li> </ul> <p>Also see, <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html#auto-failover-test\">Testing Multi-AZ </a> in the <i>ElastiCache User Guide</i>.</p>"
+    },
+    "TestMigration":{
+      "name":"TestMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestMigrationMessage"},
+      "output":{
+        "shape":"TestMigrationResponse",
+        "resultWrapper":"TestMigrationResult"
+      },
+      "errors":[
+        {"shape":"ReplicationGroupNotFoundFault"},
+        {"shape":"InvalidReplicationGroupStateFault"},
+        {"shape":"ReplicationGroupAlreadyUnderMigrationFault"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p> Async API to test connection between source and target replication group. </p>"
     }
   },
   "shapes":{
@@ -1685,11 +1704,11 @@
         },
         "NetworkType":{
           "shape":"NetworkType",
-          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type associated with the cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type associated with the cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "TransitEncryptionMode":{
           "shape":"TransitEncryptionMode",
@@ -1762,7 +1781,7 @@
         },
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the cache parameter group family associated with this cache engine.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> </p>"
+          "documentation":"<p>The name of the cache parameter group family associated with this cache engine.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>"
         },
         "CacheEngineDescription":{
           "shape":"String",
@@ -1972,7 +1991,7 @@
         },
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the cache parameter group family that this cache parameter group is compatible with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | </p>"
+          "documentation":"<p>The name of the cache parameter group family that this cache parameter group is compatible with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>"
         },
         "Description":{
           "shape":"String",
@@ -2230,7 +2249,7 @@
         },
         "SupportedNetworkTypes":{
           "shape":"NetworkTypeList",
-          "documentation":"<p>Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         }
       },
       "documentation":"<p>Represents the output of one of the following operations:</p> <ul> <li> <p> <code>CreateCacheSubnetGroup</code> </p> </li> <li> <p> <code>ModifyCacheSubnetGroup</code> </p> </li> </ul>",
@@ -2340,6 +2359,14 @@
         "shape":"String",
         "locationName":"ClusterId"
       }
+    },
+    "ClusterMode":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled",
+        "compatible"
+      ]
     },
     "ClusterQuotaForCustomerExceededFault":{
       "type":"structure",
@@ -2549,15 +2576,15 @@
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p> <p> Only available when creating a cache cluster in an Amazon VPC using Memcached version 1.6.12 or later.</p>"
+          "documentation":"<p>A flag that enables in-transit encryption when set to true.</p>"
         },
         "NetworkType":{
           "shape":"NetworkType",
-          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>. </p>"
+          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>. </p>"
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a CreateCacheCluster operation.</p>"
@@ -2582,7 +2609,7 @@
         },
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of the cache parameter group family that the cache parameter group can be used with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> </p>"
+          "documentation":"<p>The name of the cache parameter group family that the cache parameter group can be used with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>"
         },
         "Description":{
           "shape":"String",
@@ -2834,15 +2861,19 @@
         },
         "NetworkType":{
           "shape":"NetworkType",
-          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type you choose when creating a replication group, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type you choose when creating a replication group, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "TransitEncryptionMode":{
           "shape":"TransitEncryptionMode",
-          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>When setting <code>TransitEncryptionEnabled</code> to <code>true</code>, you can set your <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can modify the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code> first, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>"
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>When setting <code>TransitEncryptionEnabled</code> to <code>true</code>, you can set your <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can modify the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>.</p> <p>This process will not trigger the replacement of the replication group.</p>"
+        },
+        "ClusterMode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateReplicationGroup</code> operation.</p>"
@@ -3817,7 +3848,7 @@
       "members":{
         "CacheParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>Specifies the name of the cache parameter group family to which the engine default parameters apply.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.0</code> | <code>redis6.x</code> </p>"
+          "documentation":"<p>Specifies the name of the cache parameter group family to which the engine default parameters apply.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>"
         },
         "Marker":{
           "shape":"String",
@@ -4125,7 +4156,7 @@
         },
         "NodeGroupCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of node groups you wish to add</p>"
+          "documentation":"<p>Total number of node groups you want</p>"
         },
         "RegionalConfigurations":{
           "shape":"RegionalConfigurationList",
@@ -4600,7 +4631,7 @@
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>ModifyCacheCluster</code> operation.</p>"
@@ -4804,7 +4835,7 @@
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "TransitEncryptionEnabled":{
           "shape":"BooleanOptional",
@@ -4812,7 +4843,11 @@
         },
         "TransitEncryptionMode":{
           "shape":"TransitEncryptionMode",
-          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>You must set <code>TransitEncryptionEnabled</code> to <code>true</code>, for your existing cluster, and set <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can set the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code> first, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>"
+          "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>You must set <code>TransitEncryptionEnabled</code> to <code>true</code>, for your existing cluster, and set <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can set the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>"
+        },
+        "ClusterMode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>ModifyReplicationGroups</code> operation.</p>"
@@ -5738,19 +5773,23 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p> If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  </p>"
+          "documentation":"<p>If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions. </p>"
         },
         "NetworkType":{
           "shape":"NetworkType",
-          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "IpDiscovery":{
           "shape":"IpDiscovery",
-          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         },
         "TransitEncryptionMode":{
           "shape":"TransitEncryptionMode",
           "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
+        },
+        "ClusterMode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.</p>"
         }
       },
       "documentation":"<p>Contains all of the attributes of a specific Redis replication group.</p>",
@@ -5871,6 +5910,10 @@
         "TransitEncryptionMode":{
           "shape":"TransitEncryptionMode",
           "documentation":"<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p>"
+        },
+        "ClusterMode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.</p>"
         }
       },
       "documentation":"<p>The settings to be applied to the Redis replication group, either immediately or during the next maintenance window.</p>"
@@ -6543,7 +6586,7 @@
         },
         "SupportedNetworkTypes":{
           "shape":"NetworkTypeList",
-          "documentation":"<p>Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"https://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
+          "documentation":"<p>Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href=\"http://aws.amazon.com/ec2/nitro/\">Nitro system</a>.</p>"
         }
       },
       "documentation":"<p>Represents the subnet associated with a cluster. This parameter refers to subnets defined in Amazon Virtual Private Cloud (Amazon VPC) and used with ElastiCache.</p>"
@@ -6682,6 +6725,29 @@
       "exception":true
     },
     "TestFailoverResult":{
+      "type":"structure",
+      "members":{
+        "ReplicationGroup":{"shape":"ReplicationGroup"}
+      }
+    },
+    "TestMigrationMessage":{
+      "type":"structure",
+      "required":[
+        "ReplicationGroupId",
+        "CustomerNodeEndpointList"
+      ],
+      "members":{
+        "ReplicationGroupId":{
+          "shape":"String",
+          "documentation":"<p> The ID of the replication group to which data is to be migrated. </p>"
+        },
+        "CustomerNodeEndpointList":{
+          "shape":"CustomerNodeEndpointList",
+          "documentation":"<p> List of endpoints from which data should be migrated. List should have only one element. </p>"
+        }
+      }
+    },
+    "TestMigrationResponse":{
       "type":"structure",
       "members":{
         "ReplicationGroup":{"shape":"ReplicationGroup"}

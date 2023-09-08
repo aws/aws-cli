@@ -506,6 +506,31 @@
         }
       ]
     },
+    "StoreImageTaskComplete": {
+      "delay": 5,
+      "operation": "DescribeStoreImageTasks",
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "expected": "Completed",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "StoreImageTaskResults[].StoreTaskState"
+        },
+        {
+          "expected": "Failed",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "StoreImageTaskResults[].StoreTaskState"
+        },
+        {
+          "expected": "InProgress",
+          "matcher": "pathAny",
+          "state": "retry",
+          "argument": "StoreImageTaskResults[].StoreTaskState"
+        }
+      ]
+    },
     "SubnetAvailable": {
       "delay": 15,
       "operation": "DescribeSubnets",

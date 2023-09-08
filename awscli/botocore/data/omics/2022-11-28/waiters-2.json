@@ -81,6 +81,54 @@
         "expected" : "DELETING"
       } ]
     },
+    "AnnotationStoreVersionCreated" : {
+      "description" : "Wait until an annotation store version is created",
+      "delay" : 30,
+      "maxAttempts" : 20,
+      "operation" : "GetAnnotationStoreVersion",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "retry",
+        "expected" : "CREATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "retry",
+        "expected" : "UPDATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    },
+    "AnnotationStoreVersionDeleted" : {
+      "description" : "Wait until an annotation store version is deleted.",
+      "delay" : 30,
+      "maxAttempts" : 20,
+      "operation" : "GetAnnotationStoreVersion",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "DELETED"
+      }, {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "retry",
+        "expected" : "DELETING"
+      } ]
+    },
     "ReadSetActivationJobCompleted" : {
       "description" : "Wait until a job is completed.",
       "delay" : 30,

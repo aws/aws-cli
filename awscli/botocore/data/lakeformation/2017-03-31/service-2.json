@@ -544,7 +544,7 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Returns a list of the principal permissions on the resource, filtered by the permissions of the caller. For example, if you are granted an ALTER permission, you are able to see only the principal permissions for ALTER.</p> <p>This operation returns only those permissions that have been explicitly granted.</p> <p>For information about permissions, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
+      "documentation":"<p>Returns a list of the principal permissions on the resource, filtered by the permissions of the caller. For example, if you are granted an ALTER permission, you are able to see only the principal permissions for ALTER.</p> <p>This operation returns only those permissions that have been explicitly granted.</p> <p>For information about permissions, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
     },
     "ListResources":{
       "name":"ListResources",
@@ -1254,7 +1254,7 @@
         },
         "ColumnNames":{
           "shape":"ColumnNames",
-          "documentation":"<p>A list of column names.</p>"
+          "documentation":"<p>A list of column names and/or nested column attributes. When specifying nested attributes, use a qualified dot (.) delimited format such as \"address\".\"zip\". Nested attributes within this list may not exceed a depth of 5.</p>"
         },
         "ColumnWildcard":{
           "shape":"ColumnWildcard",
@@ -1334,6 +1334,10 @@
           "shape":"DataLakePrincipalList",
           "documentation":"<p>A list of Lake Formation principals. Supported principals are IAM users or IAM roles.</p>"
         },
+        "ReadOnlyAdmins":{
+          "shape":"DataLakePrincipalList",
+          "documentation":"<p>A list of Lake Formation principals with only view access to the resources, without the ability to make changes. Supported principals are IAM users or IAM roles.</p>"
+        },
         "CreateDatabaseDefaultPermissions":{
           "shape":"PrincipalPermissionsList",
           "documentation":"<p>Specifies whether access control on newly created database is managed by Lake Formation permissions or exclusively by IAM permissions.</p> <p>A null value indicates access control by Lake Formation permissions. A value that assigns ALL to IAM_ALLOWED_PRINCIPALS indicates access control by IAM permissions. This is referred to as the setting \"Use only IAM access control,\" and is for backward compatibility with the Glue permission model implemented by IAM permissions.</p> <p>The only permitted values are an empty array or an array that contains a single JSON object that grants ALL to IAM_ALLOWED_PRINCIPALS.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/change-settings.html\">Changing the Default Security Settings for Your Data Lake</a>.</p>"
@@ -1352,7 +1356,11 @@
         },
         "AllowExternalDataFiltering":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href=\"https://docs-aws.amazon.com/lake-formation/latest/dg/getting-started-setup.html#emr-switch\">(Optional) Allow Data Filtering on Amazon EMR</a>.</p>"
+          "documentation":"<p>Whether to allow Amazon EMR clusters to access data managed by Lake Formation. </p> <p>If true, you allow Amazon EMR clusters to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>If false or null, no Amazon EMR clusters will be able to access data in Amazon S3 locations that are registered with Lake Formation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/initial-LF-setup.html#external-data-filter\">(Optional) Allow external data filtering</a>.</p>"
+        },
+        "AllowFullTableExternalDataAccess":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Whether to allow a third-party query engine to get data access credentials without session tags when a caller has full data access permissions.</p>"
         },
         "ExternalDataFilteringAllowList":{
           "shape":"DataLakePrincipalList",
@@ -1963,8 +1971,7 @@
       "type":"structure",
       "required":[
         "TableArn",
-        "Partition",
-        "SupportedPermissionTypes"
+        "Partition"
       ],
       "members":{
         "TableArn":{
@@ -2016,10 +2023,7 @@
     },
     "GetTemporaryGlueTableCredentialsRequest":{
       "type":"structure",
-      "required":[
-        "TableArn",
-        "SupportedPermissionTypes"
-      ],
+      "required":["TableArn"],
       "members":{
         "TableArn":{
           "shape":"ResourceArnString",
@@ -2690,8 +2694,9 @@
         "CREATE_DATABASE",
         "CREATE_TABLE",
         "DATA_LOCATION_ACCESS",
-        "CREATE_TAG",
-        "ASSOCIATE"
+        "CREATE_LF_TAG",
+        "ASSOCIATE",
+        "GRANT_WITH_LF_TAG_EXPRESSION"
       ]
     },
     "PermissionList":{
@@ -2702,7 +2707,9 @@
       "type":"string",
       "enum":[
         "COLUMN_PERMISSION",
-        "CELL_FILTER_PERMISSION"
+        "CELL_FILTER_PERMISSION",
+        "NESTED_PERMISSION",
+        "NESTED_CELL_PERMISSION"
       ]
     },
     "PermissionTypeList":{

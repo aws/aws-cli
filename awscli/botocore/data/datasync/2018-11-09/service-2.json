@@ -14,6 +14,21 @@
     "uid":"datasync-2018-11-09"
   },
   "operations":{
+    "AddStorageSystem":{
+      "name":"AddStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AddStorageSystemRequest"},
+      "output":{"shape":"AddStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an Amazon Web Services resource for an on-premises storage system that you want DataSync Discovery to collect information about.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "CancelTaskExecution":{
       "name":"CancelTaskExecution",
       "http":{
@@ -40,7 +55,21 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Activates an DataSync agent that you have deployed in your storage environment. The activation process associates your agent with your account. In the activation process, you specify information such as the Amazon Web Services Region that you want to activate the agent in. You activate the agent in the Amazon Web Services Region where your target locations (in Amazon S3 or Amazon EFS) reside. Your tasks are created in this Amazon Web Services Region.</p> <p>You can activate the agent in a VPC (virtual private cloud) or provide the agent access to a VPC endpoint so you can run tasks without going over the public internet.</p> <p>You can use an agent for more than one location. If a task uses multiple agents, all of them need to have status AVAILABLE for the task to run. If you use multiple agents for a source location, the status of all the agents must be AVAILABLE for the task to run. </p> <p>Agents are automatically updated by Amazon Web Services on a regular basis, using a mechanism that ensures minimal interruption to your tasks.</p>"
+      "documentation":"<p>Activates an DataSync agent that you've deployed in your storage environment. The activation process associates the agent with your Amazon Web Services account.</p> <p>If you haven't deployed an agent yet, see the following topics to learn more:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/agent-requirements.html\">Agent requirements</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-agent.html\">Create an agent</a> </p> </li> </ul> <note> <p>If you're transferring between Amazon Web Services storage services, you don't need a DataSync agent. </p> </note>"
+    },
+    "CreateLocationAzureBlob":{
+      "name":"CreateLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLocationAzureBlobRequest"},
+      "output":{"shape":"CreateLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates an endpoint for a Microsoft Azure Blob Storage container that DataSync can use as a transfer source or destination.</p> <p>Before you begin, make sure you know <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access\">how DataSync accesses Azure Blob Storage</a> and works with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">access tiers</a> and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#blob-types\">blob types</a>. You also need a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-creating-agent\">DataSync agent</a> that can connect to your container.</p>"
     },
     "CreateLocationEfs":{
       "name":"CreateLocationEfs",
@@ -138,7 +167,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Defines a file system on a Network File System (NFS) server that can be read from or written to.</p>"
+      "documentation":"<p>Creates an endpoint for a Network File System (NFS) file server that DataSync can use for a data transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html\">Configuring transfers to or from an NFS file server</a>.</p> <note> <p>If you're copying data to or from an Snowcone device, you can also use <code>CreateLocationNfs</code> to create your transfer location. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/nfs-on-snowcone.html\">Configuring transfers with Snowcone</a>.</p> </note>"
     },
     "CreateLocationObjectStorage":{
       "name":"CreateLocationObjectStorage",
@@ -166,7 +195,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for an Amazon S3 bucket that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Create an Amazon S3 location</a>.</p>"
+      "documentation":"<p>A <i>location</i> is an endpoint for an Amazon S3 bucket. DataSync can use the location as a source or destination for copying data.</p> <important> <p>Before you create your location, make sure that you read the following sections:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#using-storage-classes\">Storage class considerations with Amazon S3 locations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">Evaluating S3 request costs when using DataSync</a> </p> </li> </ul> </important> <p> For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-locations-cli.html#create-location-s3-cli\">Creating an Amazon S3 location</a>.</p>"
     },
     "CreateLocationSmb":{
       "name":"CreateLocationSmb",
@@ -180,7 +209,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an endpoint for a Server Message Block (SMB) file server that DataSync can access for a transfer. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">Creating an SMB location</a>.</p>"
+      "documentation":"<p>Creates an endpoint for a Server Message Block (SMB) file server that DataSync can use for a data transfer.</p> <p>Before you begin, make sure that you understand how DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">accesses an SMB file server</a>.</p>"
     },
     "CreateTask":{
       "name":"CreateTask",
@@ -194,7 +223,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Configures a task, which defines where and how DataSync transfers your data.</p> <p>A task includes a source location, a destination location, and the preferences for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p>"
+      "documentation":"<p>Configures a transfer task, which defines where and how DataSync moves your data.</p> <p>A task includes a source location, destination location, and the options for how and when you want to transfer your data (such as bandwidth limits, scheduling, among other options).</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
     },
     "DeleteAgent":{
       "name":"DeleteAgent",
@@ -236,7 +265,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Deletes an DataSync task.</p>"
+      "documentation":"<p>Deletes an DataSync transfer task.</p>"
     },
     "DescribeAgent":{
       "name":"DescribeAgent",
@@ -251,6 +280,35 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns metadata about an DataSync agent, such as its name, endpoint type, and status.</p>"
+    },
+    "DescribeDiscoveryJob":{
+      "name":"DescribeDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDiscoveryJobRequest"},
+      "output":{"shape":"DescribeDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information about a DataSync discovery job.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeLocationAzureBlob":{
+      "name":"DescribeLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLocationAzureBlobRequest"},
+      "output":{"shape":"DescribeLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Provides details about how an DataSync transfer location for Microsoft Azure Blob Storage is configured.</p>"
     },
     "DescribeLocationEfs":{
       "name":"DescribeLocationEfs",
@@ -348,7 +406,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata, such as the path information, about an NFS location.</p>"
+      "documentation":"<p>Provides details about how an DataSync transfer location for a Network File System (NFS) file server is configured.</p>"
     },
     "DescribeLocationObjectStorage":{
       "name":"DescribeLocationObjectStorage",
@@ -392,6 +450,51 @@
       ],
       "documentation":"<p>Returns metadata, such as the path and user information about an SMB location.</p>"
     },
+    "DescribeStorageSystem":{
+      "name":"DescribeStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemRequest"},
+      "output":{"shape":"DescribeStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information about an on-premises storage system that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeStorageSystemResourceMetrics":{
+      "name":"DescribeStorageSystemResourceMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemResourceMetricsRequest"},
+      "output":{"shape":"DescribeStorageSystemResourceMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information, including performance data and capacity usage, which DataSync Discovery collects about a specific resource in your-premises storage system.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "DescribeStorageSystemResources":{
+      "name":"DescribeStorageSystemResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStorageSystemResourcesRequest"},
+      "output":{"shape":"DescribeStorageSystemResourcesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns information that DataSync Discovery collects about resources in your on-premises storage system.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "DescribeTask":{
       "name":"DescribeTask",
       "http":{
@@ -404,7 +507,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns metadata about a task.</p>"
+      "documentation":"<p>Provides information about an DataSync transfer task.</p>"
     },
     "DescribeTaskExecution":{
       "name":"DescribeTaskExecution",
@@ -418,7 +521,22 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Returns detailed metadata about a task that is being executed.</p>"
+      "documentation":"<p>Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing transfer or check the results of the transfer.</p>"
+    },
+    "GenerateRecommendations":{
+      "name":"GenerateRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GenerateRecommendationsRequest"},
+      "output":{"shape":"GenerateRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Creates recommendations about where to migrate your data to in Amazon Web Services. Recommendations are generated based on information that DataSync Discovery collects about your on-premises storage system's resources. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p> <p>Once generated, you can view your recommendations by using the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeStorageSystemResources.html\">DescribeStorageSystemResources</a> operation.</p> <note> <p>If your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">discovery job completes successfully</a>, you don't need to use this operation. DataSync Discovery generates the recommendations for you automatically.</p> </note>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "ListAgents":{
       "name":"ListAgents",
@@ -434,6 +552,21 @@
       ],
       "documentation":"<p>Returns a list of DataSync agents that belong to an Amazon Web Services account in the Amazon Web Services Region specified in the request.</p> <p>With pagination, you can reduce the number of agents returned in a response. If you get a truncated list of agents in a response, the response contains a marker that you can specify in your next request to fetch the next page of agents.</p> <p> <code>ListAgents</code> is eventually consistent. This means the result of running the operation might not reflect that you just created or deleted an agent. For example, if you create an agent with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateAgent.html\">CreateAgent</a> and then immediately run <code>ListAgents</code>, that agent might not show up in the list right away. In situations like this, you can always confirm whether an agent has been created (or deleted) by using <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeAgent.html\">DescribeAgent</a>.</p>"
     },
+    "ListDiscoveryJobs":{
+      "name":"ListDiscoveryJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDiscoveryJobsRequest"},
+      "output":{"shape":"ListDiscoveryJobsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Provides a list of the existing discovery jobs in the Amazon Web Services Region and Amazon Web Services account where you're using DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "ListLocations":{
       "name":"ListLocations",
       "http":{
@@ -447,6 +580,21 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns a list of source and destination locations.</p> <p>If you have more locations than are returned in a response (that is, the response returns only a truncated list of your agents), the response contains a token that you can specify in your next request to fetch the next page of locations.</p>"
+    },
+    "ListStorageSystems":{
+      "name":"ListStorageSystems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStorageSystemsRequest"},
+      "output":{"shape":"ListStorageSystemsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists the on-premises storage systems that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -490,6 +638,36 @@
       ],
       "documentation":"<p>Returns a list of the DataSync tasks you created.</p>"
     },
+    "RemoveStorageSystem":{
+      "name":"RemoveStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveStorageSystemRequest"},
+      "output":{"shape":"RemoveStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Permanently removes a storage system resource from DataSync Discovery, including the associated discovery jobs, collected data, and recommendations.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "StartDiscoveryJob":{
+      "name":"StartDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDiscoveryJobRequest"},
+      "output":{"shape":"StartDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Runs a DataSync discovery job on your on-premises storage system. If you haven't added the storage system to DataSync Discovery yet, do this first by using the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_AddStorageSystem.html\">AddStorageSystem</a> operation.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "StartTaskExecution":{
       "name":"StartTaskExecution",
       "http":{
@@ -502,7 +680,22 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Starts an DataSync task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p>"
+      "documentation":"<p>Starts an DataSync transfer task. For each task, you can only run one task execution at a time.</p> <p>There are several phases to a task execution. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#understand-task-execution-statuses\">Task execution statuses</a>.</p> <important> <p>If you're planning to transfer data to or from an Amazon S3 location, review <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests\">how DataSync can affect your S3 request charges</a> and the <a href=\"http://aws.amazon.com/datasync/pricing/\">DataSync pricing page</a> before you begin.</p> </important>"
+    },
+    "StopDiscoveryJob":{
+      "name":"StopDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopDiscoveryJobRequest"},
+      "output":{"shape":"StopDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Stops a running DataSync discovery job.</p> <p>You can stop a discovery job anytime. A job that's stopped before it's scheduled to end likely will provide you some information about your on-premises storage system resources. To get recommendations for a stopped job, you must use the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_GenerateRecommendations.html\">GenerateRecommendations</a> operation.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
     },
     "TagResource":{
       "name":"TagResource",
@@ -546,6 +739,35 @@
       ],
       "documentation":"<p>Updates the name of an agent.</p>"
     },
+    "UpdateDiscoveryJob":{
+      "name":"UpdateDiscoveryJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDiscoveryJobRequest"},
+      "output":{"shape":"UpdateDiscoveryJobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Edits a DataSync discovery job configuration.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
+    "UpdateLocationAzureBlob":{
+      "name":"UpdateLocationAzureBlob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLocationAzureBlobRequest"},
+      "output":{"shape":"UpdateLocationAzureBlobResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Modifies some configurations of the Microsoft Azure Blob Storage transfer location that you're using with DataSync.</p>"
+    },
     "UpdateLocationHdfs":{
       "name":"UpdateLocationHdfs",
       "http":{
@@ -572,7 +794,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates some of the parameters of a previously created location for Network File System (NFS) access. For information about creating an NFS location, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html\">Creating a location for NFS</a>.</p>"
+      "documentation":"<p>Modifies some configurations of the Network File System (NFS) transfer location that you're using with DataSync.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html\">Configuring transfers to or from an NFS file server</a>.</p>"
     },
     "UpdateLocationObjectStorage":{
       "name":"UpdateLocationObjectStorage",
@@ -602,6 +824,21 @@
       ],
       "documentation":"<p>Updates some of the parameters of a previously created location for Server Message Block (SMB) file system access. For information about creating an SMB location, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html\">Creating a location for SMB</a>.</p>"
     },
+    "UpdateStorageSystem":{
+      "name":"UpdateStorageSystem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateStorageSystemRequest"},
+      "output":{"shape":"UpdateStorageSystemResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Modifies some configurations of an on-premises storage system resource that you're using with DataSync Discovery.</p>",
+      "endpoint":{"hostPrefix":"discovery-"}
+    },
     "UpdateTask":{
       "name":"UpdateTask",
       "http":{
@@ -614,7 +851,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates the metadata associated with a task.</p>"
+      "documentation":"<p>Updates the configuration of a DataSync transfer task.</p>"
     },
     "UpdateTaskExecution":{
       "name":"UpdateTaskExecution",
@@ -628,7 +865,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Updates execution of a task.</p> <p>You can modify bandwidth throttling for a task execution that is running or queued. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/working-with-task-executions.html#adjust-bandwidth-throttling\">Adjusting Bandwidth Throttling for a Task Execution</a>.</p> <note> <p>The only <code>Option</code> that can be modified by <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>.</p> </note>"
+      "documentation":"<p>Updates the configuration of a running DataSync task execution.</p> <note> <p>Currently, the only <code>Option</code> that you can modify with <code>UpdateTaskExecution</code> is <code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-BytesPerSecond\">BytesPerSecond</a> </code>, which throttles bandwidth for a running or queued task execution.</p> </note>"
     }
   },
   "shapes":{
@@ -636,6 +873,61 @@
       "type":"string",
       "max":29,
       "pattern":"[A-Z0-9]{5}(-[A-Z0-9]{5}){4}"
+    },
+    "AddStorageSystemRequest":{
+      "type":"structure",
+      "required":[
+        "ServerConfiguration",
+        "SystemType",
+        "AgentArns",
+        "ClientToken",
+        "Credentials"
+      ],
+      "members":{
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>Specifies the server name and network port required to connect with the management interface of your on-premises storage system.</p>"
+        },
+        "SystemType":{
+          "shape":"DiscoverySystemType",
+          "documentation":"<p>Specifies the type of on-premises storage system that you want DataSync Discovery to collect information about.</p> <note> <p>DataSync Discovery currently supports NetApp Fabric-Attached Storage (FAS) and All Flash FAS (AFF) systems running ONTAP 9.7 or later.</p> </note>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads from your on-premises storage system's management interface. You can only specify one ARN.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>Specifies the ARN of the Amazon CloudWatch log group for monitoring and logging discovery job events.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your on-premises storage system.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>Specifies a familiar name for your on-premises storage system.</p>"
+        },
+        "ClientToken":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>Specifies a client token to make sure requests with this API operation are idempotent. If you don't specify a client token, DataSync generates one for you automatically.</p>",
+          "idempotencyToken":true
+        },
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Specifies the user name and password for accessing your on-premises storage system's management interface.</p>"
+        }
+      }
+    },
+    "AddStorageSystemResponse":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system that you can use with DataSync Discovery.</p>"
+        }
+      }
     },
     "AgentArn":{
       "type":"string",
@@ -684,6 +976,50 @@
         "BEST_EFFORT"
       ]
     },
+    "AzureAccessTier":{
+      "type":"string",
+      "enum":[
+        "HOT",
+        "COOL",
+        "ARCHIVE"
+      ]
+    },
+    "AzureBlobAuthenticationType":{
+      "type":"string",
+      "enum":["SAS"]
+    },
+    "AzureBlobContainerUrl":{
+      "type":"string",
+      "max":325,
+      "pattern":"^https:\\/\\/[A-Za-z0-9]((\\.|-+)?[A-Za-z0-9]){0,252}\\/[a-z0-9](-?[a-z0-9]){2,62}$"
+    },
+    "AzureBlobSasConfiguration":{
+      "type":"structure",
+      "required":["Token"],
+      "members":{
+        "Token":{
+          "shape":"AzureBlobSasToken",
+          "documentation":"<p>Specifies a SAS token that provides permissions to access your Azure Blob Storage.</p> <p>The token is part of the SAS URI string that comes after the storage resource URI and a question mark. A token looks something like this:</p> <p> <code>sp=r&amp;st=2023-12-20T14:54:52Z&amp;se=2023-12-20T22:54:52Z&amp;spr=https&amp;sv=2021-06-08&amp;sr=c&amp;sig=aBBKDWQvyuVcTPH9EBp%2FXTI9E%2F%2Fmq171%2BZU178wcwqU%3D</code> </p>"
+        }
+      },
+      "documentation":"<p>The shared access signature (SAS) configuration that allows DataSync to access your Microsoft Azure Blob Storage.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-sas-tokens\">SAS tokens</a> for accessing your Azure Blob Storage.</p>"
+    },
+    "AzureBlobSasToken":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^.+$",
+      "sensitive":true
+    },
+    "AzureBlobSubdirectory":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}\\p{C}]*$"
+    },
+    "AzureBlobType":{
+      "type":"string",
+      "enum":["BLOCK"]
+    },
     "BytesPerSecond":{
       "type":"long",
       "min":-1
@@ -704,33 +1040,60 @@
       "members":{
       }
     },
+    "Capacity":{
+      "type":"structure",
+      "members":{
+        "Used":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space that's being used in a storage system resource.</p>"
+        },
+        "Provisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total amount of space available in a storage system resource.</p>"
+        },
+        "LogicalUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space that's being used in a storage system resource without accounting for compression or deduplication.</p>"
+        },
+        "ClusterCloudStorageUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space in the cluster that's in cloud storage (for example, if you're using data tiering).</p>"
+        }
+      },
+      "documentation":"<p>The storage capacity of an on-premises storage system resource (for example, a volume).</p>"
+    },
+    "CollectionDurationMinutes":{
+      "type":"integer",
+      "max":44640,
+      "min":60
+    },
     "CreateAgentRequest":{
       "type":"structure",
       "required":["ActivationKey"],
       "members":{
         "ActivationKey":{
           "shape":"ActivationKey",
-          "documentation":"<p>Your agent activation key. You can get the activation key either by sending an HTTP GET request with redirects that enable you to get the agent IP address (port 80). Alternatively, you can get it from the DataSync console.</p> <p>The redirect URL returned in the response provides you the activation key for your agent in the query string parameter <code>activationKey</code>. It might also include other activation-related parameters; however, these are merely defaults. The arguments you pass to this API call determine the actual configuration of your agent.</p> <p>For more information, see Activating an Agent in the <i>DataSync User Guide.</i> </p>"
+          "documentation":"<p>Specifies your DataSync agent's activation key. If you don't have an activation key, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/activate-agent.html\">Activate your agent</a>.</p>"
         },
         "AgentName":{
           "shape":"TagValue",
-          "documentation":"<p>The name you configured for your agent. This value is a text reference that is used to identify the agent in the console.</p>"
+          "documentation":"<p>Specifies a name for your agent. You can see this name in the DataSync console.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents the tag that you want to associate with the agent. The value can be an empty string. This value helps you manage, filter, and search for your agents.</p> <note> <p>Valid characters for key and value are letters, spaces, and numbers representable in UTF-8 format, and the following special characters: + - = . _ : / @. </p> </note>"
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least one tag for your agent.</p>"
         },
         "VpcEndpointId":{
           "shape":"VpcEndpointId",
-          "documentation":"<p>The ID of the VPC (virtual private cloud) endpoint that the agent has access to. This is the client-side VPC endpoint, also called a PrivateLink. If you don't have a PrivateLink VPC endpoint, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html#create-endpoint-service\">Creating a VPC Endpoint Service Configuration</a> in the Amazon VPC User Guide.</p> <p>VPC endpoint ID looks like this: <code>vpce-01234d5aff67890e1</code>.</p>"
+          "documentation":"<p>Specifies the ID of the VPC endpoint that you want your agent to connect to. For example, a VPC endpoint ID looks like <code>vpce-01234d5aff67890e1</code>.</p> <important> <p>The VPC endpoint you use must include the DataSync service name (for example, <code>com.amazonaws.us-east-2.datasync</code>).</p> </important>"
         },
         "SubnetArns":{
           "shape":"PLSubnetArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the subnets in which DataSync will create elastic network interfaces for each data transfer task. The agent that runs a task must be private. When you start a task that is associated with an agent created in a VPC, or one that has access to an IP address in a VPC, then the task is also private. In this case, DataSync creates four network interfaces for each task in your subnet. For a data transfer to work, the agent must be able to route to all these four network interfaces.</p>"
+          "documentation":"<p>Specifies the ARN of the subnet where you want to run your DataSync task when using a VPC endpoint. This is the subnet where DataSync creates and manages the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> for your transfer. You can only specify one ARN.</p>"
         },
         "SecurityGroupArns":{
           "shape":"PLSecurityGroupArnList",
-          "documentation":"<p>The ARNs of the security groups used to protect your data transfer task subnets. See <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Ec2Config.html#DataSync-Type-Ec2Config-SecurityGroupArns\">SecurityGroupArns</a>.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the security group that protects your task's <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-network.html#required-network-interfaces\">network interfaces</a> when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choose-service-endpoint.html#choose-service-endpoint-vpc\">using a virtual private cloud (VPC) endpoint</a>. You can only specify one ARN.</p>"
         }
       },
       "documentation":"<p>CreateAgentRequest</p>"
@@ -740,10 +1103,61 @@
       "members":{
         "AgentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the agent. Use the <code>ListAgents</code> operation to return a list of agents for your account and Amazon Web Services Region.</p>"
+          "documentation":"<p>The ARN of the agent that you just activated. Use the <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_ListAgents.html\">ListAgents</a> operation to return a list of agents in your Amazon Web Services account and Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>CreateAgentResponse</p>"
+    },
+    "CreateLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":[
+        "ContainerUrl",
+        "AuthenticationType",
+        "AgentArns"
+      ],
+      "members":{
+        "ContainerUrl":{
+          "shape":"AzureBlobContainerUrl",
+          "documentation":"<p>Specifies the URL of the Azure Blob Storage container involved in your transfer.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>Specifies the authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "SasConfiguration":{
+          "shape":"AzureBlobSasConfiguration",
+          "documentation":"<p>Specifies the SAS configuration that allows DataSync to access your Azure Blob Storage.</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>Specifies the type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "Subdirectory":{
+          "shape":"AzureBlobSubdirectory",
+          "documentation":"<p>Specifies path segments if you want to limit your transfer to a virtual directory in your container (for example, <code>/my/images</code>).</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container.</p> <p>You can specify more than one agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html\">Using multiple agents for your transfer</a>.</p>"
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your transfer location.</p>"
+        }
+      }
+    },
+    "CreateLocationAzureBlobResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of the Azure Blob Storage transfer location that you created.</p>"
+        }
+      }
     },
     "CreateLocationEfsRequest":{
       "type":"structure",
@@ -929,7 +1343,7 @@
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>Specifies the user who has the permissions to access files and folders in the file system.</p> <p>For information about choosing a user name that ensures sufficient permissions to files, folders, and metadata, see <a href=\"create-fsx-location.html#FSxWuser\">user</a>.</p>"
+          "documentation":"<p>Specifies the user who has the permissions to access files, folders, and metadata in your file system.</p> <p>For information about choosing a user with sufficient permissions, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-fsx-location.html#create-fsx-windows-location-permissions\">Required permissions</a>.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
@@ -1031,23 +1445,23 @@
       "members":{
         "Subdirectory":{
           "shape":"NfsSubdirectory",
-          "documentation":"<p>The subdirectory in the NFS file system that is used to read data from the NFS source location or write data to the NFS destination. The NFS path should be a path that's exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network. </p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder you specified, DataSync needs to have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash,</code> or ensure that the permissions for all of the files that you want DataSync allow read access for all users. Doing either enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <p>For information about NFS export configuration, see 18.7. The /etc/exports Configuration File in the Red Hat Enterprise Linux documentation.</p>"
+          "documentation":"<p>Specifies the export path in your NFS file server that you want DataSync to mount.</p> <p>This path (or a subdirectory of the path) is where DataSync transfers data to or from. For information on configuring an export for DataSync, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#accessing-nfs\">Accessing NFS file servers</a>.</p>"
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>The name of the NFS server. This value is the IP address or Domain Name Service (DNS) name of the NFS server. An agent that is installed on-premises uses this hostname to mount the NFS server in a network. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <note> <p>This name must either be DNS-compliant or must be an IP version 4 (IPv4) address.</p> </note>"
+          "documentation":"<p>Specifies the Domain Name System (DNS) name or IP version 4 address of the NFS file server that your DataSync agent connects to.</p>"
         },
         "OnPremConfig":{
           "shape":"OnPremConfig",
-          "documentation":"<p>Contains a list of Amazon Resource Names (ARNs) of agents that are used to connect to an NFS server. </p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that want to connect to your NFS file server.</p> <p>You can specify more than one agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html\">Using multiple agents for transfers</a>.</p>"
         },
         "MountOptions":{
           "shape":"NfsMountOptions",
-          "documentation":"<p>The NFS mount options that DataSync can use to mount your NFS share.</p>"
+          "documentation":"<p>Specifies the options that DataSync can use to mount your NFS file server.</p>"
         },
         "Tags":{
           "shape":"InputTagList",
-          "documentation":"<p>The key-value pair that represents the tag that you want to add to the location. The value can be an empty string. We recommend using tags to name your resources.</p>"
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your location.</p>"
         }
       },
       "documentation":"<p>CreateLocationNfsRequest</p>"
@@ -1057,7 +1471,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the source NFS file system location that is created.</p>"
+          "documentation":"<p>The ARN of the transfer location that you created for your NFS file server.</p>"
         }
       },
       "documentation":"<p>CreateLocationNfsResponse</p>"
@@ -1108,7 +1522,7 @@
         },
         "ServerCertificate":{
           "shape":"ObjectStorageCertificate",
-          "documentation":"<p>Specifies a certificate to authenticate with an object storage system that uses a private or self-signed certificate authority (CA). You must specify a Base64-encoded <code>.pem</code> file (for example, <code>file:///home/user/.ssh/storage_sys_certificate.pem</code>). The certificate can be up to 32768 bytes (before Base64 encoding).</p> <p>To use this parameter, configure <code>ServerProtocol</code> to <code>HTTPS</code>.</p>"
+          "documentation":"<p>Specifies a file with the certificates that are used to sign the object storage server's certificate (for example, <code>file:///home/user/.ssh/storage_sys_certificate.pem</code>). The file you specify must include the following:</p> <ul> <li> <p>The certificate of the signing certificate authority (CA)</p> </li> <li> <p>Any intermediate certificates</p> </li> <li> <p>base64 encoding</p> </li> <li> <p>A <code>.pem</code> extension</p> </li> </ul> <p>The file can be up to 32768 bytes (before base64 encoding).</p> <p>To use this parameter, configure <code>ServerProtocol</code> to <code>HTTPS</code>.</p>"
         }
       },
       "documentation":"<p>CreateLocationObjectStorageRequest</p>"
@@ -1261,6 +1675,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>CreateTaskRequest</p>"
@@ -1274,6 +1692,24 @@
         }
       },
       "documentation":"<p>CreateTaskResponse</p>"
+    },
+    "Credentials":{
+      "type":"structure",
+      "required":[
+        "Username",
+        "Password"
+      ],
+      "members":{
+        "Username":{
+          "shape":"PtolemyUsername",
+          "documentation":"<p>Specifies the user name for your storage system's management interface.</p>"
+        },
+        "Password":{
+          "shape":"PtolemyPassword",
+          "documentation":"<p>Specifies the password for your storage system's management interface.</p>"
+        }
+      },
+      "documentation":"<p>The credentials that provide DataSync Discovery read access to your on-premises storage system's management interface.</p> <p>DataSync Discovery stores these credentials in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Secrets Manager</a>. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-configure-storage.html\">Accessing your on-premises storage system</a>.</p>"
     },
     "DeleteAgentRequest":{
       "type":"structure",
@@ -1367,6 +1803,88 @@
         }
       },
       "documentation":"<p>DescribeAgentResponse</p>"
+    },
+    "DescribeDiscoveryJobRequest":{
+      "type":"structure",
+      "required":["DiscoveryJobArn"],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want information about.</p>"
+        }
+      }
+    },
+    "DescribeDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system you're running the discovery job on.</p>"
+        },
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The ARN of the discovery job.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>The number of minutes that the discovery job runs.</p>"
+        },
+        "Status":{
+          "shape":"DiscoveryJobStatus",
+          "documentation":"<p>Indicates the status of a discovery job. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">Discovery job statuses</a>.</p>"
+        },
+        "JobStartTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>The time when the discovery job started.</p>"
+        },
+        "JobEndTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>The time when the discovery job ended.</p>"
+        }
+      }
+    },
+    "DescribeLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of your Azure Blob Storage transfer location.</p>"
+        }
+      }
+    },
+    "DescribeLocationAzureBlobResponse":{
+      "type":"structure",
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>The ARN of your Azure Blob Storage transfer location.</p>"
+        },
+        "LocationUri":{
+          "shape":"LocationUri",
+          "documentation":"<p>The URL of the Azure Blob Storage container involved in your transfer.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>The authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>The type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>The access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>The ARNs of the DataSync agents that can connect with your Azure Blob Storage container.</p>"
+        },
+        "CreationTime":{
+          "shape":"Time",
+          "documentation":"<p>The time that your Azure Blob Storage transfer location was created.</p>"
+        }
+      }
     },
     "DescribeLocationEfsRequest":{
       "type":"structure",
@@ -1624,7 +2142,7 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the NFS location to describe.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the NFS location that you want information about.</p>"
         }
       },
       "documentation":"<p>DescribeLocationNfsRequest</p>"
@@ -1634,20 +2152,20 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the NFS location that was described.</p>"
+          "documentation":"<p>The ARN of the NFS location.</p>"
         },
         "LocationUri":{
           "shape":"LocationUri",
-          "documentation":"<p>The URL of the source NFS location that was described.</p>"
+          "documentation":"<p>The URL of the NFS location.</p>"
         },
         "OnPremConfig":{"shape":"OnPremConfig"},
         "MountOptions":{
           "shape":"NfsMountOptions",
-          "documentation":"<p>The NFS mount options that DataSync used to mount your NFS share.</p>"
+          "documentation":"<p>The mount options that DataSync uses to mount your NFS file server.</p>"
         },
         "CreationTime":{
           "shape":"Time",
-          "documentation":"<p>The time that the NFS location was created.</p>"
+          "documentation":"<p>The time when the NFS location was created.</p>"
         }
       },
       "documentation":"<p>DescribeLocationNfsResponse</p>"
@@ -1784,13 +2302,165 @@
       },
       "documentation":"<p>DescribeLocationSmbResponse</p>"
     },
+    "DescribeStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of an on-premises storage system that you're using with DataSync Discovery.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourceMetricsRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceType",
+        "ResourceId"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies the kind of storage system resource that you want information about.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Specifies the universally unique identifier (UUID) of the storage system resource that you want information about.</p>"
+        },
+        "StartTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>Specifies a time within the total duration that the discovery job ran. To see information gathered during a certain time frame, use this parameter with <code>EndTime</code>.</p>"
+        },
+        "EndTime":{
+          "shape":"DiscoveryTime",
+          "documentation":"<p>Specifies a time within the total duration that the discovery job ran. To see information gathered during a certain time frame, use this parameter with <code>StartTime</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results that you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourceMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "Metrics":{
+          "shape":"Metrics",
+          "documentation":"<p>The details that your discovery job collected about your storage system resource.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceType"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that's collecting data from your on-premises storage system.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies what kind of storage system resources that you want information about.</p>"
+        },
+        "ResourceIds":{
+          "shape":"ResourceIds",
+          "documentation":"<p>Specifies the universally unique identifiers (UUIDs) of the storage system resources that you want information about. You can't use this parameter in combination with the <code>Filter</code> parameter.</p>"
+        },
+        "Filter":{
+          "shape":"ResourceFilters",
+          "documentation":"<p>Filters the storage system resources that you want returned. For example, this might be volumes associated with a specific storage virtual machine (SVM).</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies the maximum number of storage system resources that you want to list in a response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>The information collected about your storage system's resources. A response can also include Amazon Web Services storage service recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-findings.html\">storage resource information</a> collected by and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">recommendations</a> provided by DataSync Discovery.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "DescribeStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The ARN of the on-premises storage system that the discovery job looked at.</p>"
+        },
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>The server name and network port required to connect with your on-premises storage system's management interface.</p>"
+        },
+        "SystemType":{
+          "shape":"DiscoverySystemType",
+          "documentation":"<p>The type of on-premises storage system.</p> <note> <p>DataSync Discovery currently only supports NetApp Fabric-Attached Storage (FAS) and All Flash FAS (AFF) systems running ONTAP 9.7 or later. </p> </note>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>The ARN of the DataSync agent that connects to and reads from your on-premises storage system.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name that you gave your on-premises storage system when adding it to DataSync Discovery.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Describes the connectivity error that the DataSync agent is encountering with your on-premises storage system.</p>"
+        },
+        "ConnectivityStatus":{
+          "shape":"StorageSystemConnectivityStatus",
+          "documentation":"<p>Indicates whether your DataSync agent can connect to your on-premises storage system.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>The ARN of the Amazon CloudWatch log group that's used to monitor and log discovery job events.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when you added the on-premises storage system to DataSync Discovery.</p>"
+        },
+        "SecretsManagerArn":{
+          "shape":"SecretsManagerArn",
+          "documentation":"<p>The ARN of the secret that stores your on-premises storage system's credentials. DataSync Discovery stores these credentials in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-configure-storage.html#discovery-add-storage\">Secrets Manager</a>.</p>"
+        }
+      }
+    },
     "DescribeTaskExecutionRequest":{
       "type":"structure",
       "required":["TaskExecutionArn"],
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task that is being executed.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task execution that you want information about.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionRequest</p>"
@@ -1800,11 +2470,11 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution that was described. <code>TaskExecutionArn</code> is hierarchical and includes <code>TaskArn</code> for the task that was executed. </p> <p>For example, a <code>TaskExecution</code> value with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b</code> executed the task with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2</code>. </p>"
+          "documentation":"<p>The ARN of the task execution that you wanted information about. <code>TaskExecutionArn</code> is hierarchical and includes <code>TaskArn</code> for the task that was executed. </p> <p>For example, a <code>TaskExecution</code> value with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b</code> executed the task with the ARN <code>arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2</code>. </p>"
         },
         "Status":{
           "shape":"TaskExecutionStatus",
-          "documentation":"<p>The status of the task execution. </p> <p>For detailed information about task execution statuses, see Understanding Task Statuses in the <i>DataSync User Guide.</i> </p>"
+          "documentation":"<p>The status of the task execution. </p>"
         },
         "Options":{"shape":"Options"},
         "Excludes":{
@@ -1817,23 +2487,23 @@
         },
         "StartTime":{
           "shape":"Time",
-          "documentation":"<p>The time that the task execution was started.</p>"
+          "documentation":"<p>The time when the task execution started.</p>"
         },
         "EstimatedFilesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The expected number of files that is to be transferred over the network. This value is calculated during the <code>PREPARING</code> phase before the <code>TRANSFERRING</code> phase of the task execution. This value is the expected number of files to be transferred. It's calculated based on comparing the content of the source and destination locations and finding the delta that needs to be transferred. </p>"
+          "documentation":"<p>The expected number of files, objects, and directories that DataSync will transfer over the network. This value is calculated during the task execution's <code>PREPARING</code> phase before the <code>TRANSFERRING</code> phase. The calculation is based on comparing the content of the source and destination locations and finding the difference that needs to be transferred. </p>"
         },
         "EstimatedBytesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The estimated physical number of bytes that is to be transferred over the network.</p>"
+          "documentation":"<p>The estimated physical number of bytes that will transfer over the network.</p>"
         },
         "FilesTransferred":{
           "shape":"long",
-          "documentation":"<p>The actual number of files that was transferred over the network. This value is calculated and updated on an ongoing basis during the <code>TRANSFERRING</code> phase of the task execution. It's updated periodically when each file is read from the source and sent over the network. </p> <p>If failures occur during a transfer, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an indicator for a correct file number or to monitor your task execution.</p>"
+          "documentation":"<p>The actual number of files, objects, and directories that DataSync transferred over the network. This value is updated periodically during the task execution's <code>TRANSFERRING</code> phase when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what transferred or to monitor your task execution.</p>"
         },
         "BytesWritten":{
           "shape":"long",
-          "documentation":"<p>The number of logical bytes written to the destination Amazon Web Services storage resource.</p>"
+          "documentation":"<p>The number of logical bytes written to the destination location.</p>"
         },
         "BytesTransferred":{
           "shape":"long",
@@ -1846,6 +2516,30 @@
         "BytesCompressed":{
           "shape":"long",
           "documentation":"<p>The physical number of bytes transferred over the network after compression was applied. In most cases, this number is less than <code>BytesTransferred</code> unless the data isn't compressible.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>The configuration of your task report, which provides detailed information about for your DataSync transfer.</p>"
+        },
+        "FilesDeleted":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync deleted in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
+        },
+        "FilesSkipped":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync skipped during your transfer.</p>"
+        },
+        "FilesVerified":{
+          "shape":"long",
+          "documentation":"<p>The number of files, objects, and directories that DataSync verified during your transfer.</p>"
+        },
+        "ReportResult":{
+          "shape":"ReportResult",
+          "documentation":"<p>Indicates whether DataSync generated a complete <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a> for your transfer.</p>"
+        },
+        "EstimatedFilesToDelete":{
+          "shape":"long",
+          "documentation":"<p>The expected number of files, objects, and directories that DataSync will delete in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskExecutionResponse</p>"
@@ -1856,7 +2550,7 @@
       "members":{
         "TaskArn":{
           "shape":"TaskArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the task to describe.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the transfer task.</p>"
         }
       },
       "documentation":"<p>DescribeTaskRequest</p>"
@@ -1927,6 +2621,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>A list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>The configuration of your task report. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Creating a task report</a>.</p>"
         }
       },
       "documentation":"<p>DescribeTaskResponse</p>"
@@ -1935,6 +2633,100 @@
       "type":"list",
       "member":{"shape":"NetworkInterfaceArn"}
     },
+    "DiscoveryAgentArnList":{
+      "type":"list",
+      "member":{"shape":"AgentArn"},
+      "max":1,
+      "min":1
+    },
+    "DiscoveryJobArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:system/storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/job/discovery-job-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "DiscoveryJobList":{
+      "type":"list",
+      "member":{"shape":"DiscoveryJobListEntry"}
+    },
+    "DiscoveryJobListEntry":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a discovery job.</p>"
+        },
+        "Status":{
+          "shape":"DiscoveryJobStatus",
+          "documentation":"<p>The status of a discovery job. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#discovery-job-statuses-table\">Discovery job statuses</a>.</p>"
+        }
+      },
+      "documentation":"<p>The details about a specific DataSync discovery job.</p>"
+    },
+    "DiscoveryJobStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "WARNING",
+        "TERMINATED",
+        "FAILED",
+        "STOPPED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES"
+      ]
+    },
+    "DiscoveryMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "DiscoveryNextToken":{
+      "type":"string",
+      "max":65535,
+      "pattern":"[a-zA-Z0-9=_-]+"
+    },
+    "DiscoveryResourceFilter":{
+      "type":"string",
+      "enum":["SVM"]
+    },
+    "DiscoveryResourceType":{
+      "type":"string",
+      "enum":[
+        "SVM",
+        "VOLUME",
+        "CLUSTER"
+      ]
+    },
+    "DiscoveryServerConfiguration":{
+      "type":"structure",
+      "required":["ServerHostname"],
+      "members":{
+        "ServerHostname":{
+          "shape":"DiscoveryServerHostname",
+          "documentation":"<p>The domain name or IP address of your storage system's management interface.</p>"
+        },
+        "ServerPort":{
+          "shape":"DiscoveryServerPort",
+          "documentation":"<p>The network port for accessing the storage system's management interface.</p>"
+        }
+      },
+      "documentation":"<p>The network settings that DataSync Discovery uses to connect with your on-premises storage system's management interface.</p>"
+    },
+    "DiscoveryServerHostname":{
+      "type":"string",
+      "max":255,
+      "pattern":"^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
+    },
+    "DiscoveryServerPort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "DiscoverySystemType":{
+      "type":"string",
+      "enum":["NetAppONTAP"]
+    },
+    "DiscoveryTime":{"type":"timestamp"},
     "Duration":{
       "type":"long",
       "min":0
@@ -1960,7 +2752,7 @@
     "Ec2SecurityGroupArn":{
       "type":"string",
       "max":128,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/sg-[a-f0-9]+$"
     },
     "Ec2SecurityGroupArnList":{
       "type":"list",
@@ -1995,6 +2787,10 @@
       "max":4096,
       "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\p{Zs}]*$"
     },
+    "EnabledProtocols":{
+      "type":"list",
+      "member":{"shape":"PtolemyString"}
+    },
     "Endpoint":{
       "type":"string",
       "max":15,
@@ -2009,6 +2805,11 @@
         "FIPS"
       ]
     },
+    "ErrorMessage":{
+      "type":"string",
+      "max":128,
+      "pattern":".*"
+    },
     "FilterAttributeValue":{
       "type":"string",
       "max":255,
@@ -2020,6 +2821,10 @@
       "member":{"shape":"FilterRule"},
       "max":1,
       "min":0
+    },
+    "FilterMembers":{
+      "type":"list",
+      "member":{"shape":"PtolemyString"}
     },
     "FilterRule":{
       "type":"structure",
@@ -2119,6 +2924,33 @@
       "max":4096,
       "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
     },
+    "GenerateRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "ResourceIds",
+        "ResourceType"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that collects information about your on-premises storage system.</p>"
+        },
+        "ResourceIds":{
+          "shape":"ResourceIds",
+          "documentation":"<p>Specifies the universally unique identifiers (UUIDs) of the resources in your storage system that you want recommendations on.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>Specifies the type of resource in your storage system that you want recommendations on.</p>"
+        }
+      }
+    },
+    "GenerateRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Gid":{
       "type":"string",
       "enum":[
@@ -2211,6 +3043,28 @@
       "min":1,
       "pattern":"^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"
     },
+    "IOPS":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS unrelated to read and write operations.</p>"
+        },
+        "Total":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total IOPS on your on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -2262,6 +3116,24 @@
       "min":1,
       "pattern":"^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$"
     },
+    "Latency":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for operations unrelated to read and write operations.</p>"
+        }
+      },
+      "documentation":"<p>The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "ListAgentsRequest":{
       "type":"structure",
       "members":{
@@ -2289,6 +3161,36 @@
         }
       },
       "documentation":"<p>ListAgentsResponse</p>"
+    },
+    "ListDiscoveryJobsRequest":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of an on-premises storage system. Use this parameter if you only want to list the discovery jobs that are associated with a specific storage system.</p>"
+        },
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
+    },
+    "ListDiscoveryJobsResponse":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobs":{
+          "shape":"DiscoveryJobList",
+          "documentation":"<p>The discovery jobs that you've run.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
     },
     "ListLocationsRequest":{
       "type":"structure",
@@ -2321,6 +3223,32 @@
         }
       },
       "documentation":"<p>ListLocationsResponse</p>"
+    },
+    "ListStorageSystemsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"DiscoveryMaxResults",
+          "documentation":"<p>Specifies how many results you want in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>Specifies an opaque string that indicates the position to begin the next list of results in the response. </p>"
+        }
+      }
+    },
+    "ListStorageSystemsResponse":{
+      "type":"structure",
+      "members":{
+        "StorageSystems":{
+          "shape":"StorageSystemList",
+          "documentation":"<p>The Amazon Resource Names ARNs) of the on-premises storage systems that you're using with DataSync Discovery.</p>"
+        },
+        "NextToken":{
+          "shape":"DiscoveryNextToken",
+          "documentation":"<p>The opaque string that indicates the position to begin the next list of results in the response.</p>"
+        }
+      }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -2485,7 +3413,7 @@
     "LogGroupArn":{
       "type":"string",
       "max":562,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]+:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
     },
     "LogLevel":{
       "type":"string",
@@ -2495,10 +3423,64 @@
         "TRANSFER"
       ]
     },
+    "MaxP95Performance":{
+      "type":"structure",
+      "members":{
+        "IopsRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to read operations.</p>"
+        },
+        "IopsWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS related to write operations.</p>"
+        },
+        "IopsOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak IOPS unrelated to read and write operations.</p>"
+        },
+        "IopsTotal":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total IOPS on your on-premises storage system resource.</p>"
+        },
+        "ThroughputRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to read operations.</p>"
+        },
+        "ThroughputWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to write operations.</p>"
+        },
+        "ThroughputOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput unrelated to read and write operations.</p>"
+        },
+        "ThroughputTotal":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total throughput on your on-premises storage system resource.</p>"
+        },
+        "LatencyRead":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for read operations.</p>"
+        },
+        "LatencyWrite":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for write operations.</p>"
+        },
+        "LatencyOther":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak latency for operations unrelated to read and write operations.</p>"
+        }
+      },
+      "documentation":"<p>The performance data that DataSync Discovery collects about an on-premises storage system resource.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "Metrics":{
+      "type":"list",
+      "member":{"shape":"ResourceMetrics"}
     },
     "Mtime":{
       "type":"string",
@@ -2506,6 +3488,206 @@
         "NONE",
         "PRESERVE"
       ]
+    },
+    "Name":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{M}\\p{N}\\s+=._:@\\/-]+$"
+    },
+    "NetAppONTAPCluster":{
+      "type":"structure",
+      "members":{
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the cluster.</p>"
+        },
+        "NfsExportedVolumes":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of NFS volumes in the cluster.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the cluster.</p>"
+        },
+        "ClusterName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the cluster.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the cluster.</p>"
+        },
+        "ClusterBlockStorageSize":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the cluster.</p>"
+        },
+        "ClusterBlockStorageUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in a cluster.</p>"
+        },
+        "ClusterBlockStorageLogicalUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the cluster without accounting for compression or deduplication.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the cluster are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        },
+        "LunCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of LUNs (logical unit numbers) in the cluster.</p>"
+        },
+        "ClusterCloudStorageUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of space in the cluster that's in cloud storage (for example, if you're using data tiering).</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about an on-premises storage system cluster.</p>"
+    },
+    "NetAppONTAPClusters":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPCluster"}
+    },
+    "NetAppONTAPSVM":{
+      "type":"structure",
+      "members":{
+        "ClusterUuid":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the cluster associated with the SVM.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The UUID of the SVM.</p>"
+        },
+        "SvmName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the SVM</p>"
+        },
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the SVM.</p>"
+        },
+        "EnabledProtocols":{
+          "shape":"EnabledProtocols",
+          "documentation":"<p>The data transfer protocols (such as NFS) configured for the SVM.</p>"
+        },
+        "TotalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the SVM.</p>"
+        },
+        "TotalCapacityProvisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the SVM.</p>"
+        },
+        "TotalLogicalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the SVM without accounting for compression or deduplication.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the SVM.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the SVM. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "NfsExportedVolumes":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of NFS volumes in the SVM.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the SVM are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        },
+        "TotalSnapshotCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of storage in the SVM that's being used for snapshots.</p>"
+        },
+        "LunCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of LUNs (logical unit numbers) in the SVM.</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about a storage virtual machine (SVM) in your on-premises storage system.</p>"
+    },
+    "NetAppONTAPSVMs":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPSVM"}
+    },
+    "NetAppONTAPVolume":{
+      "type":"structure",
+      "members":{
+        "VolumeName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the volume.</p>"
+        },
+        "ResourceId":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The universally unique identifier (UUID) of the volume.</p>"
+        },
+        "CifsShareCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of CIFS shares in the volume.</p>"
+        },
+        "SecurityStyle":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The volume's security style (such as Unix or NTFS).</p>"
+        },
+        "SvmUuid":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>The UUID of the storage virtual machine (SVM) associated with the volume.</p>"
+        },
+        "SvmName":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The name of the SVM associated with the volume.</p>"
+        },
+        "CapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the volume.</p>"
+        },
+        "CapacityProvisioned":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total storage space that's available in the volume.</p>"
+        },
+        "LogicalCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The storage space that's being used in the volume without accounting for compression or deduplication.</p>"
+        },
+        "NfsExported":{
+          "shape":"PtolemyBoolean",
+          "documentation":"<p>The number of NFS volumes in the volume.</p>"
+        },
+        "SnapshotCapacityUsed":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The amount of storage in the volume that's being used for snapshots.</p>"
+        },
+        "MaxP95Performance":{
+          "shape":"MaxP95Performance",
+          "documentation":"<p>The performance data that DataSync Discovery collects about the volume.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>The Amazon Web Services storage services that DataSync Discovery recommends for the volume. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+        },
+        "RecommendationStatus":{
+          "shape":"RecommendationStatus",
+          "documentation":"<p>Indicates whether DataSync Discovery recommendations for the volume are ready to view, incomplete, or can't be determined.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-job-statuses.html#recommendation-statuses-table\">Recommendation statuses</a>.</p>"
+        },
+        "LunCount":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The number of LUNs (logical unit numbers) in the volume.</p>"
+        }
+      },
+      "documentation":"<p>The information that DataSync Discovery collects about a volume in your on-premises storage system.</p>"
+    },
+    "NetAppONTAPVolumes":{
+      "type":"list",
+      "member":{"shape":"NetAppONTAPVolume"}
     },
     "NetworkInterfaceArn":{
       "type":"string",
@@ -2540,6 +3722,16 @@
         "NFS4_0",
         "NFS4_1"
       ]
+    },
+    "NonNegativeDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "NonNegativeLong":{
+      "type":"long",
+      "box":true,
+      "min":0
     },
     "ObjectStorageAccessKey":{
       "type":"string",
@@ -2584,16 +3776,23 @@
         "NONE"
       ]
     },
+    "ObjectVersionIds":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "NONE"
+      ]
+    },
     "OnPremConfig":{
       "type":"structure",
       "required":["AgentArns"],
       "members":{
         "AgentArns":{
           "shape":"AgentArnList",
-          "documentation":"<p>ARNs of the agents to use for an NFS location.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the agents connecting to a transfer location.</p>"
         }
       },
-      "documentation":"<p>A list of Amazon Resource Names (ARNs) of agents to use for a Network File System (NFS) location.</p>"
+      "documentation":"<p>The DataSync agents that are connecting to a Network File System (NFS) location.</p>"
     },
     "Operator":{
       "type":"string",
@@ -2655,7 +3854,7 @@
         },
         "TaskQueueing":{
           "shape":"TaskQueueing",
-          "documentation":"<p>Specifies whether tasks should be queued before executing the tasks. The default is <code>ENABLED</code>, which means the tasks will be queued.</p> <p>If you use the same agent to run multiple tasks, you can enable the tasks to run in series. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#queue-task-execution\">Queueing task executions</a>.</p>"
+          "documentation":"<p>Specifies whether your transfer tasks should be put into a queue during certain scenarios when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#running-multiple-tasks\">running multiple tasks</a>. This is <code>ENABLED</code> by default.</p>"
         },
         "LogLevel":{
           "shape":"LogLevel",
@@ -2674,7 +3873,7 @@
           "documentation":"<p>Specifies whether object tags are preserved when transferring between object storage systems. If you want your DataSync task to ignore object tags, specify the <code>NONE</code> value.</p> <p>Default Value: <code>PRESERVE</code> </p>"
         }
       },
-      "documentation":"<p>Configures your DataSync task settings. These options include how DataSync handles files, objects, and their associated metadata. You also can specify how DataSync verifies data integrity, set bandwidth limits for your task, among other options.</p> <p>Each task setting has a default value. Unless you need to, you don't have to configure any of these <code>Options</code> before starting your task.</p>"
+      "documentation":"<p>Indicates how your transfer task is configured. These options include how DataSync handles files, objects, and their associated metadata during your transfer. You also can specify how to verify data integrity, set bandwidth limits for your task, among other options.</p> <p>Each option has a default value. Unless you need to, you don't have to configure any of these options before starting your task.</p>"
     },
     "OutputTagList":{
       "type":"list",
@@ -2688,6 +3887,24 @@
         "ALWAYS",
         "NEVER"
       ]
+    },
+    "P95Metrics":{
+      "type":"structure",
+      "members":{
+        "IOPS":{
+          "shape":"IOPS",
+          "documentation":"<p>The IOPS peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        },
+        "Throughput":{
+          "shape":"Throughput",
+          "documentation":"<p>The throughput peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        },
+        "Latency":{
+          "shape":"Latency",
+          "documentation":"<p>The latency peaks for an on-premises storage system resource. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+        }
+      },
+      "documentation":"<p>The types of performance data that DataSync Discovery collects about an on-premises storage system resource.</p>"
     },
     "PLSecurityGroupArnList":{
       "type":"list",
@@ -2735,22 +3952,44 @@
       "members":{
         "VpcEndpointId":{
           "shape":"VpcEndpointId",
-          "documentation":"<p>The ID of the VPC endpoint that is configured for an agent. An agent that is configured with a VPC endpoint will not be accessible over the public internet.</p>"
+          "documentation":"<p>Specifies the ID of the VPC endpoint that your agent connects to.</p>"
         },
         "PrivateLinkEndpoint":{
           "shape":"Endpoint",
-          "documentation":"<p>The private endpoint that is configured for an agent that has access to IP addresses in a <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html\">PrivateLink</a>. An agent that is configured with this endpoint will not be accessible over the public internet.</p>"
+          "documentation":"<p>Specifies the VPC endpoint provided by <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html\">Amazon Web Services PrivateLink</a> that your agent connects to.</p>"
         },
         "SubnetArns":{
           "shape":"PLSubnetArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the subnets that are configured for an agent activated in a VPC or an agent that has access to a VPC endpoint.</p>"
+          "documentation":"<p>Specifies the ARN of the subnet where your VPC endpoint is located. You can only specify one ARN.</p>"
         },
         "SecurityGroupArns":{
           "shape":"PLSecurityGroupArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that are configured for the EC2 resource that hosts an agent activated in a VPC or an agent that has access to a VPC endpoint.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Names (ARN) of the security group that provides DataSync access to your VPC endpoint. You can only specify one ARN.</p>"
         }
       },
-      "documentation":"<p>The VPC endpoint, subnet, and security group that an agent uses to access IP addresses in a VPC (Virtual Private Cloud).</p>"
+      "documentation":"<p>Specifies how your DataSync agent connects to Amazon Web Services using a virtual private cloud (VPC) service endpoint. An agent that uses a VPC endpoint isn't accessible over the public internet.</p>"
+    },
+    "PtolemyBoolean":{"type":"boolean"},
+    "PtolemyPassword":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(?!.*[:\\\"][^:\"]*$).+$",
+      "sensitive":true
+    },
+    "PtolemyString":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^.{0,1024}$"
+    },
+    "PtolemyUUID":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "PtolemyUsername":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^(?!.*[:\\\"][^:\"]*$).+$",
+      "sensitive":true
     },
     "QopConfiguration":{
       "type":"structure",
@@ -2765,6 +4004,212 @@
         }
       },
       "documentation":"<p>The Quality of Protection (QOP) configuration specifies the Remote Procedure Call (RPC) and data transfer privacy settings configured on the Hadoop Distributed File System (HDFS) cluster.</p>"
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "StorageType":{
+          "shape":"PtolemyString",
+          "documentation":"<p>A recommended Amazon Web Services storage service that you can migrate data to based on information that DataSync Discovery collects about your on-premises storage system.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"RecommendationsConfigMap",
+          "documentation":"<p>Information about how you can set up a recommended Amazon Web Services storage service.</p>"
+        },
+        "EstimatedMonthlyStorageCost":{
+          "shape":"PtolemyString",
+          "documentation":"<p>The estimated monthly cost of the recommended Amazon Web Services storage service.</p>"
+        }
+      },
+      "documentation":"<p>The details about an Amazon Web Services storage service that DataSync Discovery recommends for a resource in your on-premises storage system.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/discovery-understand-recommendations.html\">Recommendations provided by DataSync Discovery</a>.</p>"
+    },
+    "RecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "Recommendations":{
+      "type":"list",
+      "member":{"shape":"Recommendation"}
+    },
+    "RecommendationsConfigMap":{
+      "type":"map",
+      "key":{"shape":"PtolemyString"},
+      "value":{"shape":"PtolemyString"}
+    },
+    "RemoveStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the storage system that you want to permanently remove from DataSync Discovery.</p>"
+        }
+      }
+    },
+    "RemoveStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ReportDestination":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"ReportDestinationS3",
+          "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your task report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies where DataSync uploads your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportDestinationS3":{
+      "type":"structure",
+      "required":[
+        "S3BucketArn",
+        "BucketAccessRoleArn"
+      ],
+      "members":{
+        "Subdirectory":{
+          "shape":"S3Subdirectory",
+          "documentation":"<p>Specifies a bucket prefix for your report.</p>"
+        },
+        "S3BucketArn":{
+          "shape":"S3BucketArn",
+          "documentation":"<p>Specifies the ARN of the S3 bucket where DataSync uploads your report.</p>"
+        },
+        "BucketAccessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM policy that allows DataSync to upload a task report to your S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Allowing DataSync to upload a task report to an Amazon S3 bucket</a>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportLevel":{
+      "type":"string",
+      "enum":[
+        "ERRORS_ONLY",
+        "SUCCESSES_AND_ERRORS"
+      ]
+    },
+    "ReportOutputType":{
+      "type":"string",
+      "enum":[
+        "SUMMARY_ONLY",
+        "STANDARD"
+      ]
+    },
+    "ReportOverride":{
+      "type":"structure",
+      "members":{
+        "ReportLevel":{
+          "shape":"ReportLevel",
+          "documentation":"<p>Specifies whether your task report includes errors only or successes and errors.</p> <p>For example, your report might mostly include only what didn't go well in your transfer (<code>ERRORS_ONLY</code>). At the same time, you want to verify that your <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">task filter</a> is working correctly. In this situation, you can get a list of what files DataSync successfully skipped and if something transferred that you didn't to transfer (<code>SUCCESSES_AND_ERRORS</code>).</p>"
+        }
+      },
+      "documentation":"<p>Specifies the level of detail for a particular aspect of your DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportOverrides":{
+      "type":"structure",
+      "members":{
+        "Transferred":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to transfer.</p>"
+        },
+        "Verified":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to verify at the end of your transfer. This only applies if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html\">configure your task</a> to verify data during and after the transfer (which DataSync does by default).</p>"
+        },
+        "Deleted":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to delete in your destination location. This only applies if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
+        },
+        "Skipped":{
+          "shape":"ReportOverride",
+          "documentation":"<p>Specifies the level of reporting for the files, objects, and directories that DataSync attempted to skip during your transfer.</p>"
+        }
+      },
+      "documentation":"<p>The level of detail included in each aspect of your DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a>.</p>"
+    },
+    "ReportResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"PhaseStatus",
+          "documentation":"<p>Indicates whether DataSync is still working on your report, created a report, or can't create a complete report.</p>"
+        },
+        "ErrorCode":{
+          "shape":"string",
+          "documentation":"<p>Indicates the code associated with the error if DataSync can't create a complete report.</p>"
+        },
+        "ErrorDetail":{
+          "shape":"string",
+          "documentation":"<p>Provides details about issues creating a report.</p>"
+        }
+      },
+      "documentation":"<p>Indicates whether DataSync created a complete <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">task report</a> for your transfer.</p>"
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "NetAppONTAPSVMs":{
+          "shape":"NetAppONTAPSVMs",
+          "documentation":"<p>The information that DataSync Discovery collects about storage virtual machines (SVMs) in your on-premises storage system.</p>"
+        },
+        "NetAppONTAPVolumes":{
+          "shape":"NetAppONTAPVolumes",
+          "documentation":"<p>The information that DataSync Discovery collects about volumes in your on-premises storage system.</p>"
+        },
+        "NetAppONTAPClusters":{
+          "shape":"NetAppONTAPClusters",
+          "documentation":"<p>The information that DataSync Discovery collects about the cluster in your on-premises storage system.</p>"
+        }
+      },
+      "documentation":"<p>Information provided by DataSync Discovery about the resources in your on-premises storage system.</p>"
+    },
+    "ResourceFilters":{
+      "type":"map",
+      "key":{"shape":"DiscoveryResourceFilter"},
+      "value":{"shape":"FilterMembers"}
+    },
+    "ResourceId":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "ResourceIds":{
+      "type":"list",
+      "member":{"shape":"ResourceId"},
+      "max":100,
+      "min":1
+    },
+    "ResourceMetrics":{
+      "type":"structure",
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when DataSync Discovery collected this information from the resource.</p>"
+        },
+        "P95Metrics":{
+          "shape":"P95Metrics",
+          "documentation":"<p>The types of performance data that DataSync Discovery collects about the on-premises storage system resource.</p>"
+        },
+        "Capacity":{
+          "shape":"Capacity",
+          "documentation":"<p>The storage capacity of the on-premises storage system resource.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The universally unique identifier (UUID) of the on-premises storage system resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"DiscoveryResourceType",
+          "documentation":"<p>The type of on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>Information, including performance data and capacity usage, provided by DataSync Discovery about a resource in your on-premises storage system.</p>"
     },
     "S3BucketArn":{
       "type":"string",
@@ -2805,6 +4250,11 @@
       "max":256,
       "pattern":"^[a-zA-Z0-9\\ \\_\\*\\?\\,\\|\\^\\-\\/\\#\\s\\(\\)\\+]*$"
     },
+    "SecretsManagerArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):secretsmanager:[a-z\\-0-9]+:[0-9]{12}:secret:.*"
+    },
     "ServerHostname":{
       "type":"string",
       "max":255,
@@ -2820,7 +4270,7 @@
       "members":{
         "Version":{
           "shape":"SmbVersion",
-          "documentation":"<p>By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically.</p> <p>These are the following options for configuring the SMB version:</p> <ul> <li> <p> <code>AUTOMATIC</code> (default): DataSync and the SMB file server negotiate a protocol version that they mutually support. (DataSync supports SMB versions 1.0 and later.)</p> <p>This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an <code>Operation Not Supported</code> error.</p> </li> <li> <p> <code>SMB3</code>: Restricts the protocol negotiation to only SMB version 3.0.2.</p> </li> <li> <p> <code>SMB2</code>: Restricts the protocol negotiation to only SMB version 2.1.</p> </li> <li> <p> <code>SMB2_0</code>: Restricts the protocol negotiation to only SMB version 2.0.</p> </li> <li> <p> <code>SMB1</code>: Restricts the protocol negotiation to only SMB version 1.0.</p> <note> <p>The <code>SMB1</code> option isn't available when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateLocationFsxOntap.html\">creating an Amazon FSx for NetApp ONTAP location</a>.</p> </note> </li> </ul>"
+          "documentation":"<p>By default, DataSync automatically chooses an SMB protocol version based on negotiation with your SMB file server. You also can configure DataSync to use a specific SMB version, but we recommend doing this only if DataSync has trouble negotiating with the SMB file server automatically.</p> <p>These are the following options for configuring the SMB version:</p> <ul> <li> <p> <code>AUTOMATIC</code> (default): DataSync and the SMB file server negotiate the highest version of SMB that they mutually support between 2.1 and 3.1.1.</p> <p>This is the recommended option. If you instead choose a specific version that your file server doesn't support, you may get an <code>Operation Not Supported</code> error.</p> </li> <li> <p> <code>SMB3</code>: Restricts the protocol negotiation to only SMB version 3.0.2.</p> </li> <li> <p> <code>SMB2</code>: Restricts the protocol negotiation to only SMB version 2.1.</p> </li> <li> <p> <code>SMB2_0</code>: Restricts the protocol negotiation to only SMB version 2.0.</p> </li> <li> <p> <code>SMB1</code>: Restricts the protocol negotiation to only SMB version 1.0.</p> <note> <p>The <code>SMB1</code> option isn't available when <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_CreateLocationFsxOntap.html\">creating an Amazon FSx for NetApp ONTAP location</a>.</p> </note> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies the version of the Server Message Block (SMB) protocol that DataSync uses to access an SMB file server.</p>"
@@ -2863,6 +4313,42 @@
       "type":"list",
       "member":{"shape":"NetworkInterfaceArn"}
     },
+    "StartDiscoveryJobRequest":{
+      "type":"structure",
+      "required":[
+        "StorageSystemArn",
+        "CollectionDurationMinutes",
+        "ClientToken"
+      ],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the on-premises storage system that you want to run the discovery job on.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>Specifies in minutes how long you want the discovery job to run.</p> <note> <p>For more accurate recommendations, we recommend a duration of at least 14 days. Longer durations allow time to collect a sufficient number of data points and provide a realistic representation of storage performance and utilization.</p> </note>"
+        },
+        "ClientToken":{
+          "shape":"PtolemyUUID",
+          "documentation":"<p>Specifies a client token to make sure requests with this API operation are idempotent. If you don't specify a client token, DataSync generates one for you automatically.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"InputTagList",
+          "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources.</p>"
+        }
+      }
+    },
+    "StartDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>The ARN of the discovery job that you started.</p>"
+        }
+      }
+    },
     "StartTaskExecutionRequest":{
       "type":"structure",
       "required":["TaskArn"],
@@ -2883,6 +4369,10 @@
         "Tags":{
           "shape":"InputTagList",
           "documentation":"<p>Specifies the tags that you want to apply to the Amazon Resource Name (ARN) representing the task execution.</p> <p> <i>Tags</i> are key-value pairs that help you manage, filter, and search for your DataSync resources.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>StartTaskExecutionRequest</p>"
@@ -2896,6 +4386,52 @@
         }
       },
       "documentation":"<p>StartTaskExecutionResponse</p>"
+    },
+    "StopDiscoveryJobRequest":{
+      "type":"structure",
+      "required":["DiscoveryJobArn"],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want to stop. </p>"
+        }
+      }
+    },
+    "StopDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "StorageSystemArn":{
+      "type":"string",
+      "max":128,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:system/storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "StorageSystemConnectivityStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "UNKNOWN"
+      ]
+    },
+    "StorageSystemList":{
+      "type":"list",
+      "member":{"shape":"StorageSystemListEntry"}
+    },
+    "StorageSystemListEntry":{
+      "type":"structure",
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>The Amazon Resource Names (ARN) of an on-premises storage system that you added to DataSync Discovery.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of an on-premises storage system that you added to DataSync Discovery.</p>"
+        }
+      },
+      "documentation":"<p>Information that identifies an on-premises storage system that you're using with DataSync Discovery.</p>"
     },
     "StorageVirtualMachineArn":{
       "type":"string",
@@ -2961,7 +4497,7 @@
     "TaggableResourceArn":{
       "type":"string",
       "max":128,
-      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location)/(agent|task|loc)-[a-f0-9]{17}(/execution/exec-[a-f0-9]{17})?$"
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:(agent|task|location|system)/((agent|task|loc)-[a-f0-9]{17}|storage-system-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(/execution/exec-[a-f0-9]{17})?$"
     },
     "TaskArn":{
       "type":"string",
@@ -3108,6 +4644,32 @@
         "DISABLED"
       ]
     },
+    "TaskReportConfig":{
+      "type":"structure",
+      "members":{
+        "Destination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>Specifies the Amazon S3 bucket where DataSync uploads your task report. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html#task-report-access\">Task reports</a>.</p>"
+        },
+        "OutputType":{
+          "shape":"ReportOutputType",
+          "documentation":"<p>Specifies the type of task report that you want:</p> <ul> <li> <p> <code>SUMMARY_ONLY</code>: Provides necessary details about your task, including the number of files, objects, and directories transferred and transfer duration.</p> </li> <li> <p> <code>STANDARD</code>: Provides complete details about your task, including a full list of files, objects, and directories that were transferred, skipped, verified, and more.</p> </li> </ul>"
+        },
+        "ReportLevel":{
+          "shape":"ReportLevel",
+          "documentation":"<p>Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't.</p> <ul> <li> <p> <code>ERRORS_ONLY</code>: A report shows what DataSync was unable to transfer, skip, verify, and delete.</p> </li> <li> <p> <code>SUCCESSES_AND_ERRORS</code>: A report shows what DataSync was able and unable to transfer, skip, verify, and delete.</p> </li> </ul>"
+        },
+        "ObjectVersionIds":{
+          "shape":"ObjectVersionIds",
+          "documentation":"<p>Specifies whether your task report includes the new version of each object transferred into an S3 bucket. This only applies if you <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html\">enable versioning on your bucket</a>. Keep in mind that setting this to <code>INCLUDE</code> can increase the duration of your task execution.</p>"
+        },
+        "Overrides":{
+          "shape":"ReportOverrides",
+          "documentation":"<p>Customizes the reporting level for aspects of your task report. For example, your report might generally only include errors, but you could specify that you want a list of successes and errors just for the files that DataSync attempted to delete in your destination location.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-task-reports.html\">Task reports</a>.</p>"
+    },
     "TaskSchedule":{
       "type":"structure",
       "required":["ScheduleExpression"],
@@ -3129,7 +4691,30 @@
         "UNAVAILABLE"
       ]
     },
+    "Throughput":{
+      "type":"structure",
+      "members":{
+        "Read":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to read operations.</p>"
+        },
+        "Write":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput related to write operations.</p>"
+        },
+        "Other":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak throughput unrelated to read and write operations.</p>"
+        },
+        "Total":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>Peak total throughput on your on-premises storage system resource.</p>"
+        }
+      },
+      "documentation":"<p>The throughput peaks for an on-premises storage system volume. Each data point represents the 95th percentile peak value during a 1-hour interval.</p>"
+    },
     "Time":{"type":"timestamp"},
+    "Timestamp":{"type":"timestamp"},
     "TransferMode":{
       "type":"string",
       "enum":[
@@ -3185,6 +4770,67 @@
       "documentation":"<p>UpdateAgentRequest</p>"
     },
     "UpdateAgentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateDiscoveryJobRequest":{
+      "type":"structure",
+      "required":[
+        "DiscoveryJobArn",
+        "CollectionDurationMinutes"
+      ],
+      "members":{
+        "DiscoveryJobArn":{
+          "shape":"DiscoveryJobArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the discovery job that you want to update.</p>"
+        },
+        "CollectionDurationMinutes":{
+          "shape":"CollectionDurationMinutes",
+          "documentation":"<p>Specifies in minutes how long that you want the discovery job to run. (You can't set this parameter to less than the number of minutes that the job has already run for.)</p>"
+        }
+      }
+    },
+    "UpdateDiscoveryJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateLocationAzureBlobRequest":{
+      "type":"structure",
+      "required":["LocationArn"],
+      "members":{
+        "LocationArn":{
+          "shape":"LocationArn",
+          "documentation":"<p>Specifies the ARN of the Azure Blob Storage transfer location that you're updating.</p>"
+        },
+        "Subdirectory":{
+          "shape":"AzureBlobSubdirectory",
+          "documentation":"<p>Specifies path segments if you want to limit your transfer to a virtual directory in your container (for example, <code>/my/images</code>).</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AzureBlobAuthenticationType",
+          "documentation":"<p>Specifies the authentication method DataSync uses to access your Azure Blob Storage. DataSync can access blob storage using a shared access signature (SAS).</p>"
+        },
+        "SasConfiguration":{
+          "shape":"AzureBlobSasConfiguration",
+          "documentation":"<p>Specifies the SAS configuration that allows DataSync to access your Azure Blob Storage.</p>"
+        },
+        "BlobType":{
+          "shape":"AzureBlobType",
+          "documentation":"<p>Specifies the type of blob that you want your objects or files to be when transferring them into Azure Blob Storage. Currently, DataSync only supports moving data into Azure Blob Storage as block blobs. For more information on blob types, see the <a href=\"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs\">Azure Blob Storage documentation</a>.</p>"
+        },
+        "AccessTier":{
+          "shape":"AzureAccessTier",
+          "documentation":"<p>Specifies the access tier that you want your objects or files transferred into. This only applies when using the location as a transfer destination. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/creating-azure-blob-location.html#azure-blob-access-tiers\">Access tiers</a>.</p>"
+        },
+        "AgentArns":{
+          "shape":"AgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that can connect with your Azure Blob Storage container.</p> <p>You can specify more than one agent. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/multiple-agents.html\">Using multiple agents for your transfer</a>.</p>"
+        }
+      }
+    },
+    "UpdateLocationAzureBlobResponse":{
       "type":"structure",
       "members":{
       }
@@ -3258,11 +4904,11 @@
       "members":{
         "LocationArn":{
           "shape":"LocationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the NFS location to update.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the NFS transfer location that you want to update.</p>"
         },
         "Subdirectory":{
           "shape":"NfsSubdirectory",
-          "documentation":"<p>The subdirectory in the NFS file system that is used to read data from the NFS source location or write data to the NFS destination. The NFS path should be a path that's exported by the NFS server, or a subdirectory of that path. The path should be such that it can be mounted by other NFS clients in your network.</p> <p>To see all the paths exported by your NFS server, run \"<code>showmount -e nfs-server-name</code>\" from an NFS client that has access to your server. You can specify any directory that appears in the results, and any subdirectory of that directory. Ensure that the NFS export is accessible without Kerberos authentication. </p> <p>To transfer all the data in the folder that you specified, DataSync must have permissions to read all the data. To ensure this, either configure the NFS export with <code>no_root_squash</code>, or ensure that the files you want DataSync to access have permissions that allow read access for all users. Doing either option enables the agent to read the files. For the agent to access directories, you must additionally enable all execute access.</p> <p>If you are copying data to or from your Snowcone device, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#nfs-on-snowcone\">NFS Server on Snowcone</a> for more information.</p> <p>For information about NFS export configuration, see 18.7. The /etc/exports Configuration File in the Red Hat Enterprise Linux documentation.</p>"
+          "documentation":"<p>Specifies the export path in your NFS file server that you want DataSync to mount.</p> <p>This path (or a subdirectory of the path) is where DataSync transfers data to or from. For information on configuring an export for DataSync, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#accessing-nfs\">Accessing NFS file servers</a>.</p>"
         },
         "OnPremConfig":{"shape":"OnPremConfig"},
         "MountOptions":{"shape":"NfsMountOptions"}
@@ -3352,6 +4998,41 @@
       "members":{
       }
     },
+    "UpdateStorageSystemRequest":{
+      "type":"structure",
+      "required":["StorageSystemArn"],
+      "members":{
+        "StorageSystemArn":{
+          "shape":"StorageSystemArn",
+          "documentation":"<p>Specifies the ARN of the on-premises storage system that you want reconfigure.</p>"
+        },
+        "ServerConfiguration":{
+          "shape":"DiscoveryServerConfiguration",
+          "documentation":"<p>Specifies the server name and network port required to connect with your on-premises storage system's management interface.</p>"
+        },
+        "AgentArns":{
+          "shape":"DiscoveryAgentArnList",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the DataSync agent that connects to and reads your on-premises storage system. You can only specify one ARN.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>Specifies a familiar name for your on-premises storage system.</p>"
+        },
+        "CloudWatchLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>Specifies the ARN of the Amazon CloudWatch log group for monitoring and logging discovery job events.</p>"
+        },
+        "Credentials":{
+          "shape":"Credentials",
+          "documentation":"<p>Specifies the user name and password for accessing your on-premises storage system's management interface.</p>"
+        }
+      }
+    },
+    "UpdateStorageSystemResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateTaskExecutionRequest":{
       "type":"structure",
       "required":[
@@ -3361,7 +5042,7 @@
       "members":{
         "TaskExecutionArn":{
           "shape":"TaskExecutionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the specific task execution that is being updated. </p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the task execution that you're updating.</p>"
         },
         "Options":{"shape":"Options"}
       }
@@ -3399,6 +5080,10 @@
         "Includes":{
           "shape":"FilterList",
           "documentation":"<p>Specifies a list of filter rules that include specific data during your transfer. For more information and examples, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">Filtering data transferred by DataSync</a>.</p>"
+        },
+        "TaskReportConfig":{
+          "shape":"TaskReportConfig",
+          "documentation":"<p>Specifies how you want to configure a task report, which provides detailed information about for your DataSync transfer.</p>"
         }
       },
       "documentation":"<p>UpdateTaskResponse</p>"
@@ -3423,5 +5108,5 @@
     "long":{"type":"long"},
     "string":{"type":"string"}
   },
-  "documentation":"<fullname>DataSync</fullname> <p>DataSync is a managed data transfer service that makes it simpler for you to automate moving data between on-premises storage and Amazon Web Services storage services. You also can use DataSync to transfer data between other cloud providers and Amazon Web Services storage services.</p> <p>This API interface reference includes documentation for using DataSync programmatically. For complete information, see the <i> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html\">DataSync User Guide</a> </i>.</p>"
+  "documentation":"<fullname>DataSync</fullname> <p>DataSync is an online data movement and discovery service that simplifies data migration and helps you quickly, easily, and securely transfer your file or object data to, from, and between Amazon Web Services storage services.</p> <p>This API interface reference includes documentation for using DataSync programmatically. For complete information, see the <i> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html\">DataSync User Guide</a> </i>.</p>"
 }

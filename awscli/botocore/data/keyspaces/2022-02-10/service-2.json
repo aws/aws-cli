@@ -202,7 +202,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Associates a set of tags with a Amazon Keyspaces resource. You can then activate these user-defined tags so that they appear on the Cost Management Console for cost allocation tracking. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html\">Adding tags and labels to Amazon Keyspaces resources</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>For IAM policy examples that show how to control access to Amazon Keyspaces resources based on tags, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/security_iam_id-based-policy-examples-tags\">Amazon Keyspaces resource access based on tags</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+      "documentation":"<p>Associates a set of tags with a Amazon Keyspaces resource. You can then activate these user-defined tags so that they appear on the Cost Management Console for cost allocation tracking. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html\">Adding tags and labels to Amazon Keyspaces resources</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>For IAM policy examples that show how to control access to Amazon Keyspaces resources based on tags, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-tags\">Amazon Keyspaces resource access based on tags</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -393,6 +393,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pair tags to be attached to the keyspace.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html\">Adding tags and labels to Amazon Keyspaces resources</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+        },
+        "replicationSpecification":{
+          "shape":"ReplicationSpecification",
+          "documentation":"<p> The replication specification of the keyspace includes:</p> <ul> <li> <p> <code>replicationStrategy</code> - the required value is <code>SINGLE_REGION</code> or <code>MULTI_REGION</code>.</p> </li> <li> <p> <code>regionList</code> - if the <code>replicationStrategy</code> is <code>MULTI_REGION</code>, the <code>regionList</code> requires the current Region and at least one additional Amazon Web Services Region where the keyspace is going to be replicated in. The maximum number of supported replication Regions including the current Region is six.</p> </li> </ul>"
         }
       }
     },
@@ -550,7 +554,8 @@
       "type":"structure",
       "required":[
         "keyspaceName",
-        "resourceArn"
+        "resourceArn",
+        "replicationStrategy"
       ],
       "members":{
         "keyspaceName":{
@@ -559,7 +564,15 @@
         },
         "resourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The ARN of the keyspace.</p>"
+          "documentation":"<p>Returns the ARN of the keyspace.</p>"
+        },
+        "replicationStrategy":{
+          "shape":"rs",
+          "documentation":"<p> Returns the replication strategy of the keyspace. The options are <code>SINGLE_REGION</code> or <code>MULTI_REGION</code>. </p>"
+        },
+        "replicationRegions":{
+          "shape":"RegionList",
+          "documentation":"<p> If the <code>replicationStrategy</code> of the keyspace is <code>MULTI_REGION</code>, a list of replication Regions is returned. </p>"
         }
       }
     },
@@ -655,13 +668,14 @@
       "type":"string",
       "max":48,
       "min":1,
-      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{1,47}"
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{0,47}"
     },
     "KeyspaceSummary":{
       "type":"structure",
       "required":[
         "keyspaceName",
-        "resourceArn"
+        "resourceArn",
+        "replicationStrategy"
       ],
       "members":{
         "keyspaceName":{
@@ -671,6 +685,14 @@
         "resourceArn":{
           "shape":"ARN",
           "documentation":"<p>The unique identifier of the keyspace in the format of an Amazon Resource Name (ARN).</p>"
+        },
+        "replicationStrategy":{
+          "shape":"rs",
+          "documentation":"<p> This property specifies if a keyspace is a single Region keyspace or a multi-Region keyspace. The available values are <code>SINGLE_REGION</code> or <code>MULTI_REGION</code>. </p>"
+        },
+        "replicationRegions":{
+          "shape":"RegionList",
+          "documentation":"<p> If the <code>replicationStrategy</code> of the keyspace is <code>MULTI_REGION</code>, a list of replication Regions is returned. </p>"
         }
       },
       "documentation":"<p>Represents the properties of a keyspace.</p>"
@@ -828,6 +850,27 @@
       },
       "documentation":"<p>The point-in-time recovery status of the specified table.</p>"
     },
+    "RegionList":{
+      "type":"list",
+      "member":{"shape":"region"},
+      "max":6,
+      "min":2
+    },
+    "ReplicationSpecification":{
+      "type":"structure",
+      "required":["replicationStrategy"],
+      "members":{
+        "replicationStrategy":{
+          "shape":"rs",
+          "documentation":"<p> The <code>replicationStrategy</code> of a keyspace, the required value is <code>SINGLE_REGION</code> or <code>MULTI_REGION</code>. </p>"
+        },
+        "regionList":{
+          "shape":"RegionList",
+          "documentation":"<p> The <code>regionList</code> can contain up to six Amazon Web Services Regions where the keyspace is replicated in. </p>"
+        }
+      },
+      "documentation":"<p> The replication specification of the keyspace includes:</p> <ul> <li> <p> <code>regionList</code> - up to six Amazon Web Services Regions where the keyspace is replicated in.</p> </li> <li> <p> <code>replicationStrategy</code> - the required value is <code>SINGLE_REGION</code> or <code>MULTI_REGION</code>.</p> </li> </ul>"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -958,7 +1001,7 @@
       "type":"string",
       "max":48,
       "min":1,
-      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{1,47}"
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{0,47}"
     },
     "TableStatus":{
       "type":"string",
@@ -1166,6 +1209,20 @@
     "kmsKeyARN":{
       "type":"string",
       "max":5096,
+      "min":1
+    },
+    "region":{
+      "type":"string",
+      "max":25,
+      "min":2
+    },
+    "rs":{
+      "type":"string",
+      "enum":[
+        "SINGLE_REGION",
+        "MULTI_REGION"
+      ],
+      "max":20,
       "min":1
     }
   },

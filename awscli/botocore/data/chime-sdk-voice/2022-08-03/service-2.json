@@ -2108,6 +2108,13 @@
       },
       "documentation":"<p>The details of an Amazon Chime SDK Voice Connector call.</p>"
     },
+    "CallLegType":{
+      "type":"string",
+      "enum":[
+        "Caller",
+        "Callee"
+      ]
+    },
     "CallingName":{
       "type":"string",
       "pattern":"^$|^[a-zA-Z0-9 ]{2,15}$",
@@ -2221,6 +2228,10 @@
         "E164PhoneNumbers":{
           "shape":"E164PhoneNumberList",
           "documentation":"<p>List of phone numbers, in E.164 format.</p>"
+        },
+        "Name":{
+          "shape":"PhoneNumberName",
+          "documentation":"<p>Specifies the name assigned to one or more phone numbers.</p>"
         }
       }
     },
@@ -4017,6 +4028,10 @@
         "OrderId":{
           "shape":"GuidString",
           "documentation":"<p>The phone number's order ID.</p>"
+        },
+        "Name":{
+          "shape":"PhoneNumberName",
+          "documentation":"<p>The name of the phone number.</p>"
         }
       },
       "documentation":"<p>A phone number used to call an Amazon Chime SDK Voice Connector.</p>"
@@ -4129,6 +4144,13 @@
       "type":"integer",
       "max":500,
       "min":1
+    },
+    "PhoneNumberName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^$|^[a-zA-Z0-9\\,\\.\\_\\-]+(\\s+[a-zA-Z0-9\\,\\.\\_\\-]+)*$",
+      "sensitive":true
     },
     "PhoneNumberOrder":{
       "type":"structure",
@@ -5017,6 +5039,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestId",
           "documentation":"<p>The unique identifier for the client request. Use a different token for different speaker search tasks.</p>"
+        },
+        "CallLeg":{
+          "shape":"CallLegType",
+          "documentation":"<p>Specifies which call leg to stream for speaker search.</p>"
         }
       }
     },
@@ -5331,6 +5357,10 @@
         "CallingName":{
           "shape":"CallingName",
           "documentation":"<p>The outbound calling name associated with the phone number.</p>"
+        },
+        "Name":{
+          "shape":"PhoneNumberName",
+          "documentation":"<p>Specifies the name assigned to one or more phone numbers.</p>"
         }
       }
     },
@@ -5349,6 +5379,10 @@
         "CallingName":{
           "shape":"CallingName",
           "documentation":"<p>The outbound calling name to update.</p>"
+        },
+        "Name":{
+          "shape":"PhoneNumberName",
+          "documentation":"<p>The name of the phone number.</p>"
         }
       },
       "documentation":"<p>The phone number ID, product type, or calling name fields to update, used with the <a>BatchUpdatePhoneNumber</a> and <a>UpdatePhoneNumber</a> actions.</p>"

@@ -2696,6 +2696,10 @@
         "LanguageIdSettings":{
           "shape":"LanguageIdSettingsMap",
           "documentation":"<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>). Note that multi-language identification (<code>IdentifyMultipleLanguages</code>) doesn't support custom language models.</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It's recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code> sub-parameter. If you want to include a custom vocabulary or a custom vocabulary filter (or both) with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>VocabularyName</code> or <code>VocabularyFilterName</code> (or both) sub-parameter.</p>"
+        },
+        "ToxicityDetection":{
+          "shape":"ToxicityDetection",
+          "documentation":"<p>Enables toxic speech detection in your transcript. If you include <code>ToxicityDetection</code> in your request, you must also include <code>ToxicityCategories</code>.</p> <p>For information on the types of toxic speech Amazon Transcribe can detect, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/toxic-language.html\">Detecting toxic speech</a>.</p>"
         }
       }
     },
@@ -2832,6 +2836,33 @@
       "type":"long",
       "max":14400000,
       "min":0
+    },
+    "ToxicityCategories":{
+      "type":"list",
+      "member":{"shape":"ToxicityCategory"},
+      "max":1,
+      "min":1
+    },
+    "ToxicityCategory":{
+      "type":"string",
+      "enum":["ALL"]
+    },
+    "ToxicityDetection":{
+      "type":"list",
+      "member":{"shape":"ToxicityDetectionSettings"},
+      "max":1,
+      "min":1
+    },
+    "ToxicityDetectionSettings":{
+      "type":"structure",
+      "required":["ToxicityCategories"],
+      "members":{
+        "ToxicityCategories":{
+          "shape":"ToxicityCategories",
+          "documentation":"<p> If you include <code>ToxicityDetection</code> in your transcription request, you must also include <code>ToxicityCategories</code>. The only accepted value for this parameter is <code>ALL</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains <code>ToxicityCategories</code>, which is a required parameter if you want to enable toxicity detection (<code>ToxicityDetection</code>) in your transcription request.</p>"
     },
     "TranscribeArn":{
       "type":"string",
@@ -2985,6 +3016,10 @@
         "LanguageIdSettings":{
           "shape":"LanguageIdSettingsMap",
           "documentation":"<p>Provides the name and language of all custom language models, custom vocabularies, and custom vocabulary filters that you included in your request.</p>"
+        },
+        "ToxicityDetection":{
+          "shape":"ToxicityDetection",
+          "documentation":"<p>Provides information about the toxicity detection settings applied to your transcription.</p>"
         }
       },
       "documentation":"<p>Provides detailed information about a transcription job.</p> <p>To view the status of the specified transcription job, check the <code>TranscriptionJobStatus</code> field. If the status is <code>COMPLETED</code>, the job is finished and you can find the results at the location specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p> <p>If you enabled content redaction, the redacted transcript can be found at the location specified in <code>RedactedTranscriptFileUri</code>.</p>"
@@ -3063,6 +3098,10 @@
         "LanguageCodes":{
           "shape":"LanguageCodeList",
           "documentation":"<p>The language codes used to create your transcription job. This parameter is used with multi-language identification. For single-language identification, the singular version of this parameter, <code>LanguageCode</code>, is present.</p>"
+        },
+        "ToxicityDetection":{
+          "shape":"ToxicityDetection",
+          "documentation":"<p>Indicates whether toxicity detection was enabled for the specified transcription job.</p>"
         }
       },
       "documentation":"<p>Provides detailed information about a specific transcription job.</p>"

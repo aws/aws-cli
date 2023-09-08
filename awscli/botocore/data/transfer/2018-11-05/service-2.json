@@ -65,7 +65,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates the connector, which captures the parameters for an outbound connection for the AS2 protocol. The connector is required for sending files to an externally hosted AS2 server. For more details about connectors, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/create-b2b-server.html#configure-as2-connector\">Create AS2 connectors</a>.</p>"
+      "documentation":"<p>Creates the connector, which captures the parameters for a connection for the AS2 or SFTP protocol. For AS2, the connector is required for sending files to an externally hosted AS2 server. For SFTP, the connector is required when sending files to an SFTP server or receiving files from an SFTP server. For more details about connectors, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/create-b2b-server.html#configure-as2-connector\">Create AS2 connectors</a> and <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/configure-sftp-connector.html\">Create SFTP connectors</a>.</p> <note> <p>You must specify exactly one configuration object: either for AS2 (<code>As2Config</code>) or SFTP (<code>SftpConfig</code>).</p> </note>"
     },
     "CreateProfile":{
       "name":"CreateProfile",
@@ -196,7 +196,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes the agreement that's specified in the provided <code>ConnectorId</code>.</p>"
+      "documentation":"<p>Deletes the connector that's specified in the provided <code>ConnectorId</code>.</p>"
     },
     "DeleteHostKey":{
       "name":"DeleteHostKey",
@@ -212,7 +212,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the host key that's specified in the <code>HoskKeyId</code> parameter.</p>"
+      "documentation":"<p>Deletes the host key that's specified in the <code>HostKeyId</code> parameter.</p>"
     },
     "DeleteProfile":{
       "name":"DeleteProfile",
@@ -370,7 +370,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p>"
+      "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p> <note> <p>This API call only returns details for in-progress workflows.</p> <p> If you provide an ID for an execution that is not in progress, or if the execution doesn't match the specified workflow ID, you receive a <code>ResourceNotFound</code> exception.</p> </note>"
     },
     "DescribeHostKey":{
       "name":"DescribeHostKey",
@@ -518,7 +518,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds a Secure Shell (SSH) public key to a user account identified by a <code>UserName</code> value assigned to the specific file transfer protocol-enabled server, identified by <code>ServerId</code>.</p> <p>The response returns the <code>UserName</code> value, the <code>ServerId</code> value, and the name of the <code>SshPublicKeyId</code>.</p>"
+      "documentation":"<p>Adds a Secure Shell (SSH) public key to a Transfer Family user identified by a <code>UserName</code> value assigned to the specific file transfer protocol-enabled server, identified by <code>ServerId</code>.</p> <p>The response returns the <code>UserName</code> value, the <code>ServerId</code> value, and the name of the <code>SshPublicKeyId</code>.</p>"
     },
     "ListAccesses":{
       "name":"ListAccesses",
@@ -603,7 +603,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all executions for the specified workflow.</p>"
+      "documentation":"<p>Lists all in-progress executions for the specified workflow.</p> <note> <p>If the specified workflow ID cannot be found, <code>ListExecutions</code> returns a <code>ResourceNotFound</code> exception.</p> </note>"
     },
     "ListHostKeys":{
       "name":"ListHostKeys",
@@ -718,7 +718,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Lists all of your workflows.</p>"
+      "documentation":"<p>Lists all workflows associated with your Amazon Web Services account for your current region.</p>"
     },
     "SendWorkflowStepState":{
       "name":"SendWorkflowStepState",
@@ -753,7 +753,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Begins an outbound file transfer to a remote AS2 server. You specify the <code>ConnectorId</code> and the file paths for where to send the files. </p>"
+      "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetreiveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
     },
     "StartServer":{
       "name":"StartServer",
@@ -802,6 +802,22 @@
       ],
       "documentation":"<p>Attaches a key-value pair to a resource, as identified by its Amazon Resource Name (ARN). Resources are users, servers, roles, and other entities.</p> <p>There is no response returned from this call.</p>"
     },
+    "TestConnection":{
+      "name":"TestConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestConnectionRequest"},
+      "output":{"shape":"TestConnectionResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tests whether your SFTP connector is set up successfully. We highly recommend that you call this operation to test your ability to transfer files between a Transfer Family server and a trading partner's SFTP server.</p>"
+    },
     "TestIdentityProvider":{
       "name":"TestIdentityProvider",
       "http":{
@@ -816,7 +832,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>If the <code>IdentityProviderType</code> of a file transfer protocol-enabled server is <code>AWS_DIRECTORY_SERVICE</code> or <code>API_Gateway</code>, tests whether your identity provider is set up successfully. We highly recommend that you call this operation to test your authentication method as soon as you create your server. By doing so, you can troubleshoot issues with the identity provider integration to ensure that your users can successfully use the service.</p> <p> The <code>ServerId</code> and <code>UserName</code> parameters are required. The <code>ServerProtocol</code>, <code>SourceIp</code>, and <code>UserPassword</code> are all optional. </p> <note> <p> You cannot use <code>TestIdentityProvider</code> if the <code>IdentityProviderType</code> of your server is <code>SERVICE_MANAGED</code>. </p> </note> <ul> <li> <p> If you provide any incorrect values for any parameters, the <code>Response</code> field is empty. </p> </li> <li> <p> If you provide a server ID for a server that uses service-managed users, you get an error: </p> <p> <code> An error occurred (InvalidRequestException) when calling the TestIdentityProvider operation: s-<i>server-ID</i> not configured for external auth </code> </p> </li> <li> <p> If you enter a Server ID for the <code>--server-id</code> parameter that does not identify an actual Transfer server, you receive the following error: </p> <p> <code>An error occurred (ResourceNotFoundException) when calling the TestIdentityProvider operation: Unknown server</code> </p> </li> </ul>"
+      "documentation":"<p>If the <code>IdentityProviderType</code> of a file transfer protocol-enabled server is <code>AWS_DIRECTORY_SERVICE</code> or <code>API_Gateway</code>, tests whether your identity provider is set up successfully. We highly recommend that you call this operation to test your authentication method as soon as you create your server. By doing so, you can troubleshoot issues with the identity provider integration to ensure that your users can successfully use the service.</p> <p> The <code>ServerId</code> and <code>UserName</code> parameters are required. The <code>ServerProtocol</code>, <code>SourceIp</code>, and <code>UserPassword</code> are all optional. </p> <p>Note the following:</p> <ul> <li> <p> You cannot use <code>TestIdentityProvider</code> if the <code>IdentityProviderType</code> of your server is <code>SERVICE_MANAGED</code>.</p> </li> <li> <p> <code>TestIdentityProvider</code> does not work with keys: it only accepts passwords.</p> </li> <li> <p> <code>TestIdentityProvider</code> can test the password operation for a custom Identity Provider that handles keys and passwords.</p> </li> <li> <p> If you provide any incorrect values for any parameters, the <code>Response</code> field is empty. </p> </li> <li> <p> If you provide a server ID for a server that uses service-managed users, you get an error: </p> <p> <code> An error occurred (InvalidRequestException) when calling the TestIdentityProvider operation: s-<i>server-ID</i> not configured for external auth </code> </p> </li> <li> <p> If you enter a Server ID for the <code>--server-id</code> parameter that does not identify an actual Transfer server, you receive the following error: </p> <p> <code>An error occurred (ResourceNotFoundException) when calling the TestIdentityProvider operation: Unknown server</code>. </p> <p>It is possible your sever is in a different region. You can specify a region by adding the following: <code>--region region-code</code>, such as <code>--region us-east-2</code> to specify a server in <b>US East (Ohio)</b>.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1044,9 +1060,18 @@
         "MdnResponse":{
           "shape":"MdnResponse",
           "documentation":"<p>Used for outbound requests (from an Transfer Family server to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:</p> <ul> <li> <p> <code>SYNC</code>: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).</p> </li> <li> <p> <code>NONE</code>: Specifies that no MDN response is required.</p> </li> </ul>"
+        },
+        "BasicAuthSecretId":{
+          "shape":"As2ConnectorSecretId",
+          "documentation":"<p>Provides Basic authentication support to the AS2 Connectors API. To use Basic authentication, you must provide the name or Amazon Resource Name (ARN) of a secret in Secrets Manager.</p> <p>The default value for this parameter is <code>null</code>, which indicates that Basic authentication is not enabled for the connector.</p> <p>If the connector should use Basic authentication, the secret needs to be in the following format:</p> <p> <code>{ \"Username\": \"user-name\", \"Password\": \"user-password\" }</code> </p> <p>Replace <code>user-name</code> and <code>user-password</code> with the credentials for the actual user that is being authenticated.</p> <p>Note the following:</p> <ul> <li> <p>You are storing these credentials in Secrets Manager, <i>not passing them directly</i> into this API.</p> </li> <li> <p>If you are using the API, SDKs, or CloudFormation to configure your connector, then you must create the secret before you can enable Basic authentication. However, if you are using the Amazon Web Services management console, you can have the system create the secret for you.</p> </li> </ul> <p>If you have previously enabled Basic authentication for a connector, you can disable it by using the <code>UpdateConnector</code> API call. For example, if you are using the CLI, you can run the following command to remove Basic authentication:</p> <p> <code>update-connector --connector-id my-connector-id --as2-config 'BasicAuthSecretId=\"\"'</code> </p>"
         }
       },
-      "documentation":"<p>Contains the details for a connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
+      "documentation":"<p>Contains the details for an AS2 connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
+    },
+    "As2ConnectorSecretId":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "As2Id":{
       "type":"string",
@@ -1158,11 +1183,11 @@
         },
         "DestinationFileLocation":{
           "shape":"InputFileLocation",
-          "documentation":"<p>Specifies the location for the file being copied. Use <code>${Transfer:username}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:username}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded.</p> </note> </li> </ul>"
+          "documentation":"<p>Specifies the location for the file being copied. Use <code>${Transfer:UserName}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UserName}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to copy uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded in UTC.</p> </note> </li> </ul>"
         },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
-          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> <p>If the workflow is processing a file that has the same name as an existing file, the behavior is as follows:</p> <ul> <li> <p>If <code>OverwriteExisting</code> is <code>TRUE</code>, the existing file is replaced with the file being processed.</p> </li> <li> <p>If <code>OverwriteExisting</code> is <code>FALSE</code>, nothing happens, and the workflow processing stops.</p> </li> </ul>"
         },
         "SourceFileLocation":{
           "shape":"SourceFileLocation",
@@ -1259,7 +1284,7 @@
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         },
         "Status":{
           "shape":"AgreementStatusType",
@@ -1285,21 +1310,20 @@
       "type":"structure",
       "required":[
         "Url",
-        "As2Config",
         "AccessRole"
       ],
       "members":{
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -1308,6 +1332,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for connectors. Tags are metadata attached to connectors for any purpose.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       }
     },
@@ -1381,11 +1409,11 @@
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
+          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -1417,7 +1445,11 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
+        },
+        "StructuredLogDestinations":{
+          "shape":"StructuredLogDestinations",
+          "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
         }
       }
     },
@@ -1449,7 +1481,7 @@
         },
         "HomeDirectoryMappings":{
           "shape":"HomeDirectoryMappings",
-          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the HomeDirectory parameter value.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
+          "documentation":"<p>Logical directory mappings that specify what Amazon S3 or Amazon EFS paths and keys should be visible to your user and how you want to make them visible. You must specify the <code>Entry</code> and <code>Target</code> pair, where <code>Entry</code> shows how the path is made visible and <code>Target</code> is the actual Amazon S3 or Amazon EFS path. If you only specify a target, it is displayed as is. You also must ensure that your Identity and Access Management (IAM) role provides access to paths in <code>Target</code>. This value can be set only when <code>HomeDirectoryType</code> is set to <i>LOGICAL</i>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example.</p> <p> <code>[ { \"Entry\": \"/directory1\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p> <p>In most cases, you can use this value instead of the session policy to lock your user down to the designated home directory (\"<code>chroot</code>\"). To do this, you can set <code>Entry</code> to <code>/</code> and set <code>Target</code> to the value the user should see for their home directory when they log in.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
         },
         "Policy":{
           "shape":"Policy",
@@ -1494,7 +1526,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>A unique string that identifies a user account associated with a server.</p>"
+          "documentation":"<p>A unique string that identifies a Transfer Family user.</p>"
         }
       }
     },
@@ -1512,7 +1544,7 @@
         },
         "OnExceptionSteps":{
           "shape":"WorkflowSteps",
-          "documentation":"<p>Specifies the steps (actions) to take if errors are encountered during execution of the workflow.</p> <note> <p>For custom steps, the lambda function needs to send <code>FAILURE</code> to the call back API to kick off the exception steps. Additionally, if the lambda does not send <code>SUCCESS</code> before it times out, the exception steps are executed.</p> </note>"
+          "documentation":"<p>Specifies the steps (actions) to take if errors are encountered during execution of the workflow.</p> <note> <p>For custom steps, the Lambda function needs to send <code>FAILURE</code> to the call back API to kick off the exception steps. Additionally, if the Lambda does not send <code>SUCCESS</code> before it times out, the exception steps are executed.</p> </note>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1539,7 +1571,7 @@
         },
         "Target":{
           "shape":"CustomStepTarget",
-          "documentation":"<p>The ARN for the lambda function that is being called.</p>"
+          "documentation":"<p>The ARN for the Lambda function that is being called.</p>"
         },
         "TimeoutSeconds":{
           "shape":"CustomStepTimeoutSeconds",
@@ -1591,9 +1623,12 @@
         },
         "OverwriteExisting":{
           "shape":"OverwriteExisting",
-          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p>"
+          "documentation":"<p>A flag that indicates whether to overwrite an existing file of the same name. The default is <code>FALSE</code>.</p> <p>If the workflow is processing a file that has the same name as an existing file, the behavior is as follows:</p> <ul> <li> <p>If <code>OverwriteExisting</code> is <code>TRUE</code>, the existing file is replaced with the file being processed.</p> </li> <li> <p>If <code>OverwriteExisting</code> is <code>FALSE</code>, nothing happens, and the workflow processing stops.</p> </li> </ul>"
         },
-        "DestinationFileLocation":{"shape":"InputFileLocation"}
+        "DestinationFileLocation":{
+          "shape":"InputFileLocation",
+          "documentation":"<p>Specifies the location for the file being decrypted. Use <code>${Transfer:UserName}</code> or <code>${Transfer:UploadDate}</code> in this field to parametrize the destination prefix by username or uploaded date.</p> <ul> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UserName}</code> to decrypt uploaded files to an Amazon S3 bucket that is prefixed with the name of the Transfer Family user that uploaded the file.</p> </li> <li> <p>Set the value of <code>DestinationFileLocation</code> to <code>${Transfer:UploadDate}</code> to decrypt uploaded files to an Amazon S3 bucket that is prefixed with the date of the upload.</p> <note> <p>The system resolves <code>UploadDate</code> to a date format of <i>YYYY-MM-DD</i>, based on the date the file is uploaded in UTC.</p> </note> </li> </ul>"
+        }
       },
       "documentation":"<p>Each step type has its own <code>StepDetails</code> structure.</p>"
     },
@@ -2003,7 +2038,7 @@
         },
         "User":{
           "shape":"DescribedUser",
-          "documentation":"<p>An array containing the properties of the user account for the <code>ServerID</code> value that you specified.</p>"
+          "documentation":"<p>An array containing the properties of the Transfer Family user for the <code>ServerID</code> value that you specified.</p>"
         }
       }
     },
@@ -2096,7 +2131,7 @@
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -2182,15 +2217,15 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -2199,6 +2234,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for connectors.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
@@ -2373,7 +2412,7 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
@@ -2413,7 +2452,11 @@
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
+        },
+        "StructuredLogDestinations":{
+          "shape":"StructuredLogDestinations",
+          "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -2775,7 +2818,7 @@
         },
         "InvocationRole":{
           "shape":"Role",
-          "documentation":"<p>Provides the type of <code>InvocationRole</code> used to authenticate the user account.</p>"
+          "documentation":"<p>This parameter is only applicable if your <code>IdentityProviderType</code> is <code>API_GATEWAY</code>. Provides the type of <code>InvocationRole</code> used to authenticate the user account.</p>"
         },
         "DirectoryId":{
           "shape":"DirectoryId",
@@ -2783,14 +2826,18 @@
         },
         "Function":{
           "shape":"Function",
-          "documentation":"<p>The ARN for a lambda function to use for the Identity provider.</p>"
+          "documentation":"<p>The ARN for a Lambda function to use for the Identity provider.</p>"
+        },
+        "SftpAuthenticationMethods":{
+          "shape":"SftpAuthenticationMethods",
+          "documentation":"<p>For SFTP-enabled servers, and for custom identity providers <i>only</i>, you can specify whether to authenticate using a password, SSH key pair, or both.</p> <ul> <li> <p> <code>PASSWORD</code> - users must provide their password to connect.</p> </li> <li> <p> <code>PUBLIC_KEY</code> - users must provide their private key to connect.</p> </li> <li> <p> <code>PUBLIC_KEY_OR_PASSWORD</code> - users can authenticate with either their password or their key. This is the default value.</p> </li> <li> <p> <code>PUBLIC_KEY_AND_PASSWORD</code> - users must provide both their private key and their password to connect. The server checks the key first, and then if the key is valid, the system prompts for a password. If the private key provided does not match the public key that is stored, authentication fails.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Returns information related to the type of user authentication that is in use for a file transfer protocol-enabled server's users. A server can have only one method of authentication.</p>"
     },
     "IdentityProviderType":{
       "type":"string",
-      "documentation":"<p>Returns information related to the type of user authentication that is in use for a file transfer protocol-enabled server's users. For <code>AWS_DIRECTORY_SERVICE</code> or <code>SERVICE_MANAGED</code> authentication, the Secure Shell (SSH) public keys are stored with a user on the server instance. For <code>API_GATEWAY</code> authentication, your custom authentication method is implemented by using an API call. The server can have only one method of authentication.</p>",
+      "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>",
       "enum":[
         "SERVICE_MANAGED",
         "API_GATEWAY",
@@ -2909,7 +2956,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user account that is assigned to one or more servers.</p>"
+          "documentation":"<p>The name of the Transfer Family user that is assigned to one or more servers.</p>"
         }
       }
     },
@@ -3138,7 +3185,7 @@
         },
         "Executions":{
           "shape":"ListedExecutions",
-          "documentation":"<p>Returns the details for each execution.</p> <ul> <li> <p> <b>NextToken</b>: returned from a call to several APIs, you can use pass it to a subsequent command to continue listing additional executions.</p> </li> <li> <p> <b>StartTime</b>: timestamp indicating when the execution began.</p> </li> <li> <p> <b>Executions</b>: details of the execution, including the execution ID, initial file location, and Service metadata.</p> </li> <li> <p> <b>Status</b>: one of the following values: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, <code>EXCEPTION</code>, <code>HANDLING_EXEPTION</code>. </p> </li> </ul>"
+          "documentation":"<p>Returns the details for each execution, in a <code>ListedExecution</code> array.</p>"
         }
       }
     },
@@ -3336,7 +3383,7 @@
         },
         "Users":{
           "shape":"ListedUsers",
-          "documentation":"<p>Returns the user accounts and their properties for the <code>ServerId</code> value that you specify.</p>"
+          "documentation":"<p>Returns the Transfer Family users and their properties for the <code>ServerId</code> value that you specify.</p>"
         }
       }
     },
@@ -3486,7 +3533,7 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         }
       },
       "documentation":"<p>Returns details of the connector that is specified.</p>"
@@ -3596,7 +3643,7 @@
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
-          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter or the <code>IdentityProviderDetails</code> data type.</p>"
+          "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "EndpointType":{
           "shape":"EndpointType",
@@ -4011,6 +4058,11 @@
       "max":16,
       "min":0
     },
+    "SecretId":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":20,
@@ -4111,6 +4163,40 @@
         "ENABLE_NO_OP"
       ]
     },
+    "SftpAuthenticationMethods":{
+      "type":"string",
+      "enum":[
+        "PASSWORD",
+        "PUBLIC_KEY",
+        "PUBLIC_KEY_OR_PASSWORD",
+        "PUBLIC_KEY_AND_PASSWORD"
+      ]
+    },
+    "SftpConnectorConfig":{
+      "type":"structure",
+      "members":{
+        "UserSecretId":{
+          "shape":"SecretId",
+          "documentation":"<p>The identifier for the secret (in Amazon Web Services Secrets Manager) that contains the SFTP user's private key, password, or both. The identifier can be either the Amazon Resource Name (ARN) or the name of the secret.</p>"
+        },
+        "TrustedHostKeys":{
+          "shape":"SftpConnectorTrustedHostKeyList",
+          "documentation":"<p>The public portion of the host key, or keys, that are used to authenticate the user to the external server to which you are connecting. You can use the <code>ssh-keyscan</code> command against the SFTP server to retrieve the necessary key.</p> <p>The three standard SSH public key format elements are <code>&lt;key type&gt;</code>, <code>&lt;body base64&gt;</code>, and an optional <code>&lt;comment&gt;</code>, with spaces between each element.</p> <p>For the trusted host key, Transfer Family accepts RSA and ECDSA keys.</p> <ul> <li> <p>For RSA keys, the key type is <code>ssh-rsa</code>.</p> </li> <li> <p>For ECDSA keys, the key type is either <code>ecdsa-sha2-nistp256</code>, <code>ecdsa-sha2-nistp384</code>, or <code>ecdsa-sha2-nistp521</code>, depending on the size of the key you generated.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the details for an SFTP connector object. The connector object is used for transferring files to and from a partner's SFTP server.</p>"
+    },
+    "SftpConnectorTrustedHostKey":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "SftpConnectorTrustedHostKeyList":{
+      "type":"list",
+      "member":{"shape":"SftpConnectorTrustedHostKey"},
+      "max":10,
+      "min":1
+    },
     "SigningAlg":{
       "type":"string",
       "enum":[
@@ -4141,7 +4227,7 @@
       "members":{
         "DateImported":{
           "shape":"DateImported",
-          "documentation":"<p>Specifies the date that the public key was added to the user account.</p>"
+          "documentation":"<p>Specifies the date that the public key was added to the Transfer Family user.</p>"
         },
         "SshPublicKeyBody":{
           "shape":"SshPublicKeyBody",
@@ -4152,7 +4238,7 @@
           "documentation":"<p>Specifies the <code>SshPublicKeyId</code> parameter contains the identifier of the public key.</p>"
         }
       },
-      "documentation":"<p>Provides information about the public Secure Shell (SSH) key that is associated with a user account for the specific file transfer protocol-enabled server (as identified by <code>ServerId</code>). The information returned includes the date the key was imported, the public key contents, and the public key ID. A user can store more than one SSH public key associated with their user name on a specific server.</p>"
+      "documentation":"<p>Provides information about the public Secure Shell (SSH) key that is associated with a Transfer Family user for the specific file transfer protocol-enabled server (as identified by <code>ServerId</code>). The information returned includes the date the key was imported, the public key contents, and the public key ID. A user can store more than one SSH public key associated with their user name on a specific server.</p>"
     },
     "SshPublicKeyBody":{
       "type":"string",
@@ -4172,18 +4258,27 @@
     },
     "StartFileTransferRequest":{
       "type":"structure",
-      "required":[
-        "ConnectorId",
-        "SendFilePaths"
-      ],
+      "required":["ConnectorId"],
       "members":{
         "ConnectorId":{
           "shape":"ConnectorId",
-          "documentation":"<p>The unique identifier for the connector. </p>"
+          "documentation":"<p>The unique identifier for the connector.</p>"
         },
         "SendFilePaths":{
           "shape":"FilePaths",
-          "documentation":"<p>An array of strings. Each string represents the absolute path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>. </p>"
+          "documentation":"<p>One or more source paths for the Amazon S3 storage. Each string represents a source file path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>.</p> <note> <p>Replace <code> <i>DOC-EXAMPLE-BUCKET</i> </code> with one of your actual buckets.</p> </note>"
+        },
+        "RetrieveFilePaths":{
+          "shape":"FilePaths",
+          "documentation":"<p>One or more source paths for the partner's SFTP server. Each string represents a source file path for one inbound file transfer.</p>"
+        },
+        "LocalDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>For an inbound transfer, the <code>LocaDirectoryPath</code> specifies the destination for one or more files that are transferred from the partner's SFTP server.</p>"
+        },
+        "RemoteDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>For an outbound transfer, the <code>RemoteDirectoryPath</code> specifies the destination for one or more files that are transferred to the partner's SFTP server. If you don't specify a <code>RemoteDirectoryPath</code>, the destination for transferred files is the SFTP user's home directory.</p>"
         }
       }
     },
@@ -4193,7 +4288,7 @@
       "members":{
         "TransferId":{
           "shape":"TransferId",
-          "documentation":"<p>Returns the unique identifier for this file transfer. </p>"
+          "documentation":"<p>Returns the unique identifier for the file transfer.</p>"
         }
       }
     },
@@ -4219,6 +4314,7 @@
         "STOP_FAILED"
       ]
     },
+    "Status":{"type":"string"},
     "StatusCode":{"type":"integer"},
     "StepResultOutputsJson":{
       "type":"string",
@@ -4233,6 +4329,12 @@
           "documentation":"<p>A system-assigned unique identifier for a server that you stopped.</p>"
         }
       }
+    },
+    "StructuredLogDestinations":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":1,
+      "min":0
     },
     "SubnetId":{"type":"string"},
     "SubnetIds":{
@@ -4280,7 +4382,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to user accounts for any purpose.</p>"
+          "documentation":"<p>Key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to resources (servers, users, workflows, and so on) for any purpose.</p>"
         }
       }
     },
@@ -4312,6 +4414,33 @@
       "max":50,
       "min":1
     },
+    "TestConnectionRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        }
+      }
+    },
+    "TestConnectionResponse":{
+      "type":"structure",
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>Returns the identifier of the connector object that you are testing.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Returns <code>OK</code> for successful test, or <code>ERROR</code> if the test fails.</p>"
+        },
+        "StatusMessage":{
+          "shape":"Message",
+          "documentation":"<p>Returns <code>Connection succeeded</code> if the test is successful. Or, returns a descriptive error message if the test fails. The following list provides the details for some error messages and troubleshooting steps for each.</p> <ul> <li> <p> <b>Unable to access secrets manager</b>: Verify that your secret name aligns with the one in Transfer Role permissions.</p> </li> <li> <p> <b>Unknown Host/Connection failed</b>: Verify the server URL in the connector configuration , and verify that the login credentials work successfully outside of the connector.</p> </li> <li> <p> <b>Private key not found</b>: Verify that the secret exists and is formatted correctly.</p> </li> <li> <p> <b>Invalid trusted host keys</b>: Verify that the trusted host key in the connector configuration matches the <code>ssh-keyscan</code> output.</p> </li> </ul>"
+        }
+      }
+    },
     "TestIdentityProviderRequest":{
       "type":"structure",
       "required":[
@@ -4325,19 +4454,19 @@
         },
         "ServerProtocol":{
           "shape":"Protocol",
-          "documentation":"<p>The type of file transfer protocol to be tested.</p> <p>The available protocols are:</p> <ul> <li> <p>Secure Shell (SSH) File Transfer Protocol (SFTP)</p> </li> <li> <p>File Transfer Protocol Secure (FTPS)</p> </li> <li> <p>File Transfer Protocol (FTP)</p> </li> </ul>"
+          "documentation":"<p>The type of file transfer protocol to be tested.</p> <p>The available protocols are:</p> <ul> <li> <p>Secure Shell (SSH) File Transfer Protocol (SFTP)</p> </li> <li> <p>File Transfer Protocol Secure (FTPS)</p> </li> <li> <p>File Transfer Protocol (FTP)</p> </li> <li> <p>Applicability Statement 2 (AS2)</p> </li> </ul>"
         },
         "SourceIp":{
           "shape":"SourceIp",
-          "documentation":"<p>The source IP address of the user account to be tested.</p>"
+          "documentation":"<p>The source IP address of the account to be tested.</p>"
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user account to be tested.</p>"
+          "documentation":"<p>The name of the account to be tested.</p>"
         },
         "UserPassword":{
           "shape":"UserPassword",
-          "documentation":"<p>The password of the user account to be tested.</p>"
+          "documentation":"<p>The password of the account to be tested.</p>"
         }
       }
     },
@@ -4350,11 +4479,11 @@
       "members":{
         "Response":{
           "shape":"Response",
-          "documentation":"<p>The response that is returned from your API Gateway.</p>"
+          "documentation":"<p>The response that is returned from your API Gateway or your Lambda function.</p>"
         },
         "StatusCode":{
           "shape":"StatusCode",
-          "documentation":"<p>The HTTP status code that is the response from your API Gateway.</p>"
+          "documentation":"<p>The HTTP status code that is the response from your API Gateway or your Lambda function.</p>"
         },
         "Message":{
           "shape":"Message",
@@ -4497,7 +4626,7 @@
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         }
       }
     },
@@ -4553,19 +4682,23 @@
         },
         "Url":{
           "shape":"Url",
-          "documentation":"<p>The URL of the partner's AS2 endpoint.</p>"
+          "documentation":"<p>The URL of the partner's AS2 or SFTP endpoint.</p>"
         },
         "As2Config":{
           "shape":"As2ConnectorConfig",
-          "documentation":"<p>A structure that contains the parameters for a connector object.</p>"
+          "documentation":"<p>A structure that contains the parameters for an AS2 connector object.</p>"
         },
         "AccessRole":{
           "shape":"Role",
-          "documentation":"<p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p>"
+          "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
         },
         "LoggingRole":{
           "shape":"Role",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a connector to turn on CloudWatch logging for Amazon S3 events. When set, you can view connector activity in your CloudWatch logs.</p>"
+        },
+        "SftpConfig":{
+          "shape":"SftpConnectorConfig",
+          "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
         }
       }
     },
@@ -4692,11 +4825,15 @@
         },
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a server instance that the Transfer Family user is assigned to.</p>"
         },
         "WorkflowDetails":{
           "shape":"WorkflowDetails",
-          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+          "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+        },
+        "StructuredLogDestinations":{
+          "shape":"StructuredLogDestinations",
+          "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
         }
       }
     },
@@ -4706,7 +4843,7 @@
       "members":{
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a server that the Transfer Family user is assigned to.</p>"
         }
       }
     },
@@ -4743,7 +4880,7 @@
         },
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a Transfer Family server instance that the user is assigned to.</p>"
         },
         "UserName":{
           "shape":"UserName",
@@ -4760,7 +4897,7 @@
       "members":{
         "ServerId":{
           "shape":"ServerId",
-          "documentation":"<p>A system-assigned unique identifier for a server instance that the user account is assigned to.</p>"
+          "documentation":"<p>A system-assigned unique identifier for a Transfer Family server instance that the account is assigned to.</p>"
         },
         "UserName":{
           "shape":"UserName",
@@ -4783,7 +4920,7 @@
       "members":{
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>A unique string that identifies a user account associated with a server.</p>"
+          "documentation":"<p>A unique string that identifies a Transfer Family user associated with a server.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -4835,7 +4972,7 @@
           "documentation":"<p>Includes the necessary permissions for S3, EFS, and Lambda operations that Transfer can assume, so that all workflow steps can operate on the required resources</p>"
         }
       },
-      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.</p>"
+      "documentation":"<p>Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow.</p> <p>In addition to a workflow to execute when a file is uploaded completely, <code>WorkflowDetails</code> can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when the server session disconnects while the file is still being uploaded.</p>"
     },
     "WorkflowDetails":{
       "type":"structure",

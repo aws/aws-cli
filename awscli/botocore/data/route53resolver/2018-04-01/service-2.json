@@ -143,6 +143,24 @@
       ],
       "documentation":"<p>Creates an empty DNS Firewall rule group for filtering DNS network traffic in a VPC. You can add rules to the new rule group by calling <a>CreateFirewallRule</a>. </p>"
     },
+    "CreateOutpostResolver":{
+      "name":"CreateOutpostResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateOutpostResolverRequest"},
+      "output":{"shape":"CreateOutpostResolverResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an Route 53 Resolver on an Outpost.</p>"
+    },
     "CreateResolverEndpoint":{
       "name":"CreateResolverEndpoint",
       "http":{
@@ -252,6 +270,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes the specified firewall rule group. </p>"
+    },
+    "DeleteOutpostResolver":{
+      "name":"DeleteOutpostResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteOutpostResolverRequest"},
+      "output":{"shape":"DeleteOutpostResolverResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a Resolver on the Outpost.</p>"
     },
     "DeleteResolverEndpoint":{
       "name":"DeleteResolverEndpoint",
@@ -456,6 +492,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the Identity and Access Management (Amazon Web Services IAM) policy for sharing the specified rule group. You can use the policy to share the rule group using Resource Access Manager (RAM). </p>"
+    },
+    "GetOutpostResolver":{
+      "name":"GetOutpostResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetOutpostResolverRequest"},
+      "output":{"shape":"GetOutpostResolverResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about a specified Resolver on the Outpost, such as its instance count and type, name, and the current status of the Resolver.</p>"
     },
     "GetResolverConfig":{
       "name":"GetResolverConfig",
@@ -726,6 +779,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC. </p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>. </p>"
+    },
+    "ListOutpostResolvers":{
+      "name":"ListOutpostResolvers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOutpostResolversRequest"},
+      "output":{"shape":"ListOutpostResolversResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all the Resolvers on Outposts that were created using the current Amazon Web Services account.</p>"
     },
     "ListResolverConfigs":{
       "name":"ListResolverConfigs",
@@ -1045,6 +1115,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Changes the association of a <a>FirewallRuleGroup</a> with a VPC. The association enables DNS filtering for the VPC. </p>"
+    },
+    "UpdateOutpostResolver":{
+      "name":"UpdateOutpostResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateOutpostResolverRequest"},
+      "output":{"shape":"UpdateOutpostResolverResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>You can use <code>UpdateOutpostResolver</code> to update the instance count, type, or name of a Resolver on an Outpost.</p>"
     },
     "UpdateResolverConfig":{
       "name":"UpdateResolverConfig",
@@ -1454,6 +1543,52 @@
         }
       }
     },
+    "CreateOutpostResolverRequest":{
+      "type":"structure",
+      "required":[
+        "CreatorRequestId",
+        "Name",
+        "PreferredInstanceType",
+        "OutpostArn"
+      ],
+      "members":{
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>A unique string that identifies the request and that allows failed requests to be retried without the risk of running the operation twice. </p> <p> <code>CreatorRequestId</code> can be any unique string, for example, a date/time stamp.</p>"
+        },
+        "Name":{
+          "shape":"OutpostResolverName",
+          "documentation":"<p>A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console.</p>"
+        },
+        "InstanceCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>Number of Amazon EC2 instances for the Resolver on Outpost. The default and minimal value is 4.</p>",
+          "box":true
+        },
+        "PreferredInstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p> The Amazon EC2 instance type. If you specify this, you must also specify a value for the <code>OutpostArn</code>. </p>"
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a value for the <code>PreferredInstanceType</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> A string that helps identify the Route 53 Resolvers on Outpost. </p>",
+          "box":true
+        }
+      }
+    },
+    "CreateOutpostResolverResponse":{
+      "type":"structure",
+      "members":{
+        "OutpostResolver":{
+          "shape":"OutpostResolver",
+          "documentation":"<p>Information about the <code>CreateOutpostResolver</code> request, including the status of the request.</p>"
+        }
+      }
+    },
     "CreateResolverEndpointRequest":{
       "type":"structure",
       "required":[
@@ -1491,7 +1626,17 @@
         },
         "ResolverEndpointType":{
           "shape":"ResolverEndpointType",
-          "documentation":"<p> For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This endpoint type is applied to all IP addresses. </p>",
+          "documentation":"<p> For the endpoint type you can choose either IPv4, IPv6, or dual-stack. A dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This endpoint type is applied to all IP addresses. </p>",
+          "box":true
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a value for the <code>PreferredInstanceType</code>. </p>",
+          "box":true
+        },
+        "PreferredInstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p>The instance type. If you specify this, you must also specify a value for the <code>OutpostArn</code>.</p>",
           "box":true
         }
       }
@@ -1568,7 +1713,7 @@
         },
         "TargetIps":{
           "shape":"TargetList",
-          "documentation":"<p>The IPs that you want Resolver to forward DNS queries to. You can specify only IPv4 addresses. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>.</p>",
+          "documentation":"<p>The IPs that you want Resolver to forward DNS queries to. You can specify either Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>.</p>",
           "box":true
         },
         "ResolverEndpointId":{
@@ -1658,6 +1803,25 @@
         "FirewallRule":{
           "shape":"FirewallRule",
           "documentation":"<p>The specification for the firewall rule that you just deleted.</p>"
+        }
+      }
+    },
+    "DeleteOutpostResolverRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique string that identifies the Resolver on the Outpost.</p>"
+        }
+      }
+    },
+    "DeleteOutpostResolverResponse":{
+      "type":"structure",
+      "members":{
+        "OutpostResolver":{
+          "shape":"OutpostResolver",
+          "documentation":"<p>Information about the <code>DeleteOutpostResolver</code> request, including the status of the request.</p>"
         }
       }
     },
@@ -2323,6 +2487,25 @@
         }
       }
     },
+    "GetOutpostResolverRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Resolver on the Outpost.</p>"
+        }
+      }
+    },
+    "GetOutpostResolverResponse":{
+      "type":"structure",
+      "members":{
+        "OutpostResolver":{
+          "shape":"OutpostResolver",
+          "documentation":"<p>Information about the <code>GetOutpostResolver</code> request, including the status of the request.</p>"
+        }
+      }
+    },
     "GetResolverConfigRequest":{
       "type":"structure",
       "required":["ResourceId"],
@@ -2537,6 +2720,7 @@
         }
       }
     },
+    "InstanceCount":{"type":"integer"},
     "InternalServiceErrorException":{
       "type":"structure",
       "members":{
@@ -2668,7 +2852,8 @@
         "FAILED_RESOURCE_GONE",
         "DELETING",
         "DELETE_FAILED_FAS_EXPIRED",
-        "UPDATING"
+        "UPDATING",
+        "UPDATE_FAILED"
       ]
     },
     "IpAddressUpdate":{
@@ -2939,6 +3124,39 @@
         "FirewallRules":{
           "shape":"FirewallRules",
           "documentation":"<p>A list of the rules that you have defined. </p> <p>This might be a partial list of the firewall rules that you've defined. For information, see <code>MaxResults</code>. </p>"
+        }
+      }
+    },
+    "ListOutpostResolversRequest":{
+      "type":"structure",
+      "members":{
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost.</p>",
+          "box":true
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of Resolvers on the Outpost that you want to return in the response to a <code>ListOutpostResolver</code> request. If you don't specify a value for <code>MaxResults</code>, the request returns up to 100 Resolvers.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>For the first <code>ListOutpostResolver</code> request, omit this value.</p> <p/>",
+          "box":true
+        }
+      }
+    },
+    "ListOutpostResolversResponse":{
+      "type":"structure",
+      "members":{
+        "OutpostResolvers":{
+          "shape":"OutpostResolverList",
+          "documentation":"<p>The Resolvers on Outposts that were created by using the current Amazon Web Services account, and that match the specified filters, if any.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If more than <code>MaxResults</code> Resolvers match the specified criteria, you can submit another <code>ListOutpostResolver</code> request to get the next group of results. In the next request, specify the value of <code>NextToken</code> from the previous response.</p>"
         }
       }
     },
@@ -3302,6 +3520,92 @@
       "pattern":"(?!^[0-9]+$)([a-zA-Z0-9\\-_' ']+)"
     },
     "NextToken":{"type":"string"},
+    "OutpostArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/op-[a-f0-9]{17}$"
+    },
+    "OutpostInstanceType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "OutpostResolver":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN (Amazon Resource Name) for the Resolver on an Outpost.</p>"
+        },
+        "CreationTime":{
+          "shape":"Rfc3339TimeString",
+          "documentation":"<p>The date and time that the Outpost Resolver was created, in Unix time format and Coordinated Universal Time (UTC).</p>"
+        },
+        "ModificationTime":{
+          "shape":"Rfc3339TimeString",
+          "documentation":"<p>The date and time that the Outpost Resolver was modified, in Unix time format and Coordinated Universal Time (UTC).</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>A unique string that identifies the request that created the Resolver endpoint. The <code>CreatorRequestId</code> allows failed requests to be retried without the risk of running the operation twice.</p>"
+        },
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Resolver on Outpost.</p>"
+        },
+        "InstanceCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>Amazon EC2 instance count for the Resolver on the Outpost.</p>"
+        },
+        "PreferredInstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p> The Amazon EC2 instance type. </p>"
+        },
+        "Name":{
+          "shape":"OutpostResolverName",
+          "documentation":"<p>Name of the Resolver.</p>"
+        },
+        "Status":{
+          "shape":"OutpostResolverStatus",
+          "documentation":"<p>Status of the Resolver.</p>"
+        },
+        "StatusMessage":{
+          "shape":"OutpostResolverStatusMessage",
+          "documentation":"<p>A detailed description of the Resolver.</p>"
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) for the Outpost.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that contains settings for an existing Resolver on an Outpost.</p>"
+    },
+    "OutpostResolverList":{
+      "type":"list",
+      "member":{"shape":"OutpostResolver"}
+    },
+    "OutpostResolverName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "OutpostResolverStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "OPERATIONAL",
+        "UPDATING",
+        "DELETING",
+        "ACTION_NEEDED",
+        "FAILED_CREATION",
+        "FAILED_DELETION"
+      ]
+    },
+    "OutpostResolverStatusMessage":{
+      "type":"string",
+      "max":4096
+    },
     "Port":{
       "type":"integer",
       "max":65535,
@@ -3347,7 +3651,7 @@
         },
         "ResolverQueryLogConfigPolicy":{
           "shape":"ResolverQueryLogConfigPolicy",
-          "documentation":"<p>An Identity and Access Management policy statement that lists the query logging configurations that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Actions</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:AssociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigAssociations</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigs</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, you specify the ARNs for the query logging configurations that you want to share with the account that you specified in <code>Arn</code>. </p>"
+          "documentation":"<p>An Identity and Access Management policy statement that lists the query logging configurations that you want to share with another Amazon Web Services account and the operations that you want the account to be able to perform. You can specify the following operations in the <code>Actions</code> section of the statement:</p> <ul> <li> <p> <code>route53resolver:AssociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:DisassociateResolverQueryLogConfig</code> </p> </li> <li> <p> <code>route53resolver:ListResolverQueryLogConfigs</code> </p> </li> </ul> <p>In the <code>Resource</code> section of the statement, you specify the ARNs for the query logging configurations that you want to share with the account that you specified in <code>Arn</code>. </p>"
         }
       }
     },
@@ -3516,6 +3820,14 @@
         "ResolverEndpointType":{
           "shape":"ResolverEndpointType",
           "documentation":"<p> The Resolver endpoint IP address type. </p>"
+        },
+        "OutpostArn":{
+          "shape":"OutpostArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) for the Outpost.</p>"
+        },
+        "PreferredInstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p> The Amazon EC2 instance type. </p>"
         }
       },
       "documentation":"<p>In the response to a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html\">CreateResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html\">DeleteResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>, Updates the name, or ResolverEndpointType for an endpoint, or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a> request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.</p>"
@@ -3714,7 +4026,7 @@
         },
         "TargetIps":{
           "shape":"TargetList",
-          "documentation":"<p>An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. Specify IPv4 addresses. IPv6 is not supported.</p>"
+          "documentation":"<p>An array that contains the IP addresses and ports that an outbound endpoint forwards DNS queries to. Typically, these are the IP addresses of DNS resolvers on your network. </p>"
         },
         "ResolverEndpointId":{
           "shape":"ResourceId",
@@ -3892,6 +4204,14 @@
       "type":"string",
       "max":512,
       "min":1
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>Fulfilling the request would cause one or more quotas to be exceeded.</p>",
+      "exception":true
     },
     "ShareStatus":{
       "type":"string",
@@ -4236,6 +4556,40 @@
       "max":50,
       "min":0
     },
+    "UpdateOutpostResolverRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique string that identifies Resolver on an Outpost.</p>"
+        },
+        "Name":{
+          "shape":"OutpostResolverName",
+          "documentation":"<p>Name of the Resolver on the Outpost.</p>",
+          "box":true
+        },
+        "InstanceCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>The Amazon EC2 instance count for a Resolver on the Outpost.</p>",
+          "box":true
+        },
+        "PreferredInstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p> Amazon EC2 instance type. </p>",
+          "box":true
+        }
+      }
+    },
+    "UpdateOutpostResolverResponse":{
+      "type":"structure",
+      "members":{
+        "OutpostResolver":{
+          "shape":"OutpostResolver",
+          "documentation":"<p>The response to an <code>UpdateOutpostResolver</code> request.</p>"
+        }
+      }
+    },
     "UpdateResolverConfigRequest":{
       "type":"structure",
       "required":[
@@ -4303,12 +4657,12 @@
         },
         "ResolverEndpointType":{
           "shape":"ResolverEndpointType",
-          "documentation":"<p> Specifies the endpoint type for what type of IP address the endpoint uses to forward DNS queries. </p>",
+          "documentation":"<p> Specifies the endpoint type for what type of IP address the endpoint uses to forward DNS queries. </p> <p>Updating to <code>IPV6</code> type isn't currently supported.</p>",
           "box":true
         },
         "UpdateIpAddresses":{
           "shape":"UpdateIpAddresses",
-          "documentation":"<p> Updates the Resolver endpoint type to IpV4, Ipv6, or dual-stack. </p>",
+          "documentation":"<p> Specifies the IPv6 address when you update the Resolver endpoint from IPv4 to dual-stack. If you don't specify an IPv6 address, one will be automatically chosen from your subnet. </p>",
           "box":true
         }
       }

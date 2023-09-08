@@ -682,17 +682,6 @@
       },
       "documentation":"<p>The structure representing the EoCloudCover filter.</p>"
     },
-    "EojDataSourceConfigInput":{
-      "type":"structure",
-      "members":{
-        "S3Data":{
-          "shape":"S3DataInput",
-          "documentation":"<p>The input structure for S3Data; representing the Amazon S3 location of the input data objects.</p>"
-        }
-      },
-      "documentation":"<p>Union representing different data sources to be used as input for an Earth Observation job.</p>",
-      "union":true
-    },
     "ExecutionRoleArn":{
       "type":"string",
       "max":2048,
@@ -1295,10 +1284,6 @@
     "InputConfigInput":{
       "type":"structure",
       "members":{
-        "DataSourceConfig":{
-          "shape":"EojDataSourceConfigInput",
-          "documentation":"<p>The location of the input data.&gt;</p>"
-        },
         "PreviousEarthObservationJobArn":{
           "shape":"EarthObservationJobArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the previous Earth Observation job.</p>"
@@ -1313,10 +1298,6 @@
     "InputConfigOutput":{
       "type":"structure",
       "members":{
-        "DataSourceConfig":{
-          "shape":"EojDataSourceConfigInput",
-          "documentation":"<p>The location of the input data.</p>"
-        },
         "PreviousEarthObservationJobArn":{
           "shape":"EarthObservationJobArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the previous Earth Observation job.</p>"
@@ -1732,10 +1713,6 @@
       },
       "documentation":"<p>The input structure for Map Matching operation type.</p>"
     },
-    "MetadataProvider":{
-      "type":"string",
-      "enum":["PLANET_ORDER"]
-    },
     "MultiPolygonGeometryInput":{
       "type":"structure",
       "required":["Coordinates"],
@@ -2150,28 +2127,6 @@
       },
       "documentation":"<p>The input structure for Reverse Geocoding operation type.</p>"
     },
-    "S3DataInput":{
-      "type":"structure",
-      "required":[
-        "MetadataProvider",
-        "S3Uri"
-      ],
-      "members":{
-        "KmsKeyId":{
-          "shape":"KmsKey",
-          "documentation":"<p>The Key Management Service key ID for server-side encryption.</p>"
-        },
-        "MetadataProvider":{
-          "shape":"MetadataProvider",
-          "documentation":"<p>Metadata provider from whom the Amazon S3 data has been acquired.</p>"
-        },
-        "S3Uri":{
-          "shape":"S3Uri",
-          "documentation":"<p>The URL to the Amazon S3 input.</p>"
-        }
-      },
-      "documentation":"<p>Path to Amazon S3 storage location for input data.</p>"
-    },
     "S3Uri":{
       "type":"string",
       "pattern":"^s3://([^/]+)/?(.*)$"
@@ -2256,6 +2211,7 @@
     "StartEarthObservationJobInput":{
       "type":"structure",
       "required":[
+        "ExecutionRoleArn",
         "InputConfig",
         "JobConfig",
         "Name"
@@ -2308,6 +2264,7 @@
         "Arn",
         "CreationTime",
         "DurationInSeconds",
+        "ExecutionRoleArn",
         "JobConfig",
         "Name",
         "Status"

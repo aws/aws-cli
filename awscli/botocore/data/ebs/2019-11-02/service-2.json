@@ -29,7 +29,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Seals and completes the snapshot after all of the required blocks of data have been written to it. Completing the snapshot changes the status to <code>completed</code>. You cannot write new blocks to a snapshot after it has been completed.</p>"
+      "documentation":"<p>Seals and completes the snapshot after all of the required blocks of data have been written to it. Completing the snapshot changes the status to <code>completed</code>. You cannot write new blocks to a snapshot after it has been completed.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
     },
     "GetSnapshotBlock":{
       "name":"GetSnapshotBlock",
@@ -47,7 +47,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the data in a block in an Amazon Elastic Block Store snapshot.</p>"
+      "documentation":"<p>Returns the data in a block in an Amazon Elastic Block Store snapshot.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
     },
     "ListChangedBlocks":{
       "name":"ListChangedBlocks",
@@ -65,7 +65,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns information about the blocks that are different between two Amazon Elastic Block Store snapshots of the same volume/snapshot lineage.</p>"
+      "documentation":"<p>Returns information about the blocks that are different between two Amazon Elastic Block Store snapshots of the same volume/snapshot lineage.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
     },
     "ListSnapshotBlocks":{
       "name":"ListSnapshotBlocks",
@@ -83,7 +83,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns information about the blocks in an Amazon Elastic Block Store snapshot.</p>"
+      "documentation":"<p>Returns information about the blocks in an Amazon Elastic Block Store snapshot.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
     },
     "PutSnapshotBlock":{
       "name":"PutSnapshotBlock",
@@ -102,7 +102,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Writes a block of data to a snapshot. If the specified block contains data, the existing data is overwritten. The target snapshot must be in the <code>pending</code> state.</p> <p>Data written to a snapshot must be aligned with 512-KiB sectors.</p>",
+      "documentation":"<p>Writes a block of data to a snapshot. If the specified block contains data, the existing data is overwritten. The target snapshot must be in the <code>pending</code> state.</p> <p>Data written to a snapshot must be aligned with 512-KiB sectors.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>",
       "authtype":"v4-unsigned-body"
     },
     "StartSnapshot":{
@@ -124,7 +124,7 @@
         {"shape":"ConcurrentLimitExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a new Amazon EBS snapshot. The new snapshot enters the <code>pending</code> state after the request completes. </p> <p>After creating the snapshot, use <a href=\"https://docs.aws.amazon.com/ebs/latest/APIReference/API_PutSnapshotBlock.html\"> PutSnapshotBlock</a> to write blocks of data to the snapshot.</p>"
+      "documentation":"<p>Creates a new Amazon EBS snapshot. The new snapshot enters the <code>pending</code> state after the request completes. </p> <p>After creating the snapshot, use <a href=\"https://docs.aws.amazon.com/ebs/latest/APIReference/API_PutSnapshotBlock.html\"> PutSnapshotBlock</a> to write blocks of data to the snapshot.</p> <note> <p>You should always retry requests that receive server (<code>5xx</code>) error responses, and <code>ThrottlingException</code> and <code>RequestThrottledException</code> client error responses. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
     }
   },
   "shapes":{
@@ -370,7 +370,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>An internal error has occurred.</p>",
+      "documentation":"<p>An internal error has occurred. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a>.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -599,7 +599,7 @@
           "documentation":"<p>The reason for the exception.</p>"
         }
       },
-      "documentation":"<p>The number of API requests has exceed the maximum allowed API request throttling limit.</p>",
+      "documentation":"<p>The number of API requests has exceeded the maximum allowed API request throttling limit for the snapshot. For more information see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/error-retries.html\">Error retries</a>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -628,7 +628,17 @@
       "type":"string",
       "enum":[
         "SNAPSHOT_NOT_FOUND",
-        "DEPENDENCY_RESOURCE_NOT_FOUND"
+        "GRANT_NOT_FOUND",
+        "DEPENDENCY_RESOURCE_NOT_FOUND",
+        "IMAGE_NOT_FOUND"
+      ]
+    },
+    "SSEType":{
+      "type":"string",
+      "enum":[
+        "sse-ebs",
+        "sse-kms",
+        "none"
       ]
     },
     "ServiceQuotaExceededException":{
@@ -735,6 +745,10 @@
         "KmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service (KMS) key used to encrypt the snapshot.</p>"
+        },
+        "SseType":{
+          "shape":"SSEType",
+          "documentation":"<p>Reserved for future use.</p>"
         }
       }
     },
@@ -800,6 +814,7 @@
         "INVALID_CUSTOMER_KEY",
         "INVALID_PAGE_TOKEN",
         "INVALID_BLOCK_TOKEN",
+        "INVALID_GRANT_TOKEN",
         "INVALID_SNAPSHOT_ID",
         "UNRELATED_SNAPSHOTS",
         "INVALID_BLOCK",
@@ -808,7 +823,9 @@
         "INVALID_DEPENDENCY_REQUEST",
         "INVALID_PARAMETER_VALUE",
         "INVALID_VOLUME_SIZE",
-        "CONFLICTING_BLOCK_UPDATE"
+        "CONFLICTING_BLOCK_UPDATE",
+        "INVALID_IMAGE_ID",
+        "WRITE_REQUEST_TIMEOUT"
       ]
     },
     "VolumeSize":{

@@ -306,6 +306,41 @@
       ],
       "documentation":"<p>Returns the configuration of an Amazon OpenSearch Service domain.</p>"
     },
+    "DescribeDomainHealth":{
+      "name":"DescribeDomainHealth",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/health"
+      },
+      "input":{"shape":"DescribeDomainHealthRequest"},
+      "output":{"shape":"DescribeDomainHealthResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Returns information about domain and node health, the standby Availability Zone, number of nodes per Availability Zone, and shard count per node.</p>"
+    },
+    "DescribeDomainNodes":{
+      "name":"DescribeDomainNodes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/nodes"
+      },
+      "input":{"shape":"DescribeDomainNodesRequest"},
+      "output":{"shape":"DescribeDomainNodesResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"}
+      ],
+      "documentation":"<p>Returns information about domain and nodes, including data nodes, master nodes, ultrawarm nodes, Availability Zone(s), standby nodes, node configurations, and node states.</p>"
+    },
     "DescribeDomains":{
       "name":"DescribeDomains",
       "http":{
@@ -499,7 +534,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a list of Amazon OpenSearch Service package versions, along with their creation time and commit message. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
+      "documentation":"<p>Returns a list of Amazon OpenSearch Service package versions, along with their creation time, commit message, and plugin properties (if the package is a zip plugin package). For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
     "GetUpgradeHistory":{
       "name":"GetUpgradeHistory",
@@ -790,7 +825,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.</p>"
+      "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.sl</p>"
     },
     "UpdatePackage":{
       "name":"UpdatePackage",
@@ -1372,6 +1407,49 @@
       "documentation":"<p>Specifies the Auto-Tune type. Valid value is SCHEDULED_ACTION.</p>",
       "enum":["SCHEDULED_ACTION"]
     },
+    "AvailabilityZone":{
+      "type":"string",
+      "max":15,
+      "min":1
+    },
+    "AvailabilityZoneInfo":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZoneName":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The name of the Availability Zone.</p>"
+        },
+        "ZoneStatus":{
+          "shape":"ZoneStatus",
+          "documentation":"<p>The current state of the Availability Zone. Current options are <code>Active</code> and <code>StandBy</code>.</p> <ul> <li> <p> <code>Active</code> - Data nodes in the Availability Zone are in use.</p> </li> <li> <p> <code>StandBy</code> - Data nodes in the Availability Zone are in a standby state.</p> </li> <li> <p> <code>NotAvailable</code> - Unable to retrieve information.</p> </li> </ul>"
+        },
+        "ConfiguredDataNodeCount":{
+          "shape":"NumberOfNodes",
+          "documentation":"<p>The total number of data nodes configured in the Availability Zone.</p>"
+        },
+        "AvailableDataNodeCount":{
+          "shape":"NumberOfNodes",
+          "documentation":"<p>The number of data nodes active in the Availability Zone.</p>"
+        },
+        "TotalShards":{
+          "shape":"NumberOfShards",
+          "documentation":"<p>The total number of primary and replica shards in the Availability Zone.</p>"
+        },
+        "TotalUnAssignedShards":{
+          "shape":"NumberOfShards",
+          "documentation":"<p>The total number of primary and replica shards that aren't allocated to any of the nodes in the Availability Zone.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Availability Zone on a domain.</p>"
+    },
+    "AvailabilityZoneInfoList":{
+      "type":"list",
+      "member":{"shape":"AvailabilityZoneInfo"}
+    },
+    "AvailabilityZoneList":{
+      "type":"list",
+      "member":{"shape":"AvailabilityZone"}
+    },
     "BackendRole":{
       "type":"string",
       "max":256,
@@ -1536,7 +1614,7 @@
         },
         "DedicatedMasterCount":{
           "shape":"IntegerClass",
-          "documentation":"<p>Number of dedicated master nodes in the cluster. This number must be greater than 1, otherwise you receive a validation exception.</p>"
+          "documentation":"<p>Number of dedicated master nodes in the cluster. This number must be greater than 2 and not 4, otherwise you receive a validation exception.</p>"
         },
         "WarmEnabled":{
           "shape":"Boolean",
@@ -1553,6 +1631,10 @@
         "ColdStorageOptions":{
           "shape":"ColdStorageOptions",
           "documentation":"<p>Container for cold storage configuration options.</p>"
+        },
+        "MultiAZWithStandbyEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean that indicates whether a multi-AZ domain is turned on with a standby AZ. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-multiaz.html\">Configuring a multi-AZ domain in Amazon OpenSearch Service</a>. </p>"
         }
       },
       "documentation":"<p>Container for the cluster configuration of an OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html\">Creating and managing Amazon OpenSearch Service domains</a>.</p>"
@@ -1681,7 +1763,11 @@
       "members":{
         "Endpoint":{
           "shape":"Endpoint",
-          "documentation":"<p>The endpoint of the remote domain.</p>"
+          "documentation":"<important> <p>The Endpoint attribute cannot be modified. </p> </important> <p>The endpoint of the remote domain. Applicable for VPC_ENDPOINT connection mode.</p>"
+        },
+        "CrossClusterSearch":{
+          "shape":"CrossClusterSearchConnectionProperties",
+          "documentation":"<p>The connection properties for cross cluster search.</p>"
         }
       },
       "documentation":"<p>The connection properties of an outbound connection.</p>"
@@ -1737,7 +1823,7 @@
         },
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
-          "documentation":"<p>Key-value pairs to configure slow log publishing.</p>"
+          "documentation":"<p>Key-value pairs to configure log publishing.</p>"
         },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptions",
@@ -1798,6 +1884,10 @@
         "ConnectionMode":{
           "shape":"ConnectionMode",
           "documentation":"<p>The connection mode.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The <code>ConnectionProperties</code> for the outbound connection.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>CreateOutboundConnection</code> operation.</p>"
@@ -1850,7 +1940,7 @@
         },
         "PackageType":{
           "shape":"PackageType",
-          "documentation":"<p>Type of package.</p>"
+          "documentation":"<p>The type of package.</p>"
         },
         "PackageDescription":{
           "shape":"PackageDescription",
@@ -1905,6 +1995,16 @@
       }
     },
     "CreatedAt":{"type":"timestamp"},
+    "CrossClusterSearchConnectionProperties":{
+      "type":"structure",
+      "members":{
+        "SkipUnavailable":{
+          "shape":"SkipUnavailableStatus",
+          "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p>"
+        }
+      },
+      "documentation":"<p>Cross cluster search specific connection properties.</p>"
+    },
     "DeleteDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -2019,6 +2119,14 @@
         }
       }
     },
+    "DependencyFailureException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An exception for when a failure in one of the dependencies results in the service being unable to fetch details about the resource.</p>",
+      "error":{"httpStatusCode":424},
+      "exception":true
+    },
     "DeploymentCloseDateTimeStamp":{"type":"timestamp"},
     "DeploymentStatus":{
       "type":"string",
@@ -2122,6 +2230,100 @@
         }
       },
       "documentation":"<p>Contains the configuration information of the requested domain.</p>"
+    },
+    "DescribeDomainHealthRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DescribeDomainHealth</code> operation.</p>"
+    },
+    "DescribeDomainHealthResponse":{
+      "type":"structure",
+      "members":{
+        "DomainState":{
+          "shape":"DomainState",
+          "documentation":"<p>The current state of the domain.</p> <ul> <li> <p> <code>Processing</code> - The domain has updates in progress.</p> </li> <li> <p> <code>Active</code> - Requested changes have been processed and deployed to the domain.</p> </li> </ul>"
+        },
+        "AvailabilityZoneCount":{
+          "shape":"NumberOfAZs",
+          "documentation":"<p>The number of Availability Zones configured for the domain. If the service is unable to fetch this information, it will return <code>NotAvailable</code>.</p>"
+        },
+        "ActiveAvailabilityZoneCount":{
+          "shape":"NumberOfAZs",
+          "documentation":"<p>The number of active Availability Zones configured for the domain. If the service is unable to fetch this information, it will return <code>NotAvailable</code>.</p>"
+        },
+        "StandByAvailabilityZoneCount":{
+          "shape":"NumberOfAZs",
+          "documentation":"<p>The number of standby Availability Zones configured for the domain. If the service is unable to fetch this information, it will return <code>NotAvailable</code>.</p>"
+        },
+        "DataNodeCount":{
+          "shape":"NumberOfNodes",
+          "documentation":"<p>The number of data nodes configured for the domain. If the service is unable to fetch this information, it will return <code>NotAvailable</code>.</p>"
+        },
+        "DedicatedMaster":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean that indicates if dedicated master nodes are activated for the domain.</p>"
+        },
+        "MasterEligibleNodeCount":{
+          "shape":"NumberOfNodes",
+          "documentation":"<p>The number of nodes that can be elected as a master node. If dedicated master nodes is turned on, this value is the number of dedicated master nodes configured for the domain. If the service is unable to fetch this information, it will return <code>NotAvailable</code>.</p>"
+        },
+        "WarmNodeCount":{
+          "shape":"NumberOfNodes",
+          "documentation":"<p>The number of warm nodes configured for the domain.</p>"
+        },
+        "MasterNode":{
+          "shape":"MasterNodeStatus",
+          "documentation":"<p>Indicates whether the domain has an elected master node.</p> <ul> <li> <p> <b>Available</b> - The domain has an elected master node.</p> </li> <li> <p> <b>UnAvailable</b> - The master node hasn't yet been elected, and a quorum to elect a new master node hasn't been reached.</p> </li> </ul>"
+        },
+        "ClusterHealth":{
+          "shape":"DomainHealth",
+          "documentation":"<p>The current health status of your cluster.</p> <ul> <li> <p> <code>Red</code> - At least one primary shard is not allocated to any node.</p> </li> <li> <p> <code>Yellow</code> - All primary shards are allocated to nodes, but some replicas aren’t.</p> </li> <li> <p> <code>Green</code> - All primary shards and their replicas are allocated to nodes.</p> </li> <li> <p> <code>NotAvailable</code> - Unable to retrieve cluster health.</p> </li> </ul>"
+        },
+        "TotalShards":{
+          "shape":"NumberOfShards",
+          "documentation":"<p>The total number of primary and replica shards for the domain.</p>"
+        },
+        "TotalUnAssignedShards":{
+          "shape":"NumberOfShards",
+          "documentation":"<p>The total number of primary and replica shards not allocated to any of the nodes for the cluster.</p>"
+        },
+        "EnvironmentInformation":{
+          "shape":"EnvironmentInfoList",
+          "documentation":"<p>A list of <code>EnvironmentInfo</code> for the domain. </p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DescribeDomainHealth</code> request. Contains health information for the requested domain.</p>"
+    },
+    "DescribeDomainNodesRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DescribeDomainNodes</code> operation.</p>"
+    },
+    "DescribeDomainNodesResponse":{
+      "type":"structure",
+      "members":{
+        "DomainNodesStatusList":{
+          "shape":"DomainNodesStatusList",
+          "documentation":"<p>Contains nodes information list <code>DomainNodesStatusList</code> with details about the all nodes on the requested domain.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>DescribeDomainNodes</code> request. Contains information about the nodes on the requested domain. </p>"
     },
     "DescribeDomainRequest":{
       "type":"structure",
@@ -2321,7 +2523,7 @@
         },
         "Value":{
           "shape":"DescribePackagesFilterValues",
-          "documentation":"<p>A list of values for the specified filter field.</p>"
+          "documentation":"<p>A non-empty list of values for the specified filter field.</p>"
         }
       },
       "documentation":"<p>A filter to apply to the <code>DescribePackage</code> response.</p>"
@@ -2488,7 +2690,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An error occured because the client wanted to access a not supported operation.</p>",
+      "documentation":"<p>An error occured because the client wanted to access an unsupported operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -2575,7 +2777,7 @@
         },
         "LogPublishingOptions":{
           "shape":"LogPublishingOptionsStatus",
-          "documentation":"<p>Key-value pairs to configure slow log publishing.</p>"
+          "documentation":"<p>Key-value pairs to configure log publishing.</p>"
         },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptionsStatus",
@@ -2648,6 +2850,15 @@
       },
       "documentation":"<p>The configured endpoint options for a domain and their current status.</p>"
     },
+    "DomainHealth":{
+      "type":"string",
+      "enum":[
+        "Red",
+        "Yellow",
+        "Green",
+        "NotAvailable"
+      ]
+    },
     "DomainId":{
       "type":"string",
       "documentation":"<p>Unique identifier for an OpenSearch Service domain.</p>",
@@ -2701,6 +2912,49 @@
       "member":{"shape":"DomainName"},
       "documentation":"<p>A list of OpenSearch Service domain names.</p>"
     },
+    "DomainNodesStatus":{
+      "type":"structure",
+      "members":{
+        "NodeId":{
+          "shape":"NodeId",
+          "documentation":"<p>The ID of the node.</p>"
+        },
+        "NodeType":{
+          "shape":"NodeType",
+          "documentation":"<p>Indicates whether the nodes is a data, master, or ultrawarm node.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone of the node.</p>"
+        },
+        "InstanceType":{
+          "shape":"OpenSearchPartitionInstanceType",
+          "documentation":"<p>The instance type information of the node.</p>"
+        },
+        "NodeStatus":{
+          "shape":"NodeStatus",
+          "documentation":"<p>Indicates if the node is active or in standby.</p>"
+        },
+        "StorageType":{
+          "shape":"StorageTypeName",
+          "documentation":"<p>Indicates if the node has EBS or instance storage. </p>"
+        },
+        "StorageVolumeType":{
+          "shape":"VolumeType",
+          "documentation":"<p>If the nodes has EBS storage, indicates if the volume type is GP2 or GP3. Only applicable for data nodes. </p>"
+        },
+        "StorageSize":{
+          "shape":"VolumeSize",
+          "documentation":"<p>The storage size of the node, in GiB.</p>"
+        }
+      },
+      "documentation":"<p>Container for information about nodes on the domain.</p>"
+    },
+    "DomainNodesStatusList":{
+      "type":"list",
+      "member":{"shape":"DomainNodesStatus"},
+      "documentation":"<p>List of <code>DomainNodesStatus</code> with details about nodes on the requested domain.</p>"
+    },
     "DomainPackageDetails":{
       "type":"structure",
       "members":{
@@ -2734,7 +2988,7 @@
         },
         "ReferencePath":{
           "shape":"ReferencePath",
-          "documentation":"<p>Denotes the location of the package on the OpenSearch Service cluster nodes. It's the same as <code>synonym_path</code> for dictionary files.</p>"
+          "documentation":"<p>The relative path of the package on the OpenSearch Service cluster nodes. This is <code>synonym_path</code> when the package is for synonym files.</p>"
         },
         "ErrorDetails":{
           "shape":"ErrorDetails",
@@ -2755,6 +3009,14 @@
         "ACTIVE",
         "DISSOCIATING",
         "DISSOCIATION_FAILED"
+      ]
+    },
+    "DomainState":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Processing",
+        "NotAvailable"
       ]
     },
     "DomainStatus":{
@@ -3048,6 +3310,20 @@
         "OpenSearch",
         "Elasticsearch"
       ]
+    },
+    "EnvironmentInfo":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZoneInformation":{
+          "shape":"AvailabilityZoneInfoList",
+          "documentation":"<p> A list of <code>AvailabilityZoneInfo</code> for the domain.</p>"
+        }
+      },
+      "documentation":"<p>Information about the active domain environment.</p>"
+    },
+    "EnvironmentInfoList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentInfo"}
     },
     "ErrorDetails":{
       "type":"structure",
@@ -3351,6 +3627,10 @@
         "InstanceRole":{
           "shape":"InstanceRoleList",
           "documentation":"<p>Whether the instance acts as a data node, a dedicated master node, or an UltraWarm node.</p>"
+        },
+        "AvailabilityZones":{
+          "shape":"AvailabilityZoneList",
+          "documentation":"<p>The supported Availability Zones for the instance type.</p>"
         }
       },
       "documentation":"<p>Lists all instance types and available features for a given OpenSearch or Elasticsearch version.</p>"
@@ -3358,6 +3638,12 @@
     "InstanceTypeDetailsList":{
       "type":"list",
       "member":{"shape":"InstanceTypeDetails"}
+    },
+    "InstanceTypeString":{
+      "type":"string",
+      "max":40,
+      "min":10,
+      "pattern":"^.*\\..*\\.search$"
     },
     "Integer":{"type":"integer"},
     "IntegerClass":{"type":"integer"},
@@ -3373,7 +3659,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The request processing has failed because you provided an invalid pagination token.</p>",
+      "documentation":"<p>Request processing failed because you provided an invalid pagination token.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -3502,13 +3788,13 @@
       "members":{
         "EngineVersion":{
           "shape":"VersionString",
-          "documentation":"<p>Version of OpenSearch or Elasticsearch, in the format Elasticsearch_X.Y or OpenSearch_X.Y. Defaults to the latest version of OpenSearch.</p>",
+          "documentation":"<p>The version of OpenSearch or Elasticsearch, in the format Elasticsearch_X.Y or OpenSearch_X.Y. Defaults to the latest version of OpenSearch.</p>",
           "location":"uri",
           "locationName":"EngineVersion"
         },
         "DomainName":{
           "shape":"DomainName",
-          "documentation":"<p>Name of the domain to list instance type details for.</p>",
+          "documentation":"<p>The name of the domain.</p>",
           "location":"querystring",
           "locationName":"domainName"
         },
@@ -3523,6 +3809,18 @@
           "documentation":"<p>If your initial <code>ListInstanceTypeDetails</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListInstanceTypeDetails</code> operations, which returns results in the next page.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "RetrieveAZs":{
+          "shape":"Boolean",
+          "documentation":"<p>An optional parameter that specifies the Availability Zones for the domain.</p>",
+          "location":"querystring",
+          "locationName":"retrieveAZs"
+        },
+        "InstanceType":{
+          "shape":"InstanceTypeString",
+          "documentation":"<p>An optional parameter that lists information for a given instance type.</p>",
+          "location":"querystring",
+          "locationName":"instanceType"
         }
       }
     },
@@ -3812,6 +4110,13 @@
       ]
     },
     "Long":{"type":"long"},
+    "MasterNodeStatus":{
+      "type":"string",
+      "enum":[
+        "Available",
+        "UnAvailable"
+      ]
+    },
     "MasterUserOptions":{
       "type":"structure",
       "members":{
@@ -3852,6 +4157,19 @@
       "type":"string",
       "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
     },
+    "NodeId":{
+      "type":"string",
+      "max":40,
+      "min":10
+    },
+    "NodeStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "StandBy",
+        "NotAvailable"
+      ]
+    },
     "NodeToNodeEncryptionOptions":{
       "type":"structure",
       "members":{
@@ -3880,11 +4198,31 @@
       },
       "documentation":"<p>Status of the node-to-node encryption options for the specified domain.</p>"
     },
+    "NodeType":{
+      "type":"string",
+      "enum":[
+        "Data",
+        "Ultrawarm",
+        "Master"
+      ]
+    },
     "NonEmptyString":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9\\-\\_\\.]+"
+    },
+    "NumberOfAZs":{
+      "type":"string",
+      "pattern":"^((\\d+)|(NotAvailable))$"
+    },
+    "NumberOfNodes":{
+      "type":"string",
+      "pattern":"^((\\d+)|(NotAvailable))$"
+    },
+    "NumberOfShards":{
+      "type":"string",
+      "pattern":"^((\\d+)|(NotAvailable))$"
     },
     "OffPeakWindow":{
       "type":"structure",
@@ -3901,7 +4239,7 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Whether to enable an off-peak window.</p> <p>This option is only available when modifying a domain created prior to February 13, 2023, not when creating a new domain. All domains created after this date have the off-peak window enabled by default. You can't disable the off-peak window after it's enabled for a domain.</p>"
+          "documentation":"<p>Whether to enable an off-peak window.</p> <p>This option is only available when modifying a domain created prior to February 16, 2023, not when creating a new domain. All domains created after this date have the off-peak window enabled by default. You can't disable the off-peak window after it's enabled for a domain.</p>"
         },
         "OffPeakWindow":{
           "shape":"OffPeakWindow",
@@ -4168,7 +4506,7 @@
         },
         "PackageName":{
           "shape":"PackageName",
-          "documentation":"<p>User-specified name of the package.</p>"
+          "documentation":"<p>The user-specified name of the package.</p>"
         },
         "PackageType":{
           "shape":"PackageType",
@@ -4180,7 +4518,7 @@
         },
         "PackageStatus":{
           "shape":"PackageStatus",
-          "documentation":"<p>Current status of the package.</p>"
+          "documentation":"<p>The current status of the package. The available options are <code>AVAILABLE</code>, <code>COPYING</code>, <code>COPY_FAILED</code>, <code>VALIDATNG</code>, <code>VALIDATION_FAILED</code>, <code>DELETING</code>, and <code>DELETE_FAILED</code>.</p>"
         },
         "CreatedAt":{
           "shape":"CreatedAt",
@@ -4523,7 +4861,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An exception for accessing or deleting a resource that does not exist..</p>",
+      "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -4815,6 +5153,14 @@
       "type":"string",
       "documentation":"<p>The domain endpoint to which index and search requests are submitted. For example, <code>search-imdb-movies-oopcnjfn6ugo.eu-west-1.es.amazonaws.com</code> or <code>doc-imdb-movies-oopcnjfn6u.eu-west-1.es.amazonaws.com</code>.</p>"
     },
+    "SkipUnavailableStatus":{
+      "type":"string",
+      "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p> <ul> <li> <p> <b>ENABLED</b> - The SkipUnavailable param is enabled for the connection.</p> </li> <li> <p> <b>DISABLED</b> - The SkipUnavailable param is disabled for the connection.</p> </li> </ul>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "SlotList":{
       "type":"list",
       "member":{"shape":"Long"}
@@ -5063,7 +5409,7 @@
         },
         "AdvancedOptions":{
           "shape":"AdvancedOptions",
-          "documentation":"<p>Key-value pairs to specify advanced configuration options. The following key-value pairs are supported:</p> <ul> <li> <p> <code>\"rest.action.multi.allow_explicit_index\": \"true\" | \"false\"</code> - Note the use of a string rather than a boolean. Specifies whether explicit references to indexes are allowed inside the body of HTTP requests. If you want to configure access policies for domain sub-resources, such as specific indexes and domain APIs, you must disable this property. Default is true.</p> </li> <li> <p> <code>\"indices.fielddata.cache.size\": \"80\" </code> - Note the use of a string rather than a boolean. Specifies the percentage of heap space allocated to field data. Default is unbounded.</p> </li> <li> <p> <code>\"indices.query.bool.max_clause_count\": \"1024\"</code> - Note the use of a string rather than a boolean. Specifies the maximum number of clauses allowed in a Lucene boolean query. Default is 1,024. Queries with more than the permitted number of clauses result in a <code>TooManyClauses</code> error.</p> </li> <li> <p> <code>\"override_main_response_version\": \"true\" | \"false\"</code> - Note the use of a string rather than a boolean. Specifies whether the domain reports its version as 7.10 to allow Elasticsearch OSS clients and plugins to continue working with it. Default is false when creating a domain and true when upgrading a domain.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options\">Advanced cluster parameters</a>.</p>"
+          "documentation":"<p>Key-value pairs to specify advanced configuration options. The following key-value pairs are supported:</p> <ul> <li> <p> <code>\"rest.action.multi.allow_explicit_index\": \"true\" | \"false\"</code> - Note the use of a string rather than a boolean. Specifies whether explicit references to indexes are allowed inside the body of HTTP requests. If you want to configure access policies for domain sub-resources, such as specific indexes and domain APIs, you must disable this property. Default is true.</p> </li> <li> <p> <code>\"indices.fielddata.cache.size\": \"80\" </code> - Note the use of a string rather than a boolean. Specifies the percentage of heap space allocated to field data. Default is unbounded.</p> </li> <li> <p> <code>\"indices.query.bool.max_clause_count\": \"1024\"</code> - Note the use of a string rather than a boolean. Specifies the maximum number of clauses allowed in a Lucene boolean query. Default is 1,024. Queries with more than the permitted number of clauses result in a <code>TooManyClauses</code> error.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options\">Advanced cluster parameters</a>.</p>"
         },
         "AccessPolicies":{
           "shape":"PolicyDocument",
@@ -5490,6 +5836,7 @@
       "min":14,
       "pattern":"^Elasticsearch_[0-9]{1}\\.[0-9]{1,2}$|^OpenSearch_[0-9]{1,2}\\.[0-9]{1,2}$"
     },
+    "VolumeSize":{"type":"string"},
     "VolumeType":{
       "type":"string",
       "documentation":"<p>The type of EBS volume that a domain uses. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-createupdatedomains.html#opensearch-createdomain-configure-ebs\">Configuring EBS-based storage</a>.</p>",
@@ -5638,6 +5985,14 @@
         }
       },
       "documentation":"<p>The zone awareness configuration for an Amazon OpenSearch Service domain.</p>"
+    },
+    "ZoneStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "StandBy",
+        "NotAvailable"
+      ]
     }
   },
   "documentation":"<p>Use the Amazon OpenSearch Service configuration API to create, configure, and manage OpenSearch Service domains.</p> <p>For sample code that uses the configuration API, see the <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-configuration-samples.html\"> <i>Amazon OpenSearch Service Developer Guide</i> </a>. The guide also contains <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/request-signing.html\">sample code</a> for sending signed HTTP requests to the OpenSearch APIs. The endpoint for configuration service requests is Region specific: es.<i>region</i>.amazonaws.com. For example, es.us-east-1.amazonaws.com. For a current list of supported Regions and endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#service-regions\">Amazon Web Services service endpoints</a>.</p>"

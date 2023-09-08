@@ -94,7 +94,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns a URL to access the job run dashboard. The generated URL is valid for one hour, after which you must invoke the API again to generate a new URL.</p>"
+      "documentation":"<p>Creates and returns a URL that you can use to access the application UIs for a job run.</p> <p>For jobs in a running state, the application UI is a live user interface such as the Spark or Tez web UI. For completed jobs, the application UI is a persistent application user interface such as the Spark History Server or persistent Tez UI.</p> <note> <p>The URL is valid for one hour after you generate it. To access the application UI after that hour elapses, you must invoke the API again to generate a new URL.</p> </note>"
     },
     "GetJobRun":{
       "name":"GetJobRun",
@@ -288,7 +288,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release associated with the application.</p>"
+          "documentation":"<p>The Amazon EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -347,7 +347,7 @@
           "documentation":"<p>The specification applied to each worker type.</p>"
         }
       },
-      "documentation":"<p>Information about an application. EMR Serverless uses applications to run jobs.</p>"
+      "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
     },
     "ApplicationArn":{
       "type":"string",
@@ -415,7 +415,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release associated with the application.</p>"
+          "documentation":"<p>The Amazon EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -529,6 +529,33 @@
       "min":1,
       "pattern":"[A-Za-z0-9._-]+"
     },
+    "CloudWatchLoggingConfiguration":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables CloudWatch logging.</p>"
+        },
+        "logGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p>The name of the log group in Amazon CloudWatch Logs where you want to publish your logs.</p>"
+        },
+        "logStreamNamePrefix":{
+          "shape":"LogStreamNamePrefix",
+          "documentation":"<p>Prefix for the CloudWatch log stream name.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"EncryptionKeyArn",
+          "documentation":"<p>The Key Management Service (KMS) key ARN to encrypt the logs that you store in CloudWatch Logs.</p>"
+        },
+        "logTypes":{
+          "shape":"LogTypeMap",
+          "documentation":"<p>The types of logs that you want to publish to CloudWatch. If you don't specify any log types, driver STDOUT and STDERR logs will be published to CloudWatch Logs by default. For more information including the supported worker types for Hive and Spark, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/logging.html#jobs-log-storage-cw\">Logging for EMR Serverless with CloudWatch</a>.</p> <ul> <li> <p> <b>Key Valid Values</b>: <code>SPARK_DRIVER</code>, <code>SPARK_EXECUTOR</code>, <code>HIVE_DRIVER</code>, <code>TEZ_TASK</code> </p> </li> <li> <p> <b>Array Members Valid Values</b>: <code>STDOUT</code>, <code>STDERR</code>, <code>HIVE_LOG</code>, <code>TEZ_AM</code>, <code>SYSTEM_LOGS</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Amazon CloudWatch configuration for monitoring logs. You can configure your jobs to send log information to CloudWatch.</p>"
+    },
     "Configuration":{
       "type":"structure",
       "required":["classification"],
@@ -601,7 +628,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release associated with the application.</p>"
+          "documentation":"<p>The Amazon EMR release associated with the application.</p>"
         },
         "type":{
           "shape":"EngineType",
@@ -1006,7 +1033,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release associated with the application your job is running on.</p>"
+          "documentation":"<p>The Amazon EMR release associated with the application your job is running on.</p>"
         },
         "configurationOverrides":{
           "shape":"ConfigurationOverrides",
@@ -1036,10 +1063,10 @@
         },
         "billedResourceUtilization":{
           "shape":"ResourceUtilization",
-          "documentation":"<p>The aggregate vCPU, memory, and storage that AWS has billed for the job run. The billed resources include a 1-minute minimum usage for workers, plus additional storage over 20 GB per worker. Note that billed resources do not include usage for idle pre-initialized workers.</p>"
+          "documentation":"<p>The aggregate vCPU, memory, and storage that Amazon Web Services has billed for the job run. The billed resources include a 1-minute minimum usage for workers, plus additional storage over 20 GB per worker. Note that billed resources do not include usage for idle pre-initialized workers.</p>"
         }
       },
-      "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an EMR Serverless application.</p>"
+      "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.</p>"
     },
     "JobRunId":{
       "type":"string",
@@ -1123,7 +1150,7 @@
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",
-          "documentation":"<p>The EMR release associated with the application your job is running on.</p>"
+          "documentation":"<p>The Amazon EMR release associated with the application your job is running on.</p>"
         },
         "type":{
           "shape":"JobRunType",
@@ -1263,6 +1290,38 @@
         }
       }
     },
+    "LogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "LogStreamNamePrefix":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[^:*]*"
+    },
+    "LogTypeList":{
+      "type":"list",
+      "member":{"shape":"LogTypeString"},
+      "max":5,
+      "min":1
+    },
+    "LogTypeMap":{
+      "type":"map",
+      "key":{"shape":"WorkerTypeString"},
+      "value":{"shape":"LogTypeList"},
+      "max":4,
+      "min":1
+    },
+    "LogTypeString":{
+      "type":"string",
+      "documentation":"<p>Log type for a Spark/Hive job-run.</p>",
+      "max":50,
+      "min":1,
+      "pattern":"[a-zA-Z]+[-_]*[a-zA-Z]+"
+    },
     "ManagedPersistenceMonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -1315,6 +1374,10 @@
         "managedPersistenceMonitoringConfiguration":{
           "shape":"ManagedPersistenceMonitoringConfiguration",
           "documentation":"<p>The managed log persistence configuration for a job run.</p>"
+        },
+        "cloudWatchLoggingConfiguration":{
+          "shape":"CloudWatchLoggingConfiguration",
+          "documentation":"<p>The Amazon CloudWatch configuration for monitoring logs. You can configure your jobs to send log information to CloudWatch.</p>"
         }
       },
       "documentation":"<p>The configuration setting for monitoring.</p>"
@@ -1733,6 +1796,10 @@
         "workerTypeSpecifications":{
           "shape":"WorkerTypeSpecificationInputMap",
           "documentation":"<p>The key-value pairs that specify worker type to <code>WorkerTypeSpecificationInput</code>. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include <code>Driver</code> and <code>Executor</code> for Spark applications and <code>HiveDriver</code> and <code>TezTask</code> for Hive applications. You can either set image details in this parameter for each worker type, or in <code>imageConfiguration</code> for all worker types.</p>"
+        },
+        "releaseLabel":{
+          "shape":"ReleaseLabel",
+          "documentation":"<p>The Amazon EMR release label for the application. You can change the release label to use a different release of Amazon EMR.</p>"
         }
       }
     },
@@ -1829,10 +1896,11 @@
     },
     "WorkerTypeString":{
       "type":"string",
+      "documentation":"<p>Worker type for an analytics framework.</p>",
       "max":50,
       "min":1,
       "pattern":"[a-zA-Z]+[-_]*[a-zA-Z]+"
     }
   },
-  "documentation":"<p>Amazon EMR Serverless is a new deployment option for Amazon EMR. EMR Serverless provides a serverless runtime environment that simplifies running analytics applications using the latest open source frameworks such as Apache Spark and Apache Hive. With EMR Serverless, you don’t have to configure, optimize, secure, or operate clusters to run applications with these frameworks.</p> <p>The API reference to Amazon EMR Serverless is <code>emr-serverless</code>. The <code>emr-serverless</code> prefix is used in the following scenarios: </p> <ul> <li> <p>It is the prefix in the CLI commands for Amazon EMR Serverless. For example, <code>aws emr-serverless start-job-run</code>.</p> </li> <li> <p>It is the prefix before IAM policy actions for Amazon EMR Serverless. For example, <code>\"Action\": [\"emr-serverless:StartJobRun\"]</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/security_iam_service-with-iam.html#security_iam_service-with-iam-id-based-policies-actions\">Policy actions for Amazon EMR Serverless</a>.</p> </li> <li> <p>It is the prefix used in Amazon EMR Serverless service endpoints. For example, <code>emr-serverless.us-east-2.amazonaws.com</code>.</p> </li> </ul>"
+  "documentation":"<p>Amazon EMR Serverless is a new deployment option for Amazon EMR. Amazon EMR Serverless provides a serverless runtime environment that simplifies running analytics applications using the latest open source frameworks such as Apache Spark and Apache Hive. With Amazon EMR Serverless, you don’t have to configure, optimize, secure, or operate clusters to run applications with these frameworks.</p> <p>The API reference to Amazon EMR Serverless is <code>emr-serverless</code>. The <code>emr-serverless</code> prefix is used in the following scenarios: </p> <ul> <li> <p>It is the prefix in the CLI commands for Amazon EMR Serverless. For example, <code>aws emr-serverless start-job-run</code>.</p> </li> <li> <p>It is the prefix before IAM policy actions for Amazon EMR Serverless. For example, <code>\"Action\": [\"emr-serverless:StartJobRun\"]</code>. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/security_iam_service-with-iam.html#security_iam_service-with-iam-id-based-policies-actions\">Policy actions for Amazon EMR Serverless</a>.</p> </li> <li> <p>It is the prefix used in Amazon EMR Serverless service endpoints. For example, <code>emr-serverless.us-east-2.amazonaws.com</code>.</p> </li> </ul>"
 }

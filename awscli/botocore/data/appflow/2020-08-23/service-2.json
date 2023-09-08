@@ -12,6 +12,23 @@
     "uid":"appflow-2020-08-23"
   },
   "operations":{
+    "CancelFlowExecutions":{
+      "name":"CancelFlowExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cancel-flow-executions"
+      },
+      "input":{"shape":"CancelFlowExecutionsRequest"},
+      "output":{"shape":"CancelFlowExecutionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels active runs for a flow.</p> <p>You can cancel all of the active runs for a flow, or you can cancel specific runs by providing their IDs.</p> <p>You can cancel a flow run only when the run is in progress. You can't cancel a run that has already completed or failed. You also can't cancel a run that's scheduled to occur but hasn't started yet. To prevent a scheduled run, you can deactivate the flow with the <code>StopFlow</code> action.</p> <p>You cannot resume a run after you cancel it.</p> <p>When you send your request, the status for each run becomes <code>CancelStarted</code>. When the cancellation completes, the status becomes <code>Canceled</code>.</p> <note> <p>When you cancel a run, you still incur charges for any data that the run already processed before the cancellation. If the run had already written some data to the flow destination, then that data remains in the destination. If you configured the flow to use a batch API (such as the Salesforce Bulk API 2.0), then the run will finish reading or writing its entire batch of data after the cancellation. For these operations, the data processing charges for Amazon AppFlow apply. For the pricing information, see <a href=\"http://aws.amazon.com/appflow/pricing/\">Amazon AppFlow pricing</a>.</p> </note>"
+    },
     "CreateConnectorProfile":{
       "name":"CreateConnectorProfile",
       "http":{
@@ -44,7 +61,8 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ConnectorAuthenticationException"},
-        {"shape":"ConnectorServerException"}
+        {"shape":"ConnectorServerException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Enables your application to create a new flow using Amazon AppFlow. You must create a connector profile before calling this API. Please note that the Request Syntax below shows syntax for multiple destinations, however, you can only transfer data to one item in this list at a time. Amazon AppFlow does not currently support flows to multiple destinations at once. </p>"
     },
@@ -248,6 +266,22 @@
       ],
       "documentation":"<p>Registers a new custom connector with your Amazon Web Services account. Before you can register the connector, you must deploy the associated AWS lambda function in your account.</p>"
     },
+    "ResetConnectorMetadataCache":{
+      "name":"ResetConnectorMetadataCache",
+      "http":{
+        "method":"POST",
+        "requestUri":"/reset-connector-metadata-cache"
+      },
+      "input":{"shape":"ResetConnectorMetadataCacheRequest"},
+      "output":{"shape":"ResetConnectorMetadataCacheResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Resets metadata about your connector entities that Amazon AppFlow stored in its cache. Use this action when you want Amazon AppFlow to return the latest information about the data that you have in a source application.</p> <p>Amazon AppFlow returns metadata about your entities when you use the ListConnectorEntities or DescribeConnectorEntities actions. Following these actions, Amazon AppFlow caches the metadata to reduce the number of API requests that it must send to the source application. Amazon AppFlow automatically resets the cache once every hour, but you can use this action when you want to get the latest metadata right away.</p>"
+    },
     "StartFlow":{
       "name":"StartFlow",
       "http":{
@@ -378,7 +412,8 @@
         {"shape":"ConflictException"},
         {"shape":"ConnectorAuthenticationException"},
         {"shape":"ConnectorServerException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Updates an existing flow. </p>"
     }
@@ -540,7 +575,7 @@
     },
     "AuthCode":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "pattern":"\\S+"
     },
     "AuthCodeUrl":{
@@ -659,6 +694,29 @@
       "type":"string",
       "max":18,
       "pattern":"\\S+"
+    },
+    "CancelFlowExecutionsRequest":{
+      "type":"structure",
+      "required":["flowName"],
+      "members":{
+        "flowName":{
+          "shape":"FlowName",
+          "documentation":"<p>The name of a flow with active runs that you want to cancel.</p>"
+        },
+        "executionIds":{
+          "shape":"ExecutionIds",
+          "documentation":"<p>The ID of each active run to cancel. These runs must belong to the flow you specify in your request.</p> <p>If you omit this parameter, your request ends all active runs that belong to the flow.</p>"
+        }
+      }
+    },
+    "CancelFlowExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "invalidExecutions":{
+          "shape":"ExecutionIds",
+          "documentation":"<p>The IDs of runs that Amazon AppFlow couldn't cancel. These runs might be ineligible for canceling because they haven't started yet or have already completed.</p>"
+        }
+      }
     },
     "CatalogType":{
       "type":"string",
@@ -830,6 +888,14 @@
         "registeredBy":{
           "shape":"RegisteredBy",
           "documentation":"<p>Information about who registered the connector.</p>"
+        },
+        "supportedDataTransferTypes":{
+          "shape":"SupportedDataTransferTypeList",
+          "documentation":"<p>The data transfer types that the connector supports.</p> <dl> <dt>RECORD</dt> <dd> <p>Structured records.</p> </dd> <dt>FILE</dt> <dd> <p>Files or binary data.</p> </dd> </dl>"
+        },
+        "supportedDataTransferApis":{
+          "shape":"SupportedDataTransferApis",
+          "documentation":"<p>The APIs of the connector application that Amazon AppFlow can use to transfer your data.</p>"
         }
       },
       "documentation":"<p> The configuration settings related to a given connector. </p>"
@@ -890,6 +956,10 @@
         "connectorModes":{
           "shape":"ConnectorModeList",
           "documentation":"<p>The connection mode that the connector supports.</p>"
+        },
+        "supportedDataTransferTypes":{
+          "shape":"SupportedDataTransferTypeList",
+          "documentation":"<p>The data transfer types that the connector supports.</p> <dl> <dt>RECORD</dt> <dd> <p>Structured records.</p> </dd> <dt>FILE</dt> <dd> <p>Files or binary data.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>Information about the registered connector.</p>"
@@ -1799,6 +1869,10 @@
         "customProperties":{
           "shape":"CustomProperties",
           "documentation":"<p>Custom properties that are required to use the custom connector as a source.</p>"
+        },
+        "dataTransferApi":{
+          "shape":"DataTransferApi",
+          "documentation":"<p>The API of the connector application that Amazon AppFlow uses to transfer your data.</p>"
         }
       },
       "documentation":"<p>The properties that are applied when the custom connector is being used as a source.</p>"
@@ -1853,6 +1927,33 @@
         "Incremental",
         "Complete"
       ]
+    },
+    "DataTransferApi":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"DataTransferApiTypeName",
+          "documentation":"<p>The name of the connector application API.</p>"
+        },
+        "Type":{
+          "shape":"DataTransferApiType",
+          "documentation":"<p>You can specify one of the following types:</p> <dl> <dt>AUTOMATIC</dt> <dd> <p>The default. Optimizes a flow for datasets that fluctuate in size from small to large. For each flow run, Amazon AppFlow chooses to use the SYNC or ASYNC API type based on the amount of data that the run transfers.</p> </dd> <dt>SYNC</dt> <dd> <p>A synchronous API. This type of API optimizes a flow for small to medium-sized datasets.</p> </dd> <dt>ASYNC</dt> <dd> <p>An asynchronous API. This type of API optimizes a flow for large datasets.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>The API of the connector application that Amazon AppFlow uses to transfer your data.</p>"
+    },
+    "DataTransferApiType":{
+      "type":"string",
+      "enum":[
+        "SYNC",
+        "ASYNC",
+        "AUTOMATIC"
+      ]
+    },
+    "DataTransferApiTypeName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\w/-]+"
     },
     "DatabaseName":{
       "type":"string",
@@ -2509,6 +2610,12 @@
       "max":256,
       "pattern":"\\S+"
     },
+    "ExecutionIds":{
+      "type":"list",
+      "member":{"shape":"ExecutionId"},
+      "max":100,
+      "min":0
+    },
     "ExecutionMessage":{
       "type":"string",
       "max":2048,
@@ -2570,6 +2677,14 @@
         "recordsProcessed":{
           "shape":"Long",
           "documentation":"<p> The number of records processed in the flow run. </p>"
+        },
+        "numParallelProcesses":{
+          "shape":"Long",
+          "documentation":"<p>The number of processes that Amazon AppFlow ran at the same time when it retrieved your data.</p>"
+        },
+        "maxPageSize":{
+          "shape":"Long",
+          "documentation":"<p>The maximum number of records that Amazon AppFlow receives in each page of the response from your SAP application.</p>"
         }
       },
       "documentation":"<p> Specifies the end result of the flow run. </p>"
@@ -2579,7 +2694,9 @@
       "enum":[
         "InProgress",
         "Successful",
-        "Error"
+        "Error",
+        "CancelStarted",
+        "Canceled"
       ]
     },
     "FieldType":{"type":"string"},
@@ -3005,6 +3122,12 @@
       "exception":true
     },
     "JavaBoolean":{"type":"boolean"},
+    "JwtToken":{
+      "type":"string",
+      "max":8000,
+      "pattern":"^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]*)",
+      "sensitive":true
+    },
     "KMSArn":{
       "type":"string",
       "max":2048,
@@ -3411,7 +3534,8 @@
       "type":"string",
       "enum":[
         "CLIENT_CREDENTIALS",
-        "AUTHORIZATION_CODE"
+        "AUTHORIZATION_CODE",
+        "JWT_BEARER"
       ]
     },
     "OAuth2GrantTypeSupportedList":{
@@ -3899,7 +4023,7 @@
     },
     "RefreshToken":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "pattern":"\\S+"
     },
     "Region":{
@@ -3968,6 +4092,36 @@
         }
       },
       "documentation":"<p>Describes the status of an attempt from Amazon AppFlow to register a resource.</p> <p>When you run a flow that you've configured to use a metadata catalog, Amazon AppFlow registers a metadata table and data partitions with that catalog. This operation provides the status of that registration attempt. The operation also indicates how many related resources Amazon AppFlow created or updated.</p>"
+    },
+    "ResetConnectorMetadataCacheRequest":{
+      "type":"structure",
+      "members":{
+        "connectorProfileName":{
+          "shape":"ConnectorProfileName",
+          "documentation":"<p>The name of the connector profile that you want to reset cached metadata for.</p> <p>You can omit this parameter if you're resetting the cache for any of the following connectors: Amazon Connect, Amazon EventBridge, Amazon Lookout for Metrics, Amazon S3, or Upsolver. If you're resetting the cache for any other connector, you must include this parameter in your request.</p>"
+        },
+        "connectorType":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The type of connector to reset cached metadata for.</p> <p>You must include this parameter in your request if you're resetting the cache for any of the following connectors: Amazon Connect, Amazon EventBridge, Amazon Lookout for Metrics, Amazon S3, or Upsolver. If you're resetting the cache for any other connector, you can omit this parameter from your request. </p>"
+        },
+        "connectorEntityName":{
+          "shape":"EntityName",
+          "documentation":"<p>Use this parameter if you want to reset cached metadata about the details for an individual entity.</p> <p>If you don't include this parameter in your request, Amazon AppFlow only resets cached metadata about entity names, not entity details.</p>"
+        },
+        "entitiesPath":{
+          "shape":"EntitiesPath",
+          "documentation":"<p>Use this parameter only if you’re resetting the cached metadata about a nested entity. Only some connectors support nested entities. A nested entity is one that has another entity as a parent. To use this parameter, specify the name of the parent entity.</p> <p>To look up the parent-child relationship of entities, you can send a ListConnectorEntities request that omits the entitiesPath parameter. Amazon AppFlow will return a list of top-level entities. For each one, it indicates whether the entity has nested entities. Then, in a subsequent ListConnectorEntities request, you can specify a parent entity name for the entitiesPath parameter. Amazon AppFlow will return a list of the child entities for that parent.</p>"
+        },
+        "apiVersion":{
+          "shape":"ApiVersion",
+          "documentation":"<p>The API version that you specified in the connector profile that you’re resetting cached metadata for. You must use this parameter only if the connector supports multiple API versions or if the connector type is CustomConnector.</p> <p>To look up how many versions a connector supports, use the DescribeConnectors action. In the response, find the value that Amazon AppFlow returns for the connectorVersion parameter.</p> <p>To look up the connector type, use the DescribeConnectorProfiles action. In the response, find the value that Amazon AppFlow returns for the connectorType parameter.</p> <p>To look up the API version that you specified in a connector profile, use the DescribeConnectorProfiles action.</p>"
+        }
+      }
+    },
+    "ResetConnectorMetadataCacheResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -4159,6 +4313,10 @@
         "oAuthProperties":{
           "shape":"OAuthProperties",
           "documentation":"<p> The SAPOData OAuth properties required for OAuth type authentication. </p>"
+        },
+        "disableSSO":{
+          "shape":"Boolean",
+          "documentation":"<p>If you set this parameter to <code>true</code>, Amazon AppFlow bypasses the single sign-on (SSO) settings in your SAP account when it accesses your SAP OData instance.</p> <p>Whether you need this option depends on the types of credentials that you applied to your SAP OData connection profile. If your profile uses basic authentication credentials, SAP SSO can prevent Amazon AppFlow from connecting to your account with your username and password. In this case, bypassing SSO makes it possible for Amazon AppFlow to connect successfully. However, if your profile uses OAuth credentials, this parameter has no affect.</p>"
         }
       },
       "documentation":"<p> The connector-specific profile properties required when using SAPOData. </p>"
@@ -4181,11 +4339,45 @@
       },
       "documentation":"<p>The properties that are applied when using SAPOData as a flow destination</p>"
     },
+    "SAPODataMaxPageSize":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
+    "SAPODataMaxParallelism":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
     "SAPODataMetadata":{
       "type":"structure",
       "members":{
       },
       "documentation":"<p> The connector metadata specific to SAPOData. </p>"
+    },
+    "SAPODataPaginationConfig":{
+      "type":"structure",
+      "required":["maxPageSize"],
+      "members":{
+        "maxPageSize":{
+          "shape":"SAPODataMaxPageSize",
+          "documentation":"<p>The maximum number of records that Amazon AppFlow receives in each page of the response from your SAP application. For transfers of OData records, the maximum page size is 3,000. For transfers of data that comes from an ODP provider, the maximum page size is 10,000.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Sets the page size for each <i>concurrent process</i> that transfers OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.</p>"
+    },
+    "SAPODataParallelismConfig":{
+      "type":"structure",
+      "required":["maxParallelism"],
+      "members":{
+        "maxParallelism":{
+          "shape":"SAPODataMaxParallelism",
+          "documentation":"<p>The maximum number of processes that Amazon AppFlow runs at the same time when it retrieves your data from your SAP application.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Sets the number of <i>concurrent processes</i> that transfer OData records from your SAP instance. A concurrent process is query that retrieves a batch of records as part of a flow run. Amazon AppFlow can run multiple concurrent processes in parallel to transfer data faster.</p>"
     },
     "SAPODataSourceProperties":{
       "type":"structure",
@@ -4193,6 +4385,14 @@
         "objectPath":{
           "shape":"Object",
           "documentation":"<p> The object path specified in the SAPOData flow source. </p>"
+        },
+        "parallelismConfig":{
+          "shape":"SAPODataParallelismConfig",
+          "documentation":"<p>Sets the number of concurrent processes that transfers OData records from your SAP instance.</p>"
+        },
+        "paginationConfig":{
+          "shape":"SAPODataPaginationConfig",
+          "documentation":"<p>Sets the page size for each concurrent process that transfers OData records from your SAP instance.</p>"
         }
       },
       "documentation":"<p> The properties that are applied when using SAPOData as a flow source. </p>"
@@ -4241,6 +4441,14 @@
         "clientCredentialsArn":{
           "shape":"ClientCredentialsArn",
           "documentation":"<p> The secret manager ARN, which contains the client ID and client secret of the connected app. </p>"
+        },
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>Specifies the OAuth 2.0 grant type that Amazon AppFlow uses when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records.</p> <p>You can specify one of the following values:</p> <dl> <dt>AUTHORIZATION_CODE</dt> <dd> <p>Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records.</p> </dd> <dt>CLIENT_CREDENTIALS</dt> <dd> <p>Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account.</p> </dd> <dt>JWT_BEARER</dt> <dd> <p>Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.</p> </dd> </dl>"
+        },
+        "jwtToken":{
+          "shape":"JwtToken",
+          "documentation":"<p>A JSON web token (JWT) that authorizes Amazon AppFlow to access your Salesforce records.</p>"
         }
       },
       "documentation":"<p> The connector-specific profile credentials required when using Salesforce. </p>"
@@ -4312,6 +4520,10 @@
         "dataTransferApis":{
           "shape":"SalesforceDataTransferApiList",
           "documentation":"<p>The Salesforce APIs that you can have Amazon AppFlow use when your flows transfers data to or from Salesforce.</p>"
+        },
+        "oauth2GrantTypesSupported":{
+          "shape":"OAuth2GrantTypeSupportedList",
+          "documentation":"<p>The OAuth 2.0 grant types that Amazon AppFlow can use when it requests an access token from Salesforce. Amazon AppFlow requires an access token each time it attempts to access your Salesforce records.</p> <dl> <dt>AUTHORIZATION_CODE</dt> <dd> <p>Amazon AppFlow passes an authorization code when it requests the access token from Salesforce. Amazon AppFlow receives the authorization code from Salesforce after you log in to your Salesforce account and authorize Amazon AppFlow to access your records.</p> </dd> <dt>CLIENT_CREDENTIALS</dt> <dd> <p>Amazon AppFlow passes client credentials (a client ID and client secret) when it requests the access token from Salesforce. You provide these credentials to Amazon AppFlow when you define the connection to your Salesforce account.</p> </dd> <dt>JWT_BEARER</dt> <dd> <p>Amazon AppFlow passes a JSON web token (JWT) when it requests the access token from Salesforce. You provide the JWT to Amazon AppFlow when you define the connection to your Salesforce account. When you use this grant type, you don't need to log in to your Salesforce account to authorize Amazon AppFlow to access your records.</p> </dd> </dl>"
         }
       },
       "documentation":"<p> The connector metadata specific to Salesforce. </p>"
@@ -4439,10 +4651,6 @@
     },
     "ServiceNowConnectorProfileCredentials":{
       "type":"structure",
-      "required":[
-        "username",
-        "password"
-      ],
       "members":{
         "username":{
           "shape":"Username",
@@ -4451,6 +4659,10 @@
         "password":{
           "shape":"Password",
           "documentation":"<p> The password that corresponds to the user name. </p>"
+        },
+        "oAuth2Credentials":{
+          "shape":"OAuth2Credentials",
+          "documentation":"<p> The OAuth 2.0 credentials required to authenticate the user. </p>"
         }
       },
       "documentation":"<p> The connector-specific profile credentials required when using ServiceNow. </p>"
@@ -4927,6 +5139,21 @@
     "SupportedApiVersionList":{
       "type":"list",
       "member":{"shape":"SupportedApiVersion"}
+    },
+    "SupportedDataTransferApis":{
+      "type":"list",
+      "member":{"shape":"DataTransferApi"}
+    },
+    "SupportedDataTransferType":{
+      "type":"string",
+      "enum":[
+        "RECORD",
+        "FILE"
+      ]
+    },
+    "SupportedDataTransferTypeList":{
+      "type":"list",
+      "member":{"shape":"SupportedDataTransferType"}
     },
     "SupportedFieldTypeDetails":{
       "type":"structure",

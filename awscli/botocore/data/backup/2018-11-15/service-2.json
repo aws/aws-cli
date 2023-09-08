@@ -119,6 +119,25 @@
       "documentation":"<p>This action creates a legal hold on a recovery point (backup). A legal hold is a restraint on altering or deleting a backup until an authorized user cancels the legal hold. Any actions to delete or disassociate a recovery point will fail with an error if one or more active legal holds are on the recovery point.</p>",
       "idempotent":true
     },
+    "CreateLogicallyAirGappedBackupVault":{
+      "name":"CreateLogicallyAirGappedBackupVault",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/logically-air-gapped-backup-vaults/{backupVaultName}"
+      },
+      "input":{"shape":"CreateLogicallyAirGappedBackupVaultInput"},
+      "output":{"shape":"CreateLogicallyAirGappedBackupVaultOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>This request creates a logical container to where backups may be copied.</p> <p>This request includes a name, the Region, the maximum number of retention days, the minimum number of retention days, and optionally can include tags and a creator request ID.</p> <note> <p>Do not include sensitive data, such as passport numbers, in the name of a backup vault.</p> </note>",
+      "idempotent":true
+    },
     "CreateReportPlan":{
       "name":"CreateReportPlan",
       "http":{
@@ -817,6 +836,21 @@
       "documentation":"<p>Returns an array of resources successfully backed up by Backup, including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.</p>",
       "idempotent":true
     },
+    "ListProtectedResourcesByBackupVault":{
+      "name":"ListProtectedResourcesByBackupVault",
+      "http":{
+        "method":"GET",
+        "requestUri":"/backup-vaults/{backupVaultName}/resources/"
+      },
+      "input":{"shape":"ListProtectedResourcesByBackupVaultInput"},
+      "output":{"shape":"ListProtectedResourcesByBackupVaultOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request lists the protected resources corresponding to each backup vault.</p>"
+    },
     "ListRecoveryPointsByBackupVault":{
       "name":"ListRecoveryPointsByBackupVault",
       "http":{
@@ -1046,7 +1080,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"MissingParameterValueException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Recovers the saved resource identified by an Amazon Resource Name (ARN).</p>",
       "idempotent":true
@@ -1289,7 +1324,7 @@
         },
         "State":{
           "shape":"BackupJobState",
-          "documentation":"<p>The current state of a resource recovery point.</p>"
+          "documentation":"<p>The current state of a backup job.</p>"
         },
         "StatusMessage":{
           "shape":"string",
@@ -1520,7 +1555,7 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p> <p>During the start window, the backup job status remains in <code>CREATED</code> status until it has successfully begun or until the start window time has run out. If within the start window time Backup receives an error that allows the job to be retried, Backup will automatically retry to begin the job at least every 10 minutes until the backup successfully begins (the job status changes to <code>RUNNING</code>) or until the job status changes to <code>EXPIRED</code> (which is expected to occur when the start window time is over).</p>"
         },
         "CompletionWindowMinutes":{
           "shape":"WindowMinutes",
@@ -1545,6 +1580,10 @@
         "EnableContinuousBackup":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"Timezone",
+          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -1570,7 +1609,7 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, it must be at least 60 minutes to avoid errors.</p> <p>This parameter has a maximum value of 100 years (52,560,000 minutes).</p> <p>During the start window, the backup job status remains in <code>CREATED</code> status until it has successfully begun or until the start window time has run out. If within the start window time Backup receives an error that allows the job to be retried, Backup will automatically retry to begin the job at least every 10 minutes until the backup successfully begins (the job status changes to <code>RUNNING</code>) or until the job status changes to <code>EXPIRED</code> (which is expected to occur when the start window time is over).</p>"
         },
         "CompletionWindowMinutes":{
           "shape":"WindowMinutes",
@@ -1578,7 +1617,7 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
         },
         "RecoveryPointTags":{
           "shape":"Tags",
@@ -1591,6 +1630,10 @@
         "EnableContinuousBackup":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Backup creates continuous backups. True causes Backup to create continuous backups capable of point-in-time restore (PITR). False (or not specified) causes Backup to create snapshot backups.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"Timezone",
+          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -2286,6 +2329,59 @@
         }
       }
     },
+    "CreateLogicallyAirGappedBackupVaultInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "MinRetentionDays",
+        "MaxRetentionDays"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>This is the name of the vault that is being created.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "BackupVaultTags":{
+          "shape":"Tags",
+          "documentation":"<p>These are the tags that will be included in the newly-created vault.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"string",
+          "documentation":"<p>This is the ID of the creation request.</p>"
+        },
+        "MinRetentionDays":{
+          "shape":"Long",
+          "documentation":"<p>This setting specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, no minimum retention period is enforced.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If a job retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault.</p>"
+        },
+        "MaxRetentionDays":{
+          "shape":"Long",
+          "documentation":"<p>This is the setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Backup does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault.</p>"
+        }
+      }
+    },
+    "CreateLogicallyAirGappedBackupVaultOutput":{
+      "type":"structure",
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Name) of the vault being created.</p>"
+        },
+        "CreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time when the vault was created.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "VaultState":{
+          "shape":"VaultState",
+          "documentation":"<p>This is the current state of the vault.</p>"
+        }
+      }
+    },
     "CreateReportPlanInput":{
       "type":"structure",
       "required":[
@@ -2571,7 +2667,7 @@
         },
         "State":{
           "shape":"BackupJobState",
-          "documentation":"<p>The current state of a resource recovery point.</p>"
+          "documentation":"<p>The current state of a backup job.</p>"
         },
         "StatusMessage":{
           "shape":"string",
@@ -2648,6 +2744,12 @@
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
+        },
+        "BackupVaultAccountId":{
+          "shape":"string",
+          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "location":"querystring",
+          "locationName":"backupVaultAccountId"
         }
       }
     },
@@ -2661,6 +2763,10 @@
         "BackupVaultArn":{
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+        },
+        "VaultType":{
+          "shape":"VaultType",
+          "documentation":"<p>This is the type of vault described.</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -2835,6 +2941,12 @@
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>",
           "location":"uri",
           "locationName":"recoveryPointArn"
+        },
+        "BackupVaultAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "location":"querystring",
+          "locationName":"backupVaultAccountId"
         }
       }
     },
@@ -2875,11 +2987,11 @@
         },
         "Status":{
           "shape":"RecoveryPointStatus",
-          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p>"
+          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p> <p>For SAP HANA on Amazon EC2 <code>STOPPED</code> status occurs due to user action, application misconfiguration, or backup failure. To ensure that future continuous backups succeed, refer to the recovery point status and check SAP HANA for details.</p>"
         },
         "StatusMessage":{
           "shape":"string",
-          "documentation":"<p>A status message explaining the reason for the recovery point deletion failure.</p>"
+          "documentation":"<p>A status message explaining the status of the recovery point.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -3175,7 +3287,7 @@
         },
         "ControlScope":{
           "shape":"ControlScope",
-          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans. For more information, see <a href=\"aws-backup/latest/devguide/API_ControlScope.html\"> <code>ControlScope</code>.</a> </p>"
+          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about all of the controls of a framework. Each framework must contain at least one control.</p>"
@@ -3482,6 +3594,12 @@
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>",
           "location":"uri",
           "locationName":"recoveryPointArn"
+        },
+        "BackupVaultAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "location":"querystring",
+          "locationName":"backupVaultAccountId"
         }
       }
     },
@@ -3883,6 +4001,18 @@
     "ListBackupVaultsInput":{
       "type":"structure",
       "members":{
+        "ByVaultType":{
+          "shape":"VaultType",
+          "documentation":"<p>This parameter will sort the list of vaults by vault type.</p>",
+          "location":"querystring",
+          "locationName":"vaultType"
+        },
+        "ByShared":{
+          "shape":"boolean",
+          "documentation":"<p>This parameter will sort the list of vaults by shared vaults.</p>",
+          "location":"querystring",
+          "locationName":"shared"
+        },
         "NextToken":{
           "shape":"string",
           "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
@@ -4064,6 +4194,49 @@
       "type":"list",
       "member":{"shape":"Condition"}
     },
+    "ListProtectedResourcesByBackupVaultInput":{
+      "type":"structure",
+      "required":["BackupVaultName"],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>This is the list of protected resources by backup vault within the vault(s) you specify by name.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "BackupVaultAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>This is the list of protected resources by backup vault within the vault(s) you specify by account ID.</p>",
+          "location":"querystring",
+          "locationName":"backupVaultAccountId"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListProtectedResourcesByBackupVaultOutput":{
+      "type":"structure",
+      "members":{
+        "Results":{
+          "shape":"ProtectedResourcesList",
+          "documentation":"<p>These are the results returned for the request ListProtectedResourcesByBackupVault.</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "ListProtectedResourcesInput":{
       "type":"structure",
       "members":{
@@ -4103,6 +4276,12 @@
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p> <note> <p>Backup vault name might not be available when a supported service creates the backup.</p> </note>",
           "location":"uri",
           "locationName":"backupVaultName"
+        },
+        "BackupVaultAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>This parameter will sort the list of recovery points by account ID.</p>",
+          "location":"querystring",
+          "locationName":"backupVaultAccountId"
         },
         "NextToken":{
           "shape":"string",
@@ -4732,6 +4911,18 @@
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the Amazon Resource Name (ARN) that uniquely identifies a saved resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>This is the Amazon Web Services resource type that is saved as a recovery point.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>This is the name of the backup vault (the logical container in which backups are stored).</p>"
         }
       },
       "documentation":"<p>This is a recovery point which is a child (nested) recovery point of a parent (composite) recovery point. These recovery points can be disassociated from their parent (composite) recovery point, in which case they will no longer be a member.</p>"
@@ -5093,15 +5284,15 @@
         },
         "StartWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours. If this value is included, it must be at least 60 minutes to avoid errors.</p>"
+          "documentation":"<p>A value in minutes after a backup is scheduled before a job will be canceled if it doesn't start successfully. This value is optional, and the default is 8 hours. If this value is included, it must be at least 60 minutes to avoid errors.</p> <p>This parameter has a maximum value of 100 years (52,560,000 minutes).</p> <p>During the start window, the backup job status remains in <code>CREATED</code> status until it has successfully begun or until the start window time has run out. If within the start window time Backup receives an error that allows the job to be retried, Backup will automatically retry to begin the job at least every 10 minutes until the backup successfully begins (the job status changes to <code>RUNNING</code>) or until the job status changes to <code>EXPIRED</code> (which is expected to occur when the start window time is over).</p>"
         },
         "CompleteWindowMinutes":{
           "shape":"WindowMinutes",
-          "documentation":"<p>A value in minutes during which a successfully started backup must complete, or else Backup will cancel the job. This value is optional. This value begins counting down from when the backup was scheduled. It does not add additional time for <code>StartWindowMinutes</code>, or if the backup started later than scheduled.</p>"
+          "documentation":"<p>A value in minutes during which a successfully started backup must complete, or else Backup will cancel the job. This value is optional. This value begins counting down from when the backup was scheduled. It does not add additional time for <code>StartWindowMinutes</code>, or if the backup started later than scheduled.</p> <p>Like <code>StartWindowMinutes</code>, this parameter has a maximum value of 100 years (52,560,000 minutes).</p>"
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
         },
         "RecoveryPointTags":{
           "shape":"Tags",
@@ -5234,7 +5425,11 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>"
+          "documentation":"<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>"
+        },
+        "CopySourceTagsToRestoredResource":{
+          "shape":"boolean",
+          "documentation":"<p>This is an optional parameter. If this equals <code>True</code>, tags included in the backup will be copied to the restored resource.</p> <p>This can only be applied to backups created through Backup.</p>"
         }
       }
     },
@@ -5299,6 +5494,7 @@
       "value":{"shape":"TagValue"},
       "sensitive":true
     },
+    "Timezone":{"type":"string"},
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -5521,6 +5717,21 @@
     "VaultNames":{
       "type":"list",
       "member":{"shape":"string"}
+    },
+    "VaultState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "AVAILABLE",
+        "FAILED"
+      ]
+    },
+    "VaultType":{
+      "type":"string",
+      "enum":[
+        "BACKUP_VAULT",
+        "LOGICALLY_AIR_GAPPED_BACKUP_VAULT"
+      ]
     },
     "WindowMinutes":{"type":"long"},
     "boolean":{"type":"boolean"},

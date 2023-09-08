@@ -552,7 +552,7 @@
       "members":{
         "EndpointType":{
           "shape":"ApiGatewayEndpointType",
-          "documentation":"<p>The type of endpoint to use for the API Gateway proxy. If no value is specified in the request, the value is set to <code>REGIONAL</code> by default.</p> <p>If the value is set to <code>PRIVATE</code> in the request, this creates a private API endpoint that is isolated from the public internet. The private endpoint can only be accessed by using Amazon Virtual Private Cloud (Amazon VPC) endpoints for Amazon API Gateway that have been granted access. </p>"
+          "documentation":"<p>The type of endpoint to use for the API Gateway proxy. If no value is specified in the request, the value is set to <code>REGIONAL</code> by default.</p> <p>If the value is set to <code>PRIVATE</code> in the request, this creates a private API endpoint that is isolated from the public internet. The private endpoint can only be accessed by using Amazon Virtual Private Cloud (Amazon VPC) interface endpoints for the Amazon API Gateway that has been granted access. For more information about creating a private connection with Refactor Spaces and interface endpoint (Amazon Web Services PrivateLink) availability, see <a href=\"https://docs.aws.amazon.com/migrationhub-refactor-spaces/latest/userguide/vpc-interface-endpoints.html\">Access Refactor Spaces using an interface endpoint (Amazon Web Services PrivateLink)</a>.</p>"
         },
         "StageName":{
           "shape":"StageName",
@@ -1761,6 +1761,10 @@
     "GetRouteResponse":{
       "type":"structure",
       "members":{
+        "AppendSourcePath":{
+          "shape":"Boolean",
+          "documentation":"<p>If set to <code>true</code>, this option appends the source path to the service URL endpoint.</p>"
+        },
         "ApplicationId":{
           "shape":"ApplicationId",
           "documentation":"<p>The ID of the application that the route belongs to. </p>"
@@ -1819,7 +1823,7 @@
         },
         "SourcePath":{
           "shape":"UriPath",
-          "documentation":"<p>The path to use to match traffic. Paths must start with <code>/</code> and are relative to the base of the application. </p>"
+          "documentation":"<p>This is the path that Refactor Spaces uses to match traffic. Paths must start with <code>/</code> and are relative to the base of the application. To use path parameters in the source path, add a variable in curly braces. For example, the resource path {user} represents a path parameter called 'user'.</p>"
         },
         "State":{
           "shape":"RouteState",
@@ -2380,6 +2384,10 @@
     "RouteSummary":{
       "type":"structure",
       "members":{
+        "AppendSourcePath":{
+          "shape":"Boolean",
+          "documentation":"<p>If set to <code>true</code>, this option appends the source path to the service URL endpoint.</p>"
+        },
         "ApplicationId":{
           "shape":"ApplicationId",
           "documentation":"<p>The unique identifier of the application. </p>"
@@ -2438,7 +2446,7 @@
         },
         "SourcePath":{
           "shape":"UriPath",
-          "documentation":"<p>The path to use to match traffic. Paths must start with <code>/</code> and are relative to the base of the application.</p>"
+          "documentation":"<p>This is the path that Refactor Spaces uses to match traffic. Paths must start with <code>/</code> and are relative to the base of the application. To use path parameters in the source path, add a variable in curly braces. For example, the resource path {user} represents a path parameter called 'user'.</p>"
         },
         "State":{
           "shape":"RouteState",
@@ -2786,7 +2794,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^(/[a-zA-Z0-9._-]+)+$"
+      "pattern":"^(/([a-zA-Z0-9._:-]+|\\{[a-zA-Z0-9._:-]+\\}))+$"
     },
     "UriPathRouteInput":{
       "type":"structure",
@@ -2799,6 +2807,10 @@
           "shape":"RouteActivationState",
           "documentation":"<p>If set to <code>ACTIVE</code>, traffic is forwarded to this route’s service after the route is created. </p>"
         },
+        "AppendSourcePath":{
+          "shape":"Boolean",
+          "documentation":"<p>If set to <code>true</code>, this option appends the source path to the service URL endpoint.</p>"
+        },
         "IncludeChildPaths":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to match all subpaths of the given source path. If this value is <code>false</code>, requests must match the source path exactly before they are forwarded to this route's service. </p>"
@@ -2809,7 +2821,7 @@
         },
         "SourcePath":{
           "shape":"UriPath",
-          "documentation":"<p>The path to use to match traffic. Paths must start with <code>/</code> and are relative to the base of the application.</p>"
+          "documentation":"<p>This is the path that Refactor Spaces uses to match traffic. Paths must start with <code>/</code> and are relative to the base of the application. To use path parameters in the source path, add a variable in curly braces. For example, the resource path {user} represents a path parameter called 'user'.</p>"
         }
       },
       "documentation":"<p>The configuration for the URI path route type. </p>"

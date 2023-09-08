@@ -44,7 +44,25 @@
         {"shape":"ServiceUnavailable"},
         {"shape":"ValidationError"}
       ],
-      "documentation":"<p>After you deploy a model into production using Amazon SageMaker hosting services, your client applications use this API to get inferences from the model hosted at the specified endpoint in an asynchronous manner.</p> <p>Inference requests sent to this API are enqueued for asynchronous processing. The processing of the inference request may or may not complete before you receive a response from this API. The response from this API will not contain the result of the inference request but contain information about where you can locate it.</p> <p>Amazon SageMaker strips all <code>POST</code> headers except those supported by the API. Amazon SageMaker might add additional headers. You should not rely on the behavior of headers outside those enumerated in the request syntax.</p> <p>Calls to <code>InvokeEndpointAsync</code> are authenticated by using Amazon Web Services Signature Version 4. For information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\">Authenticating Requests (Amazon Web Services Signature Version 4)</a> in the <i>Amazon S3 API Reference</i>.</p>"
+      "documentation":"<p>After you deploy a model into production using Amazon SageMaker hosting services, your client applications use this API to get inferences from the model hosted at the specified endpoint in an asynchronous manner.</p> <p>Inference requests sent to this API are enqueued for asynchronous processing. The processing of the inference request may or may not complete before you receive a response from this API. The response from this API will not contain the result of the inference request but contain information about where you can locate it.</p> <p>Amazon SageMaker strips all POST headers except those supported by the API. Amazon SageMaker might add additional headers. You should not rely on the behavior of headers outside those enumerated in the request syntax. </p> <p>Calls to <code>InvokeEndpointAsync</code> are authenticated by using Amazon Web Services Signature Version 4. For information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\">Authenticating Requests (Amazon Web Services Signature Version 4)</a> in the <i>Amazon S3 API Reference</i>.</p>"
+    },
+    "InvokeEndpointWithResponseStream":{
+      "name":"InvokeEndpointWithResponseStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/endpoints/{EndpointName}/invocations-response-stream"
+      },
+      "input":{"shape":"InvokeEndpointWithResponseStreamInput"},
+      "output":{"shape":"InvokeEndpointWithResponseStreamOutput"},
+      "errors":[
+        {"shape":"InternalFailure"},
+        {"shape":"ServiceUnavailable"},
+        {"shape":"ValidationError"},
+        {"shape":"ModelError"},
+        {"shape":"ModelStreamError"},
+        {"shape":"InternalStreamFailure"}
+      ],
+      "documentation":"<p>Invokes a model at the specified endpoint to return the inference response as a stream. The inference stream provides the response payload incrementally as a series of parts. Before you can get an inference stream, you must have access to a model that's deployed using Amazon SageMaker hosting services, and the container for that model must support inference streaming.</p> <p>For more information that can help you use this API, see the following sections in the <i>Amazon SageMaker Developer Guide</i>:</p> <ul> <li> <p>For information about how to add streaming support to a model, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-inference-code.html#your-algorithms-inference-code-how-containe-serves-requests\">How Containers Serve Requests</a>.</p> </li> <li> <p>For information about how to process the streaming response, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-test-endpoints.html\">Invoke real-time endpoints</a>.</p> </li> </ul> <p>Amazon SageMaker strips all POST headers except those supported by the API. Amazon SageMaker might add additional headers. You should not rely on the behavior of headers outside those enumerated in the request syntax. </p> <p>Calls to <code>InvokeEndpointWithResponseStream</code> are authenticated by using Amazon Web Services Signature Version 4. For information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\">Authenticating Requests (Amazon Web Services Signature Version 4)</a> in the <i>Amazon S3 API Reference</i>.</p>"
     }
   },
   "shapes":{
@@ -70,6 +88,7 @@
       "max":63,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
+    "ErrorCode":{"type":"string"},
     "Header":{
       "type":"string",
       "max":1024,
@@ -109,6 +128,16 @@
       "fault":true,
       "synthetic":true
     },
+    "InternalStreamFailure":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>The stream processing failed because of an unknown error, exception or failure. Try your request again.</p>",
+      "exception":true,
+      "fault":true,
+      "synthetic":true
+    },
     "InvocationTimeoutSecondsHeader":{
       "type":"integer",
       "max":3600,
@@ -123,7 +152,7 @@
       "members":{
         "EndpointName":{
           "shape":"EndpointName",
-          "documentation":"<p>The name of the endpoint that you specified when you created the endpoint using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\"> <code>CreateEndpoint</code> </a> API.</p>",
+          "documentation":"<p>The name of the endpoint that you specified when you created the endpoint using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html\">CreateEndpoint</a> API.</p>",
           "location":"uri",
           "locationName":"EndpointName"
         },
@@ -135,13 +164,13 @@
         },
         "Accept":{
           "shape":"Header",
-          "documentation":"<p>The desired MIME type of the inference in the response.</p>",
+          "documentation":"<p>The desired MIME type of the inference response from the model container.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Accept"
         },
         "CustomAttributes":{
           "shape":"CustomAttributesHeader",
-          "documentation":"<p>Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to provide an ID that you can use to track a request or to provide other metadata that a service endpoint was programmed to process. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID</code>: in your post-processing function. </p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK. </p>",
+          "documentation":"<p>Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to provide an ID that you can use to track a request or to provide other metadata that a service endpoint was programmed to process. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function. </p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK. </p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Custom-Attributes"
         },
@@ -201,7 +230,7 @@
       "members":{
         "EndpointName":{
           "shape":"EndpointName",
-          "documentation":"<p>The name of the endpoint that you specified when you created the endpoint using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html\">CreateEndpoint</a> API. </p>",
+          "documentation":"<p>The name of the endpoint that you specified when you created the endpoint using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html\">CreateEndpoint</a> API.</p>",
           "location":"uri",
           "locationName":"EndpointName"
         },
@@ -217,13 +246,13 @@
         },
         "Accept":{
           "shape":"Header",
-          "documentation":"<p>The desired MIME type of the inference in the response.</p>",
+          "documentation":"<p>The desired MIME type of the inference response from the model container.</p>",
           "location":"header",
           "locationName":"Accept"
         },
         "CustomAttributes":{
           "shape":"CustomAttributesHeader",
-          "documentation":"<p>Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to provide an ID that you can use to track a request or to provide other metadata that a service endpoint was programmed to process. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://tools.ietf.org/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function.</p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK.</p>",
+          "documentation":"<p>Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to provide an ID that you can use to track a request or to provide other metadata that a service endpoint was programmed to process. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function. </p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK. </p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Custom-Attributes"
         },
@@ -270,9 +299,91 @@
         },
         "ContentType":{
           "shape":"Header",
-          "documentation":"<p>The MIME type of the inference returned in the response body.</p>",
+          "documentation":"<p>The MIME type of the inference returned from the model container.</p>",
           "location":"header",
           "locationName":"Content-Type"
+        },
+        "InvokedProductionVariant":{
+          "shape":"Header",
+          "documentation":"<p>Identifies the production variant that was invoked.</p>",
+          "location":"header",
+          "locationName":"x-Amzn-Invoked-Production-Variant"
+        },
+        "CustomAttributes":{
+          "shape":"CustomAttributesHeader",
+          "documentation":"<p>Provides additional information in the response about the inference returned by a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to return an ID received in the <code>CustomAttributes</code> header of a request or other metadata that a service endpoint was programmed to produce. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://tools.ietf.org/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). If the customer wants the custom attribute returned, the model must set the custom attribute to be included on the way back. </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function.</p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Custom-Attributes"
+        }
+      },
+      "payload":"Body"
+    },
+    "InvokeEndpointWithResponseStreamInput":{
+      "type":"structure",
+      "required":[
+        "EndpointName",
+        "Body"
+      ],
+      "members":{
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint that you specified when you created the endpoint using the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html\">CreateEndpoint</a> API.</p>",
+          "location":"uri",
+          "locationName":"EndpointName"
+        },
+        "Body":{
+          "shape":"BodyBlob",
+          "documentation":"<p>Provides input data, in the format specified in the <code>ContentType</code> request header. Amazon SageMaker passes all of the data in the body to the model. </p> <p>For information about the format of the request body, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html\">Common Data Formats-Inference</a>.</p>"
+        },
+        "ContentType":{
+          "shape":"Header",
+          "documentation":"<p>The MIME type of the input data in the request body.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "Accept":{
+          "shape":"Header",
+          "documentation":"<p>The desired MIME type of the inference response from the model container.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Accept"
+        },
+        "CustomAttributes":{
+          "shape":"CustomAttributesHeader",
+          "documentation":"<p>Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to provide an ID that you can use to track a request or to provide other metadata that a service endpoint was programmed to process. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function. </p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK. </p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Custom-Attributes"
+        },
+        "TargetVariant":{
+          "shape":"TargetVariantHeader",
+          "documentation":"<p>Specify the production variant to send the inference request to when invoking an endpoint that is running two or more variants. Note that this parameter overrides the default behavior for the endpoint, which is to distribute the invocation traffic based on the variant weights.</p> <p>For information about how to use variant targeting to perform a/b testing, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html\">Test models in production</a> </p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Target-Variant"
+        },
+        "TargetContainerHostname":{
+          "shape":"TargetContainerHostnameHeader",
+          "documentation":"<p>If the endpoint hosts multiple containers and is configured to use direct invocation, this parameter specifies the host name of the container to invoke.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Target-Container-Hostname"
+        },
+        "InferenceId":{
+          "shape":"InferenceId",
+          "documentation":"<p>An identifier that you assign to your request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Inference-Id"
+        }
+      },
+      "payload":"Body"
+    },
+    "InvokeEndpointWithResponseStreamOutput":{
+      "type":"structure",
+      "required":["Body"],
+      "members":{
+        "Body":{"shape":"ResponseStream"},
+        "ContentType":{
+          "shape":"Header",
+          "documentation":"<p>The MIME type of the inference returned from the model container.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Content-Type"
         },
         "InvokedProductionVariant":{
           "shape":"Header",
@@ -325,10 +436,58 @@
       "exception":true,
       "synthetic":true
     },
+    "ModelStreamError":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"},
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>This error can have the following error codes:</p> <dl> <dt>ModelInvocationTimeExceeded</dt> <dd> <p>The model failed to finish sending the response within the timeout period allowed by Amazon SageMaker.</p> </dd> <dt>StreamBroken</dt> <dd> <p>The Transmission Control Protocol (TCP) connection between the client and the model was reset or closed.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p> An error occurred while streaming the response body. This error can have the following error codes:</p> <dl> <dt>ModelInvocationTimeExceeded</dt> <dd> <p>The model failed to finish sending the response within the timeout period allowed by Amazon SageMaker.</p> </dd> <dt>StreamBroken</dt> <dd> <p>The Transmission Control Protocol (TCP) connection between the client and the model was reset or closed.</p> </dd> </dl>",
+      "exception":true,
+      "synthetic":true
+    },
+    "PartBlob":{
+      "type":"blob",
+      "sensitive":true
+    },
+    "PayloadPart":{
+      "type":"structure",
+      "members":{
+        "Bytes":{
+          "shape":"PartBlob",
+          "documentation":"<p>A blob that contains part of the response for your streaming inference request.</p>",
+          "eventpayload":true
+        }
+      },
+      "documentation":"<p>A wrapper for pieces of the payload that's returned in response to a streaming inference request. A streaming inference response consists of one or more payload parts. </p>",
+      "event":true
+    },
     "RequestTTLSecondsHeader":{
       "type":"integer",
       "max":21600,
       "min":60
+    },
+    "ResponseStream":{
+      "type":"structure",
+      "members":{
+        "PayloadPart":{
+          "shape":"PayloadPart",
+          "documentation":"<p>A wrapper for pieces of the payload that's returned in response to a streaming inference request. A streaming inference response consists of one or more payload parts. </p>"
+        },
+        "ModelStreamError":{
+          "shape":"ModelStreamError",
+          "documentation":"<p> An error occurred while streaming the response body. This error can have the following error codes:</p> <dl> <dt>ModelInvocationTimeExceeded</dt> <dd> <p>The model failed to finish sending the response within the timeout period allowed by Amazon SageMaker.</p> </dd> <dt>StreamBroken</dt> <dd> <p>The Transmission Control Protocol (TCP) connection between the client and the model was reset or closed.</p> </dd> </dl>"
+        },
+        "InternalStreamFailure":{
+          "shape":"InternalStreamFailure",
+          "documentation":"<p>The stream processing failed because of an unknown error, exception or failure. Try your request again.</p>"
+        }
+      },
+      "documentation":"<p>A stream of payload parts. Each part contains a portion of the response for a streaming inference request.</p>",
+      "eventstream":true
     },
     "ServiceUnavailable":{
       "type":"structure",

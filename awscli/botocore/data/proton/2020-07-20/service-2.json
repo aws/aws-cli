@@ -356,6 +356,24 @@
       "documentation":"<p>Delete an Proton component resource.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>",
       "idempotent":true
     },
+    "DeleteDeployment":{
+      "name":"DeleteDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDeploymentInput"},
+      "output":{"shape":"DeleteDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete the deployment.</p>",
+      "idempotent":true
+    },
     "DeleteEnvironment":{
       "name":"DeleteEnvironment",
       "http":{
@@ -579,6 +597,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Get detailed data for a component.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>"
+    },
+    "GetDeployment":{
+      "name":"GetDeployment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeploymentInput"},
+      "output":{"shape":"GetDeploymentOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get detailed data for a deployment.</p>"
     },
     "GetEnvironment":{
       "name":"GetEnvironment",
@@ -900,6 +935,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>List components with summary data. You can filter the result list by environment, service, or a single service instance.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>"
+    },
+    "ListDeployments":{
+      "name":"ListDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDeploymentsInput"},
+      "output":{"shape":"ListDeploymentsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List deployments. You can filter the result list by environment, service, or a single service instance.</p>"
     },
     "ListEnvironmentAccountConnections":{
       "name":"ListEnvironmentAccountConnections",
@@ -1763,6 +1815,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the Proton environment that this component is associated with.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this component.</p>"
+        },
         "lastClientRequestToken":{
           "shape":"String",
           "documentation":"<p>The last token the client requested.</p>"
@@ -1778,6 +1834,10 @@
         "lastModifiedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the component was last modified.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this component.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -1799,12 +1859,40 @@
       "documentation":"<p>Detailed data of an Proton component resource.</p> <p>For more information about components, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/ag-components.html\">Proton components</a> in the <i>Proton User Guide</i>.</p>"
     },
     "ComponentArn":{"type":"string"},
+    "ComponentDeploymentIdList":{
+      "type":"list",
+      "member":{"shape":"DeploymentId"},
+      "max":1,
+      "min":0
+    },
     "ComponentDeploymentUpdateType":{
       "type":"string",
       "enum":[
         "NONE",
         "CURRENT_VERSION"
       ]
+    },
+    "ComponentState":{
+      "type":"structure",
+      "members":{
+        "serviceInstanceName":{
+          "shape":"ResourceNameOrEmpty",
+          "documentation":"<p>The name of the service instance that this component is attached to. Provided when a component is attached to a service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceNameOrEmpty",
+          "documentation":"<p>The name of the service that <code>serviceInstanceName</code> is associated with. Provided when a component is attached to a service instance.</p>"
+        },
+        "serviceSpec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that the component uses to access service inputs. Provided when a component is attached to a service instance.</p>"
+        },
+        "templateFile":{
+          "shape":"TemplateFileContents",
+          "documentation":"<p>The template file used.</p>"
+        }
+      },
+      "documentation":"<p>The detailed data about the current state of the component.</p>"
     },
     "ComponentSummary":{
       "type":"structure",
@@ -1837,6 +1925,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the Proton environment that this component is associated with.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this component.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the component was last attempted.</p>"
@@ -1848,6 +1940,10 @@
         "lastModifiedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the component was last modified.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this component.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -2521,6 +2617,25 @@
         }
       }
     },
+    "DeleteDeploymentInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment to delete.</p>"
+        }
+      }
+    },
+    "DeleteDeploymentOutput":{
+      "type":"structure",
+      "members":{
+        "deployment":{
+          "shape":"Deployment",
+          "documentation":"<p>The detailed data of the deployment being deleted.</p>"
+        }
+      }
+    },
     "DeleteEnvironmentAccountConnectionInput":{
       "type":"structure",
       "required":["id"],
@@ -2749,9 +2864,122 @@
         }
       }
     },
+    "Deployment":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "id",
+        "lastModifiedAt",
+        "targetArn",
+        "targetResourceCreatedAt",
+        "targetResourceType"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DeploymentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deployment.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was completed.</p>"
+        },
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component associated with this deployment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The status of the deployment.</p>"
+        },
+        "deploymentStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The deployment status message.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment associated with this deployment.</p>"
+        },
+        "id":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment.</p>"
+        },
+        "initialState":{
+          "shape":"DeploymentState",
+          "documentation":"<p>The initial state of the target resource at the time of the deployment.</p>"
+        },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was last modified.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deployment's service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service in this deployment.</p>"
+        },
+        "targetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target of the deployment.</p>"
+        },
+        "targetResourceCreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the depoyment target was created.</p>"
+        },
+        "targetResourceType":{
+          "shape":"DeploymentTargetResourceType",
+          "documentation":"<p>The resource type of the deployment target. It can be an environment, service, service instance, or component.</p>"
+        },
+        "targetState":{
+          "shape":"DeploymentState",
+          "documentation":"<p>The target state of the target resource at the time of the deployment.</p>"
+        }
+      },
+      "documentation":"<p>The detailed information about a deployment.</p>"
+    },
+    "DeploymentArn":{"type":"string"},
     "DeploymentId":{
       "type":"string",
       "pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "DeploymentState":{
+      "type":"structure",
+      "members":{
+        "component":{
+          "shape":"ComponentState",
+          "documentation":"<p>The state of the component associated with the deployment.</p>"
+        },
+        "environment":{
+          "shape":"EnvironmentState",
+          "documentation":"<p>The state of the environment associated with the deployment.</p>"
+        },
+        "serviceInstance":{
+          "shape":"ServiceInstanceState",
+          "documentation":"<p>The state of the service instance associated with the deployment.</p>"
+        },
+        "servicePipeline":{
+          "shape":"ServicePipelineState",
+          "documentation":"<p>The state of the service pipeline associated with the deployment.</p>"
+        }
+      },
+      "documentation":"<p>The detailed data about the current state of the deployment.</p>",
+      "union":true
     },
     "DeploymentStatus":{
       "type":"string",
@@ -2764,6 +2992,96 @@
         "DELETE_COMPLETE",
         "CANCELLING",
         "CANCELLED"
+      ]
+    },
+    "DeploymentSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createdAt",
+        "deploymentStatus",
+        "environmentName",
+        "id",
+        "lastModifiedAt",
+        "targetArn",
+        "targetResourceCreatedAt",
+        "targetResourceType"
+      ],
+      "members":{
+        "arn":{
+          "shape":"DeploymentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deployment.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was completed.</p>"
+        },
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the component associated with the deployment.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was created.</p>"
+        },
+        "deploymentStatus":{
+          "shape":"DeploymentStatus",
+          "documentation":"<p>The current status of the deployment.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment associated with the deployment.</p>"
+        },
+        "id":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment.</p>"
+        },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the deployment was last modified.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance associated with the deployment.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service associated with the deployment.</p>"
+        },
+        "targetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target of the deployment.</p>"
+        },
+        "targetResourceCreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the target resource was created.</p>"
+        },
+        "targetResourceType":{
+          "shape":"DeploymentTargetResourceType",
+          "documentation":"<p>The resource type of the deployment target. It can be an environment, service, service instance, or component.</p>"
+        }
+      },
+      "documentation":"<p>Summary data of the deployment.</p>"
+    },
+    "DeploymentSummaryList":{
+      "type":"list",
+      "member":{"shape":"DeploymentSummary"}
+    },
+    "DeploymentTargetResourceType":{
+      "type":"string",
+      "enum":[
+        "ENVIRONMENT",
+        "SERVICE_PIPELINE",
+        "SERVICE_INSTANCE",
+        "COMPONENT"
       ]
     },
     "DeploymentUpdateType":{
@@ -2842,6 +3160,10 @@
           "shape":"AwsAccountId",
           "documentation":"<p>The ID of the environment account that the environment infrastructure resources are provisioned in.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this environment.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the environment was last attempted.</p>"
@@ -2849,6 +3171,10 @@
         "lastDeploymentSucceededAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the environment was last deployed successfully.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this environment.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -3032,6 +3358,33 @@
       "member":{"shape":"EnvironmentAccountConnectionSummary"}
     },
     "EnvironmentArn":{"type":"string"},
+    "EnvironmentState":{
+      "type":"structure",
+      "required":[
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The environment spec that was used to create the environment.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the environment template that was used to create the environment.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The minor version of the environment template that was used to create the environment.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the environment template that was used to create the environment.</p>"
+        }
+      },
+      "documentation":"<p>The detailed data about the current state of the environment.</p>"
+    },
     "EnvironmentSummary":{
       "type":"structure",
       "required":[
@@ -3078,6 +3431,10 @@
           "shape":"AwsAccountId",
           "documentation":"<p>The ID of the environment account that the environment infrastructure resources are provisioned in.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this environment.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the environment was last attempted.</p>"
@@ -3085,6 +3442,10 @@
         "lastDeploymentSucceededAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the environment was last deployed successfully.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this environment.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -3395,6 +3756,41 @@
         "component":{
           "shape":"Component",
           "documentation":"<p>The detailed data of the requested component.</p>"
+        }
+      }
+    },
+    "GetDeploymentInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a component that you want to get the detailed data for.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a environment that you want to get the detailed data for.</p>"
+        },
+        "id":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment that you want to get the detailed data for.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service instance associated with the given deployment ID. <code>serviceName</code> must be specified to identify the service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service associated with the given deployment ID.</p>"
+        }
+      }
+    },
+    "GetDeploymentOutput":{
+      "type":"structure",
+      "members":{
+        "deployment":{
+          "shape":"Deployment",
+          "documentation":"<p>The detailed data of the requested deployment.</p>"
         }
       }
     },
@@ -3839,6 +4235,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the component whose outputs you want.</p>"
         },
+        "deploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment whose outputs you want.</p>"
+        },
         "nextToken":{
           "shape":"EmptyNextToken",
           "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
@@ -3926,6 +4326,49 @@
         }
       }
     },
+    "ListDeploymentsInput":{
+      "type":"structure",
+      "members":{
+        "componentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a component for result list filtering. Proton returns deployments associated with that component.</p>"
+        },
+        "environmentName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of an environment for result list filtering. Proton returns deployments associated with the environment.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPageResults",
+          "documentation":"<p>The maximum number of deployments to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates the location of the next deployment in the array of deployment, after the list of deployment that was previously requested.</p>"
+        },
+        "serviceInstanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a service instance for result list filtering. Proton returns the deployments associated with the service instance.</p>"
+        },
+        "serviceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of a service for result list filtering. Proton returns deployments associated with service instances of the service.</p>"
+        }
+      }
+    },
+    "ListDeploymentsOutput":{
+      "type":"structure",
+      "required":["deployments"],
+      "members":{
+        "deployments":{
+          "shape":"DeploymentSummaryList",
+          "documentation":"<p>An array of deployment with summary data.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates the location of the next deployment in the array of deployment, after the current requested list of deployment.</p>"
+        }
+      }
+    },
     "ListEnvironmentAccountConnectionsInput":{
       "type":"structure",
       "required":["requestedBy"],
@@ -3970,6 +4413,10 @@
       "type":"structure",
       "required":["environmentName"],
       "members":{
+        "deploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment whose outputs you want.</p>"
+        },
         "environmentName":{
           "shape":"ResourceName",
           "documentation":"<p>The environment name.</p>"
@@ -4190,6 +4637,10 @@
         "serviceName"
       ],
       "members":{
+        "deploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment whose outputs you want.</p>"
+        },
         "nextToken":{
           "shape":"EmptyNextToken",
           "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
@@ -4346,6 +4797,10 @@
       "type":"structure",
       "required":["serviceName"],
       "members":{
+        "deploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the deployment you want the outputs for.</p>"
+        },
         "nextToken":{
           "shape":"EmptyNextToken",
           "documentation":"<p>A token that indicates the location of the next output in the array of outputs, after the list of outputs that was previously requested.</p>"
@@ -5220,6 +5675,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the environment that the service instance was deployed into.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this service instance.</p>"
+        },
         "lastClientRequestToken":{
           "shape":"String",
           "documentation":"<p>The last client request token received.</p>"
@@ -5231,6 +5690,10 @@
         "lastDeploymentSucceededAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the service instance was last deployed successfully.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this service instance.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5260,6 +5723,46 @@
       "documentation":"<p>Detailed data of an Proton service instance resource.</p>"
     },
     "ServiceInstanceArn":{"type":"string"},
+    "ServiceInstanceState":{
+      "type":"structure",
+      "required":[
+        "spec",
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "lastSuccessfulComponentDeploymentIds":{
+          "shape":"ComponentDeploymentIdList",
+          "documentation":"<p>The IDs for the last successful components deployed for this service instance.</p>"
+        },
+        "lastSuccessfulEnvironmentDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID for the last successful environment deployed for this service instance.</p>"
+        },
+        "lastSuccessfulServicePipelineDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID for the last successful service pipeline deployed for this service instance.</p>"
+        },
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that was used to create the service instance.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The minor version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that was used to create the service instance.</p>"
+        }
+      },
+      "documentation":"<p>The detailed data about the current state of this service instance.</p>"
+    },
     "ServiceInstanceSummary":{
       "type":"structure",
       "required":[
@@ -5296,6 +5799,10 @@
           "shape":"ResourceName",
           "documentation":"<p>The name of the environment that the service instance was deployed into.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this service instance.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the service was last attempted.</p>"
@@ -5303,6 +5810,10 @@
         "lastDeploymentSucceededAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the service was last deployed successfully.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this service instance.</p>"
         },
         "name":{
           "shape":"ResourceName",
@@ -5360,6 +5871,10 @@
           "shape":"StatusMessage",
           "documentation":"<p>A service pipeline deployment status message.</p>"
         },
+        "lastAttemptedDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last attempted deployment of this service pipeline.</p>"
+        },
         "lastDeploymentAttemptedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a deployment of the service pipeline was last attempted.</p>"
@@ -5367,6 +5882,10 @@
         "lastDeploymentSucceededAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the service pipeline was last deployed successfully.</p>"
+        },
+        "lastSucceededDeploymentId":{
+          "shape":"DeploymentId",
+          "documentation":"<p>The ID of the last successful deployment of this service pipeline.</p>"
         },
         "spec":{
           "shape":"SpecContents",
@@ -5386,6 +5905,33 @@
         }
       },
       "documentation":"<p>Detailed data of an Proton service instance pipeline resource.</p>"
+    },
+    "ServicePipelineState":{
+      "type":"structure",
+      "required":[
+        "templateMajorVersion",
+        "templateMinorVersion",
+        "templateName"
+      ],
+      "members":{
+        "spec":{
+          "shape":"SpecContents",
+          "documentation":"<p>The service spec that was used to create the service pipeline.</p>"
+        },
+        "templateMajorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The major version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateMinorVersion":{
+          "shape":"TemplateVersionPart",
+          "documentation":"<p>The minor version of the service template that was used to create the service pipeline.</p>"
+        },
+        "templateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the service template that was used to create the service pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The detailed data about the current state of the service pipeline.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",

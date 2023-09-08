@@ -2756,6 +2756,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
           "idempotencyToken":true
+        },
+        "MulticastGroups":{
+          "shape":"NetworkAnalyzerMulticastGroupList",
+          "documentation":"<p>Multicast Group resources to add to the network analyzer configruation. Provide the <code>MulticastGroupId</code> of the resource to add in the input array.</p>"
         }
       }
     },
@@ -3813,12 +3817,12 @@
     },
     "FragmentIntervalMS":{
       "type":"integer",
-      "documentation":"<p>The interval of sending fragments in milliseconds. Currently the interval will be rounded to the nearest second. Note that this interval only controls the timing when the cloud sends the fragments down. The actual delay of receiving fragments at device side depends on the device's class and the communication delay with the cloud.</p>",
+      "documentation":"<p>The interval for sending fragments in milliseconds, rounded to the nearest second.</p> <note> <p>This interval only determines the timing for when the Cloud sends down the fragments to yor device. There can be a delay for when your device will receive these fragments. This delay depends on the device's class and the communication delay with the cloud.</p> </note>",
       "min":1
     },
     "FragmentSizeBytes":{
       "type":"integer",
-      "documentation":"<p>The size of each fragment in bytes. Currently only supported in fuota tasks with multicast groups.</p>",
+      "documentation":"<p>The size of each fragment in bytes. This parameter is supported only for FUOTA tasks with multicast groups.</p>",
       "min":1
     },
     "FuotaDeviceStatus":{
@@ -4137,7 +4141,11 @@
           "shape":"NetworkAnalyzerConfigurationArn",
           "documentation":"<p>The Amazon Resource Name of the new resource.</p>"
         },
-        "Name":{"shape":"NetworkAnalyzerConfigurationName"}
+        "Name":{"shape":"NetworkAnalyzerConfigurationName"},
+        "MulticastGroups":{
+          "shape":"NetworkAnalyzerMulticastGroupList",
+          "documentation":"<p>List of multicast group resources that have been added to the network analyzer configuration.</p>"
+        }
       }
     },
     "GetPartnerAccountRequest":{
@@ -4623,7 +4631,7 @@
         },
         "LastUplinkReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The date and time when the most recent uplink was received.</p>"
+          "documentation":"<p>The date and time when the most recent uplink was received.</p> <note> <p>This value is only valid for 3 months.</p> </note>"
         },
         "LoRaWAN":{
           "shape":"LoRaWANDeviceMetadata",
@@ -4756,7 +4764,7 @@
         },
         "LastUplinkReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The date and time when the most recent uplink was received.</p>"
+          "documentation":"<p>The date and time when the most recent uplink was received.</p> <note> <p>This value is only valid for 3 months.</p> </note>"
         },
         "ConnectionStatus":{
           "shape":"ConnectionStatus",
@@ -4822,7 +4830,7 @@
         },
         "LastUplinkReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The date and time when the most recent uplink was received.</p>"
+          "documentation":"<p>The date and time when the most recent uplink was received.</p> <note> <p>This value is only valid for 3 months.</p> </note>"
         },
         "TaskCreatedAt":{
           "shape":"ISODateTimeString",
@@ -6462,6 +6470,14 @@
       "type":"string",
       "max":256
     },
+    "MulticastFrameInfo":{
+      "type":"string",
+      "documentation":"<p> <code>FrameInfo</code> of your multicast group resources for the trace content. Use FrameInfo to debug the multicast communication between your LoRaWAN end devices and the network server.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "MulticastGroup":{
       "type":"structure",
       "members":{
@@ -6558,6 +6574,12 @@
         "Name":{"shape":"NetworkAnalyzerConfigurationName"}
       },
       "documentation":"<p>Network analyzer configurations.</p>"
+    },
+    "NetworkAnalyzerMulticastGroupList":{
+      "type":"list",
+      "member":{"shape":"MulticastGroupId"},
+      "max":10,
+      "min":0
     },
     "NetworkId":{
       "type":"integer",
@@ -6951,7 +6973,7 @@
     "RaAllowed":{"type":"boolean"},
     "RedundancyPercent":{
       "type":"integer",
-      "documentation":"<p>The percentage of added redundant fragments. For example, if firmware file is 100 bytes and fragment size is 10 bytes, with <code>RedundancyPercent</code> set to 50(%), the final number of encoded fragments is (100 / 10) + (100 / 10 * 50%) = 15.</p>",
+      "documentation":"<p>The percentage of the added fragments that are redundant. For example, if the size of the firmware image file is 100 bytes and the fragment size is 10 bytes, with <code>RedundancyPercent</code> set to 50(%), the final number of encoded fragments is (100 / 10) + (100 / 10 * 50%) = 15.</p>",
       "max":100,
       "min":0
     },
@@ -7954,7 +7976,8 @@
       "type":"structure",
       "members":{
         "WirelessDeviceFrameInfo":{"shape":"WirelessDeviceFrameInfo"},
-        "LogLevel":{"shape":"LogLevel"}
+        "LogLevel":{"shape":"LogLevel"},
+        "MulticastFrameInfo":{"shape":"MulticastFrameInfo"}
       },
       "documentation":"<p>Trace content for your wireless gateway and wireless device resources.</p>"
     },
@@ -8202,7 +8225,15 @@
           "shape":"WirelessGatewayList",
           "documentation":"<p>Wireless gateway resources to remove from the network analyzer configuration. Provide the <code>WirelessGatewayId</code> of the resources to remove in the input array.</p>"
         },
-        "Description":{"shape":"Description"}
+        "Description":{"shape":"Description"},
+        "MulticastGroupsToAdd":{
+          "shape":"NetworkAnalyzerMulticastGroupList",
+          "documentation":"<p>Multicast group resources to add to the network analyzer configuration. Provide the <code>MulticastGroupId</code> of the resource to add in the input array.</p>"
+        },
+        "MulticastGroupsToRemove":{
+          "shape":"NetworkAnalyzerMulticastGroupList",
+          "documentation":"<p>Multicast group resources to remove from the network analyzer configuration. Provide the <code>MulticastGroupId</code> of the resource to remove in the input array.</p>"
+        }
       }
     },
     "UpdateNetworkAnalyzerConfigurationResponse":{
@@ -8807,7 +8838,7 @@
         },
         "LastUplinkReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The date and time when the most recent uplink was received.</p>"
+          "documentation":"<p>The date and time when the most recent uplink was received.</p> <note> <p>Theis value is only valid for 3 months.</p> </note>"
         },
         "LoRaWAN":{
           "shape":"LoRaWANListDevice",
@@ -8933,7 +8964,7 @@
         },
         "LastUplinkReceivedAt":{
           "shape":"ISODateTimeString",
-          "documentation":"<p>The date and time when the most recent uplink was received.</p>"
+          "documentation":"<p>The date and time when the most recent uplink was received.</p> <note> <p>This value is only valid for 3 months.</p> </note>"
         }
       },
       "documentation":"<p>Information about a wireless gateway's operation.</p>"

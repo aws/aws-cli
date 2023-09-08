@@ -562,6 +562,21 @@
       ],
       "documentation":"<p>List imports.</p>"
     },
+    "ListManagedAccounts":{
+      "name":"ListManagedAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListManagedAccounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedAccountsRequest"},
+      "output":{"shape":"ListManagedAccountsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List Managed Accounts.</p>"
+    },
     "ListSourceServerActions":{
       "name":"ListSourceServerActions",
       "http":{
@@ -640,6 +655,24 @@
       ],
       "documentation":"<p>Archives specific Source Servers by setting the SourceServer.isArchived property to true for specified SourceServers by ID. This command only works for SourceServers with a lifecycle. state which equals DISCONNECTED or CUTOVER.</p>"
     },
+    "PauseReplication":{
+      "name":"PauseReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PauseReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"PauseReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Pause Replication.</p>"
+    },
     "PutSourceServerAction":{
       "name":"PutSourceServerAction",
       "http":{
@@ -705,6 +738,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Remove template post migration custom action.</p>"
+    },
+    "ResumeReplication":{
+      "name":"ResumeReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ResumeReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"ResumeReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Resume Replication.</p>"
     },
     "RetryDataReplication":{
       "name":"RetryDataReplication",
@@ -805,6 +856,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Launches a Test Instance for specific Source Servers. This command starts a LAUNCH job whose initiatedBy property is StartTest and changes the SourceServer.lifeCycle.state property to TESTING.</p>"
+    },
+    "StopReplication":{
+      "name":"StopReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StopReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Stop Replication.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1198,6 +1267,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1208,6 +1281,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -1221,6 +1298,10 @@
         "waveID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
@@ -1243,6 +1324,10 @@
         "sourceServerIDs"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1263,6 +1348,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "BandwidthThrottling":{
+      "type":"long",
+      "max":10000,
+      "min":0
     },
     "Boolean":{
       "type":"boolean",
@@ -1301,6 +1391,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>The request to change the source server migration account ID.</p>"
+        },
         "lifeCycle":{
           "shape":"ChangeServerLifeCycleStateSourceServerLifecycle",
           "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
@@ -1380,6 +1474,10 @@
       "type":"structure",
       "required":["name"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"ApplicationDescription",
           "documentation":"<p>Application description.</p>"
@@ -1473,7 +1571,7 @@
           "documentation":"<p>Request to associate the default Application Migration Service Security group with the Replication Settings template.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Request to configure bandwidth throttling during Replication Settings template creation.</p>"
         },
         "createPublicIP":{
@@ -1519,6 +1617,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Request to use Dedicated Replication Servers during Replication Settings template creation.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to use Fips Endpoint during Replication Settings template creation.</p>"
         }
       }
     },
@@ -1526,6 +1628,10 @@
       "type":"structure",
       "required":["name"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"WaveDescription",
           "documentation":"<p>Wave description.</p>"
@@ -1724,6 +1830,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1739,6 +1849,10 @@
       "type":"structure",
       "required":["jobID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Job from service by Account ID.</p>"
+        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to delete Job from service by Job ID.</p>"
@@ -1784,6 +1898,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Source Server from service by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to delete Source Server from service by Server ID.</p>"
@@ -1809,6 +1927,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -1824,6 +1946,10 @@
       "type":"structure",
       "required":["jobID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe Job log Account ID.</p>"
+        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to describe Job log job ID.</p>"
@@ -1854,6 +1980,10 @@
     "DescribeJobsRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe job log items by Account ID.</p>"
+        },
         "filters":{
           "shape":"DescribeJobsRequestFilters",
           "documentation":"<p>Request to describe Job log filters.</p>"
@@ -1968,6 +2098,10 @@
     "DescribeSourceServersRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to filter Source Servers list by Accoun ID.</p>"
+        },
         "filters":{
           "shape":"DescribeSourceServersRequestFilters",
           "documentation":"<p>Request to filter Source Servers list.</p>"
@@ -2070,6 +2204,10 @@
         "waveID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
@@ -2092,6 +2230,10 @@
         "sourceServerIDs"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -2117,6 +2259,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to disconnect Source Server from service by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to disconnect Source Server from service by Server ID.</p>"
@@ -2297,6 +2443,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to finalize Cutover by Source Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to finalize Cutover by Source Server ID.</p>"
@@ -2320,6 +2470,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Launch Configuration information by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Launch Configuration information by Source Server ID.</p>"
@@ -2330,6 +2484,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Replication Configuration by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Replication Configuration by Source Server ID.</p>"
@@ -2380,6 +2538,10 @@
     "ImportErrorData":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Import error data source account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Import error data application ID.</p>"
@@ -2590,6 +2752,11 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "Iops":{
+      "type":"long",
+      "max":64000,
+      "min":100
     },
     "JmesPathString":{
       "type":"string",
@@ -2921,11 +3088,11 @@
       "type":"structure",
       "members":{
         "iops":{
-          "shape":"PositiveInteger",
+          "shape":"Iops",
           "documentation":"<p>Launch template disk iops configuration.</p>"
         },
         "throughput":{
-          "shape":"PositiveInteger",
+          "shape":"Throughput",
           "documentation":"<p>Launch template disk throughput configuration.</p>"
         },
         "volumeType":{
@@ -3125,6 +3292,10 @@
     "ListApplicationsRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Applications list Account ID.</p>"
+        },
         "filters":{
           "shape":"ListApplicationsRequestFilters",
           "documentation":"<p>Applications list filters.</p>"
@@ -3323,10 +3494,43 @@
       },
       "documentation":"<p>List import response.</p>"
     },
+    "ListManagedAccountsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List managed accounts request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List managed accounts request next token.</p>"
+        }
+      },
+      "documentation":"<p>List managed accounts request.</p>"
+    },
+    "ListManagedAccountsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ManagedAccounts",
+          "documentation":"<p>List managed accounts response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List managed accounts response next token.</p>"
+        }
+      },
+      "documentation":"<p>List managed accounts response.</p>"
+    },
     "ListSourceServerActionsRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID to return when listing source server post migration custom actions.</p>"
+        },
         "filters":{
           "shape":"SourceServerActionsRequestFilters",
           "documentation":"<p>Filters to apply when listing source server post migration custom actions.</p>"
@@ -3417,6 +3621,10 @@
     "ListWavesRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request account ID.</p>"
+        },
         "filters":{
           "shape":"ListWavesRequestFilters",
           "documentation":"<p>Waves list filters.</p>"
@@ -3458,10 +3666,30 @@
         }
       }
     },
+    "ManagedAccount":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountID",
+          "documentation":"<p>Managed account, account ID.</p>"
+        }
+      },
+      "documentation":"<p>Managed account.</p>"
+    },
+    "ManagedAccounts":{
+      "type":"list",
+      "member":{"shape":"ManagedAccount"},
+      "max":1000,
+      "min":0
+    },
     "MarkAsArchivedRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Mark as archived by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Mark as archived by Source Server ID.</p>"
@@ -3548,6 +3776,20 @@
       "type":"list",
       "member":{"shape":"ParticipatingServer"}
     },
+    "PauseReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Pause Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Pause Replication Request source server ID.</p>"
+        }
+      }
+    },
     "PositiveInteger":{
       "type":"long",
       "min":0
@@ -3622,6 +3864,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration custom account ID.</p>"
+        },
         "actionID":{
           "shape":"ActionID",
           "documentation":"<p>Source server post migration custom action ID.</p>"
@@ -3751,6 +3997,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration account ID.</p>"
+        },
         "actionID":{
           "shape":"ActionID",
           "documentation":"<p>Source server post migration custom action ID to remove.</p>"
@@ -3796,7 +4046,7 @@
           "documentation":"<p>Replication Configuration associate default Application Migration Service Security Group.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Replication Configuration set bandwidth throttling.</p>"
         },
         "createPublicIP":{
@@ -3850,6 +4100,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration use Dedicated Replication Server.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration use Fips Endpoint.</p>"
         }
       }
     },
@@ -3933,7 +4187,7 @@
           "documentation":"<p>Replication Configuration template associate default Application Migration Service Security group.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Replication Configuration template bandwidth throttling.</p>"
         },
         "createPublicIP":{
@@ -3983,6 +4237,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration template use Dedicated Replication Server.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template use Fips Endpoint.</p>"
         }
       }
     },
@@ -4042,10 +4300,28 @@
       },
       "exception":true
     },
+    "ResumeReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Resume Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Resume Replication Request source server ID.</p>"
+        }
+      }
+    },
     "RetryDataReplicationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Retry data replication for Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Retry data replication for Source Server ID.</p>"
@@ -4427,6 +4703,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Cutover by Account IDs</p>"
+        },
         "sourceServerIDs":{
           "shape":"StartCutoverRequestSourceServerIDs",
           "documentation":"<p>Start Cutover by Source Server IDs.</p>"
@@ -4514,6 +4794,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to start replication.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>ID of source server on which to start replication.</p>"
@@ -4524,6 +4808,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Test for Account ID.</p>"
+        },
         "sourceServerIDs":{
           "shape":"StartTestRequestSourceServerIDs",
           "documentation":"<p>Start Test for Source Server IDs.</p>"
@@ -4546,6 +4834,20 @@
         "job":{
           "shape":"Job",
           "documentation":"<p>Start Test Job response.</p>"
+        }
+      }
+    },
+    "StopReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Stop Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Stop Replication Request source server ID.</p>"
         }
       }
     },
@@ -4597,6 +4899,8 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0,
       "sensitive":true
     },
     "TargetInstanceTypeRightSizingMethod":{
@@ -4683,6 +4987,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Terminate Target instance by Account ID</p>"
+        },
         "sourceServerIDs":{
           "shape":"TerminateTargetInstancesRequestSourceServerIDs",
           "documentation":"<p>Terminate Target instance by Source Server IDs.</p>"
@@ -4735,10 +5043,19 @@
       },
       "exception":true
     },
+    "Throughput":{
+      "type":"long",
+      "max":1000,
+      "min":125
+    },
     "UnarchiveApplicationRequest":{
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -4749,6 +5066,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -4793,6 +5114,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -4811,6 +5136,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update Launch configuration Account ID.</p>"
+        },
         "bootMode":{
           "shape":"BootMode",
           "documentation":"<p>Update Launch configuration boot mode request.</p>"
@@ -4917,12 +5246,16 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update replication configuration Account ID request.</p>"
+        },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration associate default Application Migration Service Security group request.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Update replication configuration bandwidth throttling request.</p>"
         },
         "createPublicIP":{
@@ -4976,6 +5309,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration use dedicated Replication Server request.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration use Fips Endpoint.</p>"
         }
       }
     },
@@ -4992,7 +5329,7 @@
           "documentation":"<p>Update replication configuration template associate default Application Migration Service Security group request.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Update replication configuration template bandwidth throttling request.</p>"
         },
         "createPublicIP":{
@@ -5038,6 +5375,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template use dedicated Replication Server request.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template use Fips Endpoint request.</p>"
         }
       }
     },
@@ -5048,6 +5389,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to update replication type.</p>"
+        },
         "replicationType":{
           "shape":"ReplicationType",
           "documentation":"<p>Replication type to which to update source server.</p>"
@@ -5062,6 +5407,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"WaveDescription",
           "documentation":"<p>Wave description.</p>"

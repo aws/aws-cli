@@ -625,22 +625,22 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The associating array of account IDs. </p>"
+          "documentation":"<p>The associating array of account IDs.</p>"
         },
         "BillingGroupArn":{
           "shape":"BillingGroupArn",
-          "documentation":"<p> The Billing Group Arn that the linked account is associated to. </p>"
+          "documentation":"<p>The Billing Group Arn that the linked account is associated to.</p>"
         },
         "AccountName":{
           "shape":"AccountName",
-          "documentation":"<p> The Amazon Web Services account name. </p>"
+          "documentation":"<p>The Amazon Web Services account name.</p>"
         },
         "AccountEmail":{
           "shape":"AccountEmail",
-          "documentation":"<p> The Amazon Web Services account email. </p>"
+          "documentation":"<p>The Amazon Web Services account email.</p>"
         }
       },
-      "documentation":"<p> A representation of a linked account. </p>"
+      "documentation":"<p>A representation of a linked account.</p>"
     },
     "AccountEmail":{
       "type":"string",
@@ -652,10 +652,14 @@
       "members":{
         "LinkedAccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p> The account IDs that make up the billing group. Account IDs must be a part of the consolidated billing family, and not associated with another billing group. </p>"
+          "documentation":"<p>The account IDs that make up the billing group. Account IDs must be a part of the consolidated billing family, and not associated with another billing group.</p>"
+        },
+        "AutoAssociate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
         }
       },
-      "documentation":"<p> The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated family. </p>"
+      "documentation":"<p>The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated billing family.</p>"
     },
     "AccountId":{
       "type":"string",
@@ -740,14 +744,14 @@
       "members":{
         "Message":{
           "shape":"String",
-          "documentation":"<p> The reason why the resource association failed. </p>"
+          "documentation":"<p>The reason why the resource association failed.</p>"
         },
         "Reason":{
           "shape":"AssociateResourceErrorReason",
-          "documentation":"<p> A static error code that's used to classify the type of failure. </p>"
+          "documentation":"<p>A static error code that's used to classify the type of failure.</p>"
         }
       },
-      "documentation":"<p> A representation of a resource association error. </p>"
+      "documentation":"<p>A representation of a resource association error.</p>"
     },
     "AssociateResourceErrorReason":{
       "type":"string",
@@ -764,14 +768,14 @@
       "members":{
         "Arn":{
           "shape":"CustomLineItemAssociationElement",
-          "documentation":"<p> The resource ARN that was associated to the custom line item. </p>"
+          "documentation":"<p>The resource ARN that was associated to the custom line item.</p>"
         },
         "Error":{
           "shape":"AssociateResourceError",
-          "documentation":"<p> An <code>AssociateResourceError</code> that will populate if the resource association fails. </p>"
+          "documentation":"<p>An <code>AssociateResourceError</code> that will populate if the resource association fails.</p>"
         }
       },
-      "documentation":"<p> A resource association result for a percentage custom line item. </p>"
+      "documentation":"<p>A resource association result for a percentage custom line item.</p>"
     },
     "AssociateResourcesResponseList":{
       "type":"list",
@@ -862,30 +866,30 @@
       "members":{
         "Arn":{
           "shape":"BillingGroupArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a billing group. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a billing group.</p>"
         },
         "AWSCost":{
           "shape":"AWSCost",
-          "documentation":"<p>The actual Amazon Web Services charges for the billing group. </p>"
+          "documentation":"<p>The actual Amazon Web Services charges for the billing group.</p>"
         },
         "ProformaCost":{
           "shape":"ProformaCost",
-          "documentation":"<p>The hypothetical Amazon Web Services charges based on the associated pricing plan of a billing group. </p>"
+          "documentation":"<p>The hypothetical Amazon Web Services charges based on the associated pricing plan of a billing group.</p>"
         },
         "Margin":{
           "shape":"Margin",
-          "documentation":"<p> The billing group margin. </p>"
+          "documentation":"<p>The billing group margin.</p>"
         },
         "MarginPercentage":{
           "shape":"MarginPercentage",
-          "documentation":"<p> The percentage of billing group margin. </p>"
+          "documentation":"<p>The percentage of billing group margin.</p>"
         },
         "Currency":{
           "shape":"Currency",
-          "documentation":"<p>The displayed currency. </p>"
+          "documentation":"<p>The displayed currency.</p>"
         }
       },
-      "documentation":"<p>A summary report of actual Amazon Web Services charges and calculated Amazon Web Services charges, based on the associated pricing plan of a billing group. </p>"
+      "documentation":"<p>A summary report of actual Amazon Web Services charges and calculated Amazon Web Services charges, based on the associated pricing plan of a billing group.</p>"
     },
     "BillingGroupCostReportList":{
       "type":"list",
@@ -910,43 +914,47 @@
       "members":{
         "Name":{
           "shape":"BillingGroupName",
-          "documentation":"<p>The name of the billing group. </p>"
+          "documentation":"<p>The name of the billing group.</p>"
         },
         "Arn":{
           "shape":"BillingGroupArn",
-          "documentation":"<p>The Amazon Resource Number (ARN) that can be used to uniquely identify the billing group. </p>"
+          "documentation":"<p>The Amazon Resource Number (ARN) that can be used to uniquely identify the billing group.</p>"
         },
         "Description":{
           "shape":"BillingGroupDescription",
-          "documentation":"<p>The description of the billing group. </p>"
+          "documentation":"<p>The description of the billing group.</p>"
         },
         "PrimaryAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The account ID that serves as the main account in a billing group. </p>"
+          "documentation":"<p>The account ID that serves as the main account in a billing group.</p>"
         },
         "ComputationPreference":{"shape":"ComputationPreference"},
         "Size":{
           "shape":"NumberOfAccounts",
-          "documentation":"<p>The number of accounts in the particular billing group. </p>"
+          "documentation":"<p>The number of accounts in the particular billing group.</p>"
         },
         "CreationTime":{
           "shape":"Instant",
-          "documentation":"<p> The time when the billing group was created. </p>"
+          "documentation":"<p>The time when the billing group was created.</p>"
         },
         "LastModifiedTime":{
           "shape":"Instant",
-          "documentation":"<p> The most recent time when the billing group was modified. </p>"
+          "documentation":"<p>The most recent time when the billing group was modified.</p>"
         },
         "Status":{
           "shape":"BillingGroupStatus",
-          "documentation":"<p>The billing group status. Only one of the valid values can be used. </p>"
+          "documentation":"<p>The billing group status. Only one of the valid values can be used.</p>"
         },
         "StatusReason":{
           "shape":"BillingGroupStatusReason",
-          "documentation":"<p>The reason why the billing group is in its current status. </p>"
+          "documentation":"<p>The reason why the billing group is in its current status.</p>"
+        },
+        "AccountGrouping":{
+          "shape":"ListBillingGroupAccountGrouping",
+          "documentation":"<p>Specifies if the billing group has automatic account association (<code>AutoAssociate</code>) enabled.</p>"
         }
       },
-      "documentation":"<p>A representation of a billing group. </p>"
+      "documentation":"<p>A representation of a billing group.</p>"
     },
     "BillingGroupName":{
       "type":"string",
@@ -973,6 +981,10 @@
       "type":"string",
       "pattern":"\\d{4}-(0?[1-9]|1[012])"
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ClientToken":{
       "type":"string",
       "max":64,
@@ -988,7 +1000,7 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the pricing plan that's used to compute the Amazon Web Services charges for a billing group. </p>"
         }
       },
-      "documentation":"<p> The preferences and settings that will be used to compute the Amazon Web Services charges for a billing group. </p>"
+      "documentation":"<p>The preferences and settings that will be used to compute the Amazon Web Services charges for a billing group.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -1050,7 +1062,7 @@
         },
         "AccountGrouping":{
           "shape":"AccountGrouping",
-          "documentation":"<p> The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated family. </p>"
+          "documentation":"<p> The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated billing family. </p>"
         },
         "ComputationPreference":{
           "shape":"ComputationPreference",
@@ -1306,14 +1318,14 @@
       "members":{
         "InclusiveStartBillingPeriod":{
           "shape":"BillingPeriod",
-          "documentation":"<p> The inclusive start billing period that defines a billing period range where a custom line is applied. </p>"
+          "documentation":"<p>The inclusive start billing period that defines a billing period range where a custom line is applied.</p>"
         },
         "ExclusiveEndBillingPeriod":{
           "shape":"BillingPeriod",
-          "documentation":"<p> The inclusive end billing period that defines a billing period range where a custom line is applied. </p>"
+          "documentation":"<p>The inclusive end billing period that defines a billing period range where a custom line is applied.</p>"
         }
       },
-      "documentation":"<p> The billing period range in which the custom line item request will be applied. </p>"
+      "documentation":"<p>The billing period range in which the custom line item request will be applied.</p>"
     },
     "CustomLineItemChargeDetails":{
       "type":"structure",
@@ -1321,18 +1333,22 @@
       "members":{
         "Flat":{
           "shape":"CustomLineItemFlatChargeDetails",
-          "documentation":"<p> A <code>CustomLineItemFlatChargeDetails</code> that describes the charge details of a flat custom line item. </p>"
+          "documentation":"<p>A <code>CustomLineItemFlatChargeDetails</code> that describes the charge details of a flat custom line item.</p>"
         },
         "Percentage":{
           "shape":"CustomLineItemPercentageChargeDetails",
-          "documentation":"<p> A <code>CustomLineItemPercentageChargeDetails</code> that describes the charge details of a percentage custom line item. </p>"
+          "documentation":"<p>A <code>CustomLineItemPercentageChargeDetails</code> that describes the charge details of a percentage custom line item.</p>"
         },
         "Type":{
           "shape":"CustomLineItemType",
-          "documentation":"<p> The type of the custom line item that indicates whether the charge is a fee or credit. </p>"
+          "documentation":"<p>The type of the custom line item that indicates whether the charge is a fee or credit.</p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
-      "documentation":"<p> The charge details of a custom line item. It should contain only one of <code>Flat</code> or <code>Percentage</code>. </p>"
+      "documentation":"<p>The charge details of a custom line item. It should contain only one of <code>Flat</code> or <code>Percentage</code>.</p>"
     },
     "CustomLineItemChargeValue":{
       "type":"double",
@@ -1352,10 +1368,10 @@
       "members":{
         "ChargeValue":{
           "shape":"CustomLineItemChargeValue",
-          "documentation":"<p> The custom line item's fixed charge value in USD. </p>"
+          "documentation":"<p>The custom line item's fixed charge value in USD.</p>"
         }
       },
-      "documentation":"<p> A representation of the charge details that are associated with a flat custom line item. </p>"
+      "documentation":"<p>A representation of the charge details that are associated with a flat custom line item.</p>"
     },
     "CustomLineItemList":{
       "type":"list",
@@ -1366,46 +1382,46 @@
       "members":{
         "Arn":{
           "shape":"CustomLineItemArn",
-          "documentation":"<p> The Amazon Resource Names (ARNs) for custom line items. </p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for custom line items.</p>"
         },
         "Name":{
           "shape":"CustomLineItemName",
-          "documentation":"<p> The custom line item's name. </p>"
+          "documentation":"<p>The custom line item's name.</p>"
         },
         "ChargeDetails":{
           "shape":"ListCustomLineItemChargeDetails",
-          "documentation":"<p> A <code>ListCustomLineItemChargeDetails</code> that describes the charge details of a custom line item. </p>"
+          "documentation":"<p>A <code>ListCustomLineItemChargeDetails</code> that describes the charge details of a custom line item.</p>"
         },
         "CurrencyCode":{
           "shape":"CurrencyCode",
-          "documentation":"<p> The custom line item's charge value currency. Only one of the valid values can be used. </p>"
+          "documentation":"<p>The custom line item's charge value currency. Only one of the valid values can be used.</p>"
         },
         "Description":{
           "shape":"CustomLineItemDescription",
-          "documentation":"<p> The custom line item's description. This is shown on the Bills page in association with the charge value. </p>"
+          "documentation":"<p>The custom line item's description. This is shown on the Bills page in association with the charge value.</p>"
         },
         "ProductCode":{
           "shape":"CustomLineItemProductCode",
-          "documentation":"<p> The product code that's associated with the custom line item. </p>"
+          "documentation":"<p>The product code that's associated with the custom line item.</p>"
         },
         "BillingGroupArn":{
           "shape":"BillingGroupArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) that references the billing group where the custom line item applies to. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that references the billing group where the custom line item applies to.</p>"
         },
         "CreationTime":{
           "shape":"Instant",
-          "documentation":"<p> The time created. </p>"
+          "documentation":"<p>The time created.</p>"
         },
         "LastModifiedTime":{
           "shape":"Instant",
-          "documentation":"<p> The most recent time when the custom line item was modified. </p>"
+          "documentation":"<p>The most recent time when the custom line item was modified.</p>"
         },
         "AssociationSize":{
           "shape":"NumberOfAssociations",
-          "documentation":"<p> The number of resources that are associated to the custom line item. </p>"
+          "documentation":"<p>The number of resources that are associated to the custom line item.</p>"
         }
       },
-      "documentation":"<p> A representation of a custom line item. </p>"
+      "documentation":"<p>A representation of a custom line item.</p>"
     },
     "CustomLineItemName":{
       "type":"string",
@@ -1426,14 +1442,14 @@
       "members":{
         "PercentageValue":{
           "shape":"CustomLineItemPercentageChargeValue",
-          "documentation":"<p> The custom line item's percentage value. This will be multiplied against the combined value of its associated resources to determine its charge value. </p>"
+          "documentation":"<p>The custom line item's percentage value. This will be multiplied against the combined value of its associated resources to determine its charge value. </p>"
         },
         "AssociatedValues":{
           "shape":"CustomLineItemAssociationsList",
-          "documentation":"<p> A list of resource ARNs to associate to the percentage custom line item. </p>"
+          "documentation":"<p>A list of resource ARNs to associate to the percentage custom line item.</p>"
         }
       },
-      "documentation":"<p> A representation of the charge details that are associated with a percentage custom line item. </p>"
+      "documentation":"<p>A representation of the charge details that are associated with a percentage custom line item.</p>"
     },
     "CustomLineItemPercentageChargeValue":{
       "type":"double",
@@ -1653,14 +1669,14 @@
       "members":{
         "Arn":{
           "shape":"CustomLineItemAssociationElement",
-          "documentation":"<p> The resource ARN that was disassociated from the custom line item. </p>"
+          "documentation":"<p>The resource ARN that was disassociated from the custom line item. </p>"
         },
         "Error":{
           "shape":"AssociateResourceError",
           "documentation":"<p> An <code>AssociateResourceError</code> that's shown if the resource disassociation fails. </p>"
         }
       },
-      "documentation":"<p> A resource disassociation result for a percentage custom line item. </p>"
+      "documentation":"<p>A resource disassociation result for a percentage custom line item.</p>"
     },
     "DisassociateResourcesResponseList":{
       "type":"list",
@@ -1695,23 +1711,66 @@
       "exception":true,
       "fault":true
     },
+    "LineItemFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "MatchOption",
+        "Values"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"LineItemFilterAttributeName",
+          "documentation":"<p>The attribute of the line item filter. This specifies what attribute that you can filter on.</p>"
+        },
+        "MatchOption":{
+          "shape":"MatchOption",
+          "documentation":"<p>The match criteria of the line item filter. This parameter specifies whether not to include the resource value from the billing group total cost.</p>"
+        },
+        "Values":{
+          "shape":"LineItemFilterValuesList",
+          "documentation":"<p>The values of the line item filter. This specifies the values to filter on. Currently, you can only exclude Savings Plan discounts.</p>"
+        }
+      },
+      "documentation":"<p>A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plan discounts, you can update <code>LineItemFilter</code> to exclude it.</p>"
+    },
+    "LineItemFilterAttributeName":{
+      "type":"string",
+      "enum":["LINE_ITEM_TYPE"]
+    },
+    "LineItemFilterValue":{
+      "type":"string",
+      "enum":["SAVINGS_PLAN_NEGATION"]
+    },
+    "LineItemFilterValuesList":{
+      "type":"list",
+      "member":{"shape":"LineItemFilterValue"},
+      "max":1,
+      "min":1
+    },
+    "LineItemFiltersList":{
+      "type":"list",
+      "member":{"shape":"LineItemFilter"},
+      "max":1,
+      "min":0
+    },
     "ListAccountAssociationsFilter":{
       "type":"structure",
       "members":{
         "Association":{
           "shape":"Association",
-          "documentation":"<p> <code>MONITORED</code>: linked accounts that are associated to billing groups.</p> <p> <code>UNMONITORED</code>: linked accounts that are not associated to billing groups.</p> <p> <code>Billing Group Arn</code>: linked accounts that are associated to the provided Billing Group Arn. </p>"
+          "documentation":"<p> <code>MONITORED</code>: linked accounts that are associated to billing groups.</p> <p> <code>UNMONITORED</code>: linked accounts that are not associated to billing groups.</p> <p> <code>Billing Group Arn</code>: linked accounts that are associated to the provided Billing Group Arn.</p>"
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p> The Amazon Web Services account ID to filter on. </p>"
+          "documentation":"<p>The Amazon Web Services account ID to filter on.</p>"
         },
         "AccountIds":{
           "shape":"AccountIdFilterList",
           "documentation":"<p> The list of Amazon Web Services IDs to retrieve their associated billing group for a given time range. </p>"
         }
       },
-      "documentation":"<p>The filter on the account ID of the linked account, or any of the following:</p> <p> <code>MONITORED</code>: linked accounts that are associated to billing groups.</p> <p> <code>UNMONITORED</code>: linked accounts that are not associated to billing groups.</p> <p> <code>Billing Group Arn</code>: linked accounts that are associated to the provided Billing Group Arn. </p>"
+      "documentation":"<p>The filter on the account ID of the linked account, or any of the following:</p> <p> <code>MONITORED</code>: linked accounts that are associated to billing groups.</p> <p> <code>UNMONITORED</code>: linked accounts that are not associated to billing groups.</p> <p> <code>Billing Group Arn</code>: linked accounts that are associated to the provided Billing Group Arn.</p>"
     },
     "ListAccountAssociationsInput":{
       "type":"structure",
@@ -1743,6 +1802,16 @@
         }
       }
     },
+    "ListBillingGroupAccountGrouping":{
+      "type":"structure",
+      "members":{
+        "AutoAssociate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        }
+      },
+      "documentation":"<p>Specifies if the billing group has the following features enabled.</p>"
+    },
     "ListBillingGroupCostReportsFilter":{
       "type":"structure",
       "members":{
@@ -1751,7 +1820,7 @@
           "documentation":"<p>The list of Amazon Resource Names (ARNs) used to filter billing groups to retrieve reports. </p>"
         }
       },
-      "documentation":"<p>The filter used to retrieve specific <code>BillingGroupCostReportElements</code>. </p>"
+      "documentation":"<p>The filter used to retrieve specific <code>BillingGroupCostReportElements</code>.</p>"
     },
     "ListBillingGroupCostReportsInput":{
       "type":"structure",
@@ -1792,18 +1861,22 @@
       "members":{
         "Arns":{
           "shape":"BillingGroupArnList",
-          "documentation":"<p>The list of billing group Amazon Resource Names (ARNs) to retrieve information. </p>"
+          "documentation":"<p>The list of billing group Amazon Resource Names (ARNs) to retrieve information.</p>"
         },
         "PricingPlan":{
           "shape":"PricingPlanFullArn",
-          "documentation":"<p>The pricing plan Amazon Resource Names (ARNs) to retrieve information. </p>"
+          "documentation":"<p>The pricing plan Amazon Resource Names (ARNs) to retrieve information.</p>"
         },
         "Statuses":{
           "shape":"BillingGroupStatusList",
           "documentation":"<p> A list of billing groups to retrieve their current status for a specific time range </p>"
+        },
+        "AutoAssociate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
         }
       },
-      "documentation":"<p>The filter that specifies the billing groups and pricing plans to retrieve billing group information. </p>"
+      "documentation":"<p>The filter that specifies the billing groups and pricing plans to retrieve billing group information.</p>"
     },
     "ListBillingGroupsInput":{
       "type":"structure",
@@ -1854,6 +1927,10 @@
         "Type":{
           "shape":"CustomLineItemType",
           "documentation":"<p> The type of the custom line item that indicates whether the charge is a <code>fee</code> or <code>credit</code>. </p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
       "documentation":"<p> A representation of the charge details of a custom line item. </p>"
@@ -1944,18 +2021,18 @@
       "members":{
         "Names":{
           "shape":"CustomLineItemNameList",
-          "documentation":"<p> A list of custom line items to retrieve information. </p>"
+          "documentation":"<p>A list of custom line items to retrieve information.</p>"
         },
         "BillingGroups":{
           "shape":"BillingGroupArnList",
-          "documentation":"<p> The billing group Amazon Resource Names (ARNs) to retrieve information. </p>"
+          "documentation":"<p>The billing group Amazon Resource Names (ARNs) to retrieve information.</p>"
         },
         "Arns":{
           "shape":"CustomLineItemArns",
-          "documentation":"<p> A list of custom line item ARNs to retrieve information. </p>"
+          "documentation":"<p>A list of custom line item ARNs to retrieve information.</p>"
         }
       },
-      "documentation":"<p> A filter that specifies the custom line items and billing groups to retrieve FFLI information. </p>"
+      "documentation":"<p>A filter that specifies the custom line items and billing groups to retrieve FFLI information.</p>"
     },
     "ListCustomLineItemsInput":{
       "type":"structure",
@@ -2039,10 +2116,10 @@
       "members":{
         "Arns":{
           "shape":"PricingPlanArns",
-          "documentation":"<p>A list of pricing plan Amazon Resource Names (ARNs) to retrieve information. </p>"
+          "documentation":"<p>A list of pricing plan Amazon Resource Names (ARNs) to retrieve information.</p>"
         }
       },
-      "documentation":"<p>The filter that specifies the Amazon Resource Names (ARNs) of pricing plans, to retrieve pricing plan information. </p>"
+      "documentation":"<p>The filter that specifies the Amazon Resource Names (ARNs) of pricing plans, to retrieve pricing plan information.</p>"
     },
     "ListPricingPlansInput":{
       "type":"structure",
@@ -2130,10 +2207,10 @@
       "members":{
         "Arns":{
           "shape":"PricingRuleArns",
-          "documentation":"<p> A list containing the pricing rule Amazon Resource Names (ARNs) to include in the API response. </p>"
+          "documentation":"<p>A list containing the pricing rule Amazon Resource Names (ARNs) to include in the API response.</p>"
         }
       },
-      "documentation":"<p> The filter that specifies criteria that the pricing rules returned by the <code>ListPricingRules</code> API will adhere to. </p>"
+      "documentation":"<p> The filter that specifies criteria that the pricing rules returned by the <code>ListPricingRules</code> API will adhere to.</p>"
     },
     "ListPricingRulesInput":{
       "type":"structure",
@@ -2271,6 +2348,10 @@
     },
     "Margin":{"type":"string"},
     "MarginPercentage":{"type":"string"},
+    "MatchOption":{
+      "type":"string",
+      "enum":["NOT_EQUAL"]
+    },
     "MaxBillingGroupResults":{
       "type":"integer",
       "box":true,
@@ -2351,30 +2432,30 @@
       "members":{
         "Name":{
           "shape":"PricingPlanName",
-          "documentation":"<p>The name of a pricing plan. </p>"
+          "documentation":"<p>The name of a pricing plan.</p>"
         },
         "Arn":{
           "shape":"PricingPlanArn",
-          "documentation":"<p>The pricing plan Amazon Resource Names (ARN). This can be used to uniquely identify a pricing plan. </p>"
+          "documentation":"<p>The pricing plan Amazon Resource Names (ARN). This can be used to uniquely identify a pricing plan.</p>"
         },
         "Description":{
           "shape":"PricingPlanDescription",
-          "documentation":"<p>The pricing plan description. </p>"
+          "documentation":"<p>The pricing plan description.</p>"
         },
         "Size":{
           "shape":"NumberOfAssociatedPricingRules",
-          "documentation":"<p> The pricing rules count that's currently associated with this pricing plan list element. </p>"
+          "documentation":"<p>The pricing rules count that's currently associated with this pricing plan list element.</p>"
         },
         "CreationTime":{
           "shape":"Instant",
-          "documentation":"<p> The time when the pricing plan was created. </p>"
+          "documentation":"<p>The time when the pricing plan was created.</p>"
         },
         "LastModifiedTime":{
           "shape":"Instant",
-          "documentation":"<p> The most recent time when the pricing plan was modified. </p>"
+          "documentation":"<p>The most recent time when the pricing plan was modified.</p>"
         }
       },
-      "documentation":"<p>A representation of a pricing plan. </p>"
+      "documentation":"<p>A representation of a pricing plan.</p>"
     },
     "PricingPlanName":{
       "type":"string",
@@ -2420,43 +2501,43 @@
       "members":{
         "Name":{
           "shape":"PricingRuleName",
-          "documentation":"<p> The name of a pricing rule. </p>"
+          "documentation":"<p>The name of a pricing rule.</p>"
         },
         "Arn":{
           "shape":"PricingRuleArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) used to uniquely identify a pricing rule. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) used to uniquely identify a pricing rule.</p>"
         },
         "Description":{
           "shape":"PricingRuleDescription",
-          "documentation":"<p> The pricing rule description. </p>"
+          "documentation":"<p>The pricing rule description.</p>"
         },
         "Scope":{
           "shape":"PricingRuleScope",
-          "documentation":"<p> The scope of pricing rule that indicates if it is globally applicable, or if it is service-specific. </p>"
+          "documentation":"<p>The scope of pricing rule that indicates if it is globally applicable, or if it is service-specific.</p>"
         },
         "Type":{
           "shape":"PricingRuleType",
-          "documentation":"<p> The type of pricing rule. </p>"
+          "documentation":"<p>The type of pricing rule.</p>"
         },
         "ModifierPercentage":{
           "shape":"ModifierPercentage",
-          "documentation":"<p> A percentage modifier applied on the public pricing rates. </p>"
+          "documentation":"<p>A percentage modifier applied on the public pricing rates.</p>"
         },
         "Service":{
           "shape":"Service",
-          "documentation":"<p> If the <code>Scope</code> attribute is <code>SERVICE</code>, this attribute indicates which service the <code>PricingRule</code> is applicable for. </p>"
+          "documentation":"<p>If the <code>Scope</code> attribute is <code>SERVICE</code>, this attribute indicates which service the <code>PricingRule</code> is applicable for.</p>"
         },
         "AssociatedPricingPlanCount":{
           "shape":"NumberOfPricingPlansAssociatedWith",
-          "documentation":"<p> The pricing plans count that this pricing rule is associated with. </p>"
+          "documentation":"<p>The pricing plans count that this pricing rule is associated with.</p>"
         },
         "CreationTime":{
           "shape":"Instant",
-          "documentation":"<p> The time when the pricing rule was created. </p>"
+          "documentation":"<p>The time when the pricing rule was created.</p>"
         },
         "LastModifiedTime":{
           "shape":"Instant",
-          "documentation":"<p> The most recent time when the pricing rule was modified. </p>"
+          "documentation":"<p> The most recent time when the pricing rule was modified.</p>"
         },
         "BillingEntity":{
           "shape":"BillingEntity",
@@ -2475,7 +2556,7 @@
           "documentation":"<p> Operation is the specific Amazon Web Services action covered by this line item. This describes the specific usage of the line item.</p> <p> If the <code>Scope</code> attribute is set to <code>SKU</code>, this attribute indicates which operation the <code>PricingRule</code> is modifying. For example, a value of <code>RunInstances:0202</code> indicates the operation of running an Amazon EC2 instance.</p>"
         }
       },
-      "documentation":"<p> A representation of a pricing rule. </p>"
+      "documentation":"<p>A representation of a pricing rule.</p>"
     },
     "PricingRuleName":{
       "type":"string",
@@ -2676,6 +2757,16 @@
       "members":{
       }
     },
+    "UpdateBillingGroupAccountGrouping":{
+      "type":"structure",
+      "members":{
+        "AutoAssociate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        }
+      },
+      "documentation":"<p>Specifies if the billing group has the following features enabled.</p>"
+    },
     "UpdateBillingGroupInput":{
       "type":"structure",
       "required":["Arn"],
@@ -2699,6 +2790,10 @@
         "Description":{
           "shape":"BillingGroupDescription",
           "documentation":"<p>A description of the billing group. </p>"
+        },
+        "AccountGrouping":{
+          "shape":"UpdateBillingGroupAccountGrouping",
+          "documentation":"<p>Specifies if the billing group has automatic account association (<code>AutoAssociate</code>) enabled.</p>"
         }
       }
     },
@@ -2740,6 +2835,10 @@
         "StatusReason":{
           "shape":"BillingGroupStatusReason",
           "documentation":"<p> The reason why the billing group is in its current status. </p>"
+        },
+        "AccountGrouping":{
+          "shape":"UpdateBillingGroupAccountGrouping",
+          "documentation":"<p>Specifies if the billing group has automatic account association (<code>AutoAssociate</code>) enabled.</p>"
         }
       }
     },
@@ -2753,6 +2852,10 @@
         "Percentage":{
           "shape":"UpdateCustomLineItemPercentageChargeDetails",
           "documentation":"<p> An <code>UpdateCustomLineItemPercentageChargeDetails</code> that describes the new charge details of a percentage custom line item. </p>"
+        },
+        "LineItemFilters":{
+          "shape":"LineItemFiltersList",
+          "documentation":"<p>A representation of the line item filter.</p>"
         }
       },
       "documentation":"<p> A representation of the new charge details of a custom line item. This should contain only one of <code>Flat</code> or <code>Percentage</code>. </p>"
@@ -3007,7 +3110,7 @@
           "documentation":"<p>The fields that caused the error, if applicable. </p>"
         }
       },
-      "documentation":"<p>The input doesn't match with the constraints specified by Amazon Web Services services.</p>",
+      "documentation":"<p>The input doesn't match with the constraints specified by Amazon Web Services.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -3023,14 +3126,14 @@
       "members":{
         "Name":{
           "shape":"String",
-          "documentation":"<p>The field name. </p>"
+          "documentation":"<p>The field name.</p>"
         },
         "Message":{
           "shape":"String",
-          "documentation":"<p>The message describing why the field failed validation. </p>"
+          "documentation":"<p>The message describing why the field failed validation.</p>"
         }
       },
-      "documentation":"<p>The field's information of a request that resulted in an exception. </p>"
+      "documentation":"<p>The field's information of a request that resulted in an exception.</p>"
     },
     "ValidationExceptionFieldList":{
       "type":"list",
@@ -3095,7 +3198,9 @@
         "ILLEGAL_OPERATION",
         "ILLEGAL_USAGE_TYPE",
         "INVALID_SKU_COMBO",
-        "INVALID_FILTER"
+        "INVALID_FILTER",
+        "TOO_MANY_AUTO_ASSOCIATE_BILLING_GROUPS",
+        "CANNOT_DELETE_AUTO_ASSOCIATE_BILLING_GROUP"
       ]
     }
   },

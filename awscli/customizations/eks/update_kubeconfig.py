@@ -295,9 +295,8 @@ class EKSClient(object):
             ("name", arn)
         ])
 
-        if hasattr(self._parsed_args, "proxy_url"):
-            if self._parsed_args.proxy_url is not None:
-                generated_cluster["cluster"]["proxy-url"] = self._parsed_args.proxy_url
+        if self._parsed_args.proxy_url is not None:
+            generated_cluster["cluster"]["proxy-url"] = self._parsed_args.proxy_url
 
         return generated_cluster
 

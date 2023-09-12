@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.46
+=======
+
+* api-change:``ec2``: This release adds support for restricting public sharing of AMIs through AMI Block Public Access
+* api-change:``events``: Update events command to latest version
+* api-change:``kendra``: Amazon Kendra now supports confidence score buckets for retrieved passage results using the Retrieve API.
+
+
 1.29.45
 =======
 

@@ -2270,6 +2270,56 @@
       ],
       "documentation": "Starts an existing channel"
     },
+    "StartInputDevice": {
+      "name": "StartInputDevice",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/start",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StartInputDeviceRequest"
+      },
+      "output": {
+        "shape": "StartInputDeviceResponse",
+        "documentation": "Your start request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Start operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to start the input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on start device calls to the input device service."
+        }
+      ],
+      "documentation": "Start an input device that is attached to a MediaConnect flow. (There is no need to start a device that is attached to a MediaLive input; MediaLive starts the device when the channel starts.)"
+    },
     "StartInputDeviceMaintenanceWindow": {
       "name": "StartInputDeviceMaintenanceWindow",
       "http": {
@@ -2419,6 +2469,56 @@
         }
       ],
       "documentation": "Stops a running channel"
+    },
+    "StopInputDevice": {
+      "name": "StopInputDevice",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/stop",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StopInputDeviceRequest"
+      },
+      "output": {
+        "shape": "StopInputDeviceResponse",
+        "documentation": "Your stop request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Start operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to stop the input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on stop device calls to the input device service."
+        }
+      ],
+      "documentation": "Stop an input device that is attached to a MediaConnect flow. (There is no need to stop a device that is attached to a MediaLive input; MediaLive automatically stops the device when the channel stops.)"
     },
     "StopMultiplex": {
       "name": "StopMultiplex",
@@ -6159,6 +6259,16 @@
           "shape": "__string",
           "locationName": "availabilityZone",
           "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputDeviceResponse"
@@ -9845,6 +9955,16 @@
           "shape": "__string",
           "locationName": "availabilityZone",
           "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "An input device."
@@ -9855,6 +9975,14 @@
       "enum": [
         "HDMI",
         "SDI"
+      ]
+    },
+    "InputDeviceCodec": {
+      "type": "string",
+      "documentation": "The codec to use on the video that the device produces.",
+      "enum": [
+        "HEVC",
+        "AVC"
       ]
     },
     "InputDeviceConfigurableSettings": {
@@ -9874,6 +10002,16 @@
           "shape": "__integer",
           "locationName": "latencyMs",
           "documentation": "The Link device's buffer size (latency) in milliseconds (ms)."
+        },
+        "Codec": {
+          "shape": "InputDeviceCodec",
+          "locationName": "codec",
+          "documentation": "Choose the codec for the video that the device produces. Only UHD devices can specify this parameter."
+        },
+        "MediaconnectSettings": {
+          "shape": "InputDeviceMediaConnectConfigurableSettings",
+          "locationName": "mediaconnectSettings",
+          "documentation": "To attach this device to a MediaConnect flow, specify these parameters. To detach an existing flow, enter {} for the value of mediaconnectSettings. Only UHD devices can specify this parameter."
         }
       },
       "documentation": "Configurable settings for the input device."
@@ -9970,6 +10108,58 @@
         "DHCP"
       ]
     },
+    "InputDeviceMediaConnectConfigurableSettings": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the MediaConnect flow to attach this device to."
+        },
+        "RoleArn": {
+          "shape": "__string",
+          "locationName": "roleArn",
+          "documentation": "The ARN for the role that MediaLive assumes to access the attached flow and secret. For more information about how to create this role, see the MediaLive user guide."
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "The ARN for the secret that holds the encryption key to encrypt the content output by the device."
+        },
+        "SourceName": {
+          "shape": "__string",
+          "locationName": "sourceName",
+          "documentation": "The name of the MediaConnect Flow source to stream to."
+        }
+      },
+      "documentation": "Parameters required to attach a MediaConnect flow to the device."
+    },
+    "InputDeviceMediaConnectSettings": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the MediaConnect flow."
+        },
+        "RoleArn": {
+          "shape": "__string",
+          "locationName": "roleArn",
+          "documentation": "The ARN for the role that MediaLive assumes to access the attached flow and secret."
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "The ARN of the secret used to encrypt the stream."
+        },
+        "SourceName": {
+          "shape": "__string",
+          "locationName": "sourceName",
+          "documentation": "The name of the MediaConnect flow source."
+        }
+      },
+      "documentation": "Information about the MediaConnect flow attached to the device."
+    },
     "InputDeviceNetworkSettings": {
       "type": "structure",
       "members": {
@@ -10000,6 +10190,15 @@
         }
       },
       "documentation": "The network settings for the input device."
+    },
+    "InputDeviceOutputType": {
+      "type": "string",
+      "documentation": "The output attachment type of the input device.",
+      "enum": [
+        "NONE",
+        "MEDIALIVE_INPUT",
+        "MEDIACONNECT_FLOW"
+      ]
     },
     "InputDeviceRequest": {
       "type": "structure",
@@ -10111,6 +10310,16 @@
           "shape": "__string",
           "locationName": "availabilityZone",
           "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Details of the input device."
@@ -10178,6 +10387,16 @@
           "shape": "__integer",
           "locationName": "latencyMs",
           "documentation": "The Link device's buffer size (latency) in milliseconds (ms). You can specify this value."
+        },
+        "Codec": {
+          "shape": "InputDeviceCodec",
+          "locationName": "codec",
+          "documentation": "The codec for the video that the device produces."
+        },
+        "MediaconnectSettings": {
+          "shape": "InputDeviceMediaConnectSettings",
+          "locationName": "mediaconnectSettings",
+          "documentation": "Information about the MediaConnect flow attached to the device. Returned only if the outputType is MEDIACONNECT_FLOW."
         }
       },
       "documentation": "Settings that describe the active source from the input device, and the video characteristics of that source."
@@ -14746,6 +14965,27 @@
       },
       "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowResponse"
     },
+    "StartInputDeviceRequest": {
+      "type": "structure",
+      "members": {
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to reboot. For example, hd-123456789abcdef."
+        }
+      },
+      "required": [
+        "InputDeviceId"
+      ],
+      "documentation": "Placeholder documentation for StartInputDeviceRequest"
+    },
+    "StartInputDeviceResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for StartInputDeviceResponse"
+    },
     "StartMultiplexRequest": {
       "type": "structure",
       "members": {
@@ -15030,6 +15270,27 @@
         }
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
+    },
+    "StopInputDeviceRequest": {
+      "type": "structure",
+      "members": {
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to reboot. For example, hd-123456789abcdef."
+        }
+      },
+      "required": [
+        "InputDeviceId"
+      ],
+      "documentation": "Placeholder documentation for StopInputDeviceRequest"
+    },
+    "StopInputDeviceResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for StopInputDeviceResponse"
     },
     "StopMultiplexRequest": {
       "type": "structure",
@@ -15938,6 +16199,16 @@
           "shape": "__string",
           "locationName": "availabilityZone",
           "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Placeholder documentation for UpdateInputDeviceResponse"

@@ -1053,6 +1053,13 @@
       "min":1,
       "pattern":"^[ \\t]*[^\\x00-\\x1F:\\x7F]+([ \\t]+[^\\x00-\\x1F:\\x7F]+)*[ \\t]*$"
     },
+    "AuthHeaderParametersSensitive":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^[ \\t]*[^\\x00-\\x1F:\\x7F]+([ \\t]+[^\\x00-\\x1F:\\x7F]+)*[ \\t]*$",
+      "sensitive":true
+    },
     "AwsVpcConfiguration":{
       "type":"structure",
       "required":["Subnets"],
@@ -1317,7 +1324,7 @@
           "documentation":"<p>The key for the parameter.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The value associated with the key.</p>"
         },
         "IsValueSecret":{
@@ -1346,7 +1353,7 @@
           "documentation":"<p>The key for the parameter.</p>"
         },
         "Value":{
-          "shape":"HeaderValue",
+          "shape":"HeaderValueSensitive",
           "documentation":"<p>The value associated with the key.</p>"
         },
         "IsValueSecret":{
@@ -1434,7 +1441,7 @@
           "documentation":"<p>The key for a query string parameter.</p>"
         },
         "Value":{
-          "shape":"QueryStringValue",
+          "shape":"QueryStringValueSensitive",
           "documentation":"<p>The value associated with the key for the query string parameter.</p>"
         },
         "IsValueSecret":{
@@ -1589,7 +1596,7 @@
           "documentation":"<p>The name of the API key to use for authorization.</p>"
         },
         "ApiKeyValue":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The value for the API key to use for authorization.</p>"
         }
       },
@@ -1629,7 +1636,7 @@
           "documentation":"<p>The user name to use for Basic authorization.</p>"
         },
         "Password":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The password associated with the user name to use for Basic authorization.</p>"
         }
       },
@@ -1647,7 +1654,7 @@
           "documentation":"<p>The client ID to use for OAuth authorization for the connection.</p>"
         },
         "ClientSecret":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The client secret associated with the client ID to use for OAuth authorization for the connection.</p>"
         }
       },
@@ -2855,6 +2862,12 @@
       "max":512,
       "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*$"
     },
+    "HeaderValueSensitive":{
+      "type":"string",
+      "max":512,
+      "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*$",
+      "sensitive":true
+    },
     "HealthCheck":{
       "type":"string",
       "max":1600,
@@ -3934,6 +3947,12 @@
       "max":512,
       "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+"
     },
+    "QueryStringValueSensitive":{
+      "type":"string",
+      "max":512,
+      "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+",
+      "sensitive":true
+    },
     "RedshiftDataParameters":{
       "type":"structure",
       "required":["Database"],
@@ -4417,6 +4436,10 @@
       "min":20,
       "pattern":"^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]|\\d|\\-)*:([0-9]{12})?:secret:[\\/_+=\\.@\\-A-Za-z0-9]+$"
     },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
+    },
     "Sql":{
       "type":"string",
       "documentation":"A single Redshift SQL",
@@ -4850,7 +4873,7 @@
           "documentation":"<p>The name of the API key to use for authorization.</p>"
         },
         "ApiKeyValue":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The value associated with teh API key to use for authorization.</p>"
         }
       },
@@ -4886,7 +4909,7 @@
           "documentation":"<p>The user name to use for Basic authorization.</p>"
         },
         "Password":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The password associated with the user name to use for Basic authorization.</p>"
         }
       },
@@ -4900,7 +4923,7 @@
           "documentation":"<p>The client ID to use for OAuth authorization.</p>"
         },
         "ClientSecret":{
-          "shape":"AuthHeaderParameters",
+          "shape":"AuthHeaderParametersSensitive",
           "documentation":"<p>The client secret assciated with the client ID to use for OAuth authorization.</p>"
         }
       },

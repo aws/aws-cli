@@ -66,7 +66,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Removes one or more documents from an index. The documents must have been added with the <code>BatchPutDocument</code> API.</p> <p>The documents are deleted asynchronously. You can see the progress of the deletion by using Amazon Web Services CloudWatch. Any error messages related to the processing of the batch are sent to you CloudWatch log.</p>"
+      "documentation":"<p>Removes one or more documents from an index. The documents must have been added with the <code>BatchPutDocument</code> API.</p> <p>The documents are deleted asynchronously. You can see the progress of the deletion by using Amazon Web Services CloudWatch. Any error messages related to the processing of the batch are sent to your Amazon Web Services CloudWatch log. You can also use the <code>BatchGetDocumentStatus</code> API to monitor the progress of deleting your documents.</p> <p>Deleting documents from an index using <code>BatchDeleteDocument</code> could take up to an hour or more, depending on the number of documents you want to delete.</p>"
     },
     "BatchDeleteFeaturedResultsSet":{
       "name":"BatchDeleteFeaturedResultsSet",
@@ -120,7 +120,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds one or more documents to an index.</p> <p>The <code>BatchPutDocument</code> API enables you to ingest inline documents or a set of documents stored in an Amazon S3 bucket. Use this API to ingest your text and unstructured text into an index, add custom attributes to the documents, and to attach an access control list to the documents added to the index.</p> <p>The documents are indexed asynchronously. You can see the progress of the batch using Amazon Web Services CloudWatch. Any error messages related to processing the batch are sent to your Amazon Web Services CloudWatch log.</p> <p>For an example of ingesting inline documents using Python and Java SDKs, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-binary-doc.html\">Adding files directly to an index</a>.</p>"
+      "documentation":"<p>Adds one or more documents to an index.</p> <p>The <code>BatchPutDocument</code> API enables you to ingest inline documents or a set of documents stored in an Amazon S3 bucket. Use this API to ingest your text and unstructured text into an index, add custom attributes to the documents, and to attach an access control list to the documents added to the index.</p> <p>The documents are indexed asynchronously. You can see the progress of the batch using Amazon Web Services CloudWatch. Any error messages related to processing the batch are sent to your Amazon Web Services CloudWatch log. You can also use the <code>BatchGetDocumentStatus</code> API to monitor the progress of indexing your documents.</p> <p>For an example of ingesting inline documents using Python and Java SDKs, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-adding-binary-doc.html\">Adding files directly to an index</a>.</p>"
     },
     "ClearQuerySuggestions":{
       "name":"ClearQuerySuggestions",
@@ -252,7 +252,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active you can index your documents using the <code>BatchPutDocument</code> API or using one of the supported data sources.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
+      "documentation":"<p>Creates an Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active, you can index your documents using the <code>BatchPutDocument</code> API or using one of the supported <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-sources.html\">data sources</a>.</p> <p>For an example of creating an index and data source using the Python SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html\">Getting started with Python SDK</a>. For an example of creating an index and data source using the Java SDK, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html\">Getting started with Java SDK</a>.</p>"
     },
     "CreateQuerySuggestionsBlockList":{
       "name":"CreateQuerySuggestionsBlockList",
@@ -325,7 +325,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an Amazon Kendra data source connector. An exception is not thrown if the data source is already being deleted. While the data source is being deleted, the <code>Status</code> field returned by a call to the <code>DescribeDataSource</code> API is set to <code>DELETING</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/delete-data-source.html\">Deleting Data Sources</a>.</p>"
+      "documentation":"<p>Deletes an Amazon Kendra data source connector. An exception is not thrown if the data source is already being deleted. While the data source is being deleted, the <code>Status</code> field returned by a call to the <code>DescribeDataSource</code> API is set to <code>DELETING</code>. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/delete-data-source.html\">Deleting Data Sources</a>.</p> <p>Deleting an entire data source or re-syncing your index after deleting specific documents from a data source could take up to an hour or more, depending on the number of documents you want to delete.</p>"
     },
     "DeleteExperience":{
       "name":"DeleteExperience",
@@ -945,7 +945,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves relevant passages or text excerpts given an input query.</p> <p>This API is similar to the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html\">Query</a> API. However, by default, the <code>Query</code> API only returns excerpt passages of up to 100 token words. With the <code>Retrieve</code> API, you can retrieve longer passages of up to 200 token words and up to 100 semantically relevant passages. This doesn't include question-answer or FAQ type responses from your index. The passages are text excerpts that can be semantically extracted from multiple documents and multiple parts of the same document. If in extreme cases your documents produce no relevant passages using the <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API.</p> <p>You can also do the following:</p> <ul> <li> <p>Override boosting at the index level</p> </li> <li> <p>Filter based on document fields or attributes</p> </li> <li> <p>Filter based on the user or their group access to documents</p> </li> </ul> <p>You can also include certain fields in the response that might provide useful additional information.</p>"
+      "documentation":"<p>Retrieves relevant passages or text excerpts given an input query.</p> <p>This API is similar to the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html\">Query</a> API. However, by default, the <code>Query</code> API only returns excerpt passages of up to 100 token words. With the <code>Retrieve</code> API, you can retrieve longer passages of up to 200 token words and up to 100 semantically relevant passages. This doesn't include question-answer or FAQ type responses from your index. The passages are text excerpts that can be semantically extracted from multiple documents and multiple parts of the same document. If in extreme cases your documents produce zero passages using the <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API and its types of responses.</p> <p>You can also do the following:</p> <ul> <li> <p>Override boosting at the index level</p> </li> <li> <p>Filter based on document fields or attributes</p> </li> <li> <p>Filter based on the user or their group access to documents</p> </li> </ul> <p>You can also include certain fields in the response that might provide useful additional information.</p> <p>The <code>Retrieve</code> API shares the number of <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_CapacityUnitsConfiguration.html\">query capacity units</a> that you set for your index. For more information on what's included in a single capacity unit and the default base capacity for an index, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/adjusting-capacity.html\">Adjusting capacity</a>.</p>"
     },
     "StartDataSourceSyncJob":{
       "name":"StartDataSourceSyncJob",
@@ -964,7 +964,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts a synchronization job for a data source connector. If a synchronization job is already in progress, Amazon Kendra returns a <code>ResourceInUseException</code> exception.</p>"
+      "documentation":"<p>Starts a synchronization job for a data source connector. If a synchronization job is already in progress, Amazon Kendra returns a <code>ResourceInUseException</code> exception.</p> <p>Re-syncing your data source with your index after modifying, adding, or deleting documents from your data source respository could take up to an hour or more, depending on the number of documents to sync.</p>"
     },
     "StopDataSourceSyncJob":{
       "name":"StopDataSourceSyncJob",
@@ -1428,46 +1428,46 @@
       "members":{
         "AndAllFilters":{
           "shape":"AttributeFilterList",
-          "documentation":"<p>Performs a logical <code>AND</code> operation on all supplied filters.</p>"
+          "documentation":"<p>Performs a logical <code>AND</code> operation on all filters that you specify.</p>"
         },
         "OrAllFilters":{
           "shape":"AttributeFilterList",
-          "documentation":"<p>Performs a logical <code>OR</code> operation on all supplied filters.</p>"
+          "documentation":"<p>Performs a logical <code>OR</code> operation on all filters that you specify.</p>"
         },
         "NotFilter":{
           "shape":"AttributeFilter",
-          "documentation":"<p>Performs a logical <code>NOT</code> operation on all supplied filters.</p>"
+          "documentation":"<p>Performs a logical <code>NOT</code> operation on all filters that you specify.</p>"
         },
         "EqualsTo":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Performs an equals operation on two document attributes or metadata fields.</p>"
+          "documentation":"<p>Performs an equals operation on document attributes/fields and their values.</p>"
         },
         "ContainsAll":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Returns true when a document contains all of the specified document attributes or metadata fields. This filter is only applicable to <code>StringListValue</code> metadata.</p>"
+          "documentation":"<p>Returns true when a document contains all of the specified document attributes/fields. This filter is only applicable to <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">StringListValue</a>.</p>"
         },
         "ContainsAny":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Returns true when a document contains any of the specified document attributes or metadata fields. This filter is only applicable to <code>StringListValue</code> metadata.</p>"
+          "documentation":"<p>Returns true when a document contains any of the specified document attributes/fields. This filter is only applicable to <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">StringListValue</a>.</p>"
         },
         "GreaterThan":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Performs a greater than operation on two document attributes or metadata fields. Use with a document attribute of type <code>Date</code> or <code>Long</code>.</p>"
+          "documentation":"<p>Performs a greater than operation on document attributes/fields and their values. Use with the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">document attribute type</a> <code>Date</code> or <code>Long</code>.</p>"
         },
         "GreaterThanOrEquals":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Performs a greater or equals than operation on two document attributes or metadata fields. Use with a document attribute of type <code>Date</code> or <code>Long</code>.</p>"
+          "documentation":"<p>Performs a greater or equals than operation on document attributes/fields and their values. Use with the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">document attribute type</a> <code>Date</code> or <code>Long</code>.</p>"
         },
         "LessThan":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Performs a less than operation on two document attributes or metadata fields. Use with a document attribute of type <code>Date</code> or <code>Long</code>.</p>"
+          "documentation":"<p>Performs a less than operation on document attributes/fields and their values. Use with the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">document attribute type</a> <code>Date</code> or <code>Long</code>.</p>"
         },
         "LessThanOrEquals":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Performs a less than or equals operation on two document attributes or metadata fields. Use with a document attribute of type <code>Date</code> or <code>Long</code>.</p>"
+          "documentation":"<p>Performs a less than or equals operation on document attributes/fields and their values. Use with the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_DocumentAttributeValue.html\">document attribute type</a> <code>Date</code> or <code>Long</code>.</p>"
         }
       },
-      "documentation":"<p>Provides filtering the query results based on document attributes or metadata fields.</p> <p>When you use the <code>AndAllFilters</code> or <code>OrAllFilters</code>, filters you can use 2 layers under the first attribute filter. For example, you can use:</p> <p> <code>&lt;AndAllFilters&gt;</code> </p> <ol> <li> <p> <code> &lt;OrAllFilters&gt;</code> </p> </li> <li> <p> <code> &lt;EqualsTo&gt;</code> </p> </li> </ol> <p>If you use more than 2 layers, you receive a <code>ValidationException</code> exception with the message \"<code>AttributeFilter</code> cannot have a depth of more than 2.\"</p> <p>If you use more than 10 attribute filters in a given list for <code>AndAllFilters</code> or <code>OrAllFilters</code>, you receive a <code>ValidationException</code> with the message \"<code>AttributeFilter</code> cannot have a length of more than 10\".</p>"
+      "documentation":"<p>Filters the search results based on document attributes or fields.</p> <p>You can filter results using attributes for your particular documents. The attributes must exist in your index. For example, if your documents include the custom attribute \"Department\", you can filter documents that belong to the \"HR\" department. You would use the <code>EqualsTo</code> operation to filter results or documents with \"Department\" equals to \"HR\".</p> <p>You can use <code>AndAllFilters</code> and <code>AndOrFilters</code> in combination with each other or with other operations such as <code>EqualsTo</code>. For example:</p> <p> <code>AndAllFilters</code> </p> <ul> <li> <p> <code>EqualsTo</code>: \"Department\", \"HR\"</p> </li> <li> <p> <code>AndOrFilters</code> </p> <ul> <li> <p> <code>ContainsAny</code>: \"Project Name\", [\"new hires\", \"new hiring\"]</p> </li> </ul> </li> </ul> <p>This example filters results or documents that belong to the HR department <i>and</i> belong to projects that contain \"new hires\" <i>or</i> \"new hiring\" in the project name (must use <code>ContainAny</code> with <code>StringListValue</code>). This example is filtering with a depth of 2.</p> <p>You cannot filter more than a depth of 2, otherwise you receive a <code>ValidationException</code> exception with the message \"AttributeFilter cannot have a depth of more than 2.\" Also, if you use more than 10 attribute filters in a given list for <code>AndAllFilters</code> or <code>OrAllFilters</code>, you receive a <code>ValidationException</code> with the message \"AttributeFilter cannot have a length of more than 10\".</p> <p>For examples of using <code>AttributeFilter</code>, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/filtering.html#search-filtering\">Using document attributes to filter search results</a>.</p>"
     },
     "AttributeFilterList":{
       "type":"list",
@@ -1754,7 +1754,7 @@
       "members":{
         "FailedDocuments":{
           "shape":"BatchPutDocumentResponseFailedDocuments",
-          "documentation":"<p>A list of documents that were not added to the index because the document failed a validation check. Each document contains an error message that indicates why the document couldn't be added to the index.</p> <p>If there was an error adding a document to an index the error is reported in your Amazon Web Services CloudWatch log. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/cloudwatch-logs.html\">Monitoring Amazon Kendra with Amazon CloudWatch Logs</a> </p>"
+          "documentation":"<p>A list of documents that were not added to the index because the document failed a validation check. Each document contains an error message that indicates why the document couldn't be added to the index.</p> <p>If there was an error adding a document to an index the error is reported in your Amazon Web Services CloudWatch log. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/cloudwatch-logs.html\">Monitoring Amazon Kendra with Amazon CloudWatch logs</a>.</p>"
         }
       }
     },
@@ -3133,18 +3133,18 @@
       "members":{
         "DataSourceFieldName":{
           "shape":"DataSourceFieldName",
-          "documentation":"<p>The name of the column or attribute in the data source.</p>"
+          "documentation":"<p>The name of the field in the data source. You must first create the index field using the <code>UpdateIndex</code> API.</p>"
         },
         "DateFieldFormat":{
           "shape":"DataSourceDateFieldFormat",
-          "documentation":"<p>The type of data stored in the column or attribute.</p>"
+          "documentation":"<p>The format for date fields in the data source. If the field specified in <code>DataSourceFieldName</code> is a date field, you must specify the date format. If the field is not a date field, an exception is thrown.</p>"
         },
         "IndexFieldName":{
           "shape":"IndexFieldName",
-          "documentation":"<p>The name of the field in the index.</p>"
+          "documentation":"<p>The name of the index field to map to the data source field. The index field type must match the data source field type.</p>"
         }
       },
-      "documentation":"<p>Maps a column or attribute in the data source to an index field. You must first create the fields in the index using the <code>UpdateIndex</code> API.</p>"
+      "documentation":"<p>Maps attributes or field names of the documents synced from the data source to Amazon Kendra index field names. You can set up field mappings for each data source when calling <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_CreateDataSource.html\">CreateDataSource</a> or <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_UpdateDataSource.html\">UpdateDataSource</a> API. To create custom fields, use the <code>UpdateIndex</code> API to first create an index field and then map to the data source field. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/field-mapping.html\">Mapping data source fields</a>.</p>"
     },
     "DataSourceToIndexFieldMappingList":{
       "type":"list",
@@ -3224,7 +3224,7 @@
           "documentation":"<p>Provides information about how Amazon Kendra uses quote marks around SQL identifiers when querying a database data source.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to connect to a index. </p>"
+      "documentation":"<p>Provides the configuration information to an <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/data-source-database.html\">Amazon Kendra supported database</a>.</p>"
     },
     "DatabaseEngineType":{
       "type":"string",
@@ -4255,18 +4255,18 @@
       "members":{
         "DocumentAttributeValue":{
           "shape":"DocumentAttributeValue",
-          "documentation":"<p>The value of the attribute. For example, \"HR\".</p>"
+          "documentation":"<p>The value of the attribute/field. For example, \"HR\".</p>"
         },
         "Count":{
           "shape":"Integer",
-          "documentation":"<p>The number of documents in the response that have the attribute value for the key.</p>"
+          "documentation":"<p>The number of documents in the response that have the attribute/field value for the key.</p>"
         },
         "FacetResults":{
           "shape":"FacetResultList",
-          "documentation":"<p>Contains the results of a document attribute that is a nested facet. A <code>FacetResult</code> contains the counts for each facet nested within a facet.</p> <p>For example, the document attribute or facet \"Department\" includes a value called \"Engineering\". In addition, the document attribute or facet \"SubDepartment\" includes the values \"Frontend\" and \"Backend\" for documents assigned to \"Engineering\". You can display nested facets in the search results so that documents can be searched not only by department but also by a sub department within a department. The counts for documents that belong to \"Frontend\" and \"Backend\" within \"Engineering\" are returned for a query.</p> <p/> <p/>"
+          "documentation":"<p>Contains the results of a document attribute/field that is a nested facet. A <code>FacetResult</code> contains the counts for each facet nested within a facet.</p> <p>For example, the document attribute or facet \"Department\" includes a value called \"Engineering\". In addition, the document attribute or facet \"SubDepartment\" includes the values \"Frontend\" and \"Backend\" for documents assigned to \"Engineering\". You can display nested facets in the search results so that documents can be searched not only by department but also by a sub department within a department. The counts for documents that belong to \"Frontend\" and \"Backend\" within \"Engineering\" are returned for a query.</p> <p/> <p/>"
         }
       },
-      "documentation":"<p>Provides the count of documents that match a particular attribute when doing a faceted search.</p>"
+      "documentation":"<p>Provides the count of documents that match a particular document attribute or field when doing a faceted search.</p>"
     },
     "DocumentAttributeValueCountPairList":{
       "type":"list",
@@ -4682,7 +4682,7 @@
           "documentation":"<p>Maximum number of facet values per facet. The default is 10. You can use this to limit the number of facet values to less than 10. If you want to increase the default, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a>.</p>"
         }
       },
-      "documentation":"<p>Information about a document attribute. You can use document attributes as facets.</p> <p>For example, the document attribute or facet \"Department\" includes the values \"HR\", \"Engineering\", and \"Accounting\". You can display these values in the search results so that documents can be searched by department.</p> <p>You can display up to 10 facet values per facet for a query. If you want to increase this limit, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a>.</p>"
+      "documentation":"<p>Information about a document attribute or field. You can use document attributes as facets.</p> <p>For example, the document attribute or facet \"Department\" includes the values \"HR\", \"Engineering\", and \"Accounting\". You can display these values in the search results so that documents can be searched by department.</p> <p>You can display up to 10 facet values per facet for a query. If you want to increase this limit, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a>.</p>"
     },
     "FacetList":{
       "type":"list",
@@ -7230,6 +7230,10 @@
         "DocumentAttributes":{
           "shape":"DocumentAttributeList",
           "documentation":"<p>An array of document fields/attributes assigned to a document in the search results. For example, the document author (<code>_author</code>) or the source URI (<code>_source_uri</code>) of the document.</p>"
+        },
+        "ScoreAttributes":{
+          "shape":"ScoreAttributes",
+          "documentation":"<p>The confidence score bucket for a retrieved passage result. The confidence bucket provides a relative ranking that indicates how confident Amazon Kendra is that the response is relevant to the query.</p>"
         }
       },
       "documentation":"<p>A single retrieved relevant passage result.</p>"

@@ -145,7 +145,8 @@
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
-        {"shape":"LifecyclePolicyNotFoundException"}
+        {"shape":"LifecyclePolicyNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the lifecycle policy associated with the specified repository.</p>"
     },
@@ -354,7 +355,8 @@
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
-        {"shape":"LifecyclePolicyNotFoundException"}
+        {"shape":"LifecyclePolicyNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves the lifecycle policy for the specified repository.</p>"
     },
@@ -370,7 +372,8 @@
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
-        {"shape":"LifecyclePolicyPreviewNotFoundException"}
+        {"shape":"LifecyclePolicyPreviewNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves the results of the lifecycle policy preview request for the specified repository.</p>"
     },
@@ -531,7 +534,8 @@
       "errors":[
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"RepositoryNotFoundException"}
+        {"shape":"RepositoryNotFoundException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates or updates the lifecycle policy for the specified repository. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html\">Lifecycle policy template</a>.</p>"
     },
@@ -627,7 +631,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"RepositoryNotFoundException"},
         {"shape":"LifecyclePolicyNotFoundException"},
-        {"shape":"LifecyclePolicyPreviewInProgressException"}
+        {"shape":"LifecyclePolicyPreviewInProgressException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Starts a preview of a lifecycle policy for the specified repository. This allows you to see the results before associating the lifecycle policy with the repository.</p>"
     },
@@ -1025,7 +1030,7 @@
         },
         "repositoryName":{
           "shape":"RepositoryName",
-          "documentation":"<p>The name to use for the repository. The repository name may be specified on its own (such as <code>nginx-web-app</code>) or it can be prepended with a namespace to group the repository into a category (such as <code>project-a/nginx-web-app</code>).</p>"
+          "documentation":"<p>The name to use for the repository. The repository name may be specified on its own (such as <code>nginx-web-app</code>) or it can be prepended with a namespace to group the repository into a category (such as <code>project-a/nginx-web-app</code>).</p> <p>The repository name must start with a letter and can only contain lowercase letters, numbers, hyphens, underscores, and forward slashes.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -3009,7 +3014,7 @@
       "members":{
         "scanFrequency":{
           "shape":"ScanFrequency",
-          "documentation":"<p>The frequency that scans are performed at for a private registry. When the <code>ENHANCED</code> scan type is specified, the supported scan frequencies are <code>CONTINUOUS_SCAN</code> and <code>SCAN_ON_PUSH</code>. When the <code>BASIC</code> scan type is specified, the <code>SCAN_ON_PUSH</code> and <code>MANUAL</code> scan frequencies are supported.</p>"
+          "documentation":"<p>The frequency that scans are performed at for a private registry. When the <code>ENHANCED</code> scan type is specified, the supported scan frequencies are <code>CONTINUOUS_SCAN</code> and <code>SCAN_ON_PUSH</code>. When the <code>BASIC</code> scan type is specified, the <code>SCAN_ON_PUSH</code> scan frequency is supported. If scan on push is not specified, then the <code>MANUAL</code> scan frequency is set by default.</p>"
         },
         "repositoryFilters":{
           "shape":"ScanningRepositoryFilterList",
@@ -3110,7 +3115,7 @@
       "members":{
         "repositoryArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, repository namespace, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository/test</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, repository namespace, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository-namespace/repository-name</code>.</p>"
         },
         "registryId":{
           "shape":"RegistryId",
@@ -3167,7 +3172,7 @@
           "documentation":"<p>The repository filter type. The only supported value is <code>PREFIX_MATCH</code>, which is a repository name prefix specified with the <code>filter</code> parameter.</p>"
         }
       },
-      "documentation":"<p>The filter settings used with image replication. Specifying a repository filter to a replication rule provides a method for controlling which repositories in a private registry are replicated. If no repository filter is specified, all images in the repository are replicated.</p>"
+      "documentation":"<p>The filter settings used with image replication. Specifying a repository filter to a replication rule provides a method for controlling which repositories in a private registry are replicated. If no filters are added, the contents of all repositories are replicated.</p>"
     },
     "RepositoryFilterList":{
       "type":"list",
@@ -3563,6 +3568,10 @@
     "Status":{"type":"string"},
     "Tag":{
       "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
       "members":{
         "Key":{
           "shape":"TagKey",

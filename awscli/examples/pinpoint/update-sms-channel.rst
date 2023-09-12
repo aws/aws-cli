@@ -1,4 +1,4 @@
-**To enable SMS channel or to update the status and settings of the SMS channel for an application**
+**To enable SMS channel or to update the status and settings of the SMS channel for an application.**
 
 The following ``update-sms-channel`` example enables SMS channel for an SMS channel for an application. ::
 
@@ -13,7 +13,7 @@ Output::
         "SMSChannelResponse": {
             "ApplicationId": "611e3e3cdd47474c9c1399a505665b91",
             "CreationDate": "2019-01-28T23:25:25.224Z",
-            "Enabled": false,
+            "Enabled": true,
             "Id": "sms",
             "IsArchived": false,
             "LastModifiedDate": "2023-05-18T23:22:50.977Z",

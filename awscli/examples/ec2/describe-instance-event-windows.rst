@@ -1,6 +1,6 @@
 **Example 1: To describe all event windows**
 
-The following ``describe-instance-event-windows`` example describes all event windows. ::
+The following ``describe-instance-event-windows`` example describes all event windows in the specified Region. ::
 
     aws ec2 describe-instance-event-windows \
         --region us-east-1
@@ -31,15 +31,13 @@ Output::
         "NextToken": "9d624e0c-388b-4862-a31e-a85c64fc1d4a"
     }
 
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
-
 **Example 2: To describe a specific event window**
 
 The following ``describe-instance-event-windows`` example describes a specific event by using the ``instance-event-window`` parameter to describe a specific event window. ::
 
     aws ec2 describe-instance-event-windows \
         --region us-east-1 \
-        --instance-event-window-id iew-0abcdef1234567890
+        --instance-event-window-ids iew-0abcdef1234567890
 
 Output::
 
@@ -61,8 +59,6 @@ Output::
                 "Tags": []
             }
     }
-
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
 
 **Example 3: To describe event windows that match one or more filters**
 
@@ -104,4 +100,4 @@ Output::
 
 In the example output, the instance is on a Dedicated Host, which is associated with the event window.
 
-For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the Scheduled Events section of the *Amazon EC2 User Guide*.
+For event window constraints, see `Considerations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html#event-windows-considerations>`__ in the *Amazon EC2 User Guide*.

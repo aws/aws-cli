@@ -1,9 +1,9 @@
 **To describe the associations between VPCs and local gateway route tables**
 
-The following ``describe-local-gateway-route-table-vpc-associations`` example displays details for the specified association between VPCs and local gateway route tables. ::
+The following ``describe-local-gateway-route-table-vpc-associations`` example displays information about the specified association between VPCs and local gateway route tables. ::
 
     aws ec2 describe-local-gateway-route-table-vpc-associations \
-        --local-gateway-route-table-vpc-association-id lgw-vpc-assoc-0e0f27af15EXAMPLE
+        --local-gateway-route-table-vpc-association-ids lgw-vpc-assoc-0e0f27af15EXAMPLE
 
 Output::
 
@@ -16,3 +16,5 @@ Output::
             "State": "associated"
         }
     }
+
+For more information, see `Local gateway route tables <https://docs.aws.amazon.com/outposts/latest/userguide/routing.html>`__ in the *Outposts User Guide*.

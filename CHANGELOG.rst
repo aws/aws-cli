@@ -3,7 +3,6 @@ CHANGELOG
 =========
 
 2.13.18
-=======
 
 * api-change:``kendra``: Amazon Kendra now supports confidence score buckets for retrieved passage results using the Retrieve API.
 * api-change:``events``: Update events command to latest version
@@ -6007,6 +6006,18 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+=======
+1.29.47
+=======
+
+* api-change:``cloud9``: Update to include information on Ubuntu 18 deprecation.
+* api-change:``drs``: Updated existing APIs and added new ones to support using AWS Elastic Disaster Recovery post-launch actions. Added support for new regions.
+* api-change:``firehose``: DocumentIdOptions has been added for the Amazon OpenSearch destination.
+* api-change:``guardduty``: Add `managementType` field to ListCoverage API response.
+* api-change:``internetmonitor``: This release updates the Amazon CloudWatch Internet Monitor API domain name.
+* api-change:``ivs-realtime``: Doc only update that changes description for ParticipantToken.
+* api-change:``simspaceweaver``: Edited the introductory text for the API reference.
+* api-change:``xray``: Add StartTime field in GetTraceSummaries API response for each TraceSummary.
 
 
 1.29.46

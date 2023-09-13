@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.13.18
+=======
+
+* api-change:``kendra``: Amazon Kendra now supports confidence score buckets for retrieved passage results using the Retrieve API.
+* api-change:``events``: Update events command to latest version
+* api-change:``sso-admin``: Content updates to IAM Identity Center API for China Regions.
+* api-change:``quicksight``: This release launches new updates to QuickSight KPI visuals - support for sparklines, new templated layout and new targets for conditional formatting rules.
+* api-change:``workspaces``: A new field "ErrorDetails" will be added to the output of "DescribeWorkspaceImages" API call. This field provides in-depth details about the error occurred during image import process. These details include the possible causes of the errors and troubleshooting information.
+* api-change:``sagemaker``: Autopilot APIs will now support holiday featurization for Timeseries models. The models will now hold holiday metadata and should be able to accommodate holiday effect during inference.
+* api-change:``fsx``: Amazon FSx documentation fixes
+* api-change:``ec2``: This release adds support for restricting public sharing of AMIs through AMI Block Public Access
+* api-change:``ecr``: This release will have ValidationException be thrown from ECR LifecyclePolicy APIs in regions LifecyclePolicy is not supported, this includes existing Amazon Dedicated Cloud (ADC) regions. This release will also change Tag: TagValue and Tag: TagKey to required.
+* api-change:``medialive``: AWS Elemental Link now supports attaching a Link UHD device to a MediaConnect flow.
+
+
 2.13.17
 =======
 

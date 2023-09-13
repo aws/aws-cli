@@ -3130,7 +3130,7 @@
     "ActionList":{
       "type":"list",
       "member":{"shape":"String"},
-      "max":16,
+      "max":20,
       "min":1
     },
     "ActiveIAMPolicyAssignment":{
@@ -17006,6 +17006,34 @@
         "RIGHT"
       ]
     },
+    "KPIActualValueConditionalFormatting":{
+      "type":"structure",
+      "members":{
+        "TextColor":{
+          "shape":"ConditionalFormattingColor",
+          "documentation":"<p>The conditional formatting of the actual value's text color.</p>"
+        },
+        "Icon":{
+          "shape":"ConditionalFormattingIcon",
+          "documentation":"<p>The conditional formatting of the actual value's icon.</p>"
+        }
+      },
+      "documentation":"<p>The conditional formatting for the actual value of a KPI visual.</p>"
+    },
+    "KPIComparisonValueConditionalFormatting":{
+      "type":"structure",
+      "members":{
+        "TextColor":{
+          "shape":"ConditionalFormattingColor",
+          "documentation":"<p>The conditional formatting of the comparison value's text color.</p>"
+        },
+        "Icon":{
+          "shape":"ConditionalFormattingIcon",
+          "documentation":"<p>The conditional formatting of the comparison value's icon.</p>"
+        }
+      },
+      "documentation":"<p>The conditional formatting for the comparison value of a KPI visual.</p>"
+    },
     "KPIConditionalFormatting":{
       "type":"structure",
       "members":{
@@ -17026,6 +17054,14 @@
         "ProgressBar":{
           "shape":"KPIProgressBarConditionalFormatting",
           "documentation":"<p>The conditional formatting for the progress bar of a KPI visual.</p>"
+        },
+        "ActualValue":{
+          "shape":"KPIActualValueConditionalFormatting",
+          "documentation":"<p>The conditional formatting for the actual value of a KPI visual.</p>"
+        },
+        "ComparisonValue":{
+          "shape":"KPIComparisonValueConditionalFormatting",
+          "documentation":"<p>The conditional formatting for the comparison value of a KPI visual.</p>"
         }
       },
       "documentation":"<p>The conditional formatting options of a KPI visual.</p>"
@@ -17101,6 +17137,14 @@
         "SecondaryValueFontConfiguration":{
           "shape":"FontConfiguration",
           "documentation":"<p>The options that determine the secondary value font configuration.</p>"
+        },
+        "Sparkline":{
+          "shape":"KPISparklineOptions",
+          "documentation":"<p>The options that determine the visibility, color, type, and tooltip visibility of the sparkline of a KPI visual.</p>"
+        },
+        "VisualLayoutOptions":{
+          "shape":"KPIVisualLayoutOptions",
+          "documentation":"<p>The options that determine the layout a KPI visual.</p>"
         }
       },
       "documentation":"<p>The options that determine the presentation of a KPI visual.</p>"
@@ -17139,6 +17183,36 @@
       },
       "documentation":"<p>The sort configuration of a KPI visual.</p>"
     },
+    "KPISparklineOptions":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility of the sparkline.</p>"
+        },
+        "Type":{
+          "shape":"KPISparklineType",
+          "documentation":"<p>The type of the sparkline.</p>"
+        },
+        "Color":{
+          "shape":"HexColor",
+          "documentation":"<p>The color of the sparkline.</p>"
+        },
+        "TooltipVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The tooltip visibility of the sparkline.</p>"
+        }
+      },
+      "documentation":"<p>The options that determine the visibility, color, type, and tooltip visibility of the sparkline of a KPI visual.</p>"
+    },
+    "KPISparklineType":{
+      "type":"string",
+      "enum":[
+        "LINE",
+        "AREA"
+      ]
+    },
     "KPIVisual":{
       "type":"structure",
       "required":["VisualId"],
@@ -17173,6 +17247,34 @@
         }
       },
       "documentation":"<p>A key performance indicator (KPI).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/kpi.html\">Using KPIs</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+    },
+    "KPIVisualLayoutOptions":{
+      "type":"structure",
+      "members":{
+        "StandardLayout":{
+          "shape":"KPIVisualStandardLayout",
+          "documentation":"<p>The standard layout of the KPI visual.</p>"
+        }
+      },
+      "documentation":"<p>The options that determine the layout a KPI visual.</p>"
+    },
+    "KPIVisualStandardLayout":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"KPIVisualStandardLayoutType",
+          "documentation":"<p>The standard layout type.</p>"
+        }
+      },
+      "documentation":"<p>The standard layout of the KPI visual.</p>"
+    },
+    "KPIVisualStandardLayoutType":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "VERTICAL"
+      ]
     },
     "LabelOptions":{
       "type":"structure",

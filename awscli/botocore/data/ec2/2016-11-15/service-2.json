@@ -3712,6 +3712,16 @@
       "output":{"shape":"DisableFastSnapshotRestoresResult"},
       "documentation":"<p>Disables fast snapshot restores for the specified snapshots in the specified Availability Zones.</p>"
     },
+    "DisableImageBlockPublicAccess":{
+      "name":"DisableImageBlockPublicAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableImageBlockPublicAccessRequest"},
+      "output":{"shape":"DisableImageBlockPublicAccessResult"},
+      "documentation":"<p>Disables <i>block public access for AMIs</i> at the account level in the specified Amazon Web Services Region. This removes the <i>block public access</i> restriction from your account. With the restriction removed, you can publicly share your AMIs in the specified Amazon Web Services Region.</p> <p>The API can take up to 10 minutes to configure this setting. During this time, if you run <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetImageBlockPublicAccessState.html\">GetImageBlockPublicAccessState</a>, the response will be <code>block-new-sharing</code>. When the API has completed the configuration, the response will be <code>unblocked</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-intro.html#block-public-access-to-amis\">Block public access to your AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "DisableImageDeprecation":{
       "name":"DisableImageDeprecation",
       "http":{
@@ -3968,6 +3978,16 @@
       "input":{"shape":"EnableFastSnapshotRestoresRequest"},
       "output":{"shape":"EnableFastSnapshotRestoresResult"},
       "documentation":"<p>Enables fast snapshot restores for the specified snapshots in the specified Availability Zones.</p> <p>You get the full benefit of fast snapshot restores after they enter the <code>enabled</code> state. To get the current state of fast snapshot restores, use <a>DescribeFastSnapshotRestores</a>. To disable fast snapshot restores, use <a>DisableFastSnapshotRestores</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-fast-snapshot-restore.html\">Amazon EBS fast snapshot restore</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+    },
+    "EnableImageBlockPublicAccess":{
+      "name":"EnableImageBlockPublicAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableImageBlockPublicAccessRequest"},
+      "output":{"shape":"EnableImageBlockPublicAccessResult"},
+      "documentation":"<p>Enables <i>block public access for AMIs</i> at the account level in the specified Amazon Web Services Region. This prevents the public sharing of your AMIs. However, if you already have public AMIs, they will remain publicly available.</p> <p>The API can take up to 10 minutes to configure this setting. During this time, if you run <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetImageBlockPublicAccessState.html\">GetImageBlockPublicAccessState</a>, the response will be <code>unblocked</code>. When the API has completed the configuration, the response will be <code>block-new-sharing</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-intro.html#block-public-access-to-amis\">Block public access to your AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "EnableImageDeprecation":{
       "name":"EnableImageDeprecation",
@@ -4226,6 +4246,16 @@
       "input":{"shape":"GetHostReservationPurchasePreviewRequest"},
       "output":{"shape":"GetHostReservationPurchasePreviewResult"},
       "documentation":"<p>Preview a reservation purchase with configurations that match those of your Dedicated Host. You must have active Dedicated Hosts in your account before you purchase a reservation.</p> <p>This is a preview of the <a>PurchaseHostReservation</a> action and does not result in the offering being purchased.</p>"
+    },
+    "GetImageBlockPublicAccessState":{
+      "name":"GetImageBlockPublicAccessState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImageBlockPublicAccessStateRequest"},
+      "output":{"shape":"GetImageBlockPublicAccessStateResult"},
+      "documentation":"<p>Gets the current state of <i>block public access for AMIs</i> at the account level in the specified Amazon Web Services Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-intro.html#block-public-access-to-amis\">Block public access to your AMIs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "GetInstanceTypesFromInstanceRequirements":{
       "name":"GetInstanceTypesFromInstanceRequirements",
@@ -25154,6 +25184,25 @@
         }
       }
     },
+    "DisableImageBlockPublicAccessRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableImageBlockPublicAccessResult":{
+      "type":"structure",
+      "members":{
+        "ImageBlockPublicAccessState":{
+          "shape":"ImageBlockPublicAccessDisabledState",
+          "documentation":"<p>Returns <code>unblocked</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"imageBlockPublicAccessState"
+        }
+      }
+    },
     "DisableImageDeprecationRequest":{
       "type":"structure",
       "required":["ImageId"],
@@ -26880,6 +26929,30 @@
           "shape":"EnableFastSnapshotRestoreErrorSet",
           "documentation":"<p>Information about the snapshots for which fast snapshot restores could not be enabled.</p>",
           "locationName":"unsuccessful"
+        }
+      }
+    },
+    "EnableImageBlockPublicAccessRequest":{
+      "type":"structure",
+      "required":["ImageBlockPublicAccessState"],
+      "members":{
+        "ImageBlockPublicAccessState":{
+          "shape":"ImageBlockPublicAccessEnabledState",
+          "documentation":"<p>Specify <code>block-new-sharing</code> to enable block public access for AMIs at the account level in the specified Region. This will block any attempt to publicly share your AMIs in the specified Region.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableImageBlockPublicAccessResult":{
+      "type":"structure",
+      "members":{
+        "ImageBlockPublicAccessState":{
+          "shape":"ImageBlockPublicAccessEnabledState",
+          "documentation":"<p>Returns <code>block-new-sharing</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"imageBlockPublicAccessState"
         }
       }
     },
@@ -29554,6 +29627,25 @@
         }
       }
     },
+    "GetImageBlockPublicAccessStateRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetImageBlockPublicAccessStateResult":{
+      "type":"structure",
+      "members":{
+        "ImageBlockPublicAccessState":{
+          "shape":"String",
+          "documentation":"<p>The current state of block public access for AMIs at the account level in the specified Amazon Web Services Region.</p> <p>Possible values:</p> <ul> <li> <p> <code>block-new-sharing</code> - Any attempt to publicly share your AMIs in the specified Region is blocked.</p> </li> <li> <p> <code>unblocked</code> - Your AMIs in the specified Region can be publicly shared.</p> </li> </ul>",
+          "locationName":"imageBlockPublicAccessState"
+        }
+      }
+    },
     "GetInstanceTypesFromInstanceRequirementsRequest":{
       "type":"structure",
       "required":[
@@ -31788,6 +31880,14 @@
         "lastLaunchedTime",
         "imdsSupport"
       ]
+    },
+    "ImageBlockPublicAccessDisabledState":{
+      "type":"string",
+      "enum":["unblocked"]
+    },
+    "ImageBlockPublicAccessEnabledState":{
+      "type":"string",
+      "enum":["block-new-sharing"]
     },
     "ImageDiskContainer":{
       "type":"structure",

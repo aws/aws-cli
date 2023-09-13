@@ -319,12 +319,17 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
 def test_example_file_name(example_file):
     filename = example_file.split(os.sep)[-1]
     _assert_file_is_rst_or_txt(example_file)
+    _assert_file_not_executable(example_file)
     _assert_name_contains_only_allowed_characters(filename)
 
+def has_executable_bit(filename):
+    return os.stat(filename).st_mode & (os.X_OK | os.X_OK >> 3 | os.X_OK >> 6)
 
 def _assert_file_is_rst_or_txt(filepath):
     assert filepath.endswith('.rst') or filepath.endswith('.txt')
 
+def _assert_file_not_executable(filepath):
+    assert not has_executable_bit(filepath)
 
 def _assert_name_contains_only_allowed_characters(filename):
     assert ALLOWED_FILENAME_CHAR_REGEX.match(filename)

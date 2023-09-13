@@ -10,7 +10,7 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
-from awscli.compat import is_windows, urlparse, RawConfigParser, StringIO
+from awscli.compat import is_windows, urlparse, RawConfigParser, StringIO, get_stderr_encoding
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
@@ -32,6 +32,17 @@ def get_relative_expiration_time(remaining):
 
     message = " ".join(values)
     return message
+
+
+class CommandFailedError(Exception):
+    def __init__(self, called_process_error):
+        msg = str(called_process_error)
+        if called_process_error.stderr is not None:
+            msg +=(
+                f' Stderr from command:\n'
+                f'{called_process_error.stderr.decode(get_stderr_encoding())}'
+            )
+        Exception.__init__(self, msg)
 
 
 class BaseLogin(object):
@@ -84,14 +95,14 @@ class BaseLogin(object):
 
     def _run_command(self, tool, command, *, ignore_errors=False):
         try:
-            self.subprocess_utils.check_call(
+            self.subprocess_utils.run(
                 command,
-                stdout=self.subprocess_utils.PIPE,
-                stderr=self.subprocess_utils.PIPE
+                capture_output=True,
+                check=True
             )
         except subprocess.CalledProcessError as ex:
             if not ignore_errors:
-                raise ex
+                raise CommandFailedError(ex)
         except OSError as ex:
             if ex.errno == errno.ENOENT:
                 raise ValueError(
@@ -153,13 +164,14 @@ class NuGetBaseLogin(BaseLogin):
             return
 
         try:
-            self.subprocess_utils.check_output(
+            self.subprocess_utils.run(
                 command,
-                stderr=self.subprocess_utils.PIPE
+                capture_output=True,
+                check=True
             )
         except subprocess.CalledProcessError as e:
             uni_print('Failed to update the NuGet.Config\n')
-            raise e
+            raise CommandFailedError(e)
 
         uni_print(source_configured_message % source_name)
         self._write_success_message('nuget')

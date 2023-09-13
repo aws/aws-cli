@@ -40,7 +40,7 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.pypi_rc_path_mock = self.pypi_rc_path_patch.start()
         self.pypi_rc_path_mock.return_value = self.test_pypi_rc_path
 
-        self.subprocess_patch = mock.patch('subprocess.check_call')
+        self.subprocess_patch = mock.patch('subprocess.run')
         self.subprocess_mock = self.subprocess_patch.start()
         self.subprocess_check_output_patch = mock.patch(
             'subprocess.check_output'
@@ -51,6 +51,7 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
     def tearDown(self):
         self.pypi_rc_path_patch.stop()
+        self.subprocess_check_output_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
 
@@ -274,8 +275,8 @@ password: {auth_token}'''
         expected_calls = [
             mock.call(
                 command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
+                check=True
             ) for command in commands
         ]
         self.subprocess_mock.assert_has_calls(
@@ -336,7 +337,7 @@ password: {auth_token}'''
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -350,7 +351,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -364,7 +365,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -383,7 +384,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -454,7 +455,7 @@ password: {auth_token}'''
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -469,7 +470,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -484,7 +485,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -504,7 +505,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -623,7 +624,7 @@ to an 'HTTPS' source."""
         exit code. This is to make sure that login ignores that error and all
         other commands executes successfully.
         """
-        def side_effect(command, stdout, stderr):
+        def side_effect(command, capture_output, check):
             if any('always-auth' in arg for arg in command):
                 raise subprocess.CalledProcessError(
                     returncode=1,

@@ -1,5 +1,6 @@
 import errno
 import os
+import re
 import signal
 import subprocess
 
@@ -13,7 +14,7 @@ from awscli.testutils import (
 from awscli.compat import urlparse, RawConfigParser
 from awscli.customizations.codeartifact.login import (
     BaseLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin, TwineLogin,
-    get_relative_expiration_time
+    get_relative_expiration_time, CommandFailedError
 )
 
 
@@ -51,8 +52,23 @@ class TestBaseLogin(unittest.TestCase):
                 self.endpoint, self.auth_token
             )
 
+    def test_run_commands_command_failed(self):
+        error_to_be_caught = subprocess.CalledProcessError(
+            returncode=1,
+            cmd=['cmd'],
+            output=None,
+            stderr=b'Command error message.'
+        )
+        self.subprocess_utils.run.side_effect = error_to_be_caught
+        with self.assertRaisesRegex(
+            CommandFailedError,
+            rf"{re.escape(str(error_to_be_caught))}"
+            rf" Stderr from command:\nCommand error message."
+        ):
+            self.test_subject._run_commands('tool', ['cmd'])
+
     def test_run_commands_nonexistent_command(self):
-        self.subprocess_utils.check_call.side_effect = OSError(
+        self.subprocess_utils.run.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
         tool = 'NotSupported'
@@ -61,7 +77,7 @@ class TestBaseLogin(unittest.TestCase):
             self.test_subject._run_commands(tool, ['echo', tool])
 
     def test_run_commands_unhandled_error(self):
-        self.subprocess_utils.check_call.side_effect = OSError(
+        self.subprocess_utils.run.side_effect = OSError(
             errno.ENOSYS, 'unhandled error'
         )
         tool = 'NotSupported'
@@ -146,9 +162,10 @@ Registered Sources:
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_dry_run(self):
@@ -168,9 +185,10 @@ Registered Sources:
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_dry_run_old_nuget(self):
@@ -189,9 +207,10 @@ Registered Sources:
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.update_operation_command,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_source_url_already_exists_old_nuget(self):
@@ -203,7 +222,7 @@ Registered Sources:
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             [
                 'nuget', 'sources', 'update',
                 '-name', non_default_source_name,
@@ -211,7 +230,8 @@ Registered Sources:
                 '-username', 'aws',
                 '-password', self.auth_token
             ],
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_source_url_already_exists(self):
@@ -222,7 +242,7 @@ Registered Sources:
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             [
                 'nuget', 'sources', 'update',
                 '-name', non_default_source_name,
@@ -230,7 +250,8 @@ Registered Sources:
                 '-username', 'aws',
                 '-password', self.auth_token
             ],
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_nuget_not_installed(self):
@@ -348,9 +369,10 @@ to an 'HTTPS' source."""
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_non_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
@@ -362,9 +384,10 @@ to an 'HTTPS' source."""
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_dry_run(self):
@@ -385,9 +408,10 @@ to an 'HTTPS' source."""
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_non_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
@@ -399,9 +423,10 @@ to an 'HTTPS' source."""
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.add_operation_command_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_sources_listed_with_extra_non_list_text_dry_run(self):
@@ -446,9 +471,10 @@ to an 'HTTPS' source."""
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.update_operation_command_non_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
@@ -459,9 +485,10 @@ to an 'HTTPS' source."""
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             self.update_operation_command_windows,
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
@@ -473,14 +500,15 @@ to an 'HTTPS' source."""
         self.subprocess_utils.check_output.return_value = \
             list_response.encode('utf-8')
         self.test_subject.login()
-        self.subprocess_utils.check_output.assert_called_with(
+        self.subprocess_utils.run.assert_called_with(
             [
                 'dotnet', 'nuget', 'update', 'source', non_default_source_name,
                 '--source', self.nuget_index_url,
                 '--username', 'aws',
                 '--password', self.auth_token
             ],
-            stderr=self.subprocess_utils.PIPE
+            capture_output=True,
+            check=True
         )
 
     def test_login_dotnet_not_installed(self):
@@ -544,11 +572,11 @@ class TestNpmLogin(unittest.TestCase):
         expected_calls = [
             mock.call(
                 command,
-                stdout=self.subprocess_utils.PIPE,
-                stderr=self.subprocess_utils.PIPE,
+                capture_output=True,
+                check=True
             ) for command in self.commands
         ]
-        self.subprocess_utils.check_call.assert_has_calls(
+        self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
         )
 
@@ -560,7 +588,7 @@ class TestNpmLogin(unittest.TestCase):
         exit code. This is to make sure that login ignores that error and all
         other commands executes successfully.
         """
-        def side_effect(command, stdout, stderr):
+        def side_effect(command, capture_output, check):
             """Set side_effect for always-auth config setting command"""
             if any('always-auth' in arg for arg in command):
                 raise subprocess.CalledProcessError(
@@ -570,19 +598,19 @@ class TestNpmLogin(unittest.TestCase):
 
             return mock.DEFAULT
 
-        self.subprocess_utils.check_call.side_effect = side_effect
+        self.subprocess_utils.run.side_effect = side_effect
         expected_calls = []
 
         for command in self.commands:
             expected_calls.append(mock.call(
                     command,
-                    stdout=self.subprocess_utils.PIPE,
-                    stderr=self.subprocess_utils.PIPE,
+                    capture_output=True,
+                    check=True
                 )
             )
         self.test_subject.login()
 
-        self.subprocess_utils.check_call.assert_has_calls(
+        self.subprocess_utils.run.assert_has_calls(
                 expected_calls, any_order=True
             )
 
@@ -669,15 +697,15 @@ class TestPipLogin(unittest.TestCase):
 
     def test_login(self):
         self.test_subject.login()
-        self.subprocess_utils.check_call.assert_called_once_with(
+        self.subprocess_utils.run.assert_called_once_with(
             ['pip', 'config', 'set', 'global.index-url', self.pip_index_url],
-            stdout=self.subprocess_utils.PIPE,
-            stderr=self.subprocess_utils.PIPE,
+            capture_output=True,
+            check=True
         )
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
-        self.subprocess_utils.check_call.assert_not_called()
+        self.subprocess_utils.run.assert_not_called()
 
 
 class TestTwineLogin(unittest.TestCase):
@@ -776,7 +804,7 @@ class TestTwineLogin(unittest.TestCase):
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
-        self.subprocess_utils.check_call.assert_not_called()
+        self.subprocess_utils.run.assert_not_called()
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
 
     def test_login_existing_pypi_rc_not_clobbered(self):

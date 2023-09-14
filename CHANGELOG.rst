@@ -17,7 +17,6 @@ CHANGELOG
 
 
 2.13.17
-=======
 
 * api-change:``simspaceweaver``: BucketName and ObjectKey are now required for the S3Location data type. BucketName is now required for the S3Destination data type.
 * api-change:``neptunedata``: Minor changes to send unsigned requests to Neptune clusters
@@ -6007,6 +6006,17 @@ CHANGELOG
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 =======
+=======
+1.29.48
+=======
+
+* enhancement:``codeartifact login``: Include stderr output from underlying login tool when subprocess fails
+* api-change:``appstream``: This release introduces multi-session fleets, allowing customers to provision more than one user session on a single fleet instance.
+* api-change:``cloudformation``: Documentation updates for AWS CloudFormation
+* api-change:``entityresolution``: Changed "ResolutionTechniques" and "MappedInputFields" in workflow and schema mapping operations to be required fields.
+* api-change:``lookoutequipment``: This release adds APIs for the new scheduled retraining feature.
+
+
 1.29.47
 =======
 

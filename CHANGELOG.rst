@@ -3,6 +3,7 @@ CHANGELOG
 =========
 
 2.13.18
+=======
 
 * api-change:``kendra``: Amazon Kendra now supports confidence score buckets for retrieved passage results using the Retrieve API.
 * api-change:``events``: Update events command to latest version
@@ -17,6 +18,7 @@ CHANGELOG
 
 
 2.13.17
+=======
 
 * api-change:``simspaceweaver``: BucketName and ObjectKey are now required for the S3Location data type. BucketName is now required for the S3Destination data type.
 * api-change:``neptunedata``: Minor changes to send unsigned requests to Neptune clusters
@@ -29,6 +31,7 @@ CHANGELOG
 
 
 2.13.16
+=======
 
 * api-change:``vpc-lattice``: This release adds Lambda event structure version config support for LAMBDA target groups. It also adds newline support for auth policies.
 * api-change:``billingconductor``: This release adds support for line item filtering in for the custom line item resource.
@@ -6004,9 +6007,8 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
-=======
-=======
-=======
+
+
 1.29.49
 =======
 

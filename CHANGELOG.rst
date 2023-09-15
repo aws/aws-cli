@@ -6009,6 +6009,38 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.49
+=======
+
+* api-change:``appstream``: This release introduces app block builder, allowing customers to provision a resource to package applications into an app block
+* api-change:``connect``: New rule type (OnMetricDataUpdate) has been added
+* api-change:``datasync``: Documentation-only updates for AWS DataSync.
+* api-change:``sagemaker``: This release introduces Skip Model Validation for Model Packages
+
+
+1.29.48
+=======
+
+* enhancement:``codeartifact login``: Include stderr output from underlying login tool when subprocess fails
+* api-change:``appstream``: This release introduces multi-session fleets, allowing customers to provision more than one user session on a single fleet instance.
+* api-change:``cloudformation``: Documentation updates for AWS CloudFormation
+* api-change:``entityresolution``: Changed "ResolutionTechniques" and "MappedInputFields" in workflow and schema mapping operations to be required fields.
+* api-change:``lookoutequipment``: This release adds APIs for the new scheduled retraining feature.
+
+
+1.29.47
+=======
+
+* api-change:``cloud9``: Update to include information on Ubuntu 18 deprecation.
+* api-change:``drs``: Updated existing APIs and added new ones to support using AWS Elastic Disaster Recovery post-launch actions. Added support for new regions.
+* api-change:``firehose``: DocumentIdOptions has been added for the Amazon OpenSearch destination.
+* api-change:``guardduty``: Add `managementType` field to ListCoverage API response.
+* api-change:``internetmonitor``: This release updates the Amazon CloudWatch Internet Monitor API domain name.
+* api-change:``ivs-realtime``: Doc only update that changes description for ParticipantToken.
+* api-change:``simspaceweaver``: Edited the introductory text for the API reference.
+* api-change:``xray``: Add StartTime field in GetTraceSummaries API response for each TraceSummary.
+
+
 1.29.46
 =======
 

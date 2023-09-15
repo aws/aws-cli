@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.29.49
+=======
+
+* api-change:``appstream``: This release introduces app block builder, allowing customers to provision a resource to package applications into an app block
+* api-change:``connect``: New rule type (OnMetricDataUpdate) has been added
+* api-change:``datasync``: Documentation-only updates for AWS DataSync.
+* api-change:``sagemaker``: This release introduces Skip Model Validation for Model Packages
+
+
 1.29.48
 =======
 

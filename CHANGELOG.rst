@@ -29,7 +29,6 @@ CHANGELOG
 
 
 2.13.16
-=======
 
 * api-change:``vpc-lattice``: This release adds Lambda event structure version config support for LAMBDA target groups. It also adds newline support for auth policies.
 * api-change:``billingconductor``: This release adds support for line item filtering in for the custom line item resource.
@@ -6007,6 +6006,16 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 =======
 =======
+=======
+1.29.49
+=======
+
+* api-change:``appstream``: This release introduces app block builder, allowing customers to provision a resource to package applications into an app block
+* api-change:``connect``: New rule type (OnMetricDataUpdate) has been added
+* api-change:``datasync``: Documentation-only updates for AWS DataSync.
+* api-change:``sagemaker``: This release introduces Skip Model Validation for Model Packages
+
+
 1.29.48
 =======
 

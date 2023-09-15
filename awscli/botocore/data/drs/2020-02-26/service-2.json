@@ -130,6 +130,24 @@
       "documentation":"<p>Deletes a single Job by ID.</p>",
       "idempotent":true
     },
+    "DeleteLaunchAction":{
+      "name":"DeleteLaunchAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteLaunchAction",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteLaunchActionRequest"},
+      "output":{"shape":"DeleteLaunchActionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deletes a resource launch action.</p>"
+    },
     "DeleteLaunchConfigurationTemplate":{
       "name":"DeleteLaunchConfigurationTemplate",
       "http":{
@@ -504,6 +522,24 @@
       ],
       "documentation":"<p>Returns a list of source servers on a staging account that are extensible, which means that: a. The source server is not already extended into this Account. b. The source server on the Account we’re reading from is not an extension of another source server. </p>"
     },
+    "ListLaunchActions":{
+      "name":"ListLaunchActions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLaunchActions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLaunchActionsRequest"},
+      "output":{"shape":"ListLaunchActionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists resource launch actions.</p>"
+    },
     "ListStagingAccounts":{
       "name":"ListStagingAccounts",
       "http":{
@@ -539,6 +575,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>List all tags for your Elastic Disaster Recovery resources.</p>"
+    },
+    "PutLaunchAction":{
+      "name":"PutLaunchAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PutLaunchAction",
+        "responseCode":200
+      },
+      "input":{"shape":"PutLaunchActionRequest"},
+      "output":{"shape":"PutLaunchActionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Puts a resource launch action.</p>"
     },
     "RetryDataReplication":{
       "name":"RetryDataReplication",
@@ -954,13 +1009,13 @@
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9][a-z]$"
+      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me|il)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9][a-z]$"
     },
     "AwsRegion":{
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9]$"
+      "pattern":"^(us(-gov)?|ap|ca|cn|eu|sa|af|me|il)-(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9]$"
     },
     "Boolean":{
       "type":"boolean",
@@ -1095,6 +1150,10 @@
         "licensing":{
           "shape":"Licensing",
           "documentation":"<p>Licensing.</p>"
+        },
+        "postLaunchEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether we want to activate post-launch actions.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1416,6 +1475,22 @@
       }
     },
     "DeleteJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteLaunchActionRequest":{
+      "type":"structure",
+      "required":[
+        "actionId",
+        "resourceId"
+      ],
+      "members":{
+        "actionId":{"shape":"LaunchActionId"},
+        "resourceId":{"shape":"LaunchActionResourceId"}
+      }
+    },
+    "DeleteLaunchActionResponse":{
       "type":"structure",
       "members":{
       }
@@ -2004,6 +2079,12 @@
         "FAILBACK_LAUNCH_STATE_NOT_AVAILABLE"
       ]
     },
+    "FailureReason":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[0-9a-zA-Z ():/.,'-_#*;]*$"
+    },
     "GetFailbackReplicationConfigurationRequest":{
       "type":"structure",
       "required":["recoveryInstanceID"],
@@ -2312,6 +2393,209 @@
         "DRILL"
       ]
     },
+    "LaunchAction":{
+      "type":"structure",
+      "members":{
+        "actionCode":{
+          "shape":"SsmDocumentName",
+          "documentation":"<p>Launch action code.</p>"
+        },
+        "actionId":{"shape":"LaunchActionId"},
+        "actionVersion":{"shape":"LaunchActionVersion"},
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch action is active.</p>"
+        },
+        "category":{"shape":"LaunchActionCategory"},
+        "description":{"shape":"LaunchActionDescription"},
+        "name":{"shape":"LaunchActionName"},
+        "optional":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch will not be marked as failed if this action fails.</p>"
+        },
+        "order":{"shape":"LaunchActionOrder"},
+        "parameters":{"shape":"LaunchActionParameters"},
+        "type":{
+          "shape":"LaunchActionType",
+          "documentation":"<p>Launch action type.</p>"
+        }
+      },
+      "documentation":"<p>Launch action.</p>"
+    },
+    "LaunchActionCategory":{
+      "type":"string",
+      "documentation":"<p>Launch action category.</p>",
+      "enum":[
+        "MONITORING",
+        "VALIDATION",
+        "CONFIGURATION",
+        "SECURITY",
+        "OTHER"
+      ]
+    },
+    "LaunchActionDescription":{
+      "type":"string",
+      "documentation":"<p>Launch action description.</p>",
+      "max":1024,
+      "min":0,
+      "pattern":"^[0-9a-zA-Z ():/.,'-_#*; ]*$"
+    },
+    "LaunchActionId":{
+      "type":"string",
+      "documentation":"<p>Launch action Id.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "LaunchActionIds":{
+      "type":"list",
+      "member":{"shape":"LaunchActionId"},
+      "max":100,
+      "min":0
+    },
+    "LaunchActionName":{
+      "type":"string",
+      "documentation":"<p>Launch action name.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"^[A-Za-z0-9][A-Za-z0-9 /_-]*$"
+    },
+    "LaunchActionOrder":{
+      "type":"integer",
+      "documentation":"<p>Launch action order.</p>",
+      "max":10000,
+      "min":2
+    },
+    "LaunchActionParameter":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"LaunchActionParameterType",
+          "documentation":"<p>Type.</p>"
+        },
+        "value":{
+          "shape":"LaunchActionParameterValue",
+          "documentation":"<p>Value.</p>"
+        }
+      },
+      "documentation":"<p>Launch action parameter.</p>"
+    },
+    "LaunchActionParameterName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^([A-Za-z0-9])+$"
+    },
+    "LaunchActionParameterType":{
+      "type":"string",
+      "enum":[
+        "SSM_STORE",
+        "DYNAMIC"
+      ]
+    },
+    "LaunchActionParameterValue":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^[A-Za-z0-9.-]+$"
+    },
+    "LaunchActionParameters":{
+      "type":"map",
+      "key":{"shape":"LaunchActionParameterName"},
+      "value":{"shape":"LaunchActionParameter"},
+      "documentation":"<p>Launch action parameters.</p>",
+      "max":20,
+      "min":0
+    },
+    "LaunchActionResourceId":{
+      "type":"string",
+      "documentation":"<p>Launch configuration template Id or Source Server Id</p>",
+      "pattern":"^(s-[0-9a-zA-Z]{17}$|lct-[0-9a-zA-Z]{17})$"
+    },
+    "LaunchActionRun":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"LaunchAction",
+          "documentation":"<p>Action.</p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>Failure reason.</p>"
+        },
+        "runId":{
+          "shape":"LaunchActionRunId",
+          "documentation":"<p>Run Id.</p>"
+        },
+        "status":{
+          "shape":"LaunchActionRunStatus",
+          "documentation":"<p>Run status.</p>"
+        }
+      },
+      "documentation":"<p>Launch action run.</p>"
+    },
+    "LaunchActionRunId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "LaunchActionRunStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "LaunchActionRuns":{
+      "type":"list",
+      "member":{"shape":"LaunchActionRun"}
+    },
+    "LaunchActionType":{
+      "type":"string",
+      "enum":[
+        "SSM_AUTOMATION",
+        "SSM_COMMAND"
+      ]
+    },
+    "LaunchActionVersion":{
+      "type":"string",
+      "documentation":"<p>Launch action version.</p>",
+      "max":10,
+      "min":1,
+      "pattern":"^(\\$DEFAULT|\\$LATEST|[0-9]+)$"
+    },
+    "LaunchActions":{
+      "type":"list",
+      "member":{"shape":"LaunchAction"},
+      "max":200,
+      "min":0
+    },
+    "LaunchActionsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "actionIds":{
+          "shape":"LaunchActionIds",
+          "documentation":"<p>Launch actions Ids.</p>"
+        }
+      },
+      "documentation":"<p>Resource launch actions filter.</p>"
+    },
+    "LaunchActionsStatus":{
+      "type":"structure",
+      "members":{
+        "runs":{
+          "shape":"LaunchActionRuns",
+          "documentation":"<p>List of post launch action status.</p>"
+        },
+        "ssmAgentDiscoveryDatetime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Time where the AWS Systems Manager was detected as running on the launched instance.</p>"
+        }
+      },
+      "documentation":"<p>Launch actions status.</p>"
+    },
     "LaunchConfiguration":{
       "type":"structure",
       "members":{
@@ -2338,6 +2622,10 @@
         "name":{
           "shape":"SmallBoundedString",
           "documentation":"<p>The name of the launch configuration.</p>"
+        },
+        "postLaunchEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether we want to activate post-launch actions for the Source Server.</p>"
         },
         "sourceServerID":{
           "shape":"SourceServerID",
@@ -2379,6 +2667,10 @@
         "licensing":{
           "shape":"Licensing",
           "documentation":"<p>Licensing.</p>"
+        },
+        "postLaunchEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Post-launch actions activated.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2522,6 +2814,38 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token of the next extensible source server to retrieve.</p>"
+        }
+      }
+    },
+    "ListLaunchActionsRequest":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "filters":{
+          "shape":"LaunchActionsRequestFilters",
+          "documentation":"<p>Filters to apply when listing resource launch actions.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum amount of items to return when listing resource launch actions.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Next token to use when listing resource launch actions.</p>"
+        },
+        "resourceId":{"shape":"LaunchActionResourceId"}
+      }
+    },
+    "ListLaunchActionsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"LaunchActions",
+          "documentation":"<p>List of resource launch actions.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Next token returned when listing resource launch actions.</p>"
         }
       }
     },
@@ -2715,6 +3039,10 @@
     "ParticipatingServer":{
       "type":"structure",
       "members":{
+        "launchActionsStatus":{
+          "shape":"LaunchActionsStatus",
+          "documentation":"<p>The post-launch action runs of a participating server.</p>"
+        },
         "launchStatus":{
           "shape":"LaunchStatus",
           "documentation":"<p>The launch status of a participating server.</p>"
@@ -2737,6 +3065,71 @@
     "PositiveInteger":{
       "type":"long",
       "min":0
+    },
+    "PutLaunchActionRequest":{
+      "type":"structure",
+      "required":[
+        "actionCode",
+        "actionId",
+        "actionVersion",
+        "active",
+        "category",
+        "name",
+        "optional",
+        "order",
+        "resourceId"
+      ],
+      "members":{
+        "actionCode":{
+          "shape":"SsmDocumentName",
+          "documentation":"<p>Launch action code.</p>"
+        },
+        "actionId":{"shape":"LaunchActionId"},
+        "actionVersion":{"shape":"LaunchActionVersion"},
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch action is active.</p>"
+        },
+        "category":{"shape":"LaunchActionCategory"},
+        "description":{"shape":"LaunchActionDescription"},
+        "name":{"shape":"LaunchActionName"},
+        "optional":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch will not be marked as failed if this action fails.</p>"
+        },
+        "order":{"shape":"LaunchActionOrder"},
+        "parameters":{"shape":"LaunchActionParameters"},
+        "resourceId":{"shape":"LaunchActionResourceId"}
+      }
+    },
+    "PutLaunchActionResponse":{
+      "type":"structure",
+      "members":{
+        "actionCode":{
+          "shape":"SsmDocumentName",
+          "documentation":"<p>Launch action code.</p>"
+        },
+        "actionId":{"shape":"LaunchActionId"},
+        "actionVersion":{"shape":"LaunchActionVersion"},
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch action is active.</p>"
+        },
+        "category":{"shape":"LaunchActionCategory"},
+        "description":{"shape":"LaunchActionDescription"},
+        "name":{"shape":"LaunchActionName"},
+        "optional":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the launch will not be marked as failed if this action fails.</p>"
+        },
+        "order":{"shape":"LaunchActionOrder"},
+        "parameters":{"shape":"LaunchActionParameters"},
+        "resourceId":{"shape":"LaunchActionResourceId"},
+        "type":{
+          "shape":"LaunchActionType",
+          "documentation":"<p>Launch action type.</p>"
+        }
+      }
     },
     "RecoveryInstance":{
       "type":"structure",
@@ -3737,6 +4130,12 @@
       "type":"list",
       "member":{"shape":"SourceServer"}
     },
+    "SsmDocumentName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^([A-Za-z0-9-])+$"
+    },
     "StagingArea":{
       "type":"structure",
       "members":{
@@ -4180,6 +4579,10 @@
           "shape":"SmallBoundedString",
           "documentation":"<p>The name of the launch configuration.</p>"
         },
+        "postLaunchEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether we want to enable post-launch actions for the Source Server.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>The ID of the Source Server that we want to retrieve a Launch Configuration for.</p>"
@@ -4217,6 +4620,10 @@
         "licensing":{
           "shape":"Licensing",
           "documentation":"<p>Licensing.</p>"
+        },
+        "postLaunchEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether we want to activate post-launch actions.</p>"
         },
         "targetInstanceTypeRightSizingMethod":{
           "shape":"TargetInstanceTypeRightSizingMethod",

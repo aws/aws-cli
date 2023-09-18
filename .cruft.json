@@ -1,7 +1,7 @@
 {
   "template": "git@github.com:SandsB2B/cookiecutter-project-docs.git",
-  "commit": "0dc2aa41bde8464a2fe608d78715176cd96577ad",
-  "checkout": "v0.16.7",
+  "commit": "a7d6f912c7e85624b202f000018ff2a4a1610491",
+  "checkout": "v0.16.8",
   "context": {
     "cookiecutter": {
       "authors": "{name = \"Amazon Web Services\"};",
@@ -126,10 +126,46 @@
         "awscli.sdist": {
           "heading": "awscli.sdist",
           "items": {
-            "include": "[\n\"backends/**/*.py\",\n\"bin/*\",\n\"CHANGELOG.rst\",\n\"tests/**/*\",\n\"requirements/**/*.txt\",\n\"configure\",\n\"Makefile.in\",\n\"exe/**/*\",]"
+            "include": "[\n    \"backends/**/*.py\",\n    \"bin/*\",\n    \"CHANGELOG.rst\",\n    \"tests/**/*\",\n    \"requirements/**/*.txt\",\n    \"configure\",\n    \"Makefile.in\",\n    \"exe/**/*\",\n]"
           },
           "footer": "# end of cli sdist tool section"
         }
+      },
+      "tool_black_line_length": 80,
+      "tool_pytest_ini_options": {
+        1: "# We set error warning filters in order to enforce that particular",
+        2: "# undesired warnings are not emitted as part of the codebase. If you",
+        3: "# want to override these filters with pytest's default warning filters",
+        4: "# (i.e. print out deprecation warnings instead of erroring out on them),",
+        5: "# you can run pytest with the -Wd flag.",
+        6: "filterwarnings = [",
+        7: "# Prevents declaring tests that cannot be collected by pytest",
+        8: "\"error::pytest.PytestCollectionWarning\",",
+        9: " ",
+        10: "# Prevents use of functionality that is deprecated or pending deprecation",
+        11: "\"error::DeprecationWarning\",",
+        12: "\"error::PendingDeprecationWarning\",",
+        13: " ",
+        14: "# Do not error out on deprecation warnings stemming from our current",
+        15: "# version of setuptools (57.5.0) in a Python 3.10 environment. When we add",
+        16: "# support for the latest version of setuptools, we should be able to remove",
+        17: "# these filters.",
+        18: "'default:The distutils\\.sysconfig module is deprecated:DeprecationWarning',",
+        19: " ",
+        20: "# Python 3.10.9 introduced a new DeprecationWarning for the implicit",
+        21: "# creation of event loops. Python plans to remove this warning in the",
+        22: "# next patch. This filter exception should also be removed once it's",
+        23: "# confirmed that tests are passing again in the latest Python 3.10.",
+        24: "# https://github.com/python/cpython/issues/100160",
+        25: "'default:There is no current event loop:DeprecationWarning',",
+        26: " ",
+        27: "# pytest-cov is incompatible with pytest-xdist 3.x because pytest-cov",
+        28: "# uses the config variable for rsyncdir. This filter exception should",
+        29: "# be able to be removed once both of the following issues are resolved.",
+        30: "# https://github.com/pytest-dev/pytest-cov/issues/557",
+        31: "# https://github.com/pytest-dev/pytest-xdist/issues/825",
+        32: "default:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning",
+        
       },
       "_template": "git@github.com:SandsB2B/cookiecutter-project-docs.git"
     }

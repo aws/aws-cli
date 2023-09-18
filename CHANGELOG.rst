@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.29.50
+=======
+
+* api-change:``discovery``: Add sensitive protection for customer information
+* api-change:``macie2``: This release changes the default managedDataIdentifierSelector setting for new classification jobs to RECOMMENDED. By default, new classification jobs now use the recommended set of managed data identifiers.
+* api-change:``workmail``: This release includes four new APIs UpdateUser, UpdateGroup, ListGroupsForEntity and DescribeEntity, along with RemoteUsers and some enhancements to existing APIs.
+
+
 1.29.49
 =======
 

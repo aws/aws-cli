@@ -1,0 +1,109 @@
+#!/bin/bash
+
+#set | sort
+#set -x
+set +e
+
+function setup_gpg_key() {
+    export GPG_TTY=$(tty)
+    echo "${CI_GPG_KEY}" >key.asc
+    gpg --import key.asc
+    gpg --list-secret-keys --keyid-format=long
+    KEYNAME=$(gpg --list-secret-keys --keyid-format=long --with-colons | grep '^sec' | cut -d : -f 5)
+}
+
+function setup_ssh_config() {
+    set -e
+    pushd .
+    cd ~
+    pwd
+    echo $HOME
+    mkdir .ssh 2>/dev/null || true
+    chmod 700 .ssh
+    ls -al .ssh
+
+    echo "${CI_SSH_KEY}" >.ssh/id_ed25519
+    chmod 600 .ssh/id_ed25519
+
+    cat - <<EOF >.ssh/config
+#LogLevel QUIET
+VisualHostKey no
+AddKeysToAgent no
+IdentityFile ~/.ssh/id_ed25519
+
+# --------------------------------------------------
+Host github.com
+    HostName github.com
+    IdentityFile ~/.ssh/id_ed25519
+    Protocol 2
+    User git
+EOF
+    chmod 600 .ssh/config
+    ls -al .ssh
+    cat ~/.ssh/config
+    cat ~/.ssh/id_ed25519
+    eval `ssh-agent -s`
+    ssh-add -L || true
+    ssh-add -D || true
+    ssh git@github.com -i ~/.ssh/id_ed25519 || true
+    ssh git@github.com || true
+    ssh-add -L || true
+    popd || true
+    return 0
+}
+
+function setup_git_config() {
+    set +e
+    #set -x
+    git config --global user.email "svc_p_githubPipelines@sands.com"
+    git config --global user.name "svcpgithubPipelines"
+    git config --global user.signingkey $KEYNAME
+    git config --global commit.gpgsign true
+    git config --global --list | grep insteadof | sort | uniq
+    for insteadof in $(git config --global --list | grep insteadof 2>/dev/null | cut -d '=' -f 1 | sort | uniq) ; do
+      git config --global --unset-all $insteadof
+    done
+    git config --global --list
+    #set +x
+}
+
+function fix_git_remote() {
+    export errexit=$(shopt -o errexit >/dev/null; echo $?)
+    [ 0 -eq $errexit ] || set +e
+    git remote -v
+    # origin	git@key-02c58a291073d43de0fc1e593f34664cfef431fa45b1c5639590e1f7af71c813.github.com:SandsB2B/ldx_deploy (fetch)
+    REMOTE=$(git remote -v | grep origin | grep fetch | awk '{ print $2 '})
+    INSTEADOF=$(git config --global --list | grep insteadof | cut -d '=' -f 1 | grep $REMOTE 2>/dev/null | grep git@github.com: 2>/dev/null)
+    if [ -z "$INSTEADOF" ] ; then
+        INSTEADOF=$(git config --list | grep insteadof | cut -d '=' -f 1 | grep $REMOTE 2>/dev/null | grep git@github.com: 2>/dev/null)
+    fi
+    if [ ! -z "$INSTEADOF" ] ; then
+        insteadof=$(echo $INSTEADOF | cut -d = -f 1)
+        REMOTE=$(echo $INSTEADOF | cut -d = -f 2)
+        git config --global --unset-all $insteadof
+        git config --global --list
+        git remote remove origin
+        git remote -v
+        git remote add origin $REMOTE
+    else
+        if [ ! -z "$(echo $REMOTE | grep git@key)" ] ; then
+            USER=$(echo $REMOTE | cut -d @ -f 1)
+            TAIL=$(echo $REMOTE | cut -d @ -f 2 | cut -d . -f 2-)
+            git remote remove origin
+            git remote -v
+            git remote add origin ${USER}@${TAIL}.git
+        else
+            if [ ! -z "$(echo $REMOTE | grep 'https://')" ] ; then
+                REMOTE=$(echo $REMOTE | sed 's|https://||')
+                DOMAIN=$(echo $REMOTE | cut -d '/' -f 1)
+                ORG=$(echo $REMOTE | cut -d '/' -f 2)
+                REPO=$(echo $REMOTE | cut -d '/' -f 3)
+                git remote remove origin
+                git remote -v
+                git remote add origin git@${DOMAIN}:${ORG}/${REPO}.git
+            fi
+        fi
+    fi
+    git remote -v
+    [ 0 -eq $errexit ] || set -e
+}

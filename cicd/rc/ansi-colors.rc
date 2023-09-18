@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+RC=0
+if test -z "$(type white_on_black 2>/dev/null | grep function 2>/dev/null)" ; then
+  #echo "+++++ cicd/ansi-colors.rc +++++"
+
+  test -z "$xtrace" && export xtrace=$(shopt -o xtrace >/dev/null; echo $?)
+  test 0 -eq $xtrace && set +x
+
+  if test -z "$CODEBUILD_SOURCE_VERSION" -a -z "$GITHUB_ACTIONS" -a "$CI_ENABLE_LOG_COLORS" != "no" ; then
+    export ORANGE=$'\e[38;5;208m'
+    export COPPER=$'\e[38;5;216m'
+    export RED=$'\e[31m\e[40m'
+    export GREEN=$'\e[32m\e[40m'
+    export YELLOW=$'\e[33;1m\e[40m'
+    export BLUE=$'\e[34;1m\e[40m'
+    export MAGENTA=$'\e[35m\e[40m'
+    export CYAN=$'\e[36m\e[40m'
+    export WHITE=$'\e[37;1m\e[40m'
+    export GRAY=$'\e[37;0m\e[40m'
+    export RESET=$'\e[0m\e[40m'$GRAY
+
+    export BG_SNAKE="$(tput setaf 220)$(tput setab 25)"
+    export BG_RUBY="$(tput setaf 7)$(tput setab 88)"
+    export BG_TERRAFORM="$(tput setaf 15)$(tput setab 57)"
+    export BG_FIREFLY="$(tput setaf 17)$(tput setab 56)"
+    export BG_TERRAGRUNT="$(tput setaf 57)$(tput setab 15)"
+    export BG_TERRAMATE="$(tput setaf 196)$(tput setab 15)"
+    export BG_MONOREPO="$(tput setaf 15)$(tput setab 57)"
+    export BG_CLASSICREPO="$(tput setaf 15)$(tput setab 57)"
+  else
+    export ORANGE=''
+    export COPPER=''
+    export RED=''
+    export GREEN=''
+    export YELLOW=''
+    export BLUE=''
+    export MAGENTA=''
+    export CYAN=''
+    export WHITE=''
+    export GRAY=''
+    export RESET=''
+
+    export BG_SNAKE=""
+    export BG_RUBY=""
+    export BG_TERRAFORM=""
+    export BG_TERRAGRUNT=""
+    export BG_TERRAMATE=""
+    export BG_MONOREPO=""
+    export BG_CLASSICREPO=""
+    export BG_FIREFLY=""
+  fi
+
+  orange() {
+    printf "$ORANGE$*$RESET\\n"
+  }
+  copper() {
+    printf  "$COPPER$*$RESET\\n"
+  }
+  red() {
+    printf  "$RED$*$RESET\\n"
+  }
+  green() {
+    printf "$GREEN$*$RESET\\n"
+  }
+  yellow() {
+    printf "$YELLOW$*$RESET\\n"
+  }
+  blue() {
+    printf "$BLUE$*$RESET\\n"
+  }
+  magenta() {
+    printf "$MAGENTA$*$RESET\\n"
+  }
+  cyan() {
+    printf "$CYAN$*$RESET\\n"
+  }
+  white() {
+    printf "$WHITE$*$RESET\\n"
+  }
+  white_on_black() {
+    printf "$WHITE$*$RESET\\n"
+  }
+
+  bg_snake() {
+    printf "$BG_SNAKE$*$RESET\\n"
+  }
+  bg_ruby() {
+    printf "$BG_RUBY$*$RESET\\n"
+  }
+  bg_terraform() {
+    printf "$BG_TERRAFORM$*$RESET\\n"
+  }
+  bg_terragrunt() {
+    printf "$BG_TERRAGRUNT$*$RESET\\n"
+  }
+  bg_terramate() {
+    printf "$BG_TERRAMATE$*$RESET\\n"
+  }
+  bg_monorepo() {
+    printf "$BG_MONOREPO$*$RESET\\n"
+  }
+  bg_classicrepo() {
+    printf "$BG_CLASSICREPO$*$RESET\\n"
+  }
+  bg_firefly() {
+    printf "$BG_FIREFLY$*$RESET\\n"
+  }
+
+  #for color in blue copper cyan green magenta orange red white white_on_black yellow; do
+  #  $color $color
+  #done
+
+  white_on_black ''
+  RC=$?
+  export __CICD_SHARED_ANSI_COLORS_RC_INCLUDED__=yes
+  test 0 -eq $xtrace && set -x
+
+  #echo "------ cicd/ansi-colors.rc ------"
+fi
+
+test 0 -eq $RC

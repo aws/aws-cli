@@ -17,6 +17,7 @@ def setup(app):
     app.connect('html-page-context', add_html_link)
     app.connect('build-finished', create_sitemap)
     app.sitemap_links = []
+    app.set_translator('html', HTMLTranslator)
 
 
 def add_html_link(app, pagename, templatename, context, doctree):
@@ -51,28 +52,17 @@ def html_theme_path():
 
 
 class HTMLTranslator(SphinxHTMLTranslator):
-    """
-    Handle translating to bootstrap structure.
-    """
-    def visit_table(self, node, name=''):
-        """
-        Override docutils default table formatter to not include a border
-        and to use Bootstrap CSS
-        See: http://sourceforge.net/p/docutils/code/HEAD/tree/trunk/docutils/docutils/writers/html4css1/__init__.py#l1550
-        """
-        self.context.append(self.compact_p)
-        self.compact_p = True
-        classes = ' '.join(['table', 'table-bordered',
-            self.settings.table_style]).strip()
-        self.body.append(
-            self.starttag(node, 'table', CLASS=classes))
-
-    def depart_table(self, node):
-        """
-        This needs overridin' too
-        """
-        self.compact_p = self.context.pop()
-        self.body.append('</table>\n')
+    def visit_admonition(self, node, name=''):
+        """Uses the h3 tag for admonition titles instead of the p tag"""
+        self.body.append(self.starttag(
+            node, 'div', CLASS=('admonition ' + name)))
+        if name:
+            title = (
+                f"<h3 class='admonition-title'>"
+                f"{admonitionlabels[name]}</h3>"
+            )
+            self.body.append(title)
+        self.set_first_last(node)
 
 
 class GuzzleStyle(Style):

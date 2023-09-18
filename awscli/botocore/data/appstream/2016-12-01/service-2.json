@@ -13,6 +13,23 @@
     "uid":"appstream-2016-12-01"
   },
   "operations":{
+    "AssociateAppBlockBuilderAppBlock":{
+      "name":"AssociateAppBlockBuilderAppBlock",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateAppBlockBuilderAppBlockRequest"},
+      "output":{"shape":"AssociateAppBlockBuilderAppBlockResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Associates the specified app block builder with the specified app block.</p>"
+    },
     "AssociateApplicationFleet":{
       "name":"AssociateApplicationFleet",
       "http":{
@@ -126,6 +143,42 @@
         {"shape":"ResourceAlreadyExistsException"}
       ],
       "documentation":"<p>Creates an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+    },
+    "CreateAppBlockBuilder":{
+      "name":"CreateAppBlockBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAppBlockBuilderRequest"},
+      "output":{"shape":"CreateAppBlockBuilderResult"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"RequestLimitExceededException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"InvalidRoleException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotAvailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Creates an app block builder.</p>"
+    },
+    "CreateAppBlockBuilderStreamingURL":{
+      "name":"CreateAppBlockBuilderStreamingURL",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAppBlockBuilderStreamingURLRequest"},
+      "output":{"shape":"CreateAppBlockBuilderStreamingURLResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Creates a URL to start a create app block builder streaming session.</p>"
     },
     "CreateApplication":{
       "name":"CreateApplication",
@@ -339,6 +392,22 @@
       ],
       "documentation":"<p>Deletes an app block.</p>"
     },
+    "DeleteAppBlockBuilder":{
+      "name":"DeleteAppBlockBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAppBlockBuilderRequest"},
+      "output":{"shape":"DeleteAppBlockBuilderResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an app block builder.</p> <p>An app block builder can only be deleted when it has no association with an app block.</p>"
+    },
     "DeleteApplication":{
       "name":"DeleteApplication",
       "http":{
@@ -488,6 +557,34 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes a user from the user pool.</p>"
+    },
+    "DescribeAppBlockBuilderAppBlockAssociations":{
+      "name":"DescribeAppBlockBuilderAppBlockAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAppBlockBuilderAppBlockAssociationsRequest"},
+      "output":{"shape":"DescribeAppBlockBuilderAppBlockAssociationsResult"},
+      "errors":[
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one or more app block builder associations.</p>"
+    },
+    "DescribeAppBlockBuilders":{
+      "name":"DescribeAppBlockBuilders",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAppBlockBuildersRequest"},
+      "output":{"shape":"DescribeAppBlockBuildersResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes one or more app block builders.</p>"
     },
     "DescribeAppBlocks":{
       "name":"DescribeAppBlocks",
@@ -694,6 +791,22 @@
       ],
       "documentation":"<p>Disables the specified user in the user pool. Users can't sign in to AppStream 2.0 until they are re-enabled. This action does not delete the user. </p>"
     },
+    "DisassociateAppBlockBuilderAppBlock":{
+      "name":"DisassociateAppBlockBuilderAppBlock",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateAppBlockBuilderAppBlockRequest"},
+      "output":{"shape":"DisassociateAppBlockBuilderAppBlockResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates a specified app block builder from a specified app block.</p>"
+    },
     "DisassociateApplicationFleet":{
       "name":"DisassociateApplicationFleet",
       "http":{
@@ -813,6 +926,25 @@
       ],
       "documentation":"<p>Retrieves a list of all tags for the specified AppStream 2.0 resource. You can tag AppStream 2.0 image builders, images, fleets, and stacks.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
     },
+    "StartAppBlockBuilder":{
+      "name":"StartAppBlockBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAppBlockBuilderRequest"},
+      "output":{"shape":"StartAppBlockBuilderResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"RequestLimitExceededException"},
+        {"shape":"ResourceNotAvailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts an app block builder.</p> <p>An app block builder can only be started when it's associated with an app block.</p> <p>Starting an app block builder starts a new instance, which is equivalent to an elastic fleet instance with application builder assistance functionality.</p>"
+    },
     "StartFleet":{
       "name":"StartFleet",
       "http":{
@@ -849,6 +981,21 @@
         {"shape":"IncompatibleImageException"}
       ],
       "documentation":"<p>Starts the specified image builder.</p>"
+    },
+    "StopAppBlockBuilder":{
+      "name":"StopAppBlockBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopAppBlockBuilderRequest"},
+      "output":{"shape":"StopAppBlockBuilderResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Stops an app block builder.</p> <p>Stopping an app block builder terminates the instance, and the instance state is not persisted.</p>"
     },
     "StopFleet":{
       "name":"StopFleet",
@@ -906,6 +1053,28 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Disassociates one or more specified tags from the specified AppStream 2.0 resource.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+    },
+    "UpdateAppBlockBuilder":{
+      "name":"UpdateAppBlockBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAppBlockBuilderRequest"},
+      "output":{"shape":"UpdateAppBlockBuilderResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidRoleException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"RequestLimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotAvailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an app block builder.</p> <p>If the app block builder is in the <code>STARTING</code> or <code>STOPPING</code> state, you can't update it. If the app block builder is in the <code>RUNNING</code> state, you can only update the DisplayName and Description. If the app block builder is in the <code>STOPPED</code> state, you can update any attribute except the Name.</p>"
     },
     "UpdateApplication":{
       "name":"UpdateApplication",
@@ -1068,8 +1237,7 @@
       "type":"structure",
       "required":[
         "Name",
-        "Arn",
-        "SetupScriptDetails"
+        "Arn"
       ],
       "members":{
         "Name":{
@@ -1094,14 +1262,178 @@
         },
         "SetupScriptDetails":{
           "shape":"ScriptDetails",
-          "documentation":"<p>The setup script details of the app block.</p>"
+          "documentation":"<p>The setup script details of the app block.</p> <p>This only applies to app blocks with PackagingType <code>CUSTOM</code>.</p>"
         },
         "CreatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The created time of the app block.</p>"
+        },
+        "PostSetupScriptDetails":{
+          "shape":"ScriptDetails",
+          "documentation":"<p>The post setup script details of the app block.</p> <p>This only applies to app blocks with PackagingType <code>APPSTREAM2</code>.</p>"
+        },
+        "PackagingType":{
+          "shape":"PackagingType",
+          "documentation":"<p>The packaging type of the app block.</p>"
+        },
+        "State":{
+          "shape":"AppBlockState",
+          "documentation":"<p>The state of the app block.</p> <p>An app block with AppStream 2.0 packaging will be in the <code>INACTIVE</code> state if no application package (VHD) is assigned to it. After an application package (VHD) is created by an app block builder for an app block, it becomes <code>ACTIVE</code>. </p> <p>Custom app blocks are always in the <code>ACTIVE</code> state and no action is required to use them.</p>"
+        },
+        "AppBlockErrors":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The errors of the app block.</p>"
         }
       },
       "documentation":"<p>Describes an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+    },
+    "AppBlockBuilder":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Platform",
+        "InstanceType",
+        "VpcConfig",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block builder.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the app block builder.</p>"
+        },
+        "DisplayName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the app block builder.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the app block builder.</p>"
+        },
+        "Platform":{
+          "shape":"AppBlockBuilderPlatformType",
+          "documentation":"<p>The platform of the app block builder.</p> <p> <code>WINDOWS_SERVER_2019</code> is the only valid value.</p>"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the app block builder.</p>"
+        },
+        "EnableDefaultInternetAccess":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether default internet access is enabled for the app block builder.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the IAM role that is applied to the app block builder.</p>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the app block builder.</p>"
+        },
+        "State":{
+          "shape":"AppBlockBuilderState",
+          "documentation":"<p>The state of the app block builder.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the app block builder.</p>"
+        },
+        "AppBlockBuilderErrors":{
+          "shape":"ResourceErrors",
+          "documentation":"<p>The app block builder errors.</p>"
+        },
+        "StateChangeReason":{
+          "shape":"AppBlockBuilderStateChangeReason",
+          "documentation":"<p>The state change reason.</p>"
+        },
+        "AccessEndpoints":{
+          "shape":"AccessEndpointList",
+          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.</p>"
+        }
+      },
+      "documentation":"<p>Describes an app block builder.</p>"
+    },
+    "AppBlockBuilderAppBlockAssociation":{
+      "type":"structure",
+      "required":[
+        "AppBlockArn",
+        "AppBlockBuilderName"
+      ],
+      "members":{
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "AppBlockBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      },
+      "documentation":"<p>Describes an association between an app block builder and app block.</p>"
+    },
+    "AppBlockBuilderAppBlockAssociationsList":{
+      "type":"list",
+      "member":{"shape":"AppBlockBuilderAppBlockAssociation"},
+      "max":25,
+      "min":1
+    },
+    "AppBlockBuilderAttribute":{
+      "type":"string",
+      "enum":[
+        "IAM_ROLE_ARN",
+        "ACCESS_ENDPOINTS",
+        "VPC_CONFIGURATION_SECURITY_GROUP_IDS"
+      ]
+    },
+    "AppBlockBuilderAttributes":{
+      "type":"list",
+      "member":{"shape":"AppBlockBuilderAttribute"}
+    },
+    "AppBlockBuilderList":{
+      "type":"list",
+      "member":{"shape":"AppBlockBuilder"}
+    },
+    "AppBlockBuilderPlatformType":{
+      "type":"string",
+      "enum":["WINDOWS_SERVER_2019"]
+    },
+    "AppBlockBuilderState":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "AppBlockBuilderStateChangeReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"AppBlockBuilderStateChangeReasonCode",
+          "documentation":"<p>The state change reason code.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The state change reason message.</p>"
+        }
+      },
+      "documentation":"<p>Describes the reason why the last app block builder state change occurred.</p>"
+    },
+    "AppBlockBuilderStateChangeReasonCode":{
+      "type":"string",
+      "enum":["INTERNAL_ERROR"]
+    },
+    "AppBlockState":{
+      "type":"string",
+      "enum":[
+        "INACTIVE",
+        "ACTIVE"
+      ]
     },
     "AppBlocks":{
       "type":"list",
@@ -1265,6 +1597,32 @@
     "ArnList":{
       "type":"list",
       "member":{"shape":"Arn"}
+    },
+    "AssociateAppBlockBuilderAppBlockRequest":{
+      "type":"structure",
+      "required":[
+        "AppBlockArn",
+        "AppBlockBuilderName"
+      ],
+      "members":{
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "AppBlockBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      }
+    },
+    "AssociateAppBlockBuilderAppBlockResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilderAppBlockAssociation":{
+          "shape":"AppBlockBuilderAppBlockAssociation",
+          "documentation":"<p>The list of app block builders associated with app blocks.</p>"
+        }
+      }
     },
     "AssociateApplicationFleetRequest":{
       "type":"structure",
@@ -1499,12 +1857,95 @@
         }
       }
     },
+    "CreateAppBlockBuilderRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Platform",
+        "InstanceType",
+        "VpcConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The unique name for the app block builder.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the app block builder.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the app block builder.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to associate with the app block builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+        },
+        "Platform":{
+          "shape":"AppBlockBuilderPlatformType",
+          "documentation":"<p>The platform of the app block builder.</p> <p> <code>WINDOWS_SERVER_2019</code> is the only valid value.</p>"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type to use when launching the app block builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the app block builder.</p> <p>App block builders require that you specify at least two subnets in different availability zones.</p>"
+        },
+        "EnableDefaultInternetAccess":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Enables or disables default internet access for the app block builder.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+        },
+        "AccessEndpoints":{
+          "shape":"AccessEndpointList",
+          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.</p>"
+        }
+      }
+    },
+    "CreateAppBlockBuilderResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilder":{"shape":"AppBlockBuilder"}
+      }
+    },
+    "CreateAppBlockBuilderStreamingURLRequest":{
+      "type":"structure",
+      "required":["AppBlockBuilderName"],
+      "members":{
+        "AppBlockBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        },
+        "Validity":{
+          "shape":"Long",
+          "documentation":"<p>The time that the streaming URL will be valid, in seconds. Specify a value between 1 and 604800 seconds. The default is 3600 seconds.</p>"
+        }
+      }
+    },
+    "CreateAppBlockBuilderStreamingURLResult":{
+      "type":"structure",
+      "members":{
+        "StreamingURL":{
+          "shape":"String",
+          "documentation":"<p>The URL to start the streaming session.</p>"
+        },
+        "Expires":{
+          "shape":"Timestamp",
+          "documentation":"<p>The elapsed time, in seconds after the Unix epoch, when this URL expires.</p>"
+        }
+      }
+    },
     "CreateAppBlockRequest":{
       "type":"structure",
       "required":[
         "Name",
-        "SourceS3Location",
-        "SetupScriptDetails"
+        "SourceS3Location"
       ],
       "members":{
         "Name":{
@@ -1525,11 +1966,19 @@
         },
         "SetupScriptDetails":{
           "shape":"ScriptDetails",
-          "documentation":"<p>The setup script details of the app block.</p>"
+          "documentation":"<p>The setup script details of the app block. This must be provided for the <code>CUSTOM</code> PackagingType.</p>"
         },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags assigned to the app block.</p>"
+        },
+        "PostSetupScriptDetails":{
+          "shape":"ScriptDetails",
+          "documentation":"<p>The post setup script details of the app block. This can only be provided for the <code>APPSTREAM2</code> PackagingType.</p>"
+        },
+        "PackagingType":{
+          "shape":"PackagingType",
+          "documentation":"<p>The packaging type of the app block.</p>"
         }
       }
     },
@@ -1691,7 +2140,7 @@
           "documentation":"<p>A unique name for the fleet.</p>"
         },
         "ImageName":{
-          "shape":"String",
+          "shape":"Name",
           "documentation":"<p>The name of the image used to create the fleet.</p>"
         },
         "ImageArn":{
@@ -2083,6 +2532,21 @@
       "members":{
       }
     },
+    "DeleteAppBlockBuilderRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      }
+    },
+    "DeleteAppBlockBuilderResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteAppBlockRequest":{
       "type":"structure",
       "required":["Name"],
@@ -2270,6 +2734,70 @@
     "DeleteUserResult":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DescribeAppBlockBuilderAppBlockAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "AppBlockBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAppBlockBuilderAppBlockAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilderAppBlockAssociations":{
+          "shape":"AppBlockBuilderAppBlockAssociationsList",
+          "documentation":"<p>This list of app block builders associated with app blocks.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAppBlockBuildersRequest":{
+      "type":"structure",
+      "members":{
+        "Names":{
+          "shape":"StringList",
+          "documentation":"<p>The names of the app block builders.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum size of each page of results. The maximum value is 25.</p>"
+        }
+      }
+    },
+    "DescribeAppBlockBuildersResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilders":{
+          "shape":"AppBlockBuilderList",
+          "documentation":"<p>The list that describes one or more app block builders.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
       }
     },
     "DescribeAppBlocksRequest":{
@@ -2799,6 +3327,28 @@
       "members":{
       }
     },
+    "DisassociateAppBlockBuilderAppBlockRequest":{
+      "type":"structure",
+      "required":[
+        "AppBlockArn",
+        "AppBlockBuilderName"
+      ],
+      "members":{
+        "AppBlockArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the app block.</p>"
+        },
+        "AppBlockBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      }
+    },
+    "DisassociateAppBlockBuilderAppBlockResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisassociateApplicationFleetRequest":{
       "type":"structure",
       "required":[
@@ -3030,6 +3580,24 @@
       },
       "documentation":"<p>The entitlement can't be found.</p>",
       "exception":true
+    },
+    "ErrorDetails":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>The error details.</p>"
+    },
+    "ErrorDetailsList":{
+      "type":"list",
+      "member":{"shape":"ErrorDetails"}
     },
     "ErrorMessage":{
       "type":"string",
@@ -3722,6 +4290,13 @@
       "type":"list",
       "member":{"shape":"OrganizationalUnitDistinguishedName"}
     },
+    "PackagingType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM",
+        "APPSTREAM2"
+      ]
+    },
     "Permission":{
       "type":"string",
       "enum":[
@@ -3840,10 +4415,7 @@
     },
     "S3Location":{
       "type":"structure",
-      "required":[
-        "S3Bucket",
-        "S3Key"
-      ],
+      "required":["S3Bucket"],
       "members":{
         "S3Bucket":{
           "shape":"S3Bucket",
@@ -3851,7 +4423,7 @@
         },
         "S3Key":{
           "shape":"S3Key",
-          "documentation":"<p>The S3 key of the S3 object.</p>"
+          "documentation":"<p>The S3 key of the S3 object.</p> <p>This is required when used for the following:</p> <ul> <li> <p>IconS3Location (Actions: CreateApplication and UpdateApplication)</p> </li> <li> <p>SessionScriptS3Location (Actions: CreateFleet and UpdateFleet)</p> </li> <li> <p>ScriptDetails (Actions: CreateAppBlock)</p> </li> <li> <p>SourceS3Location when creating an app block with <code>CUSTOM</code> PackagingType (Actions: CreateAppBlock)</p> </li> <li> <p>SourceS3Location when creating an app block with <code>APPSTREAM2</code> PackagingType, and using an existing application package (VHD file). In this case, <code>S3Key</code> refers to the VHD file. If a new application package is required, then <code>S3Key</code> is not required. (Actions: CreateAppBlock)</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes the S3 location.</p>"
@@ -4122,6 +4694,22 @@
       "member":{"shape":"Stack"},
       "documentation":"<p>The stacks.</p>"
     },
+    "StartAppBlockBuilderRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      }
+    },
+    "StartAppBlockBuilderResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilder":{"shape":"AppBlockBuilder"}
+      }
+    },
     "StartFleetRequest":{
       "type":"structure",
       "required":["Name"],
@@ -4158,6 +4746,22 @@
           "shape":"ImageBuilder",
           "documentation":"<p>Information about the image builder.</p>"
         }
+      }
+    },
+    "StopAppBlockBuilderRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the app block builder.</p>"
+        }
+      }
+    },
+    "StopAppBlockBuilderResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilder":{"shape":"AppBlockBuilder"}
       }
     },
     "StopFleetRequest":{
@@ -4333,6 +4937,58 @@
       "members":{
       }
     },
+    "UpdateAppBlockBuilderRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The unique name for the app block builder.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the app block builder.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the app block builder.</p>"
+        },
+        "Platform":{
+          "shape":"PlatformType",
+          "documentation":"<p>The platform of the app block builder.</p> <p> <code>WINDOWS_SERVER_2019</code> is the only valid value.</p>"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type to use when launching the app block builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the app block builder.</p> <p>App block builders require that you specify at least two subnets in different availability zones.</p>"
+        },
+        "EnableDefaultInternetAccess":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Enables or disables default internet access for the app block builder.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+        },
+        "AccessEndpoints":{
+          "shape":"AccessEndpointList",
+          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the app block builder only through the specified endpoints.</p>"
+        },
+        "AttributesToDelete":{
+          "shape":"AppBlockBuilderAttributes",
+          "documentation":"<p>The attributes to delete from the app block builder.</p>"
+        }
+      }
+    },
+    "UpdateAppBlockBuilderResult":{
+      "type":"structure",
+      "members":{
+        "AppBlockBuilder":{"shape":"AppBlockBuilder"}
+      }
+    },
     "UpdateApplicationRequest":{
       "type":"structure",
       "required":["Name"],
@@ -4479,7 +5135,7 @@
         },
         "MaxUserDurationInSeconds":{
           "shape":"Integer",
-          "documentation":"<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>"
+          "documentation":"<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 432000.</p>"
         },
         "DisconnectTimeoutInSeconds":{
           "shape":"Integer",

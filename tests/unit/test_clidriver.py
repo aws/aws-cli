@@ -749,7 +749,9 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
-        rc = self.driver.main(['s3api', 'list-objects', '--help'])
+        args = ['s3api', 'list-objects', '--help']
+        driver = create_clidriver(args)
+        rc = driver.main(args)
         self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 

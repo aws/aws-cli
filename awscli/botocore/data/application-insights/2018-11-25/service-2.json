@@ -14,6 +14,22 @@
     "uid":"application-insights-2018-11-25"
   },
   "operations":{
+    "AddWorkload":{
+      "name":"AddWorkload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AddWorkloadRequest"},
+      "output":{"shape":"AddWorkloadResponse"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds a workload to a component. Each component can have at most five workloads.</p>"
+    },
     "CreateApplication":{
       "name":"CreateApplication",
       "http":{
@@ -231,6 +247,21 @@
       ],
       "documentation":"<p>Describes the anomalies or errors associated with the problem.</p>"
     },
+    "DescribeWorkload":{
+      "name":"DescribeWorkload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeWorkloadRequest"},
+      "output":{"shape":"DescribeWorkloadResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes a workload and its configuration.</p>"
+    },
     "ListApplications":{
       "name":"ListApplications",
       "http":{
@@ -334,6 +365,36 @@
       ],
       "documentation":"<p>Retrieve a list of the tags (keys and values) that are associated with a specified application. A <i>tag</i> is a label that you optionally define and associate with an application. Each tag consists of a required <i>tag key</i> and an optional associated <i>tag value</i>. A tag key is a general label that acts as a category for more specific tag values. A tag value acts as a descriptor within a tag key.</p>"
     },
+    "ListWorkloads":{
+      "name":"ListWorkloads",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWorkloadsRequest"},
+      "output":{"shape":"ListWorkloadsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the workloads that are configured on a given component.</p>"
+    },
+    "RemoveWorkload":{
+      "name":"RemoveWorkload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RemoveWorkloadRequest"},
+      "output":{"shape":"RemoveWorkloadResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Remove workload from a component.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -424,6 +485,36 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Adds a log pattern to a <code>LogPatternSet</code>.</p>"
+    },
+    "UpdateProblem":{
+      "name":"UpdateProblem",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProblemRequest"},
+      "output":{"shape":"UpdateProblemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the visibility of the problem or specifies the problem as <code>RESOLVED</code>.</p>"
+    },
+    "UpdateWorkload":{
+      "name":"UpdateWorkload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWorkloadRequest"},
+      "output":{"shape":"UpdateWorkloadResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds a workload to a component. Each component can have at most five workloads.</p>"
     }
   },
   "shapes":{
@@ -434,6 +525,47 @@
       },
       "documentation":"<p> User does not have permissions to perform this action. </p>",
       "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "AddWorkloadRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceGroupName",
+        "ComponentName",
+        "WorkloadConfiguration"
+      ],
+      "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "WorkloadConfiguration":{
+          "shape":"WorkloadConfiguration",
+          "documentation":"<p>The configuration settings of the workload. The value is the escaped JSON of the configuration.</p>"
+        }
+      }
+    },
+    "AddWorkloadResponse":{
+      "type":"structure",
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "WorkloadConfiguration":{
+          "shape":"WorkloadConfiguration",
+          "documentation":"<p>The configuration settings of the workload. The value is the escaped JSON of the configuration.</p>"
+        }
+      }
     },
     "AffectedResource":{"type":"string"},
     "AmazonResourceName":{
@@ -483,6 +615,10 @@
     "ApplicationInfo":{
       "type":"structure",
       "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the owner of the application.</p>"
+        },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group used for the application.</p>"
@@ -564,6 +700,14 @@
     "ConfigurationEvent":{
       "type":"structure",
       "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group of the application to which the configuration event belongs.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the owner of the application to which the configuration event belongs.</p>"
+        },
         "MonitoredResourceARN":{
           "shape":"ConfigurationEventMonitoredResourceARN",
           "documentation":"<p> The resource monitored by Application Insights. </p>"
@@ -811,6 +955,10 @@
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -842,6 +990,10 @@
         "Tier":{
           "shape":"Tier",
           "documentation":"<p>The tier of the application component.</p>"
+        },
+        "RecommendationType":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The recommended configuration type.</p>"
         }
       }
     },
@@ -868,6 +1020,10 @@
         "ComponentName":{
           "shape":"ComponentName",
           "documentation":"<p>The name of the component.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -902,6 +1058,10 @@
         "ComponentName":{
           "shape":"ComponentName",
           "documentation":"<p>The name of the component.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -934,6 +1094,10 @@
         "PatternName":{
           "shape":"LogPatternName",
           "documentation":"<p>The name of the log pattern.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -943,6 +1107,10 @@
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         },
         "LogPattern":{
           "shape":"LogPattern",
@@ -957,6 +1125,10 @@
         "ObservationId":{
           "shape":"ObservationId",
           "documentation":"<p>The ID of the observation.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -976,6 +1148,10 @@
         "ProblemId":{
           "shape":"ProblemId",
           "documentation":"<p>The ID of the problem.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -995,6 +1171,10 @@
         "ProblemId":{
           "shape":"ProblemId",
           "documentation":"<p>The ID of the problem.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the owner of the resource group affected by the problem.</p>"
         }
       }
     },
@@ -1004,6 +1184,49 @@
         "Problem":{
           "shape":"Problem",
           "documentation":"<p>Information about the problem. </p>"
+        }
+      }
+    },
+    "DescribeWorkloadRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceGroupName",
+        "ComponentName",
+        "WorkloadId"
+      ],
+      "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the workload owner.</p>"
+        }
+      }
+    },
+    "DescribeWorkloadResponse":{
+      "type":"structure",
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "WorkloadRemarks":{
+          "shape":"Remarks",
+          "documentation":"<p>If logging is supported for the resource type, shows whether the component has configured logs to be monitored.</p>"
+        },
+        "WorkloadConfiguration":{
+          "shape":"WorkloadConfiguration",
+          "documentation":"<p>The configuration settings of the workload. The value is the escaped JSON of the configuration.</p>"
         }
       }
     },
@@ -1076,6 +1299,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to request the next page of results.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1107,6 +1334,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to request the next page of results.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1149,6 +1380,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The <code>NextToken</code> value returned from a previous paginated <code>ListConfigurationHistory</code> request where <code>MaxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>NextToken</code> value. This value is <code>null</code> when there are no more results to return.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1180,6 +1415,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to request the next page of results.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1189,6 +1428,10 @@
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         },
         "LogPatternSets":{
           "shape":"LogPatternSetList",
@@ -1219,6 +1462,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token to request the next page of results.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1228,6 +1475,10 @@
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         },
         "LogPatterns":{
           "shape":"LogPatternList",
@@ -1242,6 +1493,10 @@
     "ListProblemsRequest":{
       "type":"structure",
       "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+        },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group.</p>"
@@ -1265,6 +1520,10 @@
         "ComponentName":{
           "shape":"ComponentName",
           "documentation":"<p> The name of the component. </p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether or not you can view the problem. If not specified, visible and ignored problems are returned.</p>"
         }
       }
     },
@@ -1282,6 +1541,10 @@
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p> The name of the resource group. </p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1301,6 +1564,48 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array that lists all the tags that are associated with the application. Each tag consists of a required tag key (<code>Key</code>) and an associated tag value (<code>Value</code>).</p>"
+        }
+      }
+    },
+    "ListWorkloadsRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceGroupName",
+        "ComponentName"
+      ],
+      "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxEntities",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>NextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to request the next page of results.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID of the owner of the workload.</p>"
+        }
+      }
+    },
+    "ListWorkloadsResponse":{
+      "type":"structure",
+      "members":{
+        "WorkloadList":{
+          "shape":"WorkloadList",
+          "documentation":"<p>The list of workloads.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to request the next page of results.</p>"
         }
       }
     },
@@ -1624,6 +1929,10 @@
           "shape":"SeverityLevel",
           "documentation":"<p>A measure of the level of impact of the problem.</p>"
         },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID for the owner of the resource group affected by the problem.</p>"
+        },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
           "documentation":"<p>The name of the resource group affected by the problem.</p>"
@@ -1639,6 +1948,14 @@
         "LastRecurrenceTime":{
           "shape":"LastRecurrenceTime",
           "documentation":"<p> The last time that the problem reoccurred after its last resolution. </p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether or not you can view the problem. Updates to ignored problems do not generate notifications.</p>"
+        },
+        "ResolutionMethod":{
+          "shape":"ResolutionMethod",
+          "documentation":"<p>Specifies how the problem was resolved. If the value is <code>AUTOMATIC</code>, the system resolved the problem. If the value is <code>MANUAL</code>, the user resolved the problem. If the value is <code>UNRESOLVED</code>, then the problem is not resolved.</p>"
         }
       },
       "documentation":"<p>Describes a problem that is detected by correlating observations.</p>"
@@ -1655,6 +1972,14 @@
     },
     "RdsEventCategories":{"type":"string"},
     "RdsEventMessage":{"type":"string"},
+    "RecommendationType":{
+      "type":"string",
+      "enum":[
+        "INFRA_ONLY",
+        "WORKLOAD_ONLY",
+        "ALL"
+      ]
+    },
     "RecurringCount":{"type":"long"},
     "RelatedObservations":{
       "type":"structure",
@@ -1668,6 +1993,41 @@
     },
     "Remarks":{"type":"string"},
     "RemoveSNSTopic":{"type":"boolean"},
+    "RemoveWorkloadRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceGroupName",
+        "ComponentName",
+        "WorkloadId"
+      ],
+      "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        }
+      }
+    },
+    "RemoveWorkloadResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ResolutionMethod":{
+      "type":"string",
+      "enum":[
+        "MANUAL",
+        "AUTOMATIC",
+        "UNRESOLVED"
+      ]
+    },
     "ResourceARN":{
       "type":"string",
       "max":1011,
@@ -1729,7 +2089,8 @@
         "IGNORE",
         "RESOLVED",
         "PENDING",
-        "RECURRING"
+        "RECURRING",
+        "RECOVERING"
       ]
     },
     "Tag":{
@@ -1824,7 +2185,10 @@
         "SAP_HANA_HIGH_AVAILABILITY",
         "SQL_SERVER_FAILOVER_CLUSTER_INSTANCE",
         "SHAREPOINT",
-        "ACTIVE_DIRECTORY"
+        "ACTIVE_DIRECTORY",
+        "SAP_NETWEAVER_STANDARD",
+        "SAP_NETWEAVER_DISTRIBUTED",
+        "SAP_NETWEAVER_HIGH_AVAILABILITY"
       ],
       "max":50,
       "min":1
@@ -2015,6 +2379,72 @@
         }
       }
     },
+    "UpdateProblemRequest":{
+      "type":"structure",
+      "required":["ProblemId"],
+      "members":{
+        "ProblemId":{
+          "shape":"ProblemId",
+          "documentation":"<p>The ID of the problem.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The status of the problem. Arguments can be passed for only problems that show a status of <code>RECOVERING</code>.</p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility of a problem. When you pass a value of <code>IGNORED</code>, the problem is removed from the default view, and all notifications for the problem are suspended. When <code>VISIBLE</code> is passed, the <code>IGNORED</code> action is reversed.</p>"
+        }
+      }
+    },
+    "UpdateProblemResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateStatus":{
+      "type":"string",
+      "enum":["RESOLVED"]
+    },
+    "UpdateWorkloadRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceGroupName",
+        "ComponentName",
+        "WorkloadConfiguration"
+      ],
+      "members":{
+        "ResourceGroupName":{
+          "shape":"ResourceGroupName",
+          "documentation":"<p>The name of the resource group.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p> The name of the component. </p>"
+        },
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "WorkloadConfiguration":{
+          "shape":"WorkloadConfiguration",
+          "documentation":"<p>The configuration settings of the workload. The value is the escaped JSON of the configuration.</p>"
+        }
+      }
+    },
+    "UpdateWorkloadResponse":{
+      "type":"structure",
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "WorkloadConfiguration":{
+          "shape":"WorkloadConfiguration",
+          "documentation":"<p>The configuration settings of the workload. The value is the escaped JSON of the configuration.</p>"
+        }
+      }
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -2024,10 +2454,77 @@
       "exception":true
     },
     "Value":{"type":"double"},
+    "Visibility":{
+      "type":"string",
+      "enum":[
+        "IGNORED",
+        "VISIBLE"
+      ]
+    },
+    "Workload":{
+      "type":"structure",
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "documentation":"<p>The ID of the workload.</p>"
+        },
+        "ComponentName":{
+          "shape":"ComponentName",
+          "documentation":"<p>The name of the component.</p>"
+        },
+        "WorkloadName":{
+          "shape":"WorkloadName",
+          "documentation":"<p>The name of the workload.</p>"
+        },
+        "Tier":{
+          "shape":"Tier",
+          "documentation":"<p>The tier of the workload.</p>"
+        },
+        "WorkloadRemarks":{
+          "shape":"Remarks",
+          "documentation":"<p>If logging is supported for the resource type, shows whether the component has configured logs to be monitored.</p>"
+        }
+      },
+      "documentation":"<p>Describes the workloads on a component.</p>"
+    },
+    "WorkloadConfiguration":{
+      "type":"structure",
+      "members":{
+        "WorkloadName":{
+          "shape":"WorkloadName",
+          "documentation":"<p>The name of the workload.</p>"
+        },
+        "Tier":{
+          "shape":"Tier",
+          "documentation":"<p>The configuration of the workload tier.</p>"
+        },
+        "Configuration":{
+          "shape":"ComponentConfiguration",
+          "documentation":"<p>The configuration settings of the workload.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the workload.</p>"
+    },
+    "WorkloadId":{
+      "type":"string",
+      "max":38,
+      "min":38,
+      "pattern":"w-[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
+    },
+    "WorkloadList":{
+      "type":"list",
+      "member":{"shape":"Workload"}
+    },
     "WorkloadMetaData":{
       "type":"map",
       "key":{"shape":"MetaDataKey"},
       "value":{"shape":"MetaDataValue"}
+    },
+    "WorkloadName":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\.\\-_]*"
     },
     "XRayErrorPercent":{"type":"integer"},
     "XRayFaultPercent":{"type":"integer"},

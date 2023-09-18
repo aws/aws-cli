@@ -753,7 +753,7 @@
           "documentation":"<p>The pricing tier.</p>"
         }
       },
-      "documentation":"<p>Information about pricing bundle.</p>"
+      "documentation":"<p>Information about the pricing bundle.</p>"
     },
     "BundleName":{
       "type":"string",
@@ -807,7 +807,7 @@
           "documentation":"<p>The update type.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The component property group request.</p>"
     },
     "ComponentPropertyGroupRequests":{
       "type":"map",
@@ -1222,6 +1222,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Metadata that you can use to manage the scene.</p>"
+        },
+        "sceneMetadata":{
+          "shape":"SceneMetadataMap",
+          "documentation":"<p>The request metadata.</p>"
         }
       }
     },
@@ -1252,19 +1256,19 @@
       "members":{
         "workspaceId":{
           "shape":"Id",
-          "documentation":"<p>The workspace Id.</p>",
+          "documentation":"<p>The workspace ID.</p>",
           "location":"uri",
           "locationName":"workspaceId"
         },
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSoource is <code>SITEWISE </code>.</p> </note>",
           "location":"uri",
           "locationName":"syncSource"
         },
         "syncRole":{
           "shape":"RoleArn",
-          "documentation":"<p>The SyncJob IAM role. This IAM role is used by the sync job to read from the syncSource, and create, update or delete the corresponding resources.</p>"
+          "documentation":"<p>The SyncJob IAM role. This IAM role is used by the SyncJob to read from the syncSource, and create, update, or delete the corresponding resources.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1542,13 +1546,13 @@
       "members":{
         "workspaceId":{
           "shape":"Id",
-          "documentation":"<p>The workspace Id.</p>",
+          "documentation":"<p>The workspace ID.</p>",
           "location":"uri",
           "locationName":"workspaceId"
         },
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSource is <code>SITEWISE </code>.</p> </note>",
           "location":"uri",
           "locationName":"syncSource"
         }
@@ -1835,6 +1839,13 @@
       "key":{"shape":"Name"},
       "value":{"shape":"FunctionResponse"}
     },
+    "GeneratedSceneMetadataMap":{
+      "type":"map",
+      "key":{"shape":"Name"},
+      "value":{"shape":"SceneMetadataValue"},
+      "max":50,
+      "min":0
+    },
     "GetComponentTypeRequest":{
       "type":"structure",
       "required":[
@@ -1924,7 +1935,7 @@
         },
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The syncSource of the sync job, if this entity was created by a sync job.</p>"
+          "documentation":"<p>The syncSource of the SyncJob, if this entity was created by a SyncJob.</p>"
         },
         "componentTypeName":{
           "shape":"ComponentTypeName",
@@ -2248,6 +2259,18 @@
         "capabilities":{
           "shape":"SceneCapabilities",
           "documentation":"<p>A list of capabilities that the scene uses to render.</p>"
+        },
+        "sceneMetadata":{
+          "shape":"SceneMetadataMap",
+          "documentation":"<p>The response metadata.</p>"
+        },
+        "generatedSceneMetadata":{
+          "shape":"GeneratedSceneMetadataMap",
+          "documentation":"<p>The generated scene metadata.</p>"
+        },
+        "error":{
+          "shape":"SceneError",
+          "documentation":"<p>The SceneResponse error.</p>"
         }
       }
     },
@@ -2257,13 +2280,13 @@
       "members":{
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSource is <code>SITEWISE </code>.</p> </note>",
           "location":"uri",
           "locationName":"syncSource"
         },
         "workspaceId":{
           "shape":"Id",
-          "documentation":"<p>The workspace Id.</p>",
+          "documentation":"<p>The workspace ID.</p>",
           "location":"querystring",
           "locationName":"workspace"
         }
@@ -2291,7 +2314,7 @@
         },
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>"
+          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSource is <code>SITEWISE </code>.</p> </note>"
         },
         "syncRole":{
           "shape":"RoleArn",
@@ -2646,13 +2669,13 @@
         },
         "syncSource":{
           "shape":"SyncSource",
-          "documentation":"<p>The sync soucre.</p> <note> <p>Currently the only supported syncSoucre is <code>SITEWISE </code>.</p> </note>",
+          "documentation":"<p>The sync source.</p> <note> <p>Currently the only supported syncSource is <code>SITEWISE </code>.</p> </note>",
           "location":"uri",
           "locationName":"syncSource"
         },
         "filters":{
           "shape":"SyncResourceFilters",
-          "documentation":"<p>A list of objects that filter the request.</p>"
+          "documentation":"<p>A list of objects that filter the request.</p> <p>The following filter combinations are supported:</p> <ul> <li> <p>Filter with state</p> </li> <li> <p>Filter with ResourceType and ResourceId</p> </li> <li> <p>Filter with ResourceType and ExternalId</p> </li> </ul>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -2864,7 +2887,7 @@
         },
         "updateReason":{
           "shape":"UpdateReason",
-          "documentation":"<p>The update reason, for changing a pricing plan.</p>"
+          "documentation":"<p>The update reason for changing a pricing plan.</p>"
         }
       },
       "documentation":"<p>The pricing plan.</p>"
@@ -3077,7 +3100,7 @@
       "members":{
         "propertyReference":{
           "shape":"EntityPropertyReference",
-          "documentation":"<p>An object that specifies information about a property.&gt;</p>"
+          "documentation":"<p>An object that specifies information about a property.</p>"
         },
         "propertyValue":{
           "shape":"DataValue",
@@ -3334,6 +3357,37 @@
       "min":0,
       "pattern":".*"
     },
+    "SceneError":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"SceneErrorCode",
+          "documentation":"<p>The SceneError code.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The SceneError message.</p>"
+        }
+      },
+      "documentation":"<p>The scene error.</p>"
+    },
+    "SceneErrorCode":{
+      "type":"string",
+      "enum":["MATTERPORT_ERROR"]
+    },
+    "SceneMetadataMap":{
+      "type":"map",
+      "key":{"shape":"Name"},
+      "value":{"shape":"SceneMetadataValue"},
+      "max":50,
+      "min":0
+    },
+    "SceneMetadataValue":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":".*"
+    },
     "SceneSummaries":{
       "type":"list",
       "member":{"shape":"SceneSummary"}
@@ -3497,15 +3551,15 @@
         },
         "resourceType":{
           "shape":"SyncResourceType",
-          "documentation":"<p>The sync resource filter resoucre type</p>"
+          "documentation":"<p>The sync resource filter resource type</p>"
         },
         "resourceId":{
           "shape":"Id",
-          "documentation":"<p>The sync resource filter resource Id.</p>"
+          "documentation":"<p>The sync resource filter resource ID.</p>"
         },
         "externalId":{
           "shape":"Id",
-          "documentation":"<p>The external Id.</p>"
+          "documentation":"<p>The external ID.</p>"
         }
       },
       "documentation":"<p>The sync resource filter.</p>",
@@ -3552,11 +3606,11 @@
         },
         "externalId":{
           "shape":"Id",
-          "documentation":"<p>The external Id.</p>"
+          "documentation":"<p>The external ID.</p>"
         },
         "resourceId":{
           "shape":"Id",
-          "documentation":"<p>The resource Id.</p>"
+          "documentation":"<p>The resource ID.</p>"
         },
         "status":{
           "shape":"SyncResourceStatus",
@@ -3769,7 +3823,7 @@
         },
         "propertyGroups":{
           "shape":"PropertyGroupsRequest",
-          "documentation":"<p>The property groups</p>"
+          "documentation":"<p>The property groups.</p>"
         },
         "componentTypeName":{
           "shape":"ComponentTypeName",
@@ -3926,6 +3980,10 @@
         "capabilities":{
           "shape":"SceneCapabilities",
           "documentation":"<p>A list of capabilities that the scene uses to render.</p>"
+        },
+        "sceneMetadata":{
+          "shape":"SceneMetadataMap",
+          "documentation":"<p>The scene metadata.</p>"
         }
       }
     },
@@ -4026,5 +4084,5 @@
       "documentation":"<p>An object that contains information about a workspace.</p>"
     }
   },
-  "documentation":"<p>IoT TwinMaker is a service that enables you to build operational digital twins of physical systems. IoT TwinMaker overlays measurements and analysis from real-world sensors, cameras, and enterprise applications so you can create data visualizations to monitor your physical factory, building, or industrial plant. You can use this real-world data to monitor operations and diagnose and repair errors.</p>"
+  "documentation":"<p>IoT TwinMaker is a service with which you can build operational digital twins of physical systems. IoT TwinMaker overlays measurements and analysis from real-world sensors, cameras, and enterprise applications so you can create data visualizations to monitor your physical factory, building, or industrial plant. You can use this real-world data to monitor operations and diagnose and repair errors.</p>"
 }

@@ -1,9 +1,9 @@
-**Example 1: To describe the security group rules using the security group ID**
+**Example 1: To describe the security group rules for a security group**
 
-The following ``describe-security-group-rules`` example describes the security group rules of a specified security group. Use the ``filter`` parameter to enter the ``group-id`` of the security group. ::
+The following ``describe-security-group-rules`` example describes the security group rules of a specified security group. Use the ``filters`` option to scope the results to a specific security group. ::
 
     aws ec2 describe-security-group-rules \
-        --filter Name="group-id",Values="sg-1234567890abcdef0"
+        --filters Name="group-id",Values="sg-1234567890abcdef0"
 
 Output::
 
@@ -48,11 +48,9 @@ Output::
         ]
     }
 
-For more information about security group rules, see `Security group rules <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules.html>` in the *Amazon EC2 User Guide*.
+**Example 2: To describe a security group rule**
 
-**Example 2: To describe a security group rule using the security group rule ID**
-
-The following ``describe-security-group-rules`` example describes a specified security group rule. Use the ``security-group-rule-ids`` parameter to specify the security group rule ID. ::
+The following ``describe-security-group-rules`` example describes the specified security group rule. ::
 
     aws ec2 describe-security-group-rules \
         --security-group-rule-ids sgr-cdef01234567890ab
@@ -75,4 +73,4 @@ Output::
         ]
     }
 
-For more information about security group rules, see `Security group rules <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules.html>` in the *Amazon EC2 User Guide*.
+For more information, see `Security group rules <https://docs.aws.amazon.com/vpc/latest/userguide/security-group-rules.html>`__ in the *Amazon VPC User Guide*.

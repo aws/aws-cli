@@ -11,4 +11,4 @@ The following ``execute-command`` example runs an interactive /bin/sh command ag
 
 This command produces no output.
 
-For more information, see `Using Amazon ECS Exec for debugging <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.htm>`__ in the *Amazon ECS Developer Guide*.
+For more information, see `Using Amazon ECS Exec for debugging <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html>`__ in the *Amazon ECS Developer Guide*.

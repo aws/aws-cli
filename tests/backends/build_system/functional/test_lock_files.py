@@ -13,7 +13,7 @@ REGENERATE_LOCK_FILE_SCRIPT_PATH = ROOT / "scripts" / "regenerate-lock-files"
 
 # Lockfiles are generated on the CANNONICAL_PYTHON_VERSION
 # These tests will be skipped on any other version of python.
-CANNONICAL_PYTHON_VERSION = "3.9"
+CANNONICAL_PYTHON_VERSION = "3.11"
 IS_CANNONICAL_PYTHON_VERSION = sys.version_info[0:2] == tuple(
     map(int, CANNONICAL_PYTHON_VERSION.split("."))
 )
@@ -131,7 +131,7 @@ def test_all_lock_files_are_generated_by_expected_python_version():
     for path in lockfile_paths(REQUIREMENTS_PATH):
         with open(path, "r") as f:
             content = f.read()
-            assert f"python {CANNONICAL_PYTHON_VERSION}" in content
+            assert f"Python {CANNONICAL_PYTHON_VERSION}" in content
 
 
 @pytest.mark.skipif(

@@ -28,7 +28,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator.</p>"
+      "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator. An HTTP 200 response indicates the association was successfully started, but doesn’t indicate whether it was completed. You can check if the association completed by using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_ListMembers.html\">ListMembers</a> for multiple accounts or <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_GetMember.html\">GetMembers</a> for a single account.</p>"
     },
     "BatchGetAccountStatus":{
       "name":"BatchGetAccountStatus",
@@ -48,6 +48,40 @@
       ],
       "documentation":"<p>Retrieves the Amazon Inspector status of multiple Amazon Web Services accounts within your environment.</p>"
     },
+    "BatchGetCodeSnippet":{
+      "name":"BatchGetCodeSnippet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/codesnippet/batchget",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCodeSnippetRequest"},
+      "output":{"shape":"BatchGetCodeSnippetResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves code snippets from findings that Amazon Inspector detected code vulnerabilities in.</p>"
+    },
+    "BatchGetFindingDetails":{
+      "name":"BatchGetFindingDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findings/details/batch/get",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetFindingDetailsRequest"},
+      "output":{"shape":"BatchGetFindingDetailsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets vulnerability details for findings.</p>"
+    },
     "BatchGetFreeTrialInfo":{
       "name":"BatchGetFreeTrialInfo",
       "http":{
@@ -64,6 +98,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets free trial status for multiple Amazon Web Services accounts.</p>"
+    },
+    "BatchGetMemberEc2DeepInspectionStatus":{
+      "name":"BatchGetMemberEc2DeepInspectionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionstatus/member/batch/get",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetMemberEc2DeepInspectionStatusRequest"},
+      "output":{"shape":"BatchGetMemberEc2DeepInspectionStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves Amazon Inspector deep inspection activation status of multiple member accounts within your organization. You must be the delegated administrator of an organization in Amazon Inspector to use this API.</p>"
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatus":{
+      "name":"BatchUpdateMemberEc2DeepInspectionStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionstatus/member/batch/update",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateMemberEc2DeepInspectionStatusRequest"},
+      "output":{"shape":"BatchUpdateMemberEc2DeepInspectionStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Activates or deactivates Amazon Inspector deep inspection for the provided member accounts in your organization. You must be the delegated administrator of an organization in Amazon Inspector to use this API.</p>"
     },
     "CancelFindingsReport":{
       "name":"CancelFindingsReport",
@@ -82,6 +150,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Cancels the given findings report.</p>"
+    },
+    "CancelSbomExport":{
+      "name":"CancelSbomExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sbomexport/cancel",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelSbomExportRequest"},
+      "output":{"shape":"CancelSbomExportResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels a software bill of materials (SBOM) report.</p>",
+      "idempotent":true
     },
     "CreateFilter":{
       "name":"CreateFilter",
@@ -118,7 +205,26 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a finding report.</p>"
+      "documentation":"<p>Creates a finding report. By default only <code>ACTIVE</code> findings are returned in the report. To see <code>SUPRESSED</code> or <code>CLOSED</code> findings you must specify a value for the <code>findingStatus</code> filter criteria. </p>"
+    },
+    "CreateSbomExport":{
+      "name":"CreateSbomExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sbomexport/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSbomExportRequest"},
+      "output":{"shape":"CreateSbomExportResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a software bill of materials (SBOM) report.</p>",
+      "idempotent":true
     },
     "DeleteFilter":{
       "name":"DeleteFilter",
@@ -280,6 +386,41 @@
       ],
       "documentation":"<p>Retrieves information about the Amazon Inspector delegated administrator for your organization.</p>"
     },
+    "GetEc2DeepInspectionConfiguration":{
+      "name":"GetEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"GetEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the activation status of Amazon Inspector deep inspection and custom paths associated with your account. </p>"
+    },
+    "GetEncryptionKey":{
+      "name":"GetEncryptionKey",
+      "http":{
+        "method":"GET",
+        "requestUri":"/encryptionkey/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEncryptionKeyRequest"},
+      "output":{"shape":"GetEncryptionKeyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets an encryption key.</p>"
+    },
     "GetFindingsReportStatus":{
       "name":"GetFindingsReportStatus",
       "http":{
@@ -315,6 +456,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets member information for your organization.</p>"
+    },
+    "GetSbomExport":{
+      "name":"GetSbomExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sbomexport/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSbomExportRequest"},
+      "output":{"shape":"GetSbomExportResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets details of a software bill of materials (SBOM) report.</p>",
+      "idempotent":true
     },
     "ListAccountPermissions":{
       "name":"ListAccountPermissions",
@@ -482,6 +642,42 @@
       ],
       "documentation":"<p>Lists the Amazon Inspector usage totals over the last 30 days.</p>"
     },
+    "ResetEncryptionKey":{
+      "name":"ResetEncryptionKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/encryptionkey/reset",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetEncryptionKeyRequest"},
+      "output":{"shape":"ResetEncryptionKeyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Resets an encryption key. After the key is reset your resources will be encrypted by an Amazon Web Services owned key.</p>",
+      "idempotent":true
+    },
+    "SearchVulnerabilities":{
+      "name":"SearchVulnerabilities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/vulnerabilities/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchVulnerabilitiesRequest"},
+      "output":{"shape":"SearchVulnerabilitiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists Amazon Inspector coverage details for a specific vulnerability.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -535,6 +731,42 @@
       ],
       "documentation":"<p>Updates setting configurations for your Amazon Inspector account. When you use this API as an Amazon Inspector delegated administrator this updates the setting for all accounts you manage. Member accounts in an organization cannot update this setting.</p>"
     },
+    "UpdateEc2DeepInspectionConfiguration":{
+      "name":"UpdateEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"UpdateEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Activates, deactivates Amazon Inspector deep inspection, or updates custom paths for your account. </p>"
+    },
+    "UpdateEncryptionKey":{
+      "name":"UpdateEncryptionKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/encryptionkey/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEncryptionKeyRequest"},
+      "output":{"shape":"UpdateEncryptionKeyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an encryption key. A <code>ResourceNotFoundException</code> means that an AWS owned key is being used for encryption.</p>",
+      "idempotent":true
+    },
     "UpdateFilter":{
       "name":"UpdateFilter",
       "http":{
@@ -552,6 +784,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Specifies the action that is to be applied to the findings that match the filter.</p>"
+    },
+    "UpdateOrgEc2DeepInspectionConfiguration":{
+      "name":"UpdateOrgEc2DeepInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ec2deepinspectionconfiguration/org/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateOrgEc2DeepInspectionConfigurationRequest"},
+      "output":{"shape":"UpdateOrgEc2DeepInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the Amazon Inspector deep inspection custom paths for your organization. You must be an Amazon Inspector delegated administrator to use this API.</p>"
     },
     "UpdateOrganizationConfiguration":{
       "name":"UpdateOrganizationConfiguration",
@@ -702,7 +951,8 @@
       "type":"string",
       "enum":[
         "NETWORK_REACHABILITY",
-        "PACKAGE_VULNERABILITY"
+        "PACKAGE_VULNERABILITY",
+        "CODE_VULNERABILITY"
       ]
     },
     "AggregationRequest":{
@@ -927,6 +1177,28 @@
         }
       }
     },
+    "AtigData":{
+      "type":"structure",
+      "members":{
+        "firstSeen":{
+          "shape":"FirstSeen",
+          "documentation":"<p>The date and time this vulnerability was first observed.</p>"
+        },
+        "lastSeen":{
+          "shape":"LastSeen",
+          "documentation":"<p>The date and time this vulnerability was last observed.</p>"
+        },
+        "targets":{
+          "shape":"Targets",
+          "documentation":"<p>The commercial sectors this vulnerability targets.</p>"
+        },
+        "ttps":{
+          "shape":"Ttps",
+          "documentation":"<p>The <a href=\"https://attack.mitre.org/\">MITRE ATT&amp;CK</a> tactics, techniques, and procedures (TTPs) associated with vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Threat Intel Group (ATIG) details for a specific vulnerability.</p>"
+    },
     "AutoEnable":{
       "type":"structure",
       "required":[
@@ -944,7 +1216,11 @@
         },
         "lambda":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether AWS Lambda scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
+          "documentation":"<p>Represents whether AWS Lambda standard scans are automatically enabled for new members of your Amazon Inspector organization. </p>"
+        },
+        "lambdaCode":{
+          "shape":"Boolean",
+          "documentation":"<p>Represents whether AWS Lambda code scans are automatically enabled for new members of your Amazon Inspector organization. <pre><code> &lt;/p&gt; </code></pre>"
         }
       },
       "documentation":"<p>Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.</p>"
@@ -1204,6 +1480,58 @@
         }
       }
     },
+    "BatchGetCodeSnippetRequest":{
+      "type":"structure",
+      "required":["findingArns"],
+      "members":{
+        "findingArns":{
+          "shape":"BatchGetCodeSnippetRequestFindingArnsList",
+          "documentation":"<p>An array of finding ARNs for the findings you want to retrieve code snippets from.</p>"
+        }
+      }
+    },
+    "BatchGetCodeSnippetRequestFindingArnsList":{
+      "type":"list",
+      "member":{"shape":"FindingArn"},
+      "max":10,
+      "min":1
+    },
+    "BatchGetCodeSnippetResponse":{
+      "type":"structure",
+      "members":{
+        "codeSnippetResults":{
+          "shape":"CodeSnippetResultList",
+          "documentation":"<p>The retrieved code snippets associated with the provided finding ARNs.</p>"
+        },
+        "errors":{
+          "shape":"CodeSnippetErrorList",
+          "documentation":"<p>Any errors Amazon Inspector encountered while trying to retrieve the requested code snippets.</p>"
+        }
+      }
+    },
+    "BatchGetFindingDetailsRequest":{
+      "type":"structure",
+      "required":["findingArns"],
+      "members":{
+        "findingArns":{
+          "shape":"FindingArnList",
+          "documentation":"<p>A list of finding ARNs.</p>"
+        }
+      }
+    },
+    "BatchGetFindingDetailsResponse":{
+      "type":"structure",
+      "members":{
+        "errors":{
+          "shape":"FindingDetailsErrorList",
+          "documentation":"<p>Error information for findings that details could not be returned for.</p>"
+        },
+        "findingDetails":{
+          "shape":"FindingDetails",
+          "documentation":"<p>A finding's vulnerability details.</p>"
+        }
+      }
+    },
     "BatchGetFreeTrialInfoRequest":{
       "type":"structure",
       "required":["accountIds"],
@@ -1237,6 +1565,51 @@
         }
       }
     },
+    "BatchGetMemberEc2DeepInspectionStatusRequest":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdSet",
+          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to retrieve Amazon Inspector deep inspection activation status for. <pre><code> &lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "BatchGetMemberEc2DeepInspectionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details on the activation status of Amazon Inspector deep inspection for each of the requested accounts. <pre><code> &lt;/p&gt; </code></pre>"
+        },
+        "failedAccountIds":{
+          "shape":"FailedMemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details on any accounts that failed to activate Amazon Inspector deep inspection and why. <pre><code> &lt;/p&gt; </code></pre>"
+        }
+      }
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatusRequest":{
+      "type":"structure",
+      "required":["accountIds"],
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusList",
+          "documentation":"<p>The unique identifiers for the Amazon Web Services accounts to change Amazon Inspector deep inspection status for.</p>"
+        }
+      }
+    },
+    "BatchUpdateMemberEc2DeepInspectionStatusResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"MemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status was successfully changed for. </p>"
+        },
+        "failedAccountIds":{
+          "shape":"FailedMemberAccountEc2DeepInspectionStatusStateList",
+          "documentation":"<p>An array of objects that provide details for each of the accounts that Amazon Inspector deep inspection status could not be successfully changed for. </p>"
+        }
+      }
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -1261,10 +1634,220 @@
         }
       }
     },
+    "CancelSbomExportRequest":{
+      "type":"structure",
+      "required":["reportId"],
+      "members":{
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The report ID of the SBOM export to cancel.</p>"
+        }
+      }
+    },
+    "CancelSbomExportResponse":{
+      "type":"structure",
+      "members":{
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The report ID of the canceled SBOM export.</p>"
+        }
+      }
+    },
+    "CisaAction":{
+      "type":"string",
+      "min":0
+    },
+    "CisaData":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"CisaAction",
+          "documentation":"<p>The remediation action recommended by CISA for this vulnerability.</p>"
+        },
+        "dateAdded":{
+          "shape":"CisaDateAdded",
+          "documentation":"<p>The date and time CISA added this vulnerability to their catalogue.</p>"
+        },
+        "dateDue":{
+          "shape":"CisaDateDue",
+          "documentation":"<p>The date and time CISA expects a fix to have been provided vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.</p>"
+    },
+    "CisaDateAdded":{"type":"timestamp"},
+    "CisaDateDue":{"type":"timestamp"},
     "ClientToken":{
       "type":"string",
       "max":64,
       "min":1
+    },
+    "CodeFilePath":{
+      "type":"structure",
+      "required":[
+        "endLine",
+        "fileName",
+        "filePath",
+        "startLine"
+      ],
+      "members":{
+        "endLine":{
+          "shape":"Integer",
+          "documentation":"<p>The line number of the last line of code that a vulnerability was found in.</p>"
+        },
+        "fileName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the file the code vulnerability was found in.</p>"
+        },
+        "filePath":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The file path to the code that a vulnerability was found in.</p>"
+        },
+        "startLine":{
+          "shape":"Integer",
+          "documentation":"<p>The line number of the first line of code that a vulnerability was found in.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on where a code vulnerability is located in your Lambda function.</p>"
+    },
+    "CodeLine":{
+      "type":"structure",
+      "required":[
+        "content",
+        "lineNumber"
+      ],
+      "members":{
+        "content":{
+          "shape":"CodeLineContentString",
+          "documentation":"<p>The content of a line of code</p>"
+        },
+        "lineNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The line number that a section of code is located at.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on the lines of code associated with a code snippet.</p>"
+    },
+    "CodeLineContentString":{
+      "type":"string",
+      "max":240,
+      "min":0
+    },
+    "CodeLineList":{
+      "type":"list",
+      "member":{"shape":"CodeLine"},
+      "max":20,
+      "min":1
+    },
+    "CodeSnippetError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "findingArn"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"CodeSnippetErrorCode",
+          "documentation":"<p>The error code for the error that prevented a code snippet from being retrieved.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message received when Amazon Inspector failed to retrieve a code snippet.</p>"
+        },
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The ARN of the finding that a code snippet couldn't be retrieved for.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about any errors encountered while trying to retrieve a code snippet.</p>"
+    },
+    "CodeSnippetErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "ACCESS_DENIED",
+        "CODE_SNIPPET_NOT_FOUND",
+        "INVALID_INPUT"
+      ]
+    },
+    "CodeSnippetErrorList":{
+      "type":"list",
+      "member":{"shape":"CodeSnippetError"}
+    },
+    "CodeSnippetResult":{
+      "type":"structure",
+      "members":{
+        "codeSnippet":{
+          "shape":"CodeLineList",
+          "documentation":"<p>Contains information on the retrieved code snippet.</p>"
+        },
+        "endLine":{
+          "shape":"Integer",
+          "documentation":"<p>The line number of the last line of a code snippet.</p>"
+        },
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The ARN of a finding that the code snippet is associated with.</p>"
+        },
+        "startLine":{
+          "shape":"Integer",
+          "documentation":"<p>The line number of the first line of a code snippet.</p>"
+        },
+        "suggestedFixes":{
+          "shape":"SuggestedFixes",
+          "documentation":"<p>Details of a suggested code fix.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on a code snippet retrieved by Amazon Inspector from a code vulnerability finding.</p>"
+    },
+    "CodeSnippetResultList":{
+      "type":"list",
+      "member":{"shape":"CodeSnippetResult"}
+    },
+    "CodeVulnerabilityDetails":{
+      "type":"structure",
+      "required":[
+        "cwes",
+        "detectorId",
+        "detectorName",
+        "filePath"
+      ],
+      "members":{
+        "cwes":{
+          "shape":"CweList",
+          "documentation":"<p>The Common Weakness Enumeration (CWE) item associated with the detected vulnerability.</p>"
+        },
+        "detectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID for the Amazon CodeGuru detector associated with the finding. For more information on detectors see <a href=\"https://docs.aws.amazon.com/codeguru/detector-library\">Amazon CodeGuru Detector Library</a>.</p>"
+        },
+        "detectorName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the detector used to identify the code vulnerability. For more information on detectors see <a href=\"https://docs.aws.amazon.com/codeguru/detector-library\">CodeGuru Detector Library</a>.</p>"
+        },
+        "detectorTags":{
+          "shape":"DetectorTagList",
+          "documentation":"<p>The detector tag associated with the vulnerability. Detector tags group related vulnerabilities by common themes or tactics. For a list of available tags by programming language, see <a href=\"https://docs.aws.amazon.com/codeguru/detector-library/java/tags/\">Java tags</a>, or <a href=\"https://docs.aws.amazon.com/codeguru/detector-library/python/tags/\">Python tags</a>. </p>"
+        },
+        "filePath":{
+          "shape":"CodeFilePath",
+          "documentation":"<p>Contains information on where the code vulnerability is located in your code.</p>"
+        },
+        "referenceUrls":{
+          "shape":"ReferenceUrls",
+          "documentation":"<p>A URL containing supporting documentation about the code vulnerability detected.</p>"
+        },
+        "ruleId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier for a rule that was used to detect the code vulnerability.</p>"
+        },
+        "sourceLambdaLayerArn":{
+          "shape":"LambdaLayerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda layer that the code vulnerability was detected in.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on the code vulnerability identified in your Lambda function.</p>"
     },
     "Component":{"type":"string"},
     "ComponentType":{"type":"string"},
@@ -1313,6 +1896,26 @@
       "max":5,
       "min":1
     },
+    "CoverageDateFilter":{
+      "type":"structure",
+      "members":{
+        "endInclusive":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>A timestamp representing the end of the time period to filter results by.</p>"
+        },
+        "startInclusive":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>A timestamp representing the start of the time period to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Contains details of a coverage date filter.</p>"
+    },
+    "CoverageDateFilterList":{
+      "type":"list",
+      "member":{"shape":"CoverageDateFilter"},
+      "max":10,
+      "min":1
+    },
     "CoverageFilterCriteria":{
       "type":"structure",
       "members":{
@@ -1344,13 +1947,17 @@
           "shape":"CoverageMapFilterList",
           "documentation":"<p>Returns coverage statistics for AWS Lambda functions filtered by tag.</p>"
         },
+        "lastScannedAt":{
+          "shape":"CoverageDateFilterList",
+          "documentation":"<p>Filters Amazon Web Services resources based on whether Amazon Inspector has checked them for vulnerabilities within the specified time range.</p>"
+        },
         "resourceId":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>An array of Amazon Web Services resource IDs to return coverage statistics for.</p>"
         },
         "resourceType":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
+          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -1457,6 +2064,10 @@
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID of the covered resource.</p>"
         },
+        "lastScannedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the resource was last checked for vulnerabilities.</p>"
+        },
         "resourceId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the covered resource.</p>"
@@ -1558,9 +2169,74 @@
         }
       }
     },
+    "CreateSbomExportRequest":{
+      "type":"structure",
+      "required":[
+        "reportFormat",
+        "s3Destination"
+      ],
+      "members":{
+        "reportFormat":{
+          "shape":"SbomReportFormat",
+          "documentation":"<p>The output format for the software bill of materials (SBOM) report.</p>"
+        },
+        "resourceFilterCriteria":{
+          "shape":"ResourceFilterCriteria",
+          "documentation":"<p>The resource filter criteria for the software bill of materials (SBOM) report.</p>"
+        },
+        "s3Destination":{"shape":"Destination"}
+      }
+    },
+    "CreateSbomExportResponse":{
+      "type":"structure",
+      "members":{
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The report ID for the software bill of materials (SBOM) report.</p>"
+        }
+      }
+    },
     "Currency":{
       "type":"string",
       "enum":["USD"]
+    },
+    "Cvss2":{
+      "type":"structure",
+      "members":{
+        "baseScore":{
+          "shape":"Cvss2BaseScore",
+          "documentation":"<p>The CVSS v2 base score for the vulnerability.</p>"
+        },
+        "scoringVector":{
+          "shape":"Cvss2ScoringVector",
+          "documentation":"<p>The scoring vector associated with the CVSS v2 score.</p>"
+        }
+      },
+      "documentation":"<p>The Common Vulnerability Scoring System (CVSS) version 2 details for the vulnerability.</p>"
+    },
+    "Cvss2BaseScore":{"type":"double"},
+    "Cvss2ScoringVector":{
+      "type":"string",
+      "min":0
+    },
+    "Cvss3":{
+      "type":"structure",
+      "members":{
+        "baseScore":{
+          "shape":"Cvss3BaseScore",
+          "documentation":"<p>The CVSS v3 base score for the vulnerability.</p>"
+        },
+        "scoringVector":{
+          "shape":"Cvss3ScoringVector",
+          "documentation":"<p>The scoring vector associated with the CVSS v3 score.</p>"
+        }
+      },
+      "documentation":"<p>The Common Vulnerability Scoring System (CVSS) version 3 details for the vulnerability.</p>"
+    },
+    "Cvss3BaseScore":{"type":"double"},
+    "Cvss3ScoringVector":{
+      "type":"string",
+      "min":0
     },
     "CvssScore":{
       "type":"structure",
@@ -1651,6 +2327,21 @@
     "CvssScoreList":{
       "type":"list",
       "member":{"shape":"CvssScore"}
+    },
+    "Cwe":{
+      "type":"string",
+      "min":0
+    },
+    "CweList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":10,
+      "min":1
+    },
+    "Cwes":{
+      "type":"list",
+      "member":{"shape":"Cwe"},
+      "min":0
     },
     "DateFilter":{
       "type":"structure",
@@ -1765,7 +2456,7 @@
         },
         "keyPrefix":{
           "shape":"String",
-          "documentation":"<p>The prefix of the KMS key used to export findings.</p>"
+          "documentation":"<p>The prefix that the findings will be written under.</p>"
         },
         "kmsKeyArn":{
           "shape":"String",
@@ -1773,6 +2464,18 @@
         }
       },
       "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings.</p>"
+    },
+    "DetectionPlatforms":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":0
+    },
+    "DetectorTagList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":10,
+      "min":1
     },
     "DisableDelegatedAdminAccountRequest":{
       "type":"structure",
@@ -1850,6 +2553,15 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "Ec2DeepInspectionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVATED",
+        "DEACTIVATED",
+        "PENDING",
+        "FAILED"
+      ]
     },
     "Ec2InstanceAggregation":{
       "type":"structure",
@@ -2102,6 +2814,32 @@
         }
       }
     },
+    "Epss":{
+      "type":"structure",
+      "members":{
+        "score":{
+          "shape":"EpssScore",
+          "documentation":"<p>The Exploit Prediction Scoring System (EPSS) score.</p>"
+        }
+      },
+      "documentation":"<p>Details about the Exploit Prediction Scoring System (EPSS) score.</p>"
+    },
+    "EpssDetails":{
+      "type":"structure",
+      "members":{
+        "score":{
+          "shape":"EpssScoreValue",
+          "documentation":"<p>The EPSS score.</p>"
+        }
+      },
+      "documentation":"<p>Details about the Exploit Prediction Scoring System (EPSS) score for a finding.</p>"
+    },
+    "EpssScore":{"type":"double"},
+    "EpssScoreValue":{
+      "type":"double",
+      "max":1.0,
+      "min":0.0
+    },
     "ErrorCode":{
       "type":"string",
       "enum":[
@@ -2122,6 +2860,40 @@
       ]
     },
     "ErrorMessage":{"type":"string"},
+    "Evidence":{
+      "type":"structure",
+      "members":{
+        "evidenceDetail":{
+          "shape":"EvidenceDetail",
+          "documentation":"<p>The evidence details.</p>"
+        },
+        "evidenceRule":{
+          "shape":"EvidenceRule",
+          "documentation":"<p>The evidence rule.</p>"
+        },
+        "severity":{
+          "shape":"EvidenceSeverity",
+          "documentation":"<p>The evidence severity.</p>"
+        }
+      },
+      "documentation":"<p>Details of the evidence for a vulnerability identified in a finding.</p>"
+    },
+    "EvidenceDetail":{
+      "type":"string",
+      "min":0
+    },
+    "EvidenceList":{
+      "type":"list",
+      "member":{"shape":"Evidence"}
+    },
+    "EvidenceRule":{
+      "type":"string",
+      "min":0
+    },
+    "EvidenceSeverity":{
+      "type":"string",
+      "min":0
+    },
     "ExecutionRoleArn":{
       "type":"string",
       "pattern":"^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
@@ -2132,6 +2904,20 @@
         "YES",
         "NO"
       ]
+    },
+    "ExploitObserved":{
+      "type":"structure",
+      "members":{
+        "firstSeen":{
+          "shape":"FirstSeen",
+          "documentation":"<p>The date an time when the exploit was first seen.</p>"
+        },
+        "lastSeen":{
+          "shape":"LastSeen",
+          "documentation":"<p>The date an time when the exploit was last seen.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on when this exploit was observed.</p>"
     },
     "ExploitabilityDetails":{
       "type":"structure",
@@ -2186,6 +2972,31 @@
     "FailedAccountList":{
       "type":"list",
       "member":{"shape":"FailedAccount"},
+      "max":100,
+      "min":0
+    },
+    "FailedMemberAccountEc2DeepInspectionStatusState":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member that failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "ec2ScanStatus":{
+          "shape":"Status",
+          "documentation":"<p>The status of EC2 scanning in the account that failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message explaining why the account failed to activate Amazon Inspector deep inspection.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about a member account in your organization that failed to activate Amazon Inspector deep inspection.</p>"
+    },
+    "FailedMemberAccountEc2DeepInspectionStatusStateList":{
+      "type":"list",
+      "member":{"shape":"FailedMemberAccountEc2DeepInspectionStatusState"},
       "max":100,
       "min":0
     },
@@ -2272,6 +3083,18 @@
           "shape":"StringFilterList",
           "documentation":"<p>Details of the Amazon Web Services account IDs used to filter findings.</p>"
         },
+        "codeVulnerabilityDetectorName":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The name of the detector used to identify a code vulnerability in a Lambda function used to filter findings.</p>"
+        },
+        "codeVulnerabilityDetectorTags":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The detector type tag associated with the vulnerability used to filter findings. Detector tags group related vulnerabilities by common themes or tactics. For a list of available tags by programming language, see <a href=\"https://docs.aws.amazon.com/codeguru/detector-library/java/tags/\">Java tags</a>, or <a href=\"https://docs.aws.amazon.com/codeguru/detector-library/python/tags/\">Python tags</a>. </p>"
+        },
+        "codeVulnerabilityFilePath":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The file path to the file in a Lambda function that contains a code vulnerability used to filter findings.</p>"
+        },
         "componentId":{
           "shape":"StringFilterList",
           "documentation":"<p>Details of the component IDs used to filter findings.</p>"
@@ -2315,6 +3138,10 @@
         "ecrImageTags":{
           "shape":"StringFilterList",
           "documentation":"<p>The tags attached to the Amazon ECR container image.</p>"
+        },
+        "epssScore":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>The EPSS score used to filter findings.</p>"
         },
         "exploitAvailable":{
           "shape":"StringFilterList",
@@ -2370,7 +3197,7 @@
         },
         "networkProtocol":{
           "shape":"StringFilterList",
-          "documentation":"<p>Details on the ingress source addresses used to filter findings.</p>"
+          "documentation":"<p>Details on network protocol used to filter findings.</p>"
         },
         "portRange":{
           "shape":"PortRangeFilterList",
@@ -2461,9 +3288,17 @@
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID associated with the finding.</p>"
         },
+        "codeVulnerabilityDetails":{
+          "shape":"CodeVulnerabilityDetails",
+          "documentation":"<p>Details about the code vulnerability identified in a Lambda function used to filter findings.</p>"
+        },
         "description":{
           "shape":"FindingDescription",
           "documentation":"<p>The description of the finding.</p>"
+        },
+        "epss":{
+          "shape":"EpssDetails",
+          "documentation":"<p>The finding's EPSS score.</p>"
         },
         "exploitAvailable":{
           "shape":"ExploitAvailable",
@@ -2538,13 +3373,101 @@
     },
     "FindingArn":{
       "type":"string",
-      "max":1024,
+      "max":100,
+      "min":1,
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:finding/[a-f0-9]{32}$"
+    },
+    "FindingArnList":{
+      "type":"list",
+      "member":{"shape":"FindingArn"},
+      "max":10,
       "min":1
     },
     "FindingDescription":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "FindingDetail":{
+      "type":"structure",
+      "members":{
+        "cisaData":{"shape":"CisaData"},
+        "cwes":{
+          "shape":"Cwes",
+          "documentation":"<p>The Common Weakness Enumerations (CWEs) associated with the vulnerability.</p>"
+        },
+        "epssScore":{
+          "shape":"Double",
+          "documentation":"<p>The Exploit Prediction Scoring System (EPSS) score of the vulnerability.</p>"
+        },
+        "evidences":{
+          "shape":"EvidenceList",
+          "documentation":"<p>Information on the evidence of the vulnerability.</p>"
+        },
+        "exploitObserved":{"shape":"ExploitObserved"},
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The finding ARN that the vulnerability details are associated with.</p>"
+        },
+        "referenceUrls":{
+          "shape":"VulnerabilityReferenceUrls",
+          "documentation":"<p>The reference URLs for the vulnerability data.</p>"
+        },
+        "riskScore":{
+          "shape":"RiskScore",
+          "documentation":"<p>The risk score of the vulnerability.</p>"
+        },
+        "tools":{
+          "shape":"Tools",
+          "documentation":"<p>The known malware tools or kits that can exploit the vulnerability.</p>"
+        },
+        "ttps":{
+          "shape":"Ttps",
+          "documentation":"<p>The MITRE adversary tactics, techniques, or procedures (TTPs) associated with the vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>Details of the vulnerability identified in a finding.</p>"
+    },
+    "FindingDetails":{
+      "type":"list",
+      "member":{"shape":"FindingDetail"},
+      "min":0
+    },
+    "FindingDetailsError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage",
+        "findingArn"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"FindingDetailsErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message.</p>"
+        },
+        "findingArn":{
+          "shape":"FindingArn",
+          "documentation":"<p>The finding ARN that returned an error.</p>"
+        }
+      },
+      "documentation":"<p>Details about an error encountered when trying to return vulnerability data for a finding.</p>"
+    },
+    "FindingDetailsErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "ACCESS_DENIED",
+        "FINDING_DETAILS_NOT_FOUND",
+        "INVALID_INPUT"
+      ]
+    },
+    "FindingDetailsErrorList":{
+      "type":"list",
+      "member":{"shape":"FindingDetailsError"}
     },
     "FindingList":{
       "type":"list",
@@ -2569,7 +3492,8 @@
       "type":"string",
       "enum":[
         "NETWORK_REACHABILITY",
-        "PACKAGE_VULNERABILITY"
+        "PACKAGE_VULNERABILITY",
+        "CODE_VULNERABILITY"
       ]
     },
     "FindingTypeAggregation":{
@@ -2616,6 +3540,7 @@
         "ALL"
       ]
     },
+    "FirstSeen":{"type":"timestamp"},
     "FixAvailable":{
       "type":"string",
       "enum":[
@@ -2724,7 +3649,8 @@
       "enum":[
         "EC2",
         "ECR",
-        "LAMBDA"
+        "LAMBDA",
+        "LAMBDA_CODE"
       ]
     },
     "FunctionName":{
@@ -2756,6 +3682,63 @@
         "delegatedAdmin":{
           "shape":"DelegatedAdmin",
           "documentation":"<p>The Amazon Web Services account ID of the Amazon Inspector delegated administrator.</p>"
+        }
+      }
+    },
+    "GetEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An error message explaining why Amazon Inspector deep inspection configurations could not be retrieved for your account.</p>"
+        },
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths for your organization.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths for your account.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The activation status of Amazon Inspector deep inspection in your account.</p>"
+        }
+      }
+    },
+    "GetEncryptionKeyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "scanType"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type the key encrypts.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "scanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The scan type the key encrypts.</p>",
+          "location":"querystring",
+          "locationName":"scanType"
+        }
+      }
+    },
+    "GetEncryptionKeyResponse":{
+      "type":"structure",
+      "required":["kmsKeyId"],
+      "members":{
+        "kmsKeyId":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>A kms key ID.</p>"
         }
       }
     },
@@ -2813,6 +3796,46 @@
         "member":{
           "shape":"Member",
           "documentation":"<p>Details of the retrieved member account.</p>"
+        }
+      }
+    },
+    "GetSbomExportRequest":{
+      "type":"structure",
+      "required":["reportId"],
+      "members":{
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The report ID of the SBOM export to get details for.</p>"
+        }
+      }
+    },
+    "GetSbomExportResponse":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"ReportingErrorCode",
+          "documentation":"<p>An error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An error message.</p>"
+        },
+        "filterCriteria":{
+          "shape":"ResourceFilterCriteria",
+          "documentation":"<p>Contains details about the resource filter criteria used for the software bill of materials (SBOM) report.</p>"
+        },
+        "format":{
+          "shape":"SbomReportFormat",
+          "documentation":"<p>The format of the software bill of materials (SBOM) report.</p>"
+        },
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The report ID of the software bill of materials (SBOM) report.</p>"
+        },
+        "s3Destination":{"shape":"Destination"},
+        "status":{
+          "shape":"ExternalReportStatus",
+          "documentation":"<p>The status of the software bill of materials (SBOM) report.</p>"
         }
       }
     },
@@ -2952,6 +3975,10 @@
     "IpV6AddressList":{
       "type":"list",
       "member":{"shape":"IpV6Address"}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-(us-gov|cn))?:kms:([a-z0-9][-.a-z0-9]{0,62})?:[0-9]{12}?:key/(([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|(mrk-[0-9a-zA-Z]{32}))$"
     },
     "LambdaFunctionAggregation":{
       "type":"structure",
@@ -3136,6 +4163,7 @@
       },
       "documentation":"<p>The VPC security groups and subnets that are attached to an AWS Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html\">VPC Settings</a>.</p>"
     },
+    "LastSeen":{"type":"timestamp"},
     "LayerList":{
       "type":"list",
       "member":{"shape":"LambdaLayerArn"},
@@ -3578,6 +4606,55 @@
       },
       "documentation":"<p>Details on a member account in your organization.</p>"
     },
+    "MemberAccountEc2DeepInspectionStatus":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "activateDeepInspection"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member.</p>"
+        },
+        "activateDeepInspection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether Amazon Inspector deep inspection is active in the account. If <code>TRUE</code> Amazon Inspector deep inspection is active, if <code>FALSE</code> it is not active.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the status of Amazon Inspector deep inspection for a member account in your organization.</p>"
+    },
+    "MemberAccountEc2DeepInspectionStatusList":{
+      "type":"list",
+      "member":{"shape":"MemberAccountEc2DeepInspectionStatus"},
+      "max":100,
+      "min":0
+    },
+    "MemberAccountEc2DeepInspectionStatusState":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the Amazon Web Services account of the organization member</p>"
+        },
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The error message explaining why the account failed to activate Amazon Inspector deep inspection.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The state of Amazon Inspector deep inspection in the member account.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about the state of Amazon Inspector deep inspection for a member account.</p>"
+    },
+    "MemberAccountEc2DeepInspectionStatusStateList":{
+      "type":"list",
+      "member":{"shape":"MemberAccountEc2DeepInspectionStatusState"},
+      "max":100,
+      "min":0
+    },
     "MemberList":{
       "type":"list",
       "member":{"shape":"Member"},
@@ -3778,7 +4855,8 @@
         "PIP",
         "PYTHONPKG",
         "NODEPKG",
-        "POM"
+        "POM",
+        "GEMSPEC"
       ]
     },
     "PackageName":{
@@ -3860,6 +4938,18 @@
         }
       },
       "documentation":"<p>Information about a package vulnerability finding.</p>"
+    },
+    "Path":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^(?:/(?:\\.[-\\w]+|[-\\w]+(?:\\.[-\\w]+)?))+/?$"
+    },
+    "PathList":{
+      "type":"list",
+      "member":{"shape":"Path"},
+      "max":5,
+      "min":0
     },
     "Permission":{
       "type":"structure",
@@ -3947,6 +5037,22 @@
         }
       },
       "documentation":"<p>Details about the recommended course of action to remediate the finding.</p>"
+    },
+    "ReferenceUrls":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":10,
+      "min":1
+    },
+    "RelatedVulnerabilities":{
+      "type":"list",
+      "member":{"shape":"RelatedVulnerability"},
+      "max":100,
+      "min":0
+    },
+    "RelatedVulnerability":{
+      "type":"string",
+      "min":0
     },
     "RelationshipStatus":{
       "type":"string",
@@ -4047,6 +5153,28 @@
         "AFFECTED_IMAGES"
       ]
     },
+    "ResetEncryptionKeyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "scanType"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type the key encrypts.</p>"
+        },
+        "scanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The scan type the key encrypts.</p>"
+        }
+      }
+    },
+    "ResetEncryptionKeyResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Resource":{
       "type":"structure",
       "required":[
@@ -4099,6 +5227,44 @@
       },
       "documentation":"<p>Contains details about the resource involved in the finding.</p>"
     },
+    "ResourceFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The account IDs used as resource filter criteria.</p>"
+        },
+        "ec2InstanceTags":{
+          "shape":"ResourceMapFilterList",
+          "documentation":"<p>The EC2 instance tags used as resource filter criteria.</p>"
+        },
+        "ecrImageTags":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The ECR image tags used as resource filter criteria.</p>"
+        },
+        "ecrRepositoryName":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The ECR repository names used as resource filter criteria.</p>"
+        },
+        "lambdaFunctionName":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The AWS Lambda function name used as resource filter criteria.</p>"
+        },
+        "lambdaFunctionTags":{
+          "shape":"ResourceMapFilterList",
+          "documentation":"<p>The AWS Lambda function tags used as resource filter criteria.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The resource IDs used as resource filter criteria.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceStringFilterList",
+          "documentation":"<p>The resource types used as resource filter criteria.</p>"
+        }
+      },
+      "documentation":"<p>The resource filter criteria for a Software bill of materials (SBOM) report.</p>"
+    },
     "ResourceId":{
       "type":"string",
       "max":341,
@@ -4108,6 +5274,38 @@
     "ResourceList":{
       "type":"list",
       "member":{"shape":"Resource"},
+      "max":10,
+      "min":1
+    },
+    "ResourceMapComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "ResourceMapFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "key"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"ResourceMapComparison",
+          "documentation":"<p>The filter's comparison.</p>"
+        },
+        "key":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The filter's key.</p>"
+        },
+        "value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The filter's value.</p>"
+        }
+      },
+      "documentation":"<p>A resource map filter for a software bill of material report.</p>"
+    },
+    "ResourceMapFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourceMapFilter"},
       "max":10,
       "min":1
     },
@@ -4151,7 +5349,8 @@
       "enum":[
         "EC2",
         "ECR",
-        "LAMBDA"
+        "LAMBDA",
+        "LAMBDA_CODE"
       ]
     },
     "ResourceState":{
@@ -4169,7 +5368,8 @@
           "shape":"State",
           "documentation":"<p>An object detailing the state of Amazon Inspector scanning for Amazon ECR resources.</p>"
         },
-        "lambda":{"shape":"State"}
+        "lambda":{"shape":"State"},
+        "lambdaCode":{"shape":"State"}
       },
       "documentation":"<p>Details the state of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
     },
@@ -4190,10 +5390,50 @@
         },
         "lambda":{
           "shape":"Status",
-          "documentation":"<p>The status of Amazon Inspector scanning for AWS Lambda function resources.</p>"
+          "documentation":"<p>The status of Amazon Inspector scanning for AWS Lambda function.</p>"
+        },
+        "lambdaCode":{
+          "shape":"Status",
+          "documentation":"<p>The status of Amazon Inspector scanning for custom application code for Amazon Web Services Lambda functions. </p>"
         }
       },
       "documentation":"<p>Details the status of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
+    },
+    "ResourceStringComparison":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS"
+      ]
+    },
+    "ResourceStringFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"ResourceStringComparison",
+          "documentation":"<p>The filter's comparison.</p>"
+        },
+        "value":{
+          "shape":"ResourceStringInput",
+          "documentation":"<p>The filter's value.</p>"
+        }
+      },
+      "documentation":"<p>A resource string filter for a software bill of materials report.</p>"
+    },
+    "ResourceStringFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourceStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "ResourceStringInput":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "ResourceType":{
       "type":"string",
@@ -4203,6 +5443,10 @@
         "AWS_ECR_REPOSITORY",
         "AWS_LAMBDA_FUNCTION"
       ]
+    },
+    "RiskScore":{
+      "type":"integer",
+      "box":true
     },
     "Runtime":{
       "type":"string",
@@ -4219,7 +5463,16 @@
         "PYTHON_3_9",
         "UNSUPPORTED",
         "NODEJS_18_X",
-        "GO_1_X"
+        "GO_1_X",
+        "JAVA_17",
+        "PYTHON_3_10"
+      ]
+    },
+    "SbomReportFormat":{
+      "type":"string",
+      "enum":[
+        "CYCLONEDX_1_4",
+        "SPDX_2_3"
       ]
     },
     "ScanStatus":{
@@ -4267,15 +5520,61 @@
         "NO_INVENTORY",
         "STALE_INVENTORY",
         "EXCLUDED_BY_TAG",
-        "UNSUPPORTED_RUNTIME"
+        "UNSUPPORTED_RUNTIME",
+        "UNSUPPORTED_MEDIA_TYPE",
+        "UNSUPPORTED_CONFIG_FILE",
+        "DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED",
+        "DEEP_INSPECTION_NO_INVENTORY"
       ]
     },
     "ScanType":{
       "type":"string",
       "enum":[
         "NETWORK",
-        "PACKAGE"
+        "PACKAGE",
+        "CODE"
       ]
+    },
+    "SearchVulnerabilitiesFilterCriteria":{
+      "type":"structure",
+      "required":["vulnerabilityIds"],
+      "members":{
+        "vulnerabilityIds":{
+          "shape":"VulnIdList",
+          "documentation":"<p>The IDs for specific vulnerabilities.</p>"
+        }
+      },
+      "documentation":"<p>Details on the criteria used to define the filter for a vulnerability search. </p>"
+    },
+    "SearchVulnerabilitiesRequest":{
+      "type":"structure",
+      "required":["filterCriteria"],
+      "members":{
+        "filterCriteria":{
+          "shape":"SearchVulnerabilitiesFilterCriteria",
+          "documentation":"<p>The criteria used to filter the results of a vulnerability search.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request to a list action. For subsequent calls, use the <code>NextToken</code> value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
+    },
+    "SearchVulnerabilitiesResponse":{
+      "type":"structure",
+      "required":["vulnerabilities"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p>"
+        },
+        "vulnerabilities":{
+          "shape":"Vulnerabilities",
+          "documentation":"<p>Details about the listed vulnerability.</p>"
+        }
+      }
     },
     "SecurityGroupId":{
       "type":"string",
@@ -4384,7 +5683,8 @@
         "VULNERABILITY_ID",
         "VULNERABILITY_SOURCE",
         "INSPECTOR_SCORE",
-        "VENDOR_SEVERITY"
+        "VENDOR_SEVERITY",
+        "EPSS_SCORE"
       ]
     },
     "SortOrder":{
@@ -4510,6 +5810,36 @@
       "max":16,
       "min":0
     },
+    "SuggestedFix":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"SuggestedFixCodeString",
+          "documentation":"<p>The fix's code.</p>"
+        },
+        "description":{
+          "shape":"SuggestedFixDescriptionString",
+          "documentation":"<p>The fix's description.</p>"
+        }
+      },
+      "documentation":"<p>A suggested fix for a vulnerability in your Lambda function code.</p>"
+    },
+    "SuggestedFixCodeString":{
+      "type":"string",
+      "max":2500,
+      "min":1
+    },
+    "SuggestedFixDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "SuggestedFixes":{
+      "type":"list",
+      "member":{"shape":"SuggestedFix"},
+      "max":5,
+      "min":1
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -4555,6 +5885,16 @@
       "members":{
       }
     },
+    "Target":{
+      "type":"string",
+      "max":50,
+      "min":0
+    },
+    "Targets":{
+      "type":"list",
+      "member":{"shape":"Target"},
+      "min":0
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -4579,6 +5919,10 @@
     "TitleAggregation":{
       "type":"structure",
       "members":{
+        "findingType":{
+          "shape":"AggregationFindingType",
+          "documentation":"<p>The type of finding to aggregate on.</p>"
+        },
         "resourceType":{
           "shape":"AggregationResourceType",
           "documentation":"<p>The resource type to aggregate on.</p>"
@@ -4633,6 +5977,24 @@
         "ALL"
       ]
     },
+    "Tool":{
+      "type":"string",
+      "min":0
+    },
+    "Tools":{
+      "type":"list",
+      "member":{"shape":"Tool"}
+    },
+    "Ttp":{
+      "type":"string",
+      "max":30,
+      "min":0
+    },
+    "Ttps":{
+      "type":"list",
+      "member":{"shape":"Ttp"},
+      "min":0
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -4670,6 +6032,67 @@
       }
     },
     "UpdateConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "activateDeepInspection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specify <code>TRUE</code> to activate Amazon Inspector deep inspection in your account, or <code>FALSE</code> to deactivate. Member accounts in an organization cannot deactivate deep inspection, instead the delegated administrator for the organization can deactivate a member account using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_BatchUpdateMemberEc2DeepInspectionStatus.html\">BatchUpdateMemberEc2DeepInspectionStatus</a>.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths you are adding for your account.</p>"
+        }
+      }
+    },
+    "UpdateEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An error message explaining why new Amazon Inspector deep inspection custom paths could not be added.</p>"
+        },
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The current Amazon Inspector deep inspection custom paths for the organization.</p>"
+        },
+        "packagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The current Amazon Inspector deep inspection custom paths for your account.</p>"
+        },
+        "status":{
+          "shape":"Ec2DeepInspectionStatus",
+          "documentation":"<p>The status of Amazon Inspector deep inspection in your account.</p>"
+        }
+      }
+    },
+    "UpdateEncryptionKeyRequest":{
+      "type":"structure",
+      "required":[
+        "kmsKeyId",
+        "resourceType",
+        "scanType"
+      ],
+      "members":{
+        "kmsKeyId":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>A KMS key ID for the encryption key.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type for the encryption key.</p>"
+        },
+        "scanType":{
+          "shape":"ScanType",
+          "documentation":"<p>The scan type for the encryption key.</p>"
+        }
+      }
+    },
+    "UpdateEncryptionKeyResponse":{
       "type":"structure",
       "members":{
       }
@@ -4712,6 +6135,21 @@
           "shape":"FilterArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the successfully updated filter.</p>"
         }
+      }
+    },
+    "UpdateOrgEc2DeepInspectionConfigurationRequest":{
+      "type":"structure",
+      "required":["orgPackagePaths"],
+      "members":{
+        "orgPackagePaths":{
+          "shape":"PathList",
+          "documentation":"<p>The Amazon Inspector deep inspection custom paths you are adding for your organization.</p>"
+        }
+      }
+    },
+    "UpdateOrgEc2DeepInspectionConfigurationResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "UpdateOrganizationConfigurationRequest":{
@@ -4794,7 +6232,8 @@
         "EC2_INSTANCE_HOURS",
         "ECR_INITIAL_SCAN",
         "ECR_RESCAN",
-        "LAMBDA_FUNCTION_HOURS"
+        "LAMBDA_FUNCTION_HOURS",
+        "LAMBDA_FUNCTION_CODE_HOURS"
       ]
     },
     "UsageValue":{
@@ -4855,6 +6294,13 @@
         "OTHER"
       ]
     },
+    "VendorCreatedAt":{"type":"timestamp"},
+    "VendorSeverity":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "VendorUpdatedAt":{"type":"timestamp"},
     "Version":{
       "type":"string",
       "pattern":"^\\$LATEST|[0-9]+$"
@@ -4863,6 +6309,98 @@
       "type":"string",
       "pattern":"^vpc-([a-z0-9]{8}|[a-z0-9]{17}|\\*)$"
     },
+    "VulnId":{
+      "type":"string",
+      "pattern":"^CVE-[12][0-9]{3}-[0-9]{1,10}$"
+    },
+    "VulnIdList":{
+      "type":"list",
+      "member":{"shape":"VulnId"},
+      "max":1,
+      "min":1
+    },
+    "Vulnerabilities":{
+      "type":"list",
+      "member":{"shape":"Vulnerability"},
+      "max":1,
+      "min":0
+    },
+    "Vulnerability":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "atigData":{
+          "shape":"AtigData",
+          "documentation":"<p>An object that contains information about the Amazon Web Services Threat Intel Group (ATIG) details for the vulnerability.</p>"
+        },
+        "cisaData":{
+          "shape":"CisaData",
+          "documentation":"<p>An object that contains the Cybersecurity and Infrastructure Security Agency (CISA) details for the vulnerability.</p>"
+        },
+        "cvss2":{
+          "shape":"Cvss2",
+          "documentation":"<p>An object that contains the Common Vulnerability Scoring System (CVSS) Version 2 details for the vulnerability.</p>"
+        },
+        "cvss3":{
+          "shape":"Cvss3",
+          "documentation":"<p>An object that contains the Common Vulnerability Scoring System (CVSS) Version 3 details for the vulnerability.</p>"
+        },
+        "cwes":{
+          "shape":"Cwes",
+          "documentation":"<p>The Common Weakness Enumeration (CWE) associated with the vulnerability.</p>"
+        },
+        "description":{
+          "shape":"VulnerabilityDescription",
+          "documentation":"<p>A description of the vulnerability.</p>"
+        },
+        "detectionPlatforms":{
+          "shape":"DetectionPlatforms",
+          "documentation":"<p>Platforms that the vulnerability can be detected on.</p>"
+        },
+        "epss":{
+          "shape":"Epss",
+          "documentation":"<p>An object that contains the Exploit Prediction Scoring System (EPSS) score for a vulnerability.</p>"
+        },
+        "exploitObserved":{
+          "shape":"ExploitObserved",
+          "documentation":"<p>An object that contains details on when the exploit was observed.</p>"
+        },
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID for the specific vulnerability.</p>"
+        },
+        "referenceUrls":{
+          "shape":"VulnerabilityReferenceUrls",
+          "documentation":"<p>Links to various resources with more information on this vulnerability. </p>"
+        },
+        "relatedVulnerabilities":{
+          "shape":"RelatedVulnerabilities",
+          "documentation":"<p>A list of related vulnerabilities.</p>"
+        },
+        "source":{
+          "shape":"VulnerabilitySource",
+          "documentation":"<p>The source of the vulnerability information.</p>"
+        },
+        "sourceUrl":{
+          "shape":"VulnerabilitySourceUrl",
+          "documentation":"<p>A link to the official source material for this vulnerability.</p>"
+        },
+        "vendorCreatedAt":{
+          "shape":"VendorCreatedAt",
+          "documentation":"<p>The date and time when the vendor created this vulnerability.</p>"
+        },
+        "vendorSeverity":{
+          "shape":"VendorSeverity",
+          "documentation":"<p>The severity assigned by the vendor.</p>"
+        },
+        "vendorUpdatedAt":{
+          "shape":"VendorUpdatedAt",
+          "documentation":"<p>The date and time when the vendor last updated this vulnerability.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific vulnerability Amazon Inspector can detect.</p>"
+    },
+    "VulnerabilityDescription":{"type":"string"},
     "VulnerabilityId":{
       "type":"string",
       "max":128,
@@ -4871,6 +6409,24 @@
     "VulnerabilityIdList":{
       "type":"list",
       "member":{"shape":"VulnerabilityId"}
+    },
+    "VulnerabilityReferenceUrl":{
+      "type":"string",
+      "min":0
+    },
+    "VulnerabilityReferenceUrls":{
+      "type":"list",
+      "member":{"shape":"VulnerabilityReferenceUrl"},
+      "max":100,
+      "min":0
+    },
+    "VulnerabilitySource":{
+      "type":"string",
+      "enum":["NVD"]
+    },
+    "VulnerabilitySourceUrl":{
+      "type":"string",
+      "min":0
     },
     "VulnerablePackage":{
       "type":"structure",

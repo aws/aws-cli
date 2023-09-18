@@ -19,7 +19,7 @@ import os
 import importlib.abc
 import sys
 
-__version__ = '2.10.3'
+__version__ = '2.13.19'
 
 #
 # Get our data path to be added to botocore's search path
@@ -62,7 +62,7 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
         's3transfer',
     ]
     _TARGET_FINDERS = [
-        'pyimod02_importers.FrozenImporter',  # Pyinstaller injected finder
+        'pyimod02_importers.PyiFrozenImporter',  # Pyinstaller injected finder
         '_frozen_importlib_external.PathFinder'  # Built-in path finder
     ]
 

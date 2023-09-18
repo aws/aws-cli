@@ -503,6 +503,80 @@
       ],
       "documentation":"<p>Retrieves all applications or multiple applications by ID.</p>"
     },
+    "ListExportErrors":{
+      "name":"ListExportErrors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListExportErrors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExportErrorsRequest"},
+      "output":{"shape":"ListExportErrorsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List export errors.</p>"
+    },
+    "ListExports":{
+      "name":"ListExports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListExports",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExportsRequest"},
+      "output":{"shape":"ListExportsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>List exports.</p>"
+    },
+    "ListImportErrors":{
+      "name":"ListImportErrors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListImportErrors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListImportErrorsRequest"},
+      "output":{"shape":"ListImportErrorsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List import errors.</p>"
+    },
+    "ListImports":{
+      "name":"ListImports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListImports",
+        "responseCode":200
+      },
+      "input":{"shape":"ListImportsRequest"},
+      "output":{"shape":"ListImportsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List imports.</p>"
+    },
+    "ListManagedAccounts":{
+      "name":"ListManagedAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListManagedAccounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedAccountsRequest"},
+      "output":{"shape":"ListManagedAccountsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List Managed Accounts.</p>"
+    },
     "ListSourceServerActions":{
       "name":"ListSourceServerActions",
       "http":{
@@ -581,6 +655,24 @@
       ],
       "documentation":"<p>Archives specific Source Servers by setting the SourceServer.isArchived property to true for specified SourceServers by ID. This command only works for SourceServers with a lifecycle. state which equals DISCONNECTED or CUTOVER.</p>"
     },
+    "PauseReplication":{
+      "name":"PauseReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PauseReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"PauseReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Pause Replication.</p>"
+    },
     "PutSourceServerAction":{
       "name":"PutSourceServerAction",
       "http":{
@@ -647,6 +739,24 @@
       ],
       "documentation":"<p>Remove template post migration custom action.</p>"
     },
+    "ResumeReplication":{
+      "name":"ResumeReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ResumeReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"ResumeReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Resume Replication.</p>"
+    },
     "RetryDataReplication":{
       "name":"RetryDataReplication",
       "http":{
@@ -678,6 +788,40 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Launches a Cutover Instance for specific Source Servers. This command starts a LAUNCH job whose initiatedBy property is StartCutover and changes the SourceServer.lifeCycle.state property to CUTTING_OVER.</p>"
+    },
+    "StartExport":{
+      "name":"StartExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartExport",
+        "responseCode":202
+      },
+      "input":{"shape":"StartExportRequest"},
+      "output":{"shape":"StartExportResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Start export.</p>"
+    },
+    "StartImport":{
+      "name":"StartImport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartImport",
+        "responseCode":202
+      },
+      "input":{"shape":"StartImportRequest"},
+      "output":{"shape":"StartImportResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Start import.</p>"
     },
     "StartReplication":{
       "name":"StartReplication",
@@ -712,6 +856,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Launches a Test Instance for specific Source Servers. This command starts a LAUNCH job whose initiatedBy property is StartTest and changes the SourceServer.lifeCycle.state property to TESTING.</p>"
+    },
+    "StopReplication":{
+      "name":"StopReplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StopReplication",
+        "responseCode":200
+      },
+      "input":{"shape":"StopReplicationRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Stop Replication.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -939,6 +1101,33 @@
       },
       "exception":true
     },
+    "AccountID":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12,}"
+    },
+    "ActionCategory":{
+      "type":"string",
+      "enum":[
+        "DISASTER_RECOVERY",
+        "OPERATING_SYSTEM",
+        "LICENSE_AND_SUBSCRIPTION",
+        "VALIDATION",
+        "OBSERVABILITY",
+        "SECURITY",
+        "NETWORKING",
+        "CONFIGURATION",
+        "BACKUP",
+        "OTHER"
+      ]
+    },
+    "ActionDescription":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[0-9a-zA-Z ():/.,'-_#*; ]*$"
+    },
     "ActionID":{
       "type":"string",
       "max":64,
@@ -1078,6 +1267,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1088,6 +1281,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -1101,6 +1298,10 @@
         "waveID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
@@ -1123,6 +1324,10 @@
         "sourceServerIDs"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1143,6 +1348,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "BandwidthThrottling":{
+      "type":"long",
+      "max":10000,
+      "min":0
     },
     "Boolean":{
       "type":"boolean",
@@ -1181,6 +1391,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>The request to change the source server migration account ID.</p>"
+        },
         "lifeCycle":{
           "shape":"ChangeServerLifeCycleStateSourceServerLifecycle",
           "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
@@ -1209,6 +1423,11 @@
         "READY_FOR_CUTOVER",
         "CUTOVER"
       ]
+    },
+    "ClientIdempotencyToken":{
+      "type":"string",
+      "max":64,
+      "min":0
     },
     "CloudWatchLogGroupName":{
       "type":"string",
@@ -1255,6 +1474,10 @@
       "type":"structure",
       "required":["name"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"ApplicationDescription",
           "documentation":"<p>Application description.</p>"
@@ -1348,7 +1571,7 @@
           "documentation":"<p>Request to associate the default Application Migration Service Security group with the Replication Settings template.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Request to configure bandwidth throttling during Replication Settings template creation.</p>"
         },
         "createPublicIP":{
@@ -1394,6 +1617,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Request to use Dedicated Replication Servers during Replication Settings template creation.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to use Fips Endpoint during Replication Settings template creation.</p>"
         }
       }
     },
@@ -1401,6 +1628,10 @@
       "type":"structure",
       "required":["name"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"WaveDescription",
           "documentation":"<p>Wave description.</p>"
@@ -1599,6 +1830,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1614,6 +1849,10 @@
       "type":"structure",
       "required":["jobID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Job from service by Account ID.</p>"
+        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to delete Job from service by Job ID.</p>"
@@ -1659,6 +1898,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Source Server from service by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to delete Source Server from service by Server ID.</p>"
@@ -1684,6 +1927,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -1699,6 +1946,10 @@
       "type":"structure",
       "required":["jobID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe Job log Account ID.</p>"
+        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to describe Job log job ID.</p>"
@@ -1729,6 +1980,10 @@
     "DescribeJobsRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe job log items by Account ID.</p>"
+        },
         "filters":{
           "shape":"DescribeJobsRequestFilters",
           "documentation":"<p>Request to describe Job log filters.</p>"
@@ -1843,6 +2098,10 @@
     "DescribeSourceServersRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to filter Source Servers list by Accoun ID.</p>"
+        },
         "filters":{
           "shape":"DescribeSourceServersRequestFilters",
           "documentation":"<p>Request to filter Source Servers list.</p>"
@@ -1945,6 +2204,10 @@
         "waveID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
@@ -1967,6 +2230,10 @@
         "sourceServerIDs"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1992,6 +2259,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to disconnect Source Server from service by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to disconnect Source Server from service by Server ID.</p>"
@@ -2061,10 +2332,121 @@
       },
       "documentation":"<p>Error details.</p>"
     },
+    "ExportErrorData":{
+      "type":"structure",
+      "members":{
+        "rawError":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Export errors data raw error.</p>"
+        }
+      },
+      "documentation":"<p>Export errors data.</p>"
+    },
+    "ExportErrors":{
+      "type":"list",
+      "member":{"shape":"ExportTaskError"}
+    },
+    "ExportID":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"^export-[0-9a-zA-Z]{17}$"
+    },
+    "ExportStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
+    "ExportTask":{
+      "type":"structure",
+      "members":{
+        "creationDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Export task creation datetime.</p>"
+        },
+        "endDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Export task end datetime.</p>"
+        },
+        "exportID":{
+          "shape":"ExportID",
+          "documentation":"<p>Export task id.</p>"
+        },
+        "progressPercentage":{
+          "shape":"Float",
+          "documentation":"<p>Export task progress percentage.</p>"
+        },
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>Export task s3 bucket.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>Export task s3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>Export task s3 key.</p>"
+        },
+        "status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>Export task status.</p>"
+        },
+        "summary":{
+          "shape":"ExportTaskSummary",
+          "documentation":"<p>Export task summary.</p>"
+        }
+      },
+      "documentation":"<p>Export task.</p>"
+    },
+    "ExportTaskError":{
+      "type":"structure",
+      "members":{
+        "errorData":{
+          "shape":"ExportErrorData",
+          "documentation":"<p>Export task error data.</p>"
+        },
+        "errorDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Export task error datetime.</p>"
+        }
+      },
+      "documentation":"<p>Export task error.</p>"
+    },
+    "ExportTaskSummary":{
+      "type":"structure",
+      "members":{
+        "applicationsCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Export task summary applications count.</p>"
+        },
+        "serversCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Export task summary servers count.</p>"
+        },
+        "wavesCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Export task summary waves count.</p>"
+        }
+      },
+      "documentation":"<p>Export task summary.</p>"
+    },
+    "ExportsList":{
+      "type":"list",
+      "member":{"shape":"ExportTask"}
+    },
     "FinalizeCutoverRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to finalize Cutover by Source Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to finalize Cutover by Source Server ID.</p>"
@@ -2080,10 +2462,18 @@
         "STOPPED"
       ]
     },
+    "Float":{
+      "type":"float",
+      "box":true
+    },
     "GetLaunchConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Launch Configuration information by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Launch Configuration information by Source Server ID.</p>"
@@ -2094,6 +2484,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Replication Configuration by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Replication Configuration by Source Server ID.</p>"
@@ -2141,6 +2535,188 @@
       },
       "documentation":"<p>Identification hints.</p>"
     },
+    "ImportErrorData":{
+      "type":"structure",
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Import error data source account ID.</p>"
+        },
+        "applicationID":{
+          "shape":"ApplicationID",
+          "documentation":"<p>Import error data application ID.</p>"
+        },
+        "ec2LaunchTemplateID":{
+          "shape":"BoundedString",
+          "documentation":"<p>Import error data ec2 LaunchTemplate ID.</p>"
+        },
+        "rawError":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Import error data raw error.</p>"
+        },
+        "rowNumber":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import error data row number.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Import error data source server ID.</p>"
+        },
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Import error data wave id.</p>"
+        }
+      },
+      "documentation":"<p>Import error data.</p>"
+    },
+    "ImportErrorType":{
+      "type":"string",
+      "enum":[
+        "VALIDATION_ERROR",
+        "PROCESSING_ERROR"
+      ]
+    },
+    "ImportErrors":{
+      "type":"list",
+      "member":{"shape":"ImportTaskError"}
+    },
+    "ImportID":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"^import-[0-9a-zA-Z]{17}$"
+    },
+    "ImportIDsFilter":{
+      "type":"list",
+      "member":{"shape":"ImportID"},
+      "max":10,
+      "min":0
+    },
+    "ImportList":{
+      "type":"list",
+      "member":{"shape":"ImportTask"}
+    },
+    "ImportStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "STARTED",
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
+    "ImportTask":{
+      "type":"structure",
+      "members":{
+        "creationDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Import task creation datetime.</p>"
+        },
+        "endDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Import task end datetime.</p>"
+        },
+        "importID":{
+          "shape":"ImportID",
+          "documentation":"<p>Import task id.</p>"
+        },
+        "progressPercentage":{
+          "shape":"Float",
+          "documentation":"<p>Import task progress percentage.</p>"
+        },
+        "s3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p>Import task s3 bucket source.</p>"
+        },
+        "status":{
+          "shape":"ImportStatus",
+          "documentation":"<p>Import task status.</p>"
+        },
+        "summary":{
+          "shape":"ImportTaskSummary",
+          "documentation":"<p>Import task summary.</p>"
+        }
+      },
+      "documentation":"<p>Import task.</p>"
+    },
+    "ImportTaskError":{
+      "type":"structure",
+      "members":{
+        "errorData":{
+          "shape":"ImportErrorData",
+          "documentation":"<p>Import task error data.</p>"
+        },
+        "errorDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Import task error datetime.</p>"
+        },
+        "errorType":{
+          "shape":"ImportErrorType",
+          "documentation":"<p>Import task error type.</p>"
+        }
+      },
+      "documentation":"<p>Import task error.</p>"
+    },
+    "ImportTaskSummary":{
+      "type":"structure",
+      "members":{
+        "applications":{
+          "shape":"ImportTaskSummaryApplications",
+          "documentation":"<p>Import task summary applications.</p>"
+        },
+        "servers":{
+          "shape":"ImportTaskSummaryServers",
+          "documentation":"<p>Import task summary servers.</p>"
+        },
+        "waves":{
+          "shape":"ImportTaskSummaryWaves",
+          "documentation":"<p>Import task summary waves.</p>"
+        }
+      },
+      "documentation":"<p>Import task summary.</p>"
+    },
+    "ImportTaskSummaryApplications":{
+      "type":"structure",
+      "members":{
+        "createdCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summary applications created count.</p>"
+        },
+        "modifiedCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summary applications modified count.</p>"
+        }
+      },
+      "documentation":"<p>Import task summary applications.</p>"
+    },
+    "ImportTaskSummaryServers":{
+      "type":"structure",
+      "members":{
+        "createdCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summary servers created count.</p>"
+        },
+        "modifiedCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summary servers modified count.</p>"
+        }
+      },
+      "documentation":"<p>Import task summary servers.</p>"
+    },
+    "ImportTaskSummaryWaves":{
+      "type":"structure",
+      "members":{
+        "createdCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summery waves created count.</p>"
+        },
+        "modifiedCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Import task summery waves modified count.</p>"
+        }
+      },
+      "documentation":"<p>Import task summery waves.</p>"
+    },
     "InitializeServiceRequest":{
       "type":"structure",
       "members":{
@@ -2176,6 +2752,17 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "Iops":{
+      "type":"long",
+      "max":64000,
+      "min":100
+    },
+    "JmesPathString":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_\\[\\]]+)*$"
     },
     "Job":{
       "type":"structure",
@@ -2501,11 +3088,11 @@
       "type":"structure",
       "members":{
         "iops":{
-          "shape":"PositiveInteger",
+          "shape":"Iops",
           "documentation":"<p>Launch template disk iops configuration.</p>"
         },
         "throughput":{
-          "shape":"PositiveInteger",
+          "shape":"Throughput",
           "documentation":"<p>Launch template disk throughput configuration.</p>"
         },
         "volumeType":{
@@ -2692,7 +3279,8 @@
         "CUTTING_OVER",
         "CUTOVER",
         "DISCONNECTED",
-        "DISCOVERED"
+        "DISCOVERED",
+        "PENDING_INSTALLATION"
       ]
     },
     "LifeCycleStates":{
@@ -2704,6 +3292,10 @@
     "ListApplicationsRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Applications list Account ID.</p>"
+        },
         "filters":{
           "shape":"ListApplicationsRequestFilters",
           "documentation":"<p>Applications list filters.</p>"
@@ -2749,10 +3341,196 @@
         }
       }
     },
+    "ListExportErrorsRequest":{
+      "type":"structure",
+      "required":["exportID"],
+      "members":{
+        "exportID":{
+          "shape":"ExportID",
+          "documentation":"<p>List export errors request export id.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List export errors request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List export errors request next token.</p>"
+        }
+      },
+      "documentation":"<p>List export errors request.</p>"
+    },
+    "ListExportErrorsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ExportErrors",
+          "documentation":"<p>List export errors response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List export errors response next token.</p>"
+        }
+      },
+      "documentation":"<p>List export errors response.</p>"
+    },
+    "ListExportsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{"shape":"ListExportsRequestFilters"},
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List export request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List export request next token.</p>"
+        }
+      },
+      "documentation":"<p>List export request.</p>"
+    },
+    "ListExportsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "exportIDs":{
+          "shape":"ListExportsRequestFiltersExportIDs",
+          "documentation":"<p>List exports request filters export ids.</p>"
+        }
+      },
+      "documentation":"<p>List exports request filters.</p>"
+    },
+    "ListExportsRequestFiltersExportIDs":{
+      "type":"list",
+      "member":{"shape":"ExportID"},
+      "max":10,
+      "min":0
+    },
+    "ListExportsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ExportsList",
+          "documentation":"<p>List export response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List export response next token.</p>"
+        }
+      },
+      "documentation":"<p>List export response.</p>"
+    },
+    "ListImportErrorsRequest":{
+      "type":"structure",
+      "required":["importID"],
+      "members":{
+        "importID":{
+          "shape":"ImportID",
+          "documentation":"<p>List import errors request import id.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List import errors request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List import errors request next token.</p>"
+        }
+      },
+      "documentation":"<p>List import errors request.</p>"
+    },
+    "ListImportErrorsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ImportErrors",
+          "documentation":"<p>List imports errors response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List imports errors response next token.</p>"
+        }
+      },
+      "documentation":"<p>List imports errors response.</p>"
+    },
+    "ListImportsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListImportsRequestFilters",
+          "documentation":"<p>List imports request filters.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List imports request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List imports request next token.</p>"
+        }
+      },
+      "documentation":"<p>List imports request.</p>"
+    },
+    "ListImportsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "importIDs":{
+          "shape":"ImportIDsFilter",
+          "documentation":"<p>List imports request filters import IDs.</p>"
+        }
+      },
+      "documentation":"<p>List imports request filters.</p>"
+    },
+    "ListImportsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ImportList",
+          "documentation":"<p>List import response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List import response next token.</p>"
+        }
+      },
+      "documentation":"<p>List import response.</p>"
+    },
+    "ListManagedAccountsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List managed accounts request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List managed accounts request next token.</p>"
+        }
+      },
+      "documentation":"<p>List managed accounts request.</p>"
+    },
+    "ListManagedAccountsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ManagedAccounts",
+          "documentation":"<p>List managed accounts response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List managed accounts response next token.</p>"
+        }
+      },
+      "documentation":"<p>List managed accounts response.</p>"
+    },
     "ListSourceServerActionsRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID to return when listing source server post migration custom actions.</p>"
+        },
         "filters":{
           "shape":"SourceServerActionsRequestFilters",
           "documentation":"<p>Filters to apply when listing source server post migration custom actions.</p>"
@@ -2843,6 +3621,10 @@
     "ListWavesRequest":{
       "type":"structure",
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request account ID.</p>"
+        },
         "filters":{
           "shape":"ListWavesRequestFilters",
           "documentation":"<p>Waves list filters.</p>"
@@ -2884,10 +3666,30 @@
         }
       }
     },
+    "ManagedAccount":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountID",
+          "documentation":"<p>Managed account, account ID.</p>"
+        }
+      },
+      "documentation":"<p>Managed account.</p>"
+    },
+    "ManagedAccounts":{
+      "type":"list",
+      "member":{"shape":"ManagedAccount"},
+      "max":1000,
+      "min":0
+    },
     "MarkAsArchivedRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Mark as archived by Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Mark as archived by Source Server ID.</p>"
@@ -2974,6 +3776,20 @@
       "type":"list",
       "member":{"shape":"ParticipatingServer"}
     },
+    "PauseReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Pause Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Pause Replication Request source server ID.</p>"
+        }
+      }
+    },
     "PositiveInteger":{
       "type":"long",
       "min":0
@@ -3048,6 +3864,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration custom account ID.</p>"
+        },
         "actionID":{
           "shape":"ActionID",
           "documentation":"<p>Source server post migration custom action ID.</p>"
@@ -3060,6 +3880,14 @@
           "shape":"Boolean",
           "documentation":"<p>Source server post migration custom action active status.</p>"
         },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Source server post migration custom action category.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Source server post migration custom action description.</p>"
+        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Source server post migration custom action document identifier.</p>"
@@ -3067,6 +3895,10 @@
         "documentVersion":{
           "shape":"DocumentVersion",
           "documentation":"<p>Source server post migration custom action document version.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Source server post migration custom action external parameters.</p>"
         },
         "mustSucceedForCutover":{
           "shape":"Boolean",
@@ -3112,6 +3944,14 @@
           "shape":"Boolean",
           "documentation":"<p>Template post migration custom action active status.</p>"
         },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Template post migration custom action category.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Template post migration custom action description.</p>"
+        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action document identifier.</p>"
@@ -3119,6 +3959,10 @@
         "documentVersion":{
           "shape":"DocumentVersion",
           "documentation":"<p>Template post migration custom action document version.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Template post migration custom action external parameters.</p>"
         },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
@@ -3153,6 +3997,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration account ID.</p>"
+        },
         "actionID":{
           "shape":"ActionID",
           "documentation":"<p>Source server post migration custom action ID to remove.</p>"
@@ -3198,7 +4046,7 @@
           "documentation":"<p>Replication Configuration associate default Application Migration Service Security Group.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Replication Configuration set bandwidth throttling.</p>"
         },
         "createPublicIP":{
@@ -3252,6 +4100,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration use Dedicated Replication Server.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration use Fips Endpoint.</p>"
         }
       }
     },
@@ -3335,7 +4187,7 @@
           "documentation":"<p>Replication Configuration template associate default Application Migration Service Security group.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Replication Configuration template bandwidth throttling.</p>"
         },
         "createPublicIP":{
@@ -3385,6 +4237,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration template use Dedicated Replication Server.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template use Fips Endpoint.</p>"
         }
       }
     },
@@ -3444,15 +4300,63 @@
       },
       "exception":true
     },
+    "ResumeReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Resume Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Resume Replication Request source server ID.</p>"
+        }
+      }
+    },
     "RetryDataReplicationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Retry data replication for Account ID.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Retry data replication for Source Server ID.</p>"
         }
       }
+    },
+    "S3BucketName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9.\\-_]{1,255}$"
+    },
+    "S3BucketSource":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3Key"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>S3 bucket source s3 bucket.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>S3 bucket source s3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>S3 bucket source s3 key.</p>"
+        }
+      },
+      "documentation":"<p>S3 bucket source.</p>"
+    },
+    "S3Key":{
+      "type":"string",
+      "pattern":"^[^\\x00]{1,1020}\\.csv$"
     },
     "S3LogBucketName":{
       "type":"string",
@@ -3556,6 +4460,10 @@
           "shape":"DataReplicationInfo",
           "documentation":"<p>Source server data replication info.</p>"
         },
+        "fqdnForActionFramework":{
+          "shape":"BoundedString",
+          "documentation":"<p>Source server fqdn for action framework.</p>"
+        },
         "isArchived":{
           "shape":"Boolean",
           "documentation":"<p>Source server archived status.</p>"
@@ -3584,6 +4492,10 @@
           "shape":"TagsMap",
           "documentation":"<p>Source server Tags.</p>"
         },
+        "userProvidedID":{
+          "shape":"BoundedString",
+          "documentation":"<p>Source server user provided ID.</p>"
+        },
         "vcenterClientID":{
           "shape":"VcenterClientID",
           "documentation":"<p>Source server vCenter client id.</p>"
@@ -3605,6 +4517,14 @@
           "shape":"Boolean",
           "documentation":"<p>Source server post migration custom action active status.</p>"
         },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Source server post migration custom action category.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Source server post migration custom action description.</p>"
+        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Source server post migration custom action document identifier.</p>"
@@ -3612,6 +4532,10 @@
         "documentVersion":{
           "shape":"DocumentVersion",
           "documentation":"<p>Source server post migration custom action document version.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Source server post migration custom action external parameters.</p>"
         },
         "mustSucceedForCutover":{
           "shape":"Boolean",
@@ -3668,6 +4592,10 @@
           "shape":"BoundedString",
           "documentation":"<p>User-friendly name for the AWS Systems Manager Document.</p>"
         },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>AWS Systems Manager Document external parameters.</p>"
+        },
         "mustSucceedForCutover":{
           "shape":"Boolean",
           "documentation":"<p>If true, Cutover will not be enabled if the document has failed.</p>"
@@ -3686,6 +4614,13 @@
         }
       },
       "documentation":"<p>AWS Systems Manager Document.</p>"
+    },
+    "SsmDocumentExternalParameters":{
+      "type":"map",
+      "key":{"shape":"SsmDocumentParameterName"},
+      "value":{"shape":"SsmExternalParameter"},
+      "max":20,
+      "min":0
     },
     "SsmDocumentName":{
       "type":"string",
@@ -3718,6 +4653,17 @@
       "member":{"shape":"SsmDocument"},
       "max":10,
       "min":0
+    },
+    "SsmExternalParameter":{
+      "type":"structure",
+      "members":{
+        "dynamicPath":{
+          "shape":"JmesPathString",
+          "documentation":"<p>AWS Systems Manager Document external parameters dynamic path.</p>"
+        }
+      },
+      "documentation":"<p>AWS Systems Manager Document external parameter.</p>",
+      "union":true
     },
     "SsmParameterStoreParameter":{
       "type":"structure",
@@ -3757,6 +4703,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Cutover by Account IDs</p>"
+        },
         "sourceServerIDs":{
           "shape":"StartCutoverRequestSourceServerIDs",
           "documentation":"<p>Start Cutover by Source Server IDs.</p>"
@@ -3782,10 +4732,72 @@
         }
       }
     },
+    "StartExportRequest":{
+      "type":"structure",
+      "required":[
+        "s3Bucket",
+        "s3Key"
+      ],
+      "members":{
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>Start export request s3 bucket.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>Start export request s3 bucket owner.</p>"
+        },
+        "s3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>Start export request s3key.</p>"
+        }
+      },
+      "documentation":"<p>Start export request.</p>"
+    },
+    "StartExportResponse":{
+      "type":"structure",
+      "members":{
+        "exportTask":{
+          "shape":"ExportTask",
+          "documentation":"<p>Start export response export task.</p>"
+        }
+      },
+      "documentation":"<p>Start export response.</p>"
+    },
+    "StartImportRequest":{
+      "type":"structure",
+      "required":["s3BucketSource"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>Start import request client token.</p>",
+          "idempotencyToken":true
+        },
+        "s3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p>Start import request s3 bucket source.</p>"
+        }
+      },
+      "documentation":"<p>Start import request.</p>"
+    },
+    "StartImportResponse":{
+      "type":"structure",
+      "members":{
+        "importTask":{
+          "shape":"ImportTask",
+          "documentation":"<p>Start import response import task.</p>"
+        }
+      },
+      "documentation":"<p>Start import response.</p>"
+    },
     "StartReplicationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to start replication.</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>ID of source server on which to start replication.</p>"
@@ -3796,6 +4808,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Test for Account ID.</p>"
+        },
         "sourceServerIDs":{
           "shape":"StartTestRequestSourceServerIDs",
           "documentation":"<p>Start Test for Source Server IDs.</p>"
@@ -3818,6 +4834,20 @@
         "job":{
           "shape":"Job",
           "documentation":"<p>Start Test Job response.</p>"
+        }
+      }
+    },
+    "StopReplicationRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Stop Replication Request account ID.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Stop Replication Request source server ID.</p>"
         }
       }
     },
@@ -3869,6 +4899,8 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0,
       "sensitive":true
     },
     "TargetInstanceTypeRightSizingMethod":{
@@ -3893,6 +4925,14 @@
           "shape":"Boolean",
           "documentation":"<p>Template post migration custom action active status.</p>"
         },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Template post migration custom action category.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Template post migration custom action description.</p>"
+        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action document identifier.</p>"
@@ -3900,6 +4940,10 @@
         "documentVersion":{
           "shape":"DocumentVersion",
           "documentation":"<p>Template post migration custom action document version.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Template post migration custom action external parameters.</p>"
         },
         "mustSucceedForCutover":{
           "shape":"Boolean",
@@ -3943,6 +4987,10 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Terminate Target instance by Account ID</p>"
+        },
         "sourceServerIDs":{
           "shape":"TerminateTargetInstancesRequestSourceServerIDs",
           "documentation":"<p>Terminate Target instance by Source Server IDs.</p>"
@@ -3995,10 +5043,19 @@
       },
       "exception":true
     },
+    "Throughput":{
+      "type":"long",
+      "max":1000,
+      "min":125
+    },
     "UnarchiveApplicationRequest":{
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -4009,6 +5066,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
@@ -4053,6 +5114,10 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -4071,6 +5136,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update Launch configuration Account ID.</p>"
+        },
         "bootMode":{
           "shape":"BootMode",
           "documentation":"<p>Update Launch configuration boot mode request.</p>"
@@ -4177,12 +5246,16 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update replication configuration Account ID request.</p>"
+        },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration associate default Application Migration Service Security group request.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Update replication configuration bandwidth throttling request.</p>"
         },
         "createPublicIP":{
@@ -4236,6 +5309,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration use dedicated Replication Server request.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration use Fips Endpoint.</p>"
         }
       }
     },
@@ -4252,7 +5329,7 @@
           "documentation":"<p>Update replication configuration template associate default Application Migration Service Security group request.</p>"
         },
         "bandwidthThrottling":{
-          "shape":"PositiveInteger",
+          "shape":"BandwidthThrottling",
           "documentation":"<p>Update replication configuration template bandwidth throttling request.</p>"
         },
         "createPublicIP":{
@@ -4298,6 +5375,10 @@
         "useDedicatedReplicationServer":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template use dedicated Replication Server request.</p>"
+        },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template use Fips Endpoint request.</p>"
         }
       }
     },
@@ -4308,6 +5389,10 @@
         "sourceServerID"
       ],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to update replication type.</p>"
+        },
         "replicationType":{
           "shape":"ReplicationType",
           "documentation":"<p>Replication type to which to update source server.</p>"
@@ -4322,6 +5407,10 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        },
         "description":{
           "shape":"WaveDescription",
           "documentation":"<p>Wave description.</p>"

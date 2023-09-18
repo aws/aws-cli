@@ -22,7 +22,7 @@ For more information, see `Retrieve a secret <https://docs.aws.amazon.com/secret
 
 **Example 2: To retrieve the previous secret value**
 
-The following ``get-secret-value`` example gets the current secret value.::
+The following ``get-secret-value`` example gets the previous secret value.::
 
     aws secretsmanager get-secret-value \
         --secret-id MyTestSecret

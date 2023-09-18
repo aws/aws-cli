@@ -4,11 +4,12 @@
     "outputs" : {
       "dnsSuffix" : "amazonaws.com",
       "dualStackDnsSuffix" : "api.aws",
+      "implicitGlobalRegion" : "us-east-1",
       "name" : "aws",
       "supportsDualStack" : true,
       "supportsFIPS" : true
     },
-    "regionRegex" : "^(us|eu|ap|sa|ca|me|af)\\-\\w+\\-\\d+$",
+    "regionRegex" : "^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$",
     "regions" : {
       "af-south-1" : {
         "description" : "Africa (Cape Town)"
@@ -73,6 +74,9 @@
       "eu-west-3" : {
         "description" : "Europe (Paris)"
       },
+      "il-central-1" : {
+        "description" : "Israel (Tel Aviv)"
+      },
       "me-central-1" : {
         "description" : "Middle East (UAE)"
       },
@@ -100,6 +104,7 @@
     "outputs" : {
       "dnsSuffix" : "amazonaws.com.cn",
       "dualStackDnsSuffix" : "api.amazonwebservices.com.cn",
+      "implicitGlobalRegion" : "cn-northwest-1",
       "name" : "aws-cn",
       "supportsDualStack" : true,
       "supportsFIPS" : true
@@ -121,6 +126,7 @@
     "outputs" : {
       "dnsSuffix" : "amazonaws.com",
       "dualStackDnsSuffix" : "api.aws",
+      "implicitGlobalRegion" : "us-gov-west-1",
       "name" : "aws-us-gov",
       "supportsDualStack" : true,
       "supportsFIPS" : true
@@ -142,6 +148,7 @@
     "outputs" : {
       "dnsSuffix" : "c2s.ic.gov",
       "dualStackDnsSuffix" : "c2s.ic.gov",
+      "implicitGlobalRegion" : "us-iso-east-1",
       "name" : "aws-iso",
       "supportsDualStack" : false,
       "supportsFIPS" : true
@@ -163,6 +170,7 @@
     "outputs" : {
       "dnsSuffix" : "sc2s.sgov.gov",
       "dualStackDnsSuffix" : "sc2s.sgov.gov",
+      "implicitGlobalRegion" : "us-isob-east-1",
       "name" : "aws-iso-b",
       "supportsDualStack" : false,
       "supportsFIPS" : true
@@ -176,6 +184,30 @@
         "description" : "US ISOB East (Ohio)"
       }
     }
+  }, {
+    "id" : "aws-iso-e",
+    "outputs" : {
+      "dnsSuffix" : "cloud.adc-e.uk",
+      "dualStackDnsSuffix" : "cloud.adc-e.uk",
+      "implicitGlobalRegion" : "eu-isoe-west-1",
+      "name" : "aws-iso-e",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^eu\\-isoe\\-\\w+\\-\\d+$",
+    "regions" : { }
+  }, {
+    "id" : "aws-iso-f",
+    "outputs" : {
+      "dnsSuffix" : "csp.hci.ic.gov",
+      "dualStackDnsSuffix" : "csp.hci.ic.gov",
+      "implicitGlobalRegion" : "us-isof-south-1",
+      "name" : "aws-iso-f",
+      "supportsDualStack" : false,
+      "supportsFIPS" : true
+    },
+    "regionRegex" : "^us\\-isof\\-\\w+\\-\\d+$",
+    "regions" : { }
   } ],
   "version" : "1.1"
 }

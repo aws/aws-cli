@@ -2258,6 +2258,22 @@
         "DATA_SET"
       ]
     },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "KmsKeyToGrant":{
+      "type":"structure",
+      "required":["KmsKeyArn"],
+      "members":{
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The AWS KMS CMK (Key Management System Customer Managed Key) used to encrypt S3 objects in the shared S3 Bucket. AWS Data exchange will create a KMS grant for each subscriber to allow them to access and decrypt their entitled data that is encrypted using this KMS key specified.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the shared S3 objects.</p>"
+    },
     "LFPermission":{
       "type":"string",
       "enum":[
@@ -2584,6 +2600,12 @@
       "type":"list",
       "member":{"shape":"JobError"}
     },
+    "ListOfKmsKeysToGrant":{
+      "type":"list",
+      "member":{"shape":"KmsKeyToGrant"},
+      "max":10,
+      "min":1
+    },
     "ListOfLFPermissions":{
       "type":"list",
       "member":{"shape":"LFPermission"}
@@ -2691,7 +2713,7 @@
     },
     "MaxResults":{
       "type":"integer",
-      "max":25,
+      "max":200,
       "min":1
     },
     "Name":{"type":"string"},
@@ -3050,6 +3072,10 @@
         "S3AccessPointArn":{
           "shape":"__string",
           "documentation":"<p>The ARN for your Amazon S3 Access Point. Customers can also access their entitled data using the S3 Access Point ARN.</p>"
+        },
+        "KmsKeysToGrant":{
+          "shape":"ListOfKmsKeysToGrant",
+          "documentation":"<p> List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs used to encrypt S3 objects being shared in this S3 Data Access asset. Providers must include all AWS KMS keys used to encrypt these shared S3 objects.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 data access that is the asset.</p>"
@@ -3069,6 +3095,10 @@
         "Keys":{
           "shape":"ListOf__string",
           "documentation":"<p>The keys used to create the Amazon S3 data access.</p>"
+        },
+        "KmsKeysToGrant":{
+          "shape":"ListOfKmsKeysToGrant",
+          "documentation":"<p>List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs used to encrypt S3 objects being shared in this S3 Data Access asset.</p>"
         }
       },
       "documentation":"<p>Source details for an Amazon S3 data access asset.</p>"

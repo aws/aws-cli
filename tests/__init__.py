@@ -2,6 +2,7 @@ import asyncio
 import contextlib
 import dataclasses
 from io import BytesIO
+import base64
 import collections
 import copy
 import os
@@ -37,6 +38,10 @@ import botocore.model
 import botocore.serialize
 import botocore.validate
 from botocore.exceptions import ClientError, WaiterError
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.serialization import Encoding, \
+    PublicFormat, load_pem_private_key
 
 import prompt_toolkit
 import prompt_toolkit.buffer
@@ -669,3 +674,16 @@ class S3Utils:
             params.update(extra_params)
         for _ in range(min_successes):
             waiter.wait(**params)
+
+class PublicPrivateKeyLoader:
+    def load_private_key_and_generate_public_key(private_key_path):
+        with open(private_key_path, 'rb') as f:
+            private_key_byte_input = f.read()
+
+        private_key = load_pem_private_key(private_key_byte_input, None,
+                                           default_backend())
+        public_key = private_key.public_key()
+        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
+        public_key_b64 = base64.b64encode(pub_bytes)
+
+        return public_key_b64, private_key

@@ -63,6 +63,23 @@
       ],
       "documentation":"<p>Returns information about a specific code signing job. You specify the job by using the <code>jobId</code> value that is returned by the <a>StartSigningJob</a> operation. </p>"
     },
+    "GetRevocationStatus":{
+      "name":"GetRevocationStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/revocations"
+      },
+      "input":{"shape":"GetRevocationStatusRequest"},
+      "output":{"shape":"GetRevocationStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Retrieves the revocation status of one or more of the signing profile, signing job, and signing certificate.</p>",
+      "endpoint":{"hostPrefix":"verification."}
+    },
     "GetSigningPlatform":{
       "name":"GetSigningPlatform",
       "http":{
@@ -190,7 +207,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Creates a signing profile. A signing profile is a code signing template that can be used to carry out a pre-defined signing job. For more information, see <a href=\"http://docs.aws.amazon.com/signer/latest/developerguide/gs-profile.html\">http://docs.aws.amazon.com/signer/latest/developerguide/gs-profile.html</a> </p>"
+      "documentation":"<p>Creates a signing profile. A signing profile is a code signing template that can be used to carry out a pre-defined signing job. </p>"
     },
     "RemoveProfilePermission":{
       "name":"RemoveProfilePermission",
@@ -242,6 +259,23 @@
       ],
       "documentation":"<p>Changes the state of a signing profile to REVOKED. This indicates that signatures generated using the signing profile after an effective start date are no longer valid.</p>"
     },
+    "SignPayload":{
+      "name":"SignPayload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/signing-jobs/with-payload"
+      },
+      "input":{"shape":"SignPayloadRequest"},
+      "output":{"shape":"SignPayloadResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServiceErrorException"}
+      ],
+      "documentation":"<p>Signs a binary payload and returns a signature envelope.</p>"
+    },
     "StartSigningJob":{
       "name":"StartSigningJob",
       "http":{
@@ -258,7 +292,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>Initiates a signing job to be performed on the code provided. Signing jobs are viewable by the <code>ListSigningJobs</code> operation for two years after they are performed. Note the following requirements: </p> <ul> <li> <p> You must create an Amazon S3 source bucket. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html\">Create a Bucket</a> in the <i>Amazon S3 Getting Started Guide</i>. </p> </li> <li> <p>Your S3 source bucket must be version enabled.</p> </li> <li> <p>You must create an S3 destination bucket. Code signing uses your S3 destination bucket to write your signed code.</p> </li> <li> <p>You specify the name of the source and destination buckets when calling the <code>StartSigningJob</code> operation.</p> </li> <li> <p>You must also specify a request token that identifies your request to code signing.</p> </li> </ul> <p>You can call the <a>DescribeSigningJob</a> and the <a>ListSigningJobs</a> actions after you call <code>StartSigningJob</code>.</p> <p>For a Java example that shows how to use this action, see <a href=\"http://docs.aws.amazon.com/acm/latest/userguide/\">http://docs.aws.amazon.com/acm/latest/userguide/</a> </p>"
+      "documentation":"<p>Initiates a signing job to be performed on the code provided. Signing jobs are viewable by the <code>ListSigningJobs</code> operation for two years after they are performed. Note the following requirements: </p> <ul> <li> <p> You must create an Amazon S3 source bucket. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html\">Creating a Bucket</a> in the <i>Amazon S3 Getting Started Guide</i>. </p> </li> <li> <p>Your S3 source bucket must be version enabled.</p> </li> <li> <p>You must create an S3 destination bucket. Code signing uses your S3 destination bucket to write your signed code.</p> </li> <li> <p>You specify the name of the source and destination buckets when calling the <code>StartSigningJob</code> operation.</p> </li> <li> <p>You must also specify a request token that identifies your request to code signing.</p> </li> </ul> <p>You can call the <a>DescribeSigningJob</a> and the <a>ListSigningJobs</a> actions after you call <code>StartSigningJob</code>.</p> <p>For a Java example that shows how to use this action, see <a href=\"https://docs.aws.amazon.com/signer/latest/developerguide/api-startsigningjob.html\">StartSigningJob</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -371,6 +405,7 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "Blob":{"type":"blob"},
     "BucketName":{"type":"string"},
     "CancelSigningProfileRequest":{
       "type":"structure",
@@ -389,6 +424,10 @@
       "enum":["AWSIoT"]
     },
     "CertificateArn":{"type":"string"},
+    "CertificateHashes":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ClientRequestToken":{"type":"string"},
     "ConflictException":{
       "type":"structure",
@@ -535,6 +574,57 @@
     },
     "ErrorCode":{"type":"string"},
     "ErrorMessage":{"type":"string"},
+    "GetRevocationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "signatureTimestamp",
+        "platformId",
+        "profileVersionArn",
+        "jobArn",
+        "certificateHashes"
+      ],
+      "members":{
+        "signatureTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the signature that validates the profile or job.</p>",
+          "location":"querystring",
+          "locationName":"signatureTimestamp"
+        },
+        "platformId":{
+          "shape":"PlatformId",
+          "documentation":"<p>The ID of a signing platform. </p>",
+          "location":"querystring",
+          "locationName":"platformId"
+        },
+        "profileVersionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The version of a signing profile.</p>",
+          "location":"querystring",
+          "locationName":"profileVersionArn"
+        },
+        "jobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of a signing job.</p>",
+          "location":"querystring",
+          "locationName":"jobArn"
+        },
+        "certificateHashes":{
+          "shape":"CertificateHashes",
+          "documentation":"<p>A list of composite signed hashes that identify certificates.</p> <p>A certificate identifier consists of a subject certificate TBS hash (signed by the parent CA) combined with a parent CA TBS hash (signed by the parent CA’s CA). Root certificates are defined as their own CA.</p>",
+          "location":"querystring",
+          "locationName":"certificateHashes"
+        }
+      }
+    },
+    "GetRevocationStatusResponse":{
+      "type":"structure",
+      "members":{
+        "revokedEntities":{
+          "shape":"RevokedEntities",
+          "documentation":"<p>A list of revoked entities (including one or more of the signing profile ARN, signing job ID, and certificate hash) supplied as input to the API.</p>"
+        }
+      }
+    },
     "GetSigningPlatformRequest":{
       "type":"structure",
       "required":["platformId"],
@@ -950,6 +1040,11 @@
       "min":1
     },
     "MaxSizeInMB":{"type":"integer"},
+    "Metadata":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "NextToken":{"type":"string"},
     "NotFoundException":{
       "type":"structure",
@@ -960,6 +1055,11 @@
       "documentation":"<p>The signing profile was not found.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "Payload":{
+      "type":"blob",
+      "max":4096,
+      "min":1
     },
     "Permission":{
       "type":"structure",
@@ -1163,6 +1263,10 @@
         }
       }
     },
+    "RevokedEntities":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "S3Destination":{
       "type":"structure",
       "members":{
@@ -1223,6 +1327,53 @@
       "documentation":"<p>The client is making a request that exceeds service limits.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
+    },
+    "SignPayloadRequest":{
+      "type":"structure",
+      "required":[
+        "profileName",
+        "payload",
+        "payloadFormat"
+      ],
+      "members":{
+        "profileName":{
+          "shape":"ProfileName",
+          "documentation":"<p>The name of the signing profile.</p>"
+        },
+        "profileOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID of the profile owner.</p>"
+        },
+        "payload":{
+          "shape":"Payload",
+          "documentation":"<p>Specifies the object digest (hash) to sign.</p>"
+        },
+        "payloadFormat":{
+          "shape":"String",
+          "documentation":"<p>Payload content type</p>"
+        }
+      }
+    },
+    "SignPayloadResponse":{
+      "type":"structure",
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>Unique identifier of the signing job.</p>"
+        },
+        "jobOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID of the job owner.</p>"
+        },
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>Information including the signing profile ARN and the signing job ID. Clients use metadata to signature records, for example, as annotations added to the signature manifest inside an OCI registry.</p>"
+        },
+        "signature":{
+          "shape":"Blob",
+          "documentation":"<p>A cryptographic signature.</p>"
+        }
+      }
     },
     "SignatureValidityPeriod":{
       "type":"structure",
@@ -1405,7 +1556,7 @@
       "members":{
         "platformId":{
           "shape":"String",
-          "documentation":"<p>The ID of a code signing; platform.</p>"
+          "documentation":"<p>The ID of a code signing platform.</p>"
         },
         "displayName":{
           "shape":"String",
@@ -1724,5 +1875,5 @@
     "bool":{"type":"boolean"},
     "string":{"type":"string"}
   },
-  "documentation":"<p>AWS Signer is a fully managed code signing service to help you ensure the trust and integrity of your code. </p> <p>AWS Signer supports the following applications:</p> <p>With <i>code signing for AWS Lambda</i>, you can sign AWS Lambda deployment packages. Integrated support is provided for Amazon S3, Amazon CloudWatch, and AWS CloudTrail. In order to sign code, you create a signing profile and then use Signer to sign Lambda zip files in S3. </p> <p>With <i>code signing for IoT</i>, you can sign code for any IoT device that is supported by AWS. IoT code signing is available for <a href=\"http://docs.aws.amazon.com/freertos/latest/userguide/\">Amazon FreeRTOS</a> and <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/\">AWS IoT Device Management</a>, and is integrated with <a href=\"http://docs.aws.amazon.com/acm/latest/userguide/\">AWS Certificate Manager (ACM)</a>. In order to sign code, you import a third-party code signing certificate using ACM, and use that to sign updates in Amazon FreeRTOS and AWS IoT Device Management. </p> <p>For more information about AWS Signer, see the <a href=\"http://docs.aws.amazon.com/signer/latest/developerguide/Welcome.html\">AWS Signer Developer Guide</a>.</p> <p/>"
+  "documentation":"<p>AWS Signer is a fully managed code signing service to help you ensure the trust and integrity of your code. </p> <p>AWS Signer supports the following applications:</p> <p>With code signing for AWS Lambda, you can sign <a href=\"http://docs.aws.amazon.com/lambda/latest/dg/\">AWS Lambda</a> deployment packages. Integrated support is provided for <a href=\"http://docs.aws.amazon.com/AmazonS3/latest/gsg/\">Amazon S3</a>, <a href=\"http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/\">Amazon CloudWatch</a>, and <a href=\"http://docs.aws.amazon.com/awscloudtrail/latest/userguide/\">AWS CloudTrail</a>. In order to sign code, you create a signing profile and then use Signer to sign Lambda zip files in S3. </p> <p>With code signing for IoT, you can sign code for any IoT device that is supported by AWS. IoT code signing is available for <a href=\"http://docs.aws.amazon.com/freertos/latest/userguide/\">Amazon FreeRTOS</a> and <a href=\"http://docs.aws.amazon.com/iot/latest/developerguide/\">AWS IoT Device Management</a>, and is integrated with <a href=\"http://docs.aws.amazon.com/acm/latest/userguide/\">AWS Certificate Manager (ACM)</a>. In order to sign code, you import a third-party code signing certificate using ACM, and use that to sign updates in Amazon FreeRTOS and AWS IoT Device Management. </p> <p>With code signing for containers …(TBD)</p> <p>For more information about AWS Signer, see the <a href=\"https://docs.aws.amazon.com/signer/latest/developerguide/Welcome.html\">AWS Signer Developer Guide</a>.</p>"
 }

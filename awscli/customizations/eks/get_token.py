@@ -20,6 +20,7 @@ from datetime import datetime, timedelta
 from botocore.signers import RequestSigner
 from botocore.model import ServiceId
 
+from awscli.formatter import get_formatter
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 from awscli.customizations.utils import validate_mutually_exclusive
@@ -142,7 +143,13 @@ class GetTokenCommand(BasicCommand):
             },
         }
 
-        uni_print(json.dumps(full_object))
+        output = parsed_globals.output
+        if output is None:
+            output = self._session.get_config_variable('output')
+        formatter = get_formatter(output, parsed_globals)
+        formatter.query = parsed_globals.query
+
+        formatter(self.NAME, full_object)
         uni_print('\n')
         return 0
 

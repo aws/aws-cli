@@ -2422,7 +2422,7 @@
         },
         "maxResults":{
           "shape":"BatchGetAssetPropertyAggregatesMaxResults",
-          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>"
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 1 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>"
         }
       }
     },
@@ -2694,7 +2694,7 @@
         },
         "maxResults":{
           "shape":"BatchGetAssetPropertyValueHistoryMaxResults",
-          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is less than 1 MB.</p> </li> <li> <p>The number of data points in the result set is less than the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 4000.</p> </li> </ul>"
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 4 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 20000.</p> </li> </ul>"
         }
       }
     },
@@ -2778,7 +2778,7 @@
       "members":{
         "entries":{
           "shape":"BatchGetAssetPropertyValueEntries",
-          "documentation":"<p>The list of asset property value entries for the batch get request. You can specify up to 16 entries per request.</p>"
+          "documentation":"<p>The list of asset property value entries for the batch get request. You can specify up to 128 entries per request.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -4514,7 +4514,8 @@
         "timeSeriesId",
         "dataType",
         "timeSeriesCreationDate",
-        "timeSeriesLastUpdateDate"
+        "timeSeriesLastUpdateDate",
+        "timeSeriesArn"
       ],
       "members":{
         "assetId":{
@@ -4548,6 +4549,10 @@
         "timeSeriesLastUpdateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date that the time series was last updated, in Unix epoch time.</p>"
+        },
+        "timeSeriesArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>"
         }
       }
     },
@@ -4949,8 +4954,8 @@
           "locationName":"nextToken"
         },
         "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return for each paginated request.</p> <p>Default: 100</p>",
+          "shape":"GetAssetPropertyValueAggregatesMaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 1 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 250.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4969,6 +4974,14 @@
           "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
         }
       }
+    },
+    "GetAssetPropertyValueAggregatesMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "GetAssetPropertyValueHistoryMaxResults":{
+      "type":"integer",
+      "min":1
     },
     "GetAssetPropertyValueHistoryRequest":{
       "type":"structure",
@@ -5022,8 +5035,8 @@
           "locationName":"nextToken"
         },
         "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return for each paginated request.</p> <p>Default: 100</p>",
+          "shape":"GetAssetPropertyValueHistoryMaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 4 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 20000.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6657,9 +6670,9 @@
     },
     "Resolution":{
       "type":"string",
-      "max":2,
+      "max":3,
       "min":2,
-      "pattern":"1m|1h|1d"
+      "pattern":"1m|15m|1h|1d"
     },
     "Resource":{
       "type":"structure",
@@ -6854,7 +6867,8 @@
         "timeSeriesId",
         "dataType",
         "timeSeriesCreationDate",
-        "timeSeriesLastUpdateDate"
+        "timeSeriesLastUpdateDate",
+        "timeSeriesArn"
       ],
       "members":{
         "assetId":{
@@ -6888,6 +6902,10 @@
         "timeSeriesLastUpdateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date that the time series was last updated, in Unix epoch time.</p>"
+        },
+        "timeSeriesArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the time series, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:time-series/${TimeSeriesId}</code> </p>"
         }
       },
       "documentation":"<p>Contains a summary of a time series (data stream).</p>"

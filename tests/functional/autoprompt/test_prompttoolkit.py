@@ -158,9 +158,11 @@ class TestPromptToolkitPrompterBuffer:
     def test_input_buffer_initialization(
             self, prompter, args, expected_input_buffer_text):
         prompter.args = args
-        prompter.pre_run()
-        actual_input_text = prompter.input_buffer.document.text
-        assert actual_input_text == expected_input_buffer_text
+        app_runner = PromptToolkitAppRunner(
+            app=prompter.app, pre_run=prompter.pre_run)
+        with app_runner.run_app_in_thread():
+            actual_input_text = prompter.input_buffer.document.text
+            assert actual_input_text == expected_input_buffer_text
 
     def test_handle_args_with_spaces(self, app_runner, prompter):
         original_args = ['iam', 'create-role', '--description', 'With spaces']
@@ -241,8 +243,10 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
     )
     def test_doc_panel_content(self, prompter, args, expected_docs):
         prompter.args = args
-        prompter.pre_run()
-        assert expected_docs in prompter.doc_buffer.document.text
+        app_runner = PromptToolkitAppRunner(
+            app=prompter.app, pre_run=prompter.pre_run)
+        with app_runner.run_app_in_thread():
+            assert expected_docs in prompter.doc_buffer.document.text
 
 
 class TestHistoryMode(BasicPromptToolkitTest):

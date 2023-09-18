@@ -381,12 +381,78 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p> The AWS user account does not have permission to perform the action. Check the AWS Identity and Access Management (IAM) policy associated with this account.</p>",
+      "documentation":"<p> The user does not have permission to perform the action. Check the AWS Identity and Access Management (IAM) policy associated with this user.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
       },
       "exception":true
+    },
+    "AnalysisStatusUnion":{
+      "type":"structure",
+      "members":{
+        "runtimeAnalysisStatus":{
+          "shape":"RuntimeAnalysisStatus",
+          "documentation":"<p>The status of the analysis.</p>"
+        },
+        "srcCodeOrDbAnalysisStatus":{
+          "shape":"SrcCodeOrDbAnalysisStatus",
+          "documentation":"<p>The status of the source code or database analysis.</p>"
+        }
+      },
+      "documentation":"<p>A combination of existing analysis statuses.</p>",
+      "union":true
+    },
+    "AnalysisType":{
+      "type":"string",
+      "enum":[
+        "SOURCE_CODE_ANALYSIS",
+        "DATABASE_ANALYSIS",
+        "RUNTIME_ANALYSIS",
+        "BINARY_ANALYSIS"
+      ]
+    },
+    "AnalyzerNameUnion":{
+      "type":"structure",
+      "members":{
+        "binaryAnalyzerName":{
+          "shape":"BinaryAnalyzerName",
+          "documentation":"<p>The binary analyzer names.</p>"
+        },
+        "runTimeAnalyzerName":{
+          "shape":"RunTimeAnalyzerName",
+          "documentation":"<p>The assessment analyzer names.</p>"
+        },
+        "sourceCodeAnalyzerName":{
+          "shape":"SourceCodeAnalyzerName",
+          "documentation":"<p>The source code analyzer names.</p>"
+        }
+      },
+      "documentation":"<p>The combination of the existing analyzers.</p>",
+      "union":true
+    },
+    "AntipatternReportResult":{
+      "type":"structure",
+      "members":{
+        "analyzerName":{
+          "shape":"AnalyzerNameUnion",
+          "documentation":"<p>The analyzer name.</p>"
+        },
+        "antiPatternReportS3Object":{"shape":"S3Object"},
+        "antipatternReportStatus":{
+          "shape":"AntipatternReportStatus",
+          "documentation":"<p>The status of the anti-pattern report generation.</p>"
+        },
+        "antipatternReportStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The status message for the anti-pattern.</p>"
+        }
+      },
+      "documentation":"<p>The anti-pattern report result.</p>"
+    },
+    "AntipatternReportResultList":{
+      "type":"list",
+      "member":{"shape":"AntipatternReportResult"}
     },
     "AntipatternReportStatus":{
       "type":"string",
@@ -544,6 +610,10 @@
         "resourceSubType":{
           "shape":"ResourceSubType",
           "documentation":"<p> The application component subtype.</p>"
+        },
+        "resultList":{
+          "shape":"ResultList",
+          "documentation":"<p>A list of the analysis results.</p>"
         },
         "runtimeStatus":{
           "shape":"RuntimeAnalysisStatus",
@@ -801,6 +871,13 @@
       "max":1,
       "min":1
     },
+    "BinaryAnalyzerName":{
+      "type":"string",
+      "enum":[
+        "DLL_ANALYZER",
+        "BYTECODE_ANALYZER"
+      ]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -972,7 +1049,8 @@
       "type":"string",
       "enum":[
         "ApplicationDiscoveryService",
-        "MPA"
+        "MPA",
+        "Import"
       ]
     },
     "DatabaseConfigDetail":{
@@ -1341,7 +1419,10 @@
     },
     "GroupName":{
       "type":"string",
-      "enum":["ExternalId"]
+      "enum":[
+        "ExternalId",
+        "ExternalSourceType"
+      ]
     },
     "Heterogeneous":{
       "type":"structure",
@@ -2013,6 +2094,42 @@
         "DatabaseProcess"
       ]
     },
+    "Result":{
+      "type":"structure",
+      "members":{
+        "analysisStatus":{
+          "shape":"AnalysisStatusUnion",
+          "documentation":"<p>The error in server analysis.</p>"
+        },
+        "analysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p>The error in server analysis.</p>"
+        },
+        "antipatternReportResultList":{
+          "shape":"AntipatternReportResultList",
+          "documentation":"<p>The error in server analysis.</p>"
+        },
+        "statusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The error in server analysis.</p>"
+        }
+      },
+      "documentation":"<p>The error in server analysis.</p>"
+    },
+    "ResultList":{
+      "type":"list",
+      "member":{"shape":"Result"}
+    },
+    "RunTimeAnalyzerName":{
+      "type":"string",
+      "enum":[
+        "A2C_ANALYZER",
+        "REHOST_ANALYZER",
+        "EMP_PA_ANALYZER",
+        "DATABASE_ANALYZER",
+        "SCT_ANALYZER"
+      ]
+    },
     "RunTimeAssessmentStatus":{
       "type":"string",
       "enum":[
@@ -2326,6 +2443,15 @@
         }
       },
       "documentation":"<p> Object containing source code information that is linked to an application component. </p>"
+    },
+    "SourceCodeAnalyzerName":{
+      "type":"string",
+      "enum":[
+        "CSHARP_ANALYZER",
+        "JAVA_ANALYZER",
+        "BYTECODE_ANALYZER",
+        "PORTING_ASSISTANT"
+      ]
     },
     "SourceCodeList":{
       "type":"list",
@@ -2830,5 +2956,5 @@
       "pattern":".*\\S.*"
     }
   },
-  "documentation":"<p><fullname>Migration Hub Strategy Recommendations</fullname></p> <pre><code> &lt;p&gt;This API reference provides descriptions, syntax, and other details about each of the actions and data types for Migration Hub Strategy Recommendations (Strategy Recommendations). The topic for each action shows the API request parameters and the response. Alternatively, you can use one of the AWS SDKs to access an API that is tailored to the programming language or platform that you're using. For more information, see &lt;a href=&quot;http://aws.amazon.com/tools/#SDKs&quot;&gt;AWS SDKs&lt;/a&gt;.&lt;/p&gt; </code></pre>"
+  "documentation":"<p><fullname>Migration Hub Strategy Recommendations</fullname> <p>This API reference provides descriptions, syntax, and other details about each of the actions and data types for Migration Hub Strategy Recommendations (Strategy Recommendations). The topic for each action shows the API request parameters and the response. Alternatively, you can use one of the AWS SDKs to access an API that is tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">AWS SDKs</a>.</p></p>"
 }

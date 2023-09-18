@@ -124,6 +124,7 @@ class TestMake(BaseArtifactTest):
         workspace.make()
 
         self.assert_built_exe_is_correct(workspace.cli_path)
+        self.assert_no_pycache(workspace.cli_path)
 
     @skip_if_windows(WINDOWS_SKIP_REASON)
     def test_exe_without_deps(self, workspace: VEnvWorkspace):
@@ -132,6 +133,7 @@ class TestMake(BaseArtifactTest):
         workspace.configure(install_type="portable-exe")
         workspace.make()
 
+        self.assert_no_pycache(workspace.cli_path)
         self.assert_built_exe_is_correct(workspace.cli_path)
 
     @skip_if_windows(WINDOWS_SKIP_REASON)
@@ -142,6 +144,7 @@ class TestMake(BaseArtifactTest):
         )
         workspace.make()
 
+        self.assert_no_pycache(workspace.cli_path)
         self.assert_built_venv_is_correct(workspace.build_path)
 
     @skip_if_windows(WINDOWS_SKIP_REASON)
@@ -152,4 +155,5 @@ class TestMake(BaseArtifactTest):
         )
         workspace.make()
 
+        self.assert_no_pycache(workspace.cli_path)
         self.assert_built_venv_is_correct(workspace.build_path)

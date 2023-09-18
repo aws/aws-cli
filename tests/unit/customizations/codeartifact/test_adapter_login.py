@@ -1,5 +1,6 @@
 import errno
 import os
+import signal
 import subprocess
 
 from datetime import datetime
@@ -9,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 from configparser import RawConfigParser
 from urllib.parse import urlsplit
 
-from awscli.testutils import unittest, mock, FileCreator
+from awscli.testutils import unittest, mock, FileCreator, skip_if_windows
 from awscli.customizations.codeartifact.login import (
     BaseLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin, TwineLogin,
     get_relative_expiration_time
@@ -67,6 +68,10 @@ class TestBaseLogin(unittest.TestCase):
             self.test_subject._run_commands(tool, ['echo', tool])
 
 
+def handle_timeout(signum, frame, test_name):
+    raise TimeoutError(f"{test_name} timed out!!")
+
+
 class TestNuGetLogin(unittest.TestCase):
     _NUGET_INDEX_URL_FMT = NuGetLogin._NUGET_INDEX_URL_FMT
     _NUGET_SOURCES_LIST_RESPONSE = b"""\
@@ -75,6 +80,8 @@ Registered Sources:
      https://source1.com/index.json
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
+
+    _NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING = b'1.' + b' ' * 10000 + b'a'
 
     _NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE = b"""\
                 Registered Sources:
@@ -234,6 +241,21 @@ Registered Sources:
                 'nuget was not found. Please verify installation.'):
             self.test_subject.login()
 
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    def test_login_nuget_sources_listed_with_backtracking(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM,
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
 
 class TestDotNetLogin(unittest.TestCase):
     _NUGET_INDEX_URL_FMT = NuGetLogin._NUGET_INDEX_URL_FMT
@@ -243,6 +265,8 @@ Registered Sources:
      https://source1.com/index.json
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
+
+    _NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING = b'1.' + b' ' * 10000 + b'a'
 
     _NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT = b"""\
 Welcome to dotnet 2.0!
@@ -387,6 +411,31 @@ to an 'HTTPS' source."""
             self.list_operation_command,
             stderr=self.subprocess_utils.PIPE
         )
+
+
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
+    def test_login_dotnet_sources_listed_with_backtracking(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM,
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
+
+    @skip_if_windows("Windows does not support signal.SIGALRM.")
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_login_dotnet_sources_listed_with_backtracking_windows(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_BACKTRACKING
+        signal.signal(
+            signal.SIGALRM,
+            lambda signum, frame: handle_timeout(signum, frame, self.id()))
+        signal.alarm(10)
+        self.test_subject.login()
+        signal.alarm(0)
 
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', False)
     def test_login_source_name_already_exists(self):

@@ -153,6 +153,26 @@
       ],
       "documentation":"<p>Exports optimization recommendations for Lambda functions.</p> <p>Recommendations are exported in a comma-separated values (.csv) file, and its metadata in a JavaScript Object Notation (JSON) (.json) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one Lambda function export job in progress per Amazon Web Services Region.</p>"
     },
+    "ExportLicenseRecommendations":{
+      "name":"ExportLicenseRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportLicenseRecommendationsRequest"},
+      "output":{"shape":"ExportLicenseRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Export optimization recommendations for your licenses. </p> <p>Recommendations are exported in a comma-separated values (CSV) file, and its metadata in a JavaScript Object Notation (JSON) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one license export job in progress per Amazon Web Services Region.</p>"
+    },
     "GetAutoScalingGroupRecommendations":{
       "name":"GetAutoScalingGroupRecommendations",
       "http":{
@@ -348,6 +368,26 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Returns Lambda function recommendations.</p> <p>Compute Optimizer generates recommendations for functions that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
+    "GetLicenseRecommendations":{
+      "name":"GetLicenseRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetLicenseRecommendationsRequest"},
+      "output":{"shape":"GetLicenseRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns license recommendations for Amazon EC2 instances that run on a specific license.</p> <p>Compute Optimizer generates recommendations for licenses that meet a specific set of requirements. For more information, see the <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Supported resources and requirements</a> in the <i>Compute Optimizer User Guide</i>.</p>"
     },
     "GetRecommendationPreferences":{
       "name":"GetRecommendationPreferences",
@@ -552,7 +592,11 @@
         },
         "inferredWorkloadTypes":{
           "shape":"InferredWorkloadTypes",
-          "documentation":"<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> </ul>"
+          "documentation":"<p>The applications that might be running on the instances in the Auto Scaling group as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instances:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instances.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instances.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instances.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instances.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instances.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instances.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instances.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> <li> <p> <code>SQLServer</code> - Infers that SQLServer might be running on the instance.</p> </li> </ul>"
+        },
+        "currentInstanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the current instance type of the Auto Scaling group. </p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group recommendation.</p>"
@@ -583,6 +627,10 @@
         "migrationEffort":{
           "shape":"MigrationEffort",
           "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
+        },
+        "instanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type of the Auto Scaling group. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Auto Scaling group.</p>"
@@ -762,7 +810,7 @@
       "members":{
         "name":{
           "shape":"EBSFilterName",
-          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p>"
+          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p> <p>You can filter your Amazon EBS volume recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your Amazon EBS volume recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon EBS volume recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your Amazon EBS volume recommendations. Use this filter to find all of your Amazon EBS volume recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon EBS volume recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
         },
         "values":{
           "shape":"FilterValues",
@@ -936,6 +984,10 @@
         "currentPerformanceRisk":{
           "shape":"CurrentPerformanceRisk",
           "documentation":"<p> The risk of the current Amazon ECS service not meeting the performance needs of its workloads. The higher the risk, the more likely the current service can't meet the performance requirements of its workload. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to your Amazon ECS service recommendations. </p>"
         }
       },
       "documentation":"<p> Describes an Amazon ECS service recommendation. </p>"
@@ -945,7 +997,7 @@
       "members":{
         "name":{
           "shape":"ECSServiceRecommendationFilterName",
-          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p> Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code. </p>"
+          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p> Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code. </p> <p>You can filter your Amazon ECS service recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your Amazon ECS service recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Amazon ECS service recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your Amazon ECS service recommendations. Use this filter to find all of your Amazon ECS service recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Amazon ECS service recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
         },
         "values":{
           "shape":"FilterValues",
@@ -1342,6 +1394,43 @@
         "s3Destination":{"shape":"S3Destination"}
       }
     },
+    "ExportLicenseRecommendationsRequest":{
+      "type":"structure",
+      "required":["s3DestinationConfig"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>The IDs of the Amazon Web Services accounts for which to export license recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to export recommendations.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter is omitted, recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
+        },
+        "filters":{
+          "shape":"LicenseRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that exports a more specific set of license recommendations. </p>"
+        },
+        "fieldsToExport":{
+          "shape":"ExportableLicenseFields",
+          "documentation":"<p>The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files\">Exported files</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "s3DestinationConfig":{"shape":"S3DestinationConfig"},
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>The format of the export file.</p> <p>A CSV file is the only export format currently supported.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"IncludeMemberAccounts",
+          "documentation":"<p>Indicates whether to include recommendations for resources in all member accounts of the organization if your account is the management account of an organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access\">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren't included in the export file .</p> <p>This parameter cannot be specified together with the account IDs parameter. The parameters are mutually exclusive.</p>"
+        }
+      }
+    },
+    "ExportLicenseRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID.</p>"
+        },
+        "s3Destination":{"shape":"S3Destination"}
+      }
+    },
     "ExportableAutoScalingGroupField":{
       "type":"string",
       "enum":[
@@ -1398,7 +1487,13 @@
         "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
         "EffectiveRecommendationPreferencesInferredWorkloadTypes",
         "InferredWorkloadTypes",
-        "RecommendationOptionsMigrationEffort"
+        "RecommendationOptionsMigrationEffort",
+        "CurrentInstanceGpuInfo",
+        "RecommendationOptionsInstanceGpuInfo",
+        "UtilizationMetricsGpuPercentageMaximum",
+        "UtilizationMetricsGpuMemoryPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum"
       ]
     },
     "ExportableAutoScalingGroupFields":{
@@ -1430,7 +1525,8 @@
         "RecommendationOptionsEstimatedMonthlySavingsValue",
         "RecommendationOptionsContainerRecommendations",
         "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
-        "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
+        "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum",
+        "Tags"
       ]
     },
     "ExportableECSServiceFields":{
@@ -1492,7 +1588,18 @@
         "EffectiveRecommendationPreferencesInferredWorkloadTypes",
         "InferredWorkloadTypes",
         "RecommendationOptionsMigrationEffort",
-        "EffectiveRecommendationPreferencesExternalMetricsSource"
+        "EffectiveRecommendationPreferencesExternalMetricsSource",
+        "InstanceState",
+        "Tags",
+        "ExternalMetricStatusCode",
+        "ExternalMetricStatusReason",
+        "CurrentInstanceGpuInfo",
+        "RecommendationOptionsInstanceGpuInfo",
+        "UtilizationMetricsGpuPercentageMaximum",
+        "UtilizationMetricsGpuMemoryPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
+        "Idle"
       ]
     },
     "ExportableInstanceFields":{
@@ -1527,12 +1634,43 @@
         "CurrentPerformanceRisk",
         "RecommendationOptionsSavingsOpportunityPercentage",
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
-        "RecommendationOptionsEstimatedMonthlySavingsValue"
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "Tags"
       ]
     },
     "ExportableLambdaFunctionFields":{
       "type":"list",
       "member":{"shape":"ExportableLambdaFunctionField"}
+    },
+    "ExportableLicenseField":{
+      "type":"string",
+      "enum":[
+        "AccountId",
+        "ResourceArn",
+        "LookbackPeriodInDays",
+        "LastRefreshTimestamp",
+        "Finding",
+        "FindingReasonCodes",
+        "CurrentLicenseConfigurationNumberOfCores",
+        "CurrentLicenseConfigurationInstanceType",
+        "CurrentLicenseConfigurationOperatingSystem",
+        "CurrentLicenseConfigurationLicenseName",
+        "CurrentLicenseConfigurationLicenseEdition",
+        "CurrentLicenseConfigurationLicenseModel",
+        "CurrentLicenseConfigurationLicenseVersion",
+        "CurrentLicenseConfigurationMetricsSource",
+        "RecommendationOptionsOperatingSystem",
+        "RecommendationOptionsLicenseEdition",
+        "RecommendationOptionsLicenseModel",
+        "RecommendationOptionsSavingsOpportunityPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrency",
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "Tags"
+      ]
+    },
+    "ExportableLicenseFields":{
+      "type":"list",
+      "member":{"shape":"ExportableLicenseField"}
     },
     "ExportableVolumeField":{
       "type":"string",
@@ -1564,13 +1702,46 @@
         "CurrentPerformanceRisk",
         "RecommendationOptionsSavingsOpportunityPercentage",
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
-        "RecommendationOptionsEstimatedMonthlySavingsValue"
+        "RecommendationOptionsEstimatedMonthlySavingsValue",
+        "RootVolume",
+        "Tags",
+        "CurrentConfigurationRootVolume"
       ]
     },
     "ExportableVolumeFields":{
       "type":"list",
       "member":{"shape":"ExportableVolumeField"}
     },
+    "ExternalMetricStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"ExternalMetricStatusCode",
+          "documentation":"<p> The status code for Compute Optimizer's integration with an external metrics provider. </p>"
+        },
+        "statusReason":{
+          "shape":"ExternalMetricStatusReason",
+          "documentation":"<p> The reason for Compute Optimizer's integration status with your external metric provider. </p>"
+        }
+      },
+      "documentation":"<p> Describes Compute Optimizer's integration status with your chosen external metric provider. For example, Datadog. </p>"
+    },
+    "ExternalMetricStatusCode":{
+      "type":"string",
+      "enum":[
+        "NO_EXTERNAL_METRIC_SET",
+        "INTEGRATION_SUCCESS",
+        "DATADOG_INTEGRATION_ERROR",
+        "DYNATRACE_INTEGRATION_ERROR",
+        "NEWRELIC_INTEGRATION_ERROR",
+        "INSTANA_INTEGRATION_ERROR",
+        "INSUFFICIENT_DATADOG_METRICS",
+        "INSUFFICIENT_DYNATRACE_METRICS",
+        "INSUFFICIENT_NEWRELIC_METRICS",
+        "INSUFFICIENT_INSTANA_METRICS"
+      ]
+    },
+    "ExternalMetricStatusReason":{"type":"string"},
     "ExternalMetricsPreference":{
       "type":"structure",
       "members":{
@@ -1600,7 +1771,7 @@
       "members":{
         "name":{
           "shape":"FilterName",
-          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>Underprovisioned</code>).</p> <p>Specify <code>RecommendationSourceType</code> to return recommendations of a specific resource type (for example, <code>Ec2Instance</code>).</p> <p>Specify <code>FindingReasonCodes</code> to return recommendations with a specific finding reason code (for example, <code>CPUUnderprovisioned</code>).</p>"
+          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification. For example, <code>Underprovisioned</code>.</p> <p>Specify <code>RecommendationSourceType</code> to return recommendations of a specific resource type. For example, <code>Ec2Instance</code>.</p> <p>Specify <code>FindingReasonCodes</code> to return recommendations with a specific finding reason code. For example, <code>CPUUnderprovisioned</code>.</p> <p>Specify <code>InferredWorkloadTypes</code> to return recommendations of a specific inferred workload. For example, <code>Redis</code>.</p> <p>You can filter your EC2 instance recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your recommendations. Use this filter to find all of your recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
         },
         "values":{
           "shape":"FilterValues",
@@ -1614,7 +1785,8 @@
       "enum":[
         "Finding",
         "FindingReasonCodes",
-        "RecommendationSourceType"
+        "RecommendationSourceType",
+        "InferredWorkloadTypes"
       ]
     },
     "FilterValue":{"type":"string"},
@@ -2031,6 +2203,48 @@
         }
       }
     },
+    "GetLicenseRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p> The ARN that identifies the Amazon EC2 instance. </p> <p> The following is the format of the ARN: </p> <p> <code>arn:aws:ec2:region:aws_account_id:instance/instance-id</code> </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to advance to the next page of license recommendations. </p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of license recommendations to return with a single request. </p> <p> To retrieve the remaining results, make another request with the returned <code>nextToken</code> value. </p>"
+        },
+        "filters":{
+          "shape":"LicenseRecommendationFilters",
+          "documentation":"<p> An array of objects to specify a filter that returns a more specific list of license recommendations. </p>"
+        },
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>The ID of the Amazon Web Services account for which to return license recommendations.</p> <p>If your account is the management account of an organization, use this parameter to specify the member account for which you want to return license recommendations.</p> <p>Only one account ID can be specified per request.</p>"
+        }
+      }
+    },
+    "GetLicenseRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to advance to the next page of license recommendations. </p>"
+        },
+        "licenseRecommendations":{
+          "shape":"LicenseRecommendations",
+          "documentation":"<p> An array of objects that describe license recommendations. </p>"
+        },
+        "errors":{
+          "shape":"GetRecommendationErrors",
+          "documentation":"<p> An array of objects that describe errors of the request. </p>"
+        }
+      }
+    },
     "GetRecommendationError":{
       "type":"structure",
       "members":{
@@ -2118,9 +2332,57 @@
         }
       }
     },
+    "Gpu":{
+      "type":"structure",
+      "members":{
+        "gpuCount":{
+          "shape":"GpuCount",
+          "documentation":"<p> The number of GPUs for the instance type. </p>"
+        },
+        "gpuMemorySizeInMiB":{
+          "shape":"GpuMemorySizeInMiB",
+          "documentation":"<p> The total size of the memory for the GPU accelerators for the instance type, in MiB. </p>"
+        }
+      },
+      "documentation":"<p> Describes the GPU accelerators for the instance type. </p>"
+    },
+    "GpuCount":{"type":"integer"},
+    "GpuInfo":{
+      "type":"structure",
+      "members":{
+        "gpus":{
+          "shape":"Gpus",
+          "documentation":"<p> Describes the GPU accelerators for the instance type. </p>"
+        }
+      },
+      "documentation":"<p> Describes the GPU accelerator settings for the instance type. </p>"
+    },
+    "GpuMemorySizeInMiB":{"type":"integer"},
+    "Gpus":{
+      "type":"list",
+      "member":{"shape":"Gpu"}
+    },
     "High":{"type":"long"},
     "Identifier":{"type":"string"},
     "IncludeMemberAccounts":{"type":"boolean"},
+    "InferredWorkloadSaving":{
+      "type":"structure",
+      "members":{
+        "inferredWorkloadTypes":{
+          "shape":"InferredWorkloadTypes",
+          "documentation":"<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> <li> <p> <code>SQLServer</code> - Infers that SQLServer might be running on the instance.</p> </li> </ul>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"EstimatedMonthlySavings",
+          "documentation":"<p>An object that describes the estimated monthly savings amount possible by adopting Compute Optimizer recommendations for a given resource. This is based on the On-Demand instance pricing.</p>"
+        }
+      },
+      "documentation":"<p> The estimated monthly savings after you adjust the configurations of your instances running on the inferred workload types to the recommended configurations. If the <code>inferredWorkloadTypes</code> list contains multiple entries, then the savings are the sum of the monthly savings from instances that run the exact combination of the inferred workload types. </p>"
+    },
+    "InferredWorkloadSavings":{
+      "type":"list",
+      "member":{"shape":"InferredWorkloadSaving"}
+    },
     "InferredWorkloadType":{
       "type":"string",
       "enum":[
@@ -2131,7 +2393,8 @@
         "Nginx",
         "PostgreSql",
         "Redis",
-        "Kafka"
+        "Kafka",
+        "SQLServer"
       ]
     },
     "InferredWorkloadTypes":{
@@ -2149,6 +2412,13 @@
     "InstanceArns":{
       "type":"list",
       "member":{"shape":"InstanceArn"}
+    },
+    "InstanceIdle":{
+      "type":"string",
+      "enum":[
+        "True",
+        "False"
+      ]
     },
     "InstanceName":{"type":"string"},
     "InstanceRecommendation":{
@@ -2176,7 +2446,7 @@
         },
         "findingReasonCodes":{
           "shape":"InstanceRecommendationFindingReasonCodes",
-          "documentation":"<p>The reason for the finding classification of the instance.</p> <p>Finding reason codes for instances include:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> <note> <p>Memory utilization is analyzed only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling memory utilization with the Amazon CloudWatch Agent</a> in the <i>Compute Optimizer User Guide</i>. On Linux instances, Compute Optimizer analyses the <code>mem_used_percent</code> metric in the <code>CWAgent</code> namespace, or the legacy <code>MemoryUtilization</code> metric in the <code>System/Linux</code> namespace. On Windows instances, Compute Optimizer analyses the <code>Memory % Committed Bytes In Use</code> metric in the <code>CWAgent</code> namespace.</p> </note> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> </ul> <note> <p>For more information about instance metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html\">List the available CloudWatch metrics for your instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about EBS volume metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cloudwatch_ebs.html\">Amazon CloudWatch metrics for Amazon EBS</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
+          "documentation":"<p>The reason for the finding classification of the instance.</p> <p>Finding reason codes for instances include:</p> <ul> <li> <p> <b> <code>CPUOverprovisioned</code> </b> — The instance’s CPU configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>CPUUnderprovisioned</code> </b> — The instance’s CPU configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better CPU performance. This is identified by analyzing the <code>CPUUtilization</code> metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryOverprovisioned</code> </b> — The instance’s memory configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>MemoryUnderprovisioned</code> </b> — The instance’s memory configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better memory performance. This is identified by analyzing the memory utilization metric of the current instance during the look-back period.</p> <note> <p>Memory utilization is analyzed only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling memory utilization with the Amazon CloudWatch Agent</a> in the <i>Compute Optimizer User Guide</i>. On Linux instances, Compute Optimizer analyses the <code>mem_used_percent</code> metric in the <code>CWAgent</code> namespace, or the legacy <code>MemoryUtilization</code> metric in the <code>System/Linux</code> namespace. On Windows instances, Compute Optimizer analyses the <code>Memory % Committed Bytes In Use</code> metric in the <code>CWAgent</code> namespace.</p> </note> </li> <li> <p> <b> <code>EBSThroughputOverprovisioned</code> </b> — The instance’s EBS throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSThroughputUnderprovisioned</code> </b> — The instance’s EBS throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS throughput performance. This is identified by analyzing the <code>VolumeReadBytes</code> and <code>VolumeWriteBytes</code> metrics of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSOverprovisioned</code> </b> — The instance’s EBS IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>EBSIOPSUnderprovisioned</code> </b> — The instance’s EBS IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better EBS IOPS performance. This is identified by analyzing the <code>VolumeReadOps</code> and <code>VolumeWriteOps</code> metric of EBS volumes attached to the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthOverprovisioned</code> </b> — The instance’s network bandwidth configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkBandwidthUnderprovisioned</code> </b> — The instance’s network bandwidth configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network bandwidth performance. This is identified by analyzing the <code>NetworkIn</code> and <code>NetworkOut</code> metrics of the current instance during the look-back period. This finding reason happens when the <code>NetworkIn</code> or <code>NetworkOut</code> performance of an instance is impacted.</p> </li> <li> <p> <b> <code>NetworkPPSOverprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>NetworkPPSUnderprovisioned</code> </b> — The instance’s network PPS (packets per second) configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better network PPS performance. This is identified by analyzing the <code>NetworkPacketsIn</code> and <code>NetworkPacketsIn</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSOverprovisioned</code> </b> — The instance’s disk IOPS configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskIOPSUnderprovisioned</code> </b> — The instance’s disk IOPS configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk IOPS performance. This is identified by analyzing the <code>DiskReadOps</code> and <code>DiskWriteOps</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputOverprovisioned</code> </b> — The instance’s disk throughput configuration can be sized down while still meeting the performance requirements of your workload. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> <li> <p> <b> <code>DiskThroughputUnderprovisioned</code> </b> — The instance’s disk throughput configuration doesn't meet the performance requirements of your workload and there is an alternative instance type that provides better disk throughput performance. This is identified by analyzing the <code>DiskReadBytes</code> and <code>DiskWriteBytes</code> metrics of the current instance during the look-back period.</p> </li> </ul> <note> <p>For more information about instance metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html\">List the available CloudWatch metrics for your instances</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>. For more information about EBS volume metrics, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cloudwatch_ebs.html\">Amazon CloudWatch metrics for Amazon EBS</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> </note>"
         },
         "utilizationMetrics":{
           "shape":"UtilizationMetrics",
@@ -2208,7 +2478,27 @@
         },
         "inferredWorkloadTypes":{
           "shape":"InferredWorkloadTypes",
-          "documentation":"<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> </ul>"
+          "documentation":"<p>The applications that might be running on the instance as inferred by Compute Optimizer.</p> <p>Compute Optimizer can infer if one of the following applications might be running on the instance:</p> <ul> <li> <p> <code>AmazonEmr</code> - Infers that Amazon EMR might be running on the instance.</p> </li> <li> <p> <code>ApacheCassandra</code> - Infers that Apache Cassandra might be running on the instance.</p> </li> <li> <p> <code>ApacheHadoop</code> - Infers that Apache Hadoop might be running on the instance.</p> </li> <li> <p> <code>Memcached</code> - Infers that Memcached might be running on the instance.</p> </li> <li> <p> <code>NGINX</code> - Infers that NGINX might be running on the instance.</p> </li> <li> <p> <code>PostgreSql</code> - Infers that PostgreSQL might be running on the instance.</p> </li> <li> <p> <code>Redis</code> - Infers that Redis might be running on the instance.</p> </li> <li> <p> <code>Kafka</code> - Infers that Kafka might be running on the instance.</p> </li> <li> <p> <code>SQLServer</code> - Infers that SQLServer might be running on the instance.</p> </li> </ul>"
+        },
+        "instanceState":{
+          "shape":"InstanceState",
+          "documentation":"<p> The state of the instance when the recommendation was generated. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to your Amazon EC2 instance recommendations. </p>"
+        },
+        "externalMetricStatus":{
+          "shape":"ExternalMetricStatus",
+          "documentation":"<p> An object that describes Compute Optimizer's integration status with your external metrics provider. </p>"
+        },
+        "currentInstanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the current instance type. </p>"
+        },
+        "idle":{
+          "shape":"InstanceIdle",
+          "documentation":"<p> Describes if an Amazon EC2 instance is idle. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon EC2 instance recommendation.</p>"
@@ -2231,7 +2521,11 @@
         "DiskIOPSOverprovisioned",
         "DiskIOPSUnderprovisioned",
         "DiskThroughputOverprovisioned",
-        "DiskThroughputUnderprovisioned"
+        "DiskThroughputUnderprovisioned",
+        "GPUUnderprovisioned",
+        "GPUOverprovisioned",
+        "GPUMemoryUnderprovisioned",
+        "GPUMemoryOverprovisioned"
       ]
     },
     "InstanceRecommendationFindingReasonCodes":{
@@ -2268,6 +2562,10 @@
         "migrationEffort":{
           "shape":"MigrationEffort",
           "documentation":"<p>The level of effort required to migrate from the current instance type to the recommended instance type.</p> <p>For example, the migration effort is <code>Low</code> if Amazon EMR is the inferred workload type and an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>Medium</code> if a workload type couldn't be inferred but an Amazon Web Services Graviton instance type is recommended. The migration effort is <code>VeryLow</code> if both the current and recommended instance types are of the same CPU architecture.</p>"
+        },
+        "instanceGpuInfo":{
+          "shape":"GpuInfo",
+          "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon EC2 instance.</p>"
@@ -2275,6 +2573,17 @@
     "InstanceRecommendations":{
       "type":"list",
       "member":{"shape":"InstanceRecommendation"}
+    },
+    "InstanceState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "running",
+        "shutting-down",
+        "terminated",
+        "stopping",
+        "stopped"
+      ]
     },
     "InstanceType":{"type":"string"},
     "InternalServerException":{
@@ -2458,6 +2767,10 @@
         "currentPerformanceRisk":{
           "shape":"CurrentPerformanceRisk",
           "documentation":"<p>The risk of the current Lambda function not meeting the performance needs of its workloads. The higher the risk, the more likely the current Lambda function requires more memory.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to your Lambda function recommendations. </p>"
         }
       },
       "documentation":"<p>Describes an Lambda function recommendation.</p>"
@@ -2467,7 +2780,7 @@
       "members":{
         "name":{
           "shape":"LambdaFunctionRecommendationFilterName",
-          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code (for example, <code>MemoryUnderprovisioned</code>).</p>"
+          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification (for example, <code>NotOptimized</code>).</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code (for example, <code>MemoryUnderprovisioned</code>).</p> <p>You can filter your Lambda function recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your Lambda function recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all Lambda function recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your Lambda function recommendations. Use this filter to find all of your Lambda function recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your Lambda function recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
         },
         "values":{
           "shape":"FilterValues",
@@ -2536,6 +2849,185 @@
     },
     "LastRefreshTimestamp":{"type":"timestamp"},
     "LastUpdatedTimestamp":{"type":"timestamp"},
+    "LicenseConfiguration":{
+      "type":"structure",
+      "members":{
+        "numberOfCores":{
+          "shape":"NumberOfCores",
+          "documentation":"<p> The current number of cores associated with the instance. </p>"
+        },
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p> The instance type used in the license. </p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p> The operating system of the instance. </p>"
+        },
+        "licenseEdition":{
+          "shape":"LicenseEdition",
+          "documentation":"<p> The edition of the license for the application that runs on the instance. </p>"
+        },
+        "licenseName":{
+          "shape":"LicenseName",
+          "documentation":"<p> The name of the license for the application that runs on the instance. </p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p> The license type associated with the instance. </p>"
+        },
+        "licenseVersion":{
+          "shape":"LicenseVersion",
+          "documentation":"<p> The version of the license for the application that runs on the instance. </p>"
+        },
+        "metricsSource":{
+          "shape":"MetricsSource",
+          "documentation":"<p> The list of metric sources required to generate recommendations for commercial software licenses. </p>"
+        }
+      },
+      "documentation":"<p> Describes the configuration of a license for an Amazon EC2 instance. </p>"
+    },
+    "LicenseEdition":{
+      "type":"string",
+      "enum":[
+        "Enterprise",
+        "Standard",
+        "Free",
+        "NoLicenseEditionFound"
+      ]
+    },
+    "LicenseFinding":{
+      "type":"string",
+      "enum":[
+        "InsufficientMetrics",
+        "Optimized",
+        "NotOptimized"
+      ]
+    },
+    "LicenseFindingReasonCode":{
+      "type":"string",
+      "enum":[
+        "InvalidCloudWatchApplicationInsightsSetup",
+        "CloudWatchApplicationInsightsError",
+        "LicenseOverprovisioned",
+        "Optimized"
+      ]
+    },
+    "LicenseFindingReasonCodes":{
+      "type":"list",
+      "member":{"shape":"LicenseFindingReasonCode"}
+    },
+    "LicenseModel":{
+      "type":"string",
+      "enum":[
+        "LicenseIncluded",
+        "BringYourOwnLicense"
+      ]
+    },
+    "LicenseName":{
+      "type":"string",
+      "enum":["SQLServer"]
+    },
+    "LicenseRecommendation":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The ARN that identifies the Amazon EC2 instance. </p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID of the license. </p>"
+        },
+        "currentLicenseConfiguration":{
+          "shape":"LicenseConfiguration",
+          "documentation":"<p> An object that describes the current configuration of an instance that runs on a license. </p>"
+        },
+        "lookbackPeriodInDays":{
+          "shape":"LookBackPeriodInDays",
+          "documentation":"<p> The number of days for which utilization metrics were analyzed for an instance that runs on a license. </p>"
+        },
+        "lastRefreshTimestamp":{
+          "shape":"LastRefreshTimestamp",
+          "documentation":"<p> The timestamp of when the license recommendation was last generated. </p>"
+        },
+        "finding":{
+          "shape":"LicenseFinding",
+          "documentation":"<p> The finding classification for an instance that runs on a license. </p> <p>Findings include:</p> <ul> <li> <p> <code>InsufficentMetrics</code> — When Compute Optimizer detects that your CloudWatch Application Insights isn't enabled or is enabled with insufficient permissions. </p> </li> <li> <p> <code>NotOptimized</code> — When Compute Optimizer detects that your EC2 infrastructure isn't using any of the SQL server license features you're paying for, a license is considered not optimized.</p> </li> <li> <p> <code>Optimized</code> — When Compute Optimizer detects that all specifications of your license meet the performance requirements of your workload. </p> </li> </ul>"
+        },
+        "findingReasonCodes":{
+          "shape":"LicenseFindingReasonCodes",
+          "documentation":"<p> The reason for the finding classification for an instance that runs on a license. </p> <p>Finding reason codes include:</p> <ul> <li> <p> <code>Optimized</code> — All specifications of your license meet the performance requirements of your workload. </p> </li> <li> <p> <code>LicenseOverprovisioned</code> — A license is considered over-provisioned when your license can be downgraded while still meeting the performance requirements of your workload.</p> </li> <li> <p> <code>InvalidCloudwatchApplicationInsights</code> — CloudWatch Application Insights isn't configured properly.</p> </li> <li> <p> <code>CloudwatchApplicationInsightsError</code> — There is a CloudWatch Application Insights error. </p> </li> </ul>"
+        },
+        "licenseRecommendationOptions":{
+          "shape":"LicenseRecommendationOptions",
+          "documentation":"<p> An array of objects that describe the license recommendation options. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to an EC2 instance. </p>"
+        }
+      },
+      "documentation":"<p> Describes a license recommendation for an EC2 instance. </p>"
+    },
+    "LicenseRecommendationFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"LicenseRecommendationFilterName",
+          "documentation":"<p>The name of the filter.</p> <p>Specify <code>Finding</code> to return recommendations with a specific finding classification.</p> <p>Specify <code>FindingReasonCode</code> to return recommendations with a specific finding reason code.</p> <p>You can filter your license recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your license recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all license recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your license recommendations. Use this filter to find all of your license recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your license recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p>The value of the filter.</p> <p>The valid values for this parameter are as follows, depending on what you specify for the <code>name</code> parameter:</p> <ul> <li> <p>If you specify the <code>name</code> parameter as <code>Finding</code>, then specify <code>Optimized</code>, <code>NotOptimized</code>, or <code>InsufficentMetrics</code>.</p> </li> <li> <p>If you specify the <code>name</code> parameter as <code>FindingReasonCode</code>, then specify <code>Optimized</code>, <code>LicenseOverprovisioned</code>, <code>InvalidCloudwatchApplicationInsights</code>, or <code>CloudwatchApplicationInsightsError</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> Describes a filter that returns a more specific list of license recommendations. Use this filter with the <code>GetLicenseRecommendation</code> action. </p>"
+    },
+    "LicenseRecommendationFilterName":{
+      "type":"string",
+      "enum":[
+        "Finding",
+        "FindingReasonCode",
+        "LicenseName"
+      ]
+    },
+    "LicenseRecommendationFilters":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendationFilter"}
+    },
+    "LicenseRecommendationOption":{
+      "type":"structure",
+      "members":{
+        "rank":{
+          "shape":"Rank",
+          "documentation":"<p> The rank of the license recommendation option. </p> <p> The top recommendation option is ranked as <code>1</code>. </p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p> The operating system of a license recommendation option. </p>"
+        },
+        "licenseEdition":{
+          "shape":"LicenseEdition",
+          "documentation":"<p> The recommended edition of the license for the application that runs on the instance. </p>"
+        },
+        "licenseModel":{
+          "shape":"LicenseModel",
+          "documentation":"<p> The recommended license type associated with the instance. </p>"
+        },
+        "savingsOpportunity":{"shape":"SavingsOpportunity"}
+      },
+      "documentation":"<p> Describes the recommendation options for licenses. </p>"
+    },
+    "LicenseRecommendationOptions":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendationOption"}
+    },
+    "LicenseRecommendations":{
+      "type":"list",
+      "member":{"shape":"LicenseRecommendation"}
+    },
+    "LicenseVersion":{"type":"string"},
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -2590,8 +3082,29 @@
         "NETWORK_IN_BYTES_PER_SECOND",
         "NETWORK_OUT_BYTES_PER_SECOND",
         "NETWORK_PACKETS_IN_PER_SECOND",
-        "NETWORK_PACKETS_OUT_PER_SECOND"
+        "NETWORK_PACKETS_OUT_PER_SECOND",
+        "GPU_PERCENTAGE",
+        "GPU_MEMORY_PERCENTAGE"
       ]
+    },
+    "MetricProviderArn":{"type":"string"},
+    "MetricSource":{
+      "type":"structure",
+      "members":{
+        "provider":{
+          "shape":"MetricSourceProvider",
+          "documentation":"<p> The name of the metric source provider. </p>"
+        },
+        "providerArn":{
+          "shape":"MetricProviderArn",
+          "documentation":"<p> The ARN of the metric source provider. </p>"
+        }
+      },
+      "documentation":"<p> The list of metric sources required to generate recommendations for commercial software licenses. </p>"
+    },
+    "MetricSourceProvider":{
+      "type":"string",
+      "enum":["CloudWatchApplicationInsights"]
     },
     "MetricStatistic":{
       "type":"string",
@@ -2604,6 +3117,10 @@
     "MetricValues":{
       "type":"list",
       "member":{"shape":"MetricValue"}
+    },
+    "MetricsSource":{
+      "type":"list",
+      "member":{"shape":"MetricSource"}
     },
     "MigrationEffort":{
       "type":"string",
@@ -2628,8 +3145,10 @@
     "NullableCpu":{"type":"integer"},
     "NullableMemory":{"type":"integer"},
     "NullableMemoryReservation":{"type":"integer"},
+    "NumberOfCores":{"type":"integer"},
     "NumberOfInvocations":{"type":"long"},
     "NumberOfMemberAccountsOptedIn":{"type":"integer"},
+    "OperatingSystem":{"type":"string"},
     "OptInRequiredException":{
       "type":"structure",
       "members":{
@@ -2665,7 +3184,7 @@
       "members":{
         "name":{
           "shape":"MetricName",
-          "documentation":"<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>"
+          "documentation":"<p>The name of the projected utilization metric.</p> <p>The following projected utilization metrics are returned:</p> <ul> <li> <p> <code>Cpu</code> - The projected percentage of allocated EC2 compute units that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the processing power required to run an application on the recommendation option.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that would be in use on the recommendation option had you used that resource during the analyzed period. This metric identifies the amount of memory required to run an application on the recommendation option.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is only returned for resources with the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>GPU</code> - The projected percentage of allocated GPUs if you adjust your configurations to Compute Optimizer's recommendation option.</p> </li> <li> <p> <code>GPU_MEMORY</code> - The projected percentage of total GPU memory if you adjust your configurations to Compute Optimizer's recommendation option.</p> <note> <p>The <code>GPU</code> and <code>GPU_MEMORY</code> metrics are only returned for resources with the unified CloudWatch Agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note> </li> </ul>"
         },
         "timestamps":{
           "shape":"Timestamps",
@@ -2676,7 +3195,7 @@
           "documentation":"<p>The values of the projected utilization metrics.</p>"
         }
       },
-      "documentation":"<p>Describes a projected utilization metric of a recommendation option, such as an Amazon EC2 instance. This represents the projected utilization of a recommendation option had you used that resource during the analyzed period.</p> <p>Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.</p> <note> <p>The <code>Cpu</code> and <code>Memory</code> metrics are the only projected utilization metrics returned when you run the <a>GetEC2RecommendationProjectedMetrics</a> action. Additionally, the <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note>"
+      "documentation":"<p>Describes a projected utilization metric of a recommendation option, such as an Amazon EC2 instance. This represents the projected utilization of a recommendation option had you used that resource during the analyzed period.</p> <p>Compare the utilization metric data of your resource against its projected utilization metric data to determine the performance difference between your current resource and the recommended option.</p> <note> <p>The <code>Cpu</code>, <code>Memory</code>, <code>GPU</code>, and <code>GPU_MEMORY</code> metrics are the only projected utilization metrics returned when you run the <a>GetEC2RecommendationProjectedMetrics</a> action. Additionally, these metrics are only returned for resources with the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a> and <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note>"
     },
     "ProjectedMetrics":{
       "type":"list",
@@ -2852,7 +3371,8 @@
         "AutoScalingGroup",
         "EbsVolume",
         "LambdaFunction",
-        "EcsService"
+        "EcsService",
+        "License"
       ]
     },
     "RecommendationSources":{
@@ -2885,6 +3405,10 @@
         "currentPerformanceRiskRatings":{
           "shape":"CurrentPerformanceRiskRatings",
           "documentation":"<p>An object that describes the performance risk ratings for a given resource type.</p>"
+        },
+        "inferredWorkloadSavings":{
+          "shape":"InferredWorkloadSavings",
+          "documentation":"<p> An array of objects that describes the estimated monthly saving amounts for the instances running on the specified <code>inferredWorkloadTypes</code>. The array contains the top five savings opportunites for the instances that run inferred workload types. </p>"
         }
       },
       "documentation":"<p>A summary of a recommendation.</p>"
@@ -2913,6 +3437,10 @@
       "member":{"shape":"RecommendedOptionProjectedMetric"}
     },
     "ResourceArn":{"type":"string"},
+    "ResourceArns":{
+      "type":"list",
+      "member":{"shape":"ResourceArn"}
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -2930,9 +3458,11 @@
         "EbsVolume",
         "LambdaFunction",
         "NotApplicable",
-        "EcsService"
+        "EcsService",
+        "License"
       ]
     },
+    "RootVolume":{"type":"boolean"},
     "S3Destination":{
       "type":"structure",
       "members":{
@@ -2974,7 +3504,7 @@
         },
         "estimatedMonthlySavings":{
           "shape":"EstimatedMonthlySavings",
-          "documentation":"<p>An object that describes the estimated monthly savings amount possible, based on On-Demand instance pricing, by adopting Compute Optimizer recommendations for a given resource.</p>"
+          "documentation":"<p>An object that describes the estimated monthly savings amount possible by adopting Compute Optimizer recommendations for a given resource. This is based on the On-Demand instance pricing..</p>"
         }
       },
       "documentation":"<p>Describes the savings opportunity for recommendations of a given resource type or for the recommendation option of an individual resource.</p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing a given Compute Optimizer recommendation.</p> <important> <p>Savings opportunity data requires that you opt in to Cost Explorer, as well as activate <b>Receive Amazon EC2 resource recommendations</b> in the Cost Explorer preferences page. That creates a connection between Cost Explorer and Compute Optimizer. With this connection, Cost Explorer generates savings estimates considering the price of existing resources, the price of recommended resources, and historical usage data. Estimated monthly savings reflects the projected dollar savings associated with each of the recommendations generated. For more information, see <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-enable.html\">Enabling Cost Explorer</a> and <a href=\"https://docs.aws.amazon.com/cost-management/latest/userguide/ce-rightsizing.html\">Optimizing your cost with Rightsizing Recommendations</a> in the <i>Cost Management User Guide</i>.</p> </important>"
@@ -3076,6 +3606,26 @@
       "documentation":"<p>The summary of a recommendation.</p>"
     },
     "SummaryValue":{"type":"double"},
+    "Tag":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p> One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values. </p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p> One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null. </p>"
+        }
+      },
+      "documentation":"<p> A list of tag key and value pairs that you define. </p>"
+    },
+    "TagKey":{"type":"string"},
+    "TagValue":{"type":"string"},
+    "Tags":{
+      "type":"list",
+      "member":{"shape":"Tag"}
+    },
     "TaskDefinitionArn":{"type":"string"},
     "ThrottlingException":{
       "type":"structure",
@@ -3125,7 +3675,7 @@
       "members":{
         "name":{
           "shape":"MetricName",
-          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>"
+          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>Cpu</code> - The percentage of allocated EC2 compute units that are currently in use on the instance. This metric identifies the processing power required to run an application on the instance.</p> <p>Depending on the instance type, tools in your operating system can show a lower percentage than CloudWatch when the instance is not allocated a full processor core.</p> <p>Units: Percent</p> </li> <li> <p> <code>Memory</code> - The percentage of memory that is currently in use on the instance. This metric identifies the amount of memory required to run an application on the instance.</p> <p>Units: Percent</p> <note> <p>The <code>Memory</code> metric is returned only for resources that have the unified CloudWatch agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#cw-agent\">Enabling Memory Utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>GPU</code> - The percentage of allocated GPUs that currently run on the instance.</p> </li> <li> <p> <code>GPU_MEMORY</code> - The percentage of total GPU memory that currently runs on the instance.</p> <note> <p>The <code>GPU</code> and <code>GPU_MEMORY</code> metrics are only returned for resources with the unified CloudWatch Agent installed on them. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/metrics.html#nvidia-cw-agent\">Enabling NVIDIA GPU utilization with the CloudWatch Agent</a>.</p> </note> </li> <li> <p> <code>EBS_READ_OPS_PER_SECOND</code> - The completed read operations from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_WRITE_OPS_PER_SECOND</code> - The completed write operations to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>EBS_READ_BYTES_PER_SECOND</code> - The bytes read from all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>EBS_WRITE_BYTES_PER_SECOND</code> - The bytes written to all EBS volumes attached to the instance in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>DISK_READ_OPS_PER_SECOND</code> - The completed read operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_OPS_PER_SECOND</code> - The completed write operations from all instance store volumes available to the instance in a specified period of time.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_READ_BYTES_PER_SECOND</code> - The bytes read from all instance store volumes available to the instance. This metric is used to determine the volume of the data the application reads from the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>DISK_WRITE_BYTES_PER_SECOND</code> - The bytes written to all instance store volumes available to the instance. This metric is used to determine the volume of the data the application writes onto the disk of the instance. This can be used to determine the speed of the application.</p> <p>If there are no instance store volumes, either the value is <code>0</code> or the metric is not reported.</p> </li> <li> <p> <code>NETWORK_IN_BYTES_PER_SECOND</code> - The number of bytes received by the instance on all network interfaces. This metric identifies the volume of incoming network traffic to a single instance.</p> </li> <li> <p> <code>NETWORK_OUT_BYTES_PER_SECOND</code> - The number of bytes sent out by the instance on all network interfaces. This metric identifies the volume of outgoing network traffic from a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_IN_PER_SECOND</code> - The number of packets received by the instance on all network interfaces. This metric identifies the volume of incoming traffic in terms of the number of packets on a single instance.</p> </li> <li> <p> <code>NETWORK_PACKETS_OUT_PER_SECOND</code> - The number of packets sent out by the instance on all network interfaces. This metric identifies the volume of outgoing traffic in terms of the number of packets on a single instance.</p> </li> </ul>"
         },
         "statistic":{
           "shape":"MetricStatistic",
@@ -3179,6 +3729,10 @@
         "volumeBurstThroughput":{
           "shape":"VolumeBurstThroughput",
           "documentation":"<p>The burst throughput of the volume.</p>"
+        },
+        "rootVolume":{
+          "shape":"RootVolume",
+          "documentation":"<p> Contains the image used to boot the instance during launch. </p>"
         }
       },
       "documentation":"<p>Describes the configuration of an Amazon Elastic Block Store (Amazon EBS) volume.</p>"
@@ -3221,6 +3775,10 @@
         "currentPerformanceRisk":{
           "shape":"CurrentPerformanceRisk",
           "documentation":"<p>The risk of the current EBS volume not meeting the performance needs of its workloads. The higher the risk, the more likely the current EBS volume doesn't have sufficient capacity.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p> A list of tags assigned to your Amazon EBS volume recommendations. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon Elastic Block Store (Amazon EBS) volume recommendation.</p>"

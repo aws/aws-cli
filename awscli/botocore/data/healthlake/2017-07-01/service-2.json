@@ -28,7 +28,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a Data Store that can ingest and export FHIR formatted data.</p>"
+      "documentation":"<p>Creates a data store that can ingest and export FHIR formatted data.</p>"
     },
     "DeleteFHIRDatastore":{
       "name":"DeleteFHIRDatastore",
@@ -46,7 +46,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a Data Store. </p>"
+      "documentation":"<p>Deletes a data store. </p>"
     },
     "DescribeFHIRDatastore":{
       "name":"DescribeFHIRDatastore",
@@ -62,7 +62,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Gets the properties associated with the FHIR Data Store, including the Data Store ID, Data Store ARN, Data Store name, Data Store status, created at, Data Store type version, and Data Store endpoint.</p>"
+      "documentation":"<p>Gets the properties associated with the FHIR data store, including the data store ID, data store ARN, data store name, data store status, when the data store was created, data store type version, and the data store's endpoint.</p>"
     },
     "DescribeFHIRExportJob":{
       "name":"DescribeFHIRExportJob",
@@ -109,7 +109,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all FHIR Data Stores that are in the user’s account, regardless of Data Store status.</p>"
+      "documentation":"<p>Lists all FHIR data stores that are in the user’s account, regardless of data store status.</p>"
     },
     "ListFHIRExportJobs":{
       "name":"ListFHIRExportJobs",
@@ -157,7 +157,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Returns a list of all existing tags associated with a Data Store. </p>"
+      "documentation":"<p> Returns a list of all existing tags associated with a data store. </p>"
     },
     "StartFHIRExportJob":{
       "name":"StartFHIRExportJob",
@@ -205,7 +205,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Adds a user specifed key and value tag to a Data Store. </p>"
+      "documentation":"<p> Adds a user specified key and value tag to a data store. </p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -219,7 +219,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Removes tags from a Data Store. </p>"
+      "documentation":"<p> Removes tags from a data store. </p>"
     }
   },
   "shapes":{
@@ -237,6 +237,14 @@
       "min":1,
       "pattern":"^arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:healthlake:[a-z0-9-]+:\\d{12}:datastore\\/fhir\\/.{32}"
     },
+    "AuthorizationStrategy":{
+      "type":"string",
+      "enum":[
+        "SMART_ON_FHIR_V1",
+        "AWS_AUTH"
+      ]
+    },
+    "Boolean":{"type":"boolean"},
     "BoundedLengthString":{
       "type":"string",
       "max":5000,
@@ -256,12 +264,13 @@
         "AWS_OWNED_KMS_KEY"
       ]
     },
+    "ConfigurationMetadata":{"type":"string"},
     "ConflictException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The Data Store is in a transition state and the user requested action can not be performed.</p>",
+      "documentation":"<p>The data store is in a transition state and the user requested action can not be performed.</p>",
       "exception":true
     },
     "CreateFHIRDatastoreRequest":{
@@ -270,19 +279,19 @@
       "members":{
         "DatastoreName":{
           "shape":"DatastoreName",
-          "documentation":"<p>The user generated name for the Data Store.</p>"
+          "documentation":"<p>The user generated name for the data store.</p>"
         },
         "DatastoreTypeVersion":{
           "shape":"FHIRVersion",
-          "documentation":"<p>The FHIR version of the Data Store. The only supported version is R4.</p>"
+          "documentation":"<p>The FHIR version of the data store. The only supported version is R4.</p>"
         },
         "SseConfiguration":{
           "shape":"SseConfiguration",
-          "documentation":"<p> The server-side encryption key configuration for a customer provided encryption key specified for creating a Data Store. </p>"
+          "documentation":"<p> The server-side encryption key configuration for a customer provided encryption key specified for creating a data store. </p>"
         },
         "PreloadDataConfig":{
           "shape":"PreloadDataConfig",
-          "documentation":"<p>Optional parameter to preload data upon creation of the Data Store. Currently, the only supported preloaded data is synthetic data generated from Synthea.</p>"
+          "documentation":"<p>Optional parameter to preload data upon creation of the data store. Currently, the only supported preloaded data is synthetic data generated from Synthea.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenString",
@@ -291,7 +300,11 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p> Resource tags that are applied to a Data Store when it is created. </p>"
+          "documentation":"<p> Resource tags that are applied to a data store when it is created. </p>"
+        },
+        "IdentityProviderConfiguration":{
+          "shape":"IdentityProviderConfiguration",
+          "documentation":"<p>The configuration of the identity provider that you want to use for your data store.</p>"
         }
       }
     },
@@ -306,19 +319,19 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated Data Store id. This id is in the output from the initial Data Store creation call.</p>"
+          "documentation":"<p>The AWS-generated data store id. This id is in the output from the initial data store creation call.</p>"
         },
         "DatastoreArn":{
           "shape":"DatastoreArn",
-          "documentation":"<p>The datastore ARN is generated during the creation of the Data Store and can be found in the output from the initial Data Store creation call.</p>"
+          "documentation":"<p>The data store ARN is generated during the creation of the data store and can be found in the output from the initial data store creation call.</p>"
         },
         "DatastoreStatus":{
           "shape":"DatastoreStatus",
-          "documentation":"<p>The status of the FHIR Data Store. Possible statuses are ‘CREATING’, ‘ACTIVE’, ‘DELETING’, ‘DELETED’.</p>"
+          "documentation":"<p>The status of the FHIR data store.</p>"
         },
         "DatastoreEndpoint":{
           "shape":"BoundedLengthString",
-          "documentation":"<p>The AWS endpoint for the created Data Store. For preview, only US-east-1 endpoints are supported.</p>"
+          "documentation":"<p>The AWS endpoint for the created data store.</p>"
         }
       }
     },
@@ -331,22 +344,22 @@
       "members":{
         "DatastoreName":{
           "shape":"DatastoreName",
-          "documentation":"<p>Allows the user to filter Data Store results by name.</p>"
+          "documentation":"<p>Allows the user to filter data store results by name.</p>"
         },
         "DatastoreStatus":{
           "shape":"DatastoreStatus",
-          "documentation":"<p>Allows the user to filter Data Store results by status.</p>"
+          "documentation":"<p>Allows the user to filter data store results by status.</p>"
         },
         "CreatedBefore":{
           "shape":"Timestamp",
-          "documentation":"<p>A filter that allows the user to set cutoff dates for records. All Data Stores created before the specified date will be included in the results. </p>"
+          "documentation":"<p>A filter that allows the user to set cutoff dates for records. All data stores created before the specified date will be included in the results. </p>"
         },
         "CreatedAfter":{
           "shape":"Timestamp",
-          "documentation":"<p>A filter that allows the user to set cutoff dates for records. All Data Stores created after the specified date will be included in the results.</p>"
+          "documentation":"<p>A filter that allows the user to set cutoff dates for records. All data stores created after the specified date will be included in the results.</p>"
         }
       },
-      "documentation":"<p>The filters applied to Data Store query.</p>"
+      "documentation":"<p>The filters applied to data store query.</p>"
     },
     "DatastoreId":{
       "type":"string",
@@ -372,23 +385,23 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated ID number for the Data Store.</p>"
+          "documentation":"<p>The AWS-generated ID number for the data store.</p>"
         },
         "DatastoreArn":{
           "shape":"DatastoreArn",
-          "documentation":"<p>The Amazon Resource Name used in the creation of the Data Store.</p>"
+          "documentation":"<p>The Amazon Resource Name used in the creation of the data store.</p>"
         },
         "DatastoreName":{
           "shape":"DatastoreName",
-          "documentation":"<p>The user-generated name for the Data Store.</p>"
+          "documentation":"<p>The user-generated name for the data store.</p>"
         },
         "DatastoreStatus":{
           "shape":"DatastoreStatus",
-          "documentation":"<p>The status of the Data Store. Possible statuses are 'CREATING', 'ACTIVE', 'DELETING', or 'DELETED'.</p>"
+          "documentation":"<p>The status of the data store.</p>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that a Data Store was created. </p>"
+          "documentation":"<p>The time that a data store was created. </p>"
         },
         "DatastoreTypeVersion":{
           "shape":"FHIRVersion",
@@ -396,7 +409,7 @@
         },
         "DatastoreEndpoint":{
           "shape":"String",
-          "documentation":"<p>The AWS endpoint for the Data Store. Each Data Store will have it's own endpoint with Data Store ID in the endpoint URL.</p>"
+          "documentation":"<p>The AWS endpoint for the data store. Each data store will have it's own endpoint with data store ID in the endpoint URL.</p>"
         },
         "SseConfiguration":{
           "shape":"SseConfiguration",
@@ -404,10 +417,14 @@
         },
         "PreloadDataConfig":{
           "shape":"PreloadDataConfig",
-          "documentation":"<p>The preloaded data configuration for the Data Store. Only data preloaded from Synthea is supported.</p>"
+          "documentation":"<p>The preloaded data configuration for the data store. Only data preloaded from Synthea is supported.</p>"
+        },
+        "IdentityProviderConfiguration":{
+          "shape":"IdentityProviderConfiguration",
+          "documentation":"<p>The identity provider that you selected when you created the data store.</p>"
         }
       },
-      "documentation":"<p>Displays the properties of the Data Store, including the ID, Arn, name, and the status of the Data Store.</p>"
+      "documentation":"<p>Displays the properties of the data store, including the ID, ARN, name, and the status of the data store.</p>"
     },
     "DatastorePropertiesList":{
       "type":"list",
@@ -424,10 +441,11 @@
     },
     "DeleteFHIRDatastoreRequest":{
       "type":"structure",
+      "required":["DatastoreId"],
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p> The AWS-generated ID for the Data Store to be deleted.</p>"
+          "documentation":"<p> The AWS-generated ID for the data store to be deleted.</p>"
         }
       }
     },
@@ -442,28 +460,29 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated ID for the Data Store to be deleted.</p>"
+          "documentation":"<p>The AWS-generated ID for the data store to be deleted.</p>"
         },
         "DatastoreArn":{
           "shape":"DatastoreArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that gives AWS HealthLake access permission.</p>"
         },
         "DatastoreStatus":{
           "shape":"DatastoreStatus",
-          "documentation":"<p>The status of the Data Store that the user has requested to be deleted. </p>"
+          "documentation":"<p>The status of the data store that the user has requested to be deleted. </p>"
         },
         "DatastoreEndpoint":{
           "shape":"BoundedLengthString",
-          "documentation":"<p>The AWS endpoint for the Data Store the user has requested to be deleted.</p>"
+          "documentation":"<p>The AWS endpoint for the data store the user has requested to be deleted.</p>"
         }
       }
     },
     "DescribeFHIRDatastoreRequest":{
       "type":"structure",
+      "required":["DatastoreId"],
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated Data Store id. This is part of the ‘CreateFHIRDatastore’ output.</p>"
+          "documentation":"<p>The AWS-generated data store ID.</p>"
         }
       }
     },
@@ -473,7 +492,7 @@
       "members":{
         "DatastoreProperties":{
           "shape":"DatastoreProperties",
-          "documentation":"<p>All properties associated with a Data Store, including the Data Store ID, Data Store ARN, Data Store name, Data Store status, created at, Data Store type version, and Data Store endpoint.</p>"
+          "documentation":"<p>All properties associated with a data store, including the data store ID, data store ARN, data store name, data store status, when the data store was created, data store type version, and the data store's endpoint.</p>"
         }
       }
     },
@@ -486,7 +505,7 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS generated ID for the Data Store from which files are being exported from for an export job.</p>"
+          "documentation":"<p>The AWS generated ID for the data store from which files are being exported from for an export job.</p>"
         },
         "JobId":{
           "shape":"JobId",
@@ -513,7 +532,7 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated ID of the Data Store.</p>"
+          "documentation":"<p>The AWS-generated ID of the data store.</p>"
         },
         "JobId":{
           "shape":"JobId",
@@ -569,7 +588,7 @@
         },
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS generated ID for the Data Store from which files are being exported for an export job.</p>"
+          "documentation":"<p>The AWS generated ID for the data store from which files are being exported for an export job.</p>"
         },
         "OutputDataConfig":{
           "shape":"OutputDataConfig",
@@ -600,6 +619,29 @@
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"
     },
+    "IdentityProviderConfiguration":{
+      "type":"structure",
+      "required":["AuthorizationStrategy"],
+      "members":{
+        "AuthorizationStrategy":{
+          "shape":"AuthorizationStrategy",
+          "documentation":"<p>The authorization strategy that you selected when you created the data store.</p>"
+        },
+        "FineGrainedAuthorizationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>If you enabled fine-grained authorization when you created the data store.</p>"
+        },
+        "Metadata":{
+          "shape":"ConfigurationMetadata",
+          "documentation":"<p>The JSON metadata elements that you want to use in your identity provider configuration. Required elements are listed based on the launch specification of the SMART application. For more information on all possible elements, see <a href=\"https://build.fhir.org/ig/HL7/smart-app-launch/conformance.html#metadata\">Metadata</a> in SMART's App Launch specification.</p> <p> <code>authorization_endpoint</code>: The URL to the OAuth2 authorization endpoint.</p> <p> <code>grant_types_supported</code>: An array of grant types that are supported at the token endpoint. You must provide at least one grant type option. Valid options are <code>authorization_code</code> and <code>client_credentials</code>.</p> <p> <code>token_endpoint</code>: The URL to the OAuth2 token endpoint.</p> <p> <code>capabilities</code>: An array of strings of the SMART capabilities that the authorization server supports.</p> <p> <code>code_challenge_methods_supported</code>: An array of strings of supported PKCE code challenge methods. You must include the <code>S256</code> method in the array of PKCE code challenge methods.</p>"
+        },
+        "IdpLambdaArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function that you want to use to decode the access token created by the authorization server.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider configuration that you gave when the data store was created.</p>"
+    },
     "ImportJobProperties":{
       "type":"structure",
       "required":[
@@ -620,7 +662,7 @@
         },
         "JobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The job status for an Import job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED, FAILED.</p>"
+          "documentation":"<p>The job status for an Import job. Possible statuses are SUBMITTED, IN_PROGRESS, COMPLETED_WITH_ERRORS, COMPLETED, FAILED.</p>"
         },
         "SubmitTime":{
           "shape":"Timestamp",
@@ -641,14 +683,14 @@
         "JobOutputDataConfig":{"shape":"OutputDataConfig"},
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon HealthLake access to your input data.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that gives AWS HealthLake access to your input data.</p>"
         },
         "Message":{
           "shape":"Message",
           "documentation":"<p>An explanation of any errors that may have occurred during the FHIR import job. </p>"
         }
       },
-      "documentation":"<p>Displays the properties of the import job, including the ID, Arn, Name, and the status of the Data Store.</p>"
+      "documentation":"<p>Displays the properties of the import job, including the ID, Arn, Name, and the status of the data store.</p>"
     },
     "ImportJobPropertiesList":{
       "type":"list",
@@ -659,7 +701,7 @@
       "members":{
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. </p>"
+          "documentation":"<p>The S3Uri is the user specified S3 location of the FHIR data to be imported into AWS HealthLake. </p>"
         }
       },
       "documentation":"<p> The input properties for an import job.</p>",
@@ -693,7 +735,11 @@
         "IN_PROGRESS",
         "COMPLETED_WITH_ERRORS",
         "COMPLETED",
-        "FAILED"
+        "FAILED",
+        "CANCEL_SUBMITTED",
+        "CANCEL_IN_PROGRESS",
+        "CANCEL_COMPLETED",
+        "CANCEL_FAILED"
       ]
     },
     "KmsEncryptionConfig":{
@@ -702,29 +748,35 @@
       "members":{
         "CmkType":{
           "shape":"CmkType",
-          "documentation":"<p> The type of customer-managed-key(CMK) used for encyrption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs. </p>"
+          "documentation":"<p> The type of customer-managed-key(CMK) used for encryption. The two types of supported CMKs are customer owned CMKs and AWS owned CMKs. </p>"
         },
         "KmsKeyId":{
           "shape":"EncryptionKeyID",
-          "documentation":"<p> The KMS encryption key id/alias used to encrypt the Data Store contents at rest. </p>"
+          "documentation":"<p> The KMS encryption key id/alias used to encrypt the data store contents at rest. </p>"
         }
       },
-      "documentation":"<p> The customer-managed-key(CMK) used when creating a Data Store. If a customer owned key is not specified, an AWS owned key will be used for encryption. </p>"
+      "documentation":"<p> The customer-managed-key(CMK) used when creating a data store. If a customer owned key is not specified, an AWS owned key will be used for encryption. </p>"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "max":256,
+      "min":49,
+      "pattern":"arn:aws:lambda:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9\\-_\\.]+(:(\\$LATEST|[a-zA-Z0-9\\-_]+))?"
     },
     "ListFHIRDatastoresRequest":{
       "type":"structure",
       "members":{
         "Filter":{
           "shape":"DatastoreFilter",
-          "documentation":"<p>Lists all filters associated with a FHIR Data Store request.</p>"
+          "documentation":"<p>Lists all filters associated with a FHIR data store request.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Fetches the next page of Data Stores when results are paginated.</p>"
+          "documentation":"<p>Fetches the next page of data stores when results are paginated.</p>"
         },
         "MaxResults":{
           "shape":"MaxResultsInteger",
-          "documentation":"<p>The maximum number of Data Stores returned in a single page of a ListFHIRDatastoresRequest call.</p>"
+          "documentation":"<p>The maximum number of data stores returned in a single page of a ListFHIRDatastoresRequest call.</p>"
         }
       }
     },
@@ -734,7 +786,7 @@
       "members":{
         "DatastorePropertiesList":{
           "shape":"DatastorePropertiesList",
-          "documentation":"<p>All properties associated with the listed Data Stores.</p>"
+          "documentation":"<p>All properties associated with the listed data stores.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -748,7 +800,7 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p> This parameter limits the response to the export job with the specified Data Store ID. </p>"
+          "documentation":"<p> This parameter limits the response to the export job with the specified data store ID. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -796,7 +848,7 @@
       "members":{
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p> This parameter limits the response to the import job with the specified Data Store ID. </p>"
+          "documentation":"<p> This parameter limits the response to the import job with the specified data store ID. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -844,7 +896,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p> The Amazon Resource Name(ARN) of the Data Store for which tags are being added. </p>"
+          "documentation":"<p> The Amazon Resource Name(ARN) of the data store for which tags are being added. </p>"
         }
       }
     },
@@ -853,7 +905,7 @@
       "members":{
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p> Returns a list of tags associated with a Data Store. </p>"
+          "documentation":"<p> Returns a list of tags associated with a data store. </p>"
         }
       }
     },
@@ -893,7 +945,7 @@
           "documentation":"<p>The type of preloaded data. Only Synthea preloaded data is supported.</p>"
         }
       },
-      "documentation":"<p> The input properties for the preloaded Data Store. Only data preloaded from Synthea is supported.</p>"
+      "documentation":"<p> The input properties for the preloaded data store. Only data preloaded from Synthea is supported.</p>"
     },
     "PreloadDataType":{
       "type":"string",
@@ -904,7 +956,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p> The requested Data Store was not found.</p>",
+      "documentation":"<p> The requested data store was not found.</p>",
       "exception":true
     },
     "S3Configuration":{
@@ -916,7 +968,7 @@
       "members":{
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p> The S3Uri is the user specified S3 location of the FHIR data to be imported into Amazon HealthLake. </p>"
+          "documentation":"<p> The S3Uri is the user specified S3 location of the FHIR data to be imported into AWS HealthLake. </p>"
         },
         "KmsKeyId":{
           "shape":"EncryptionKeyID",
@@ -960,7 +1012,7 @@
         },
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS generated ID for the Data Store from which files are being exported for an export job.</p>"
+          "documentation":"<p>The AWS generated ID for the data store from which files are being exported for an export job.</p>"
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
@@ -990,7 +1042,7 @@
         },
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS generated ID for the Data Store from which files are being exported for an export job.</p>"
+          "documentation":"<p>The AWS generated ID for the data store from which files are being exported for an export job.</p>"
         }
       }
     },
@@ -1015,11 +1067,11 @@
         "JobOutputDataConfig":{"shape":"OutputDataConfig"},
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated Data Store ID.</p>"
+          "documentation":"<p>The AWS-generated data store ID.</p>"
         },
         "DataAccessRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that gives Amazon HealthLake access permission.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that gives AWS HealthLake access permission.</p>"
         },
         "ClientToken":{
           "shape":"ClientTokenString",
@@ -1045,7 +1097,7 @@
         },
         "DatastoreId":{
           "shape":"DatastoreId",
-          "documentation":"<p>The AWS-generated Data Store ID.</p>"
+          "documentation":"<p>The AWS-generated data store ID.</p>"
         }
       }
     },
@@ -1067,7 +1119,7 @@
         },
         "Value":{
           "shape":"TagValue",
-          "documentation":"<p> The value portion of tag. Tag values are case sensitive. </p>"
+          "documentation":"<p> The value portion of a tag. Tag values are case sensitive. </p>"
         }
       },
       "documentation":"<p> A tag is a label consisting of a user-defined key and value. The form for tags is {\"Key\", \"Value\"} </p>"
@@ -1099,11 +1151,11 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p> The Amazon Resource Name(ARN)that gives Amazon HealthLake access to the Data Store which tags are being added to. </p>"
+          "documentation":"<p> The Amazon Resource Name(ARN)that gives AWS HealthLake access to the data store which tags are being added to. </p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p> The user specified key and value pair tags being added to a Data Store. </p>"
+          "documentation":"<p> The user specified key and value pair tags being added to a data store. </p>"
         }
       }
     },
@@ -1136,11 +1188,11 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p> \"The Amazon Resource Name(ARN) of the Data Store for which tags are being removed </p>"
+          "documentation":"<p>The Amazon Resource Name(ARN) of the data store for which tags are being removed.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p> The keys for the tags to be removed from the Healthlake Data Store. </p>"
+          "documentation":"<p> The keys for the tags to be removed from the HealthLake data store. </p>"
         }
       }
     },
@@ -1158,5 +1210,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Amazon HealthLake is a HIPAA eligibile service that allows customers to store, transform, query, and analyze their FHIR-formatted data in a consistent fashion in the cloud.</p>"
+  "documentation":"<p>AWS HealthLake is a HIPAA eligibile service that allows customers to store, transform, query, and analyze their FHIR-formatted data in a consistent fashion in the cloud.</p>"
 }

@@ -109,9 +109,28 @@ class TestCSVCredentialParser(unittest.TestCase):
         )
         self.assert_parse_matches_expected(contents)
 
+    def test_csv_parser_with_bom(self):
+        contents = (
+            u'\ufeffUser name,Access key ID,Secret access key\n'
+            'PROFILENAME,AKID,SAK\n'
+        )
+        self.assert_parse_matches_expected(contents)
+
     def test_csv_parser_multiple_entries(self):
         contents = (
             'User name,Access key ID,Secret access key\n'
+            'PROFILENAME1,AKID1,SAK1\n'
+            'PROFILENAME2,AKID2,SAK2\n'
+        )
+        self.expected_credentials = [
+            ('PROFILENAME1', 'AKID1', 'SAK1'),
+            ('PROFILENAME2', 'AKID2', 'SAK2'),
+        ]
+        self.assert_parse_matches_expected(contents)
+
+    def test_csv_parser_multiple_entries_bom(self):
+        contents = (
+            u'\ufeffUser name,Access key ID,Secret access key\n'
             'PROFILENAME1,AKID1,SAK1\n'
             'PROFILENAME2,AKID2,SAK2\n'
         )

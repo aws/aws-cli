@@ -32,6 +32,26 @@
       "documentation":"<p>Associates a browser settings resource with a web portal.</p>",
       "idempotent":true
     },
+    "AssociateIpAccessSettings":{
+      "name":"AssociateIpAccessSettings",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/portals/{portalArn+}/ipAccessSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateIpAccessSettingsRequest"},
+      "output":{"shape":"AssociateIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates an IP access settings resource with a web portal.</p>",
+      "idempotent":true
+    },
     "AssociateNetworkSettings":{
       "name":"AssociateNetworkSettings",
       "http":{
@@ -150,6 +170,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Creates an identity provider resource that is then associated with a web portal.</p>"
+    },
+    "CreateIpAccessSettings":{
+      "name":"CreateIpAccessSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ipAccessSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIpAccessSettingsRequest"},
+      "output":{"shape":"CreateIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an IP access settings resource that can be associated with a web portal.</p>"
     },
     "CreateNetworkSettings":{
       "name":"CreateNetworkSettings",
@@ -285,6 +324,25 @@
       "documentation":"<p>Deletes the identity provider.</p>",
       "idempotent":true
     },
+    "DeleteIpAccessSettings":{
+      "name":"DeleteIpAccessSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/ipAccessSettings/{ipAccessSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteIpAccessSettingsRequest"},
+      "output":{"shape":"DeleteIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes IP access settings.</p>",
+      "idempotent":true
+    },
     "DeleteNetworkSettings":{
       "name":"DeleteNetworkSettings",
       "http":{
@@ -399,6 +457,25 @@
       "documentation":"<p>Disassociates browser settings from a web portal.</p>",
       "idempotent":true
     },
+    "DisassociateIpAccessSettings":{
+      "name":"DisassociateIpAccessSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/portals/{portalArn+}/ipAccessSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateIpAccessSettingsRequest"},
+      "output":{"shape":"DisassociateIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Disassociates IP access settings from a web portal.</p>",
+      "idempotent":true
+    },
     "DisassociateNetworkSettings":{
       "name":"DisassociateNetworkSettings",
       "http":{
@@ -510,6 +587,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets the identity provider.</p>"
+    },
+    "GetIpAccessSettings":{
+      "name":"GetIpAccessSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ipAccessSettings/{ipAccessSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIpAccessSettingsRequest"},
+      "output":{"shape":"GetIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the IP access settings.</p>"
     },
     "GetNetworkSettings":{
       "name":"GetNetworkSettings",
@@ -670,6 +765,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves a list of identity providers for a specific web portal.</p>"
+    },
+    "ListIpAccessSettings":{
+      "name":"ListIpAccessSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/ipAccessSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIpAccessSettingsRequest"},
+      "output":{"shape":"ListIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves a list of IP access settings.</p>"
     },
     "ListNetworkSettings":{
       "name":"ListNetworkSettings",
@@ -866,6 +978,24 @@
       ],
       "documentation":"<p>Updates the identity provider. </p>"
     },
+    "UpdateIpAccessSettings":{
+      "name":"UpdateIpAccessSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/ipAccessSettings/{ipAccessSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIpAccessSettingsRequest"},
+      "output":{"shape":"UpdateIpAccessSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates IP access settings.</p>"
+    },
     "UpdateNetworkSettings":{
       "name":"UpdateNetworkSettings",
       "http":{
@@ -898,7 +1028,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates a web portal.</p>",
       "idempotent":true
@@ -1013,6 +1144,44 @@
         "browserSettingsArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the browser settings.</p>"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>"
+        }
+      }
+    },
+    "AssociateIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "ipAccessSettingsArn",
+        "portalArn"
+      ],
+      "members":{
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>",
+          "location":"querystring",
+          "locationName":"ipAccessSettingsArn"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        }
+      }
+    },
+    "AssociateIpAccessSettingsResponse":{
+      "type":"structure",
+      "required":[
+        "ipAccessSettingsArn",
+        "portalArn"
+      ],
+      "members":{
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings resource.</p>"
         },
         "portalArn":{
           "shape":"ARN",
@@ -1211,6 +1380,7 @@
     },
     "BrowserSettingsSummary":{
       "type":"structure",
+      "required":["browserSettingsArn"],
       "members":{
         "browserSettingsArn":{
           "shape":"ARN",
@@ -1329,6 +1499,64 @@
       },
       "exception":true
     },
+    "CookieDomain":{
+      "type":"string",
+      "max":253,
+      "min":0,
+      "pattern":"^(\\.?)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)*[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+    },
+    "CookieName":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "CookiePath":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "pattern":"^/(\\S)*$"
+    },
+    "CookieSpecification":{
+      "type":"structure",
+      "required":["domain"],
+      "members":{
+        "domain":{
+          "shape":"CookieDomain",
+          "documentation":"<p>The domain of the cookie.</p>"
+        },
+        "name":{
+          "shape":"CookieName",
+          "documentation":"<p>The name of the cookie.</p>"
+        },
+        "path":{
+          "shape":"CookiePath",
+          "documentation":"<p>The path of the cookie.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a single cookie or set of cookies in an end user's browser.</p>"
+    },
+    "CookieSpecifications":{
+      "type":"list",
+      "member":{"shape":"CookieSpecification"},
+      "max":10,
+      "min":0
+    },
+    "CookieSynchronizationConfiguration":{
+      "type":"structure",
+      "required":["allowlist"],
+      "members":{
+        "allowlist":{
+          "shape":"CookieSpecifications",
+          "documentation":"<p>The list of cookie specifications that are allowed to be synchronized to the remote browser.</p>"
+        },
+        "blocklist":{
+          "shape":"CookieSpecifications",
+          "documentation":"<p>The list of cookie specifications that are blocked from being synchronized to the remote browser.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.</p>",
+      "sensitive":true
+    },
     "CreateBrowserSettingsRequest":{
       "type":"structure",
       "required":["browserPolicy"],
@@ -1403,8 +1631,53 @@
       "required":["identityProviderArn"],
       "members":{
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>"
+        }
+      }
+    },
+    "CreateIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":["ipRules"],
+      "members":{
+        "additionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>Additional encryption context of the IP access settings.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
+          "idempotencyToken":true
+        },
+        "customerManagedKey":{
+          "shape":"keyArn",
+          "documentation":"<p>The custom managed key of the IP access settings.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the IP access settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the IP access settings.</p>"
+        },
+        "ipRules":{
+          "shape":"IpRuleList",
+          "documentation":"<p>The IP rules of the IP access settings.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the browser settings resource. A tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateIpAccessSettingsResponse":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings resource.</p>"
         }
       }
     },
@@ -1564,14 +1837,26 @@
         "uploadAllowed"
       ],
       "members":{
+        "additionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>The additional encryption context of the user settings.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
           "idempotencyToken":true
         },
+        "cookieSynchronizationConfiguration":{
+          "shape":"CookieSynchronizationConfiguration",
+          "documentation":"<p>The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.</p>"
+        },
         "copyAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
+        },
+        "customerManagedKey":{
+          "shape":"keyArn",
+          "documentation":"<p>The customer managed key used to encrypt sensitive information in the user settings.</p>"
         },
         "disconnectTimeoutInMinutes":{
           "shape":"DisconnectTimeoutInMinutes",
@@ -1635,7 +1920,7 @@
       "required":["identityProviderArn"],
       "members":{
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>",
           "location":"uri",
           "locationName":"identityProviderArn"
@@ -1643,6 +1928,23 @@
       }
     },
     "DeleteIdentityProviderResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>",
+          "location":"uri",
+          "locationName":"ipAccessSettingsArn"
+        }
+      }
+    },
+    "DeleteIpAccessSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -1732,6 +2034,13 @@
       "members":{
       }
     },
+    "Description":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^.+$",
+      "sensitive":true
+    },
     "DisassociateBrowserSettingsRequest":{
       "type":"structure",
       "required":["portalArn"],
@@ -1745,6 +2054,23 @@
       }
     },
     "DisassociateBrowserSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisassociateIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":["portalArn"],
+      "members":{
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        }
+      }
+    },
+    "DisassociateIpAccessSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -1870,7 +2196,7 @@
       "required":["identityProviderArn"],
       "members":{
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>",
           "location":"uri",
           "locationName":"identityProviderArn"
@@ -1883,6 +2209,27 @@
         "identityProvider":{
           "shape":"IdentityProvider",
           "documentation":"<p>The identity provider.</p>"
+        }
+      }
+    },
+    "GetIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>",
+          "location":"uri",
+          "locationName":"ipAccessSettingsArn"
+        }
+      }
+    },
+    "GetIpAccessSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "ipAccessSettings":{
+          "shape":"IpAccessSettings",
+          "documentation":"<p>The IP access settings.</p>"
         }
       }
     },
@@ -1977,6 +2324,7 @@
     },
     "GetTrustStoreCertificateResponse":{
       "type":"structure",
+      "required":["trustStoreArn"],
       "members":{
         "certificate":{
           "shape":"Certificate",
@@ -2056,7 +2404,7 @@
       "required":["identityProviderArn"],
       "members":{
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>"
         },
         "identityProviderDetails":{
@@ -2093,9 +2441,10 @@
     },
     "IdentityProviderSummary":{
       "type":"structure",
+      "required":["identityProviderArn"],
       "members":{
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>"
         },
         "identityProviderName":{
@@ -2141,6 +2490,92 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "IpAccessSettings":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "associatedPortalArns":{
+          "shape":"ArnList",
+          "documentation":"<p>A list of web portal ARNs that this IP access settings resource is associated with.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date timestamp of the IP access settings.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the IP access settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p> The display name of the IP access settings.</p>"
+        },
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings resource.</p>"
+        },
+        "ipRules":{
+          "shape":"IpRuleList",
+          "documentation":"<p>The IP rules of the IP access settings.</p>"
+        }
+      },
+      "documentation":"<p>The IP access settings resource that can be associated with a web portal. </p>"
+    },
+    "IpAccessSettingsList":{
+      "type":"list",
+      "member":{"shape":"IpAccessSettingsSummary"}
+    },
+    "IpAccessSettingsSummary":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date timestamp of the IP access settings.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the IP access settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the IP access settings.</p>"
+        },
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of IP access settings.</p>"
+        }
+      },
+      "documentation":"<p>The summary of IP access settings.</p>"
+    },
+    "IpRange":{
+      "type":"string",
+      "documentation":"<p>A single IP address or an IP address range in CIDR notation</p>",
+      "pattern":"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?:/([0-9]|[12][0-9]|3[0-2])|)$",
+      "sensitive":true
+    },
+    "IpRule":{
+      "type":"structure",
+      "required":["ipRange"],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the IP rule.</p>"
+        },
+        "ipRange":{
+          "shape":"IpRange",
+          "documentation":"<p>The IP range of the IP rule.</p>"
+        }
+      },
+      "documentation":"<p>The IP rules of the IP access settings.</p>"
+    },
+    "IpRuleList":{
+      "type":"list",
+      "member":{"shape":"IpRule"},
+      "max":100,
+      "min":1,
+      "sensitive":true
     },
     "KinesisStreamArn":{
       "type":"string",
@@ -2209,6 +2644,36 @@
         "identityProviders":{
           "shape":"IdentityProviderList",
           "documentation":"<p>The identity providers.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "ListIpAccessSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be included in the next page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListIpAccessSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "ipAccessSettings":{
+          "shape":"IpAccessSettingsList",
+          "documentation":"<p>The IP access settings.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -2323,6 +2788,7 @@
     },
     "ListTrustStoreCertificatesResponse":{
       "type":"structure",
+      "required":["trustStoreArn"],
       "members":{
         "certificateList":{
           "shape":"CertificateSummaryList",
@@ -2466,6 +2932,7 @@
     },
     "NetworkSettingsSummary":{
       "type":"structure",
+      "required":["networkSettingsArn"],
       "members":{
         "networkSettingsArn":{
           "shape":"ARN",
@@ -2486,6 +2953,7 @@
     },
     "Portal":{
       "type":"structure",
+      "required":["portalArn"],
       "members":{
         "authenticationType":{
           "shape":"AuthenticationType",
@@ -2506,6 +2974,10 @@
         "displayName":{
           "shape":"DisplayName",
           "documentation":"<p>The name of the web portal.</p>"
+        },
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>"
         },
         "networkSettingsArn":{
           "shape":"ARN",
@@ -2566,6 +3038,7 @@
     },
     "PortalSummary":{
       "type":"structure",
+      "required":["portalArn"],
       "members":{
         "authenticationType":{
           "shape":"AuthenticationType",
@@ -2586,6 +3059,10 @@
         "displayName":{
           "shape":"DisplayName",
           "documentation":"<p>The name of the web portal.</p>"
+        },
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>"
         },
         "networkSettingsArn":{
           "shape":"ARN",
@@ -2721,6 +3198,12 @@
       "max":3,
       "min":2
     },
+    "SubresourceARN":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[\\w+=\\/,.@-]+:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:[a-zA-Z]+(\\/[a-fA-F0-9\\-]{36}){2,}$"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -2841,6 +3324,7 @@
     },
     "TrustStore":{
       "type":"structure",
+      "required":["trustStoreArn"],
       "members":{
         "associatedPortalArns":{
           "shape":"ArnList",
@@ -2934,7 +3418,7 @@
           "idempotencyToken":true
         },
         "identityProviderArn":{
-          "shape":"ARN",
+          "shape":"SubresourceARN",
           "documentation":"<p>The ARN of the identity provider.</p>",
           "location":"uri",
           "locationName":"identityProviderArn"
@@ -2960,6 +3444,45 @@
         "identityProvider":{
           "shape":"IdentityProvider",
           "documentation":"<p>The identity provider.</p>"
+        }
+      }
+    },
+    "UpdateIpAccessSettingsRequest":{
+      "type":"structure",
+      "required":["ipAccessSettingsArn"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the IP access settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the IP access settings.</p>"
+        },
+        "ipAccessSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the IP access settings.</p>",
+          "location":"uri",
+          "locationName":"ipAccessSettingsArn"
+        },
+        "ipRules":{
+          "shape":"IpRuleList",
+          "documentation":"<p>The updated IP rules of the IP access settings.</p>"
+        }
+      }
+    },
+    "UpdateIpAccessSettingsResponse":{
+      "type":"structure",
+      "required":["ipAccessSettings"],
+      "members":{
+        "ipAccessSettings":{
+          "shape":"IpAccessSettings",
+          "documentation":"<p>The IP access settings.</p>"
         }
       }
     },
@@ -3106,6 +3629,10 @@
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the AWS SDK.</p>",
           "idempotencyToken":true
         },
+        "cookieSynchronizationConfiguration":{
+          "shape":"CookieSynchronizationConfiguration",
+          "documentation":"<p>The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.</p> <p>If the allowlist and blocklist are empty, the configuration becomes null.</p>"
+        },
         "copyAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
@@ -3177,6 +3704,7 @@
     },
     "UserAccessLoggingSettingsSummary":{
       "type":"structure",
+      "required":["userAccessLoggingSettingsArn"],
       "members":{
         "kinesisStreamArn":{
           "shape":"KinesisStreamArn",
@@ -3196,6 +3724,10 @@
         "associatedPortalArns":{
           "shape":"ArnList",
           "documentation":"<p>A list of web portal ARNs that this user settings is associated with.</p>"
+        },
+        "cookieSynchronizationConfiguration":{
+          "shape":"CookieSynchronizationConfiguration",
+          "documentation":"<p>The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.</p>"
         },
         "copyAllowed":{
           "shape":"EnabledType",
@@ -3238,7 +3770,12 @@
     },
     "UserSettingsSummary":{
       "type":"structure",
+      "required":["userSettingsArn"],
       "members":{
+        "cookieSynchronizationConfiguration":{
+          "shape":"CookieSynchronizationConfiguration",
+          "documentation":"<p>The configuration that specifies which cookies should be synchronized from the end user's local browser to the remote browser.</p>"
+        },
         "copyAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"

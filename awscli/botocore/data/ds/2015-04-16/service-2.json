@@ -2596,6 +2596,7 @@
       "exception":true
     },
     "DirectoryConfigurationSettingAllowedValues":{"type":"string"},
+    "DirectoryConfigurationSettingDataType":{"type":"string"},
     "DirectoryConfigurationSettingLastRequestedDateTime":{"type":"timestamp"},
     "DirectoryConfigurationSettingLastUpdatedDateTime":{"type":"timestamp"},
     "DirectoryConfigurationSettingName":{
@@ -2615,7 +2616,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^[a-zA-Z0-9]*$"
+      "pattern":"^[a-zA-Z0-9_]*$"
     },
     "DirectoryConfigurationStatus":{
       "type":"string",
@@ -4060,6 +4061,7 @@
     },
     "RemoteDomainName":{
       "type":"string",
+      "max":1024,
       "pattern":"^([a-zA-Z0-9]+[\\\\.-])+([a-zA-Z0-9])+[.]?$"
     },
     "RemoteDomainNames":{
@@ -4302,7 +4304,7 @@
       "members":{
         "Type":{
           "shape":"DirectoryConfigurationSettingType",
-          "documentation":"<p>The type of directory setting. For example, <code>Protocol</code> or <code>Cipher</code>.</p>"
+          "documentation":"<p>The type, or category, of a directory setting. Similar settings have the same type. For example, <code>Protocol</code>, <code>Cipher</code>, or <code>Certificate-Based Authentication</code>.</p>"
         },
         "Name":{
           "shape":"DirectoryConfigurationSettingName",
@@ -4310,7 +4312,7 @@
         },
         "AllowedValues":{
           "shape":"DirectoryConfigurationSettingAllowedValues",
-          "documentation":"<p>The valid range of values for the directory setting.</p>"
+          "documentation":"<p>The valid range of values for the directory setting. These values depend on the <code>DataType</code> of your directory.</p>"
         },
         "AppliedValue":{
           "shape":"DirectoryConfigurationSettingValue",
@@ -4339,6 +4341,10 @@
         "LastRequestedDateTime":{
           "shape":"DirectoryConfigurationSettingLastRequestedDateTime",
           "documentation":"<p>The date and time when the request to update a directory setting was last submitted.</p>"
+        },
+        "DataType":{
+          "shape":"DirectoryConfigurationSettingDataType",
+          "documentation":"<p>The data type of a directory setting. This is used to define the <code>AllowedValues</code> of a setting. For example a data type can be <code>Boolean</code>, <code>DurationInSeconds</code>, or <code>Enum</code>.</p>"
         }
       },
       "documentation":"<p>Contains information about the specified configurable setting for a directory.</p>"

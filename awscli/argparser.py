@@ -277,6 +277,7 @@ class SubCommandArgParser(ArgTableArgParser):
 
 class FirstPassGlobalArgParser(CLIArgParser):
     def __init__(self, *args, **kwargs):
+        kwargs['add_help'] = False
         super().__init__(*args, **kwargs)
         self._build()
 

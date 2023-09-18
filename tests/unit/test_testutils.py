@@ -33,5 +33,6 @@ class TestCreateBucket(BaseCLIDriverTest):
                         <RequestId>0123456789ABCDEF</RequestId>
                         <HostId>foo</HostId>
                         </Error>'''),
+                mock.Mock(status_code=200, headers={}, content=b''),
                 ]
             self.assertEqual(create_bucket(self.session, 'bucket'), 'bucket')

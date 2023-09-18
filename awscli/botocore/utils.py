@@ -3302,3 +3302,78 @@ def is_s3_accelerate_url(url):
 
     # Remaining parts must all be in the whitelist.
     return all(p in S3_ACCELERATE_WHITELIST for p in feature_parts)
+
+
+# This parameter is not part of the public interface and is subject to abrupt
+# breaking changes or removal without prior announcement.
+# Mapping of services that have been renamed for backwards compatibility reasons.
+# Keys are the previous name that should be allowed, values are the documented
+# and preferred client name.
+SERVICE_NAME_ALIASES = {'runtime.sagemaker': 'sagemaker-runtime'}
+
+
+# This parameter is not part of the public interface and is subject to abrupt
+# breaking changes or removal without prior announcement.
+# Mapping to determine the service ID for services that do not use it as the
+# model data directory name. The keys are the data directory name and the
+# values are the transformed service IDs (lower case and hyphenated).
+CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
+    # Actual service name we use -> Allowed computed service name.
+    'alexaforbusiness': 'alexa-for-business',
+    'apigateway': 'api-gateway',
+    'application-autoscaling': 'application-auto-scaling',
+    'appmesh': 'app-mesh',
+    'autoscaling': 'auto-scaling',
+    'autoscaling-plans': 'auto-scaling-plans',
+    'ce': 'cost-explorer',
+    'cloudhsmv2': 'cloudhsm-v2',
+    'cloudsearchdomain': 'cloudsearch-domain',
+    'cognito-idp': 'cognito-identity-provider',
+    'config': 'config-service',
+    'cur': 'cost-and-usage-report-service',
+    'datapipeline': 'data-pipeline',
+    'directconnect': 'direct-connect',
+    'devicefarm': 'device-farm',
+    'discovery': 'application-discovery-service',
+    'dms': 'database-migration-service',
+    'ds': 'directory-service',
+    'dynamodbstreams': 'dynamodb-streams',
+    'elasticbeanstalk': 'elastic-beanstalk',
+    'elastictranscoder': 'elastic-transcoder',
+    'elb': 'elastic-load-balancing',
+    'elbv2': 'elastic-load-balancing-v2',
+    'es': 'elasticsearch-service',
+    'events': 'eventbridge',
+    'globalaccelerator': 'global-accelerator',
+    'iot-data': 'iot-data-plane',
+    'iot-jobs-data': 'iot-jobs-data-plane',
+    'iot1click-devices': 'iot-1click-devices-service',
+    'iot1click-projects': 'iot-1click-projects',
+    'iotevents-data': 'iot-events-data',
+    'iotevents': 'iot-events',
+    'iotwireless': 'iot-wireless',
+    'kinesisanalytics': 'kinesis-analytics',
+    'kinesisanalyticsv2': 'kinesis-analytics-v2',
+    'kinesisvideo': 'kinesis-video',
+    'lex-models': 'lex-model-building-service',
+    'lexv2-models': 'lex-models-v2',
+    'lex-runtime': 'lex-runtime-service',
+    'lexv2-runtime': 'lex-runtime-v2',
+    'logs': 'cloudwatch-logs',
+    'machinelearning': 'machine-learning',
+    'marketplacecommerceanalytics': 'marketplace-commerce-analytics',
+    'marketplace-entitlement': 'marketplace-entitlement-service',
+    'meteringmarketplace': 'marketplace-metering',
+    'mgh': 'migration-hub',
+    'resourcegroupstaggingapi': 'resource-groups-tagging-api',
+    'route53': 'route-53',
+    'route53domains': 'route-53-domains',
+    's3control': 's3-control',
+    'sdb': 'simpledb',
+    'secretsmanager': 'secrets-manager',
+    'serverlessrepo': 'serverlessapplicationrepository',
+    'servicecatalog': 'service-catalog',
+    'servicecatalog-appregistry': 'service-catalog-appregistry',
+    'stepfunctions': 'sfn',
+    'storagegateway': 'storage-gateway',
+}

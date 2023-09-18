@@ -17,9 +17,9 @@ import json
 import gzip
 from datetime import datetime, timedelta
 from dateutil import parser, tz
-
 from mock import Mock, call
 from argparse import Namespace
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -30,14 +30,13 @@ from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestError, \
     extract_digest_key_date, normalize_date, format_date, DigestProvider, \
-    DigestTraverser, create_digest_traverser, PublicKeyProvider, \
+    DigestTraverser, create_digest_traverser, \
     Sha256RSADigestValidator, DATE_FORMAT, CloudTrailValidateLogs, \
     parse_date, assert_cloudtrail_arn_is_valid, DigestSignatureError, \
     InvalidDigestFormat, S3ClientProvider
-from botocore.exceptions import ClientError
 from awscli.testutils import unittest
 from awscli.customizations.exceptions import ParamValidationError
-
+from botocore.exceptions import ClientError
 
 START_DATE = parser.parse('20140810T000000Z')
 END_DATE = parser.parse('20150810T000000Z')
@@ -349,27 +348,6 @@ class TestValidation(unittest.TestCase):
                 cloudtrail_client=cloudtrail_client,
                 organization_client=organization_client,
                 s3_client_provider=Mock())
-
-
-class TestPublicKeyProvider(unittest.TestCase):
-    def test_returns_public_key_in_range(self):
-        cloudtrail_client = Mock()
-        cloudtrail_client.list_public_keys.return_value = {'PublicKeyList': [
-            {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
-            {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
-            {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
-        ]}
-        provider = PublicKeyProvider(cloudtrail_client)
-        start_date = START_DATE
-        end_date = start_date + timedelta(days=2)
-        keys = provider.get_public_keys(start_date, end_date)
-        self.assertEqual({
-            'a': {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
-            'b': {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
-            'c': {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
-        }, keys)
-        cloudtrail_client.list_public_keys.assert_has_calls(
-            [call(EndTime=end_date, StartTime=start_date)])
 
 
 class TestSha256RSADigestValidator(unittest.TestCase):

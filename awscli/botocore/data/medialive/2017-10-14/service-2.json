@@ -1508,6 +1508,98 @@
       ],
       "documentation": "Get a channel schedule"
     },
+    "DescribeAccountConfiguration": {
+      "name": "DescribeAccountConfiguration",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "DescribeAccountConfigurationResponse",
+        "documentation": "An array of account configuration options."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to describe the account configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe account configuration calls."
+        }
+      ],
+      "documentation": "Get account configuration"
+    },
+    "DescribeThumbnails": {
+      "name": "DescribeThumbnails",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/channels/{channelId}/thumbnails",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeThumbnailsRequest"
+      },
+      "output": {
+        "shape": "DescribeThumbnailsResponse",
+        "documentation": "An array of thumbnails for the channel. Each member contains the thumbnail data for one pipeline."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error.."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to get thumbnails."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "There are no thumbnails for this channel."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe thumbnails calls to channel service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "Service do not have permission to customer's KMS key."
+        }
+      ],
+      "documentation": "Describe the latest thumbnails data."
+    },
     "ListChannels": {
       "name": "ListChannels",
       "http": {
@@ -2082,6 +2174,52 @@
       ],
       "documentation": "Reject the transfer of the specified input device to your AWS account."
     },
+    "UpdateAccountConfiguration": {
+      "name": "UpdateAccountConfiguration",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/accountConfiguration",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateAccountConfigurationRequest"
+      },
+      "output": {
+        "shape": "UpdateAccountConfigurationResponse",
+        "documentation": "Successful update of the account configuration."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The update account configuration request failed validation."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to update the account's configuration."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update account configuration calls."
+        }
+      ],
+      "documentation": "Update account configuration"
+    },
     "StartChannel": {
       "name": "StartChannel",
       "http": {
@@ -2131,6 +2269,56 @@
         }
       ],
       "documentation": "Starts an existing channel"
+    },
+    "StartInputDevice": {
+      "name": "StartInputDevice",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/start",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StartInputDeviceRequest"
+      },
+      "output": {
+        "shape": "StartInputDeviceResponse",
+        "documentation": "Your start request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Start operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to start the input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on start device calls to the input device service."
+        }
+      ],
+      "documentation": "Start an input device that is attached to a MediaConnect flow. (There is no need to start a device that is attached to a MediaLive input; MediaLive starts the device when the channel starts.)"
     },
     "StartInputDeviceMaintenanceWindow": {
       "name": "StartInputDeviceMaintenanceWindow",
@@ -2281,6 +2469,56 @@
         }
       ],
       "documentation": "Stops a running channel"
+    },
+    "StopInputDevice": {
+      "name": "StopInputDevice",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/inputDevices/{inputDeviceId}/stop",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StopInputDeviceRequest"
+      },
+      "output": {
+        "shape": "StopInputDeviceResponse",
+        "documentation": "Your stop request has succeeded."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "Start operation failed, input could not be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Unexpected internal service error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to stop the input device."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad gateway error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "Input device not found."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout Error"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on stop device calls to the input device service."
+        }
+      ],
+      "documentation": "Stop an input device that is attached to a MediaConnect flow. (There is no need to stop a device that is attached to a MediaLive input; MediaLive automatically stops the device when the channel stops.)"
     },
     "StopMultiplex": {
       "name": "StopMultiplex",
@@ -2893,6 +3131,14 @@
         "MEDIUM_LOW"
       ]
     },
+    "Ac3AttenuationControl": {
+      "type": "string",
+      "documentation": "Ac3 Attenuation Control",
+      "enum": [
+        "ATTENUATE_3_DB",
+        "NONE"
+      ]
+    },
     "Ac3BitstreamMode": {
       "type": "string",
       "documentation": "Ac3 Bitstream Mode",
@@ -2978,6 +3224,11 @@
           "shape": "Ac3MetadataControl",
           "locationName": "metadataControl",
           "documentation": "When set to \"followInput\", encoder metadata will be sourced from the DD, DD+, or DolbyE decoder that supplied this audio data. If audio was not supplied from one of these streams, then the static metadata settings will be used."
+        },
+        "AttenuationControl": {
+          "shape": "Ac3AttenuationControl",
+          "locationName": "attenuationControl",
+          "documentation": "Applies a 3 dB attenuation to the surround channels. Applies only when the coding mode parameter is CODING_MODE_3_2_LFE."
         }
       },
       "documentation": "Ac3 Settings"
@@ -3020,6 +3271,17 @@
         "DOES_NOT_IMPLEMENT_ACCESSIBILITY_FEATURES",
         "IMPLEMENTS_ACCESSIBILITY_FEATURES"
       ]
+    },
+    "AccountConfiguration": {
+      "type": "structure",
+      "members": {
+        "KmsKeyId": {
+          "shape": "__string",
+          "locationName": "kmsKeyId",
+          "documentation": "Specifies the KMS key to use for all features that use key encryption. Specify the ARN of a KMS key that you have created. Or leave blank to use the key that MediaLive creates and manages for you."
+        }
+      },
+      "documentation": "Placeholder documentation for AccountConfiguration"
     },
     "AfdSignaling": {
       "type": "string",
@@ -3615,7 +3877,7 @@
         "AvailSettings": {
           "shape": "AvailSettings",
           "locationName": "availSettings",
-          "documentation": "Ad avail settings."
+          "documentation": "Controls how SCTE-35 messages create cues. Splice Insert mode treats all segmentation signals traditionally. With Time Signal APOS mode only Time Signal Placement Opportunity and Break messages create segment breaks. With ESAM mode, signals are forwarded to an ESAM server for possible update."
         }
       },
       "documentation": "Avail Configuration"
@@ -4431,7 +4693,7 @@
           "documentation": "Caption selector settings."
         }
       },
-      "documentation": "Output groups for this Live Event. Output groups contain information about where streams should be distributed.",
+      "documentation": "Caption Selector",
       "required": [
         "Name"
       ]
@@ -5987,6 +6249,26 @@
           "shape": "InputDeviceUhdSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputDeviceResponse"
@@ -7313,6 +7595,11 @@
         "VideoDescriptions": {
           "shape": "__listOfVideoDescription",
           "locationName": "videoDescriptions"
+        },
+        "ThumbnailConfiguration": {
+          "shape": "ThumbnailConfiguration",
+          "locationName": "thumbnailConfiguration",
+          "documentation": "Thumbnail configuration settings."
         }
       },
       "documentation": "Encoder Settings",
@@ -7322,6 +7609,22 @@
         "OutputGroups",
         "TimecodeConfig"
       ]
+    },
+    "EpochLockingSettings": {
+      "type": "structure",
+      "members": {
+        "CustomEpoch": {
+          "shape": "__string",
+          "locationName": "customEpoch",
+          "documentation": "Optional. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00."
+        },
+        "JamSyncTime": {
+          "shape": "__string",
+          "locationName": "jamSyncTime",
+          "documentation": "Optional. Enter a time for the jam sync. The default is midnight UTC. When epoch locking is enabled, MediaLive performs a daily jam sync on every output encode to ensure timecodes don\u2019t diverge from the wall clock. The jam sync applies only to encodes with frame rate of 29.97 or 59.94 FPS. To override, enter a time in HH:MM:SS in UTC. Always set the MM:SS portion to 00:00."
+        }
+      },
+      "documentation": "Epoch Locking Settings"
     },
     "Esam": {
       "type": "structure",
@@ -7661,6 +7964,81 @@
       },
       "documentation": "Placeholder documentation for GatewayTimeoutException"
     },
+    "DescribeAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationRequest"
+    },
+    "DescribeAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeAccountConfigurationResponse"
+    },
+    "DescribeAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's configuration."
+    },
+    "DescribeThumbnailsRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "Unique ID of the channel"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID (\"0\" or \"1\")"
+        },
+        "ThumbnailType": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "thumbnailType",
+          "documentation": "thumbnail type"
+        }
+      },
+      "required": [
+        "ThumbnailType",
+        "PipelineId",
+        "ChannelId"
+      ],
+      "documentation": "Placeholder documentation for DescribeThumbnailsRequest"
+    },
+    "DescribeThumbnailsResponse": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeThumbnailsResponse"
+    },
+    "DescribeThumbnailsResultModel": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "__listOfThumbnailDetail",
+          "locationName": "thumbnailDetails"
+        }
+      },
+      "documentation": "Thumbnail details for all the pipelines of a running channel."
+    },
     "GlobalConfiguration": {
       "type": "structure",
       "members": {
@@ -7693,6 +8071,11 @@
           "shape": "GlobalConfigurationLowFramerateInputs",
           "locationName": "supportLowFramerateInputs",
           "documentation": "Adjusts video input buffer for streams with very low video framerates. This is commonly set to enabled for music channels with less than one video frame per second."
+        },
+        "OutputLockingSettings": {
+          "shape": "OutputLockingSettings",
+          "locationName": "outputLockingSettings",
+          "documentation": "Advanced output locking settings"
         }
       },
       "documentation": "Global Configuration"
@@ -8541,7 +8924,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -8577,7 +8960,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -8901,12 +9284,14 @@
           "shape": "__string",
           "locationName": "tag",
           "documentation": "ID3 tag to insert into each segment. Supports special keyword identifiers to substitute in segment-related values.\\nSupported keyword identifiers: https://docs.aws.amazon.com/medialive/latest/ug/variable-data-identifiers.html"
+        },
+        "Id3": {
+          "shape": "__string",
+          "locationName": "id3",
+          "documentation": "Base64 string formatted according to the ID3 specification: http://id3.org/id3v2.4.0-structure"
         }
       },
-      "documentation": "Settings for the action to insert a user-defined ID3 tag in each HLS segment",
-      "required": [
-        "Tag"
-      ]
+      "documentation": "Settings for the action to insert a user-defined ID3 tag in each HLS segment"
     },
     "HlsId3SegmentTaggingState": {
       "type": "string",
@@ -9008,7 +9393,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -9220,7 +9605,7 @@
         "NumRetries": {
           "shape": "__integerMin0",
           "locationName": "numRetries",
-          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state."
+          "documentation": "Number of retry attempts that will be made before the Live Event is put into an error state. Applies only if the CDN destination URI begins with \"s3\" or \"mediastore\". For other URIs, the value is always 3."
         },
         "RestartDelay": {
           "shape": "__integerMin0Max15",
@@ -9249,6 +9634,15 @@
       "members": {
       },
       "documentation": "Settings to configure an action so that it occurs as soon as possible."
+    },
+    "IncludeFillerNalUnits": {
+      "type": "string",
+      "documentation": "Include Filler Nal Units",
+      "enum": [
+        "AUTO",
+        "DROP",
+        "INCLUDE"
+      ]
     },
     "Input": {
       "type": "structure",
@@ -9551,6 +9945,26 @@
           "shape": "InputDeviceUhdSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "An input device."
@@ -9561,6 +9975,14 @@
       "enum": [
         "HDMI",
         "SDI"
+      ]
+    },
+    "InputDeviceCodec": {
+      "type": "string",
+      "documentation": "The codec to use on the video that the device produces.",
+      "enum": [
+        "HEVC",
+        "AVC"
       ]
     },
     "InputDeviceConfigurableSettings": {
@@ -9580,6 +10002,16 @@
           "shape": "__integer",
           "locationName": "latencyMs",
           "documentation": "The Link device's buffer size (latency) in milliseconds (ms)."
+        },
+        "Codec": {
+          "shape": "InputDeviceCodec",
+          "locationName": "codec",
+          "documentation": "Choose the codec for the video that the device produces. Only UHD devices can specify this parameter."
+        },
+        "MediaconnectSettings": {
+          "shape": "InputDeviceMediaConnectConfigurableSettings",
+          "locationName": "mediaconnectSettings",
+          "documentation": "To attach this device to a MediaConnect flow, specify these parameters. To detach an existing flow, enter {} for the value of mediaconnectSettings. Only UHD devices can specify this parameter."
         }
       },
       "documentation": "Configurable settings for the input device."
@@ -9676,6 +10108,58 @@
         "DHCP"
       ]
     },
+    "InputDeviceMediaConnectConfigurableSettings": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the MediaConnect flow to attach this device to."
+        },
+        "RoleArn": {
+          "shape": "__string",
+          "locationName": "roleArn",
+          "documentation": "The ARN for the role that MediaLive assumes to access the attached flow and secret. For more information about how to create this role, see the MediaLive user guide."
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "The ARN for the secret that holds the encryption key to encrypt the content output by the device."
+        },
+        "SourceName": {
+          "shape": "__string",
+          "locationName": "sourceName",
+          "documentation": "The name of the MediaConnect Flow source to stream to."
+        }
+      },
+      "documentation": "Parameters required to attach a MediaConnect flow to the device."
+    },
+    "InputDeviceMediaConnectSettings": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the MediaConnect flow."
+        },
+        "RoleArn": {
+          "shape": "__string",
+          "locationName": "roleArn",
+          "documentation": "The ARN for the role that MediaLive assumes to access the attached flow and secret."
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "The ARN of the secret used to encrypt the stream."
+        },
+        "SourceName": {
+          "shape": "__string",
+          "locationName": "sourceName",
+          "documentation": "The name of the MediaConnect flow source."
+        }
+      },
+      "documentation": "Information about the MediaConnect flow attached to the device."
+    },
     "InputDeviceNetworkSettings": {
       "type": "structure",
       "members": {
@@ -9706,6 +10190,15 @@
         }
       },
       "documentation": "The network settings for the input device."
+    },
+    "InputDeviceOutputType": {
+      "type": "string",
+      "documentation": "The output attachment type of the input device.",
+      "enum": [
+        "NONE",
+        "MEDIALIVE_INPUT",
+        "MEDIACONNECT_FLOW"
+      ]
     },
     "InputDeviceRequest": {
       "type": "structure",
@@ -9807,6 +10300,26 @@
           "shape": "InputDeviceUhdSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Details of the input device."
@@ -9874,6 +10387,16 @@
           "shape": "__integer",
           "locationName": "latencyMs",
           "documentation": "The Link device's buffer size (latency) in milliseconds (ms). You can specify this value."
+        },
+        "Codec": {
+          "shape": "InputDeviceCodec",
+          "locationName": "codec",
+          "documentation": "The codec for the video that the device produces."
+        },
+        "MediaconnectSettings": {
+          "shape": "InputDeviceMediaConnectSettings",
+          "locationName": "mediaconnectSettings",
+          "documentation": "Information about the MediaConnect flow attached to the device. Returned only if the outputType is MEDIACONNECT_FLOW."
         }
       },
       "documentation": "Settings that describe the active source from the input device, and the video characteristics of that source."
@@ -11393,6 +11916,14 @@
         "PASSTHROUGH"
       ]
     },
+    "M3u8KlvBehavior": {
+      "type": "string",
+      "documentation": "M3u8 Klv Behavior",
+      "enum": [
+        "NO_PASSTHROUGH",
+        "PASSTHROUGH"
+      ]
+    },
     "M3u8NielsenId3Behavior": {
       "type": "string",
       "documentation": "M3u8 Nielsen Id3 Behavior",
@@ -11504,6 +12035,16 @@
           "shape": "__string",
           "locationName": "videoPid",
           "documentation": "Packet Identifier (PID) of the elementary video stream in the transport stream. Can be entered as a decimal or hexadecimal value."
+        },
+        "KlvBehavior": {
+          "shape": "M3u8KlvBehavior",
+          "locationName": "klvBehavior",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "KlvDataPids": {
+          "shape": "__string",
+          "locationName": "klvDataPids",
+          "documentation": "Packet Identifier (PID) for input source KLV data to this output. Multiple values are accepted, and can be entered in ranges and/or by comma separation. Can be entered as decimal or hexadecimal values.  Each PID specified must be in the range of 32 (or 0x20)..8182 (or 0x1ff6)."
         }
       },
       "documentation": "Settings information for the .m3u8 container"
@@ -12570,6 +13111,11 @@
           "shape": "__doubleMin1Max65535",
           "locationName": "sid",
           "documentation": "Enter the Nielsen Source ID (SID) to include in the watermark"
+        },
+        "Timezone": {
+          "shape": "NielsenWatermarkTimezones",
+          "locationName": "timezone",
+          "documentation": "Choose the timezone for the time stamps in the watermark. If not provided,\nthe timestamps will be in Coordinated Universal Time (UTC)"
         }
       },
       "documentation": "Nielsen Naes Ii Nw",
@@ -12584,6 +13130,22 @@
       "enum": [
         "DISABLED",
         "ENABLED"
+      ]
+    },
+    "NielsenWatermarkTimezones": {
+      "type": "string",
+      "documentation": "Nielsen Watermark Timezones",
+      "enum": [
+        "AMERICA_PUERTO_RICO",
+        "US_ALASKA",
+        "US_ARIZONA",
+        "US_CENTRAL",
+        "US_EASTERN",
+        "US_HAWAII",
+        "US_MOUNTAIN",
+        "US_PACIFIC",
+        "US_SAMOA",
+        "UTC"
       ]
     },
     "NielsenWatermarksCbetStepaside": {
@@ -12870,6 +13432,20 @@
       },
       "documentation": "Reference to an OutputDestination ID defined in the channel"
     },
+    "OutputLockingSettings": {
+      "type": "structure",
+      "members": {
+        "EpochLockingSettings": {
+          "shape": "EpochLockingSettings",
+          "locationName": "epochLockingSettings"
+        },
+        "PipelineLockingSettings": {
+          "shape": "PipelineLockingSettings",
+          "locationName": "pipelineLockingSettings"
+        }
+      },
+      "documentation": "Output Locking Settings"
+    },
     "OutputSettings": {
       "type": "structure",
       "members": {
@@ -12962,6 +13538,12 @@
         "PIPELINE_0",
         "PIPELINE_1"
       ]
+    },
+    "PipelineLockingSettings": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
       "type": "structure",
@@ -13537,6 +14119,11 @@
           "shape": "__integerMin0",
           "locationName": "restartDelay",
           "documentation": "If a streaming output fails, number of seconds to wait until a restart is initiated. A value of 0 means never restart."
+        },
+        "IncludeFillerNalUnits": {
+          "shape": "IncludeFillerNalUnits",
+          "locationName": "includeFillerNalUnits",
+          "documentation": "Applies only when the rate control mode (in the codec settings) is CBR (constant bit rate). Controls whether the RTMP output stream is padded (with FILL NAL units) in order to achieve a constant bit rate that is truly constant. When there is no padding, the bandwidth varies (up to the bitrate value in the codec settings). We recommend that you choose Auto."
         }
       },
       "documentation": "Rtmp Group Settings"
@@ -14030,7 +14617,7 @@
           "documentation": "When set to ignore, Segment Descriptors with webDeliveryAllowedFlag set to 0 will no longer trigger blackouts or Ad Avail slates"
         }
       },
-      "documentation": "Scte35 Splice Insert"
+      "documentation": "Typical configuration that applies breaks on splice inserts in addition to time signal placement opportunities, breaks, and advertisements."
     },
     "Scte35SpliceInsertNoRegionalBlackoutBehavior": {
       "type": "string",
@@ -14086,7 +14673,7 @@
           "documentation": "When set to ignore, Segment Descriptors with webDeliveryAllowedFlag set to 0 will no longer trigger blackouts or Ad Avail slates"
         }
       },
-      "documentation": "Scte35 Time Signal Apos"
+      "documentation": "Atypical configuration that applies segment breaks only on SCTE-35 time signal placement opportunities and breaks."
     },
     "Scte35TimeSignalScheduleActionSettings": {
       "type": "structure",
@@ -14109,6 +14696,46 @@
         "WEB_DELIVERY_NOT_ALLOWED",
         "WEB_DELIVERY_ALLOWED"
       ]
+    },
+    "UpdateAccountConfigurationRequest": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "List of account configuration parameters to update."
+    },
+    "UpdateAccountConfigurationRequestModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The desired new account configuration."
+    },
+    "UpdateAccountConfigurationResponse": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateAccountConfigurationResponse"
+    },
+    "UpdateAccountConfigurationResultModel": {
+      "type": "structure",
+      "members": {
+        "AccountConfiguration": {
+          "shape": "AccountConfiguration",
+          "locationName": "accountConfiguration"
+        }
+      },
+      "documentation": "The account's updated configuration."
     },
     "SmoothGroupAudioOnlyTimecodeControl": {
       "type": "string",
@@ -14337,6 +14964,27 @@
       "members": {
       },
       "documentation": "Placeholder documentation for StartInputDeviceMaintenanceWindowResponse"
+    },
+    "StartInputDeviceRequest": {
+      "type": "structure",
+      "members": {
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to reboot. For example, hd-123456789abcdef."
+        }
+      },
+      "required": [
+        "InputDeviceId"
+      ],
+      "documentation": "Placeholder documentation for StartInputDeviceRequest"
+    },
+    "StartInputDeviceResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for StartInputDeviceResponse"
     },
     "StartMultiplexRequest": {
       "type": "structure",
@@ -14623,6 +15271,27 @@
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
     },
+    "StopInputDeviceRequest": {
+      "type": "structure",
+      "members": {
+        "InputDeviceId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "inputDeviceId",
+          "documentation": "The unique ID of the input device to reboot. For example, hd-123456789abcdef."
+        }
+      },
+      "required": [
+        "InputDeviceId"
+      ],
+      "documentation": "Placeholder documentation for StopInputDeviceRequest"
+    },
+    "StopInputDeviceResponse": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for StopInputDeviceResponse"
+    },
     "StopMultiplexRequest": {
       "type": "structure",
       "members": {
@@ -14800,6 +15469,46 @@
         "STRENGTH_16"
       ]
     },
+    "Thumbnail": {
+      "type": "structure",
+      "members": {
+        "Body": {
+          "shape": "__string",
+          "locationName": "body",
+          "documentation": "The binary data for the latest thumbnail."
+        },
+        "ContentType": {
+          "shape": "__string",
+          "locationName": "contentType",
+          "documentation": "The content type for the latest thumbnail."
+        },
+        "ThumbnailType": {
+          "shape": "ThumbnailType",
+          "locationName": "thumbnailType",
+          "documentation": "Thumbnail Type"
+        },
+        "TimeStamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "timeStamp",
+          "documentation": "Time stamp for the latest thumbnail."
+        }
+      },
+      "documentation": "Details of a single thumbnail"
+    },
+    "ThumbnailConfiguration": {
+      "type": "structure",
+      "members": {
+        "State": {
+          "shape": "ThumbnailState",
+          "locationName": "state",
+          "documentation": "Whether Thumbnail is enabled."
+        }
+      },
+      "documentation": "Thumbnail Configuration",
+      "required": [
+        "State"
+      ]
+    },
     "ThumbnailData": {
       "type": "structure",
       "members": {
@@ -14810,6 +15519,44 @@
         }
       },
       "documentation": "The binary data for the thumbnail that the Link device has most recently sent to MediaLive."
+    },
+    "ThumbnailDetail": {
+      "type": "structure",
+      "members": {
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "Pipeline ID"
+        },
+        "Thumbnails": {
+          "shape": "__listOfThumbnail",
+          "locationName": "thumbnails",
+          "documentation": "thumbnails of a single pipeline"
+        }
+      },
+      "documentation": "Thumbnail details for one pipeline of a running channel."
+    },
+    "ThumbnailNoData": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Response when thumbnail has no data. It should have no message."
+    },
+    "ThumbnailState": {
+      "type": "string",
+      "documentation": "Thumbnail State",
+      "enum": [
+        "AUTO",
+        "DISABLED"
+      ]
+    },
+    "ThumbnailType": {
+      "type": "string",
+      "documentation": "Thumbnail type.",
+      "enum": [
+        "UNSPECIFIED",
+        "CURRENT_ACTIVE"
+      ]
     },
     "TimecodeBurninFontSize": {
       "type": "string",
@@ -15336,6 +16083,11 @@
           "shape": "InputDeviceConfigurableSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "The settings that you want to apply to the UHD input device."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone you want associated with this input device."
         }
       },
       "documentation": "Updates an input device."
@@ -15363,6 +16115,11 @@
           "shape": "InputDeviceConfigurableSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "The settings that you want to apply to the UHD input device."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone you want associated with this input device."
         }
       },
       "documentation": "A request to update an input device.",
@@ -15432,6 +16189,26 @@
           "shape": "InputDeviceUhdSettings",
           "locationName": "uhdDeviceSettings",
           "documentation": "Settings that describe an input device that is type UHD."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "AvailabilityZone": {
+          "shape": "__string",
+          "locationName": "availabilityZone",
+          "documentation": "The Availability Zone associated with this input device."
+        },
+        "MedialiveInputArns": {
+          "shape": "__listOf__string",
+          "locationName": "medialiveInputArns",
+          "documentation": "An array of the ARNs for the MediaLive inputs attached to the device. Returned only if the outputType is MEDIALIVE_INPUT."
+        },
+        "OutputType": {
+          "shape": "InputDeviceOutputType",
+          "locationName": "outputType",
+          "documentation": "The output attachment type of the input device. Specifies MEDIACONNECT_FLOW if this device is the source for a MediaConnect flow. Specifies MEDIALIVE_INPUT if this device is the source for a MediaLive input."
         }
       },
       "documentation": "Placeholder documentation for UpdateInputDeviceResponse"
@@ -16688,6 +17465,20 @@
         "shape": "Scte35Descriptor"
       },
       "documentation": "Placeholder documentation for __listOfScte35Descriptor"
+    },
+    "__listOfThumbnail": {
+      "type": "list",
+      "member": {
+        "shape": "Thumbnail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnail"
+    },
+    "__listOfThumbnailDetail": {
+      "type": "list",
+      "member": {
+        "shape": "ThumbnailDetail"
+      },
+      "documentation": "Placeholder documentation for __listOfThumbnailDetail"
     },
     "__listOfTransferringInputDeviceSummary": {
       "type": "list",

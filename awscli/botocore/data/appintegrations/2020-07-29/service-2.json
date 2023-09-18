@@ -294,7 +294,12 @@
     },
     "CreateDataIntegrationRequest":{
       "type":"structure",
-      "required":["Name"],
+      "required":[
+        "Name",
+        "KmsKey",
+        "SourceURI",
+        "ScheduleConfig"
+      ],
       "members":{
         "Name":{
           "shape":"Name",
@@ -309,7 +314,7 @@
           "documentation":"<p>The KMS key for the DataIntegration.</p>"
         },
         "SourceURI":{
-          "shape":"NonBlankString",
+          "shape":"SourceURI",
           "documentation":"<p>The URI of the data source.</p>"
         },
         "ScheduleConfig":{
@@ -318,12 +323,20 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         },
         "ClientToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
+        },
+        "FileConfiguration":{
+          "shape":"FileConfiguration",
+          "documentation":"<p>The configuration for what files should be pulled from the source.</p>"
+        },
+        "ObjectConfiguration":{
+          "shape":"ObjectConfiguration",
+          "documentation":"<p>The configuration for what data should be pulled from the source.</p>"
         }
       }
     },
@@ -351,7 +364,7 @@
           "documentation":"<p>The KMS key for the DataIntegration.</p>"
         },
         "SourceURI":{
-          "shape":"NonBlankString",
+          "shape":"SourceURI",
           "documentation":"<p>The URI of the data source.</p>"
         },
         "ScheduleConfiguration":{
@@ -360,11 +373,19 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         },
         "ClientToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        },
+        "FileConfiguration":{
+          "shape":"FileConfiguration",
+          "documentation":"<p>The configuration for what files should be pulled from the source.</p>"
+        },
+        "ObjectConfiguration":{
+          "shape":"ObjectConfiguration",
+          "documentation":"<p>The configuration for what data should be pulled from the source.</p>"
         }
       }
     },
@@ -394,12 +415,12 @@
         },
         "ClientToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
     },
@@ -421,11 +442,11 @@
         },
         "DataIntegrationArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN)of the DataIntegration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DataIntegration.</p>"
         },
         "ClientId":{
           "shape":"ClientId",
-          "documentation":"<p>The identifier for teh client that is associated with the DataIntegration association.</p>"
+          "documentation":"<p>The identifier for the client that is associated with the DataIntegration association.</p>"
         }
       },
       "documentation":"<p>Summary information about the DataIntegration association.</p>"
@@ -448,7 +469,7 @@
           "documentation":"<p>The name of the DataIntegration.</p>"
         },
         "SourceURI":{
-          "shape":"NonBlankString",
+          "shape":"SourceURI",
           "documentation":"<p>The URI of the data source.</p>"
         }
       },
@@ -557,7 +578,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       },
       "documentation":"<p>The event integration.</p>"
@@ -604,6 +625,44 @@
       "max":50,
       "min":1
     },
+    "Fields":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
+    },
+    "FieldsList":{
+      "type":"list",
+      "member":{"shape":"Fields"},
+      "max":2048,
+      "min":1
+    },
+    "FieldsMap":{
+      "type":"map",
+      "key":{"shape":"NonBlankString"},
+      "value":{"shape":"FieldsList"}
+    },
+    "FileConfiguration":{
+      "type":"structure",
+      "required":["Folders"],
+      "members":{
+        "Folders":{
+          "shape":"FolderList",
+          "documentation":"<p>Identifiers for the source folders to pull all files from recursively.</p>"
+        },
+        "Filters":{
+          "shape":"FieldsMap",
+          "documentation":"<p>Restrictions for what files should be pulled from the source.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for what files should be pulled from the source.</p>"
+    },
+    "FolderList":{
+      "type":"list",
+      "member":{"shape":"NonBlankLongString"},
+      "max":10,
+      "min":1
+    },
     "GetDataIntegrationRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -640,7 +699,7 @@
           "documentation":"<p>The KMS key for the DataIntegration.</p>"
         },
         "SourceURI":{
-          "shape":"NonBlankString",
+          "shape":"SourceURI",
           "documentation":"<p>The URI of the data source.</p>"
         },
         "ScheduleConfiguration":{
@@ -649,7 +708,15 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "FileConfiguration":{
+          "shape":"FileConfiguration",
+          "documentation":"<p>The configuration for what files should be pulled from the source.</p>"
+        },
+        "ObjectConfiguration":{
+          "shape":"ObjectConfiguration",
+          "documentation":"<p>The configuration for what data should be pulled from the source.</p>"
         }
       }
     },
@@ -690,7 +757,7 @@
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags.</p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
     },
@@ -898,6 +965,12 @@
       "min":1,
       "pattern":".*"
     },
+    "NonBlankLongString":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "NonBlankString":{
       "type":"string",
       "max":255,
@@ -909,6 +982,12 @@
       "max":255,
       "min":1,
       "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
+    },
+    "ObjectConfiguration":{
+      "type":"map",
+      "key":{"shape":"NonBlankString"},
+      "value":{"shape":"FieldsMap"},
+      "documentation":"<p>The configuration for what data should be pulled from the source.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -928,25 +1007,20 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
-    "Schedule":{
-      "type":"string",
-      "max":255,
-      "min":1,
-      "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
-    },
     "ScheduleConfiguration":{
       "type":"structure",
+      "required":["ScheduleExpression"],
       "members":{
         "FirstExecutionFrom":{
           "shape":"NonBlankString",
-          "documentation":"<p>The start date for objects to import in the first flow run.</p>"
+          "documentation":"<p>The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.</p>"
         },
         "Object":{
           "shape":"Object",
           "documentation":"<p>The name of the object to pull from the data source.</p>"
         },
         "ScheduleExpression":{
-          "shape":"Schedule",
+          "shape":"NonBlankString",
           "documentation":"<p>How often the data should be pulled from data source.</p>"
         }
       },
@@ -957,6 +1031,12 @@
       "max":256,
       "min":1,
       "pattern":"^aws\\.partner\\/.*$"
+    },
+    "SourceURI":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+$)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+$)"
     },
     "TagKey":{
       "type":"string",
@@ -992,7 +1072,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>One or more tags. </p>"
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
     },

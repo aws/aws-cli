@@ -26,4 +26,3 @@ class TestWriteException(unittest.TestCase):
                 "\n%s\n" % error_message
             )
             self.assertEqual(outfile.read(), expected_output)
-

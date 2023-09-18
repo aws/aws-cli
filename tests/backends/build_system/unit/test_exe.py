@@ -45,6 +45,10 @@ class FakeUtils:
     def rmtree(self, path):
         self.calls.append(("rmtree", path))
 
+    def glob(self, pattern, root, recursive=True):
+        self.calls.append(('glob', pattern, root, recursive))
+        return []
+
 
 class FakeAwsCliVenv:
     @property
@@ -116,7 +120,12 @@ class TestExe:
                 os.path.join("workspace", "aws", "dist"),
                 {"distribution_source": "source-exe"},
             ),
-
+            (
+                "glob",
+                "**/*.dist-info",
+                os.path.join("workspace", "aws", "dist"),
+                True
+            ),
         ]
 
     def test_build(self, fake_aws_cli_venv):

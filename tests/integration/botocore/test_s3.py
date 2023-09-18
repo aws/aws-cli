@@ -75,7 +75,8 @@ def setup_module():
         'Bucket': _SHARED_BUCKET,
         'CreateBucketConfiguration': {
             'LocationConstraint': _DEFAULT_REGION,
-        }
+        },
+        'ObjectOwnership': 'ObjectWriter',
     }
     try:
         s3.create_bucket(**params)
@@ -85,6 +86,7 @@ def setup_module():
         # final call as to whether or not the bucket exists.
         LOG.debug("create_bucket() raised an exception: %s", e, exc_info=True)
     waiter.wait(Bucket=_SHARED_BUCKET)
+    s3.delete_public_access_block(Bucket=_SHARED_BUCKET)
 
 
 def clear_out_bucket(bucket, region, delete_bucket=False):
@@ -144,7 +146,7 @@ class BaseS3ClientTest(unittest.TestCase):
         bucket_client = client or self.client
         if bucket_name is None:
             bucket_name = random_bucketname()
-        bucket_kwargs = {'Bucket': bucket_name}
+        bucket_kwargs = {'Bucket': bucket_name, 'ObjectOwnership': 'ObjectWriter'}
         if region_name != 'us-east-1':
             bucket_kwargs['CreateBucketConfiguration'] = {
                 'LocationConstraint': region_name,
@@ -158,6 +160,7 @@ class BaseS3ClientTest(unittest.TestCase):
         consistency_waiter.wait(
             lambda: waiter.wait(Bucket=bucket_name) is None
         )
+        bucket_client.delete_public_access_block(Bucket=bucket_name)
         self.addCleanup(clear_out_bucket, bucket_name, region_name, True)
         return bucket_name
 

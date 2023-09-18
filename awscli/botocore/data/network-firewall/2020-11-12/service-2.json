@@ -103,6 +103,23 @@
       ],
       "documentation":"<p>Creates the specified stateless or stateful rule group, which includes the rules for network traffic inspection, a capacity setting, and tags. </p> <p>You provide your rule group specification in your request using either <code>RuleGroup</code> or <code>Rules</code>.</p>"
     },
+    "CreateTLSInspectionConfiguration":{
+      "name":"CreateTLSInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTLSInspectionConfigurationRequest"},
+      "output":{"shape":"CreateTLSInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InsufficientCapacityException"}
+      ],
+      "documentation":"<p>Creates an Network Firewall TLS inspection configuration. A TLS inspection configuration contains the Certificate Manager certificate references that Network Firewall uses to decrypt and re-encrypt inbound traffic.</p> <p>After you create a TLS inspection configuration, you associate it with a new firewall policy.</p> <p>To update the settings for a TLS inspection configuration, use <a>UpdateTLSInspectionConfiguration</a>.</p> <p>To manage a TLS inspection configuration's tags, use the standard Amazon Web Services resource tagging operations, <a>ListTagsForResource</a>, <a>TagResource</a>, and <a>UntagResource</a>.</p> <p>To retrieve information about TLS inspection configurations, use <a>ListTLSInspectionConfigurations</a> and <a>DescribeTLSInspectionConfiguration</a>.</p> <p> For more information about TLS inspection configurations, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html\">Decrypting SSL/TLS traffic with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>. </p>"
+    },
     "DeleteFirewall":{
       "name":"DeleteFirewall",
       "http":{
@@ -173,6 +190,23 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Deletes the specified <a>RuleGroup</a>. </p>"
+    },
+    "DeleteTLSInspectionConfiguration":{
+      "name":"DeleteTLSInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTLSInspectionConfigurationRequest"},
+      "output":{"shape":"DeleteTLSInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>TLSInspectionConfiguration</a>.</p>"
     },
     "DescribeFirewall":{
       "name":"DescribeFirewall",
@@ -270,6 +304,22 @@
       ],
       "documentation":"<p>High-level information about a rule group, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
     },
+    "DescribeTLSInspectionConfiguration":{
+      "name":"DescribeTLSInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTLSInspectionConfigurationRequest"},
+      "output":{"shape":"DescribeTLSInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the data objects for the specified TLS inspection configuration.</p>"
+    },
     "DisassociateSubnets":{
       "name":"DisassociateSubnets",
       "http":{
@@ -332,6 +382,21 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Retrieves the metadata for the rule groups that you have defined. Depending on your setting for max results and the number of rule groups, a single call might not return the full list. </p>"
+    },
+    "ListTLSInspectionConfigurations":{
+      "name":"ListTLSInspectionConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTLSInspectionConfigurationsRequest"},
+      "output":{"shape":"ListTLSInspectionConfigurationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for the TLS inspection configurations that you have defined. Depending on your setting for max results and the number of TLS inspection configurations, a single call might not return the full list.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -538,6 +603,23 @@
         {"shape":"ResourceOwnerCheckException"}
       ],
       "documentation":"<p/>"
+    },
+    "UpdateTLSInspectionConfiguration":{
+      "name":"UpdateTLSInspectionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateTLSInspectionConfigurationRequest"},
+      "output":{"shape":"UpdateTLSInspectionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidTokenException"}
+      ],
+      "documentation":"<p>Updates the TLS inspection configuration settings for the specified TLS inspection configuration. You use a TLS inspection configuration by reference in one or more firewall policies. When you modify a TLS inspection configuration, you modify all firewall policies that use the TLS inspection configuration. </p> <p>To update a TLS inspection configuration, first call <a>DescribeTLSInspectionConfiguration</a> to retrieve the current <a>TLSInspectionConfiguration</a> object, update the object as needed, and then provide the updated object to this call. </p>"
     }
   },
   "shapes":{
@@ -681,7 +763,7 @@
         },
         "StatusMessage":{
           "shape":"StatusMessage",
-          "documentation":"<p>If Network Firewall fails to create or delete the firewall endpoint in the subnet, it populates this with the reason for the failure and how to resolve it. Depending on the error, it can take as many as 15 minutes to populate this field. For more information about the errors and solutions available for this field, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+          "documentation":"<p>If Network Firewall fails to create or delete the firewall endpoint in the subnet, it populates this with the reason for the error or failure and how to resolve it. A <code>FAILED</code> status indicates a non-recoverable state, and a <code>ERROR</code> status indicates an issue that you can fix. Depending on the error, it can take as many as 15 minutes to populate this field. For more information about the causes for failiure or errors and solutions available for this field, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>The configuration and status for a single subnet that you've specified for use by the Network Firewall firewall. This is part of the <a>FirewallStatus</a>.</p>"
@@ -691,6 +773,8 @@
       "enum":[
         "CREATING",
         "DELETING",
+        "FAILED",
+        "ERROR",
         "SCALING",
         "READY"
       ]
@@ -739,6 +823,10 @@
         }
       },
       "documentation":"<p>The capacity usage summary of the resources used by the <a>ReferenceSets</a> in a firewall.</p>"
+    },
+    "Certificates":{
+      "type":"list",
+      "member":{"shape":"TlsCertificateData"}
     },
     "CollectionMember_String":{"type":"string"},
     "ConfigurationSyncState":{
@@ -930,6 +1018,49 @@
         }
       }
     },
+    "CreateTLSInspectionConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "TLSInspectionConfigurationName",
+        "TLSInspectionConfiguration"
+      ],
+      "members":{
+        "TLSInspectionConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p>"
+        },
+        "TLSInspectionConfiguration":{
+          "shape":"TLSInspectionConfiguration",
+          "documentation":"<p>The object that defines a TLS inspection configuration. This, along with <a>TLSInspectionConfigurationResponse</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p> <p>Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination.</p> <p>To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect inbound traffic. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html\">Decrypting SSL/TLS traffic with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the TLS inspection configuration. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"}
+      }
+    },
+    "CreateTLSInspectionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "UpdateToken",
+        "TLSInspectionConfigurationResponse"
+      ],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the TLS inspection configuration. The token marks the state of the TLS inspection configuration resource at the time of the request. </p> <p>To make changes to the TLS inspection configuration, you provide the token in your request. Network Firewall uses the token to ensure that the TLS inspection configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the TLS inspection configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "TLSInspectionConfigurationResponse":{
+          "shape":"TLSInspectionConfigurationResponse",
+          "documentation":"<p>The high-level properties of a TLS inspection configuration. This, along with the <a>TLSInspectionConfiguration</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p>"
+        }
+      }
+    },
     "CustomAction":{
       "type":"structure",
       "required":[
@@ -1034,6 +1165,29 @@
         "RuleGroupResponse":{
           "shape":"RuleGroupResponse",
           "documentation":"<p>The high-level properties of a rule group. This, along with the <a>RuleGroup</a>, define the rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
+        }
+      }
+    },
+    "DeleteTLSInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "TLSInspectionConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "TLSInspectionConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DeleteTLSInspectionConfigurationResponse":{
+      "type":"structure",
+      "required":["TLSInspectionConfigurationResponse"],
+      "members":{
+        "TLSInspectionConfigurationResponse":{
+          "shape":"TLSInspectionConfigurationResponse",
+          "documentation":"<p>The high-level properties of a TLS inspection configuration. This, along with the <a>TLSInspectionConfiguration</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p>"
         }
       }
     },
@@ -1229,6 +1383,40 @@
         "RuleGroupResponse":{
           "shape":"RuleGroupResponse",
           "documentation":"<p>The high-level properties of a rule group. This, along with the <a>RuleGroup</a>, define the rule group. You can retrieve all objects for a rule group by calling <a>DescribeRuleGroup</a>. </p>"
+        }
+      }
+    },
+    "DescribeTLSInspectionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "TLSInspectionConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "TLSInspectionConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeTLSInspectionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "UpdateToken",
+        "TLSInspectionConfigurationResponse"
+      ],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the TLS inspection configuration. The token marks the state of the TLS inspection configuration resource at the time of the request. </p> <p>To make changes to the TLS inspection configuration, you provide the token in your request. Network Firewall uses the token to ensure that the TLS inspection configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the TLS inspection configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "TLSInspectionConfiguration":{
+          "shape":"TLSInspectionConfiguration",
+          "documentation":"<p>The object that defines a TLS inspection configuration. This, along with <a>TLSInspectionConfigurationResponse</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p> <p>Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination.</p> <p>To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect inbound traffic. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html\">Decrypting SSL/TLS traffic with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "TLSInspectionConfigurationResponse":{
+          "shape":"TLSInspectionConfigurationResponse",
+          "documentation":"<p>The high-level properties of a TLS inspection configuration. This, along with the <a>TLSInspectionConfiguration</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p>"
         }
       }
     },
@@ -1445,6 +1633,14 @@
         "StatefulEngineOptions":{
           "shape":"StatefulEngineOptions",
           "documentation":"<p>Additional options governing how Network Firewall handles stateful rules. The stateful rule groups that you use in your policy must have stateful rule options settings that are compatible with these settings.</p>"
+        },
+        "TLSInspectionConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p>"
+        },
+        "PolicyVariables":{
+          "shape":"PolicyVariables",
+          "documentation":"<p>Contains variables that you can use to override default Suricata settings in your firewall policy.</p>"
         }
       },
       "documentation":"<p>The firewall policy defines the behavior of a firewall using a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. </p> <p>This, along with <a>FirewallPolicyResponse</a>, define the policy. You can retrieve all objects for a firewall policy by calling <a>DescribeFirewallPolicy</a>.</p>"
@@ -1621,7 +1817,8 @@
       "type":"string",
       "enum":[
         "DUALSTACK",
-        "IPV4"
+        "IPV4",
+        "IPV6"
       ]
     },
     "IPSet":{
@@ -1659,7 +1856,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you are referencing in your rule group.</p>"
         }
       },
-      "documentation":"<p>Configures one or more IP set references for a Suricata-compatible rule group. This is used in <a>CreateRuleGroup</a> or <a>UpdateRuleGroup</a>. An IP set reference is a rule variable that references a resource that you create and manage in another Amazon Web Services service, such as an Amazon VPC prefix list. Network Firewall IP set references enable you to dynamically update the contents of your rules. When you create, update, or delete the IP set you are referencing in your rule, Network Firewall automatically updates the rule's content with the changes. For more information about IP set references in Network Firewall, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references\">Using IP set references</a> in the <i>Network Firewall Developer Guide</i>.</p> <p> Network Firewall currently supports only <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html\">Amazon VPC prefix lists</a> as IP set references. </p>"
+      "documentation":"<p>Configures one or more IP set references for a Suricata-compatible rule group. This is used in <a>CreateRuleGroup</a> or <a>UpdateRuleGroup</a>. An IP set reference is a rule variable that references resources that you create and manage in another Amazon Web Services service, such as an Amazon VPC prefix list. Network Firewall IP set references enable you to dynamically update the contents of your rules. When you create, update, or delete the resource you are referencing in your rule, Network Firewall automatically updates the rule's content with the changes. For more information about IP set references in Network Firewall, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references\">Using IP set references</a> in the <i>Network Firewall Developer Guide</i>.</p> <p> Network Firewall currently supports <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html\">Amazon VPC prefix lists</a> and <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references.html#rule-groups-referencing-resource-groups\">resource groups</a> in IP set references. </p>"
     },
     "IPSetReferenceMap":{
       "type":"map",
@@ -1842,6 +2039,32 @@
         }
       }
     },
+    "ListTLSInspectionConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListTLSInspectionConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "TLSInspectionConfigurations":{
+          "shape":"TLSInspectionConfigurations",
+          "documentation":"<p>The TLS inspection configuration metadata objects that you've defined. Depending on your setting for max results and the number of TLS inspection configurations, this might not be the full list.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1984,7 +2207,7 @@
     },
     "PaginationToken":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "min":1,
       "pattern":"[0-9A-Za-z:\\/+=]+$"
     },
@@ -2015,6 +2238,16 @@
       "max":395000,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "PolicyVariables":{
+      "type":"structure",
+      "members":{
+        "RuleVariables":{
+          "shape":"IPSets",
+          "documentation":"<p>The IPv4 or IPv6 addresses in CIDR notation to use for the Suricata <code>HOME_NET</code> variable. If your firewall uses an inspection VPC, you might want to override the <code>HOME_NET</code> variable with the CIDRs of your home networks. If you don't override <code>HOME_NET</code> with your own CIDRs, Network Firewall by default uses the CIDR of your inspection VPC.</p>"
+        }
+      },
+      "documentation":"<p>Contains variables that you can use to override default Suricata settings in your firewall policy.</p>"
     },
     "Port":{
       "type":"string",
@@ -2102,7 +2335,7 @@
         },
         "Policy":{
           "shape":"PolicyString",
-          "documentation":"<p>The IAM policy statement that lists the accounts that you want to share your rule group or firewall policy with and the operations that you want the accounts to be able to perform. </p> <p>For a rule group resource, you can specify the following operations in the Actions section of the statement:</p> <ul> <li> <p>network-firewall:CreateFirewallPolicy</p> </li> <li> <p>network-firewall:UpdateFirewallPolicy</p> </li> <li> <p>network-firewall:ListRuleGroups</p> </li> </ul> <p>For a firewall policy resource, you can specify the following operations in the Actions section of the statement:</p> <ul> <li> <p>network-firewall:CreateFirewall</p> </li> <li> <p>network-firewall:UpdateFirewall</p> </li> <li> <p>network-firewall:AssociateFirewallPolicy</p> </li> <li> <p>network-firewall:ListFirewallPolicies</p> </li> </ul> <p>In the Resource section of the statement, you specify the ARNs for the rule groups and firewall policies that you want to share with the account that you specified in <code>Arn</code>.</p>"
+          "documentation":"<p>The IAM policy statement that lists the accounts that you want to share your rule group or firewall policy with and the operations that you want the accounts to be able to perform. </p> <p>For a rule group resource, you can specify the following operations in the Actions section of the statement:</p> <ul> <li> <p>network-firewall:CreateFirewallPolicy</p> </li> <li> <p>network-firewall:UpdateFirewallPolicy</p> </li> <li> <p>network-firewall:ListRuleGroups</p> </li> </ul> <p>For a firewall policy resource, you can specify the following operations in the Actions section of the statement:</p> <ul> <li> <p>network-firewall:AssociateFirewallPolicy</p> </li> <li> <p>network-firewall:ListFirewallPolicies</p> </li> </ul> <p>In the Resource section of the statement, you specify the ARNs for the rule groups and firewall policies that you want to share with the account that you specified in <code>Arn</code>.</p>"
         }
       }
     },
@@ -2316,11 +2549,11 @@
       "members":{
         "Keyword":{
           "shape":"Keyword",
-          "documentation":"<p/>"
+          "documentation":"<p>The keyword for the Suricata compatible rule option. You must include a <code>sid</code> (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see <a href=\"https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html#rule-options\">Rule options</a> in the Suricata documentation.</p>"
         },
         "Settings":{
           "shape":"Settings",
-          "documentation":"<p/>"
+          "documentation":"<p>The settings of the Suricata compatible rule option. Rule options have zero or more setting values, and the number of possible and required settings depends on the <code>Keyword</code>. For more information about the settings for specific options, see <a href=\"https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html#rule-options\">Rule options</a>.</p>"
         }
       },
       "documentation":"<p>Additional settings for a stateful rule. This is part of the <a>StatefulRule</a> configuration.</p>"
@@ -2373,7 +2606,7 @@
         },
         "StatefulRules":{
           "shape":"StatefulRules",
-          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/rules/intro.html#\">Rules Format</a>. </p>"
+          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html\">Rules Format</a>. </p>"
         },
         "StatelessRulesAndCustomActions":{
           "shape":"StatelessRulesAndCustomActions",
@@ -2409,6 +2642,68 @@
       "type":"string",
       "max":2000000,
       "min":0
+    },
+    "ServerCertificate":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Certificate Manager SSL/TLS server certificate.</p>"
+        }
+      },
+      "documentation":"<p>Any Certificate Manager Secure Sockets Layer/Transport Layer Security (SSL/TLS) server certificate that's associated with a <a>ServerCertificateConfiguration</a> used in a <a>TLSInspectionConfiguration</a>. You must request or import a SSL/TLS certificate into ACM for each domain Network Firewall needs to decrypt and inspect. Network Firewall uses the SSL/TLS certificates to decrypt specified inbound SSL/TLS traffic going to your firewall. For information about working with certificates in Certificate Manager, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html\">Request a public certificate </a> or <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates</a> in the <i>Certificate Manager User Guide</i>.</p>"
+    },
+    "ServerCertificateConfiguration":{
+      "type":"structure",
+      "members":{
+        "ServerCertificates":{
+          "shape":"ServerCertificates",
+          "documentation":"<p>The list of a server certificate configuration's Certificate Manager SSL/TLS certificates.</p>"
+        },
+        "Scopes":{
+          "shape":"ServerCertificateScopes",
+          "documentation":"<p>A list of a server certificate configuration's scopes.</p>"
+        }
+      },
+      "documentation":"<p>Configures the associated Certificate Manager Secure Sockets Layer/Transport Layer Security (SSL/TLS) server certificates and scope settings Network Firewall uses to decrypt traffic in a <a>TLSInspectionConfiguration</a>. For information about working with SSL/TLS certificates for TLS inspection, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-certificate-requirements.html\"> Requirements for using SSL/TLS server certficiates with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>.</p> <note> <p>If a server certificate that's associated with your <a>TLSInspectionConfiguration</a> is revoked, deleted, or expired it can result in client-side TLS errors.</p> </note>"
+    },
+    "ServerCertificateConfigurations":{
+      "type":"list",
+      "member":{"shape":"ServerCertificateConfiguration"}
+    },
+    "ServerCertificateScope":{
+      "type":"structure",
+      "members":{
+        "Sources":{
+          "shape":"Addresses",
+          "documentation":"<p>The source IP addresses and address ranges to decrypt for inspection, in CIDR notation. If not specified, this matches with any source address.</p>"
+        },
+        "Destinations":{
+          "shape":"Addresses",
+          "documentation":"<p>The destination IP addresses and address ranges to decrypt for inspection, in CIDR notation. If not specified, this matches with any destination address.</p>"
+        },
+        "SourcePorts":{
+          "shape":"PortRanges",
+          "documentation":"<p>The source ports to decrypt for inspection, in Transmission Control Protocol (TCP) format. If not specified, this matches with any source port.</p> <p>You can specify individual ports, for example <code>1994</code>, and you can specify port ranges, such as <code>1990:1994</code>.</p>"
+        },
+        "DestinationPorts":{
+          "shape":"PortRanges",
+          "documentation":"<p>The destination ports to decrypt for inspection, in Transmission Control Protocol (TCP) format. If not specified, this matches with any destination port.</p> <p>You can specify individual ports, for example <code>1994</code>, and you can specify port ranges, such as <code>1990:1994</code>.</p>"
+        },
+        "Protocols":{
+          "shape":"ProtocolNumbers",
+          "documentation":"<p>The protocols to decrypt for inspection, specified using each protocol's assigned internet protocol number (IANA). Network Firewall currently supports only TCP.</p>"
+        }
+      },
+      "documentation":"<p>Settings that define the Secure Sockets Layer/Transport Layer Security (SSL/TLS) traffic that Network Firewall should decrypt for inspection by the stateful rule engine.</p>"
+    },
+    "ServerCertificateScopes":{
+      "type":"list",
+      "member":{"shape":"ServerCertificateScope"}
+    },
+    "ServerCertificates":{
+      "type":"list",
+      "member":{"shape":"ServerCertificate"}
     },
     "Setting":{
       "type":"string",
@@ -2462,7 +2757,7 @@
         },
         "StreamExceptionPolicy":{
           "shape":"StreamExceptionPolicy",
-          "documentation":"<p>Configures how Network Firewall processes traffic when a network connection breaks midstream. Network connections can break due to disruptions in external networks or within the firewall itself.</p> <ul> <li> <p> <code>DROP</code> - Network Firewall fails closed and drops all subsequent traffic going to the firewall. This is the default behavior.</p> </li> <li> <p> <code>CONTINUE</code> - Network Firewall continues to apply rules to the subsequent traffic without context from traffic before the break. This impacts the behavior of rules that depend on this context. For example, if you have a stateful rule to <code>drop http</code> traffic, Network Firewall won't match the traffic for this rule because the service won't have the context from session initialization defining the application layer protocol as HTTP. However, this behavior is rule dependent—a TCP-layer rule using a <code>flow:stateless</code> rule would still match, as would the <code>aws:drop_strict</code> default action.</p> </li> </ul>"
+          "documentation":"<p>Configures how Network Firewall processes traffic when a network connection breaks midstream. Network connections can break due to disruptions in external networks or within the firewall itself.</p> <ul> <li> <p> <code>DROP</code> - Network Firewall fails closed and drops all subsequent traffic going to the firewall. This is the default behavior.</p> </li> <li> <p> <code>CONTINUE</code> - Network Firewall continues to apply rules to the subsequent traffic without context from traffic before the break. This impacts the behavior of rules that depend on this context. For example, if you have a stateful rule to <code>drop http</code> traffic, Network Firewall won't match the traffic for this rule because the service won't have the context from session initialization defining the application layer protocol as HTTP. However, this behavior is rule dependent—a TCP-layer rule using a <code>flow:stateless</code> rule would still match, as would the <code>aws:drop_strict</code> default action.</p> </li> <li> <p> <code>REJECT</code> - Network Firewall fails closed and drops all subsequent traffic going to the firewall. Network Firewall also sends a TCP reject packet back to your client so that the client can immediately establish a new session. Network Firewall will have context about the new session and will apply rules to the subsequent traffic.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p>"
@@ -2477,7 +2772,7 @@
       "members":{
         "Action":{
           "shape":"StatefulAction",
-          "documentation":"<p>Defines what Network Firewall should do with the packets in a traffic flow when the flow matches the stateful rule criteria. For all actions, Network Firewall performs the specified action and discontinues stateful inspection of the traffic flow. </p> <p>The actions for a stateful rule are defined as follows: </p> <ul> <li> <p> <b>PASS</b> - Permits the packets to go to the intended destination.</p> </li> <li> <p> <b>DROP</b> - Blocks the packets from going to the intended destination and sends an alert log message, if alert logging is configured in the <a>Firewall</a> <a>LoggingConfiguration</a>. </p> </li> <li> <p> <b>ALERT</b> - Permits the packets to go to the intended destination and sends an alert log message, if alert logging is configured in the <a>Firewall</a> <a>LoggingConfiguration</a>. </p> <p>You can use this action to test a rule that you intend to use to drop traffic. You can enable the rule with <code>ALERT</code> action, verify in the logs that the rule is filtering as you want, then change the action to <code>DROP</code>.</p> </li> <li> <p> <b>REJECT</b> - Drops TCP traffic that matches the conditions of the stateful rule, and sends a TCP reset packet back to sender of the packet. A TCP reset packet is a packet with no payload and a <code>RST</code> bit contained in the TCP header flags. Also sends an alert log mesage if alert logging is configured in the <a>Firewall</a> <a>LoggingConfiguration</a>.</p> <p> <code>REJECT</code> isn't currently available for use with IMAP and FTP protocols.</p> </li> </ul>"
+          "documentation":"<p>Defines what Network Firewall should do with the packets in a traffic flow when the flow matches the stateful rule criteria. For all actions, Network Firewall performs the specified action and discontinues stateful inspection of the traffic flow. </p> <p>The actions for a stateful rule are defined as follows: </p> <ul> <li> <p> <b>PASS</b> - Permits the packets to go to the intended destination.</p> </li> <li> <p> <b>DROP</b> - Blocks the packets from going to the intended destination and sends an alert log message, if alert logging is configured in the <a>Firewall</a> <a>LoggingConfiguration</a>. </p> </li> <li> <p> <b>ALERT</b> - Permits the packets to go to the intended destination and sends an alert log message, if alert logging is configured in the <a>Firewall</a> <a>LoggingConfiguration</a>. </p> <p>You can use this action to test a rule that you intend to use to drop traffic. You can enable the rule with <code>ALERT</code> action, verify in the logs that the rule is filtering as you want, then change the action to <code>DROP</code>.</p> </li> </ul>"
         },
         "Header":{
           "shape":"Header",
@@ -2488,7 +2783,7 @@
           "documentation":"<p>Additional options for the rule. These are the Suricata <code>RuleOptions</code> settings.</p>"
         }
       },
-      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/rules/intro.html#\">Rules Format</a>. </p>"
+      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html\">Rules Format</a>. </p>"
     },
     "StatefulRuleDirection":{
       "type":"string",
@@ -2633,11 +2928,18 @@
       "documentation":"<p>Stateless inspection criteria. Each stateless rule group uses exactly one of these data types to define its stateless rules. </p>"
     },
     "StatusMessage":{"type":"string"},
+    "StatusReason":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9- ]+$"
+    },
     "StreamExceptionPolicy":{
       "type":"string",
       "enum":[
         "DROP",
-        "CONTINUE"
+        "CONTINUE",
+        "REJECT"
       ]
     },
     "SubnetMapping":{
@@ -2714,6 +3016,85 @@
     "TCPFlags":{
       "type":"list",
       "member":{"shape":"TCPFlagField"}
+    },
+    "TLSInspectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "ServerCertificateConfigurations":{
+          "shape":"ServerCertificateConfigurations",
+          "documentation":"<p>Lists the server certificate configurations that are associated with the TLS configuration.</p>"
+        }
+      },
+      "documentation":"<p>The object that defines a TLS inspection configuration. This, along with <a>TLSInspectionConfigurationResponse</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p> <p>Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination.</p> <p>To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect inbound traffic. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html\">Decrypting SSL/TLS traffic with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+    },
+    "TLSInspectionConfigurationMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p>"
+        },
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about a TLS inspection configuration, returned by <code>ListTLSInspectionConfigurations</code>. You can use the information provided in the metadata to retrieve and manage a TLS configuration.</p>"
+    },
+    "TLSInspectionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "TLSInspectionConfigurationArn",
+        "TLSInspectionConfigurationName",
+        "TLSInspectionConfigurationId"
+      ],
+      "members":{
+        "TLSInspectionConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p>"
+        },
+        "TLSInspectionConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p>"
+        },
+        "TLSInspectionConfigurationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>A unique identifier for the TLS inspection configuration. This ID is returned in the responses to create and list commands. You provide it to operations such as update and delete.</p>"
+        },
+        "TLSInspectionConfigurationStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>Detailed information about the current status of a <a>TLSInspectionConfiguration</a>. You can retrieve this for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a> and providing the TLS inspection configuration name and ARN.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the TLS inspection configuration. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastUpdateTime",
+          "documentation":"<p>The last time that the TLS inspection configuration was changed.</p>"
+        },
+        "NumberOfAssociations":{
+          "shape":"NumberOfAssociations",
+          "documentation":"<p>The number of firewall policies that use this TLS inspection configuration.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>A complex type that contains the Amazon Web Services KMS encryption configuration settings for your TLS inspection configuration.</p>"
+        },
+        "Certificates":{
+          "shape":"Certificates",
+          "documentation":"<p>A list of the certificates associated with the TLS inspection configuration.</p>"
+        }
+      },
+      "documentation":"<p>The high-level properties of a TLS inspection configuration. This, along with the <code>TLSInspectionConfiguration</code>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <code>DescribeTLSInspectionConfiguration</code>.</p>"
+    },
+    "TLSInspectionConfigurations":{
+      "type":"list",
+      "member":{"shape":"TLSInspectionConfigurationMetadata"}
     },
     "Tag":{
       "type":"structure",
@@ -2802,6 +3183,28 @@
       },
       "documentation":"<p>Unable to process the request due to throttling limitations.</p>",
       "exception":true
+    },
+    "TlsCertificateData":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate.</p>"
+        },
+        "CertificateSerial":{
+          "shape":"CollectionMember_String",
+          "documentation":"<p>The serial number of the certificate.</p>"
+        },
+        "Status":{
+          "shape":"CollectionMember_String",
+          "documentation":"<p>The status of the certificate.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusReason",
+          "documentation":"<p>Contains details about the certificate status, including information about certificate errors.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about an Certificate Manager certificate.</p>"
     },
     "UnsupportedOperationException":{
       "type":"structure",
@@ -3018,7 +3421,7 @@
         },
         "FirewallPolicy":{
           "shape":"FirewallPolicy",
-          "documentation":"<p>The updated firewall policy to use for the firewall. </p>"
+          "documentation":"<p>The updated firewall policy to use for the firewall. You can't add or remove a <a>TLSInspectionConfiguration</a> after you create a firewall policy. However, you can replace an existing TLS inspection configuration with another <code>TLSInspectionConfiguration</code>.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -3188,6 +3591,56 @@
         }
       }
     },
+    "UpdateTLSInspectionConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "TLSInspectionConfiguration",
+        "UpdateToken"
+      ],
+      "members":{
+        "TLSInspectionConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the TLS inspection configuration.</p>"
+        },
+        "TLSInspectionConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the TLS inspection configuration. You can't change the name of a TLS inspection configuration after you create it.</p>"
+        },
+        "TLSInspectionConfiguration":{
+          "shape":"TLSInspectionConfiguration",
+          "documentation":"<p>The object that defines a TLS inspection configuration. This, along with <a>TLSInspectionConfigurationResponse</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p> <p>Network Firewall uses a TLS inspection configuration to decrypt traffic. Network Firewall re-encrypts the traffic before sending it to its destination.</p> <p>To use a TLS inspection configuration, you add it to a new Network Firewall firewall policy, then you apply the firewall policy to a firewall. Network Firewall acts as a proxy service to decrypt and inspect inbound traffic. You can reference a TLS inspection configuration from more than one firewall policy, and you can use a firewall policy in more than one firewall. For more information about using TLS inspection configurations, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection.html\">Decrypting SSL/TLS traffic with TLS inspection configurations</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the TLS inspection configuration. </p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>A complex type that contains the Amazon Web Services KMS encryption configuration settings for your TLS inspection configuration.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the TLS inspection configuration. The token marks the state of the TLS inspection configuration resource at the time of the request. </p> <p>To make changes to the TLS inspection configuration, you provide the token in your request. Network Firewall uses the token to ensure that the TLS inspection configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the TLS inspection configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateTLSInspectionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "UpdateToken",
+        "TLSInspectionConfigurationResponse"
+      ],
+      "members":{
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the TLS inspection configuration. The token marks the state of the TLS inspection configuration resource at the time of the request. </p> <p>To make changes to the TLS inspection configuration, you provide the token in your request. Network Firewall uses the token to ensure that the TLS inspection configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the TLS inspection configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "TLSInspectionConfigurationResponse":{
+          "shape":"TLSInspectionConfigurationResponse",
+          "documentation":"<p>The high-level properties of a TLS inspection configuration. This, along with the <a>TLSInspectionConfiguration</a>, define the TLS inspection configuration. You can retrieve all objects for a TLS inspection configuration by calling <a>DescribeTLSInspectionConfiguration</a>. </p>"
+        }
+      }
+    },
     "UpdateToken":{
       "type":"string",
       "max":1024,
@@ -3214,5 +3667,5 @@
       "member":{"shape":"VpcId"}
     }
   },
-  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <ul> <li> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To access Network Firewall using the REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> </li> <li> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> </li> <li> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> </li> </ul> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 5.0.2. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a>.</p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>In Network Firewall, create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol>"
+  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <ul> <li> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To access Network Firewall using the REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> </li> <li> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> </li> <li> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> </li> </ul> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 6.0.9. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a>.</p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>In Network Firewall, create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol>"
 }

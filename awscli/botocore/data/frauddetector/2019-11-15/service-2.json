@@ -308,7 +308,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes the specified event.</p> <p>When you delete an event, Amazon Fraud Detector permanently deletes that event and the event data is no longer stored in Amazon Fraud Detector.</p>"
+      "documentation":"<p>Deletes the specified event.</p> <p>When you delete an event, Amazon Fraud Detector permanently deletes that event and the event data is no longer stored in Amazon Fraud Detector. If <code>deleteAuditHistory</code> is <code>True</code>, event data is available through search for up to 30 seconds after the delete operation is completed.</p>"
     },
     "DeleteEventType":{
       "name":"DeleteEventType",
@@ -2003,7 +2003,7 @@
         },
         "dataType":{
           "shape":"DataType",
-          "documentation":"<p>The data type.</p>"
+          "documentation":"<p>The data type of the variable.</p>"
         },
         "dataSource":{
           "shape":"DataSource",
@@ -2051,7 +2051,8 @@
         "STRING",
         "INTEGER",
         "FLOAT",
-        "BOOLEAN"
+        "BOOLEAN",
+        "DATETIME"
       ]
     },
     "DataValidationMetrics":{
@@ -2168,7 +2169,7 @@
         },
         "deleteAuditHistory":{
           "shape":"DeleteAuditHistory",
-          "documentation":"<p>Specifies whether or not to delete any predictions associated with the event.</p>"
+          "documentation":"<p>Specifies whether or not to delete any predictions associated with the event. If set to <code>True</code>, </p>"
         }
       }
     },
@@ -2694,6 +2695,17 @@
         "DISABLED"
       ]
     },
+    "EventOrchestration":{
+      "type":"structure",
+      "required":["eventBridgeEnabled"],
+      "members":{
+        "eventBridgeEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if event orchestration is enabled through Amazon EventBridge.</p>"
+        }
+      },
+      "documentation":"<p> The event orchestration status. </p>"
+    },
     "EventPredictionSummary":{
       "type":"structure",
       "members":{
@@ -2772,6 +2784,10 @@
         "arn":{
           "shape":"fraudDetectorArn",
           "documentation":"<p>The entity type ARN.</p>"
+        },
+        "eventOrchestration":{
+          "shape":"EventOrchestration",
+          "documentation":"<p>The event orchestration status. </p>"
         }
       },
       "documentation":"<p>The event type details.</p>",
@@ -3836,7 +3852,7 @@
         },
         "unlabeledEventsTreatment":{
           "shape":"UnlabeledEventsTreatment",
-          "documentation":"<p>The action to take for unlabeled events.</p> <ul> <li> <p>Use <code>IGNORE</code> if you want the unlabeled events to be ignored. This is recommended when the majority of the events in the dataset are labeled.</p> </li> <li> <p>Use <code>FRAUD</code> if you want to categorize all unlabeled events as “Fraud”. This is recommended when most of the events in your dataset are fraudulent.</p> </li> <li> <p>Use <code>LEGIT</code> f you want to categorize all unlabeled events as “Legit”. This is recommended when most of the events in your dataset are legitimate.</p> </li> <li> <p>Use <code>AUTO</code> if you want Amazon Fraud Detector to decide how to use the unlabeled data. This is recommended when there is significant unlabeled events in the dataset.</p> </li> </ul> <p>By default, Amazon Fraud Detector ignores the unlabeled data.</p>"
+          "documentation":"<p>The action to take for unlabeled events.</p> <ul> <li> <p>Use <code>IGNORE</code> if you want the unlabeled events to be ignored. This is recommended when the majority of the events in the dataset are labeled.</p> </li> <li> <p>Use <code>FRAUD</code> if you want to categorize all unlabeled events as “Fraud”. This is recommended when most of the events in your dataset are fraudulent.</p> </li> <li> <p>Use <code>LEGIT</code> if you want to categorize all unlabeled events as “Legit”. This is recommended when most of the events in your dataset are legitimate.</p> </li> <li> <p>Use <code>AUTO</code> if you want Amazon Fraud Detector to decide how to use the unlabeled data. This is recommended when there is significant unlabeled events in the dataset.</p> </li> </ul> <p>By default, Amazon Fraud Detector ignores the unlabeled data.</p>"
         }
       },
       "documentation":"<p>The label schema.</p>"
@@ -4519,11 +4535,15 @@
         },
         "eventIngestion":{
           "shape":"EventIngestion",
-          "documentation":"<p>Specifies if ingenstion is enabled or disabled.</p>"
+          "documentation":"<p>Specifies if ingestion is enabled or disabled.</p>"
         },
         "tags":{
           "shape":"tagList",
           "documentation":"<p>A collection of key and value pairs.</p>"
+        },
+        "eventOrchestration":{
+          "shape":"EventOrchestration",
+          "documentation":"<p>Enables or disables event orchestration. If enabled, you can send event predictions to select AWS services for downstream processing of the events.</p>"
         }
       }
     },
@@ -4607,7 +4627,7 @@
         },
         "tags":{
           "shape":"tagList",
-          "documentation":"<p/>"
+          "documentation":"<p>A collection of key and value pairs.</p>"
         }
       }
     },
@@ -5012,7 +5032,7 @@
         },
         "upperBoundValue":{
           "shape":"float",
-          "documentation":"<p> The lower bound value of the area under curve (auc). </p>"
+          "documentation":"<p> The upper bound value of the area under curve (auc). </p>"
         }
       },
       "documentation":"<p> Range of area under curve (auc) expected from the model. A range greater than 0.1 indicates higher model uncertainity. A range is the difference between upper and lower bound of auc. </p>"
@@ -5785,5 +5805,5 @@
       "pattern":"^([1-9][0-9]*)$"
     }
   },
-  "documentation":"<p>This is the Amazon Fraud Detector API Reference. This guide is for developers who need detailed information about Amazon Fraud Detector API actions, data types, and errors. For more information about Amazon Fraud Detector features, see the <a href=\"https://docs.aws.amazon.com/frauddetector/latest/ug/\">Amazon Fraud Detector User Guide</a>.</p> <p>We provide the Query API as well as AWS software development kits (SDK) for Amazon Fraud Detector in Java and Python programming languages.</p> <p>The Amazon Fraud Detector Query API provides HTTPS requests that use the HTTP verb GET or POST and a Query parameter <code>Action</code>. AWS SDK provides libraries, sample code, tutorials, and other resources for software developers who prefer to build applications using language-specific APIs instead of submitting a request over HTTP or HTTPS. These libraries provide basic functions that automatically take care of tasks such as cryptographically signing your requests, retrying requests, and handling error responses, so that it is easier for you to get started. For more information about the AWS SDKs, see <a href=\"https://docs.aws.amazon.com/https:/aws.amazon.com/tools/\">Tools to build on AWS</a>. </p>"
+  "documentation":"<p>This is the Amazon Fraud Detector API Reference. This guide is for developers who need detailed information about Amazon Fraud Detector API actions, data types, and errors. For more information about Amazon Fraud Detector features, see the <a href=\"https://docs.aws.amazon.com/frauddetector/latest/ug/\">Amazon Fraud Detector User Guide</a>.</p> <p>We provide the Query API as well as AWS software development kits (SDK) for Amazon Fraud Detector in Java and Python programming languages.</p> <p>The Amazon Fraud Detector Query API provides HTTPS requests that use the HTTP verb GET or POST and a Query parameter <code>Action</code>. AWS SDK provides libraries, sample code, tutorials, and other resources for software developers who prefer to build applications using language-specific APIs instead of submitting a request over HTTP or HTTPS. These libraries provide basic functions that automatically take care of tasks such as cryptographically signing your requests, retrying requests, and handling error responses, so that it is easier for you to get started. For more information about the AWS SDKs, go to <a href=\"https://aws.amazon.com/developer/tools/\">Tools to build on AWS</a> page, scroll down to the <b>SDK</b> section, and choose plus (+) sign to expand the section. </p>"
 }

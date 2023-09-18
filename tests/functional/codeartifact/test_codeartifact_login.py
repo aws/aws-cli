@@ -54,6 +54,7 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
     def tearDown(self):
         self.pypi_rc_path_patch.stop()
+        self.subprocess_check_output_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
 
@@ -339,7 +340,7 @@ password: {auth_token}'''
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -353,7 +354,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -367,7 +368,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -386,7 +387,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -457,7 +458,7 @@ password: {auth_token}'''
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -472,7 +473,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -487,7 +488,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -507,7 +508,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 

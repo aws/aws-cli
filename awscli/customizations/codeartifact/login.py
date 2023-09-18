@@ -14,7 +14,7 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
-from awscli.compat import is_windows
+from awscli.compat import is_windows, get_stderr_encoding
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.utils import original_ld_library_path
@@ -37,6 +37,17 @@ def get_relative_expiration_time(remaining):
 
     message = " ".join(values)
     return message
+
+
+class CommandFailedError(Exception):
+    def __init__(self, called_process_error):
+        msg = str(called_process_error)
+        if called_process_error.stderr is not None:
+            msg +=(
+                f' Stderr from command:\n'
+                f'{called_process_error.stderr.decode(get_stderr_encoding())}'
+            )
+        Exception.__init__(self, msg)
 
 
 class BaseLogin:
@@ -97,7 +108,7 @@ class BaseLogin:
                 )
         except subprocess.CalledProcessError as ex:
             if not ignore_errors:
-                raise ex
+                raise CommandFailedError(ex)
         except OSError as ex:
             if ex.errno == errno.ENOENT:
                 raise ValueError(
@@ -160,13 +171,14 @@ class NuGetBaseLogin(BaseLogin):
 
         try:
             with original_ld_library_path():
-                self.subprocess_utils.check_output(
+                self.subprocess_utils.run(
                     command,
-                    stderr=self.subprocess_utils.PIPE
+                    capture_output=True,
+                    check=True
                 )
         except subprocess.CalledProcessError as e:
             uni_print('Failed to update the NuGet.Config\n')
-            raise e
+            raise CommandFailedError(e)
 
         uni_print(source_configured_message % source_name)
         self._write_success_message('nuget')

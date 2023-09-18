@@ -177,6 +177,13 @@ def get_stderr_text_writer():
     return _get_text_writer(sys.stderr, errors="replace")
 
 
+def get_stderr_encoding():
+    encoding = getattr(sys.__stderr__, 'encoding', None)
+    if encoding is None:
+        encoding = 'utf-8'
+    return encoding
+
+
 def compat_input(prompt):
     """
     Cygwin's pty's are based on pipes. Therefore, when it interacts with a Win32

@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = build
+BUILDDIR      ?= build
 MANBUILDDIR   = $(BUILDDIR)/man1
 SOURCEDIR     = source
 

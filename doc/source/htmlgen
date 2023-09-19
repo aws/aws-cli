@@ -93,7 +93,7 @@ def do_provider(driver):
 
     services = sorted(help_command.command_table)
     print('\nWriting service references')
-    for service_name in services:
+    for service_name in services[:5]:
         if service_name == 'help':
             continue
         service_command = help_command.command_table[service_name]
@@ -115,7 +115,7 @@ def build_service_list(tut_path, ref_path, driver):
         service = service_command._service_object
         l.append((service.service_full_name, service_name))
     l = sorted(l, key=lambda x: x[1])
-    for full_name, service_name in l:
+    for full_name, service_name in l[:5]:
         service_ref_path = os.path.join(ref_path, service_name)
         service_ref_path = os.path.join(service_ref_path, 'index')
         fp.write('* :doc:`%s <..%s%s>`\n' % (full_name,

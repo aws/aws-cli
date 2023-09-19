@@ -6030,6 +6030,14 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.51
+=======
+
+* api-change:``ec2``: This release adds support for C7i, and R7a instance types.
+* api-change:``outposts``: This release adds the InstanceFamilies field to the ListAssets response.
+* api-change:``sagemaker``: This release adds support for one-time model monitoring schedules that are executed immediately without delay, explicit data analysis windows for model monitoring schedules and exclude features attributes to remove features from model monitor analysis.
+
+
 1.29.50
 =======
 

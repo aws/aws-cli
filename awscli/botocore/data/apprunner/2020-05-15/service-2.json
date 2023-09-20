@@ -132,7 +132,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Delete an App Runner automatic scaling configuration resource. You can delete a specific revision or the latest active revision. You can't delete a configuration that's used by one or more App Runner services.</p>"
+      "documentation":"<p>Delete an App Runner automatic scaling configuration resource. You can delete a top level auto scaling configuration, a specific revision of one, or all revisions associated with the top level configuration. You can't delete the default auto scaling configuration or a configuration that's used by one or more App Runner services.</p>"
     },
     "DeleteConnection":{
       "name":"DeleteConnection",
@@ -388,6 +388,21 @@
       ],
       "documentation":"<p>Returns a list of running App Runner services in your Amazon Web Services account.</p>"
     },
+    "ListServicesForAutoScalingConfiguration":{
+      "name":"ListServicesForAutoScalingConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServicesForAutoScalingConfigurationRequest"},
+      "output":{"shape":"ListServicesForAutoScalingConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of the associated App Runner services using an auto scaling configuration.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -510,6 +525,21 @@
         {"shape":"InvalidStateException"}
       ],
       "documentation":"<p>Remove tags from an App Runner resource.</p>"
+    },
+    "UpdateDefaultAutoScalingConfiguration":{
+      "name":"UpdateDefaultAutoScalingConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDefaultAutoScalingConfigurationRequest"},
+      "output":{"shape":"UpdateDefaultAutoScalingConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Update an auto scaling configuration to be the default. The existing default auto scaling configuration will be set to non-default automatically.</p>"
     },
     "UpdateService":{
       "name":"UpdateService",
@@ -639,11 +669,11 @@
           "documentation":"<p>The customer-provided auto scaling configuration name. It can be used in multiple revisions of a configuration.</p>"
         },
         "AutoScalingConfigurationRevision":{
-          "shape":"Integer",
+          "shape":"AutoScalingConfigurationRevision",
           "documentation":"<p>The revision of this auto scaling configuration. It's unique among all the active configurations (<code>\"Status\": \"ACTIVE\"</code>) that share the same <code>AutoScalingConfigurationName</code>.</p>"
         },
         "Latest":{
-          "shape":"Boolean",
+          "shape":"Latest",
           "documentation":"<p>It's set to <code>true</code> for the configuration with the highest <code>Revision</code> among all configurations that share the same <code>AutoScalingConfigurationName</code>. It's set to <code>false</code> otherwise.</p>"
         },
         "Status":{
@@ -651,15 +681,15 @@
           "documentation":"<p>The current state of the auto scaling configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.</p>"
         },
         "MaxConcurrency":{
-          "shape":"Integer",
+          "shape":"MaxConcurrency",
           "documentation":"<p>The maximum number of concurrent requests that an instance processes. If the number of concurrent requests exceeds this limit, App Runner scales the service up.</p>"
         },
         "MinSize":{
-          "shape":"Integer",
+          "shape":"MinSize",
           "documentation":"<p>The minimum number of instances that App Runner provisions for a service. The service always has at least <code>MinSize</code> provisioned instances. Some of them actively serve traffic. The rest of them (provisioned and inactive instances) are a cost-effective compute capacity reserve and are ready to be quickly activated. You pay for memory usage of all the provisioned instances. You pay for CPU usage of only the active subset.</p> <p>App Runner temporarily doubles the number of provisioned instances during deployments, to maintain the same capacity for both old and new code.</p>"
         },
         "MaxSize":{
-          "shape":"Integer",
+          "shape":"MaxSize",
           "documentation":"<p>The maximum number of instances that a service scales up to. At most <code>MaxSize</code> instances actively serve traffic for your service.</p>"
         },
         "CreatedAt":{
@@ -669,6 +699,14 @@
         "DeletedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the auto scaling configuration was deleted. It's in Unix time stamp format.</p>"
+        },
+        "HasAssociatedService":{
+          "shape":"HasAssociatedService",
+          "documentation":"<p>Indicates if this auto scaling configuration has an App Runner service associated with it. A value of <code>true</code> indicates one or more services are associated. A value of <code>false</code> indicates no services are associated.</p>"
+        },
+        "IsDefault":{
+          "shape":"IsDefault",
+          "documentation":"<p>Indicates if this auto scaling configuration should be used as the default for a new App Runner service that does not have an auto scaling configuration ARN specified during creation. Each account can have only one default <code>AutoScalingConfiguration</code> per region. The default <code>AutoScalingConfiguration</code> can be any revision under the same <code>AutoScalingConfigurationName</code>.</p>"
         }
       },
       "documentation":"<p>Describes an App Runner automatic scaling configuration resource.</p> <p>A higher <code>MinSize</code> increases the spread of your App Runner service over more Availability Zones in the Amazon Web Services Region. The tradeoff is a higher minimal cost.</p> <p>A lower <code>MaxSize</code> controls your cost. The tradeoff is lower responsiveness during peak demand.</p> <p>Multiple revisions of a configuration might have the same <code>AutoScalingConfigurationName</code> and different <code>AutoScalingConfigurationRevision</code> values.</p>"
@@ -679,6 +717,7 @@
       "min":4,
       "pattern":"[A-Za-z0-9][A-Za-z0-9\\-_]{3,31}"
     },
+    "AutoScalingConfigurationRevision":{"type":"integer"},
     "AutoScalingConfigurationStatus":{
       "type":"string",
       "enum":[
@@ -700,6 +739,22 @@
         "AutoScalingConfigurationRevision":{
           "shape":"Integer",
           "documentation":"<p>The revision of this auto scaling configuration. It's unique among all the active configurations (<code>\"Status\": \"ACTIVE\"</code>) with the same <code>AutoScalingConfigurationName</code>.</p>"
+        },
+        "Status":{
+          "shape":"AutoScalingConfigurationStatus",
+          "documentation":"<p>The current state of the auto scaling configuration. If the status of a configuration revision is <code>INACTIVE</code>, it was deleted and can't be used. Inactive configuration revisions are permanently removed some time after they are deleted.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the auto scaling configuration was created. It's in Unix time stamp format.</p>"
+        },
+        "HasAssociatedService":{
+          "shape":"HasAssociatedService",
+          "documentation":"<p>Indicates if this auto scaling configuration has an App Runner service associated with it. A value of <code>true</code> indicates one or more services are associated. A value of <code>false</code> indicates no services are associated.</p>"
+        },
+        "IsDefault":{
+          "shape":"IsDefault",
+          "documentation":"<p>Indicates if this auto scaling configuration should be used as the default for a new App Runner service that does not have an auto scaling configuration ARN specified during creation. Each account can have only one default <code>AutoScalingConfiguration</code> per region. The default <code>AutoScalingConfiguration</code> can be any revision under the same <code>AutoScalingConfigurationName</code>.</p>"
         }
       },
       "documentation":"<p>Provides summary information about an App Runner automatic scaling configuration resource.</p> <p>This type contains limited information about an auto scaling configuration. It includes only identification information, without configuration details. It's returned by the <a>ListAutoScalingConfigurations</a> action. Complete configuration information is returned by the <a>CreateAutoScalingConfiguration</a>, <a>DescribeAutoScalingConfiguration</a>, and <a>DeleteAutoScalingConfiguration</a> actions using the <a>AutoScalingConfiguration</a> type.</p>"
@@ -906,7 +961,7 @@
       "members":{
         "AutoScalingConfigurationName":{
           "shape":"AutoScalingConfigurationName",
-          "documentation":"<p>A name for the auto scaling configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>The name <code>DefaultConfiguration</code> is reserved (it's the configuration that App Runner uses if you don't provide a custome one). You can't use it to create a new auto scaling configuration, and you can't create a revision of it.</p> <p>When you want to use your own auto scaling configuration for your App Runner service, <i>create a configuration with a different name</i>, and then provide it when you create or update your service.</p> </note>"
+          "documentation":"<p>A name for the auto scaling configuration. When you use it for the first time in an Amazon Web Services Region, App Runner creates revision number <code>1</code> of this name. When you use the same name in subsequent calls, App Runner creates incremental revisions of the configuration.</p> <note> <p>Prior to the release of <a href=\"https://docs.aws.amazon.com/apprunner/latest/relnotes/release-yyyy-mm-dd-asc-improvements.html\">Managing auto scaling</a>, the name <code>DefaultConfiguration</code> was reserved. </p> <p>This restriction is no longer in place. You can now manage <code>DefaultConfiguration</code> the same way you manage your custom auto scaling configurations. This means you can do the following with the <code>DefaultConfiguration</code> that App Runner provides:</p> <ul> <li> <p>Create new revisions of the <code>DefaultConfiguration</code>.</p> </li> <li> <p>Delete the revisions of the <code>DefaultConfiguration</code>.</p> </li> <li> <p>Delete the auto scaling configuration for which the App Runner <code>DefaultConfiguration</code> was created.</p> </li> <li> <p>If you delete the auto scaling configuration you can create another custom auto scaling configuration with the same <code>DefaultConfiguration</code> name. The original <code>DefaultConfiguration</code> resource provided by App Runner remains in your account unless you make changes to it.</p> </li> </ul> </note>"
         },
         "MaxConcurrency":{
           "shape":"ASConfigMaxConcurrency",
@@ -1184,6 +1239,10 @@
         "AutoScalingConfigurationArn":{
           "shape":"AppRunnerResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want to delete.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is deleted.</p>"
+        },
+        "DeleteAllRevisions":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to delete all of the revisions associated with the <code>AutoScalingConfigurationArn</code> parameter value.</p> <p>When <code>DeleteAllRevisions</code> is set to <code>true</code>, the only valid value for the Amazon Resource Name (ARN) is a partial ARN ending with: <code>.../name</code>.</p>"
         }
       }
     },
@@ -1543,6 +1602,7 @@
       "type":"string",
       "max":600
     },
+    "HasAssociatedService":{"type":"boolean"},
     "HealthCheckConfiguration":{
       "type":"structure",
       "members":{
@@ -1729,12 +1789,14 @@
       "documentation":"<p>You can't perform this action when the resource is in its current state.</p>",
       "exception":true
     },
+    "IsDefault":{"type":"boolean"},
     "KmsKeyArn":{
       "type":"string",
       "max":256,
       "min":0,
       "pattern":"arn:aws(-[\\w]+)*:kms:[a-z\\-]+-[0-9]{1}:[0-9]{12}:key\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "Latest":{"type":"boolean"},
     "ListAutoScalingConfigurationsRequest":{
       "type":"structure",
       "members":{
@@ -1872,6 +1934,38 @@
         }
       }
     },
+    "ListServicesForAutoScalingConfigurationRequest":{
+      "type":"structure",
+      "required":["AutoScalingConfigurationArn"],
+      "members":{
+        "AutoScalingConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want to list the services for.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is used.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to include in each response (result page). It's used for a paginated request.</p> <p>If you don't specify <code>MaxResults</code>, the request retrieves all available results in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token from a previous result page. It's used for a paginated request. The request retrieves the next result page. All other parameter values must be identical to the ones specified in the initial request.</p> <p>If you don't specify <code>NextToken</code>, the request retrieves the first result page.</p>"
+        }
+      }
+    },
+    "ListServicesForAutoScalingConfigurationResponse":{
+      "type":"structure",
+      "required":["ServiceArnList"],
+      "members":{
+        "ServiceArnList":{
+          "shape":"ServiceArnList",
+          "documentation":"<p>A list of service ARN records. In a paginated request, the request returns up to <code>MaxResults</code> records for each call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that you can pass in a subsequent request to get the next result page. It's returned in a paginated request.</p>"
+        }
+      }
+    },
     "ListServicesRequest":{
       "type":"structure",
       "members":{
@@ -1990,17 +2084,20 @@
         }
       }
     },
+    "MaxConcurrency":{"type":"integer"},
     "MaxResults":{
       "type":"integer",
       "max":100,
       "min":1
     },
+    "MaxSize":{"type":"integer"},
     "Memory":{
       "type":"string",
       "max":6,
       "min":3,
       "pattern":"512|1024|2048|3072|4096|6144|8192|10240|12288|(0.5|1|2|3|4|6|8|10|12) GB"
     },
+    "MinSize":{"type":"integer"},
     "NetworkConfiguration":{
       "type":"structure",
       "members":{
@@ -2354,6 +2451,10 @@
       },
       "documentation":"<p>Describes an App Runner service. It can describe a service in any state, including deleted services.</p> <p>This type contains the full information about a service, including configuration details. It's returned by the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_CreateService.html\">CreateService</a>, <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_DescribeService.html\">DescribeService</a>, and <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_DeleteService.html\">DeleteService</a> actions. A subset of this information is returned by the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_ListServices.html\">ListServices</a> action using the <a href=\"https://docs.aws.amazon.com/apprunner/latest/api/API_ServiceSummary.html\">ServiceSummary</a> type.</p>"
     },
+    "ServiceArnList":{
+      "type":"list",
+      "member":{"shape":"AppRunnerResourceArn"}
+    },
     "ServiceId":{
       "type":"string",
       "max":32,
@@ -2620,6 +2721,26 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateDefaultAutoScalingConfigurationRequest":{
+      "type":"structure",
+      "required":["AutoScalingConfigurationArn"],
+      "members":{
+        "AutoScalingConfigurationArn":{
+          "shape":"AppRunnerResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the App Runner auto scaling configuration that you want to set as the default.</p> <p>The ARN can be a full auto scaling configuration ARN, or a partial ARN ending with either <code>.../<i>name</i> </code> or <code>.../<i>name</i>/<i>revision</i> </code>. If a revision isn't specified, the latest active revision is set as the default.</p>"
+        }
+      }
+    },
+    "UpdateDefaultAutoScalingConfigurationResponse":{
+      "type":"structure",
+      "required":["AutoScalingConfiguration"],
+      "members":{
+        "AutoScalingConfiguration":{
+          "shape":"AutoScalingConfiguration",
+          "documentation":"<p>A description of the App Runner auto scaling configuration that was set as default.</p>"
+        }
       }
     },
     "UpdateServiceRequest":{

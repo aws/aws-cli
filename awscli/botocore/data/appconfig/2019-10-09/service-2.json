@@ -24,6 +24,7 @@
       "output":{"shape":"Application"},
       "errors":[
         {"shape":"BadRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates an application. In AppConfig, an application is simply an organizational construct like a folder. This organizational construct has a relationship with some unit of executable code. For example, you could create an application called MyMobileApp to organize and manage configuration data for a mobile application installed by your users.</p>"
@@ -40,7 +41,8 @@
       "errors":[
         {"shape":"BadRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a configuration profile, which is information that enables AppConfig to access the configuration source. Valid configuration sources include the following:</p> <ul> <li> <p>Configuration data in YAML, JSON, and other formats stored in the AppConfig hosted configuration store</p> </li> <li> <p>Configuration data stored as objects in an Amazon Simple Storage Service (Amazon S3) bucket</p> </li> <li> <p>Pipelines stored in CodePipeline</p> </li> <li> <p>Secrets stored in Secrets Manager</p> </li> <li> <p>Standard and secure string parameters stored in Amazon Web Services Systems Manager Parameter Store</p> </li> <li> <p>Configuration data in SSM documents stored in the Systems Manager document store</p> </li> </ul> <p>A configuration profile includes the following information:</p> <ul> <li> <p>The URI location of the configuration data.</p> </li> <li> <p>The Identity and Access Management (IAM) role that provides access to the configuration data.</p> </li> <li> <p>A validator for the configuration data. Available validators include either a JSON Schema or an Amazon Web Services Lambda function.</p> </li> </ul> <p>For more information, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile.html\">Create a Configuration and a Configuration Profile</a> in the <i>AppConfig User Guide</i>.</p>"
     },
@@ -55,6 +57,7 @@
       "output":{"shape":"DeploymentStrategy"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Creates a deployment strategy that defines important criteria for rolling out your configuration to the designated targets. A deployment strategy includes the overall duration required, a percentage of targets to receive the deployment during each interval, an algorithm that defines how percentage grows, and bake time.</p>"
@@ -71,7 +74,8 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"BadRequestException"}
+        {"shape":"BadRequestException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates an environment. For each application, you define one or more environments. An environment is a deployment group of AppConfig targets, such as applications in a <code>Beta</code> or <code>Production</code> environment. You can also define environments for application subcomponents such as the <code>Web</code>, <code>Mobile</code> and <code>Back-end</code> components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.</p>"
     },
@@ -90,7 +94,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an AppConfig extension. An extension augments your ability to inject logic or behavior at different points during the AppConfig workflow of creating or deploying a configuration.</p> <p>You can create your own extensions or use the Amazon Web Services authored extensions provided by AppConfig. For most use cases, to create your own extension, you must create an Lambda function to perform any computation and processing defined in the extension. For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with AppConfig extensions</a> in the <i>AppConfig User Guide</i>.</p>"
+      "documentation":"<p>Creates an AppConfig extension. An extension augments your ability to inject logic or behavior at different points during the AppConfig workflow of creating or deploying a configuration.</p> <p>You can create your own extensions or use the Amazon Web Services authored extensions provided by AppConfig. For an AppConfig extension that uses Lambda, you must create a Lambda function to perform any computation and processing defined in the extension. If you plan to create custom versions of the Amazon Web Services authored notification extensions, you only need to specify an Amazon Resource Name (ARN) in the <code>Uri</code> field for the new extension version.</p> <ul> <li> <p>For a custom EventBridge notification extension, enter the ARN of the EventBridge default events in the <code>Uri</code> field.</p> </li> <li> <p>For a custom Amazon SNS notification extension, enter the ARN of an Amazon SNS topic in the <code>Uri</code> field.</p> </li> <li> <p>For a custom Amazon SQS notification extension, enter the ARN of an Amazon SQS message queue in the <code>Uri</code> field. </p> </li> </ul> <p>For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with AppConfig extensions</a> in the <i>AppConfig User Guide</i>.</p>"
     },
     "CreateExtensionAssociation":{
       "name":"CreateExtensionAssociation",
@@ -1045,7 +1049,7 @@
         },
         "LocationUri":{
           "shape":"Uri",
-          "documentation":"<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secrets-manager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://my-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>"
+          "documentation":"<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Amazon Web Services CodePipeline pipeline, specify the URI in the following format: <code>codepipeline</code>://&lt;pipeline name&gt;.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secretsmanager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://my-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>"
         },
         "RetrievalRoleArn":{
           "shape":"RoleArn",
@@ -1470,6 +1474,10 @@
         "KmsKeyIdentifier":{
           "shape":"Identifier",
           "documentation":"<p>The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. </p>"
+        },
+        "VersionLabel":{
+          "shape":"VersionLabel",
+          "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>"
         }
       }
     },
@@ -1486,7 +1494,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description of the deployment event. Descriptions include, but are not limited to, the user account or the Amazon CloudWatch alarm ARN that initiated a rollback, the percentage of hosts that received the deployment, or in the case of an internal error, a recommendation to attempt a new deployment.</p>"
+          "documentation":"<p>A description of the deployment event. Descriptions include, but are not limited to, the following:</p> <ul> <li> <p>The Amazon Web Services account or the Amazon CloudWatch alarm ARN that initiated a rollback.</p> </li> <li> <p>The percentage of hosts that received the deployment.</p> </li> <li> <p>A recommendation to attempt a new deployment (in the case of an internal error).</p> </li> </ul>"
         },
         "ActionInvocations":{
           "shape":"ActionInvocations",
@@ -1633,6 +1641,10 @@
         "CompletedAt":{
           "shape":"Iso8601DateTime",
           "documentation":"<p>Time the deployment completed.</p>"
+        },
+        "VersionLabel":{
+          "shape":"VersionLabel",
+          "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>"
         }
       },
       "documentation":"<p>Information about the deployment.</p>"
@@ -2577,7 +2589,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The number of hosted configuration versions exceeds the limit for the AppConfig hosted configuration store. Delete one or more versions and try again.</p>",
+      "documentation":"<p>The number of one more AppConfig resources exceeds the maximum allowed. Verify that your environment doesn't exceed the following service quotas:</p> <p>Applications: 100 max</p> <p>Deployment strategies: 20 max</p> <p>Configuration profiles: 100 max per application</p> <p>Environments: 20 max per application</p> <p>To resolve this issue, you can delete one or more resources and try again. Or, you can request a quota increase. For more information about quotas and to request an increase, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/appconfig.html#limits_appconfig\">Service quotas for AppConfig</a> in the Amazon Web Services General Reference.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
     },
@@ -2613,7 +2625,7 @@
         },
         "ConfigurationVersion":{
           "shape":"Version",
-          "documentation":"<p>The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.</p>"
+          "documentation":"<p>The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label. For all other configurations, you must specify the version number.</p>"
         },
         "Description":{
           "shape":"Description",

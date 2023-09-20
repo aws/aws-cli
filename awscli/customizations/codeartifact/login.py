@@ -14,7 +14,9 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
-from awscli.compat import is_windows, get_stderr_encoding
+from awscli.compat import (
+    is_windows, urlparse, get_stderr_encoding, is_macos
+)
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.utils import original_ld_library_path
@@ -119,6 +121,137 @@ class BaseLogin:
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
         raise NotImplementedError('get_commands()')
+
+
+class SwiftLogin(BaseLogin):
+
+    DEFAULT_NETRC_FMT = \
+        u'machine {hostname} login token password {auth_token}'
+
+    NETRC_REGEX_FMT = \
+        r'(?P<entry_start>\bmachine\s+{escaped_hostname}\s+login\s+\S+\s+password\s+)' \
+        r'(?P<token>\S+)'
+
+    def login(self, dry_run=False):
+        scope = self.get_scope(
+            self.namespace
+        )
+        commands = self.get_commands(
+            self.repository_endpoint, self.auth_token, scope=scope
+        )
+
+        if not is_macos:
+            hostname = urlparse.urlparse(self.repository_endpoint).hostname
+            new_entry = self.DEFAULT_NETRC_FMT.format(
+                hostname=hostname,
+                auth_token=self.auth_token
+            )
+            if dry_run:
+                self._display_new_netrc_entry(new_entry, self.get_netrc_path())
+            else:
+                self._update_netrc_entry(hostname, new_entry, self.get_netrc_path())
+
+        self._run_commands('swift', commands, dry_run)
+
+    def _display_new_netrc_entry(self, new_entry, netrc_path):
+        sys.stdout.write('Dryrun mode is enabled, not writing to netrc.')
+        sys.stdout.write(os.linesep)
+        sys.stdout.write(
+            f'The following line would have been written to {netrc_path}:'
+        )
+        sys.stdout.write(os.linesep)
+        sys.stdout.write(os.linesep)
+        sys.stdout.write(new_entry)
+        sys.stdout.write(os.linesep)
+        sys.stdout.write(os.linesep)
+        sys.stdout.write('And would have run the following commands:')
+        sys.stdout.write(os.linesep)
+        sys.stdout.write(os.linesep)
+
+    def _update_netrc_entry(self, hostname, new_entry, netrc_path):
+        pattern = re.compile(
+            self.NETRC_REGEX_FMT.format(escaped_hostname=re.escape(hostname)),
+            re.M
+        )
+        if not os.path.isfile(netrc_path):
+            self._create_netrc_file(netrc_path, new_entry)
+        else:
+            with open(netrc_path, 'r') as f:
+                contents = f.read()
+            escaped_auth_token = self.auth_token.replace('\\', r'\\')
+            new_contents = re.sub(
+                pattern,
+                rf"\g<entry_start>{escaped_auth_token}",
+                contents
+            )
+
+            if new_contents == contents:
+                new_contents = self._append_netrc_entry(new_contents, new_entry)
+
+            with open(netrc_path, 'w') as f:
+                f.write(new_contents)
+
+    def _create_netrc_file(self, netrc_path, new_entry):
+        dirname = os.path.split(netrc_path)[0]
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+        with os.fdopen(os.open(netrc_path,
+                               os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:
+            f.write(new_entry + '\n')
+
+    def _append_netrc_entry(self, contents, new_entry):
+        if contents.endswith('\n'):
+            return contents + new_entry + '\n'
+        else:
+            return contents + '\n' + new_entry + '\n'
+
+    @classmethod
+    def get_netrc_path(cls):
+        return os.path.join(os.path.expanduser("~"), ".netrc")
+
+    @classmethod
+    def get_scope(cls, namespace):
+        # Regex for valid scope name
+        valid_scope_name = re.compile(
+            r'\A[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}\Z'
+        )
+
+        if namespace is None:
+            return namespace
+
+        if not valid_scope_name.match(namespace):
+            raise ValueError(
+                'Invalid scope name, scope must contain URL-safe '
+                'characters, no leading dots or underscores and no '
+                'more than 39 characters'
+            )
+
+        return namespace
+
+    @classmethod
+    def get_commands(cls, endpoint, auth_token, **kwargs):
+        commands = []
+        scope = kwargs.get('scope')
+
+        # Set up the codeartifact repository as the swift registry.
+        set_registry_command = [
+            'swift', 'package-registry', 'set', endpoint
+        ]
+        if scope is not None:
+            set_registry_command.extend(['--scope', scope])
+        commands.append(set_registry_command)
+
+        # Authenticate against the repository.
+        # We will write token to .netrc for Linux and Windows
+        # MacOS will store the token from command line option to Keychain
+        login_registry_command = [
+            'swift', 'package-registry', 'login', f'{endpoint}login'
+        ]
+        if is_macos:
+            login_registry_command.extend(['--token', auth_token])
+        commands.append(login_registry_command)
+
+        return commands
 
 
 class NuGetBaseLogin(BaseLogin):
@@ -519,6 +652,11 @@ class CodeArtifactLogin(BasicCommand):
     '''Log in to the idiomatic tool for the requested package format.'''
 
     TOOL_MAP = {
+        'swift': {
+            'package_format': 'swift',
+            'login_cls': SwiftLogin,
+            'namespace_support': True,
+        },
         'nuget': {
             'package_format': 'nuget',
             'login_cls': NuGetLogin,

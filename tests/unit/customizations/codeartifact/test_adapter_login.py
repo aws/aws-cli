@@ -13,6 +13,7 @@ from configparser import RawConfigParser
 from urllib.parse import urlsplit
 
 from awscli.testutils import unittest, mock, FileCreator, skip_if_windows
+from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import (
     BaseLogin, SwiftLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin,
     TwineLogin, get_relative_expiration_time, CommandFailedError

@@ -12,6 +12,7 @@ from botocore.utils import parse_timestamp
 
 from tests import CLIRunner, AWSRequest, AWSResponse
 from awscli.testutils import unittest, FileCreator, mock
+from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
 
 

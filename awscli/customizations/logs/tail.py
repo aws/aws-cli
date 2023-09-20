@@ -106,11 +106,17 @@ class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
 
 class BasicEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        self._write_log_event(json.dumps(log_event))
+        self._write_log_event(json.dumps({
+            "timestamp": log_event["timestamp"].strftime("%Y-%m-%dT%H:%M:%S"),
+            "message": self._format_json(log_event["message"])
+        }))
 
-    def _format_timestamp(self, timestamp):
-        return self._color_if_configured(
-            timestamp.strftime("%Y-%m-%dT%H:%M:%S"), self._TIMESTAMP_COLOR)
+    def _format_json(self, log_message):
+        try:
+            return json.loads(log_message)
+        except json.decoder.JSONDecodeError:
+            pass
+        return log_message
 
 class TailCommand(BasicCommand):
     NAME = 'tail'

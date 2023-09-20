@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.13.20
+=======
+
+* api-change:``discovery``: Add sensitive protection for customer information
+* api-change:``macie2``: This release changes the default managedDataIdentifierSelector setting for new classification jobs to RECOMMENDED. By default, new classification jobs now use the recommended set of managed data identifiers.
+* api-change:``workmail``: This release includes four new APIs UpdateUser, UpdateGroup, ListGroupsForEntity and DescribeEntity, along with RemoteUsers and some enhancements to existing APIs.
+* api-change:``sagemaker``: This release adds support for one-time model monitoring schedules that are executed immediately without delay, explicit data analysis windows for model monitoring schedules and exclude features attributes to remove features from model monitor analysis.
+* enhancement:``codeartifact login``: Include stderr output from underlying login tool when subprocess fails
+* api-change:``ec2``: This release adds support for C7i, and R7a instance types.
+* api-change:``outposts``: This release adds the InstanceFamilies field to the ListAssets response.
+
+
 2.13.19
 =======
 

@@ -58,6 +58,8 @@ except ImportError:
 
 is_windows = sys.platform == 'win32'
 
+is_macos = sys.platform == 'darwin'
+
 
 if is_windows:
     default_pager = 'more'

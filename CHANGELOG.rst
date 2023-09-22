@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.13.21
+=======
+
+* api-change:``logs``: Add ClientToken to QueryDefinition CFN Handler in CWL
+* api-change:``sso-oidc``: Update FIPS endpoints in aws-us-gov.
+* api-change:``apprunner``: This release adds improvements for managing App Runner auto scaling configuration resources. New APIs: UpdateDefaultAutoScalingConfiguration and ListServicesForAutoScalingConfiguration. Updated API: DeleteAutoScalingConfiguration.
+* api-change:``codeartifact``: Add support for the Swift package format.
+* enhancement:``codeartifact login``: Add Swift support for CodeArtifact login command
+* api-change:``appconfig``: Enabling boto3 paginators for list APIs and adding documentation around ServiceQuotaExceededException errors
+* api-change:``servicediscovery``: Adds a new DiscoverInstancesRevision API and also adds InstanceRevision field to the DiscoverInstances API response.
+* api-change:``kinesisvideo``: Updated DescribeMediaStorageConfiguration, StartEdgeConfigurationUpdate, ImageGenerationConfiguration$SamplingInterval, and UpdateMediaStorageConfiguration to match AWS Docs.
+* api-change:``s3``: Fix an issue where the SDK can fail to unmarshall response due to NumberFormatException
+
+
 2.13.20
 =======
 

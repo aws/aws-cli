@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.53
+=======
+
+* api-change:``braket``: This release adds support to view the device queue depth (the number of queued quantum tasks and hybrid jobs on a device) and queue position for a quantum task and hybrid job.
+* api-change:``dms``: new vendors for DMS CSF: MongoDB, MariaDB, DocumentDb and Redshift
+* api-change:``ec2``: EC2 M2 Pro Mac instances are powered by Apple M2 Pro Mac Mini computers featuring 12 core CPU, 19 core GPU, 32 GiB of memory, and 16 core Apple Neural Engine and uniquely enabled by the AWS Nitro System through high-speed Thunderbolt connections.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``guardduty``: Add `EKS_CLUSTER_NAME` to filter and sort key.
+* api-change:``mediaconvert``: This release supports the creation of of audio-only tracks in CMAF output groups.
+
+
 1.29.52
 =======
 

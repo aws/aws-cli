@@ -22,13 +22,12 @@ import socket
 
 import botocore.exceptions
 import botocore.serialize
-import botocore.utils
 from botocore.config import Config
 from botocore.endpoint import EndpointCreator
 from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
 from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
-from botocore.utils import is_s3_accelerate_url
+from botocore.utils import ensure_boolean, is_s3_accelerate_url
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +139,7 @@ class ClientArgsCreator(object):
         elif scoped_config:
             raw_value = scoped_config.get('parameter_validation')
             if raw_value is not None:
-                parameter_validation = botocore.utils.ensure_boolean(raw_value)
+                parameter_validation = ensure_boolean(raw_value)
 
         # Override the user agent if specified in the client config.
         user_agent = self._user_agent
@@ -187,8 +186,15 @@ class ClientArgsCreator(object):
                 retries=client_config.retries,
                 client_cert=client_config.client_cert,
                 inject_host_prefix=client_config.inject_host_prefix,
+                request_min_compression_size_bytes=(
+                    client_config.request_min_compression_size_bytes
+                ),
+                disable_request_compression=(
+                    client_config.disable_request_compression
+                ),
             )
         self._compute_retry_config(config_kwargs)
+        self._compute_request_compression_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
         is_s3_service = self._is_s3_service(service_name)
@@ -341,6 +347,53 @@ class ClientArgsCreator(object):
         if retry_mode is None:
             retry_mode = 'standard'
         retries['mode'] = retry_mode
+
+    def _compute_request_compression_config(self, config_kwargs):
+        min_size = config_kwargs.get('request_min_compression_size_bytes')
+        disabled = config_kwargs.get('disable_request_compression')
+        if min_size is None:
+            min_size = self._config_store.get_config_variable(
+                'request_min_compression_size_bytes'
+            )
+        # conversion func is skipped so input validation must be done here
+        # regardless if the value is coming from the config store or the
+        # config object
+        min_size = self._validate_min_compression_size(min_size)
+        config_kwargs['request_min_compression_size_bytes'] = min_size
+
+        if disabled is None:
+            disabled = self._config_store.get_config_variable(
+                'disable_request_compression'
+            )
+        else:
+            # if the user provided a value we must check if it's a boolean
+            disabled = ensure_boolean(disabled)
+        config_kwargs['disable_request_compression'] = disabled
+
+    def _validate_min_compression_size(self, min_size):
+        min_allowed_min_size = 1
+        max_allowed_min_size = 1048576
+        if min_size is not None:
+            error_msg_base = (
+                f'Invalid value "{min_size}" for '
+                'request_min_compression_size_bytes.'
+            )
+            try:
+                min_size = int(min_size)
+            except (ValueError, TypeError):
+                msg = (
+                    f'{error_msg_base} Value must be an integer. '
+                    f'Received {type(min_size)} instead.'
+                )
+                raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+            if not min_allowed_min_size <= min_size <= max_allowed_min_size:
+                msg = (
+                    f'{error_msg_base} Value must be between '
+                    f'{min_allowed_min_size} and {max_allowed_min_size}.'
+                )
+                raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+
+        return min_size
 
     def _ensure_boolean(self, val):
         if isinstance(val, bool):

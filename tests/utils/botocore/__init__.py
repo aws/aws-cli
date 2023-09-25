@@ -50,6 +50,16 @@ from botocore.stub import Stubber
 _LOADER = botocore.loaders.Loader()
 
 
+def _all_services():
+    session = botocore.session.Session()
+    service_names = session.get_available_services()
+    return [session.get_service_model(name) for name in service_names]
+
+
+# Only compute our service models once
+ALL_SERVICES = _all_services()
+
+
 def skip_unless_has_memory_collection(cls):
     """Class decorator to skip tests that require memory collection.
 
@@ -568,3 +578,16 @@ class FreezeTime(contextlib.ContextDecorator):
 
     def __exit__(self, *args, **kwargs):
         self.datetime_patcher.stop()
+
+
+def patch_load_service_model(
+    session, monkeypatch, service_model_json, ruleset_json
+):
+    def mock_load_service_model(service_name, type_name, api_version=None):
+        if type_name == 'service-2':
+            return service_model_json
+        if type_name == 'endpoint-rule-set-1':
+            return ruleset_json
+
+    loader = session.get_component('data_loader')
+    monkeypatch.setattr(loader, 'load_service_model', mock_load_service_model)

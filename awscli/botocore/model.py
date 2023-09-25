@@ -59,7 +59,7 @@ class Shape(object):
     METADATA_ATTRS = ['required', 'min', 'max', 'sensitive', 'enum',
                       'idempotencyToken', 'error', 'exception',
                       'endpointdiscoveryid', 'retryable', 'document', 'union',
-                      'contextParam', 'clientContextParams']
+                      'contextParam', 'clientContextParams', 'requiresLength']
     MAP_TYPE = OrderedDict
 
     def __init__(self, shape_name, shape_model, shape_resolver=None):
@@ -143,6 +143,9 @@ class Shape(object):
             * idempotencyToken
             * document
             * union
+            * contextParam
+            * clientContextParams
+            * requiresLength
 
         :rtype: dict
         :return: Metadata about the shape.
@@ -579,6 +582,10 @@ class OperationModel(object):
             if 'contextParam' in shape.metadata
             and 'name' in shape.metadata['contextParam']
         ]
+
+    @CachedProperty
+    def request_compression(self):
+        return self._operation_model.get('requestcompression')
 
     @CachedProperty
     def auth_type(self):

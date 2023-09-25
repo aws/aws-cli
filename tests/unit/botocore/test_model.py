@@ -216,6 +216,7 @@ class TestOperationModelFromService(unittest.TestCase):
                     },
                     'errors': [{'shape': 'NoSuchResourceException'}],
                     'documentation': 'Docs for PayloadOperation',
+                    'requestcompression': {'encodings': ['gzip']},
                 },
                 'NoBodyOperation': {
                     'http': {
@@ -532,11 +533,18 @@ class TestOperationModelFromService(unittest.TestCase):
         self.assertEqual(static_ctx_param2.name, 'booleanStaticContextParam')
         self.assertEqual(static_ctx_param2.value, True)
 
-    def test_static_context_parameter_abent(self):
+    def test_static_context_parameter_absent(self):
         service_model = model.ServiceModel(self.model)
         operation = service_model.operation_model('OperationTwo')
         self.assertIsInstance(operation.static_context_parameters, list)
         self.assertEqual(len(operation.static_context_parameters), 0)
+
+    def test_request_compression(self):
+        service_model = model.ServiceModel(self.model)
+        operation = service_model.operation_model('PayloadOperation')
+        self.assertEqual(
+            operation.request_compression, {'encodings': ['gzip']}
+        )
 
 
 class TestOperationModelEventStreamTypes(unittest.TestCase):

@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-"""This module contains the inteface for controlling how configuration
+"""This module contains the interface for controlling how configuration
 is loaded.
 """
 import copy
@@ -112,6 +112,18 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         'auto', None),
     'retry_mode': ('retry_mode', 'AWS_RETRY_MODE', 'standard', None),
     'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', 3, int),
+    'request_min_compression_size_bytes': (
+        'request_min_compression_size_bytes',
+        'AWS_REQUEST_MIN_COMPRESSION_SIZE_BYTES',
+        10240,
+        None,
+    ),
+    'disable_request_compression': (
+        'disable_request_compression',
+        'AWS_DISABLE_REQUEST_COMPRESSION',
+        False,
+        utils.ensure_boolean,
+    ),
 }
 # A mapping for the s3 specific configuration vars. These are the configuration
 # vars that typically go in the s3 section of the config file. This mapping

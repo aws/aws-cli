@@ -12,17 +12,7 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-from botocore.session import Session
-
-
-def _all_services():
-    session = Session()
-    service_names = session.get_available_services()
-    return [session.get_service_model(name) for name in service_names]
-
-
-# Only compute our service models once
-ALL_SERVICES = _all_services()
+from tests import ALL_SERVICES
 
 
 def _all_service_error_shapes():

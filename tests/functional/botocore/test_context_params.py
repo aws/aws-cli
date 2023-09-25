@@ -14,7 +14,7 @@
 import pytest
 
 from botocore.config import Config
-from tests import ClientHTTPStubber, mock
+from tests import ClientHTTPStubber, mock, patch_load_service_model
 
 # fake rulesets compatible with all fake service models below
 FAKE_RULESET_TEMPLATE = {
@@ -224,19 +224,6 @@ FAKE_S3CONTROL_MODEL_WITH_CLIENT_CONTEXT_PARAM = {
     **FAKE_MODEL_WITH_CLIENT_CONTEXT_PARAM,
     "metadata": S3CONTROL_METADATA,
 }
-
-
-def patch_load_service_model(
-    session, monkeypatch, service_model_json, ruleset_json
-):
-    def mock_load_service_model(service_name, type_name, api_version=None):
-        if type_name == 'service-2':
-            return service_model_json
-        if type_name == 'endpoint-rule-set-1':
-            return ruleset_json
-
-    loader = session.get_component('data_loader')
-    monkeypatch.setattr(loader, 'load_service_model', mock_load_service_model)
 
 
 @pytest.mark.parametrize(

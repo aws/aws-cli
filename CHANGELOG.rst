@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.29.54
+=======
+
+* api-change:``amplifyuibuilder``: Support for generating code that is compatible with future versions of amplify project dependencies.
+* api-change:``chime-sdk-media-pipelines``: Adds support for sending WebRTC audio to Amazon Kineses Video Streams.
+* api-change:``emr-serverless``: This release adds support for application-wide default job configurations.
+* api-change:``finspace-data``: Adding sensitive trait to attributes. Change max SessionDuration from 720 to 60. Correct "ApiAccess" attribute to "apiAccess" to maintain consistency between APIs.
+* api-change:``quicksight``: Added ability to tag users upon creation.
+* api-change:``ssm``: This release updates the enum values for ResourceType in SSM DescribeInstanceInformation input and ConnectionStatus in GetConnectionStatus output.
+* api-change:``wafv2``: You can now perform an exact match against the web request's JA3 fingerprint.
+
+
 1.29.53
 =======
 

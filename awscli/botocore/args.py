@@ -22,13 +22,12 @@ import socket
 
 import botocore.exceptions
 import botocore.serialize
-import botocore.utils
 from botocore.config import Config
 from botocore.endpoint import EndpointCreator
 from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
 from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
-from botocore.utils import is_s3_accelerate_url
+from botocore.utils import ensure_boolean, is_s3_accelerate_url
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +139,7 @@ class ClientArgsCreator(object):
         elif scoped_config:
             raw_value = scoped_config.get('parameter_validation')
             if raw_value is not None:
-                parameter_validation = botocore.utils.ensure_boolean(raw_value)
+                parameter_validation = ensure_boolean(raw_value)
 
         # Override the user agent if specified in the client config.
         user_agent = self._user_agent

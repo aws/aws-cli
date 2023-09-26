@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.29.55
+=======
+
+* api-change:``appintegrations``: The Amazon AppIntegrations service adds a set of APIs (in preview) to manage third party applications to be used in Amazon Connect agent workspace.
+* api-change:``apprunner``: This release allows an App Runner customer to specify a custom source directory to run the build & start command. This change allows App Runner to support monorepo based repositories
+* api-change:``codedeploy``: CodeDeploy now supports In-place and Blue/Green EC2 deployments with multiple Classic Load Balancers and multiple Target Groups.
+* api-change:``connect``: This release updates a set of Amazon Connect APIs that provides the ability to integrate third party applications in the Amazon Connect agent workspace.
+* api-change:``dynamodb``: Amazon DynamoDB now supports Incremental Export as an enhancement to the existing Export Table
+* api-change:``ec2``: The release includes AWS verified access to support FIPs compliance in North America regions
+* api-change:``lakeformation``: This release adds three new API support "CreateLakeFormationOptIn", "DeleteLakeFormationOptIn" and "ListLakeFormationOptIns", and also updates the corresponding documentation.
+* api-change:``pinpoint``: Update documentation for RemoveAttributes to more accurately reflect its behavior when attributes are deleted.
+* api-change:``s3``: This release adds a new field COMPLETED to the ReplicationStatus Enum. You can now use this field to validate the replication status of S3 objects using the AWS SDK.
+
+
 1.29.54
 =======
 

@@ -116,6 +116,10 @@ class CreateCluster(Command):
          'help_text' : helptext.CUSTOM_AMI_ID},
         {'name': 'ebs-root-volume-size',
          'help_text' : helptext.EBS_ROOT_VOLUME_SIZE},
+        {'name': 'ebs-root-volume-iops',
+         'help_text' : helptext.EBS_ROOT_VOLUME_IOPS},
+        {'name': 'ebs-root-volume-throughput',
+         'help_text' : helptext.EBS_ROOT_VOLUME_THROUGHPUT},
         {'name': 'repo-upgrade-on-boot',
          'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
         {'name': 'kerberos-attributes',
@@ -342,6 +346,14 @@ class CreateCluster(Command):
         if parsed_args.ebs_root_volume_size is not None:
             emrutils.apply_dict(
                 params, 'EbsRootVolumeSize', int(parsed_args.ebs_root_volume_size)
+            )
+        if parsed_args.ebs_root_volume_iops is not None:
+            emrutils.apply_dict(
+                params, 'EbsRootVolumeIops', int(parsed_args.ebs_root_volume_iops)
+            )
+        if parsed_args.ebs_root_volume_throughput is not None:
+            emrutils.apply_dict(
+                params, 'EbsRootVolumeThroughput', int(parsed_args.ebs_root_volume_throughput)
             )
 
         if parsed_args.repo_upgrade_on_boot is not None:

@@ -646,7 +646,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Invites Amazon Web Services accounts to become members of an organization administered by the Amazon Web Services account that invokes this API. If you are using organizations to manager your GuardDuty environment, this step is not needed. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_organizations.html\">Managing accounts with organizations</a>.</p> <p>To invite Amazon Web Services accounts, the first step is to ensure that GuardDuty has been enabled in the potential member accounts. You can now invoke this API to add accounts by invitation. The invited accounts can either accept or decline the invitation from their GuardDuty accounts. Each invited Amazon Web Services account can choose to accept the invitation from only one Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html\">Managing GuardDuty accounts by invitation</a>.</p> <p>After the invite has been accepted and you choose to disassociate a member account (by using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DisassociateMembers.html\">DisassociateMembers</a>) from your account, the details of the member account obtained by invoking <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a>, including the associated email addresses, will be retained. This is done so that you can invoke InviteMembers without the need to invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> again. To remove the details associated with a member account, you must also invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a>. </p>"
+      "documentation":"<p>Invites Amazon Web Services accounts to become members of an organization administered by the Amazon Web Services account that invokes this API. If you are using Amazon Web Services Organizations to manage your GuardDuty environment, this step is not needed. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_organizations.html\">Managing accounts with organizations</a>.</p> <p>To invite Amazon Web Services accounts, the first step is to ensure that GuardDuty has been enabled in the potential member accounts. You can now invoke this API to add accounts by invitation. The invited accounts can either accept or decline the invitation from their GuardDuty accounts. Each invited Amazon Web Services account can choose to accept the invitation from only one Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_invitations.html\">Managing GuardDuty accounts by invitation</a>.</p> <p>After the invite has been accepted and you choose to disassociate a member account (by using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DisassociateMembers.html\">DisassociateMembers</a>) from your account, the details of the member account obtained by invoking <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a>, including the associated email addresses, will be retained. This is done so that you can invoke InviteMembers without the need to invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_CreateMembers.html\">CreateMembers</a> again. To remove the details associated with a member account, you must also invoke <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a>. </p>"
     },
     "ListCoverage":{
       "name":"ListCoverage",
@@ -766,7 +766,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists the accounts configured as GuardDuty delegated administrators. Only the organization's management account can run this API operation.</p>"
+      "documentation":"<p>Lists the accounts designated as GuardDuty delegated administrators. Only the organization's management account can run this API operation.</p>"
     },
     "ListPublishingDestinations":{
       "name":"ListPublishingDestinations",
@@ -1787,7 +1787,7 @@
       "members":{
         "CriterionKey":{
           "shape":"CoverageFilterCriterionKey",
-          "documentation":"<p>An enum value representing possible filter fields.</p>",
+          "documentation":"<p>An enum value representing possible filter fields.</p> <note> <p>Replace the enum value <code>CLUSTER_NAME</code> with <code>EKS_CLUSTER_NAME</code>. <code>CLUSTER_NAME</code> has been deprecated.</p> </note>",
           "locationName":"criterionKey"
         },
         "FilterCondition":{
@@ -1806,7 +1806,8 @@
         "RESOURCE_TYPE",
         "COVERAGE_STATUS",
         "ADDON_VERSION",
-        "MANAGEMENT_TYPE"
+        "MANAGEMENT_TYPE",
+        "EKS_CLUSTER_NAME"
       ]
     },
     "CoverageFilterCriterionList":{
@@ -1881,7 +1882,7 @@
       "members":{
         "AttributeName":{
           "shape":"CoverageSortKey",
-          "documentation":"<p>Represents the field name used to sort the coverage details.</p>",
+          "documentation":"<p>Represents the field name used to sort the coverage details.</p> <note> <p>Replace the enum value <code>CLUSTER_NAME</code> with <code>EKS_CLUSTER_NAME</code>. <code>CLUSTER_NAME</code> has been deprecated.</p> </note>",
           "locationName":"attributeName"
         },
         "OrderBy":{
@@ -1900,7 +1901,8 @@
         "COVERAGE_STATUS",
         "ISSUE",
         "ADDON_VERSION",
-        "UPDATED_AT"
+        "UPDATED_AT",
+        "EKS_CLUSTER_NAME"
       ]
     },
     "CoverageStatistics":{
@@ -3359,7 +3361,7 @@
       "members":{
         "AdminAccountId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services Account ID for the organization account to be enabled as a GuardDuty delegated administrator.</p>",
+          "documentation":"<p>The Amazon Web Services account ID for the organization account to be enabled as a GuardDuty delegated administrator.</p>",
           "locationName":"adminAccountId"
         }
       }
@@ -3456,7 +3458,7 @@
       "members":{
         "CriterionKey":{
           "shape":"CriterionKey",
-          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p>",
+          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p> <note> <p>Replace the enum value <code>CLUSTER_NAME</code> with <code>EKS_CLUSTER_NAME</code>. <code>CLUSTER_NAME</code> has been deprecated.</p> </note>",
           "locationName":"criterionKey"
         },
         "FilterCondition":{
@@ -3583,7 +3585,7 @@
           "locationName":"updatedAt"
         }
       },
-      "documentation":"<p>Contains information about the finding, which is generated when abnormal or suspicious activity is detected.</p>"
+      "documentation":"<p>Contains information about the finding that is generated when abnormal or suspicious activity is detected.</p>"
     },
     "FindingCriteria":{
       "type":"structure",
@@ -5922,7 +5924,7 @@
         },
         "AutoEnable":{
           "shape":"OrgFeatureStatus",
-          "documentation":"<p>The status of the feature that will be configured for the organization. Use one of the following values to configure the feature status for the entire organization:</p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have the feature enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the organization have the feature enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> <p>It may take up to 24 hours to update the configuration for all the member accounts.</p> </li> <li> <p> <code>NONE</code>: Indicates that the feature will not be automatically enabled for any account in the organization. The administrator must manage the feature for each account individually.</p> </li> </ul>",
+          "documentation":"<p>Describes the status of the feature that is configured for the member accounts within the organization. One of the following values is the status for the entire organization:</p> <ul> <li> <p> <code>NEW</code>: Indicates that when a new account joins the organization, they will have the feature enabled automatically. </p> </li> <li> <p> <code>ALL</code>: Indicates that all accounts in the organization have the feature enabled automatically. This includes <code>NEW</code> accounts that join the organization and accounts that may have been suspended or removed from the organization in GuardDuty.</p> <p>It may take up to 24 hours to update the configuration for all the member accounts.</p> </li> <li> <p> <code>NONE</code>: Indicates that the feature will not be automatically enabled for any account in the organization. The administrator must manage the feature for each account individually.</p> </li> </ul>",
           "locationName":"autoEnable"
         },
         "AdditionalConfiguration":{
@@ -6815,16 +6817,16 @@
       "members":{
         "Key":{
           "shape":"TagKey",
-          "documentation":"<p>Represents <i>key</i> <b/> in the map condition.</p>",
+          "documentation":"<p>Represents the <b>key</b> in the map condition.</p>",
           "locationName":"key"
         },
         "Value":{
           "shape":"TagValue",
-          "documentation":"<p>Represents optional <i>value</i> <b/> in the map condition. If not specified, only <i>key</i> <b/> will be matched.</p>",
+          "documentation":"<p>Represents optional <b>value</b> in the map condition. If not specified, only the <b>key</b> will be matched.</p>",
           "locationName":"value"
         }
       },
-      "documentation":"<p>Represents key, value pair to be matched against given resource property.</p>"
+      "documentation":"<p>Represents the <code>key:value</code> pair to be matched against given resource property.</p>"
     },
     "ScanCriterion":{
       "type":"map",
@@ -7787,7 +7789,7 @@
         },
         "AutoEnable":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to automatically enable member accounts in the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results. You must provide the value for either <code>autoEnableOrganizationMembers</code> or <code>autoEnable</code>.</p>",
+          "documentation":"<p>Represents whether or not to automatically enable member accounts in the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results. You must provide a value for either <code>autoEnableOrganizationMembers</code> or <code>autoEnable</code>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated, use AutoEnableOrganizationMembers instead",
           "locationName":"autoEnable"

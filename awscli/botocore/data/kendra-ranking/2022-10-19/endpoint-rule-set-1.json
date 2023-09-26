@@ -3,7 +3,7 @@
     "parameters": {
         "Region": {
             "builtIn": "AWS::Region",
-            "required": true,
+            "required": false,
             "documentation": "The AWS region used to dispatch the request.",
             "type": "String"
         },
@@ -25,13 +25,12 @@
         {
             "conditions": [
                 {
-                    "fn": "aws.partition",
+                    "fn": "isSet",
                     "argv": [
                         {
-                            "ref": "Region"
+                            "ref": "Endpoint"
                         }
-                    ],
-                    "assign": "PartitionResult"
+                    ]
                 }
             ],
             "type": "tree",
@@ -39,46 +38,56 @@
                 {
                     "conditions": [
                         {
-                            "fn": "isSet",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
                         }
                     ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseFIPS"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
-                            "type": "error"
-                        },
-                        {
-                            "conditions": [],
-                            "endpoint": {
-                                "url": {
-                                    "ref": "Endpoint"
-                                },
-                                "properties": {},
-                                "headers": {}
-                            },
-                            "type": "endpoint"
-                        }
-                    ]
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                    "type": "error"
                 },
                 {
                     "conditions": [],
+                    "endpoint": {
+                        "url": {
+                            "ref": "Endpoint"
+                        },
+                        "properties": {},
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                }
+            ]
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                }
+            ],
+            "type": "tree",
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
+                        }
+                    ],
                     "type": "tree",
                     "rules": [
                         {
@@ -165,7 +174,17 @@
                             ]
                         },
                         {
-                            "conditions": [],
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
                             "type": "tree",
                             "rules": [
                                 {
@@ -173,67 +192,56 @@
                                         {
                                             "fn": "booleanEquals",
                                             "argv": [
+                                                true,
                                                 {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                true
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "supportsFIPS"
+                                                    ]
+                                                }
                                             ]
                                         }
                                     ],
                                     "type": "tree",
                                     "rules": [
                                         {
-                                            "conditions": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        true,
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "PartitionResult"
-                                                                },
-                                                                "supportsFIPS"
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ],
-                                            "type": "tree",
-                                            "rules": [
-                                                {
-                                                    "conditions": [],
-                                                    "endpoint": {
-                                                        "url": "https://kendra-ranking-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                        "properties": {},
-                                                        "headers": {}
-                                                    },
-                                                    "type": "endpoint"
-                                                }
-                                            ]
-                                        },
-                                        {
                                             "conditions": [],
-                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                            "type": "error"
+                                            "endpoint": {
+                                                "url": "https://kendra-ranking-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
                                     ]
                                 },
                                 {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://kendra-ranking.{Region}.{PartitionResult#dnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
+                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                    "type": "error"
                                 }
                             ]
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://kendra-ranking.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
                         }
                     ]
                 }
             ]
+        },
+        {
+            "conditions": [],
+            "error": "Invalid Configuration: Missing Region",
+            "type": "error"
         }
     ]
 }

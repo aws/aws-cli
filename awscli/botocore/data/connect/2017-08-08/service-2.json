@@ -2203,6 +2203,23 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all security keys associated with the instance.</p>"
     },
+    "ListSecurityProfileApplications":{
+      "name":"ListSecurityProfileApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles-applications/{InstanceId}/{SecurityProfileId}"
+      },
+      "input":{"shape":"ListSecurityProfileApplicationsRequest"},
+      "output":{"shape":"ListSecurityProfileApplicationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a list of third party applications in a specific security profile.</p>"
+    },
     "ListSecurityProfilePermissions":{
       "name":"ListSecurityProfilePermissions",
       "http":{
@@ -3930,6 +3947,31 @@
       },
       "documentation":"<p>Configuration of the answering machine detection.</p>"
     },
+    "Application":{
+      "type":"structure",
+      "members":{
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>Namespace of the application that you want to give access to.</p>"
+        },
+        "ApplicationPermissions":{
+          "shape":"ApplicationPermissions",
+          "documentation":"<p>The permissions that the agent is granted on the application. Only the <code>ACCESS</code> permission is supported.</p>"
+        }
+      },
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A third party application's metadata.</p>"
+    },
+    "ApplicationPermissions":{
+      "type":"list",
+      "member":{"shape":"Permission"},
+      "max":10,
+      "min":1
+    },
+    "Applications":{
+      "type":"list",
+      "member":{"shape":"Application"},
+      "max":10
+    },
     "ApproximateTotalCount":{"type":"long"},
     "AssignContactCategoryActionDefinition":{
       "type":"structure",
@@ -5383,7 +5425,7 @@
         },
         "Name":{
           "shape":"QuickConnectName",
-          "documentation":"<p>The name of the quick connect.</p>"
+          "documentation":"<p>A unique name of the quick connect.</p>"
         },
         "Description":{
           "shape":"QuickConnectDescription",
@@ -5574,6 +5616,10 @@
         "TagRestrictedResources":{
           "shape":"TagRestrictedResourceList",
           "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code> | <code>SecurityProfile</code> | <code>Queue</code> | <code>RoutingProfile</code> </p>"
+        },
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of third party applications that the security profile will give access to.</p>"
         }
       }
     },
@@ -9957,7 +10003,8 @@
         "PINPOINT_APP",
         "WISDOM_ASSISTANT",
         "WISDOM_KNOWLEDGE_BASE",
-        "CASES_DOMAIN"
+        "CASES_DOMAIN",
+        "APPLICATION"
       ]
     },
     "InternalServiceException":{
@@ -10870,7 +10917,7 @@
         },
         "PhoneNumberTypes":{
           "shape":"PhoneNumberTypes",
-          "documentation":"<p>The type of phone number.</p>",
+          "documentation":"<p>The type of phone number.</p> <note> <p>We recommend using <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> to return phone number types. While ListPhoneNumbers returns number types <code>UIFN</code>, <code>SHARED</code>, <code>THIRD_PARTY_TF</code>, and <code>THIRD_PARTY_DID</code>, it incorrectly lists them as <code>TOLL_FREE</code> or <code>DID</code>. </p> </note>",
           "location":"querystring",
           "locationName":"phoneNumberTypes"
         },
@@ -11327,6 +11374,52 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListSecurityProfileApplicationsRequest":{
+      "type":"structure",
+      "required":[
+        "SecurityProfileId",
+        "InstanceId"
+      ],
+      "members":{
+        "SecurityProfileId":{
+          "shape":"SecurityProfileId",
+          "documentation":"<p>The security profile identifier.</p>",
+          "location":"uri",
+          "locationName":"SecurityProfileId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The instance identifier.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. The next set of results can be retrieved by using the token value returned in the previous response when making the next request.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSecurityProfileApplicationsResponse":{
+      "type":"structure",
+      "members":{
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>A list of the third party application's metadata.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. The next set of results can be retrieved by using the token value returned in the previous response when making the next request.</p>"
         }
       }
     },
@@ -12004,6 +12097,11 @@
       "min":1,
       "pattern":"(^[\\S].*[\\S]$)|(^[\\S]$)"
     },
+    "Namespace":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "NextToken":{"type":"string"},
     "NextToken2500":{
       "type":"string",
@@ -12245,6 +12343,11 @@
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "Permission":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "PermissionsList":{
       "type":"list",
@@ -13769,15 +13872,15 @@
         },
         "EventBridgeAction":{
           "shape":"EventBridgeActionDefinition",
-          "documentation":"<p>Information about the EventBridge action.</p>"
+          "documentation":"<p>Information about the EventBridge action.</p> <p>Supported only for <code>TriggerEventSource</code> values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code> | <code>OnContactEvaluationSubmit</code> | <code>OnMetricDataUpdate</code> </p>"
         },
         "AssignContactCategoryAction":{
           "shape":"AssignContactCategoryActionDefinition",
-          "documentation":"<p>Information about the contact category action.</p>"
+          "documentation":"<p>Information about the contact category action.</p> <p>Supported only for <code>TriggerEventSource</code> values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code> | <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> </p>"
         },
         "SendNotificationAction":{
           "shape":"SendNotificationActionDefinition",
-          "documentation":"<p>Information about the send notification action.</p>"
+          "documentation":"<p>Information about the send notification action.</p> <p>Supported only for <code>TriggerEventSource</code> values: <code>OnPostCallAnalysisAvailable</code> | <code>OnRealTimeCallAnalysisAvailable</code> | <code>OnPostChatAnalysisAvailable</code> | <code>OnContactEvaluationSubmit</code> | <code>OnMetricDataUpdate</code> </p>"
         }
       },
       "documentation":"<p>Information about the action to be performed when a rule is triggered.</p>"
@@ -13870,7 +13973,7 @@
           "documentation":"<p>The identifier for the integration association.</p>"
         }
       },
-      "documentation":"<p>The name of the event source. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> </p>"
+      "documentation":"<p>The name of the event source. This field is required if <code>TriggerEventSource</code> is one of the following values: <code>OnZendeskTicketCreate</code> | <code>OnZendeskTicketStatusUpdate</code> | <code>OnSalesforceCaseCreate</code> | <code>OnContactEvaluationSubmit</code> | <code>OnMetricDataUpdate</code>.</p>"
     },
     "S3Config":{
       "type":"structure",
@@ -16863,6 +16966,10 @@
         "TagRestrictedResources":{
           "shape":"TagRestrictedResourceList",
           "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect.</p>"
+        },
+        "Applications":{
+          "shape":"Applications",
+          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third party application's metadata.</p>"
         }
       }
     },

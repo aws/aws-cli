@@ -149,6 +149,24 @@
       ],
       "documentation":"<p>Creates an LF-tag with the specified name and values.</p>"
     },
+    "CreateLakeFormationOptIn":{
+      "name":"CreateLakeFormationOptIn",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateLakeFormationOptIn"
+      },
+      "input":{"shape":"CreateLakeFormationOptInRequest"},
+      "output":{"shape":"CreateLakeFormationOptInResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Enforce Lake Formation permissions for the given databases, tables, and principals.</p>"
+    },
     "DeleteDataCellsFilter":{
       "name":"DeleteDataCellsFilter",
       "http":{
@@ -182,6 +200,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified LF-tag given a key name. If the input parameter tag key was not found, then the operation will throw an exception. When you delete an LF-tag, the <code>LFTagPolicy</code> attached to the LF-tag becomes invalid. If the deleted LF-tag was still assigned to any resource, the tag policy attach to the deleted LF-tag will no longer be applied to the resource.</p>"
+    },
+    "DeleteLakeFormationOptIn":{
+      "name":"DeleteLakeFormationOptIn",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteLakeFormationOptIn"
+      },
+      "input":{"shape":"DeleteLakeFormationOptInRequest"},
+      "output":{"shape":"DeleteLakeFormationOptInResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Remove the Lake Formation permissions enforcement of the given databases, tables, and principals.</p>"
     },
     "DeleteObjectsOnCancel":{
       "name":"DeleteObjectsOnCancel",
@@ -530,6 +566,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists LF-tags that the requester has permission to view. </p>"
+    },
+    "ListLakeFormationOptIns":{
+      "name":"ListLakeFormationOptIns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLakeFormationOptIns"
+      },
+      "input":{"shape":"ListLakeFormationOptInsRequest"},
+      "output":{"shape":"ListLakeFormationOptInsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieve the current list of resources and principals that are opt in to enforce Lake Formation permissions.</p>"
     },
     "ListPermissions":{
       "name":"ListPermissions",
@@ -1217,6 +1269,22 @@
       "members":{
       }
     },
+    "CreateLakeFormationOptInRequest":{
+      "type":"structure",
+      "required":[
+        "Principal",
+        "Resource"
+      ],
+      "members":{
+        "Principal":{"shape":"DataLakePrincipal"},
+        "Resource":{"shape":"Resource"}
+      }
+    },
+    "CreateLakeFormationOptInResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CredentialTimeoutDurationSecondInteger":{
       "type":"integer",
       "box":true,
@@ -1452,6 +1520,22 @@
       }
     },
     "DeleteLFTagResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteLakeFormationOptInRequest":{
+      "type":"structure",
+      "required":[
+        "Principal",
+        "Resource"
+      ],
+      "members":{
+        "Principal":{"shape":"DataLakePrincipal"},
+        "Resource":{"shape":"Resource"}
+      }
+    },
+    "DeleteLakeFormationOptInResponse":{
       "type":"structure",
       "members":{
       }
@@ -2265,7 +2349,7 @@
         },
         "TagValues":{
           "shape":"TagValueList",
-          "documentation":"<p>A list of possible values an attribute can take.</p>"
+          "documentation":"<p>A list of possible values an attribute can take.</p> <p>The maximum number of values that can be defined for a LF-Tag is 1000. A single API call supports 50 values. You can use multiple API calls to add more values.</p>"
         }
       },
       "documentation":"<p>A structure that allows an admin to grant user permissions on certain conditions. For example, granting a role access to all columns that do not have the LF-tag 'PII' in tables that have the LF-tag 'Prod'.</p>"
@@ -2372,6 +2456,26 @@
       "max":50,
       "min":1
     },
+    "LakeFormationOptInsInfo":{
+      "type":"structure",
+      "members":{
+        "Resource":{"shape":"Resource"},
+        "Principal":{"shape":"DataLakePrincipal"},
+        "LastModified":{
+          "shape":"LastModifiedTimestamp",
+          "documentation":"<p>The last modified date and time of the record.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"NameString",
+          "documentation":"<p>The user who updated the record.</p>"
+        }
+      },
+      "documentation":"<p>A single principal-resource pair that has Lake Formation permissins enforced.</p>"
+    },
+    "LakeFormationOptInsInfoList":{
+      "type":"list",
+      "member":{"shape":"LakeFormationOptInsInfo"}
+    },
     "LastModifiedTimestamp":{"type":"timestamp"},
     "ListDataCellsFilterRequest":{
       "type":"structure",
@@ -2434,6 +2538,37 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, present if the current list segment is not the last.</p>"
+        }
+      }
+    },
+    "ListLakeFormationOptInsRequest":{
+      "type":"structure",
+      "members":{
+        "Principal":{"shape":"DataLakePrincipal"},
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>A structure for the resource.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
+        }
+      }
+    },
+    "ListLakeFormationOptInsResponse":{
+      "type":"structure",
+      "members":{
+        "LakeFormationOptInsInfoList":{
+          "shape":"LakeFormationOptInsInfoList",
+          "documentation":"<p>A list of principal-resource pairs that have Lake Formation permissins enforced.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
         }
       }
     },
@@ -2797,6 +2932,14 @@
         "AdditionalDetails":{
           "shape":"DetailsMap",
           "documentation":"<p>This attribute can be used to return any additional details of <code>PrincipalResourcePermissions</code>. Currently returns only as a RAM resource share ARN.</p>"
+        },
+        "LastUpdated":{
+          "shape":"LastModifiedTimestamp",
+          "documentation":"<p>The date and time when the resource was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"NameString",
+          "documentation":"<p>The user who updated the record.</p>"
         }
       },
       "documentation":"<p>The permissions granted or revoked on a resource.</p>"
@@ -2892,6 +3035,10 @@
         "WithFederation":{
           "shape":"NullableBoolean",
           "documentation":"<p>Whether or not the resource is a federated resource.</p>"
+        },
+        "HybridAccessEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p> Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
         }
       }
     },
@@ -2987,6 +3134,10 @@
         "WithFederation":{
           "shape":"NullableBoolean",
           "documentation":"<p>Whether or not the resource is a federated resource.</p>"
+        },
+        "HybridAccessEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p> Indicates whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
         }
       },
       "documentation":"<p>A structure containing information about an Lake Formation resource.</p>"
@@ -3611,6 +3762,10 @@
         "WithFederation":{
           "shape":"NullableBoolean",
           "documentation":"<p>Whether or not the resource is a federated resource.</p>"
+        },
+        "HybridAccessEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p> Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
         }
       }
     },

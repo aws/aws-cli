@@ -219,7 +219,7 @@
         {"shape":"InvalidSubnet"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
-      "documentation":"<p>Creates the replication instance using the specified parameters.</p> <p>DMS requires that your account have certain roles with appropriate permissions before you can create a replication instance. For information on the required roles, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.APIRole\">Creating the IAM Roles to Use With the CLI and DMS API</a>. For information on the required permissions, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.IAMPermissions\">IAM Permissions Needed to Use DMS</a>.</p>"
+      "documentation":"<p>Creates the replication instance using the specified parameters.</p> <p>DMS requires that your account have certain roles with appropriate permissions before you can create a replication instance. For information on the required roles, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.APIRole\">Creating the IAM Roles to Use With the CLI and DMS API</a>. For information on the required permissions, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#CHAP_Security.IAMPermissions\">IAM Permissions Needed to Use DMS</a>.</p> <note> <p>If you don't specify a version when creating a replication instance, DMS will create the instance using the default engine version. For information about the default engine version, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReleaseNotes.html\">Release Notes</a>.</p> </note>"
     },
     "CreateReplicationSubnetGroup":{
       "name":"CreateReplicationSubnetGroup",
@@ -1580,7 +1580,7 @@
         {"shape":"AccessDeniedFault"},
         {"shape":"InvalidResourceStateFault"}
       ],
-      "documentation":"<p>Migrates 10 active and enabled Amazon SNS subscriptions at a time and converts them to corresponding Amazon EventBridge rules. By default, this operation migrates subscriptions only when all your replication instance versions are 3.4.6 or higher. If any replication instances are from versions earlier than 3.4.6, the operation raises an error and tells you to upgrade these instances to version 3.4.6 or higher. To enable migration regardless of version, set the <code>Force</code> option to true. However, if you don't upgrade instances earlier than version 3.4.6, some types of events might not be available when you use Amazon EventBridge.</p> <p>To call this operation, make sure that you have certain permissions added to your user account. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Events.html#CHAP_Events-migrate-to-eventbridge\">Migrating event subscriptions to Amazon EventBridge</a> in the <i>Amazon Web Services Database Migration Service User Guide</i>.</p>"
+      "documentation":"<p>Migrates 10 active and enabled Amazon SNS subscriptions at a time and converts them to corresponding Amazon EventBridge rules. By default, this operation migrates subscriptions only when all your replication instance versions are 3.4.5 or higher. If any replication instances are from versions earlier than 3.4.5, the operation raises an error and tells you to upgrade these instances to version 3.4.5 or higher. To enable migration regardless of version, set the <code>Force</code> option to true. However, if you don't upgrade instances earlier than version 3.4.5, some types of events might not be available when you use Amazon EventBridge.</p> <p>To call this operation, make sure that you have certain permissions added to your user account. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Events.html#CHAP_Events-migrate-to-eventbridge\">Migrating event subscriptions to Amazon EventBridge</a> in the <i>Amazon Web Services Database Migration Service User Guide</i>.</p>"
     }
   },
   "shapes":{
@@ -1993,11 +1993,11 @@
         },
         "MaxCapacityUnits":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the maximum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 2 DCUs as the minimum value allowed. The list of valid DCU values includes 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the maximum value that you can specify for DMS Serverless is 384. The <code>MaxCapacityUnits</code> parameter is the only DCU parameter you are required to specify.</p>"
+          "documentation":"<p>Specifies the maximum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 1 DCU as the minimum value allowed. The list of valid DCU values includes 1, 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the maximum value that you can specify for DMS Serverless is 384. The <code>MaxCapacityUnits</code> parameter is the only DCU parameter you are required to specify.</p>"
         },
         "MinCapacityUnits":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the minimum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 2 DCUs as the minimum value allowed. The list of valid DCU values includes 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the minimum DCU value that you can specify for DMS Serverless is 2. You don't have to specify a value for the <code>MinCapacityUnits</code> parameter. If you don't set this value, DMS scans the current activity of available source tables to identify an optimum setting for this parameter. If there is no current source activity or DMS can't otherwise identify a more appropriate value, it sets this parameter to the minimum DCU value allowed, 2.</p>"
+          "documentation":"<p>Specifies the minimum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 1 DCU as the minimum value allowed. The list of valid DCU values includes 1, 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the minimum DCU value that you can specify for DMS Serverless is 1. You don't have to specify a value for the <code>MinCapacityUnits</code> parameter. If you don't set this value, DMS scans the current activity of available source tables to identify an optimum setting for this parameter. If there is no current source activity or DMS can't otherwise identify a more appropriate value, it sets this parameter to the minimum DCU value allowed, 1.</p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
@@ -2554,7 +2554,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the replication instance during the maintenance window. This parameter defaults to <code>true</code>.</p> <p>Default: <code>true</code> </p> <p>When <code>AutoMinorVersionUpgrade</code> is enabled, DMS uses the current default engine version when you create a replication instance. For example, if you set <code>EngineVersion</code> to a lower version number than the current default version, DMS uses the default version.</p> <p>If <code>AutoMinorVersionUpgrade</code> <i>isn’t</i> enabled when you create a replication instance, DMS uses the engine version specified by the <code>EngineVersion</code> parameter. </p>"
+          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the replication instance during the maintenance window. This parameter defaults to <code>true</code>.</p> <p>Default: <code>true</code> </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2679,7 +2679,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time:2018-02-09T12:12:12“</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2799,10 +2799,20 @@
     "DataProviderSettings":{
       "type":"structure",
       "members":{
+        "RedshiftSettings":{"shape":"RedshiftDataProviderSettings"},
         "PostgreSqlSettings":{"shape":"PostgreSqlDataProviderSettings"},
         "MySqlSettings":{"shape":"MySqlDataProviderSettings"},
         "OracleSettings":{"shape":"OracleDataProviderSettings"},
-        "MicrosoftSqlServerSettings":{"shape":"MicrosoftSqlServerDataProviderSettings"}
+        "MicrosoftSqlServerSettings":{"shape":"MicrosoftSqlServerDataProviderSettings"},
+        "DocDbSettings":{"shape":"DocDbDataProviderSettings"},
+        "MariaDbSettings":{
+          "shape":"MariaDbDataProviderSettings",
+          "documentation":"<p>Provides information that defines a MariaDB data provider.</p>"
+        },
+        "MongoDbSettings":{
+          "shape":"MongoDbDataProviderSettings",
+          "documentation":"<p>Provides information that defines a MongoDB data provider.</p>"
+        }
       },
       "documentation":"<p>Provides information that defines a data provider.</p>",
       "union":true
@@ -4631,6 +4641,32 @@
       },
       "documentation":"<p> The settings in JSON format for the DMS Transfer type source endpoint. </p>"
     },
+    "DocDbDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the source DocumentDB server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the DocumentDB data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the DocumentDB data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the DocumentDB data provider. The default value is <code>none</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines a DocumentDB data provider.</p>"
+    },
     "DocDbSettings":{
       "type":"structure",
       "members":{
@@ -5812,6 +5848,28 @@
         "nclob"
       ]
     },
+    "MariaDbDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the MariaDB server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the MariaDB data provider</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the MariaDB data provider. The default value is <code>none</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines a MariaDB data provider.</p>"
+    },
     "MessageFormatValue":{
       "type":"string",
       "enum":[
@@ -5880,7 +5938,7 @@
         },
         "TrimSpaceInChar":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Use the <code>TrimSpaceInChar</code> source endpoint setting to trim data on CHAR and NCHAR data types during migration. The default value is <code>true</code>.</p>"
+          "documentation":"<p>Use the <code>TrimSpaceInChar</code> source endpoint setting to right-trim data on CHAR and NCHAR data types during migration. Setting <code>TrimSpaceInChar</code> does not left-trim data. The default value is <code>true</code>.</p>"
         },
         "TlogAccessMode":{
           "shape":"TlogAccessMode",
@@ -6421,7 +6479,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates that minor version upgrades are applied automatically to the replication instance during the maintenance window. Changing this parameter doesn't result in an outage, except in the case described following. The change is asynchronously applied as soon as possible. </p> <p>An outage does result if these factors apply: </p> <ul> <li> <p>This parameter is set to <code>true</code> during the maintenance window.</p> </li> <li> <p>A newer minor version is available. </p> </li> <li> <p>DMS has enabled automatic patching for the given engine version. </p> </li> </ul> <p>When <code>AutoMinorVersionUpgrade</code> is enabled, DMS uses the current default engine version when you modify a replication instance. For example, if you set <code>EngineVersion</code> to a lower version number than the current default version, DMS uses the default version.</p> <p>If <code>AutoMinorVersionUpgrade</code> <i>isn’t</i> enabled when you modify a replication instance, DMS uses the engine version specified by the <code>EngineVersion</code> parameter.</p>"
+          "documentation":"<p>A value that indicates that minor version upgrades are applied automatically to the replication instance during the maintenance window. Changing this parameter doesn't result in an outage, except in the case described following. The change is asynchronously applied as soon as possible. </p> <p>An outage does result if these factors apply: </p> <ul> <li> <p>This parameter is set to <code>true</code> during the maintenance window.</p> </li> <li> <p>A newer minor version is available. </p> </li> <li> <p>DMS has enabled automatic patching for the given engine version. </p> </li> </ul>"
         },
         "ReplicationInstanceIdentifier":{
           "shape":"String",
@@ -6510,7 +6568,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time:2018-02-09T12:12:12“</p>"
         },
         "TaskData":{
           "shape":"String",
@@ -6529,6 +6587,44 @@
       },
       "documentation":"<p/>"
     },
+    "MongoDbDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the MongoDB server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the MongoDB data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the MongoDB data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the MongoDB data provider. The default value is <code>none</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthTypeValue",
+          "documentation":"<p>The authentication type for the database connection. Valid values are PASSWORD or NO.</p>"
+        },
+        "AuthSource":{
+          "shape":"String",
+          "documentation":"<p> The MongoDB database name. This setting isn't used when <code>AuthType</code> is set to <code>\"no\"</code>. </p> <p>The default is <code>\"admin\"</code>.</p>"
+        },
+        "AuthMechanism":{
+          "shape":"AuthMechanismValue",
+          "documentation":"<p>The authentication method for connecting to the data provider. Valid values are DEFAULT, MONGODB_CR, or SCRAM_SHA_1.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines a MongoDB data provider.</p>"
+    },
     "MongoDbSettings":{
       "type":"structure",
       "members":{
@@ -6542,7 +6638,7 @@
         },
         "ServerName":{
           "shape":"String",
-          "documentation":"<p> The name of the server on the MongoDB source endpoint. </p>"
+          "documentation":"<p> The name of the server on the MongoDB source endpoint. For MongoDB Atlas, provide the server name for any of the servers in the replication set.</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -6959,7 +7055,7 @@
         },
         "SecretsManagerOracleAsmAccessRoleArn":{
           "shape":"String",
-          "documentation":"<p>Required only if your Oracle endpoint uses Automatic Storage Management (ASM). The full ARN of the IAM role that specifies DMS as the trusted entity and grants the required permissions to access the <code>SecretsManagerOracleAsmSecret</code>. This <code>SecretsManagerOracleAsmSecret</code> has the secret value that allows access to the Oracle ASM of the endpoint.</p> <note> <p>You can specify one of two sets of values for these permissions. You can specify the values for this setting and <code>SecretsManagerOracleAsmSecretId</code>. Or you can specify clear-text values for <code>AsmUserName</code>, <code>AsmPassword</code>, and <code>AsmServerName</code>. You can't specify both. For more information on creating this <code>SecretsManagerOracleAsmSecret</code> and the <code>SecretsManagerOracleAsmAccessRoleArn</code> and <code>SecretsManagerOracleAsmSecretId</code> required to access it, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#security-iam-secretsmanager\">Using secrets to access Database Migration Service resources</a> in the <i>Database Migration Service User Guide</i>.</p> </note>"
+          "documentation":"<p>Required only if your Oracle endpoint uses Automatic Storage Management (ASM). The full ARN of the IAM role that specifies DMS as the trusted entity and grants the required permissions to access the <code>SecretsManagerOracleAsmSecret</code>. This <code>SecretsManagerOracleAsmSecret</code> has the secret value that allows access to the Oracle ASM of the endpoint.</p> <note> <p>You can specify one of two sets of values for these permissions. You can specify the values for this setting and <code>SecretsManagerOracleAsmSecretId</code>. Or you can specify clear-text values for <code>AsmUser</code>, <code>AsmPassword</code>, and <code>AsmServerName</code>. You can't specify both. For more information on creating this <code>SecretsManagerOracleAsmSecret</code> and the <code>SecretsManagerOracleAsmAccessRoleArn</code> and <code>SecretsManagerOracleAsmSecretId</code> required to access it, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.html#security-iam-secretsmanager\">Using secrets to access Database Migration Service resources</a> in the <i>Database Migration Service User Guide</i>.</p> </note>"
         },
         "SecretsManagerOracleAsmSecretId":{
           "shape":"String",
@@ -7167,7 +7263,7 @@
         },
         "MapBooleanAsBoolean":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When true, lets PostgreSQL migrate the boolean type as boolean. By default, PostgreSQL migrates booleans as <code>varchar(5)</code>.</p>"
+          "documentation":"<p>When true, lets PostgreSQL migrate the boolean type as boolean. By default, PostgreSQL migrates booleans as <code>varchar(5)</code>. You must set this setting on both the source and target endpoints for it to take effect.</p>"
         },
         "MapJsonbAsClob":{
           "shape":"BooleanOptional",
@@ -7473,6 +7569,24 @@
       },
       "documentation":"<p>Provides information that defines a Redis target endpoint.</p>"
     },
+    "RedshiftDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Redshift server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the Amazon Redshift data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the Amazon Redshift data provider.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines an Amazon Redshift data provider.</p>"
+    },
     "RedshiftSettings":{
       "type":"structure",
       "members":{
@@ -7598,7 +7712,7 @@
         },
         "MapBooleanAsBoolean":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When true, lets Redshift migrate the boolean type as boolean. By default, Redshift migrates booleans as <code>varchar(1)</code>.</p>"
+          "documentation":"<p>When true, lets Redshift migrate the boolean type as boolean. By default, Redshift migrates booleans as <code>varchar(1)</code>. You must set this setting on both the source and target endpoints for it to take effect.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Amazon Redshift endpoint.</p>"
@@ -8236,7 +8350,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time:2018-02-09T12:12:12“</p>"
         },
         "RecoveryCheckpoint":{
           "shape":"String",
@@ -8673,7 +8787,7 @@
         },
         "CsvNullValue":{
           "shape":"String",
-          "documentation":"<p>An optional parameter that specifies how DMS treats null values. While handling the null value, you can use this parameter to pass a user-defined string as null when writing to the target. For example, when target columns are not nullable, you can use this option to differentiate between the empty string value and the null value. So, if you set this parameter value to the empty string (\"\" or ''), DMS treats the empty string as the null value instead of <code>NULL</code>.</p> <p>The default value is <code>NULL</code>. Valid values include any valid string.</p>"
+          "documentation":"<p>An optional parameter that specifies how DMS treats null values. While handling the null value, you can use this parameter to pass a user-defined string as null when writing to the target. For example, when target columns are nullable, you can use this option to differentiate between the empty string value and the null value. So, if you set this parameter value to the empty string (\"\" or ''), DMS treats the empty string as the null value instead of <code>NULL</code>.</p> <p>The default value is <code>NULL</code>. Valid values include any valid string.</p>"
         },
         "IgnoreHeaderRows":{
           "shape":"IntegerOptional",
@@ -9234,7 +9348,7 @@
         },
         "CdcStopPosition":{
           "shape":"String",
-          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time: 2018-02-09T12:12:12“</p>"
+          "documentation":"<p>Indicates when you want a change data capture (CDC) operation to stop. The value can be either server time or commit time.</p> <p>Server time example: --cdc-stop-position “server_time:2018-02-09T12:12:12”</p> <p>Commit time example: --cdc-stop-position “commit_time:2018-02-09T12:12:12“</p>"
         }
       },
       "documentation":"<p/>"
@@ -9642,7 +9756,7 @@
       "members":{
         "ForceMove":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When set to true, this operation migrates DMS subscriptions for Amazon SNS notifications no matter what your replication instance version is. If not set or set to false, this operation runs only when all your replication instances are from DMS version 3.4.6 or higher. </p>"
+          "documentation":"<p>When set to true, this operation migrates DMS subscriptions for Amazon SNS notifications no matter what your replication instance version is. If not set or set to false, this operation runs only when all your replication instances are from DMS version 3.4.5 or higher. </p>"
         }
       },
       "documentation":"<p/>"

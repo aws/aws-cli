@@ -583,6 +583,32 @@
       },
       "exception":true
     },
+    "DeviceQueueInfo":{
+      "type":"structure",
+      "required":[
+        "queue",
+        "queueSize"
+      ],
+      "members":{
+        "queue":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue. </p>"
+        },
+        "queuePriority":{
+          "shape":"QueuePriority",
+          "documentation":"<p>Optional. Specifies the priority of the queue. Tasks in a priority queue are processed before the tasks in a normal queue.</p>"
+        },
+        "queueSize":{
+          "shape":"String",
+          "documentation":"<p>The number of jobs or tasks in the queue for a given device. </p>"
+        }
+      },
+      "documentation":"<p>Information about tasks and jobs queued on a device.</p>"
+    },
+    "DeviceQueueInfoList":{
+      "type":"list",
+      "member":{"shape":"DeviceQueueInfo"}
+    },
     "DeviceRetiredException":{
       "type":"structure",
       "members":{
@@ -683,6 +709,10 @@
           "shape":"String",
           "documentation":"<p>The name of the device.</p>"
         },
+        "deviceQueueInfo":{
+          "shape":"DeviceQueueInfoList",
+          "documentation":"<p>List of information about tasks and jobs queued on a device.</p>"
+        },
         "deviceStatus":{
           "shape":"DeviceStatus",
           "documentation":"<p>The status of the device.</p>"
@@ -701,6 +731,12 @@
       "type":"structure",
       "required":["jobArn"],
       "members":{
+        "additionalAttributeNames":{
+          "shape":"HybridJobAdditionalAttributeNamesList",
+          "documentation":"<p>A list of attributes to return information for.</p>",
+          "location":"querystring",
+          "locationName":"additionalAttributeNames"
+        },
         "jobArn":{
           "shape":"JobArn",
           "documentation":"<p>The ARN of the job to retrieve.</p>",
@@ -778,6 +814,10 @@
           "shape":"JobOutputDataConfig",
           "documentation":"<p>The path to the S3 location where job artifacts are stored and the encryption key used to store them there.</p>"
         },
+        "queueInfo":{
+          "shape":"HybridJobQueueInfo",
+          "documentation":"<p>Queue information for the requested job. Only returned if <code>QueueInfo</code> is specified in the <code>additionalAttributeNames\"</code> field in the <code>GetJob</code> API request.</p>"
+        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that Amazon Braket can assume to perform tasks on behalf of a user. It can access user resources, run an Amazon Braket job container on behalf of user, and output resources to the s3 buckets of a user.</p>"
@@ -810,6 +850,12 @@
       "type":"structure",
       "required":["quantumTaskArn"],
       "members":{
+        "additionalAttributeNames":{
+          "shape":"QuantumTaskAdditionalAttributeNamesList",
+          "documentation":"<p>A list of attributes to return information for.</p>",
+          "location":"querystring",
+          "locationName":"additionalAttributeNames"
+        },
         "quantumTaskArn":{
           "shape":"QuantumTaskArn",
           "documentation":"<p>the ARN of the task to retrieve.</p>",
@@ -868,6 +914,10 @@
           "shape":"QuantumTaskArn",
           "documentation":"<p>The ARN of the task.</p>"
         },
+        "queueInfo":{
+          "shape":"QuantumTaskQueueInfo",
+          "documentation":"<p>Queue information for the requested quantum task. Only returned if <code>QueueInfo</code> is specified in the <code>additionalAttributeNames\"</code> field in the <code>GetQuantumTask</code> API request.</p>"
+        },
         "shots":{
           "shape":"Long",
           "documentation":"<p>The number of shots used in the task.</p>"
@@ -881,6 +931,36 @@
           "documentation":"<p>The tags that belong to this task.</p>"
         }
       }
+    },
+    "HybridJobAdditionalAttributeName":{
+      "type":"string",
+      "enum":["QueueInfo"]
+    },
+    "HybridJobAdditionalAttributeNamesList":{
+      "type":"list",
+      "member":{"shape":"HybridJobAdditionalAttributeName"}
+    },
+    "HybridJobQueueInfo":{
+      "type":"structure",
+      "required":[
+        "position",
+        "queue"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Optional. Provides more information about the queue position. For example, if the job is complete and no longer in the queue, the message field contains that information.</p>"
+        },
+        "position":{
+          "shape":"String",
+          "documentation":"<p>Current position of the job in the jobs queue.</p>"
+        },
+        "queue":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue.</p>"
+        }
+      },
+      "documentation":"<p>Information about the queue for a specified job.</p>"
     },
     "HyperParameters":{
       "type":"map",
@@ -1202,10 +1282,44 @@
       "type":"long",
       "box":true
     },
+    "QuantumTaskAdditionalAttributeName":{
+      "type":"string",
+      "enum":["QueueInfo"]
+    },
+    "QuantumTaskAdditionalAttributeNamesList":{
+      "type":"list",
+      "member":{"shape":"QuantumTaskAdditionalAttributeName"}
+    },
     "QuantumTaskArn":{
       "type":"string",
       "max":256,
-      "min":1
+      "min":0
+    },
+    "QuantumTaskQueueInfo":{
+      "type":"structure",
+      "required":[
+        "position",
+        "queue"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Optional. Provides more information about the queue position. For example, if the task is complete and no longer in the queue, the message field contains that information.</p>"
+        },
+        "position":{
+          "shape":"String",
+          "documentation":"<p>Current position of the task in the quantum tasks queue.</p>"
+        },
+        "queue":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue. </p>"
+        },
+        "queuePriority":{
+          "shape":"QueuePriority",
+          "documentation":"<p>Optional. Specifies the priority of the queue. Quantum tasks in a priority queue are processed before the tasks in a normal queue.</p>"
+        }
+      },
+      "documentation":"<p>Information about the queue for the specified quantum task.</p>"
     },
     "QuantumTaskStatus":{
       "type":"string",
@@ -1273,6 +1387,20 @@
     "QuantumTaskSummaryList":{
       "type":"list",
       "member":{"shape":"QuantumTaskSummary"}
+    },
+    "QueueName":{
+      "type":"string",
+      "enum":[
+        "QUANTUM_TASKS_QUEUE",
+        "JOBS_QUEUE"
+      ]
+    },
+    "QueuePriority":{
+      "type":"string",
+      "enum":[
+        "Normal",
+        "Priority"
+      ]
     },
     "ResourceNotFoundException":{
       "type":"structure",

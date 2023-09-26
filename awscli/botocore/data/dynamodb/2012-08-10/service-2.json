@@ -507,7 +507,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>List backups associated with an Amazon Web Services account. To list backups for a given table, specify <code>TableName</code>. <code>ListBackups</code> returns a paginated list of results with at most 1 MB worth of items in a page. You can also specify a maximum number of entries to be returned in a page.</p> <p>In the request, start time is inclusive, but end time is exclusive. Note that these boundaries are for the time at which the original backup was requested.</p> <p>You can call <code>ListBackups</code> a maximum of five times per second.</p>",
+      "documentation":"<p>List DynamoDB backups that are associated with an Amazon Web Services account and weren't made with Amazon Web Services Backup. To list these backups for a given table, specify <code>TableName</code>. <code>ListBackups</code> returns a paginated list of results with at most 1 MB worth of items in a page. You can also specify a maximum number of entries to be returned in a page.</p> <p>In the request, start time is inclusive, but end time is exclusive. Note that these boundaries are for the time at which the original backup was requested.</p> <p>You can call <code>ListBackups</code> a maximum of five times per second.</p> <p>If you want to retrieve the complete list of backups made with Amazon Web Services Backup, use the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_ListBackupJobs.html\">Amazon Web Services Backup list API.</a> </p>",
       "endpointdiscovery":{
       }
     },
@@ -2782,6 +2782,14 @@
         "ItemCount":{
           "shape":"ItemCount",
           "documentation":"<p>The number of items exported.</p>"
+        },
+        "ExportType":{
+          "shape":"ExportType",
+          "documentation":"<p>Choice of whether to execute as a full export or incremental export. Valid values are <code>FULL_EXPORT</code> or <code>INCREMENTAL_EXPORT</code>. If <code>INCREMENTAL_EXPORT</code> is provided, the <code>IncrementalExportSpecification</code> must also be used.</p>"
+        },
+        "IncrementalExportSpecification":{
+          "shape":"IncrementalExportSpecification",
+          "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
         }
       },
       "documentation":"<p>Represents the properties of the exported table.</p>"
@@ -2794,6 +2802,7 @@
         "ION"
       ]
     },
+    "ExportFromTime":{"type":"timestamp"},
     "ExportManifest":{"type":"string"},
     "ExportNextToken":{"type":"string"},
     "ExportNotFoundException":{
@@ -2827,6 +2836,10 @@
         "ExportStatus":{
           "shape":"ExportStatus",
           "documentation":"<p>Export can be in one of the following states: IN_PROGRESS, COMPLETED, or FAILED.</p>"
+        },
+        "ExportType":{
+          "shape":"ExportType",
+          "documentation":"<p>Choice of whether to execute as a full export or incremental export. Valid values are <code>FULL_EXPORT</code> or <code>INCREMENTAL_EXPORT</code>. If <code>INCREMENTAL_EXPORT</code> is provided, the <code>IncrementalExportSpecification</code> must also be used.</p>"
         }
       },
       "documentation":"<p>Summary information about an export task.</p>"
@@ -2874,6 +2887,14 @@
         "ExportFormat":{
           "shape":"ExportFormat",
           "documentation":"<p>The format for the exported data. Valid values for <code>ExportFormat</code> are <code>DYNAMODB_JSON</code> or <code>ION</code>.</p>"
+        },
+        "ExportType":{
+          "shape":"ExportType",
+          "documentation":"<p>Choice of whether to execute as a full export or incremental export. Valid values are <code>FULL_EXPORT</code> or <code>INCREMENTAL_EXPORT</code>. If <code>INCREMENTAL_EXPORT</code> is provided, the <code>IncrementalExportSpecification</code> must also be used.</p>"
+        },
+        "IncrementalExportSpecification":{
+          "shape":"IncrementalExportSpecification",
+          "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
         }
       }
     },
@@ -2887,6 +2908,21 @@
       }
     },
     "ExportTime":{"type":"timestamp"},
+    "ExportToTime":{"type":"timestamp"},
+    "ExportType":{
+      "type":"string",
+      "enum":[
+        "FULL_EXPORT",
+        "INCREMENTAL_EXPORT"
+      ]
+    },
+    "ExportViewType":{
+      "type":"string",
+      "enum":[
+        "NEW_IMAGE",
+        "NEW_AND_OLD_IMAGES"
+      ]
+    },
     "ExpressionAttributeNameMap":{
       "type":"map",
       "key":{"shape":"ExpressionAttributeNameVariable"},
@@ -3450,6 +3486,24 @@
     "ImportedItemCount":{
       "type":"long",
       "min":0
+    },
+    "IncrementalExportSpecification":{
+      "type":"structure",
+      "members":{
+        "ExportFromTime":{
+          "shape":"ExportFromTime",
+          "documentation":"<p>Time in the past which provides the inclusive start range for the export table's data, counted in seconds from the start of the Unix epoch. The incremental export will reflect the table's state including and after this point in time.</p>"
+        },
+        "ExportToTime":{
+          "shape":"ExportToTime",
+          "documentation":"<p>Time in the past which provides the exclusive end range for the export table's data, counted in seconds from the start of the Unix epoch. The incremental export will reflect the table's state just prior to this point in time. If this is not provided, the latest time with data available will be used.</p>"
+        },
+        "ExportViewType":{
+          "shape":"ExportViewType",
+          "documentation":"<p>Choice of whether to output the previous item image prior to the start time of the incremental export. Valid values are <code>NEW_AND_OLD_IMAGES</code> and <code>NEW_IMAGES</code>.</p>"
+        }
+      },
+      "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
     },
     "IndexName":{
       "type":"string",

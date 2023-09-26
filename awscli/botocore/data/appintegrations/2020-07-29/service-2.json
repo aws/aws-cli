@@ -12,6 +12,24 @@
     "uid":"appintegrations-2020-07-29"
   },
   "operations":{
+    "CreateApplication":{
+      "name":"CreateApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications"
+      },
+      "input":{"shape":"CreateApplicationRequest"},
+      "output":{"shape":"CreateApplicationResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ResourceQuotaExceededException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API is in preview release and subject to change.</p> <p>Creates and persists an Application resource.</p>"
+    },
     "CreateDataIntegration":{
       "name":"CreateDataIntegration",
       "http":{
@@ -82,6 +100,23 @@
       ],
       "documentation":"<p>Deletes the specified existing event integration. If the event integration is associated with clients, the request is rejected.</p>"
     },
+    "GetApplication":{
+      "name":"GetApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{Arn}"
+      },
+      "input":{"shape":"GetApplicationRequest"},
+      "output":{"shape":"GetApplicationResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API is in preview release and subject to change.</p> <p>Get an Application resource.</p>"
+    },
     "GetDataIntegration":{
       "name":"GetDataIntegration",
       "http":{
@@ -115,6 +150,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns information about the event integration.</p>"
+    },
+    "ListApplications":{
+      "name":"ListApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications"
+      },
+      "input":{"shape":"ListApplicationsRequest"},
+      "output":{"shape":"ListApplicationsResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API is in preview release and subject to change.</p> <p>Lists applications in the account.</p>"
     },
     "ListDataIntegrationAssociations":{
       "name":"ListDataIntegrationAssociations",
@@ -230,6 +281,23 @@
       ],
       "documentation":"<p>Removes the specified tags from the specified resource.</p>"
     },
+    "UpdateApplication":{
+      "name":"UpdateApplication",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/applications/{Arn}"
+      },
+      "input":{"shape":"UpdateApplicationRequest"},
+      "output":{"shape":"UpdateApplicationResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API is in preview release and subject to change.</p> <p>Updates and persists an Application resource.</p>"
+    },
     "UpdateDataIntegration":{
       "name":"UpdateDataIntegration",
       "http":{
@@ -275,11 +343,87 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "ApplicationApprovedOrigins":{
+      "type":"list",
+      "member":{"shape":"ApplicationTrustedSource"},
+      "max":50,
+      "min":1
+    },
+    "ApplicationName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\/\\._ \\-]+$"
+    },
+    "ApplicationNamespace":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
+    },
+    "ApplicationSourceConfig":{
+      "type":"structure",
+      "members":{
+        "ExternalUrlConfig":{
+          "shape":"ExternalUrlConfig",
+          "documentation":"<p>The external URL source for the application.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for where the application should be loaded from.</p>"
+    },
+    "ApplicationSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>"
+        },
+        "Id":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the Application.</p>"
+        },
+        "Name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>The name of the application.</p>"
+        },
+        "Namespace":{
+          "shape":"ApplicationNamespace",
+          "documentation":"<p>The namespace of the application.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the application was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the application was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about the Application.</p>"
+    },
+    "ApplicationTrustedSource":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^\\w+\\:\\/\\/.*$"
+    },
+    "ApplicationsList":{
+      "type":"list",
+      "member":{"shape":"ApplicationSummary"},
+      "max":50,
+      "min":1
+    },
     "Arn":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"^arn:aws:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+    },
+    "ArnOrUUID":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(arn:aws:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(:[\\w\\$]+)?$"
     },
     "ClientAssociationMetadata":{
       "type":"map",
@@ -291,6 +435,62 @@
       "max":255,
       "min":1,
       "pattern":".*"
+    },
+    "CreateApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Namespace",
+        "ApplicationSourceConfig"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>The name of the application.</p>"
+        },
+        "Namespace":{
+          "shape":"ApplicationNamespace",
+          "documentation":"<p>The namespace of the application.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "ApplicationSourceConfig":{
+          "shape":"ApplicationSourceConfig",
+          "documentation":"<p>The configuration for where the application should be loaded from.</p>"
+        },
+        "Subscriptions":{
+          "shape":"SubscriptionList",
+          "documentation":"<p>The events that the application subscribes.</p>"
+        },
+        "Publications":{
+          "shape":"PublicationList",
+          "documentation":"<p>The events that the application publishes.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "CreateApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>"
+        },
+        "Id":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the Application.</p>"
+        }
+      }
     },
     "CreateDataIntegrationRequest":{
       "type":"structure",
@@ -542,6 +742,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
     },
+    "EventDefinitionSchema":{
+      "type":"string",
+      "max":10240,
+      "min":1,
+      "pattern":"^.*$"
+    },
     "EventFilter":{
       "type":"structure",
       "required":["Source"],
@@ -625,6 +831,27 @@
       "max":50,
       "min":1
     },
+    "EventName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\/\\._\\-]+::[a-zA-Z0-9\\/\\._\\-]+(?:\\*)?$"
+    },
+    "ExternalUrlConfig":{
+      "type":"structure",
+      "required":["AccessUrl"],
+      "members":{
+        "AccessUrl":{
+          "shape":"URL",
+          "documentation":"<p>The URL to access the application.</p>"
+        },
+        "ApprovedOrigins":{
+          "shape":"ApplicationApprovedOrigins",
+          "documentation":"<p>Additional URLs to allow list if different than the access URL.</p>"
+        }
+      },
+      "documentation":"<p>The external URL source for the application.</p>"
+    },
     "Fields":{
       "type":"string",
       "max":255,
@@ -662,6 +889,67 @@
       "member":{"shape":"NonBlankLongString"},
       "max":10,
       "min":1
+    },
+    "GetApplicationRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ArnOrUUID",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>"
+        },
+        "Id":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the Application.</p>"
+        },
+        "Name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>The name of the application.</p>"
+        },
+        "Namespace":{
+          "shape":"ApplicationNamespace",
+          "documentation":"<p>The namespace of the application.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "ApplicationSourceConfig":{
+          "shape":"ApplicationSourceConfig",
+          "documentation":"<p>The configuration for where the application should be loaded from.</p>"
+        },
+        "Subscriptions":{
+          "shape":"SubscriptionList",
+          "documentation":"<p>The events that the application subscribes.</p>"
+        },
+        "Publications":{
+          "shape":"PublicationList",
+          "documentation":"<p>The events that the application publishes.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The created time of the Application.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of the Application.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
     },
     "GetDataIntegrationRequest":{
       "type":"structure",
@@ -791,6 +1079,36 @@
       "documentation":"<p>The request is not valid. </p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ListApplicationsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListApplicationsResponse":{
+      "type":"structure",
+      "members":{
+        "Applications":{
+          "shape":"ApplicationsList",
+          "documentation":"<p>The Applications associated with this account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
     },
     "ListDataIntegrationAssociationsRequest":{
       "type":"structure",
@@ -989,6 +1307,34 @@
       "value":{"shape":"FieldsMap"},
       "documentation":"<p>The configuration for what data should be pulled from the source.</p>"
     },
+    "Publication":{
+      "type":"structure",
+      "required":[
+        "Event",
+        "Schema"
+      ],
+      "members":{
+        "Event":{
+          "shape":"EventName",
+          "documentation":"<p>The name of the publication.</p>"
+        },
+        "Schema":{
+          "shape":"EventDefinitionSchema",
+          "documentation":"<p>The JSON schema of the publication event.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the publication.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of an event that the application publishes.</p>"
+    },
+    "PublicationList":{
+      "type":"list",
+      "member":{"shape":"Publication"},
+      "max":50,
+      "min":0
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1037,6 +1383,27 @@
       "max":1000,
       "min":1,
       "pattern":"^(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+$)|(\\w+\\:\\/\\/[\\w.-]+[\\w/!@#+=.-]+[\\w/!@#+=.-]+[\\w/!@#+=.,-]+$)"
+    },
+    "Subscription":{
+      "type":"structure",
+      "required":["Event"],
+      "members":{
+        "Event":{
+          "shape":"EventName",
+          "documentation":"<p>The name of the subscription.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the subscription.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of an event that the application subscribes.</p>"
+    },
+    "SubscriptionList":{
+      "type":"list",
+      "member":{"shape":"Subscription"},
+      "max":50,
+      "min":0
     },
     "TagKey":{
       "type":"string",
@@ -1094,6 +1461,13 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "Timestamp":{"type":"timestamp"},
+    "URL":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^\\w+\\:\\/\\/.*$"
+    },
     "UUID":{
       "type":"string",
       "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
@@ -1120,6 +1494,43 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateApplicationRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ArnOrUUID",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>The name of the application.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application.</p>"
+        },
+        "ApplicationSourceConfig":{
+          "shape":"ApplicationSourceConfig",
+          "documentation":"<p>The configuration for where the application should be loaded from.</p>"
+        },
+        "Subscriptions":{
+          "shape":"SubscriptionList",
+          "documentation":"<p>The events that the application subscribes.</p>"
+        },
+        "Publications":{
+          "shape":"PublicationList",
+          "documentation":"<p>The events that the application publishes.</p>"
+        }
+      }
+    },
+    "UpdateApplicationResponse":{
       "type":"structure",
       "members":{
       }
@@ -1161,7 +1572,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>The description of the event inegration.</p>"
+          "documentation":"<p>The description of the event integration.</p>"
         }
       }
     },

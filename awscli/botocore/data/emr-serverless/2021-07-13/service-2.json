@@ -345,7 +345,12 @@
         "workerTypeSpecifications":{
           "shape":"WorkerTypeSpecificationMap",
           "documentation":"<p>The specification applied to each worker type.</p>"
-        }
+        },
+        "runtimeConfiguration":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications of an application. Each configuration consists of a classification and properties. You use this parameter when creating or updating an application. To see the runtimeConfiguration object of an application, run the <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_GetApplication.html\">GetApplication</a> API operation.</p>"
+        },
+        "monitoringConfiguration":{"shape":"MonitoringConfiguration"}
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
     },
@@ -674,6 +679,14 @@
         "workerTypeSpecifications":{
           "shape":"WorkerTypeSpecificationInputMap",
           "documentation":"<p>The key-value pairs that specify worker type to <code>WorkerTypeSpecificationInput</code>. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include <code>Driver</code> and <code>Executor</code> for Spark applications and <code>HiveDriver</code> and <code>TezTask</code> for Hive applications. You can either set image details in this parameter for each worker type, or in <code>imageConfiguration</code> for all worker types.</p>"
+        },
+        "runtimeConfiguration":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications to use when creating an application. Each configuration consists of a classification and properties. This configuration is applied to all the job runs submitted under the application.</p>"
+        },
+        "monitoringConfiguration":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>The configuration setting for monitoring.</p>"
         }
       }
     },
@@ -1800,6 +1813,14 @@
         "releaseLabel":{
           "shape":"ReleaseLabel",
           "documentation":"<p>The Amazon EMR release label for the application. You can change the release label to use a different release of Amazon EMR.</p>"
+        },
+        "runtimeConfiguration":{
+          "shape":"ConfigurationList",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications to use when updating an application. Each configuration consists of a classification and properties. This configuration is applied across all the job runs submitted under the application.</p>"
+        },
+        "monitoringConfiguration":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>The configuration setting for monitoring.</p>"
         }
       }
     },

@@ -1,5 +1,5 @@
 {
-    "version": "1.3",
+    "version": "1.0",
     "parameters": {
         "UseFIPS": {
             "builtIn": "AWS::UseFIPS",
@@ -23,50 +23,139 @@
     },
     "rules": [
         {
-            "conditions": [],
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": {
+                    "ref": "Endpoint"
+                },
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        "us-west-2"
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
             "type": "tree",
             "rules": [
                 {
                     "conditions": [
                         {
-                            "fn": "isSet",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
                         }
                     ],
-                    "endpoint": {
-                        "url": {
-                            "ref": "Endpoint"
+                    "type": "tree",
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "supportsFIPS"
+                                            ]
+                                        },
+                                        false
+                                    ]
+                                }
+                            ],
+                            "error": "Partition does not support FIPS.",
+                            "type": "error"
                         },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://codecatalyst-fips.global.{PartitionResult#dualStackDnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        }
+                    ]
+                },
+                {
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://codecatalyst.global.{PartitionResult#dualStackDnsSuffix}",
                         "properties": {},
                         "headers": {}
                     },
                     "type": "endpoint"
+                }
+            ]
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
                 },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "type": "tree",
+            "rules": [
                 {
                     "conditions": [
                         {
-                            "fn": "not",
+                            "fn": "booleanEquals",
                             "argv": [
                                 {
-                                    "fn": "isSet",
-                                    "argv": [
-                                        {
-                                            "ref": "Region"
-                                        }
-                                    ]
-                                }
+                                    "ref": "UseFIPS"
+                                },
+                                true
                             ]
-                        },
-                        {
-                            "fn": "aws.partition",
-                            "argv": [
-                                "us-west-2"
-                            ],
-                            "assign": "PartitionResult"
                         }
                     ],
                     "type": "tree",
@@ -77,50 +166,25 @@
                                     "fn": "booleanEquals",
                                     "argv": [
                                         {
-                                            "ref": "UseFIPS"
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "supportsFIPS"
+                                            ]
                                         },
-                                        true
+                                        false
                                     ]
                                 }
                             ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsFIPS"
-                                                    ]
-                                                },
-                                                false
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Partition does not support FIPS.",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://codecatalyst-fips.global.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
+                            "error": "Partition does not support FIPS.",
+                            "type": "error"
                         },
                         {
                             "conditions": [],
                             "endpoint": {
-                                "url": "https://codecatalyst.global.{PartitionResult#dualStackDnsSuffix}",
+                                "url": "https://codecatalyst-fips.global.{PartitionResult#dualStackDnsSuffix}",
                                 "properties": {},
                                 "headers": {}
                             },
@@ -129,83 +193,13 @@
                     ]
                 },
                 {
-                    "conditions": [
-                        {
-                            "fn": "isSet",
-                            "argv": [
-                                {
-                                    "ref": "Region"
-                                }
-                            ]
-                        },
-                        {
-                            "fn": "aws.partition",
-                            "argv": [
-                                {
-                                    "ref": "Region"
-                                }
-                            ],
-                            "assign": "PartitionResult"
-                        }
-                    ],
-                    "type": "tree",
-                    "rules": [
-                        {
-                            "conditions": [
-                                {
-                                    "fn": "booleanEquals",
-                                    "argv": [
-                                        {
-                                            "ref": "UseFIPS"
-                                        },
-                                        true
-                                    ]
-                                }
-                            ],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "supportsFIPS"
-                                                    ]
-                                                },
-                                                false
-                                            ]
-                                        }
-                                    ],
-                                    "error": "Partition does not support FIPS.",
-                                    "type": "error"
-                                },
-                                {
-                                    "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://codecatalyst-fips.global.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "endpoint": {
-                                "url": "https://codecatalyst.global.{PartitionResult#dualStackDnsSuffix}",
-                                "properties": {},
-                                "headers": {}
-                            },
-                            "type": "endpoint"
-                        }
-                    ]
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://codecatalyst.global.{PartitionResult#dualStackDnsSuffix}",
+                        "properties": {},
+                        "headers": {}
+                    },
+                    "type": "endpoint"
                 }
             ]
         }

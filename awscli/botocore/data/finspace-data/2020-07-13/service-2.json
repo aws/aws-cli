@@ -29,7 +29,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Adds a user account to a permission group to grant permissions for actions a user can perform in FinSpace.</p>"
+      "documentation":"<p>Adds a user to a permission group to grant permissions for actions a user can perform in FinSpace.</p>"
     },
     "CreateChangeset":{
       "name":"CreateChangeset",
@@ -195,7 +195,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Removes a user account from a permission group.</p>"
+      "documentation":"<p>Removes a user from a permission group.</p>"
     },
     "EnableUser":{
       "name":"EnableUser",
@@ -317,7 +317,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Request programmatic credentials to use with FinSpace SDK.</p>"
+      "documentation":"<p>Request programmatic credentials to use with FinSpace SDK. For more information, see <a href=\"https://docs.aws.amazon.com/finspace/latest/data-api/fs-using-the-finspace-api.html#accessing-credentials\">Step 2. Access credentials programmatically using IAM access key id and secret access key</a>.</p>"
     },
     "GetUser":{
       "name":"GetUser",
@@ -435,7 +435,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all the permission groups that are associated with a specific user account.</p>"
+      "documentation":"<p>Lists all the permission groups that are associated with a specific user.</p>"
     },
     "ListUsers":{
       "name":"ListUsers",
@@ -451,7 +451,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all available user accounts in FinSpace.</p>"
+      "documentation":"<p>Lists all available users in FinSpace.</p>"
     },
     "ListUsersByPermissionGroup":{
       "name":"ListUsersByPermissionGroup",
@@ -558,7 +558,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Modifies the details of the specified user account. You cannot update the <code>userId</code> for a user.</p>"
+      "documentation":"<p>Modifies the details of the specified user. You cannot update the <code>userId</code> for a user.</p>"
     }
   },
   "shapes":{
@@ -662,7 +662,8 @@
           "documentation":"<p> The Epoch time when the current credentials expire.</p>"
         }
       },
-      "documentation":"<p> The credentials required to access the external Dataview from the S3 location.</p>"
+      "documentation":"<p> The credentials required to access the external Dataview from the S3 location.</p>",
+      "sensitive":true
     },
     "Boolean":{
       "type":"boolean",
@@ -1058,7 +1059,7 @@
           "shape":"LastName",
           "documentation":"<p>The last name of the user that you want to register.</p>"
         },
-        "ApiAccess":{
+        "apiAccess":{
           "shape":"ApiAccess",
           "documentation":"<p>The option to indicate whether the user can use the <code>GetProgrammaticAccessCredentials</code> API to obtain credentials that can then be used to access other FinSpace Data API operations.</p> <ul> <li> <p> <code>ENABLED</code> – The user has permissions to use the APIs.</p> </li> <li> <p> <code>DISABLED</code> – The user does not have permissions to use any APIs.</p> </li> </ul>"
         },
@@ -1098,7 +1099,8 @@
           "documentation":"<p>The session token.</p>"
         }
       },
-      "documentation":"<p>Short term API credentials.</p>"
+      "documentation":"<p>Short term API credentials.</p>",
+      "sensitive":true
     },
     "DataViewArn":{
       "type":"string",
@@ -1395,7 +1397,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the user account that you want to disable.</p>",
+          "documentation":"<p>The unique identifier for the user that you want to deactivate.</p>",
           "location":"uri",
           "locationName":"userId"
         },
@@ -1411,7 +1413,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the disabled user account.</p>"
+          "documentation":"<p>The unique identifier for the deactivated user.</p>"
         }
       }
     },
@@ -1466,7 +1468,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the user account that you want to enable.</p>",
+          "documentation":"<p>The unique identifier for the user that you want to activate.</p>",
           "location":"uri",
           "locationName":"userId"
         },
@@ -1482,7 +1484,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the enabled user account.</p>"
+          "documentation":"<p>The unique identifier for the active user.</p>"
         }
       }
     },
@@ -1846,11 +1848,11 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the user account that is retrieved.</p>"
+          "documentation":"<p>The unique identifier for the user that is retrieved.</p>"
         },
         "status":{
           "shape":"UserStatus",
-          "documentation":"<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>"
+          "documentation":"<p>The current status of the user. </p> <ul> <li> <p> <code>CREATING</code> – The creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user is currently inactive.</p> </li> </ul>"
         },
         "firstName":{
           "shape":"FirstName",
@@ -1878,19 +1880,19 @@
         },
         "createTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. </p>"
+          "documentation":"<p>The timestamp at which the user was created in FinSpace. The value is determined as epoch time in milliseconds. </p>"
         },
         "lastEnabledTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds.</p>"
+          "documentation":"<p>Describes the last time the user was activated. The value is determined as epoch time in milliseconds.</p>"
         },
         "lastDisabledTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.</p>"
+          "documentation":"<p>Describes the last time the user was deactivated. The value is determined as epoch time in milliseconds.</p>"
         },
         "lastModifiedTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>Describes the last time the user account was updated. The value is determined as epoch time in milliseconds.</p>"
+          "documentation":"<p>Describes the last time the user details were updated. The value is determined as epoch time in milliseconds.</p>"
         },
         "lastLoginTime":{
           "shape":"TimestampEpoch",
@@ -2211,7 +2213,7 @@
       "members":{
         "users":{
           "shape":"UserList",
-          "documentation":"<p>A list of all the user accounts.</p>"
+          "documentation":"<p>A list of all the users.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -2268,7 +2270,7 @@
         },
         "membershipStatus":{
           "shape":"PermissionGroupMembershipStatus",
-          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
+          "documentation":"<p>Indicates the status of the user within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The structure for a permission group.</p>"
@@ -2286,10 +2288,10 @@
         },
         "membershipStatus":{
           "shape":"PermissionGroupMembershipStatus",
-          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
+          "documentation":"<p>Indicates the status of the user within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The structure of a permission group associated with a user account.</p>"
+      "documentation":"<p>The structure of a permission group associated with a user.</p>"
     },
     "PermissionGroupByUserList":{
       "type":"list",
@@ -2374,7 +2376,7 @@
         },
         "temporaryPassword":{
           "shape":"Password",
-          "documentation":"<p>A randomly generated temporary password for the requested user account. This password expires in 7 days.</p>"
+          "documentation":"<p>A randomly generated temporary password for the requested user. This password expires in 7 days.</p>"
         }
       }
     },
@@ -2482,8 +2484,8 @@
     },
     "SessionDuration":{
       "type":"long",
-      "max":720,
-      "min":60
+      "max":60,
+      "min":1
     },
     "SessionToken":{
       "type":"string",
@@ -2687,7 +2689,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier for the user account to update.</p>",
+          "documentation":"<p>The unique identifier for the user that you want to update.</p>",
           "location":"uri",
           "locationName":"userId"
         },
@@ -2723,7 +2725,7 @@
       "members":{
         "userId":{
           "shape":"UserId",
-          "documentation":"<p>The unique identifier of the updated user account.</p>"
+          "documentation":"<p>The unique identifier of the updated user.</p>"
         }
       }
     },
@@ -2736,7 +2738,7 @@
         },
         "status":{
           "shape":"UserStatus",
-          "documentation":"<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>"
+          "documentation":"<p>The current status of the user. </p> <ul> <li> <p> <code>CREATING</code> – The user creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user is currently inactive.</p> </li> </ul>"
         },
         "firstName":{
           "shape":"FirstName",
@@ -2764,26 +2766,26 @@
         },
         "createTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>The timestamp at which the user account was created in FinSpace. The value is determined as epoch time in milliseconds. </p>"
+          "documentation":"<p>The timestamp at which the user was created in FinSpace. The value is determined as epoch time in milliseconds. </p>"
         },
         "lastEnabledTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p> Describes the last time the user account was enabled. The value is determined as epoch time in milliseconds. </p>"
+          "documentation":"<p> Describes the last time the user was activated. The value is determined as epoch time in milliseconds. </p>"
         },
         "lastDisabledTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>Describes the last time the user account was disabled. The value is determined as epoch time in milliseconds.</p>"
+          "documentation":"<p>Describes the last time the user was deactivated. The value is determined as epoch time in milliseconds.</p>"
         },
         "lastModifiedTime":{
           "shape":"TimestampEpoch",
-          "documentation":"<p>Describes the last time the user account was updated. The value is determined as epoch time in milliseconds. </p>"
+          "documentation":"<p>Describes the last time the user was updated. The value is determined as epoch time in milliseconds. </p>"
         },
         "lastLoginTime":{
           "shape":"TimestampEpoch",
           "documentation":"<p>Describes the last time that the user logged into their account. The value is determined as epoch time in milliseconds. </p>"
         }
       },
-      "documentation":"<p>The details of the user account.</p>"
+      "documentation":"<p>The details of the user.</p>"
     },
     "UserByPermissionGroup":{
       "type":"structure",
@@ -2794,7 +2796,7 @@
         },
         "status":{
           "shape":"UserStatus",
-          "documentation":"<p>The current status of the user account. </p> <ul> <li> <p> <code>CREATING</code> – The user account creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user account is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user account is currently inactive.</p> </li> </ul>"
+          "documentation":"<p>The current status of the user. </p> <ul> <li> <p> <code>CREATING</code> – The user creation is in progress.</p> </li> <li> <p> <code>ENABLED</code> – The user is created and is currently active.</p> </li> <li> <p> <code>DISABLED</code> – The user is currently inactive.</p> </li> </ul>"
         },
         "firstName":{
           "shape":"FirstName",
@@ -2822,10 +2824,10 @@
         },
         "membershipStatus":{
           "shape":"PermissionGroupMembershipStatus",
-          "documentation":"<p>Indicates the status of the user account within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user account is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user account is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
+          "documentation":"<p>Indicates the status of the user within a permission group.</p> <ul> <li> <p> <code>ADDITION_IN_PROGRESS</code> – The user is currently being added to the permission group.</p> </li> <li> <p> <code>ADDITION_SUCCESS</code> – The user is successfully added to the permission group.</p> </li> <li> <p> <code>REMOVAL_IN_PROGRESS</code> – The user is currently being removed from the permission group.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The structure of a user account associated with a permission group.</p>"
+      "documentation":"<p>The structure of a user associated with a permission group.</p>"
     },
     "UserByPermissionGroupList":{
       "type":"list",

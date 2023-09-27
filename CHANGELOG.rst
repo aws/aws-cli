@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.29.56
+=======
+
+* api-change:``cognito-idp``: The UserPoolType Status field is no longer used.
+* api-change:``firehose``: Features : Adding support for new data ingestion source to Kinesis Firehose - AWS Managed Services Kafka.
+* api-change:``iot``: Added support for IoT Rules Engine Kafka Action Headers
+* api-change:``textract``: This release adds new feature - Layout to Analyze Document API which can automatically extract layout elements such as titles, paragraphs, headers, section headers, lists, page numbers, footers, table areas, key-value areas and figure areas and order the elements as a human would read.
+
+
 1.29.55
 =======
 

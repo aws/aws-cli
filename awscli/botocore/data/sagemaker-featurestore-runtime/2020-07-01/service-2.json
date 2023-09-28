@@ -290,10 +290,7 @@
     },
     "FeatureValue":{
       "type":"structure",
-      "required":[
-        "FeatureName",
-        "ValueAsString"
-      ],
+      "required":["FeatureName"],
       "members":{
         "FeatureName":{
           "shape":"FeatureName",
@@ -301,7 +298,11 @@
         },
         "ValueAsString":{
           "shape":"ValueAsString",
-          "documentation":"<p>The value associated with a feature, in string format. Note that features types can be String, Integral, or Fractional. This value represents all three types as a string.</p>"
+          "documentation":"<p>The value in string format associated with a feature. Used when your <code>CollectionType</code> is <code>None</code>. Note that features types can be <code>String</code>, <code>Integral</code>, or <code>Fractional</code>. This value represents all three types as a string.</p>"
+        },
+        "ValueAsStringList":{
+          "shape":"ValueAsStringList",
+          "documentation":"<p>The list of values in string format associated with a feature. Used when your <code>CollectionType</code> is a <code>List</code>, <code>Set</code>, or <code>Vector</code>. Note that features types can be <code>String</code>, <code>Integral</code>, or <code>Fractional</code>. These values represents all three types as a string.</p>"
         }
       },
       "documentation":"<p>The value associated with a feature.</p>"
@@ -489,6 +490,12 @@
       "type":"string",
       "max":358400,
       "pattern":".*"
+    },
+    "ValueAsStringList":{
+      "type":"list",
+      "member":{"shape":"ValueAsString"},
+      "max":358400,
+      "min":0
     }
   },
   "documentation":"<p>Contains all data plane API operations and data types for the Amazon SageMaker Feature Store. Use this API to put, delete, and retrieve (get) features from a feature store.</p> <p>Use the following operations to configure your <code>OnlineStore</code> and <code>OfflineStore</code> features, and to create and manage feature groups:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateFeatureGroup.html\">CreateFeatureGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteFeatureGroup.html\">DeleteFeatureGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeFeatureGroup.html\">DescribeFeatureGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListFeatureGroups.html\">ListFeatureGroups</a> </p> </li> </ul>"

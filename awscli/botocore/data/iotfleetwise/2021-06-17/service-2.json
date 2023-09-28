@@ -343,6 +343,23 @@
       ],
       "documentation":"<p> Retrieves information about a created decoder manifest. </p>"
     },
+    "GetEncryptionConfiguration":{
+      "name":"GetEncryptionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEncryptionConfigurationRequest"},
+      "output":{"shape":"GetEncryptionConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the encryption configuration for resources and data in Amazon Web Services IoT FleetWise.</p>"
+    },
     "GetFleet":{
       "name":"GetFleet",
       "http":{
@@ -718,6 +735,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Retrieves a list of summaries of all vehicles associated with a fleet. </p> <note> <p>This API operation uses pagination. Specify the <code>nextToken</code> parameter in the request to return more results.</p> </note>"
+    },
+    "PutEncryptionConfiguration":{
+      "name":"PutEncryptionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutEncryptionConfigurationRequest"},
+      "output":{"shape":"PutEncryptionConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or updates the encryption configuration. Amazon Web Services IoT FleetWise can encrypt your data and resources using an Amazon Web Services managed key. Or, you can use a KMS key that you own and manage. For more information, see <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/data-encryption.html\">Data encryption</a> in the <i>Amazon Web Services IoT FleetWise Developer Guide</i>.</p>"
     },
     "PutLoggingOptions":{
       "name":"PutLoggingOptions",
@@ -1431,7 +1466,7 @@
         },
         "dataDestinationConfigs":{
           "shape":"DataDestinationConfigs",
-          "documentation":"<p>The destination where the campaign sends data. You can choose to send data to be stored in Amazon S3 or Amazon Timestream.</p> <p>Amazon S3 optimizes the cost of data storage and provides additional mechanisms to use vehicle data, such as data lakes, centralized data storage, data processing pipelines, and analytics. </p> <p>You can use Amazon Timestream to access and analyze time series data, and Timestream to query vehicle data so that you can identify trends and patterns.</p>"
+          "documentation":"<p>The destination where the campaign sends data. You can choose to send data to be stored in Amazon S3 or Amazon Timestream.</p> <p>Amazon S3 optimizes the cost of data storage and provides additional mechanisms to use vehicle data, such as data lakes, centralized data storage, data processing pipelines, and analytics. Amazon Web Services IoT FleetWise supports at-least-once file delivery to S3. Your vehicle data is stored on multiple Amazon Web Services IoT FleetWise servers for redundancy and high availability.</p> <p>You can use Amazon Timestream to access and analyze time series data, and Timestream to query vehicle data so that you can identify trends and patterns.</p>"
         }
       }
     },
@@ -2019,6 +2054,21 @@
       "members":{
       }
     },
+    "EncryptionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "SUCCESS",
+        "FAILURE"
+      ]
+    },
+    "EncryptionType":{
+      "type":"string",
+      "enum":[
+        "KMS_BASED_ENCRYPTION",
+        "FLEETWISE_DEFAULT_ENCRYPTION"
+      ]
+    },
     "FleetSummary":{
       "type":"structure",
       "required":[
@@ -2214,6 +2264,44 @@
         "lastModificationTime":{
           "shape":"timestamp",
           "documentation":"<p> The time the decoder manifest was last updated in seconds since epoch (January 1, 1970 at midnight UTC time). </p>"
+        }
+      }
+    },
+    "GetEncryptionConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetEncryptionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "encryptionStatus",
+        "encryptionType"
+      ],
+      "members":{
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the KMS key that is used for encryption.</p>"
+        },
+        "encryptionStatus":{
+          "shape":"EncryptionStatus",
+          "documentation":"<p>The encryption status.</p>"
+        },
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption. Set to <code>KMS_BASED_ENCRYPTION</code> to use an KMS key that you own and manage. Set to <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key that is owned by the Amazon Web Services IoT FleetWise service account.</p>"
+        },
+        "errorMessage":{
+          "shape":"errorMessage",
+          "documentation":"<p>The error message that describes why encryption settings couldn't be configured, if applicable.</p>"
+        },
+        "creationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The time when encryption was configured in seconds since epoch (January 1, 1970 at midnight UTC time).</p>"
+        },
+        "lastModificationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The time when encryption was last updated in seconds since epoch (January 1, 1970 at midnight UTC time).</p>"
         }
       }
     },
@@ -3455,6 +3543,41 @@
       "type":"string",
       "max":50,
       "min":1
+    },
+    "PutEncryptionConfigurationRequest":{
+      "type":"structure",
+      "required":["encryptionType"],
+      "members":{
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the KMS key that is used for encryption.</p>"
+        },
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption. Choose <code>KMS_BASED_ENCRYPTION</code> to use a KMS key or <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key.</p>"
+        }
+      }
+    },
+    "PutEncryptionConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "encryptionStatus",
+        "encryptionType"
+      ],
+      "members":{
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the KMS key that is used for encryption.</p>"
+        },
+        "encryptionStatus":{
+          "shape":"EncryptionStatus",
+          "documentation":"<p>The encryption status.</p>"
+        },
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption. Set to <code>KMS_BASED_ENCRYPTION</code> to use an KMS key that you own and manage. Set to <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key that is owned by the Amazon Web Services IoT FleetWise service account.</p>"
+        }
+      }
     },
     "PutLoggingOptionsRequest":{
       "type":"structure",

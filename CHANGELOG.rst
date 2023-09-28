@@ -6084,6 +6084,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.57
+=======
+
+* api-change:``bedrock``: Model Invocation logging added to enable or disable logs in customer account. Model listing and description support added. Provisioned Throughput feature added. Custom model support added for creating custom models. Also includes list, and delete functions for custom model.
+* api-change:``bedrock-runtime``: Run Inference: Added support to run the inference on models.  Includes set of APIs for running inference in streaming and non-streaming mode.
+* api-change:``budgets``: Update DescribeBudgets and DescribeBudgetNotificationsForAccount MaxResults limit to 1000.
+* api-change:``ec2``: Adds support for Customer Managed Key encryption for Amazon Verified Access resources
+* api-change:``iotfleetwise``: AWS IoT FleetWise now supports encryption through a customer managed AWS KMS key. The PutEncryptionConfiguration and GetEncryptionConfiguration APIs were added.
+* api-change:``sagemaker``: Online store feature groups supports Standard and InMemory tier storage types for low latency storage for real-time data retrieval. The InMemory tier supports collection types List, Set, and Vector.
+* api-change:``sagemaker-featurestore-runtime``: Feature Store supports read/write of records with collection type features.
+* api-change:``wafv2``: Correct and improve the documentation for the FieldToMatch option JA3 fingerprint.
+
+
+1.29.56
+=======
+
+* api-change:``cognito-idp``: The UserPoolType Status field is no longer used.
+* api-change:``firehose``: Features : Adding support for new data ingestion source to Kinesis Firehose - AWS Managed Services Kafka.
+* api-change:``iot``: Added support for IoT Rules Engine Kafka Action Headers
+* api-change:``textract``: This release adds new feature - Layout to Analyze Document API which can automatically extract layout elements such as titles, paragraphs, headers, section headers, lists, page numbers, footers, table areas, key-value areas and figure areas and order the elements as a human would read.
+
+
 1.29.55
 =======
 

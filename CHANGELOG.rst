@@ -6084,6 +6084,19 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.58
+=======
+
+* api-change:``bedrock-runtime``: Add model timeout exception for InvokeModelWithResponseStream API and update validator for invoke model identifier.
+* api-change:``bedrock``: Provisioned throughput feature with Amazon and third-party base models, and update validators for model identifier and taggable resource ARNs.
+* api-change:``ec2``: Introducing Amazon EC2 R7iz instances with 3.9 GHz sustained all-core turbo frequency and deliver up to 20% better performance than previous generation z1d instances.
+* api-change:``managedblockchain``: Remove Rinkeby as option from Ethereum APIs
+* api-change:``rds``: Adds DefaultCertificateForNewLaunches field in the DescribeCertificates API response.
+* api-change:``sso``: Fix FIPS Endpoints in aws-us-gov.
+* api-change:``sts``: STS API updates for assumeRole
+* api-change:``transfer``: Documentation updates for AWS Transfer Family
+
+
 1.29.57
 =======
 

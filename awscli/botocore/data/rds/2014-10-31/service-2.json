@@ -981,7 +981,7 @@
       "errors":[
         {"shape":"CertificateNotFoundFault"}
       ],
-      "documentation":"<p>Lists the set of CA certificates provided by Amazon RDS for this Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>Lists the set of certificate authority (CA) certificates provided by Amazon RDS for this Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "DescribeDBClusterAutomatedBackups":{
       "name":"DescribeDBClusterAutomatedBackups",
@@ -2436,7 +2436,7 @@
         {"shape":"DBInstanceAutomatedBackupNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"}
       ],
-      "documentation":"<p>Restores a DB instance to an arbitrary point in time. You can restore to any point in time before the time identified by the LatestRestorableTime property. You can restore to a point up to the number of days specified by the BackupRetentionPeriod property.</p> <p>The target database is created with most of the original configuration, but in a system-selected Availability Zone, with the default security group, the default subnet group, and the default DB parameter group. By default, the new DB instance is created as a single-AZ deployment except when the instance is a SQL Server instance that has an option group that is associated with mirroring; in this case, the instance becomes a mirrored deployment and not a single-AZ deployment.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterToPointInTime</code>.</p> </note>"
+      "documentation":"<p>Restores a DB instance to an arbitrary point in time. You can restore to any point in time before the time identified by the <code>LatestRestorableTime</code> property. You can restore to a point up to the number of days specified by the <code>BackupRetentionPeriod</code> property.</p> <p>The target database is created with most of the original configuration, but in a system-selected Availability Zone, with the default security group, the default subnet group, and the default DB parameter group. By default, the new DB instance is created as a single-AZ deployment except when the instance is a SQL Server instance that has an option group that is associated with mirroring; in this case, the instance becomes a mirrored deployment and not a single-AZ deployment.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterToPointInTime</code>.</p> </note>"
     },
     "RevokeDBSecurityGroupIngress":{
       "name":"RevokeDBSecurityGroupIngress",
@@ -3265,6 +3265,10 @@
     "CertificateMessage":{
       "type":"structure",
       "members":{
+        "DefaultCertificateForNewLaunches":{
+          "shape":"String",
+          "documentation":"<p>The default root CA for new databases created by your Amazon Web Services account. This is either the root CA override set on your Amazon Web Services account or the system default CA for the Region if no override exists. To override the default CA, use the <code>ModifyCertificates</code> operation.</p>"
+        },
         "Certificates":{
           "shape":"CertificateList",
           "documentation":"<p>The list of <code>Certificate</code> objects for the Amazon Web Services account.</p>"
@@ -10745,7 +10749,7 @@
         },
         "AllowMajorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether major version upgrades are allowed.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Constraints:</p> <ul> <li> <p>You must allow major version upgrades when specifying a value for the <code>EngineVersion</code> parameter that is a different major version than the DB cluster's current version.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether major version upgrades are allowed.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Constraints:</p> <ul> <li> <p>You must allow major version upgrades when specifying a value for the <code>EngineVersion</code> parameter that is a different major version than the DB cluster's current version.</p> </li> </ul>"
         },
         "DBInstanceParameterGroupName":{
           "shape":"String",
@@ -10925,7 +10929,7 @@
         },
         "DBInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The new compute and memory capacity of the DB instance, for example <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html\">Aurora DB instance classes</a> in the <i>Amazon Aurora User Guide</i>. For RDS Custom, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits.html#custom-reqs-limits.instances\">DB instance class support for RDS Custom for Oracle</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html#custom-reqs-limits.instancesMS\"> DB instance class support for RDS Custom for SQL Server</a>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless you specify <code>ApplyImmediately</code> in your request. </p> <p>Default: Uses existing setting</p>"
+          "documentation":"<p>The new compute and memory capacity of the DB instance, for example <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html\">Aurora DB instance classes</a> in the <i>Amazon Aurora User Guide</i>. For RDS Custom, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits.html#custom-reqs-limits.instances\">DB instance class support for RDS Custom for Oracle</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html#custom-reqs-limits.instancesMS\"> DB instance class support for RDS Custom for SQL Server</a>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless you specify <code>ApplyImmediately</code> in your request. </p> <p>Default: Uses existing setting</p> <p>Constraints:</p> <ul> <li> <p>If you are modifying the DB instance class and upgrading the engine version at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to modify the DB instance class, and then run it again to upgrade the engine version.</p> </li> </ul>"
         },
         "DBSubnetGroupName":{
           "shape":"String",
@@ -10969,7 +10973,7 @@
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the database engine to upgrade to. Changing this parameter results in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is enabled for this request.</p> <p>For major version upgrades, if a nondefault DB parameter group is currently in use, a new DB parameter group in the DB parameter group family for the new engine version must be specified. The new DB parameter group can be the default for that DB parameter group family.</p> <p>If you specify only a major version, Amazon RDS updates the DB instance to the default minor version if the current minor version is lower. For information about valid engine versions, see <code>CreateDBInstance</code>, or call <code>DescribeDBEngineVersions</code>.</p> <p>If the instance that you're modifying is acting as a read replica, the engine version that you specify must be the same or higher than the version that the source DB instance or cluster is running.</p> <p>In RDS Custom for Oracle, this parameter is supported for read replicas only if they are in the <code>PATCH_DB_FAILURE</code> lifecycle.</p>"
+          "documentation":"<p>The version number of the database engine to upgrade to. Changing this parameter results in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is enabled for this request.</p> <p>For major version upgrades, if a nondefault DB parameter group is currently in use, a new DB parameter group in the DB parameter group family for the new engine version must be specified. The new DB parameter group can be the default for that DB parameter group family.</p> <p>If you specify only a major version, Amazon RDS updates the DB instance to the default minor version if the current minor version is lower. For information about valid engine versions, see <code>CreateDBInstance</code>, or call <code>DescribeDBEngineVersions</code>.</p> <p>If the instance that you're modifying is acting as a read replica, the engine version that you specify must be the same or higher than the version that the source DB instance or cluster is running.</p> <p>In RDS Custom for Oracle, this parameter is supported for read replicas only if they are in the <code>PATCH_DB_FAILURE</code> lifecycle.</p> <p>Constraints:</p> <ul> <li> <p>If you are upgrading the engine version and modifying the DB instance class at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to modify the DB instance class, and then run it again to upgrade the engine version.</p> </li> </ul>"
         },
         "AllowMajorVersionUpgrade":{
           "shape":"Boolean",
@@ -13290,7 +13294,7 @@
         },
         "DBClusterParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the DB cluster parameter group to associate with this DB cluster. If this argument is omitted, the default DB cluster parameter group for the specified engine is used.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DB cluster parameter group.</p> </li> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>The name of the custom DB cluster parameter group to associate with this DB cluster.</p> <p>If the <code>DBClusterParameterGroupName</code> parameter is omitted, the default DB cluster parameter group for the specified engine is used.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DB cluster parameter group.</p> </li> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
@@ -13318,7 +13322,7 @@
         },
         "DBClusterInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The compute and memory capacity of the each DB instance in the Multi-AZ DB cluster, for example db.m6gd.xlarge. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines.</p> <p>For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB instance class</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>The compute and memory capacity of the each DB instance in the Multi-AZ DB cluster, for example db.m6gd.xlarge. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines.</p> <p>For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB instance class</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for: Multi-AZ DB clusters only</p>"
         },
         "StorageType":{
           "shape":"String",
@@ -13738,47 +13742,47 @@
         },
         "TargetDBInstanceIdentifier":{
           "shape":"String",
-          "documentation":"<p>The name of the new DB instance to be created.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
+          "documentation":"<p>The name of the new DB instance to create.</p> <p>Constraints:</p> <ul> <li> <p>Must contain from 1 to 63 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
         },
         "RestoreTime":{
           "shape":"TStamp",
-          "documentation":"<p>The date and time to restore from.</p> <p>Valid Values: Value must be a time in Universal Coordinated Time (UTC) format</p> <p>Constraints:</p> <ul> <li> <p>Must be before the latest restorable time for the DB instance</p> </li> <li> <p>Can't be specified if the <code>UseLatestRestorableTime</code> parameter is enabled</p> </li> </ul> <p>Example: <code>2009-09-07T23:45:00Z</code> </p>"
+          "documentation":"<p>The date and time to restore from.</p> <p>Constraints:</p> <ul> <li> <p>Must be a time in Universal Coordinated Time (UTC) format.</p> </li> <li> <p>Must be before the latest restorable time for the DB instance.</p> </li> <li> <p>Can't be specified if the <code>UseLatestRestorableTime</code> parameter is enabled.</p> </li> </ul> <p>Example: <code>2009-09-07T23:45:00Z</code> </p>"
         },
         "UseLatestRestorableTime":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether the DB instance is restored from the latest backup time. By default, the DB instance isn't restored from the latest backup time.</p> <p>Constraints: Can't be specified if the <code>RestoreTime</code> parameter is provided.</p>"
+          "documentation":"<p>Specifies whether the DB instance is restored from the latest backup time. By default, the DB instance isn't restored from the latest backup time.</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified if the <code>RestoreTime</code> parameter is provided.</p> </li> </ul>"
         },
         "DBInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The compute and memory capacity of the Amazon RDS DB instance, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Default: The same DBInstanceClass as the original DB instance.</p>"
+          "documentation":"<p>The compute and memory capacity of the Amazon RDS DB instance, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Default: The same DB instance class as the original DB instance.</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number on which the database accepts connections.</p> <p>Constraints: Value must be <code>1150-65535</code> </p> <p>Default: The same port as the original DB instance.</p>"
+          "documentation":"<p>The port number on which the database accepts connections.</p> <p>Default: The same port as the original DB instance.</p> <p>Constraints:</p> <ul> <li> <p>The value must be <code>1150-65535</code>.</p> </li> </ul>"
         },
         "AvailabilityZone":{
           "shape":"String",
-          "documentation":"<p>The Availability Zone (AZ) where the DB instance will be created.</p> <p>Default: A random, system-chosen Availability Zone.</p> <p>Constraint: You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p> <p>Example: <code>us-east-1a</code> </p>"
+          "documentation":"<p>The Availability Zone (AZ) where the DB instance will be created.</p> <p>Default: A random, system-chosen Availability Zone.</p> <p>Constraints:</p> <ul> <li> <p>You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p> </li> </ul> <p>Example: <code>us-east-1a</code> </p>"
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints: If supplied, must match the name of an existing DBSubnetGroup.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
+          "documentation":"<p>The DB subnet group name to use for the new instance.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is a Multi-AZ deployment.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraint: You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p>"
+          "documentation":"<p>Secifies whether the DB instance is a Multi-AZ deployment.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p> </li> </ul>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access isn't permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access isn't permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor version upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether minor version upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "LicenseModel":{
           "shape":"String",
-          "documentation":"<p>License model information for the restored DB instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: Same as source.</p> <p>Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p>"
+          "documentation":"<p>The license model information for the restored DB instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Valid Values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p> <p>Default: Same as the source.</p>"
         },
         "DBName":{
           "shape":"String",
@@ -13786,24 +13790,24 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The database engine to use for the new instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: The same as source</p> <p>Constraint: Must be compatible with the engine of the source</p> <p>Valid Values:</p> <ul> <li> <p> <code>mariadb</code> </p> </li> <li> <p> <code>mysql</code> </p> </li> <li> <p> <code>oracle-ee</code> </p> </li> <li> <p> <code>oracle-ee-cdb</code> </p> </li> <li> <p> <code>oracle-se2</code> </p> </li> <li> <p> <code>oracle-se2-cdb</code> </p> </li> <li> <p> <code>postgres</code> </p> </li> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul>"
+          "documentation":"<p>The database engine to use for the new instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Valid Values:</p> <ul> <li> <p> <code>mariadb</code> </p> </li> <li> <p> <code>mysql</code> </p> </li> <li> <p> <code>oracle-ee</code> </p> </li> <li> <p> <code>oracle-ee-cdb</code> </p> </li> <li> <p> <code>oracle-se2</code> </p> </li> <li> <p> <code>oracle-se2-cdb</code> </p> </li> <li> <p> <code>postgres</code> </p> </li> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul> <p>Default: The same as source</p> <p>Constraints:</p> <ul> <li> <p>Must be compatible with the engine of the source.</p> </li> </ul>"
         },
         "Iops":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB instance.</p> <p>Constraints: Must be an integer greater than 1000.</p> <p> <b>SQL Server</b> </p> <p>Setting the IOPS value for the SQL Server database engine isn't supported.</p>"
+          "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to initially allocate for the DB instance.</p> <p>This setting doesn't apply to SQL Server.</p> <p>Constraints:</p> <ul> <li> <p>Must be an integer greater than 1000.</p> </li> </ul>"
         },
         "OptionGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the option group to be used for the restored DB instance.</p> <p>Permanent options, such as the TDE option for Oracle Advanced Security TDE, can't be removed from an option group, and that option group can't be removed from a DB instance after it is associated with a DB instance</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The name of the option group to use for the restored DB instance.</p> <p>Permanent options, such as the TDE option for Oracle Advanced Security TDE, can't be removed from an option group, and that option group can't be removed from a DB instance after it is associated with a DB instance</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB instance to snapshots of the DB instance. By default, tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the restored DB instance to snapshots of the DB instance. By default, tags are not copied.</p>"
         },
         "Tags":{"shape":"TagList"},
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Valid values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified, otherwise <code>gp2</code> </p>"
+          "documentation":"<p>The storage type to associate with the DB instance.</p> <p>Valid Values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>Default: <code>io1</code>, if the <code>Iops</code> parameter is specified. Otherwise, <code>gp2</code>.</p> <p>Constraints:</p> <ul> <li> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> </li> </ul>"
         },
         "TdeCredentialArn":{
           "shape":"String",
@@ -13819,7 +13823,7 @@
         },
         "Domain":{
           "shape":"String",
-          "documentation":"<p>Specify the Active Directory directory ID to restore the DB instance in. Create the domain before running this command. Currently, you can create only the MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances in an Active Directory Domain.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>The Active Directory directory ID to restore the DB instance in. Create the domain before running this command. Currently, you can create only the MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances in an Active Directory Domain.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
@@ -13843,7 +13847,7 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
@@ -13859,11 +13863,11 @@
         },
         "DBParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the DB parameter group to associate with this DB instance.</p> <p>If you do not specify a value for <code>DBParameterGroupName</code>, then the default <code>DBParameterGroup</code> for the specified DB engine is used.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBParameterGroup.</p> </li> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+          "documentation":"<p>The name of the DB parameter group to associate with this DB instance.</p> <p>If you do not specify a value for <code>DBParameterGroupName</code>, then the default <code>DBParameterGroup</code> for the specified DB engine is used.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DB parameter group.</p> </li> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
         },
         "SourceDbiResourceId":{
           "shape":"String",
@@ -13875,11 +13879,11 @@
         },
         "SourceDBInstanceAutomatedBackupsArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the replicated automated backups from which to restore, for example, <code>arn:aws:rds:useast-1:123456789012:auto-backup:ab-L2IJCEXJP7XQ7HOJ4SIEXAMPLE</code>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replicated automated backups from which to restore, for example, <code>arn:aws:rds:us-east-1:123456789012:auto-backup:ab-L2IJCEXJP7XQ7HOJ4SIEXAMPLE</code>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "EnableCustomerOwnedIp":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts DB instance.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the DB instance from outside of its virtual private cloud (VPC) on your local network.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts DB instance.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the DB instance from outside of its virtual private cloud (VPC) on your local network.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
         },
         "CustomIamInstanceProfile":{
           "shape":"String",
@@ -13891,11 +13895,11 @@
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>The network type of the DB instance.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+          "documentation":"<p>The storage throughput value for the DB instance.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",

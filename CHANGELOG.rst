@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.59
+=======
+
+* api-change:``connect``: GetMetricDataV2 API: Update to include new metrics CONTACTS_RESOLVED_IN_X , AVG_HOLD_TIME_ALL_CONTACTS , AVG_RESOLUTION_TIME , ABANDONMENT_RATE , AGENT_NON_RESPONSE_WITHOUT_CUSTOMER_ABANDONS with added features: Interval Period, TimeZone, Negate MetricFilters, Extended date time range.
+* api-change:``location``: Amazon Location Service adds support for bounding polygon queries. Additionally, the GeofenceCount field has been added to the DescribeGeofenceCollection API response.
+* api-change:``mediaconvert``: This release adds the ability to replace video frames without modifying the audio essence.
+* api-change:``oam``: This release adds support for sharing AWS::ApplicationInsights::Application resources.
+* api-change:``sagemaker``: This release allows users to run Selective Execution in SageMaker Pipelines without SourcePipelineExecutionArn if selected steps do not have any dependent steps.
+* api-change:``wellarchitected``: AWS Well-Architected now supports Review Templates that allows you to create templates with pre-filled answers for Well-Architected and Custom Lens best practices.
+
+
 1.29.58
 =======
 

@@ -141,6 +141,44 @@
       ],
       "documentation":"<p>Create a profile share.</p>"
     },
+    "CreateReviewTemplate":{
+      "name":"CreateReviewTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/reviewTemplates"
+      },
+      "input":{"shape":"CreateReviewTemplateInput"},
+      "output":{"shape":"CreateReviewTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Create a review template.</p> <note> <p> <b>Disclaimer</b> </p> <p>Do not include or gather personal identifiable information (PII) of end users or other identifiable individuals in or via your review templates. If your review template or those shared with you and used in your account do include or collect PII you are responsible for: ensuring that the included PII is processed in accordance with applicable law, providing adequate privacy notices, and obtaining necessary consents for processing such data.</p> </note>"
+    },
+    "CreateTemplateShare":{
+      "name":"CreateTemplateShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/templates/shares/{TemplateArn}"
+      },
+      "input":{"shape":"CreateTemplateShareInput"},
+      "output":{"shape":"CreateTemplateShareOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Create a review template share.</p> <p>The owner of a review template can share it with other Amazon Web Services accounts, users, an organization, and organizational units (OUs) in the same Amazon Web Services Region. </p> <p> Shared access to a review template is not removed until the review template share invitation is deleted.</p> <p>If you share a review template with an organization or OU, all accounts in the organization or OU are granted access to the review template.</p> <note> <p> <b>Disclaimer</b> </p> <p>By sharing your review template with other Amazon Web Services accounts, you acknowledge that Amazon Web Services will make your review template available to those other accounts.</p> </note>"
+    },
     "CreateWorkload":{
       "name":"CreateWorkload",
       "http":{
@@ -158,7 +196,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Create a new workload.</p> <p>The owner of a workload can share the workload with other Amazon Web Services accounts, users, an organization, and organizational units (OUs) in the same Amazon Web Services Region. Only the owner of a workload can delete it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/define-workload.html\">Defining a Workload</a> in the <i>Well-Architected Tool User Guide</i>.</p> <important> <p>Either <code>AwsRegions</code>, <code>NonAwsRegions</code>, or both must be specified when creating a workload.</p> <p>You also must specify <code>ReviewOwner</code>, even though the parameter is listed as not being required in the following section. </p> </important>"
+      "documentation":"<p>Create a new workload.</p> <p>The owner of a workload can share the workload with other Amazon Web Services accounts, users, an organization, and organizational units (OUs) in the same Amazon Web Services Region. Only the owner of a workload can delete it.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/wellarchitected/latest/userguide/define-workload.html\">Defining a Workload</a> in the <i>Well-Architected Tool User Guide</i>.</p> <important> <p>Either <code>AwsRegions</code>, <code>NonAwsRegions</code>, or both must be specified when creating a workload.</p> <p>You also must specify <code>ReviewOwner</code>, even though the parameter is listed as not being required in the following section. </p> </important> <p>When creating a workload using a review template, you must have the following IAM permissions:</p> <ul> <li> <p> <code>wellarchitected:GetReviewTemplate</code> </p> </li> <li> <p> <code>wellarchitected:GetReviewTemplateAnswer</code> </p> </li> <li> <p> <code>wellarchitected:ListReviewTemplateAnswers</code> </p> </li> <li> <p> <code>wellarchitected:GetReviewTemplateLensReview</code> </p> </li> </ul>"
     },
     "CreateWorkloadShare":{
       "name":"CreateWorkloadShare",
@@ -246,6 +284,40 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Delete a profile share.</p>"
+    },
+    "DeleteReviewTemplate":{
+      "name":"DeleteReviewTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/reviewTemplates/{TemplateArn}"
+      },
+      "input":{"shape":"DeleteReviewTemplateInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete a review template.</p> <p>Only the owner of a review template can delete it.</p> <p>After the review template is deleted, Amazon Web Services accounts, users, organizations, and organizational units (OUs) that you shared the review template with will no longer be able to apply it to new workloads.</p>"
+    },
+    "DeleteTemplateShare":{
+      "name":"DeleteTemplateShare",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/templates/shares/{TemplateArn}/{ShareId}"
+      },
+      "input":{"shape":"DeleteTemplateShareInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete a review template share.</p> <p>After the review template share is deleted, Amazon Web Services accounts, users, organizations, and organizational units (OUs) that you shared the review template with will no longer be able to apply it to new workloads.</p>"
     },
     "DeleteWorkload":{
       "name":"DeleteWorkload",
@@ -485,6 +557,57 @@
       ],
       "documentation":"<p>Get profile template.</p>"
     },
+    "GetReviewTemplate":{
+      "name":"GetReviewTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/reviewTemplates/{TemplateArn}"
+      },
+      "input":{"shape":"GetReviewTemplateInput"},
+      "output":{"shape":"GetReviewTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get review template.</p>"
+    },
+    "GetReviewTemplateAnswer":{
+      "name":"GetReviewTemplateAnswer",
+      "http":{
+        "method":"GET",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}"
+      },
+      "input":{"shape":"GetReviewTemplateAnswerInput"},
+      "output":{"shape":"GetReviewTemplateAnswerOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get review template answer.</p>"
+    },
+    "GetReviewTemplateLensReview":{
+      "name":"GetReviewTemplateLensReview",
+      "http":{
+        "method":"GET",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}"
+      },
+      "input":{"shape":"GetReviewTemplateLensReviewInput"},
+      "output":{"shape":"GetReviewTemplateLensReviewOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get a lens review associated with a review template.</p>"
+    },
     "GetWorkload":{
       "name":"GetWorkload",
       "http":{
@@ -721,6 +844,39 @@
       ],
       "documentation":"<p>List profiles.</p>"
     },
+    "ListReviewTemplateAnswers":{
+      "name":"ListReviewTemplateAnswers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers"
+      },
+      "input":{"shape":"ListReviewTemplateAnswersInput"},
+      "output":{"shape":"ListReviewTemplateAnswersOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List the answers of a review template.</p>"
+    },
+    "ListReviewTemplates":{
+      "name":"ListReviewTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/reviewTemplates"
+      },
+      "input":{"shape":"ListReviewTemplatesInput"},
+      "output":{"shape":"ListReviewTemplatesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List review templates.</p>"
+    },
     "ListShareInvitations":{
       "name":"ListShareInvitations",
       "http":{
@@ -735,7 +891,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List the workload invitations.</p>"
+      "documentation":"<p>List the share invitations.</p> <p> <code>WorkloadNamePrefix</code>, <code>LensNamePrefix</code>, <code>ProfileNamePrefix</code>, and <code>TemplateNamePrefix</code> are mutually exclusive. Use the parameter that matches your <code>ShareResourceType</code>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -749,7 +905,24 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List the tags for a resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, or a profile ARN.</p> </note>"
+      "documentation":"<p>List the tags for a resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, a profile ARN, or review template ARN.</p> </note>"
+    },
+    "ListTemplateShares":{
+      "name":"ListTemplateShares",
+      "http":{
+        "method":"GET",
+        "requestUri":"/templates/shares/{TemplateArn}"
+      },
+      "input":{"shape":"ListTemplateSharesInput"},
+      "output":{"shape":"ListTemplateSharesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List review template shares.</p>"
     },
     "ListWorkloadShares":{
       "name":"ListWorkloadShares",
@@ -796,7 +969,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds one or more tags to the specified resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, or a profile ARN.</p> </note>"
+      "documentation":"<p>Adds one or more tags to the specified resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, a profile ARN, or review template ARN.</p> </note>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -810,7 +983,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes specified tags from a resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, or a profile ARN.</p> </note> <p>To specify multiple tags, use separate <b>tagKeys</b> parameters, for example:</p> <p> <code>DELETE /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code> </p>"
+      "documentation":"<p>Deletes specified tags from a resource.</p> <note> <p>The WorkloadArn parameter can be a workload ARN, a custom lens ARN, a profile ARN, or review template ARN.</p> </note> <p>To specify multiple tags, use separate <b>tagKeys</b> parameters, for example:</p> <p> <code>DELETE /tags/WorkloadArn?tagKeys=key1&amp;tagKeys=key2</code> </p>"
     },
     "UpdateAnswer":{
       "name":"UpdateAnswer",
@@ -881,6 +1054,60 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Update a profile.</p>"
+    },
+    "UpdateReviewTemplate":{
+      "name":"UpdateReviewTemplate",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/reviewTemplates/{TemplateArn}"
+      },
+      "input":{"shape":"UpdateReviewTemplateInput"},
+      "output":{"shape":"UpdateReviewTemplateOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update a review template.</p>"
+    },
+    "UpdateReviewTemplateAnswer":{
+      "name":"UpdateReviewTemplateAnswer",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}"
+      },
+      "input":{"shape":"UpdateReviewTemplateAnswerInput"},
+      "output":{"shape":"UpdateReviewTemplateAnswerOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update a review template answer.</p>"
+    },
+    "UpdateReviewTemplateLensReview":{
+      "name":"UpdateReviewTemplateLensReview",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}"
+      },
+      "input":{"shape":"UpdateReviewTemplateLensReviewInput"},
+      "output":{"shape":"UpdateReviewTemplateLensReviewOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update a lens review associated with a review template.</p>"
     },
     "UpdateShareInvitation":{
       "name":"UpdateShareInvitation",
@@ -969,6 +1196,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Upgrade a profile.</p>"
+    },
+    "UpgradeReviewTemplateLensReview":{
+      "name":"UpgradeReviewTemplateLensReview",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/upgrade"
+      },
+      "input":{"shape":"UpgradeReviewTemplateLensReviewInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Upgrade the lens review of a review template.</p>"
     }
   },
   "shapes":{
@@ -1665,6 +1909,78 @@
         }
       }
     },
+    "CreateReviewTemplateInput":{
+      "type":"structure",
+      "required":[
+        "TemplateName",
+        "Description",
+        "Lenses",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p>Name of the review template.</p>"
+        },
+        "Description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>The review template description.</p>"
+        },
+        "Lenses":{
+          "shape":"ReviewTemplateLenses",
+          "documentation":"<p>Lenses applied to the review template.</p>"
+        },
+        "Notes":{"shape":"Notes"},
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to the review template.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateReviewTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        }
+      }
+    },
+    "CreateTemplateShareInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "SharedWith",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "SharedWith":{"shape":"SharedWith"},
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTemplateShareOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "ShareId":{"shape":"ShareId"}
+      }
+    },
     "CreateWorkloadInput":{
       "type":"structure",
       "required":[
@@ -1707,6 +2023,10 @@
         "ProfileArns":{
           "shape":"WorkloadProfileArns",
           "documentation":"<p>The list of profile ARNs associated with the workload.</p>"
+        },
+        "ReviewTemplateArns":{
+          "shape":"ReviewTemplateArns",
+          "documentation":"<p>The list of review template ARNs to associate with the workload.</p>"
         }
       },
       "documentation":"<p>Input for workload creation.</p>"
@@ -1849,6 +2169,54 @@
           "documentation":"<p>The profile ARN.</p>",
           "location":"uri",
           "locationName":"ProfileArn"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"ClientRequestToken"
+        }
+      }
+    },
+    "DeleteReviewTemplateInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"ClientRequestToken"
+        }
+      }
+    },
+    "DeleteTemplateShareInput":{
+      "type":"structure",
+      "required":[
+        "ShareId",
+        "TemplateArn",
+        "ClientRequestToken"
+      ],
+      "members":{
+        "ShareId":{
+          "shape":"ShareId",
+          "location":"uri",
+          "locationName":"ShareId"
+        },
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -2302,6 +2670,100 @@
         }
       }
     },
+    "GetReviewTemplateAnswerInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias",
+        "QuestionId"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        },
+        "QuestionId":{
+          "shape":"QuestionId",
+          "location":"uri",
+          "locationName":"QuestionId"
+        }
+      }
+    },
+    "GetReviewTemplateAnswerOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "LensAlias":{"shape":"LensAlias"},
+        "Answer":{
+          "shape":"ReviewTemplateAnswer",
+          "documentation":"<p>An answer of the question.</p>"
+        }
+      }
+    },
+    "GetReviewTemplateInput":{
+      "type":"structure",
+      "required":["TemplateArn"],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        }
+      }
+    },
+    "GetReviewTemplateLensReviewInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        }
+      }
+    },
+    "GetReviewTemplateLensReviewOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "LensReview":{
+          "shape":"ReviewTemplateLensReview",
+          "documentation":"<p>A lens review of a question.</p>"
+        }
+      }
+    },
+    "GetReviewTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "ReviewTemplate":{
+          "shape":"ReviewTemplate",
+          "documentation":"<p>The review template.</p>"
+        }
+      }
+    },
     "GetWorkloadInput":{
       "type":"structure",
       "required":["WorkloadId"],
@@ -2663,7 +3125,12 @@
         "LatestLensVersion":{
           "shape":"LensVersion",
           "documentation":"<p>The latest version of the lens.</p>"
-        }
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> <code>ResourceArn</code> of the lens being upgraded</p>"
+        },
+        "ResourceName":{"shape":"WorkloadName"}
       },
       "documentation":"<p>Lens upgrade summary return object.</p>"
     },
@@ -2930,7 +3397,7 @@
         },
         "SharedWithPrefix":{
           "shape":"SharedWithPrefix",
-          "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the lens is shared.</p>",
+          "documentation":"<p>The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the lens is shared.</p>",
           "location":"querystring",
           "locationName":"SharedWithPrefix"
         },
@@ -3034,6 +3501,10 @@
         "MaxResults":{
           "shape":"ListNotificationsMaxResults",
           "documentation":"<p>The maximum number of results to return for this request.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN for the related resource for the notification.</p> <note> <p>Only one of <code>WorkloadID</code> or <code>ResourceARN</code> should be specified.</p> </note>"
         }
       }
     },
@@ -3094,7 +3565,7 @@
         },
         "SharedWithPrefix":{
           "shape":"SharedWithPrefix",
-          "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the profile is shared.</p>",
+          "documentation":"<p>The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the profile is shared.</p>",
           "location":"querystring",
           "locationName":"SharedWithPrefix"
         },
@@ -3136,7 +3607,7 @@
       "members":{
         "ProfileNamePrefix":{
           "shape":"ProfileNamePrefix",
-          "documentation":"<p>Prefix for profile name.</p>",
+          "documentation":"<p>An optional string added to the beginning of each profile name returned in the results.</p>",
           "location":"querystring",
           "locationName":"ProfileNamePrefix"
         },
@@ -3164,6 +3635,87 @@
         "ProfileSummaries":{
           "shape":"ProfileSummaries",
           "documentation":"<p>Profile summaries.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListReviewTemplateAnswersInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The ARN of the review template.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        },
+        "PillarId":{
+          "shape":"PillarId",
+          "location":"querystring",
+          "locationName":"PillarId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"ListReviewTemplateAnswersMaxResults",
+          "documentation":"<p>The maximum number of results to return for this request.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListReviewTemplateAnswersMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListReviewTemplateAnswersOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The ARN of the review template.</p>"
+        },
+        "LensAlias":{"shape":"LensAlias"},
+        "AnswerSummaries":{
+          "shape":"ReviewTemplateAnswerSummaries",
+          "documentation":"<p>List of answer summaries of a lens review in a review template.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListReviewTemplatesInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "ListReviewTemplatesOutput":{
+      "type":"structure",
+      "members":{
+        "ReviewTemplates":{
+          "shape":"ReviewTemplates",
+          "documentation":"<p>List of review templates.</p>"
         },
         "NextToken":{"shape":"NextToken"}
       }
@@ -3201,9 +3753,15 @@
         },
         "ProfileNamePrefix":{
           "shape":"ProfileNamePrefix",
-          "documentation":"<p>Profile name prefix.</p>",
+          "documentation":"<p>An optional string added to the beginning of each profile name returned in the results.</p>",
           "location":"querystring",
           "locationName":"ProfileNamePrefix"
+        },
+        "TemplateNamePrefix":{
+          "shape":"TemplateNamePrefix",
+          "documentation":"<p>An optional string added to the beginning of each review template name returned in the results.</p>",
+          "location":"querystring",
+          "locationName":"TemplateNamePrefix"
         }
       },
       "documentation":"<p>Input for List Share Invitations</p>"
@@ -3244,6 +3802,59 @@
         }
       }
     },
+    "ListTemplateSharesInput":{
+      "type":"structure",
+      "required":["TemplateArn"],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "SharedWithPrefix":{
+          "shape":"SharedWithPrefix",
+          "documentation":"<p>The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the profile is shared.</p>",
+          "location":"querystring",
+          "locationName":"SharedWithPrefix"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"ListTemplateSharesMaxResults",
+          "documentation":"<p>The maximum number of results to return for this request.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "Status":{
+          "shape":"ShareStatus",
+          "location":"querystring",
+          "locationName":"Status"
+        }
+      }
+    },
+    "ListTemplateSharesMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListTemplateSharesOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "TemplateShareSummaries":{
+          "shape":"TemplateShareSummaries",
+          "documentation":"<p>A review template share summary return object.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
     "ListWorkloadSharesInput":{
       "type":"structure",
       "required":["WorkloadId"],
@@ -3255,7 +3866,7 @@
         },
         "SharedWithPrefix":{
           "shape":"SharedWithPrefix",
-          "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the workload is shared.</p>",
+          "documentation":"<p>The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the workload is shared.</p>",
           "location":"querystring",
           "locationName":"SharedWithPrefix"
         },
@@ -3378,7 +3989,7 @@
     },
     "Notes":{
       "type":"string",
-      "documentation":"<p>The notes associated with the workload.</p>",
+      "documentation":"<p>The notes associated with the workload.</p> <p>For a review template, these are the notes that will be associated with the workload when the template is applied.</p>",
       "max":2084
     },
     "NotificationSummaries":{
@@ -3473,7 +4084,7 @@
       "type":"map",
       "key":{"shape":"PillarId"},
       "value":{"shape":"Notes"},
-      "documentation":"<p>List of pillar notes of a lens review in a workload.</p>"
+      "documentation":"<p>List of pillar notes of a lens review in a workload.</p> <p>For a review template, these are the notes that will be associated with the workload when the template is applied.</p>"
     },
     "PillarReviewSummaries":{
       "type":"list",
@@ -3760,6 +4371,18 @@
       "min":1,
       "pattern":"^[A-Za-z0-9-]+$"
     },
+    "Question":{
+      "type":"string",
+      "enum":[
+        "UNANSWERED",
+        "ANSWERED"
+      ]
+    },
+    "QuestionCounts":{
+      "type":"map",
+      "key":{"shape":"Question"},
+      "value":{"shape":"Count"}
+    },
     "QuestionDescription":{
       "type":"string",
       "documentation":"<p>The description of the question.</p>",
@@ -3835,6 +4458,12 @@
         "JSON"
       ]
     },
+    "ResourceArn":{
+      "type":"string",
+      "max":250,
+      "min":50,
+      "pattern":"arn:aws(-us-gov|-iso(-[a-z])?|-cn)?:wellarchitected:[a-z]{2}(-gov|-iso([a-z])?)?-[a-z]+-\\d:\\d{12}:(review-template)/[a-f0-9]{32}"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":[
@@ -3850,6 +4479,220 @@
       "documentation":"<p>The requested resource was not found.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ReviewTemplate":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>The review template description.</p>"
+        },
+        "Lenses":{
+          "shape":"ReviewTemplateLenses",
+          "documentation":"<p>The lenses applied to the review template.</p>"
+        },
+        "Notes":{"shape":"Notes"},
+        "QuestionCounts":{
+          "shape":"QuestionCounts",
+          "documentation":"<p>A count of how many total questions are answered and unanswered in the review template.</p>"
+        },
+        "Owner":{"shape":"AwsAccountId"},
+        "UpdatedAt":{"shape":"Timestamp"},
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p>The name of the review template.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags assigned to the review template.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"ReviewTemplateUpdateStatus",
+          "documentation":"<p>The latest status of a review template.</p>"
+        },
+        "ShareInvitationId":{
+          "shape":"ShareInvitationId",
+          "documentation":"<p>The ID assigned to the template share invitation.</p>"
+        }
+      },
+      "documentation":"<p>A review template.</p>"
+    },
+    "ReviewTemplateAnswer":{
+      "type":"structure",
+      "members":{
+        "QuestionId":{"shape":"QuestionId"},
+        "PillarId":{"shape":"PillarId"},
+        "QuestionTitle":{"shape":"QuestionTitle"},
+        "QuestionDescription":{"shape":"QuestionDescription"},
+        "ImprovementPlanUrl":{"shape":"ImprovementPlanUrl"},
+        "HelpfulResourceUrl":{"shape":"HelpfulResourceUrl"},
+        "HelpfulResourceDisplayText":{
+          "shape":"DisplayText",
+          "documentation":"<p>The helpful resource text to be displayed for a custom lens.</p> <note> <p>This field does not apply to Amazon Web Services official lenses.</p> </note>"
+        },
+        "Choices":{"shape":"Choices"},
+        "SelectedChoices":{"shape":"SelectedChoices"},
+        "ChoiceAnswers":{
+          "shape":"ChoiceAnswers",
+          "documentation":"<p>A list of selected choices to a question in your review template.</p>"
+        },
+        "IsApplicable":{"shape":"IsApplicable"},
+        "AnswerStatus":{
+          "shape":"ReviewTemplateAnswerStatus",
+          "documentation":"<p>The status of whether or not this question has been answered.</p>"
+        },
+        "Notes":{"shape":"Notes"},
+        "Reason":{
+          "shape":"AnswerReason",
+          "documentation":"<p>The reason why the question is not applicable to your review template.</p>"
+        }
+      },
+      "documentation":"<p>An answer of the question.</p>"
+    },
+    "ReviewTemplateAnswerStatus":{
+      "type":"string",
+      "enum":[
+        "UNANSWERED",
+        "ANSWERED"
+      ]
+    },
+    "ReviewTemplateAnswerSummaries":{
+      "type":"list",
+      "member":{"shape":"ReviewTemplateAnswerSummary"}
+    },
+    "ReviewTemplateAnswerSummary":{
+      "type":"structure",
+      "members":{
+        "QuestionId":{"shape":"QuestionId"},
+        "PillarId":{"shape":"PillarId"},
+        "QuestionTitle":{"shape":"QuestionTitle"},
+        "Choices":{"shape":"Choices"},
+        "SelectedChoices":{"shape":"SelectedChoices"},
+        "ChoiceAnswerSummaries":{
+          "shape":"ChoiceAnswerSummaries",
+          "documentation":"<p>A list of selected choices to a question in the review template.</p>"
+        },
+        "IsApplicable":{"shape":"IsApplicable"},
+        "AnswerStatus":{
+          "shape":"ReviewTemplateAnswerStatus",
+          "documentation":"<p>The status of whether or not this question has been answered.</p>"
+        },
+        "Reason":{
+          "shape":"AnswerReason",
+          "documentation":"<p>The reason why a choice is not-applicable to a question in the review template.</p>"
+        },
+        "QuestionType":{
+          "shape":"QuestionType",
+          "documentation":"<p>The type of question.</p>"
+        }
+      },
+      "documentation":"<p>The summary of review template answers.</p>"
+    },
+    "ReviewTemplateArns":{
+      "type":"list",
+      "member":{"shape":"TemplateArn"},
+      "max":1
+    },
+    "ReviewTemplateLensAliases":{
+      "type":"list",
+      "member":{"shape":"LensAlias"},
+      "max":10,
+      "min":1
+    },
+    "ReviewTemplateLensReview":{
+      "type":"structure",
+      "members":{
+        "LensAlias":{"shape":"LensAlias"},
+        "LensArn":{
+          "shape":"LensArn",
+          "documentation":"<p>The lens ARN.</p>"
+        },
+        "LensVersion":{
+          "shape":"LensVersion",
+          "documentation":"<p>The version of the lens.</p>"
+        },
+        "LensName":{"shape":"LensName"},
+        "LensStatus":{
+          "shape":"LensStatus",
+          "documentation":"<p>The status of the lens.</p>"
+        },
+        "PillarReviewSummaries":{
+          "shape":"ReviewTemplatePillarReviewSummaries",
+          "documentation":"<p>Pillar review summaries of a lens review.</p>"
+        },
+        "UpdatedAt":{"shape":"Timestamp"},
+        "Notes":{"shape":"Notes"},
+        "QuestionCounts":{
+          "shape":"QuestionCounts",
+          "documentation":"<p>A count of how many questions are answered and unanswered in the lens review.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      },
+      "documentation":"<p>The lens review of a review template.</p>"
+    },
+    "ReviewTemplateLenses":{
+      "type":"list",
+      "member":{"shape":"LensAlias"}
+    },
+    "ReviewTemplatePillarReviewSummaries":{
+      "type":"list",
+      "member":{"shape":"ReviewTemplatePillarReviewSummary"}
+    },
+    "ReviewTemplatePillarReviewSummary":{
+      "type":"structure",
+      "members":{
+        "PillarId":{"shape":"PillarId"},
+        "PillarName":{"shape":"PillarName"},
+        "Notes":{"shape":"Notes"},
+        "QuestionCounts":{
+          "shape":"QuestionCounts",
+          "documentation":"<p>A count of how many questions are answered and unanswered in the requested pillar of the lens review.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a review template.</p>"
+    },
+    "ReviewTemplateSummary":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>Description of the review template.</p>"
+        },
+        "Lenses":{
+          "shape":"ReviewTemplateLenses",
+          "documentation":"<p>Lenses associated with the review template.</p>"
+        },
+        "Owner":{"shape":"AwsAccountId"},
+        "UpdatedAt":{"shape":"Timestamp"},
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p>The name of the review template.</p>"
+        },
+        "UpdateStatus":{
+          "shape":"ReviewTemplateUpdateStatus",
+          "documentation":"<p>The latest status of a review template.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a review template.</p>"
+    },
+    "ReviewTemplateUpdateStatus":{
+      "type":"string",
+      "enum":[
+        "CURRENT",
+        "LENS_NOT_CURRENT"
+      ]
+    },
+    "ReviewTemplates":{
+      "type":"list",
+      "member":{"shape":"ReviewTemplateSummary"}
     },
     "Risk":{
       "type":"string",
@@ -3928,6 +4771,10 @@
         "ProfileArn":{
           "shape":"ProfileArn",
           "documentation":"<p>The profile ARN.</p>"
+        },
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
         }
       },
       "documentation":"<p>The share invitation.</p>"
@@ -3976,6 +4823,14 @@
         "ProfileArn":{
           "shape":"ProfileArn",
           "documentation":"<p>The profile ARN.</p>"
+        },
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p>The name of the review template.</p>"
+        },
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
         }
       },
       "documentation":"<p>A share invitation summary return object.</p>"
@@ -3985,7 +4840,8 @@
       "enum":[
         "WORKLOAD",
         "LENS",
-        "PROFILE"
+        "PROFILE",
+        "TEMPLATE"
       ]
     },
     "ShareStatus":{
@@ -4004,7 +4860,7 @@
     },
     "SharedWith":{
       "type":"string",
-      "documentation":"<p>The Amazon Web Services account ID, IAM role, organization ID, or organizational unit (OU) ID with which the workload, lens, or profile is shared.</p>",
+      "documentation":"<p>The Amazon Web Services account ID, organization ID, or organizational unit (OU) ID with which the workload, lens, profile, or review template is shared.</p>",
       "max":2048,
       "min":12
     },
@@ -4063,9 +4919,49 @@
       "max":256,
       "min":0
     },
+    "TemplateArn":{
+      "type":"string",
+      "max":250,
+      "min":50,
+      "pattern":"arn:aws(-us-gov|-iso(-[a-z])?|-cn)?:wellarchitected:[a-z]{2}(-gov|-iso([a-z])?)?-[a-z]+-\\d:\\d{12}:(review-template)/[a-f0-9]{32}"
+    },
+    "TemplateDescription":{
+      "type":"string",
+      "max":250,
+      "min":3,
+      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+    },
+    "TemplateName":{
+      "type":"string",
+      "max":100,
+      "min":3,
+      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+    },
+    "TemplateNamePrefix":{
+      "type":"string",
+      "max":100,
+      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+    },
     "TemplateQuestions":{
       "type":"list",
       "member":{"shape":"ProfileTemplateQuestion"}
+    },
+    "TemplateShareSummaries":{
+      "type":"list",
+      "member":{"shape":"TemplateShareSummary"}
+    },
+    "TemplateShareSummary":{
+      "type":"structure",
+      "members":{
+        "ShareId":{"shape":"ShareId"},
+        "SharedWith":{"shape":"SharedWith"},
+        "Status":{"shape":"ShareStatus"},
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Review template share invitation status message. </p>"
+        }
+      },
+      "documentation":"<p>Summary of a review template share.</p>"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -4237,6 +5133,130 @@
         }
       }
     },
+    "UpdateReviewTemplateAnswerInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias",
+        "QuestionId"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        },
+        "QuestionId":{
+          "shape":"QuestionId",
+          "location":"uri",
+          "locationName":"QuestionId"
+        },
+        "SelectedChoices":{"shape":"SelectedChoices"},
+        "ChoiceUpdates":{
+          "shape":"ChoiceUpdates",
+          "documentation":"<p>A list of choices to be updated.</p>"
+        },
+        "Notes":{"shape":"Notes"},
+        "IsApplicable":{"shape":"IsApplicable"},
+        "Reason":{
+          "shape":"AnswerReason",
+          "documentation":"<p>The update reason.</p>"
+        }
+      }
+    },
+    "UpdateReviewTemplateAnswerOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "LensAlias":{"shape":"LensAlias"},
+        "Answer":{
+          "shape":"ReviewTemplateAnswer",
+          "documentation":"<p>An answer of the question.</p>"
+        }
+      }
+    },
+    "UpdateReviewTemplateInput":{
+      "type":"structure",
+      "required":["TemplateArn"],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "TemplateName":{
+          "shape":"TemplateName",
+          "documentation":"<p>The review template name.</p>"
+        },
+        "Description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>The review template description.</p>"
+        },
+        "Notes":{"shape":"Notes"},
+        "LensesToAssociate":{
+          "shape":"ReviewTemplateLensAliases",
+          "documentation":"<p>A list of lens aliases or ARNs to apply to the review template.</p>"
+        },
+        "LensesToDisassociate":{
+          "shape":"ReviewTemplateLensAliases",
+          "documentation":"<p>A list of lens aliases or ARNs to unapply to the review template. The <code>wellarchitected</code> lens cannot be unapplied.</p>"
+        }
+      }
+    },
+    "UpdateReviewTemplateLensReviewInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        },
+        "LensNotes":{"shape":"Notes"},
+        "PillarNotes":{"shape":"PillarNotes"}
+      }
+    },
+    "UpdateReviewTemplateLensReviewOutput":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The review template ARN.</p>"
+        },
+        "LensReview":{
+          "shape":"ReviewTemplateLensReview",
+          "documentation":"<p>A lens review of a question.</p>"
+        }
+      }
+    },
+    "UpdateReviewTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "ReviewTemplate":{
+          "shape":"ReviewTemplate",
+          "documentation":"<p>A review template.</p>"
+        }
+      }
+    },
     "UpdateShareInvitationInput":{
       "type":"structure",
       "required":[
@@ -4382,6 +5402,27 @@
           "shape":"ClientRequestToken",
           "idempotencyToken":true
         }
+      }
+    },
+    "UpgradeReviewTemplateLensReviewInput":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "LensAlias"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The ARN of the review template.</p>",
+          "location":"uri",
+          "locationName":"TemplateArn"
+        },
+        "LensAlias":{
+          "shape":"LensAlias",
+          "location":"uri",
+          "locationName":"LensAlias"
+        },
+        "ClientRequestToken":{"shape":"ClientRequestToken"}
       }
     },
     "Urls":{
@@ -4578,7 +5619,7 @@
     "WorkloadLenses":{
       "type":"list",
       "member":{"shape":"LensAlias"},
-      "documentation":"<p>The list of lenses associated with the workload. Each lens is identified by its <a>LensSummary$LensAlias</a>.</p>"
+      "documentation":"<p>The list of lenses associated with the workload. Each lens is identified by its <a>LensSummary$LensAlias</a>.</p> <p>If a review template that specifies lenses is applied to the workload, those lenses are applied to the workload in addition to these lenses.</p>"
     },
     "WorkloadName":{
       "type":"string",

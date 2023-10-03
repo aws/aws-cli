@@ -31,6 +31,8 @@ author = 'AWS CLI Maintainers'
 extensions = [
     "myst_parser",
     "sphinx.ext.githubpages",
+    "sphinx_copybutton",
+    "sphinx_inline_tabs",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -49,6 +51,8 @@ exclude_patterns = ['_build', 'venv*', 'env*', 'README.md', '.github']
 html_theme = 'furo'
 
 html_theme_options = {
+    "light_logo": "files/AWS_logo_light.png",
+    "dark_logo": "files/AWS_logo_dark.png",
     "announcement": (
         "<em>Important!</em> We've just begun making improvements "
         "to our contribution process. This guide is a work in "
@@ -61,7 +65,15 @@ html_theme_options = {
     }
 }
 
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ["_static"]
+
+# Copybutton settings
+copybutton_prompt_text = r"C\:\\ |\$ "
+copybutton_prompt_is_regexp = True
+
+# MyST settings
+myst_heading_anchors = 3

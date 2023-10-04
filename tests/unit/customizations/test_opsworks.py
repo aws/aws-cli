@@ -14,7 +14,7 @@
 import argparse
 import datetime
 import json
-import mock
+from unittest import mock
 
 from botocore.exceptions import ClientError
 

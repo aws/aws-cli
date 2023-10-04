@@ -20,7 +20,7 @@ from botocore.paginate import TokenEncoder
 from botocore.exceptions import PaginationError
 from botocore.compat import six
 
-import mock
+from unittest import mock
 
 
 def encode_token(token):

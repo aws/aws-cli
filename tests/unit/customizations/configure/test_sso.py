@@ -15,7 +15,7 @@ import dataclasses
 import json
 import typing
 
-import mock
+from unittest import mock
 from datetime import datetime, timedelta
 
 import prompt_toolkit

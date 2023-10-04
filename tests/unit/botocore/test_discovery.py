@@ -1,5 +1,5 @@
 import time
-from mock import Mock, call
+from unittest.mock import Mock, call
 from tests import unittest
 
 from botocore.awsrequest import AWSRequest

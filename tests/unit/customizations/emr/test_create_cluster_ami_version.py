@@ -20,7 +20,7 @@ from tests.unit.customizations.emr import test_constants_instance_fleets as \
 import copy
 import os
 import json
-from mock import patch
+from unittest.mock import patch
 
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"

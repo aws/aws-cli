@@ -14,7 +14,7 @@
 import base64
 import datetime
 
-import mock
+from unittest import mock
 from six.moves import cStringIO
 
 import awscli.customizations.ec2.bundleinstance

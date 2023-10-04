@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 
 import copy
-import mock
+from unittest import mock
 import unittest
 
 from awscli.testutils import BaseAWSHelpOutputTest, BaseAWSCommandParamsTest

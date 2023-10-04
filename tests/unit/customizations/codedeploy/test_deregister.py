@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
-from mock import MagicMock, call
+from unittest.mock import MagicMock, call
 from awscli.customizations.codedeploy.deregister import Deregister
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError

@@ -16,7 +16,7 @@ import os
 
 from awscli.testutils import unittest
 from awscli.compat import six
-import mock
+from unittest import mock
 
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError

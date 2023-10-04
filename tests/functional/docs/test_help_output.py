@@ -28,7 +28,7 @@ from awscli.testutils import FileCreator
 
 from awscli.compat import six
 from awscli.alias import AliasLoader
-import mock
+from unittest import mock
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):

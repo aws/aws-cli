@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-import mock
+from unittest import mock
 
 from tests import BaseSessionTest, ClientHTTPStubber
 from botocore.history import BaseHistoryHandler

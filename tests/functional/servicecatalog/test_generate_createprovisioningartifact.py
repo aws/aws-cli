@@ -13,7 +13,7 @@
 
 
 import os
-from mock import mock
+import unittest.mock as mock
 
 from awscli.customizations.servicecatalog.utils \
     import get_s3_path

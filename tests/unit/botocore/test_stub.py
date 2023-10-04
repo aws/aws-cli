@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from tests import unittest
-import mock
+from unittest import mock
 
 from botocore.stub import Stubber
 from botocore.exceptions import ParamValidationError, StubResponseError, UnStubbedResponseError

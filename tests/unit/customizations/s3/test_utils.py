@@ -18,7 +18,7 @@ import ntpath
 import time
 import datetime
 
-import mock
+from unittest import mock
 from dateutil.tz import tzlocal
 import pytest
 from s3transfer.compat import seekable

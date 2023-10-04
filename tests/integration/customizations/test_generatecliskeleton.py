@@ -15,7 +15,7 @@ import os
 import json
 import logging
 
-import mock
+from unittest import mock
 import pytest
 from ruamel.yaml import YAML
 

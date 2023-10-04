@@ -14,7 +14,7 @@
 import awscli
 
 from argparse import Namespace
-from mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch, call
 from six import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials

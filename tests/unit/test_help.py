@@ -16,7 +16,7 @@ import json
 import sys
 import os
 
-import mock
+from unittest import mock
 
 from awscli.compat import six
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError

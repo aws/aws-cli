@@ -16,7 +16,7 @@ from awscli.testutils import mock
 from awscli.customizations.servicecatalog import \
     register_servicecatalog_commands, GenerateCommand
 from awscli.customizations.servicecatalog import inject_commands
-from mock import call
+from unittest.mock import call
 
 
 class TestRegisterServiceCatalogCommands(unittest.TestCase):

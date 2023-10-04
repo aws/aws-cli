@@ -15,7 +15,7 @@ import json
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from mock import patch
+from unittest.mock import patch
 
 describe_cluster_result_mock_ig = {
     "Cluster": {

@@ -20,7 +20,7 @@ import io
 import socket
 import sys
 
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
 
 from botocore.exceptions import UnseekableStreamError

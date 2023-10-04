@@ -6,7 +6,7 @@ from awscli.customizations.emr.ssh import Put
 from awscli.customizations.emr.ssh import SSH
 from awscli.customizations.emr.ssh import Socks
 from awscli.testutils import BaseAWSHelpOutputTest
-import mock
+from unittest import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 

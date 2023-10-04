@@ -29,7 +29,7 @@ import datetime
 import re
 from botocore.compat import six, urlsplit, parse_qsl
 
-import mock
+from unittest import mock
 import pytest
 
 from tests import FreezeTime

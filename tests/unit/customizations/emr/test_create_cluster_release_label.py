@@ -23,7 +23,7 @@ from tests.unit.customizations.emr import test_constants_instance_fleets as \
     CONSTANTS_FLEET
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from mock import patch
+from unittest.mock import patch
 
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import os
-import mock
+from unittest import mock
 
 from . import FakeSession
 from awscli.testutils import unittest

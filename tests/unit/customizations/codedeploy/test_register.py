@@ -17,7 +17,7 @@ from awscli.customizations.codedeploy.utils import MAX_TAGS_PER_INSTANCE
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
-from mock import MagicMock, patch, call, mock_open
+from unittest.mock import MagicMock, patch, call, mock_open
 
 
 class TestRegister(unittest.TestCase):

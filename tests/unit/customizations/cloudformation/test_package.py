@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
+from unittest import mock
 import os
 import sys
 import tempfile
 
 from io import StringIO
-from mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock, MagicMock
 from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump

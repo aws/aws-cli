@@ -17,7 +17,7 @@ import threading
 import datetime
 import numbers
 
-import mock
+from unittest import mock
 
 from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection

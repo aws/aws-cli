@@ -21,7 +21,7 @@ import socket
 
 from botocore.exceptions import ClientError
 from awscli.compat import six
-import mock
+from unittest import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable

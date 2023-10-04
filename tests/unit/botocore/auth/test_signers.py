@@ -18,7 +18,7 @@ import time
 import base64
 import json
 
-import mock
+from unittest import mock
 
 import botocore.auth
 import botocore.credentials

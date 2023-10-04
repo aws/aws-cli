@@ -13,7 +13,7 @@
 import sys
 from awscli.testutils import unittest
 
-import mock
+from unittest import mock
 
 from awscli import plugin
 from botocore import hooks

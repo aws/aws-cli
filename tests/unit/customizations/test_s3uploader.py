@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import mock
+from unittest import mock
 import random
 import string
 import tempfile
 import hashlib
 import shutil
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 
 import botocore
 import botocore.session

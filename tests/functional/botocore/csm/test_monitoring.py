@@ -18,7 +18,7 @@ import os
 import socket
 import threading
 
-import mock
+from unittest import mock
 import pytest
 
 from tests import temporary_file

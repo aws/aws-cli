@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
+from unittest import mock
 import tempfile
 import six
-from mock import patch, Mock, MagicMock, call
+from unittest.mock import patch, Mock, MagicMock, call
 import collections
 
 from awscli.customizations.cloudformation.deploy import DeployCommand

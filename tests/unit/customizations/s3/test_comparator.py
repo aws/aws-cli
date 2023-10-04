@@ -13,7 +13,7 @@
 import datetime
 import unittest
 
-from mock import Mock
+from unittest.mock import Mock
 
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.filegenerator import FileStat

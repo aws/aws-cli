@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from tests import unittest, temporary_file
 
-import mock
+from unittest import mock
 
 import botocore.session
 from botocore.exceptions import ProfileNotFound

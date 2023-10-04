@@ -1,7 +1,7 @@
 """
 Regression test for six issue #98 (https://github.com/benjaminp/six/issues/98)
 """
-from mock import patch
+from unittest.mock import patch
 import sys
 import threading
 import time

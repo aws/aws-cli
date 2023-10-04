@@ -20,7 +20,7 @@
 # distribution when running the tests.
 import os
 import sys
-import mock
+from unittest import mock
 import time
 import random
 import shutil

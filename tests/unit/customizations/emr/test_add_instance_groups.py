@@ -16,7 +16,7 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 import json
-from mock import patch
+from unittest.mock import patch
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'

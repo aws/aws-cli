@@ -22,7 +22,7 @@ import tempfile
 import shutil
 import threading
 import logging
-import mock
+from unittest import mock
 from tarfile import TarFile
 from contextlib import closing
 

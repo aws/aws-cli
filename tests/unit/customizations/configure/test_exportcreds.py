@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import mock
+from unittest import mock
 import io
 from datetime import datetime, timedelta
 

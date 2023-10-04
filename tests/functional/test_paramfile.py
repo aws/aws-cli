@@ -13,7 +13,7 @@
 import logging
 import os
 
-from mock import patch, ANY
+from unittest.mock import patch, ANY
 
 from awscli.testutils import FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver

@@ -13,7 +13,7 @@
 from datetime import datetime
 import re
 
-import mock
+from unittest import mock
 
 from tests import BaseSessionTest
 from tests import temporary_file

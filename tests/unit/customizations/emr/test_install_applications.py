@@ -13,7 +13,7 @@
 
 
 import json
-import mock
+from unittest import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 

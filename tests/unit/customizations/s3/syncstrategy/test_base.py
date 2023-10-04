@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.base import BaseSync, \

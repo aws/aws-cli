@@ -16,7 +16,7 @@ from awscli.help import PagingHelpRenderer
 from awscli.customizations.cloudsearchdomain import validate_endpoint_url
 from awscli.customizations.exceptions import ParamValidationError
 
-import mock
+from unittest import mock
 
 
 class TestSearchCommand(BaseAWSCommandParamsTest):

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 """Unit tests for the binary event stream decoder. """
 import pytest
-from mock import Mock
+from unittest.mock import Mock
 
 from botocore.parsers import EventStreamXMLParser
 from botocore.eventstream import (

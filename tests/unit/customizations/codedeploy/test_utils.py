@@ -15,7 +15,7 @@ import sys
 
 from socket import timeout
 from argparse import Namespace
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, validate_tags, \

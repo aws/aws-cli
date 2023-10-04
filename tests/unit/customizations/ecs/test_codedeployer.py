@@ -13,7 +13,7 @@
 
 import hashlib
 import json
-import mock
+from unittest import mock
 
 from botocore import compat
 from awscli.testutils import capture_output, unittest

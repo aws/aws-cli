@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import logging
-import mock
+from unittest import mock
 import io
 
 from prompt_toolkit.buffer import Buffer

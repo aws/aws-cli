@@ -17,7 +17,7 @@ import json
 import gzip
 from datetime import datetime, timedelta
 from dateutil import parser, tz
-from mock import Mock, call
+from unittest.mock import Mock, call
 from argparse import Namespace
 
 from cryptography.hazmat.backends import default_backend

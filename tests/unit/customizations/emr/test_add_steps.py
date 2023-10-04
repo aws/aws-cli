@@ -13,7 +13,7 @@
 
 import os
 import copy
-import mock
+from unittest import mock
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest

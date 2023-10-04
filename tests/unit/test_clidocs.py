@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
+from unittest import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
     ListShape, MapShape, Shape, DenormalizedStructureBuilder
 

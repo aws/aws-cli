@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
-from mock import patch
+from unittest.mock import patch
 
 from awscli.customizations.servicecatalog import exceptions
 from awscli.customizations.servicecatalog.generateprovisioningartifact \

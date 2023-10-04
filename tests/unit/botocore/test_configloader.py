@@ -14,7 +14,7 @@
 # language governing permissions and limitations under the License.
 from tests import unittest, BaseEnvVar
 import os
-import mock
+from unittest import mock
 import tempfile
 import shutil
 

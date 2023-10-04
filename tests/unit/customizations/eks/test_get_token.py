@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import mock
-from mock import patch, call
+from unittest import mock
+from unittest.mock import patch, call
 import base64
 import botocore
 import json

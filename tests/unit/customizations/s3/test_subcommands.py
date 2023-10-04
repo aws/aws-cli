@@ -14,8 +14,8 @@ import argparse
 import os
 import sys
 
-import mock
-from mock import patch, Mock, MagicMock
+from unittest import mock
+from unittest.mock import patch, Mock, MagicMock
 
 import botocore.session
 from awscli.customizations.s3.s3 import S3

@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 from datetime import datetime, timedelta
 import subprocess
-import mock
+from unittest import mock
 import os
 import tempfile
 import shutil

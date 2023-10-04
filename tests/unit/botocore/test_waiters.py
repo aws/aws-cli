@@ -13,7 +13,7 @@
 import os
 from tests import unittest, BaseEnvVar
 
-import mock
+from unittest import mock
 
 import botocore
 from botocore.compat import six

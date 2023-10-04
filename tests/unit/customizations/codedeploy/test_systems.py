@@ -14,7 +14,7 @@
 import subprocess
 
 from argparse import Namespace
-from mock import MagicMock, patch, call, mock_open
+from unittest.mock import MagicMock, patch, call, mock_open
 from awscli.customizations.codedeploy.systems import Windows, Ubuntu, RHEL
 from awscli.testutils import unittest
 

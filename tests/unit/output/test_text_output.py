@@ -21,7 +21,7 @@ import locale
 
 from awscli.compat import six
 from six.moves import cStringIO
-import mock
+from unittest import mock
 
 from awscli.formatter import Formatter
 

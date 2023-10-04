@@ -16,7 +16,7 @@ import tempfile
 import shutil
 
 from botocore.docs.bcdoc.restdoc import DocumentStructure
-import mock
+from unittest import mock
 
 from tests import unittest
 from botocore.compat import OrderedDict

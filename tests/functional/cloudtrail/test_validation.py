@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import gzip
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 from awscli.compat import six
 from botocore.exceptions import ClientError

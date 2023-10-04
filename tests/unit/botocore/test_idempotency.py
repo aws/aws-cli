@@ -13,7 +13,7 @@
 
 from tests import unittest
 import re
-import mock
+from unittest import mock
 from botocore.handlers import generate_idempotent_uuid
 
 

@@ -20,7 +20,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
 
-import mock
+from unittest import mock
 import awscrt.io
 from awscli.compat import six
 from botocore import xform_name

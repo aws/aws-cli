@@ -16,9 +16,9 @@ import shutil
 import sys
 import tempfile
 
-import mock
+from unittest import mock
 from botocore.session import get_session
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (

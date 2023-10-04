@@ -16,8 +16,8 @@ from botocore.exceptions import DataNotFoundError
 from botocore.model import OperationModel
 from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
-import mock
-from mock import Mock, patch
+from unittest import mock
+from unittest.mock import Mock, patch
 
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError

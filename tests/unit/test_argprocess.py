@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
+from unittest import mock
 from botocore import xform_name
 from botocore import model
 from botocore.compat import OrderedDict

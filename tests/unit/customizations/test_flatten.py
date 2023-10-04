@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
 
-import mock
+from unittest import mock
 
 from awscli.arguments import CLIArgument
 from awscli.customizations import utils

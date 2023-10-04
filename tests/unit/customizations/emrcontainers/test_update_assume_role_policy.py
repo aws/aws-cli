@@ -13,7 +13,7 @@
 
 import copy
 import json
-import mock
+from unittest import mock
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.customizations.emrcontainers.base36 import Base36

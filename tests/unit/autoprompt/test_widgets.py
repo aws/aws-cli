@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
+from unittest import mock
 
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.formatted_text import FormattedText

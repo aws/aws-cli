@@ -40,7 +40,7 @@ from awscli.compat import StringIO
 from ruamel.yaml import YAML
 
 try:
-    import mock
+    from unittest import mock
 except ImportError as e:
     # In the off chance something imports this module
     # that's not suppose to, we should not stop the CLI

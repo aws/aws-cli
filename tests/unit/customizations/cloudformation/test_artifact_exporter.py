@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 import botocore.session
 import tempfile
 import os
@@ -9,7 +9,7 @@ import zipfile
 import pytest
 
 from contextlib import contextmanager, closing
-from mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock, MagicMock
 from botocore.stub import Stubber
 from awscli.testutils import FileCreator
 from awscli.customizations.cloudformation import exceptions

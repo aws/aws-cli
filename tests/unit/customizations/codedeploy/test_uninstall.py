@@ -18,7 +18,7 @@ from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, Syst
 from awscli.customizations.codedeploy.uninstall import Uninstall
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.testutils import unittest
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 from socket import timeout
 
 

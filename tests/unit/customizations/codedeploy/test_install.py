@@ -19,7 +19,7 @@ from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, Syst
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
-from mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch, mock_open
 from socket import timeout
 
 

@@ -13,7 +13,7 @@
 import socket
 from tests import unittest
 
-from mock import Mock, patch, sentinel
+from unittest.mock import Mock, patch, sentinel
 
 from botocore.compat import six
 from botocore.awsrequest import AWSRequest

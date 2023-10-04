@@ -14,7 +14,7 @@
 import awscli
 
 from argparse import Namespace
-from mock import MagicMock, patch, ANY, call
+from unittest.mock import MagicMock, patch, ANY, call
 from six import StringIO
 from botocore.exceptions import ClientError
 

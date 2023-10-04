@@ -13,7 +13,7 @@
 import os
 from tests import unittest
 
-import mock
+from unittest import mock
 
 import botocore.session
 

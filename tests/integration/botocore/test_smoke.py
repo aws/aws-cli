@@ -11,7 +11,7 @@ to use and all the services in SMOKE_TESTS/ERROR_TESTS will be tested.
 
 """
 import os
-import mock
+from unittest import mock
 from pprint import pformat
 import warnings
 import logging

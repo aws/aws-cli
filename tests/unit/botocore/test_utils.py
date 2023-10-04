@@ -21,7 +21,7 @@ from tests import FreezeTime
 from dateutil.tz import tzutc, tzoffset
 import datetime
 import copy
-import mock
+from unittest import mock
 import operator
 
 import botocore

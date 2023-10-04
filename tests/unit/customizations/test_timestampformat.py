@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from botocore.exceptions import ProfileNotFound
 from botocore.session import Session
-from mock import Mock, call
+from unittest.mock import Mock, call
 
 from awscli.customizations import timestampformat
 from awscli.customizations.exceptions import ConfigurationError

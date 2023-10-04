@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 import copy
-import mock
+from unittest import mock
 import pytest
 
 import botocore

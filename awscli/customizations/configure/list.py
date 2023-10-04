@@ -20,15 +20,21 @@ from . import ConfigValue, NOT_SET
 class ConfigureListCommand(BasicCommand):
     NAME = 'list'
     DESCRIPTION = (
-        'List the AWS CLI configuration data.  This command will '
-        'show you the current configuration data.  For each configuration '
-        'item, it will show you the value, where the configuration value '
-        'was retrieved, and the configuration variable name.  For example, '
+        'Lists the profile, access key, secret key, and region configuration '
+        'information used for the specified profile. For each configuration '
+        'item, it shows the value, where the configuration value '
+        'was retrieved, and the configuration variable name.\n'
+        '\n'
+        'For example, '
         'if you provide the AWS region in an environment variable, this '
-        'command will show you the name of the region you\'ve configured, '
-        'it will tell you that this value came from an environment '
-        'variable, and it will tell you the name of the environment '
+        'command shows you the name of the region you\'ve configured, '
+        'that this value came from an environment '
+        'variable, and the name of the environment '
         'variable.\n'
+        '\n'
+        'For temporary credential methods such as roles and IAM Identity '
+        'Center, this command displays the temporarily cached access key and '
+        'secret access key is displayed.\n'
     )
     SYNOPSIS = 'aws configure list [--profile profile-name]'
     EXAMPLES = (

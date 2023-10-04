@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.60
+=======
+
+* api-change:``appconfig``: AWS AppConfig introduces KMS customer-managed key (CMK) encryption support for data saved to AppConfig's hosted configuration store.
+* api-change:``datazone``: Initial release of Amazon DataZone
+* api-change:``mediatailor``: Updates DescribeVodSource to include a list of ad break opportunities in the response
+* api-change:``mgn``: This release includes the following new APIs: ListConnectors, CreateConnector,  UpdateConnector, DeleteConnector and UpdateSourceServer to support the source action framework feature.
+* api-change:``sagemaker``: Adding support for AdditionalS3DataSource, a data source used for training or inference that is in addition to the input dataset or model data.
+
+
 1.29.59
 =======
 

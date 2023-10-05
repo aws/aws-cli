@@ -6120,6 +6120,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.61
+=======
+
+* api-change:``omics``: Add Etag Support for Omics Storage in ListReadSets and GetReadSetMetadata API
+* api-change:``rds``: Updates Amazon RDS documentation for corrections and minor improvements.
+* api-change:``route53``: Add hostedzonetype filter to ListHostedZones API.
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsEventsEventbus, AwsEventsEndpoint, AwsDmsEndpoint, AwsDmsReplicationTask, AwsDmsReplicationInstance, AwsRoute53HostedZone, and AwsMskCluster
+* api-change:``storagegateway``: Add SoftwareVersion to response of DescribeGatewayInformation.
+* api-change:``workspaces``: This release introduces Manage applications. This feature allows users to manage their WorkSpaces applications by associating or disassociating their WorkSpaces with applications. The DescribeWorkspaces API will now additionally return OperatingSystemName in its responses.
+
+
+1.29.60
+=======
+
+* api-change:``appconfig``: AWS AppConfig introduces KMS customer-managed key (CMK) encryption support for data saved to AppConfig's hosted configuration store.
+* api-change:``datazone``: Initial release of Amazon DataZone
+* api-change:``mediatailor``: Updates DescribeVodSource to include a list of ad break opportunities in the response
+* api-change:``mgn``: This release includes the following new APIs: ListConnectors, CreateConnector,  UpdateConnector, DeleteConnector and UpdateSourceServer to support the source action framework feature.
+* api-change:``sagemaker``: Adding support for AdditionalS3DataSource, a data source used for training or inference that is in addition to the input dataset or model data.
+
+
 1.29.59
 =======
 

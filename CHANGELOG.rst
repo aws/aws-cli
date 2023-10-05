@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.61
+=======
+
+* api-change:``omics``: Add Etag Support for Omics Storage in ListReadSets and GetReadSetMetadata API
+* api-change:``rds``: Updates Amazon RDS documentation for corrections and minor improvements.
+* api-change:``route53``: Add hostedzonetype filter to ListHostedZones API.
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsEventsEventbus, AwsEventsEndpoint, AwsDmsEndpoint, AwsDmsReplicationTask, AwsDmsReplicationInstance, AwsRoute53HostedZone, and AwsMskCluster
+* api-change:``storagegateway``: Add SoftwareVersion to response of DescribeGatewayInformation.
+* api-change:``workspaces``: This release introduces Manage applications. This feature allows users to manage their WorkSpaces applications by associating or disassociating their WorkSpaces with applications. The DescribeWorkspaces API will now additionally return OperatingSystemName in its responses.
+
+
 1.29.60
 =======
 

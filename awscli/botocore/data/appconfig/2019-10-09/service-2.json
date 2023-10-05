@@ -944,6 +944,14 @@
         "Type":{
           "shape":"ConfigurationProfileType",
           "documentation":"<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>"
+        },
+        "KmsKeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name of the Key Management Service key to encrypt new configuration data versions in the AppConfig hosted configuration store. This attribute is only used for <code>hosted</code> configuration types. To encrypt data managed in other configuration stores, see the documentation for how to specify an KMS key for that particular service.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated.</p>"
         }
       }
     },
@@ -1066,6 +1074,10 @@
         "Type":{
           "shape":"ConfigurationProfileType",
           "documentation":"<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier for an Key Management Service key to encrypt new configuration data versions in the AppConfig hosted configuration store. This attribute is only used for <code>hosted</code> configuration types. The identifier can be an KMS key ID, alias, or the Amazon Resource Name (ARN) of the key ID or alias. To encrypt data managed in other configuration stores, see the documentation for how to specify an KMS key for that particular service.</p>"
         }
       }
     },
@@ -1182,7 +1194,7 @@
       ],
       "members":{
         "Name":{
-          "shape":"Name",
+          "shape":"ExtensionOrParameterName",
           "documentation":"<p>A name for the extension. Each extension name in your account must be unique. Extension versions use the same name.</p>"
         },
         "Description":{
@@ -1472,8 +1484,8 @@
           "documentation":"<p>The Amazon Resource Name of the Key Management Service key used to encrypt configuration data. You can encrypt secrets stored in Secrets Manager, Amazon Simple Storage Service (Amazon S3) objects encrypted with SSE-KMS, or secure string parameters stored in Amazon Web Services Systems Manager Parameter Store. </p>"
         },
         "KmsKeyIdentifier":{
-          "shape":"Identifier",
-          "documentation":"<p>The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. </p>"
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated.</p>"
         },
         "VersionLabel":{
           "shape":"VersionLabel",
@@ -1819,6 +1831,10 @@
         }
       }
     },
+    "ExtensionOrParameterName":{
+      "type":"string",
+      "pattern":"^[^\\/#:\\n]{1,64}$"
+    },
     "ExtensionSummaries":{
       "type":"list",
       "member":{"shape":"ExtensionSummary"}
@@ -2112,6 +2128,12 @@
           "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>",
           "location":"header",
           "locationName":"VersionLabel"
+        },
+        "KmsKeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name of the Key Management Service key that was used to encrypt this specific version of the configuration data in the AppConfig hosted configuration store.</p>",
+          "location":"header",
+          "locationName":"KmsKeyArn"
         }
       },
       "payload":"Content"
@@ -2142,6 +2164,10 @@
         "VersionLabel":{
           "shape":"VersionLabel",
           "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name of the Key Management Service key that was used to encrypt this specific version of the configuration data in the AppConfig hosted configuration store.</p>"
         }
       },
       "documentation":"<p>Information about the configuration.</p>"
@@ -2216,6 +2242,14 @@
     "Iso8601DateTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "KmsKeyIdentifier":{
+      "type":"string",
+      "pattern":"^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}|alias/[a-zA-Z0-9/_-]{1,250}|arn:aws[a-zA-Z-]*:kms:[a-z]{2}(-gov|-iso(b?))?-[a-z]+-\\d{1}:\\d{12}:(key/[0-9a-f-]{36}|alias/[a-zA-Z0-9/_-]{1,250})$"
+    },
+    "KmsKeyIdentifierOrEmpty":{
+      "type":"string",
+      "pattern":"^\\s{0,1}|[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}|alias/[a-zA-Z0-9/_-]{1,250}|arn:aws[a-zA-Z-]*:kms:[a-z]{2}(-gov|-iso(b?))?-[a-z]+-\\d{1}:\\d{12}:(key/[0-9a-f-]{36}|alias/[a-zA-Z0-9/_-]{1,250})$"
     },
     "ListApplicationsRequest":{
       "type":"structure",
@@ -2518,14 +2552,14 @@
     },
     "ParameterMap":{
       "type":"map",
-      "key":{"shape":"Name"},
+      "key":{"shape":"ExtensionOrParameterName"},
       "value":{"shape":"Parameter"},
       "max":5,
       "min":1
     },
     "ParameterValueMap":{
       "type":"map",
-      "key":{"shape":"Name"},
+      "key":{"shape":"ExtensionOrParameterName"},
       "value":{"shape":"StringWithLengthBetween1And2048"},
       "max":5,
       "min":0
@@ -2636,7 +2670,7 @@
           "documentation":"<p>Metadata to assign to the deployment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.</p>"
         },
         "KmsKeyIdentifier":{
-          "shape":"Identifier",
+          "shape":"KmsKeyIdentifier",
           "documentation":"<p>The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. </p>"
         }
       }
@@ -2817,6 +2851,10 @@
         "Validators":{
           "shape":"ValidatorList",
           "documentation":"<p>A list of methods for validating the configuration.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifierOrEmpty",
+          "documentation":"<p>The identifier for a Key Management Service key to encrypt new configuration data versions in the AppConfig hosted configuration store. This attribute is only used for <code>hosted</code> configuration types. The identifier can be an KMS key ID, alias, or the Amazon Resource Name (ARN) of the key ID or alias. To encrypt data managed in other configuration stores, see the documentation for how to specify an KMS key for that particular service.</p>"
         }
       }
     },

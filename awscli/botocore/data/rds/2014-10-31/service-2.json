@@ -451,7 +451,7 @@
         {"shape":"DomainNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"}
       ],
-      "documentation":"<p>Creates a new DB instance that acts as a read replica for an existing source DB instance or Multi-AZ DB cluster. You can create a read replica for a DB instance running MySQL, MariaDB, Oracle, PostgreSQL, or SQL Server. You can create a read replica for a Multi-AZ DB cluster running MySQL or PostgreSQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html\">Working with read replicas</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html#multi-az-db-clusters-migrating-to-instance-with-read-replica\">Migrating from a Multi-AZ DB cluster to a DB instance using a read replica</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Amazon Aurora doesn't support this operation. Call the <code>CreateDBInstance</code> operation to create a DB instance for an Aurora DB cluster.</p> <p>All read replica DB instances are created with backups disabled. All other attributes (including DB security groups and DB parameter groups) are inherited from the source DB instance or cluster, except as specified.</p> <important> <p>Your source DB instance or cluster must have backup retention enabled.</p> </important>"
+      "documentation":"<p>Creates a new DB instance that acts as a read replica for an existing source DB instance or Multi-AZ DB cluster. You can create a read replica for a DB instance running MySQL, MariaDB, Oracle, PostgreSQL, or SQL Server. You can create a read replica for a Multi-AZ DB cluster running MySQL or PostgreSQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html\">Working with read replicas</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html#multi-az-db-clusters-migrating-to-instance-with-read-replica\">Migrating from a Multi-AZ DB cluster to a DB instance using a read replica</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Amazon Aurora doesn't support this operation. To create a DB instance for an Aurora DB cluster, use the <code>CreateDBInstance</code> operation.</p> <p>All read replica DB instances are created with backups disabled. All other attributes (including DB security groups and DB parameter groups) are inherited from the source DB instance or cluster, except as specified.</p> <important> <p>Your source DB instance or cluster must have backup retention enabled.</p> </important>"
     },
     "CreateDBParameterGroup":{
       "name":"CreateDBParameterGroup",
@@ -762,7 +762,7 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBInstanceAutomatedBackupQuotaExceededFault"}
       ],
-      "documentation":"<p>The DeleteDBInstance action deletes a previously provisioned DB instance. When you delete a DB instance, all automated backups for that instance are deleted and can't be recovered. Manual DB snapshots of the DB instance to be deleted by <code>DeleteDBInstance</code> are not deleted.</p> <p>If you request a final DB snapshot the status of the Amazon RDS DB instance is <code>deleting</code> until the DB snapshot is created. The API action <code>DescribeDBInstance</code> is used to monitor the status of this operation. The action can't be canceled or reverted once submitted.</p> <p>When a DB instance is in a failure state and has a status of <code>failed</code>, <code>incompatible-restore</code>, or <code>incompatible-network</code>, you can only delete it when you skip creation of the final snapshot with the <code>SkipFinalSnapshot</code> parameter.</p> <p>If the specified DB instance is part of an Amazon Aurora DB cluster, you can't delete the DB instance if both of the following conditions are true:</p> <ul> <li> <p>The DB cluster is a read replica of another Amazon Aurora DB cluster.</p> </li> <li> <p>The DB instance is the only instance in the DB cluster.</p> </li> </ul> <p>To delete a DB instance in this case, first call the <code>PromoteReadReplicaDBCluster</code> API action to promote the DB cluster so it's no longer a read replica. After the promotion completes, then call the <code>DeleteDBInstance</code> API action to delete the final instance in the DB cluster.</p>"
+      "documentation":"<p>Deletes a previously provisioned DB instance. When you delete a DB instance, all automated backups for that instance are deleted and can't be recovered. However, manual DB snapshots of the DB instance aren't deleted.</p> <p>If you request a final DB snapshot, the status of the Amazon RDS DB instance is <code>deleting</code> until the DB snapshot is created. This operation can't be canceled or reverted after it begins. To monitor the status of this operation, use <code>DescribeDBInstance</code>.</p> <p>When a DB instance is in a failure state and has a status of <code>failed</code>, <code>incompatible-restore</code>, or <code>incompatible-network</code>, you can only delete it when you skip creation of the final snapshot with the <code>SkipFinalSnapshot</code> parameter.</p> <p>If the specified DB instance is part of an Amazon Aurora DB cluster, you can't delete the DB instance if both of the following conditions are true:</p> <ul> <li> <p>The DB cluster is a read replica of another Amazon Aurora DB cluster.</p> </li> <li> <p>The DB instance is the only instance in the DB cluster.</p> </li> </ul> <p>To delete a DB instance in this case, first use the <code>PromoteReadReplicaDBCluster</code> operation to promote the DB cluster so that it's no longer a read replica. After the promotion completes, use the <code>DeleteDBInstance</code> operation to delete the final instance in the DB cluster.</p> <important> <p>For RDS Custom DB instances, deleting the DB instance permanently deletes the EC2 instance and the associated EBS volumes. Make sure that you don't terminate or delete these resources before you delete the DB instance. Otherwise, deleting the DB instance and creation of the final snapshot might fail.</p> </important>"
     },
     "DeleteDBInstanceAutomatedBackup":{
       "name":"DeleteDBInstanceAutomatedBackup",
@@ -1123,7 +1123,7 @@
         "shape":"DBEngineVersionMessage",
         "resultWrapper":"DescribeDBEngineVersionsResult"
       },
-      "documentation":"<p>Returns a list of the available DB engines.</p>"
+      "documentation":"<p>Describes the properties of specific versions of DB engines.</p>"
     },
     "DescribeDBInstanceAutomatedBackups":{
       "name":"DescribeDBInstanceAutomatedBackups",
@@ -2867,11 +2867,11 @@
         },
         "ApplyAction":{
           "shape":"String",
-          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>system-update</code>, <code>db-upgrade</code>, <code>hardware-maintenance</code>, <code>ca-certificate-rotation</code> </p>"
+          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid Values: <code>system-update</code>, <code>db-upgrade</code>, <code>hardware-maintenance</code>, <code>ca-certificate-rotation</code> </p>"
         },
         "OptInType":{
           "shape":"String",
-          "documentation":"<p>A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type <code>immediate</code> can't be undone.</p> <p>Valid values:</p> <ul> <li> <p> <code>immediate</code> - Apply the maintenance action immediately.</p> </li> <li> <p> <code>next-maintenance</code> - Apply the maintenance action during the next maintenance window for the resource.</p> </li> <li> <p> <code>undo-opt-in</code> - Cancel any existing <code>next-maintenance</code> opt-in requests.</p> </li> </ul>"
+          "documentation":"<p>A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type <code>immediate</code> can't be undone.</p> <p>Valid Values:</p> <ul> <li> <p> <code>immediate</code> - Apply the maintenance action immediately.</p> </li> <li> <p> <code>next-maintenance</code> - Apply the maintenance action during the next maintenance window for the resource.</p> </li> <li> <p> <code>undo-opt-in</code> - Cancel any existing <code>next-maintenance</code> opt-in requests.</p> </li> </ul>"
         }
       },
       "documentation":"<p/>"
@@ -3049,11 +3049,11 @@
         },
         "Force":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to force the DB cluster to backtrack when binary logging is enabled. Otherwise, an error occurs when binary logging is enabled.</p>"
+          "documentation":"<p>Specifies whether to force the DB cluster to backtrack when binary logging is enabled. Otherwise, an error occurs when binary logging is enabled.</p>"
         },
         "UseEarliestTimeOnPointInTimeUnavailable":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to backtrack the DB cluster to the earliest possible backtrack time when <i>BacktrackTo</i> is set to a timestamp earlier than the earliest backtrack time. When this parameter is disabled and <i>BacktrackTo</i> is set to a timestamp earlier than the earliest backtrack time, an error occurs.</p>"
+          "documentation":"<p>Specifies whether to backtrack the DB cluster to the earliest possible backtrack time when <i>BacktrackTo</i> is set to a timestamp earlier than the earliest backtrack time. When this parameter is disabled and <i>BacktrackTo</i> is set to a timestamp earlier than the earliest backtrack time, an error occurs.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3231,7 +3231,7 @@
         },
         "CustomerOverride":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Whether there is an override for the default certificate identifier.</p>"
+          "documentation":"<p>Indicates whether there is an override for the default certificate identifier.</p>"
         },
         "CustomerOverrideValidTill":{
           "shape":"TStamp",
@@ -3343,7 +3343,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
+          "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -3373,15 +3373,15 @@
       "members":{
         "MaxConnectionsPercent":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum size of the connection pool for each target in a target group. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group.</p> <p>If you specify <code>MaxIdleConnectionsPercent</code>, then you must also include a value for this parameter.</p> <p>Default: 10 for RDS for Microsoft SQL Server, and 100 for all other engines</p> <p>Constraints: Must be between 1 and 100.</p>"
+          "documentation":"<p>The maximum size of the connection pool for each target in a target group. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group.</p> <p>If you specify <code>MaxIdleConnectionsPercent</code>, then you must also include a value for this parameter.</p> <p>Default: <code>10</code> for RDS for Microsoft SQL Server, and <code>100</code> for all other engines</p> <p>Constraints:</p> <ul> <li> <p>Must be between 1 and 100.</p> </li> </ul>"
         },
         "MaxIdleConnectionsPercent":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Controls how actively the proxy closes idle database connections in the connection pool. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group. With a high value, the proxy leaves a high percentage of idle database connections open. A low value causes the proxy to close more idle connections and return them to the database.</p> <p>If you specify this parameter, then you must also include a value for <code>MaxConnectionsPercent</code>.</p> <p>Default: The default value is half of the value of <code>MaxConnectionsPercent</code>. For example, if <code>MaxConnectionsPercent</code> is 80, then the default value of <code>MaxIdleConnectionsPercent</code> is 40. If the value of <code>MaxConnectionsPercent</code> isn't specified, then for SQL Server, <code>MaxIdleConnectionsPercent</code> is 5, and for all other engines, the default is 50.</p> <p>Constraints: Must be between 0 and the value of <code>MaxConnectionsPercent</code>.</p>"
+          "documentation":"<p>A value that controls how actively the proxy closes idle database connections in the connection pool. The value is expressed as a percentage of the <code>max_connections</code> setting for the RDS DB instance or Aurora DB cluster used by the target group. With a high value, the proxy leaves a high percentage of idle database connections open. A low value causes the proxy to close more idle connections and return them to the database.</p> <p>If you specify this parameter, then you must also include a value for <code>MaxConnectionsPercent</code>.</p> <p>Default: The default value is half of the value of <code>MaxConnectionsPercent</code>. For example, if <code>MaxConnectionsPercent</code> is 80, then the default value of <code>MaxIdleConnectionsPercent</code> is 40. If the value of <code>MaxConnectionsPercent</code> isn't specified, then for SQL Server, <code>MaxIdleConnectionsPercent</code> is <code>5</code>, and for all other engines, the default is <code>50</code>.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 0 and the value of <code>MaxConnectionsPercent</code>.</p> </li> </ul>"
         },
         "ConnectionBorrowTimeout":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of seconds for a proxy to wait for a connection to become available in the connection pool. Only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions.</p> <p>Default: 120</p> <p>Constraints: between 1 and 3600, or 0 representing unlimited</p>"
+          "documentation":"<p>The number of seconds for a proxy to wait for a connection to become available in the connection pool. This setting only applies when the proxy has opened its maximum number of connections and all connections are busy with client sessions. For an unlimited wait time, specify <code>0</code>.</p> <p>Default: <code>120</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be between 0 and 3600.</p> </li> </ul>"
         },
         "SessionPinningFilters":{
           "shape":"StringList",
@@ -3474,7 +3474,7 @@
         },
         "CopyTags":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the source DB cluster snapshot to the target DB cluster snapshot. By default, tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the source DB cluster snapshot to the target DB cluster snapshot. By default, tags are not copied.</p>"
         },
         "Tags":{"shape":"TagList"}
       },
@@ -3538,7 +3538,7 @@
         "Tags":{"shape":"TagList"},
         "CopyTags":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the source DB snapshot to the target DB snapshot. By default, tags aren't copied.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the source DB snapshot to the target DB snapshot. By default, tags aren't copied.</p>"
         },
         "PreSignedUrl":{
           "shape":"String",
@@ -3554,7 +3554,7 @@
         },
         "CopyOptionGroup":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy the DB option group associated with the source DB snapshot to the target Amazon Web Services account and associate with the target DB snapshot. The associated option group can be copied only with cross-account snapshot copy calls.</p>"
+          "documentation":"<p>Specifies whether to copy the DB option group associated with the source DB snapshot to the target Amazon Web Services account and associate with the target DB snapshot. The associated option group can be copied only with cross-account snapshot copy calls.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4038,7 +4038,7 @@
         },
         "MasterUserPassword":{
           "shape":"String",
-          "documentation":"<p>The password for the master user.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. The password for the master user is managed by the DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified if <code>ManageMasterUserPassword</code> is turned on.</p> </li> <li> <p>Can include any printable ASCII character except \"/\", \"\"\", or \"@\".</p> </li> </ul> <p>Length Constraints:</p> <ul> <li> <p>RDS for MariaDB - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Microsoft SQL Server - Must contain from 8 to 128 characters.</p> </li> <li> <p>RDS for MySQL - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Oracle - Must contain from 8 to 30 characters.</p> </li> <li> <p>RDS for PostgreSQL - Must contain from 8 to 128 characters.</p> </li> </ul>"
+          "documentation":"<p>The password for the master user.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. The password for the master user is managed by the DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>Can't be specified if <code>ManageMasterUserPassword</code> is turned on.</p> </li> <li> <p>Can include any printable ASCII character except \"/\", \"\"\", or \"@\". For RDS for Oracle, can't include the \"&amp;\" (ampersand) or the \"'\" (single quotes) character.</p> </li> </ul> <p>Length Constraints:</p> <ul> <li> <p>RDS for MariaDB - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Microsoft SQL Server - Must contain from 8 to 128 characters.</p> </li> <li> <p>RDS for MySQL - Must contain from 8 to 41 characters.</p> </li> <li> <p>RDS for Oracle - Must contain from 8 to 30 characters.</p> </li> <li> <p>RDS for PostgreSQL - Must contain from 8 to 128 characters.</p> </li> </ul>"
         },
         "DBSecurityGroups":{
           "shape":"DBSecurityGroupNameList",
@@ -4269,7 +4269,7 @@
         },
         "DBInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The compute and memory capacity of the read replica, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Default: Inherits from the source DB instance.</p>"
+          "documentation":"<p>The compute and memory capacity of the read replica, for example db.m4.large. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Default: Inherits the value from the source DB instance.</p>"
         },
         "AvailabilityZone":{
           "shape":"String",
@@ -4277,56 +4277,56 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number that the DB instance uses for connections.</p> <p>Default: Inherits from the source DB instance</p> <p>Valid Values: <code>1150-65535</code> </p>"
+          "documentation":"<p>The port number that the DB instance uses for connections.</p> <p>Valid Values: <code>1150-65535</code> </p> <p>Default: Inherits the value from the source DB instance.</p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the read replica is in a Multi-AZ deployment.</p> <p>You can create a read replica as a Multi-AZ DB instance. RDS creates a standby of your replica in another Availability Zone for failover support for the replica. Creating your read replica as a Multi-AZ DB instance is independent of whether the source is a Multi-AZ DB instance or a Multi-AZ DB cluster.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether the read replica is in a Multi-AZ deployment.</p> <p>You can create a read replica as a Multi-AZ DB instance. RDS creates a standby of your replica in another Availability Zone for failover support for the replica. Creating your read replica as a Multi-AZ DB instance is independent of whether the source is a Multi-AZ DB instance or a Multi-AZ DB cluster.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the read replica during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: Inherits from the source DB instance</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the read replica during the maintenance window.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Default: Inherits the value from the source DB instance.</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB instance.</p>"
+          "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to initially allocate for the DB instance.</p>"
         },
         "OptionGroupName":{
           "shape":"String",
-          "documentation":"<p>The option group the DB instance is associated with. If omitted, the option group associated with the source instance or cluster is used.</p> <note> <p>For SQL Server, you must use the option group associated with the source.</p> </note> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The option group to associate the DB instance with. If not specified, RDS uses the option group associated with the source DB instance or cluster.</p> <note> <p>For SQL Server, you must use the option group associated with the source.</p> </note> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "DBParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the DB parameter group to associate with this DB instance.</p> <p>If you do not specify a value for <code>DBParameterGroupName</code>, then Amazon RDS uses the <code>DBParameterGroup</code> of source DB instance for a same Region read replica, or the default <code>DBParameterGroup</code> for the specified DB engine for a cross-Region read replica.</p> <p>Specifying a parameter group for this operation is only supported for MySQL and Oracle DB instances. It isn't supported for RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
+          "documentation":"<p>The name of the DB parameter group to associate with this DB instance.</p> <p>If you don't specify a value for <code>DBParameterGroupName</code>, then Amazon RDS uses the <code>DBParameterGroup</code> of the source DB instance for a same Region read replica, or the default <code>DBParameterGroup</code> for the specified DB engine for a cross-Region read replica.</p> <p>Specifying a parameter group for this operation is only supported for MySQL DB instances for cross-Region read replicas and for Oracle DB instances. It isn't supported for MySQL DB instances for same Region read replicas or for RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access isn't permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access isn't permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
         },
         "Tags":{"shape":"TagList"},
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>Specifies a DB subnet group for the DB instance. The new DB instance is created in the VPC associated with the DB subnet group. If no DB subnet group is specified, then the new DB instance isn't created in a VPC.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DBSubnetGroup.</p> </li> <li> <p>The specified DB subnet group must be in the same Amazon Web Services Region in which the operation is running.</p> </li> <li> <p>All read replicas in one Amazon Web Services Region that are created from the same source DB instance must either:&gt;</p> <ul> <li> <p>Specify DB subnet groups from the same VPC. All these read replicas are created in the same VPC.</p> </li> <li> <p>Not specify a DB subnet group. All these read replicas are created outside of any VPC.</p> </li> </ul> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
+          "documentation":"<p>A DB subnet group for the DB instance. The new DB instance is created in the VPC associated with the DB subnet group. If no DB subnet group is specified, then the new DB instance isn't created in a VPC.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the name of an existing DB subnet group.</p> </li> <li> <p>The specified DB subnet group must be in the same Amazon Web Services Region in which the operation is running.</p> </li> <li> <p>All read replicas in one Amazon Web Services Region that are created from the same source DB instance must either:</p> <ul> <li> <p>Specify DB subnet groups from the same VPC. All these read replicas are created in the same VPC.</p> </li> <li> <p>Not specify a DB subnet group. All these read replicas are created outside of any VPC.</p> </li> </ul> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "VpcSecurityGroupIds":{
           "shape":"VpcSecurityGroupIdList",
-          "documentation":"<p>A list of Amazon EC2 VPC security groups to associate with the read replica.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: The default EC2 VPC security group for the DB subnet group's VPC.</p>"
+          "documentation":"<p>A list of Amazon EC2 VPC security groups to associate with the read replica.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Default: The default EC2 VPC security group for the DB subnet group's VPC.</p>"
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the read replica.</p> <p>Valid values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified, otherwise <code>gp2</code> </p>"
+          "documentation":"<p>The storage type to associate with the read replica.</p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Valid Values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified. Otherwise, <code>gp2</code>.</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the read replica to snapshots of the read replica. By default, tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the read replica to snapshots of the read replica. By default, tags aren't copied.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the read replica. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must also set <code>MonitoringInterval</code> to a value other than 0.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p>"
+          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the read replica. To disable collection of Enhanced Monitoring metrics, specify <code>0</code>. The default is <code>0</code>.</p> <p>If <code>MonitoringRoleArn</code> is specified, then you must set <code>MonitoringInterval</code> to a value other than <code>0</code>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Valid Values: <code>0, 1, 5, 10, 15, 30, 60</code> </p> <p>Default: <code>0</code> </p>"
         },
         "MonitoringRoleArn":{
           "shape":"String",
-          "documentation":"<p>The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, go to <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.html#USER_Monitoring.OS.IAMRole\">To create an IAM role for Amazon RDS Enhanced Monitoring</a> in the <i>Amazon RDS User Guide</i>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to Amazon CloudWatch Logs. For example, <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, go to <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.html#USER_Monitoring.OS.IAMRole\">To create an IAM role for Amazon RDS Enhanced Monitoring</a> in the <i>Amazon RDS User Guide</i>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than 0, then you must supply a <code>MonitoringRoleArn</code> value.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -4334,47 +4334,47 @@
         },
         "PreSignedUrl":{
           "shape":"String",
-          "documentation":"<p>When you are creating a read replica from one Amazon Web Services GovCloud (US) Region to another or from one China Amazon Web Services Region to another, the URL that contains a Signature Version 4 signed request for the <code>CreateDBInstanceReadReplica</code> API operation in the source Amazon Web Services Region that contains the source DB instance.</p> <p>This setting applies only to Amazon Web Services GovCloud (US) Regions and China Amazon Web Services Regions. It's ignored in other Amazon Web Services Regions.</p> <p>This setting applies only when replicating from a source DB <i>instance</i>. Source DB clusters aren't supported in Amazon Web Services GovCloud (US) Regions and China Amazon Web Services Regions.</p> <p>You must specify this parameter when you create an encrypted read replica from another Amazon Web Services Region by using the Amazon RDS API. Don't specify <code>PreSignedUrl</code> when you are creating an encrypted read replica in the same Amazon Web Services Region.</p> <p>The presigned URL must be a valid request for the <code>CreateDBInstanceReadReplica</code> API operation that can run in the source Amazon Web Services Region that contains the encrypted source DB instance. The presigned URL request must contain the following parameter values:</p> <ul> <li> <p> <code>DestinationRegion</code> - The Amazon Web Services Region that the encrypted read replica is created in. This Amazon Web Services Region is the same one where the <code>CreateDBInstanceReadReplica</code> operation is called that contains this presigned URL.</p> <p>For example, if you create an encrypted DB instance in the us-west-1 Amazon Web Services Region, from a source DB instance in the us-east-2 Amazon Web Services Region, then you call the <code>CreateDBInstanceReadReplica</code> operation in the us-east-1 Amazon Web Services Region and provide a presigned URL that contains a call to the <code>CreateDBInstanceReadReplica</code> operation in the us-west-2 Amazon Web Services Region. For this example, the <code>DestinationRegion</code> in the presigned URL must be set to the us-east-1 Amazon Web Services Region.</p> </li> <li> <p> <code>KmsKeyId</code> - The KMS key identifier for the key to use to encrypt the read replica in the destination Amazon Web Services Region. This is the same identifier for both the <code>CreateDBInstanceReadReplica</code> operation that is called in the destination Amazon Web Services Region, and the operation contained in the presigned URL.</p> </li> <li> <p> <code>SourceDBInstanceIdentifier</code> - The DB instance identifier for the encrypted DB instance to be replicated. This identifier must be in the Amazon Resource Name (ARN) format for the source Amazon Web Services Region. For example, if you are creating an encrypted read replica from a DB instance in the us-west-2 Amazon Web Services Region, then your <code>SourceDBInstanceIdentifier</code> looks like the following example: <code>arn:aws:rds:us-west-2:123456789012:instance:mysql-instance1-20161115</code>.</p> </li> </ul> <p>To learn how to generate a Signature Version 4 signed request, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html\">Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p> <note> <p>If you are using an Amazon Web Services SDK tool or the CLI, you can specify <code>SourceRegion</code> (or <code>--source-region</code> for the CLI) instead of specifying <code>PreSignedUrl</code> manually. Specifying <code>SourceRegion</code> autogenerates a presigned URL that is a valid request for the operation that can run in the source Amazon Web Services Region.</p> <p> <code>SourceRegion</code> isn't supported for SQL Server, because Amazon RDS for SQL Server doesn't support cross-Region read replicas.</p> </note> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>When you are creating a read replica from one Amazon Web Services GovCloud (US) Region to another or from one China Amazon Web Services Region to another, the URL that contains a Signature Version 4 signed request for the <code>CreateDBInstanceReadReplica</code> API operation in the source Amazon Web Services Region that contains the source DB instance.</p> <p>This setting applies only to Amazon Web Services GovCloud (US) Regions and China Amazon Web Services Regions. It's ignored in other Amazon Web Services Regions.</p> <p>This setting applies only when replicating from a source DB <i>instance</i>. Source DB clusters aren't supported in Amazon Web Services GovCloud (US) Regions and China Amazon Web Services Regions.</p> <p>You must specify this parameter when you create an encrypted read replica from another Amazon Web Services Region by using the Amazon RDS API. Don't specify <code>PreSignedUrl</code> when you are creating an encrypted read replica in the same Amazon Web Services Region.</p> <p>The presigned URL must be a valid request for the <code>CreateDBInstanceReadReplica</code> API operation that can run in the source Amazon Web Services Region that contains the encrypted source DB instance. The presigned URL request must contain the following parameter values:</p> <ul> <li> <p> <code>DestinationRegion</code> - The Amazon Web Services Region that the encrypted read replica is created in. This Amazon Web Services Region is the same one where the <code>CreateDBInstanceReadReplica</code> operation is called that contains this presigned URL.</p> <p>For example, if you create an encrypted DB instance in the us-west-1 Amazon Web Services Region, from a source DB instance in the us-east-2 Amazon Web Services Region, then you call the <code>CreateDBInstanceReadReplica</code> operation in the us-east-1 Amazon Web Services Region and provide a presigned URL that contains a call to the <code>CreateDBInstanceReadReplica</code> operation in the us-west-2 Amazon Web Services Region. For this example, the <code>DestinationRegion</code> in the presigned URL must be set to the us-east-1 Amazon Web Services Region.</p> </li> <li> <p> <code>KmsKeyId</code> - The KMS key identifier for the key to use to encrypt the read replica in the destination Amazon Web Services Region. This is the same identifier for both the <code>CreateDBInstanceReadReplica</code> operation that is called in the destination Amazon Web Services Region, and the operation contained in the presigned URL.</p> </li> <li> <p> <code>SourceDBInstanceIdentifier</code> - The DB instance identifier for the encrypted DB instance to be replicated. This identifier must be in the Amazon Resource Name (ARN) format for the source Amazon Web Services Region. For example, if you are creating an encrypted read replica from a DB instance in the us-west-2 Amazon Web Services Region, then your <code>SourceDBInstanceIdentifier</code> looks like the following example: <code>arn:aws:rds:us-west-2:123456789012:instance:mysql-instance1-20161115</code>.</p> </li> </ul> <p>To learn how to generate a Signature Version 4 signed request, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html\">Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p> <note> <p>If you are using an Amazon Web Services SDK tool or the CLI, you can specify <code>SourceRegion</code> (or <code>--source-region</code> for the CLI) instead of specifying <code>PreSignedUrl</code> manually. Specifying <code>SourceRegion</code> autogenerates a presigned URL that is a valid request for the operation that can run in the source Amazon Web Services Region.</p> <p> <code>SourceRegion</code> isn't supported for SQL Server, because Amazon RDS for SQL Server doesn't support cross-Region read replicas.</p> </note> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable Performance Insights for the read replica.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\">Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to enable Performance Insights for the read replica.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\">Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you do not specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you do not specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of days to retain Performance Insights data. The default is 7 days. The following values are valid:</p> <ul> <li> <p>7</p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23</p> </li> <li> <p>731</p> </li> </ul> <p>For example, the following values are valid:</p> <ul> <li> <p>93 (3 months * 31)</p> </li> <li> <p>341 (11 months * 31)</p> </li> <li> <p>589 (19 months * 31)</p> </li> <li> <p>731</p> </li> </ul> <p>If you specify a retention period such as 94, which isn't a valid value, RDS issues an error.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS returns an error.</p>"
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of logs that the new DB instance is to export to CloudWatch Logs. The values in the list depend on the DB engine being used. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs </a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The list of logs that the new DB instance is to export to CloudWatch Logs. The values in the list depend on the DB engine being used. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs </a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "ProcessorFeatures":{
           "shape":"ProcessorFeatureList",
-          "documentation":"<p>The number of CPU cores and the number of threads per core for the DB instance class of the DB instance.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The number of CPU cores and the number of threads per core for the DB instance class of the DB instance.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "UseDefaultProcessorFeatures":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB instance. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
         },
         "Domain":{
           "shape":"String",
-          "documentation":"<p>The Active Directory directory ID to create the DB instance in. Currently, only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances can be created in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The Active Directory directory ID to create the DB instance in. Currently, only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances can be created in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
-          "documentation":"<p>The name of the IAM role to be used when making API calls to the Directory Service.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>The name of the IAM role to use when making API calls to the Directory Service.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
         },
         "DomainFqdn":{
           "shape":"String",
@@ -4402,19 +4402,19 @@
         },
         "CustomIamInstanceProfile":{
           "shape":"String",
-          "documentation":"<p>The instance profile associated with the underlying Amazon EC2 instance of an RDS Custom DB instance. The instance profile must meet the following requirements:</p> <ul> <li> <p>The profile must exist in your account.</p> </li> <li> <p>The profile must have an IAM role that Amazon EC2 has permissions to assume.</p> </li> <li> <p>The instance profile name and the associated IAM role name must start with the prefix <code>AWSRDSCustom</code>.</p> </li> </ul> <p>For the list of permissions required for the IAM role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc\"> Configure IAM and your VPC</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting is required for RDS Custom.</p>"
+          "documentation":"<p>The instance profile associated with the underlying Amazon EC2 instance of an RDS Custom DB instance. The instance profile must meet the following requirements:</p> <ul> <li> <p>The profile must exist in your account.</p> </li> <li> <p>The profile must have an IAM role that Amazon EC2 has permissions to assume.</p> </li> <li> <p>The instance profile name and the associated IAM role name must start with the prefix <code>AWSRDSCustom</code>.</p> </li> </ul> <p>For the list of permissions required for the IAM role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc\"> Configure IAM and your VPC</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting is required for RDS Custom DB instances.</p>"
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for read replica. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>The network type of the DB instance.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for read replica. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput value for the read replica.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora.</p>"
+          "documentation":"<p>Specifies the storage throughput value for the read replica.</p> <p>This setting doesn't apply to RDS Custom or Amazon Aurora DB instances.</p>"
         },
         "EnableCustomerOwnedIp":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts read replica.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the read replica from outside of its virtual private cloud (VPC) on your local network.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts read replica.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the read replica from outside of its virtual private cloud (VPC) on your local network.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
@@ -4497,7 +4497,7 @@
         },
         "TargetRole":{
           "shape":"DBProxyEndpointTargetRole",
-          "documentation":"<p>A value that indicates whether the DB proxy endpoint can be used for read/write or read-only operations. The default is <code>READ_WRITE</code>. The only role that proxies for RDS for Microsoft SQL Server support is <code>READ_WRITE</code>.</p>"
+          "documentation":"<p>The role of the DB proxy endpoint. The role determines whether the endpoint can be used for read/write or only read operations. The default is <code>READ_WRITE</code>. The only role that proxies for RDS for Microsoft SQL Server support is <code>READ_WRITE</code>.</p>"
         },
         "Tags":{"shape":"TagList"}
       }
@@ -4547,7 +4547,7 @@
         },
         "RequireTLS":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean parameter that specifies whether Transport Layer Security (TLS) encryption is required for connections to the proxy. By enabling this setting, you can enforce encrypted TLS connections to the proxy.</p>"
+          "documentation":"<p>Specifies whether Transport Layer Security (TLS) encryption is required for connections to the proxy. By enabling this setting, you can enforce encrypted TLS connections to the proxy.</p>"
         },
         "IdleClientTimeout":{
           "shape":"IntegerOptional",
@@ -4555,7 +4555,7 @@
         },
         "DebugLogging":{
           "shape":"Boolean",
-          "documentation":"<p>Whether the proxy includes detailed information about SQL statements in its logs. This information helps you to debug issues involving SQL behavior or the performance and scalability of the proxy connections. The debug information includes the text of SQL statements that you submit through the proxy. Thus, only enable this setting when needed for debugging, and only when you have security measures in place to safeguard any sensitive information that appears in the logs.</p>"
+          "documentation":"<p>Specifies whether the proxy includes detailed information about SQL statements in its logs. This information helps you to debug issues involving SQL behavior or the performance and scalability of the proxy connections. The debug information includes the text of SQL statements that you submit through the proxy. Thus, only enable this setting when needed for debugging, and only when you have security measures in place to safeguard any sensitive information that appears in the logs.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -4675,7 +4675,7 @@
         },
         "SourceType":{
           "shape":"String",
-          "documentation":"<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you set this parameter to <code>db-instance</code>. For RDS Proxy events, specify <code>db-proxy</code>. If this value isn't specified, all events are returned.</p> <p>Valid values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
+          "documentation":"<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you set this parameter to <code>db-instance</code>. For RDS Proxy events, specify <code>db-proxy</code>. If this value isn't specified, all events are returned.</p> <p>Valid Values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
         },
         "EventCategories":{
           "shape":"EventCategoriesList",
@@ -4687,7 +4687,7 @@
         },
         "Enabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to activate the subscription. If the event notification subscription isn't activated, the subscription is created but not active.</p>"
+          "documentation":"<p>Specifies whether to activate the subscription. If the event notification subscription isn't activated, the subscription is created but not active.</p>"
         },
         "Tags":{"shape":"TagList"}
       },
@@ -5083,7 +5083,7 @@
         },
         "GlobalWriteForwardingRequested":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether write forwarding is enabled for a secondary cluster in an Aurora global database. Because write forwarding takes time to enable, check the value of <code>GlobalWriteForwardingStatus</code> to confirm that the request has completed before using the write forwarding feature for this cluster.</p>"
+          "documentation":"<p>Indicates whether write forwarding is enabled for a secondary cluster in an Aurora global database. Because write forwarding takes time to enable, check the value of <code>GlobalWriteForwardingStatus</code> to confirm that the request has completed before using the write forwarding feature for this cluster.</p>"
         },
         "PendingModifiedValues":{
           "shape":"ClusterPendingModifiedValues",
@@ -5148,7 +5148,7 @@
         },
         "LocalWriteForwardingStatus":{
           "shape":"LocalWriteForwardingStatus",
-          "documentation":"<p>Specifies whether an Aurora DB cluster has in-cluster write forwarding enabled, not enabled, requested, or is in the process of enabling it.</p>"
+          "documentation":"<p>Indicates whether an Aurora DB cluster has in-cluster write forwarding enabled, not enabled, requested, or is in the process of enabling it.</p>"
         },
         "AwsBackupRecoveryPointArn":{
           "shape":"String",
@@ -5212,7 +5212,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
+          "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
         },
         "ClusterCreateTime":{
           "shape":"TStamp",
@@ -5220,7 +5220,7 @@
         },
         "StorageEncrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the source DB cluster is encrypted.</p>"
+          "documentation":"<p>Indicates whether the source DB cluster is encrypted.</p>"
         },
         "AllocatedStorage":{
           "shape":"Integer",
@@ -5526,7 +5526,7 @@
         },
         "IsClusterWriter":{
           "shape":"Boolean",
-          "documentation":"<p>Value that is <code>true</code> if the cluster member is the primary instance for the DB cluster and <code>false</code> otherwise.</p>"
+          "documentation":"<p>Indicates whether the cluster member is the primary DB instance for the DB cluster.</p>"
         },
         "DBClusterParameterGroupStatus":{
           "shape":"String",
@@ -5752,71 +5752,71 @@
       "members":{
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
-          "documentation":"<p>Provides the list of Availability Zones (AZs) where instances in the DB cluster snapshot can be restored.</p>"
+          "documentation":"<p>The list of Availability Zones (AZs) where instances in the DB cluster snapshot can be restored.</p>"
         },
         "DBClusterSnapshotIdentifier":{
           "shape":"String",
-          "documentation":"<p>Specifies the identifier for the DB cluster snapshot.</p>"
+          "documentation":"<p>The identifier for the DB cluster snapshot.</p>"
         },
         "DBClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>Specifies the DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.</p>"
+          "documentation":"<p>The DB cluster identifier of the DB cluster that this DB cluster snapshot was created from.</p>"
         },
         "SnapshotCreateTime":{
           "shape":"TStamp",
-          "documentation":"<p>Provides the time when the snapshot was taken, in Universal Coordinated Time (UTC).</p>"
+          "documentation":"<p>The time when the snapshot was taken, in Universal Coordinated Time (UTC).</p>"
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>Specifies the name of the database engine for this DB cluster snapshot.</p>"
+          "documentation":"<p>The name of the database engine for this DB cluster snapshot.</p>"
         },
         "EngineMode":{
           "shape":"String",
-          "documentation":"<p>Provides the engine mode of the database engine for this DB cluster snapshot.</p>"
+          "documentation":"<p>The engine mode of the database engine for this DB cluster snapshot.</p>"
         },
         "AllocatedStorage":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the allocated storage size in gibibytes (GiB).</p>"
+          "documentation":"<p>The allocated storage size of the DB cluster snapshot in gibibytes (GiB).</p>"
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Specifies the status of this DB cluster snapshot. Valid statuses are the following:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>copying</code> </p> </li> <li> <p> <code>creating</code> </p> </li> </ul>"
+          "documentation":"<p>The status of this DB cluster snapshot. Valid statuses are the following:</p> <ul> <li> <p> <code>available</code> </p> </li> <li> <p> <code>copying</code> </p> </li> <li> <p> <code>creating</code> </p> </li> </ul>"
         },
         "Port":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the port that the DB cluster was listening on at the time of the snapshot.</p>"
+          "documentation":"<p>The port that the DB cluster was listening on at the time of the snapshot.</p>"
         },
         "VpcId":{
           "shape":"String",
-          "documentation":"<p>Provides the VPC ID associated with the DB cluster snapshot.</p>"
+          "documentation":"<p>The VPC ID associated with the DB cluster snapshot.</p>"
         },
         "ClusterCreateTime":{
           "shape":"TStamp",
-          "documentation":"<p>Specifies the time when the DB cluster was created, in Universal Coordinated Time (UTC).</p>"
+          "documentation":"<p>The time when the DB cluster was created, in Universal Coordinated Time (UTC).</p>"
         },
         "MasterUsername":{
           "shape":"String",
-          "documentation":"<p>Provides the master username for this DB cluster snapshot.</p>"
+          "documentation":"<p>The master username for this DB cluster snapshot.</p>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>Provides the version of the database engine for this DB cluster snapshot.</p>"
+          "documentation":"<p>The version of the database engine for this DB cluster snapshot.</p>"
         },
         "LicenseModel":{
           "shape":"String",
-          "documentation":"<p>Provides the license model information for this DB cluster snapshot.</p>"
+          "documentation":"<p>The license model information for this DB cluster snapshot.</p>"
         },
         "SnapshotType":{
           "shape":"String",
-          "documentation":"<p>Provides the type of the DB cluster snapshot.</p>"
+          "documentation":"<p>The type of the DB cluster snapshot.</p>"
         },
         "PercentProgress":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the percentage of the estimated data that has been transferred.</p>"
+          "documentation":"<p>The percentage of the estimated data that has been transferred.</p>"
         },
         "StorageEncrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the DB cluster snapshot is encrypted.</p>"
+          "documentation":"<p>Indicates whether the DB cluster snapshot is encrypted.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -5824,7 +5824,7 @@
         },
         "DBClusterSnapshotArn":{
           "shape":"String",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) for the DB cluster snapshot.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the DB cluster snapshot.</p>"
         },
         "SourceDBClusterSnapshotArn":{
           "shape":"String",
@@ -5832,7 +5832,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
+          "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
         },
         "TagList":{"shape":"TagList"},
         "DBSystemId":{
@@ -5845,7 +5845,7 @@
         },
         "DbClusterResourceId":{
           "shape":"String",
-          "documentation":"<p>Specifies the resource ID of the DB cluster that this DB cluster snapshot was created from.</p>"
+          "documentation":"<p>The resource ID of the DB cluster that this DB cluster snapshot was created from.</p>"
         }
       },
       "documentation":"<p>Contains the details for an Amazon RDS DB cluster snapshot</p> <p>This data type is used as a response element in the <code>DescribeDBClusterSnapshots</code> action.</p>",
@@ -5989,7 +5989,7 @@
         },
         "SupportsLogExportsToCloudwatchLogs":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether the engine version supports exporting the log types specified by ExportableLogTypes to CloudWatch Logs.</p>"
+          "documentation":"<p>Indicates whether the engine version supports exporting the log types specified by ExportableLogTypes to CloudWatch Logs.</p>"
         },
         "SupportsReadReplica":{
           "shape":"Boolean",
@@ -6009,11 +6009,11 @@
         },
         "SupportsParallelQuery":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether you can use Aurora parallel query with a specific DB engine version.</p>"
+          "documentation":"<p>Indicates whether you can use Aurora parallel query with a specific DB engine version.</p>"
         },
         "SupportsGlobalDatabases":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether you can use Aurora global databases with a specific DB engine version.</p>"
+          "documentation":"<p>Indicates whether you can use Aurora global databases with a specific DB engine version.</p>"
         },
         "MajorEngineVersion":{
           "shape":"String",
@@ -6042,7 +6042,7 @@
         "TagList":{"shape":"TagList"},
         "SupportsBabelfish":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether the engine version supports Babelfish for Aurora PostgreSQL.</p>"
+          "documentation":"<p>Indicates whether the engine version supports Babelfish for Aurora PostgreSQL.</p>"
         },
         "CustomDBEngineVersionManifest":{
           "shape":"CustomDBEngineVersionManifest",
@@ -6050,7 +6050,7 @@
         },
         "SupportsCertificateRotationWithoutRestart":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the engine version supports rotating the server certificate without rebooting the DB instance.</p>"
+          "documentation":"<p>Indicates whether the engine version supports rotating the server certificate without rebooting the DB instance.</p>"
         },
         "SupportedCACertificateIdentifiers":{
           "shape":"CACertificateIdentifiersList",
@@ -6058,7 +6058,7 @@
         },
         "SupportsLocalWriteForwarding":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>Indicates whether the DB engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
@@ -6449,15 +6449,15 @@
         },
         "RestoreWindow":{
           "shape":"RestoreWindow",
-          "documentation":"<p>Earliest and latest time an instance can be restored to.</p>"
+          "documentation":"<p>The earliest and latest time a DB instance can be restored to.</p>"
         },
         "AllocatedStorage":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the allocated storage size in gibibytes (GiB).</p>"
+          "documentation":"<p>The allocated storage size for the the automated backup in gibibytes (GiB).</p>"
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Provides a list of status information for an automated backup:</p> <ul> <li> <p> <code>active</code> - Automated backups for current instances.</p> </li> <li> <p> <code>retained</code> - Automated backups for deleted instances.</p> </li> <li> <p> <code>creating</code> - Automated backups that are waiting for the first automated snapshot to be available.</p> </li> </ul>"
+          "documentation":"<p>A list of status information for an automated backup:</p> <ul> <li> <p> <code>active</code> - Automated backups for current instances.</p> </li> <li> <p> <code>retained</code> - Automated backups for deleted instances.</p> </li> <li> <p> <code>creating</code> - Automated backups that are waiting for the first automated snapshot to be available.</p> </li> </ul>"
         },
         "Port":{
           "shape":"Integer",
@@ -6469,11 +6469,11 @@
         },
         "VpcId":{
           "shape":"String",
-          "documentation":"<p>Provides the VPC ID associated with the DB instance.</p>"
+          "documentation":"<p>The VPC ID associated with the DB instance.</p>"
         },
         "InstanceCreateTime":{
           "shape":"TStamp",
-          "documentation":"<p>Provides the date and time that the DB instance was created.</p>"
+          "documentation":"<p>The date and time when the DB instance was created.</p>"
         },
         "MasterUsername":{
           "shape":"String",
@@ -6489,7 +6489,7 @@
         },
         "LicenseModel":{
           "shape":"String",
-          "documentation":"<p>License model information for the automated backup.</p>"
+          "documentation":"<p>The license model information for the automated backup.</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -6505,11 +6505,11 @@
         },
         "Encrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the automated backup is encrypted.</p>"
+          "documentation":"<p>Indicates whether the automated backup is encrypted.</p>"
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type associated with the automated backup.</p>"
+          "documentation":"<p>The storage type associated with the automated backup.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -6537,11 +6537,11 @@
         },
         "BackupTarget":{
           "shape":"String",
-          "documentation":"<p>Specifies where automated backups are stored: Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
+          "documentation":"<p>The location where automated backups are stored: Amazon Web Services Outposts or the Amazon Web Services Region.</p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the storage throughput for the automated backup.</p>"
+          "documentation":"<p>The storage throughput for the automated backup.</p>"
         },
         "AwsBackupRecoveryPointArn":{
           "shape":"String",
@@ -6659,10 +6659,10 @@
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Describes the state of association between the IAM role and the DB instance. The Status property returns one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - the IAM role ARN is associated with the DB instance and can be used to access other Amazon Web Services services on your behalf.</p> </li> <li> <p> <code>PENDING</code> - the IAM role ARN is being associated with the DB instance.</p> </li> <li> <p> <code>INVALID</code> - the IAM role ARN is associated with the DB instance, but the DB instance is unable to assume the IAM role in order to access other Amazon Web Services services on your behalf.</p> </li> </ul>"
+          "documentation":"<p>Information about the state of association between the IAM role and the DB instance. The Status property returns one of the following values:</p> <ul> <li> <p> <code>ACTIVE</code> - the IAM role ARN is associated with the DB instance and can be used to access other Amazon Web Services services on your behalf.</p> </li> <li> <p> <code>PENDING</code> - the IAM role ARN is being associated with the DB instance.</p> </li> <li> <p> <code>INVALID</code> - the IAM role ARN is associated with the DB instance, but the DB instance is unable to assume the IAM role in order to access other Amazon Web Services services on your behalf.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Describes an Amazon Web Services Identity and Access Management (IAM) role that is associated with a DB instance.</p>"
+      "documentation":"<p>Information about an Amazon Web Services Identity and Access Management (IAM) role that is associated with a DB instance.</p>"
     },
     "DBInstanceRoleAlreadyExistsFault":{
       "type":"structure",
@@ -6716,11 +6716,11 @@
         },
         "Normal":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean value that is true if the instance is operating normally, or false if the instance is in an error state.</p>"
+          "documentation":"<p>A Boolean value that is true if the instance is operating normally, or false if the instance is in an error state.</p>"
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Status of the DB instance. For a StatusType of read replica, the values can be replicating, replication stop point set, replication stop point reached, error, stopped, or terminated.</p>"
+          "documentation":"<p>The status of the DB instance. For a StatusType of read replica, the values can be replicating, replication stop point set, replication stop point reached, error, stopped, or terminated.</p>"
         },
         "Message":{
           "shape":"String",
@@ -6926,7 +6926,7 @@
         },
         "DebugLogging":{
           "shape":"Boolean",
-          "documentation":"<p>Whether the proxy includes detailed information about SQL statements in its logs. This information helps you to debug issues involving SQL behavior or the performance and scalability of the proxy connections. The debug information includes the text of SQL statements that you submit through the proxy. Thus, only enable this setting when needed for debugging, and only when you have security measures in place to safeguard any sensitive information that appears in the logs.</p>"
+          "documentation":"<p>Indicates whether the proxy includes detailed information about SQL statements in its logs. This information helps you to debug issues involving SQL behavior or the performance and scalability of the proxy connections. The debug information includes the text of SQL statements that you submit through the proxy. Thus, only enable this setting when needed for debugging, and only when you have security measures in place to safeguard any sensitive information that appears in the logs.</p>"
         },
         "CreatedDate":{
           "shape":"TStamp",
@@ -6996,7 +6996,7 @@
         },
         "IsDefault":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether this endpoint is the default endpoint for the associated DB proxy. Default DB proxy endpoints always have read/write capability. Other endpoints that you associate with the DB proxy can be either read/write or read-only.</p>"
+          "documentation":"<p>Indicates whether this endpoint is the default endpoint for the associated DB proxy. Default DB proxy endpoints always have read/write capability. Other endpoints that you associate with the DB proxy can be either read/write or read-only.</p>"
         }
       },
       "documentation":"<p>The data structure representing an endpoint associated with a DB proxy. RDS automatically creates one endpoint for each DB proxy. For Aurora DB clusters, you can associate additional endpoints with the same DB proxy. These endpoints can be read/write or read-only. They can also reside in different VPCs than the associated DB proxy.</p> <p>This data type is used as a response element in the <code>DescribeDBProxyEndpoints</code> operation.</p>"
@@ -7180,7 +7180,7 @@
         },
         "IsDefault":{
           "shape":"Boolean",
-          "documentation":"<p>Whether this target group is the first one used for connection requests by the associated proxy. Because each proxy is currently associated with a single target group, currently this setting is always <code>true</code>.</p>"
+          "documentation":"<p>Indicates whether this target group is the first one used for connection requests by the associated proxy. Because each proxy is currently associated with a single target group, currently this setting is always <code>true</code>.</p>"
         },
         "Status":{
           "shape":"String",
@@ -7446,7 +7446,7 @@
         },
         "Encrypted":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the DB snapshot is encrypted.</p>"
+          "documentation":"<p>Indicates whether the DB snapshot is encrypted.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -7462,7 +7462,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
+          "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
         },
         "ProcessorFeatures":{
           "shape":"ProcessorFeatureList",
@@ -7798,7 +7798,7 @@
         },
         "SkipFinalSnapshot":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to skip the creation of a final DB cluster snapshot before the DB cluster is deleted. If skip is specified, no DB cluster snapshot is created. If skip isn't specified, a DB cluster snapshot is created before the DB cluster is deleted. By default, skip isn't specified, and the DB cluster snapshot is created. By default, this parameter is disabled.</p> <note> <p>You must specify a <code>FinalDBSnapshotIdentifier</code> parameter if <code>SkipFinalSnapshot</code> is disabled.</p> </note>"
+          "documentation":"<p>Specifies whether to skip the creation of a final DB cluster snapshot before the DB cluster is deleted. If skip is specified, no DB cluster snapshot is created. If skip isn't specified, a DB cluster snapshot is created before the DB cluster is deleted. By default, skip isn't specified, and the DB cluster snapshot is created. By default, this parameter is disabled.</p> <note> <p>You must specify a <code>FinalDBSnapshotIdentifier</code> parameter if <code>SkipFinalSnapshot</code> is disabled.</p> </note>"
         },
         "FinalDBSnapshotIdentifier":{
           "shape":"String",
@@ -7806,7 +7806,7 @@
         },
         "DeleteAutomatedBackups":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
+          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7875,7 +7875,7 @@
         },
         "SkipFinalSnapshot":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to skip the creation of a final DB snapshot before deleting the instance. If you enable this parameter, RDS doesn't create a DB snapshot. If you don't enable this parameter, RDS creates a DB snapshot before the DB instance is deleted. By default, skip isn't enabled, and the DB snapshot is created.</p> <note> <p>If you don't enable this parameter, you must specify the <code>FinalDBSnapshotIdentifier</code> parameter.</p> </note> <p>When a DB instance is in a failure state and has a status of <code>failed</code>, <code>incompatible-restore</code>, or <code>incompatible-network</code>, RDS can delete the instance only if you enable this parameter.</p> <p>If you delete a read replica or an RDS Custom instance, you must enable this setting.</p> <p>This setting is required for RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to skip the creation of a final DB snapshot before deleting the instance. If you enable this parameter, RDS doesn't create a DB snapshot. If you don't enable this parameter, RDS creates a DB snapshot before the DB instance is deleted. By default, skip isn't enabled, and the DB snapshot is created.</p> <note> <p>If you don't enable this parameter, you must specify the <code>FinalDBSnapshotIdentifier</code> parameter.</p> </note> <p>When a DB instance is in a failure state and has a status of <code>failed</code>, <code>incompatible-restore</code>, or <code>incompatible-network</code>, RDS can delete the instance only if you enable this parameter.</p> <p>If you delete a read replica or an RDS Custom instance, you must enable this setting.</p> <p>This setting is required for RDS Custom.</p>"
         },
         "FinalDBSnapshotIdentifier":{
           "shape":"String",
@@ -7883,7 +7883,7 @@
         },
         "DeleteAutomatedBackups":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to remove automated backups immediately after the DB instance is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB instance is deleted.</p>"
+          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB instance is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB instance is deleted.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8224,7 +8224,7 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>A value that indicates to return only parameters for a specific source. Parameter sources can be <code>engine</code>, <code>service</code>, or <code>customer</code>.</p>"
+          "documentation":"<p>A specific source to return parameters for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>customer</code> </p> </li> <li> <p> <code>engine</code> </p> </li> <li> <p> <code>service</code> </p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -8287,11 +8287,11 @@
         },
         "IncludeShared":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to include shared manual DB cluster snapshots from other Amazon Web Services accounts that this Amazon Web Services account has been given permission to copy or restore. By default, these snapshots are not included.</p> <p>You can give an Amazon Web Services account permission to restore a manual DB cluster snapshot from another Amazon Web Services account by the <code>ModifyDBClusterSnapshotAttribute</code> API action.</p>"
+          "documentation":"<p>Specifies whether to include shared manual DB cluster snapshots from other Amazon Web Services accounts that this Amazon Web Services account has been given permission to copy or restore. By default, these snapshots are not included.</p> <p>You can give an Amazon Web Services account permission to restore a manual DB cluster snapshot from another Amazon Web Services account by the <code>ModifyDBClusterSnapshotAttribute</code> API action.</p>"
         },
         "IncludePublic":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon Web Services account. By default, the public snapshots are not included.</p> <p>You can share a manual DB cluster snapshot as public by using the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>"
+          "documentation":"<p>Specifies whether to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon Web Services account. By default, the public snapshots are not included.</p> <p>You can share a manual DB cluster snapshot as public by using the <a>ModifyDBClusterSnapshotAttribute</a> API action.</p>"
         },
         "DbClusterResourceId":{
           "shape":"String",
@@ -8331,15 +8331,15 @@
       "members":{
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The database engine to return.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora-mysql</code> </p> </li> <li> <p> <code>aurora-postgresql</code> </p> </li> <li> <p> <code>custom-oracle-ee</code> </p> </li> <li> <p> <code>mariadb</code> </p> </li> <li> <p> <code>mysql</code> </p> </li> <li> <p> <code>oracle-ee</code> </p> </li> <li> <p> <code>oracle-ee-cdb</code> </p> </li> <li> <p> <code>oracle-se2</code> </p> </li> <li> <p> <code>oracle-se2-cdb</code> </p> </li> <li> <p> <code>postgres</code> </p> </li> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul>"
+          "documentation":"<p>The database engine to return version details for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>aurora-mysql</code> </p> </li> <li> <p> <code>aurora-postgresql</code> </p> </li> <li> <p> <code>custom-oracle-ee</code> </p> </li> <li> <p> <code>mariadb</code> </p> </li> <li> <p> <code>mysql</code> </p> </li> <li> <p> <code>oracle-ee</code> </p> </li> <li> <p> <code>oracle-ee-cdb</code> </p> </li> <li> <p> <code>oracle-se2</code> </p> </li> <li> <p> <code>oracle-se2-cdb</code> </p> </li> <li> <p> <code>postgres</code> </p> </li> <li> <p> <code>sqlserver-ee</code> </p> </li> <li> <p> <code>sqlserver-se</code> </p> </li> <li> <p> <code>sqlserver-ex</code> </p> </li> <li> <p> <code>sqlserver-web</code> </p> </li> </ul>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The database engine version to return.</p> <p>Example: <code>5.1.49</code> </p>"
+          "documentation":"<p>A specific database engine version to return details for.</p> <p>Example: <code>5.1.49</code> </p>"
         },
         "DBParameterGroupFamily":{
           "shape":"String",
-          "documentation":"<p>The name of a specific DB parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DBParameterGroupFamily.</p> </li> </ul>"
+          "documentation":"<p>The name of a specific DB parameter group family to return details for.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DB parameter group family.</p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -8355,19 +8355,19 @@
         },
         "DefaultOnly":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether only the default version of the specified engine or engine and major version combination is returned.</p>"
+          "documentation":"<p>Specifies whether to return only the default version of the specified engine or the engine and major version combination.</p>"
         },
         "ListSupportedCharacterSets":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to list the supported character sets for each engine version.</p> <p>If this parameter is enabled and the requested engine supports the <code>CharacterSetName</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported character sets for each engine version.</p> <p>For RDS Custom, the default is not to list supported character sets. If you set <code>ListSupportedCharacterSets</code> to <code>true</code>, RDS Custom returns no results.</p>"
+          "documentation":"<p>Specifies whether to list the supported character sets for each engine version.</p> <p>If this parameter is enabled and the requested engine supports the <code>CharacterSetName</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported character sets for each engine version.</p> <p>For RDS Custom, the default is not to list supported character sets. If you enable this parameter, RDS Custom returns no results.</p>"
         },
         "ListSupportedTimezones":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to list the supported time zones for each engine version.</p> <p>If this parameter is enabled and the requested engine supports the <code>TimeZone</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported time zones for each engine version.</p> <p>For RDS Custom, the default is not to list supported time zones. If you set <code>ListSupportedTimezones</code> to <code>true</code>, RDS Custom returns no results.</p>"
+          "documentation":"<p>Specifies whether to list the supported time zones for each engine version.</p> <p>If this parameter is enabled and the requested engine supports the <code>TimeZone</code> parameter for <code>CreateDBInstance</code>, the response includes a list of supported time zones for each engine version.</p> <p>For RDS Custom, the default is not to list supported time zones. If you enable this parameter, RDS Custom returns no results.</p>"
         },
         "IncludeAll":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to include engine versions that aren't available in the list. The default is to list only available engine versions.</p>"
+          "documentation":"<p>Specifies whether to also list the engine versions that aren't available. The default is to list only available engine versions.</p>"
         }
       }
     },
@@ -8763,11 +8763,11 @@
         },
         "IncludeShared":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to include shared manual DB cluster snapshots from other Amazon Web Services accounts that this Amazon Web Services account has been given permission to copy or restore. By default, these snapshots are not included.</p> <p>You can give an Amazon Web Services account permission to restore a manual DB snapshot from another Amazon Web Services account by using the <code>ModifyDBSnapshotAttribute</code> API action.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to include shared manual DB cluster snapshots from other Amazon Web Services accounts that this Amazon Web Services account has been given permission to copy or restore. By default, these snapshots are not included.</p> <p>You can give an Amazon Web Services account permission to restore a manual DB snapshot from another Amazon Web Services account by using the <code>ModifyDBSnapshotAttribute</code> API action.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "IncludePublic":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon Web Services account. By default, the public snapshots are not included.</p> <p>You can share a manual DB snapshot as public by using the <a>ModifyDBSnapshotAttribute</a> API.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to include manual DB cluster snapshots that are public and can be copied or restored by any Amazon Web Services account. By default, the public snapshots are not included.</p> <p>You can share a manual DB snapshot as public by using the <a>ModifyDBSnapshotAttribute</a> API.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "DbiResourceId":{
           "shape":"String",
@@ -8861,7 +8861,7 @@
       "members":{
         "SourceType":{
           "shape":"String",
-          "documentation":"<p>The type of source that is generating the events. For RDS Proxy events, specify <code>db-proxy</code>.</p> <p>Valid values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
+          "documentation":"<p>The type of source that is generating the events. For RDS Proxy events, specify <code>db-proxy</code>.</p> <p>Valid Values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -9067,7 +9067,7 @@
         },
         "Vpc":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to show only VPC or non-VPC offerings. RDS Custom supports only VPC offerings.</p> <p>RDS Custom supports only VPC offerings. If you describe non-VPC offerings for RDS Custom, the output shows VPC offerings.</p>"
+          "documentation":"<p>Specifies whether to show only VPC or non-VPC offerings. RDS Custom supports only VPC offerings.</p> <p>RDS Custom supports only VPC offerings. If you describe non-VPC offerings for RDS Custom, the output shows VPC offerings.</p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -9135,7 +9135,7 @@
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to show only those reservations that support Multi-AZ.</p>"
+          "documentation":"<p>Specifies whether to show only those reservations that support Multi-AZ.</p>"
         },
         "LeaseId":{
           "shape":"String",
@@ -9181,7 +9181,7 @@
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to show only those reservations that support Multi-AZ.</p>"
+          "documentation":"<p>Specifies whether to show only those reservations that support Multi-AZ.</p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -9332,7 +9332,7 @@
         },
         "AdditionalDataPending":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean value that if true, indicates there is more data to be downloaded.</p>"
+          "documentation":"<p>A Boolean value that, if true, indicates there is more data to be downloaded.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element to <code>DownloadDBLogFilePortion</code>.</p>"
@@ -9643,23 +9643,23 @@
         },
         "ExportOnly":{
           "shape":"StringList",
-          "documentation":"<p>The data exported from the snapshot or cluster. Valid values are the following:</p> <ul> <li> <p> <code>database</code> - Export all the data from a specified database.</p> </li> <li> <p> <code>database.table</code> <i>table-name</i> - Export a table of the snapshot or cluster. This format is valid only for RDS for MySQL, RDS for MariaDB, and Aurora MySQL.</p> </li> <li> <p> <code>database.schema</code> <i>schema-name</i> - Export a database schema of the snapshot or cluster. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> <li> <p> <code>database.schema.table</code> <i>table-name</i> - Export a table of the database schema. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> </ul>"
+          "documentation":"<p>The data exported from the snapshot or cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>database</code> - Export all the data from a specified database.</p> </li> <li> <p> <code>database.table</code> <i>table-name</i> - Export a table of the snapshot or cluster. This format is valid only for RDS for MySQL, RDS for MariaDB, and Aurora MySQL.</p> </li> <li> <p> <code>database.schema</code> <i>schema-name</i> - Export a database schema of the snapshot or cluster. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> <li> <p> <code>database.schema.table</code> <i>table-name</i> - Export a table of the database schema. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> </ul>"
         },
         "SnapshotTime":{
           "shape":"TStamp",
-          "documentation":"<p>The time that the snapshot was created.</p>"
+          "documentation":"<p>The time when the snapshot was created.</p>"
         },
         "TaskStartTime":{
           "shape":"TStamp",
-          "documentation":"<p>The time that the snapshot or cluster export task started.</p>"
+          "documentation":"<p>The time when the snapshot or cluster export task started.</p>"
         },
         "TaskEndTime":{
           "shape":"TStamp",
-          "documentation":"<p>The time that the snapshot or cluster export task ended.</p>"
+          "documentation":"<p>The time when the snapshot or cluster export task ended.</p>"
         },
         "S3Bucket":{
           "shape":"String",
-          "documentation":"<p>The Amazon S3 bucket that the snapshot or cluster is exported to.</p>"
+          "documentation":"<p>The Amazon S3 bucket where the snapshot or cluster is exported to.</p>"
         },
         "S3Prefix":{
           "shape":"String",
@@ -9698,7 +9698,7 @@
           "documentation":"<p>The type of source for the export.</p>"
         }
       },
-      "documentation":"<p>Contains the details of a snapshot or cluster export to Amazon S3.</p> <p>This data type is used as a response element in the <code>DescribeExportTasks</code> action.</p>"
+      "documentation":"<p>Contains the details of a snapshot or cluster export to Amazon S3.</p> <p>This data type is used as a response element in the <code>DescribeExportTasks</code> operation.</p>"
     },
     "ExportTaskAlreadyExistsFault":{
       "type":"structure",
@@ -9750,7 +9750,7 @@
       "members":{
         "DBClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>A DB cluster identifier to force a failover for. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DBCluster.</p> </li> </ul>"
+          "documentation":"<p>The identifier of the DB cluster to force a failover for. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DB cluster.</p> </li> </ul>"
         },
         "TargetDBInstanceIdentifier":{
           "shape":"String",
@@ -9952,11 +9952,11 @@
         },
         "IsWriter":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the Aurora DB cluster is the primary cluster (that is, has read-write capability) for the global cluster with which it is associated.</p>"
+          "documentation":"<p>Indicates whether the Aurora DB cluster is the primary cluster (that is, has read-write capability) for the global cluster with which it is associated.</p>"
         },
         "GlobalWriteForwardingStatus":{
           "shape":"WriteForwardingStatus",
-          "documentation":"<p>Specifies whether a secondary cluster in the global cluster has write forwarding enabled, not enabled, or is in the process of enabling it.</p>"
+          "documentation":"<p>The status of write forwarding for a secondary cluster in the global cluster.</p>"
         },
         "SynchronizationStatus":{
           "shape":"GlobalClusterMemberSynchronizationStatus",
@@ -10030,11 +10030,11 @@
       "members":{
         "Status":{
           "shape":"String",
-          "documentation":"<p>Specifies the status of the IP range. Status can be \"authorizing\", \"authorized\", \"revoking\", and \"revoked\".</p>"
+          "documentation":"<p>The status of the IP range. Status can be \"authorizing\", \"authorized\", \"revoking\", and \"revoked\".</p>"
         },
         "CIDRIP":{
           "shape":"String",
-          "documentation":"<p>Specifies the IP range.</p>"
+          "documentation":"<p>The IP range.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>DescribeDBSecurityGroups</code> action.</p>"
@@ -10604,7 +10604,7 @@
         },
         "RemoveCustomerOverride":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to remove the override for the default certificate. If the override is removed, the default certificate is the system default.</p>"
+          "documentation":"<p>Specifies whether to remove the override for the default certificate. If the override is removed, the default certificate is the system default.</p>"
         }
       }
     },
@@ -11384,7 +11384,7 @@
         },
         "SourceType":{
           "shape":"String",
-          "documentation":"<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. For RDS Proxy events, specify <code>db-proxy</code>. If this value isn't specified, all events are returned.</p> <p>Valid values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
+          "documentation":"<p>The type of source that is generating the events. For example, if you want to be notified of events generated by a DB instance, you would set this parameter to db-instance. For RDS Proxy events, specify <code>db-proxy</code>. If this value isn't specified, all events are returned.</p> <p>Valid Values: <code>db-instance</code> | <code>db-cluster</code> | <code>db-parameter-group</code> | <code>db-security-group</code> | <code>db-snapshot</code> | <code>db-cluster-snapshot</code> | <code>db-proxy</code> </p>"
         },
         "EventCategories":{
           "shape":"EventCategoriesList",
@@ -11392,7 +11392,7 @@
         },
         "Enabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to activate the subscription.</p>"
+          "documentation":"<p>Specifies whether to activate the subscription.</p>"
         }
       },
       "documentation":"<p/>"
@@ -11452,7 +11452,7 @@
         },
         "ApplyImmediately":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to apply the change immediately or during the next maintenance window for each instance associated with the option group.</p>"
+          "documentation":"<p>Specifies whether to apply the change immediately or during the next maintenance window for each instance associated with the option group.</p>"
         }
       },
       "documentation":"<p/>"
@@ -11488,11 +11488,11 @@
         },
         "Persistent":{
           "shape":"Boolean",
-          "documentation":"<p>Indicate if this option is persistent.</p>"
+          "documentation":"<p>Indicates whether this option is persistent.</p>"
         },
         "Permanent":{
           "shape":"Boolean",
-          "documentation":"<p>Indicate if this option is permanent.</p>"
+          "documentation":"<p>Indicates whether this option is permanent.</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -11515,7 +11515,7 @@
           "documentation":"<p>If the option requires access to a port, then this VPC security group allows access to the port.</p>"
         }
       },
-      "documentation":"<p>Option details.</p>"
+      "documentation":"<p>The details of an option.</p>"
     },
     "OptionConfiguration":{
       "type":"structure",
@@ -11676,7 +11676,7 @@
         },
         "PortRequired":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the option requires a port.</p>"
+          "documentation":"<p>Indicates whether the option requires a port.</p>"
         },
         "DefaultPort":{
           "shape":"IntegerOptional",
@@ -11720,7 +11720,7 @@
         },
         "CopyableCrossAccount":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether the option can be copied across Amazon Web Services accounts.</p>"
+          "documentation":"<p>Indicates whether the option can be copied across Amazon Web Services accounts.</p>"
         }
       },
       "documentation":"<p>Available option.</p>"
@@ -11750,11 +11750,11 @@
         },
         "IsModifiable":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean value where true indicates that this option group option can be changed from the default value.</p>"
+          "documentation":"<p>Indicates whether this option group option can be changed from the default value.</p>"
         },
         "IsRequired":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean value where true indicates that a value must be specified for this option setting of the option group option.</p>"
+          "documentation":"<p>Indicates whether a value must be specified for this option setting of the option group option.</p>"
         },
         "MinimumEngineVersionPerAllowedValue":{
           "shape":"MinimumEngineVersionPerAllowedValueList",
@@ -11866,11 +11866,11 @@
         },
         "IsModifiable":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean value that, when true, indicates the option setting can be modified from the default.</p>"
+          "documentation":"<p>Indicates whether the option setting can be modified from the default.</p>"
         },
         "IsCollection":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates if the option setting is part of a collection.</p>"
+          "documentation":"<p>Indicates whether the option setting is part of a collection.</p>"
         }
       },
       "documentation":"<p>Option settings are the actual settings being applied or configured for that option. It is used when you modify an option group or describe option groups. For example, the NATIVE_NETWORK_ENCRYPTION option has a setting called SQLNET.ENCRYPTION_SERVER that can have several different values.</p>"
@@ -11898,7 +11898,7 @@
         },
         "IsDefault":{
           "shape":"Boolean",
-          "documentation":"<p>True if the version is the default version of the option, and otherwise false.</p>"
+          "documentation":"<p>Indicates whether the version is the default version of the option.</p>"
         }
       },
       "documentation":"<p>The version for an option. Option group option versions are returned by the <code>DescribeOptionGroupOptions</code> action.</p>"
@@ -11969,7 +11969,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Indicates the storage type for a DB instance.</p>"
+          "documentation":"<p>The storage type for a DB instance.</p>"
         },
         "SupportsIops":{
           "shape":"Boolean",
@@ -11985,7 +11985,7 @@
         },
         "SupportsPerformanceInsights":{
           "shape":"Boolean",
-          "documentation":"<p>True if a DB instance supports Performance Insights, otherwise false.</p>"
+          "documentation":"<p>Indicates whether a DB instance supports Performance Insights.</p>"
         },
         "MinStorageSize":{
           "shape":"IntegerOptional",
@@ -12021,15 +12021,15 @@
         },
         "SupportsStorageAutoscaling":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Whether Amazon RDS can automatically scale storage for DB instances that use the specified DB instance class.</p>"
+          "documentation":"<p>Indicates whether Amazon RDS can automatically scale storage for DB instances that use the specified DB instance class.</p>"
         },
         "SupportsKerberosAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Whether a DB instance supports Kerberos Authentication.</p>"
+          "documentation":"<p>Indicates whether a DB instance supports Kerberos Authentication.</p>"
         },
         "OutpostCapable":{
           "shape":"Boolean",
-          "documentation":"<p>Whether a DB instance supports RDS on Outposts.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>Indicates whether a DB instance supports RDS on Outposts.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "SupportedActivityStreamModes":{
           "shape":"ActivityStreamModeList",
@@ -12037,11 +12037,11 @@
         },
         "SupportsGlobalDatabases":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether you can use Aurora global databases with a specific combination of other DB engine attributes.</p>"
+          "documentation":"<p>Indicates whether you can use Aurora global databases with a specific combination of other DB engine attributes.</p>"
         },
         "SupportsClusters":{
           "shape":"Boolean",
-          "documentation":"<p>Whether DB instances can be configured as a Multi-AZ DB cluster.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>Indicates whether DB instances can be configured as a Multi-AZ DB cluster.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "SupportedNetworkTypes":{
           "shape":"StringList",
@@ -12107,11 +12107,11 @@
       "members":{
         "ParameterName":{
           "shape":"String",
-          "documentation":"<p>Specifies the name of the parameter.</p>"
+          "documentation":"<p>The name of the parameter.</p>"
         },
         "ParameterValue":{
           "shape":"String",
-          "documentation":"<p>Specifies the value of the parameter.</p>"
+          "documentation":"<p>The value of the parameter.</p>"
         },
         "Description":{
           "shape":"String",
@@ -12119,7 +12119,7 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>Indicates the source of the parameter value.</p>"
+          "documentation":"<p>The source of the parameter value.</p>"
         },
         "ApplyType":{
           "shape":"String",
@@ -12256,7 +12256,7 @@
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates that the Single-AZ DB instance will change to a Multi-AZ deployment.</p>"
+          "documentation":"<p>Indicates whether the Single-AZ DB instance will change to a Multi-AZ deployment.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -12293,7 +12293,7 @@
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
+          "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled.</p>"
         },
         "AutomationMode":{
           "shape":"AutomationMode",
@@ -12503,7 +12503,7 @@
         },
         "ForceFailover":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the reboot is conducted through a Multi-AZ failover.</p> <p>Constraint: You can't enable force failover if the instance isn't configured for Multi-AZ.</p>"
+          "documentation":"<p>Specifies whether the reboot is conducted through a Multi-AZ failover.</p> <p>Constraint: You can't enable force failover if the instance isn't configured for Multi-AZ.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12727,7 +12727,7 @@
         },
         "MultiAZ":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates if the reservation applies to Multi-AZ deployments.</p>"
+          "documentation":"<p>Indicates whether the reservation applies to Multi-AZ deployments.</p>"
         },
         "State":{
           "shape":"String",
@@ -12843,7 +12843,7 @@
         },
         "MultiAZ":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates if the offering applies to Multi-AZ deployments.</p>"
+          "documentation":"<p>Indicates whether the offering applies to Multi-AZ deployments.</p>"
         },
         "RecurringCharges":{
           "shape":"RecurringChargeList",
@@ -12896,7 +12896,7 @@
         },
         "ResetAllParameters":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to reset all parameters in the DB cluster parameter group to their default values. You can't use this parameter if there is a list of parameter names specified for the <code>Parameters</code> parameter.</p>"
+          "documentation":"<p>Specifies whether to reset all parameters in the DB cluster parameter group to their default values. You can't use this parameter if there is a list of parameter names specified for the <code>Parameters</code> parameter.</p>"
         },
         "Parameters":{
           "shape":"ParametersList",
@@ -12915,7 +12915,7 @@
         },
         "ResetAllParameters":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to reset all parameters in the DB parameter group to default values. By default, all parameters in the DB parameter group are reset to default values.</p>"
+          "documentation":"<p>Specifies whether to reset all parameters in the DB parameter group to default values. By default, all parameters in the DB parameter group are reset to default values.</p>"
         },
         "Parameters":{
           "shape":"ParametersList",
@@ -13030,7 +13030,7 @@
         "Tags":{"shape":"TagList"},
         "StorageEncrypted":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the restored DB cluster is encrypted.</p>"
+          "documentation":"<p>Specifies whether the restored DB cluster is encrypted.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -13038,11 +13038,11 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "SourceEngine":{
           "shape":"String",
-          "documentation":"<p>The identifier for the database engine that was backed up to create the files stored in the Amazon S3 bucket.</p> <p>Valid values: <code>mysql</code> </p>"
+          "documentation":"<p>The identifier for the database engine that was backed up to create the files stored in the Amazon S3 bucket.</p> <p>Valid Values: <code>mysql</code> </p>"
         },
         "SourceEngineVersion":{
           "shape":"String",
@@ -13070,11 +13070,11 @@
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB cluster. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p>"
         },
         "Domain":{
           "shape":"String",
@@ -13087,11 +13087,11 @@
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p>"
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p>"
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
         },
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
@@ -13099,7 +13099,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> </p> <p>Default: <code>aurora</code> </p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid Values: <code>aurora</code>, <code>aurora-iopt1</code> </p> <p>Default: <code>aurora</code> </p> <p>Valid for: Aurora DB clusters only</p>"
         }
       }
     },
@@ -13167,7 +13167,7 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "BacktrackWindow":{
           "shape":"LongOptional",
@@ -13191,19 +13191,19 @@
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB cluster. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Domain":{
           "shape":"String",
-          "documentation":"<p>Specify the Active Directory directory ID to restore the DB cluster in. The domain must be created prior to this operation. Currently, only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances can be created in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The Active Directory directory ID to restore the DB cluster in. The domain must be created prior to this operation. Currently, only MySQL, Microsoft SQL Server, Oracle, and PostgreSQL DB instances can be created in an Active Directory Domain.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/kerberos-authentication.html\"> Kerberos Authentication</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
-          "documentation":"<p>Specify the name of the IAM role to be used when making API calls to the Directory Service.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The name of the IAM role to be used when making API calls to the Directory Service.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "DBClusterInstanceClass":{
           "shape":"String",
@@ -13211,7 +13211,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid Values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -13219,12 +13219,12 @@
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB cluster is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether the DB cluster is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p/>"
@@ -13257,7 +13257,7 @@
         },
         "UseLatestRestorableTime":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether to restore the DB cluster to the latest restorable backup time. By default, the DB cluster isn't restored to the latest restorable backup time.</p> <p>Constraints: Can't be specified if <code>RestoreToTime</code> parameter is provided.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether to restore the DB cluster to the latest restorable backup time. By default, the DB cluster isn't restored to the latest restorable backup time.</p> <p>Constraints: Can't be specified if <code>RestoreToTime</code> parameter is provided.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -13282,7 +13282,7 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "BacktrackWindow":{
           "shape":"LongOptional",
@@ -13298,19 +13298,19 @@
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB cluster. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the restored DB cluster to snapshots of the restored DB cluster. The default is not to copy them.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Domain":{
           "shape":"String",
-          "documentation":"<p>Specify the Active Directory directory ID to restore the DB cluster in. The domain must be created prior to this operation.</p> <p>For Amazon Aurora DB clusters, Amazon RDS can use Kerberos Authentication to authenticate users that connect to the DB cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/kerberos-authentication.html\">Kerberos Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The Active Directory directory ID to restore the DB cluster in. The domain must be created prior to this operation.</p> <p>For Amazon Aurora DB clusters, Amazon RDS can use Kerberos Authentication to authenticate users that connect to the DB cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/kerberos-authentication.html\">Kerberos Authentication</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
-          "documentation":"<p>Specify the name of the IAM role to be used when making API calls to the Directory Service.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The name of the IAM role to be used when making API calls to the Directory Service.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "ScalingConfiguration":{
           "shape":"ScalingConfiguration",
@@ -13326,11 +13326,11 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>When specified for a Multi-AZ DB cluster, a value for the <code>Iops</code> parameter is required.</p> <p>Valid Values: <code>aurora</code>, <code>aurora-iopt1</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Default: <code>aurora</code> (Aurora DB clusters); <code>io1</code> (Multi-AZ DB clusters)</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB cluster is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>Valid for: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies whether the DB cluster is publicly accessible.</p> <p>When the DB cluster is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB cluster's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB cluster's VPC. Access to the DB cluster is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB cluster doesn't permit it.</p> <p>When the DB cluster isn't publicly accessible, it is an internal DB cluster with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB cluster is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB cluster is public.</p> </li> </ul> <p>Valid for: Multi-AZ DB clusters only</p>"
         },
         "Iops":{
           "shape":"IntegerOptional",
@@ -13339,7 +13339,7 @@
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>The network type of the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "SourceDbClusterResourceId":{
           "shape":"String",
@@ -13384,19 +13384,19 @@
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is a Multi-AZ deployment.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraint: You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p>"
+          "documentation":"<p>Specifies whether the DB instance is a Multi-AZ deployment.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Constraint: You can't specify the <code>AvailabilityZone</code> parameter if the DB instance is a Multi-AZ deployment.</p>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is publicly accessible.</p> <p>When the DB instance is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB instance's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB instance's VPC. Access to the DB instance is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB instance doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance is publicly accessible.</p> <p>When the DB instance is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB instance's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB instance's VPC. Access to the DB instance is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB instance doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor version upgrades are applied automatically to the DB instance during the maintenance window.</p> <p>If you restore an RDS Custom DB instance, you must disable this parameter.</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor version upgrades to the DB instance during the maintenance window.</p> <p>If you restore an RDS Custom DB instance, you must disable this parameter.</p>"
         },
         "LicenseModel":{
           "shape":"String",
-          "documentation":"<p>License model information for the restored DB instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: Same as source.</p> <p>Valid values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p>"
+          "documentation":"<p>License model information for the restored DB instance.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>Default: Same as source.</p> <p>Valid Values: <code>license-included</code> | <code>bring-your-own-license</code> | <code>general-public-license</code> </p>"
         },
         "DBName":{
           "shape":"String",
@@ -13417,7 +13417,7 @@
         "Tags":{"shape":"TagList"},
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Valid values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified, otherwise <code>gp2</code> </p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Valid Values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified, otherwise <code>gp2</code> </p>"
         },
         "TdeCredentialArn":{
           "shape":"String",
@@ -13445,7 +13445,7 @@
         },
         "DomainAuthSecretArn":{
           "shape":"String",
-          "documentation":"<p>The ARN for the Secrets Manager secret with the credentials for the user joining the domain.</p> <p>Constraints:</p> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
+          "documentation":"<p>The ARN for the Secrets Manager secret with the credentials for the user joining the domain.</p> <p>Constraints:</p> <ul> <li> <p>Can't be longer than 64 characters.</p> </li> </ul> <p>Example: <code>arn:aws:secretsmanager:region:account-number:secret:myselfmanagedADtestsecret-123456</code> </p>"
         },
         "DomainDnsIps":{
           "shape":"StringList",
@@ -13453,7 +13453,7 @@
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the restored DB instance to snapshots of the DB instance.</p> <p>In most cases, tags aren't copied by default. However, when you restore a DB instance from a DB snapshot, RDS checks whether you specify new tags. If yes, the new tags are added to the restored DB instance. If there are no new tags, RDS looks for the tags from the source DB instance for the DB snapshot, and then adds those tags to the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html#USER_Tagging.CopyTags\"> Copying tags to DB instance snapshots</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the restored DB instance to snapshots of the DB instance.</p> <p>In most cases, tags aren't copied by default. However, when you restore a DB instance from a DB snapshot, RDS checks whether you specify new tags. If yes, the new tags are added to the restored DB instance. If there are no new tags, RDS looks for the tags from the source DB instance for the DB snapshot, and then adds those tags to the restored DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html#USER_Tagging.CopyTags\"> Copying tags to DB instance snapshots</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "DomainIAMRoleName":{
           "shape":"String",
@@ -13461,7 +13461,7 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping is disabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping is disabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
@@ -13473,7 +13473,7 @@
         },
         "UseDefaultProcessorFeatures":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "DBParameterGroupName":{
           "shape":"String",
@@ -13481,11 +13481,11 @@
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB instance. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
         },
         "EnableCustomerOwnedIp":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts DB instance.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the DB instance from outside of its virtual private cloud (VPC) on your local network.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to enable a customer-owned IP address (CoIP) for an RDS on Outposts DB instance.</p> <p>A <i>CoIP</i> provides local or external connectivity to resources in your Outpost subnets through your on-premises network. For some use cases, a CoIP can provide lower latency for connections to the DB instance from outside of its virtual private cloud (VPC) on your local network.</p> <p>This setting doesn't apply to RDS Custom.</p> <p>For more information about RDS on Outposts, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html\">Working with Amazon RDS on Amazon Web Services Outposts</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about CoIPs, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">Customer-owned IP addresses</a> in the <i>Amazon Web Services Outposts User Guide</i>.</p>"
         },
         "CustomIamInstanceProfile":{
           "shape":"String",
@@ -13497,7 +13497,7 @@
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>The network type of the DB instance.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
@@ -13598,7 +13598,7 @@
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is a Multi-AZ deployment. If the DB instance is a Multi-AZ deployment, you can't set the <code>AvailabilityZone</code> parameter.</p>"
+          "documentation":"<p>Specifies whether the DB instance is a Multi-AZ deployment. If the DB instance is a Multi-AZ deployment, you can't set the <code>AvailabilityZone</code> parameter.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -13606,7 +13606,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether minor engine upgrades are applied automatically to the DB instance during the maintenance window. By default, minor engine upgrades are not applied automatically.</p>"
+          "documentation":"<p>Specifies whether to automatically apply minor engine upgrades to the DB instance during the maintenance window. By default, minor engine upgrades are not applied automatically.</p>"
         },
         "LicenseModel":{
           "shape":"String",
@@ -13622,7 +13622,7 @@
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance is publicly accessible.</p> <p>When the DB instance is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB instance's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB instance's VPC. Access to the DB instance is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB instance doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance is publicly accessible.</p> <p>When the DB instance is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB instance's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB instance's VPC. Access to the DB instance is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB instance doesn't permit it.</p> <p>When the DB instance isn't publicly accessible, it is an internal DB instance with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBInstance</a>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -13630,11 +13630,11 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Valid values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified; otherwise <code>gp2</code> </p>"
+          "documentation":"<p>Specifies the storage type to be associated with the DB instance.</p> <p>Valid Values: <code>gp2 | gp3 | io1 | standard</code> </p> <p>If you specify <code>io1</code> or <code>gp3</code>, you must also include a value for the <code>Iops</code> parameter.</p> <p>Default: <code>io1</code> if the <code>Iops</code> parameter is specified; otherwise <code>gp2</code> </p>"
         },
         "StorageEncrypted":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the new DB instance is encrypted or not.</p>"
+          "documentation":"<p>Specifies whether the new DB instance is encrypted or not.</p>"
         },
         "KmsKeyId":{
           "shape":"String",
@@ -13642,7 +13642,7 @@
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to copy all tags from the DB instance to snapshots of the DB instance. By default, tags are not copied.</p>"
+          "documentation":"<p>Specifies whether to copy all tags from the DB instance to snapshots of the DB instance. By default, tags are not copied.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
@@ -13654,7 +13654,7 @@
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "SourceEngine":{
           "shape":"String",
@@ -13678,7 +13678,7 @@
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to enable Performance Insights for the DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\">Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p>"
+          "documentation":"<p>Specifies whether to enable Performance Insights for the DB instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\">Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
@@ -13698,11 +13698,11 @@
         },
         "UseDefaultProcessorFeatures":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance class of the DB instance uses its default processor features.</p>"
+          "documentation":"<p>Specifies whether the DB instance class of the DB instance uses its default processor features.</p>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
+          "documentation":"<p>Specifies whether to enable deletion protection for the DB instance. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
         },
         "MaxAllocatedStorage":{
           "shape":"IntegerOptional",
@@ -13710,7 +13710,7 @@
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB instance.</p> <p>Valid values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
+          "documentation":"<p>The network type of the DB instance.</p> <p>Valid Values:</p> <ul> <li> <p> <code>IPV4</code> </p> </li> <li> <p> <code>DUAL</code> </p> </li> </ul> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB instance. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide.</i> </p>"
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
@@ -13718,7 +13718,7 @@
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to manage the master user password with Amazon Web Services Secrets Manager.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Can't manage the master user password with Amazon Web Services Secrets Manager if <code>MasterUserPassword</code> is specified.</p> </li> </ul>"
         },
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
@@ -13859,7 +13859,7 @@
         },
         "UseDefaultProcessorFeatures":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom.</p>"
+          "documentation":"<p>Specifies whether the DB instance class of the DB instance uses its default processor features.</p> <p>This setting doesn't apply to RDS Custom.</p>"
         },
         "DBParameterGroupName":{
           "shape":"String",
@@ -14010,7 +14010,7 @@
         },
         "AutoPause":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether to allow or disallow automatic pause for an Aurora DB cluster in <code>serverless</code> DB engine mode. A DB cluster can be paused only when it's idle (it has no connections).</p> <note> <p>If a DB cluster is paused for more than seven days, the DB cluster might be backed up with a snapshot. In this case, the DB cluster is restored when there is a request to connect to it.</p> </note>"
+          "documentation":"<p>Indicates whether to allow or disallow automatic pause for an Aurora DB cluster in <code>serverless</code> DB engine mode. A DB cluster can be paused only when it's idle (it has no connections).</p> <note> <p>If a DB cluster is paused for more than seven days, the DB cluster might be backed up with a snapshot. In this case, the DB cluster is restored when there is a request to connect to it.</p> </note>"
         },
         "SecondsUntilAutoPause":{
           "shape":"IntegerOptional",
@@ -14040,7 +14040,7 @@
         },
         "AutoPause":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether automatic pause is allowed for the Aurora DB cluster in <code>serverless</code> DB engine mode.</p> <p>When the value is set to false for an Aurora Serverless v1 DB cluster, the DB cluster automatically resumes.</p>"
+          "documentation":"<p>Indicates whether automatic pause is allowed for the Aurora DB cluster in <code>serverless</code> DB engine mode.</p> <p>When the value is set to false for an Aurora Serverless v1 DB cluster, the DB cluster automatically resumes.</p>"
         },
         "SecondsUntilAutoPause":{
           "shape":"IntegerOptional",
@@ -14169,7 +14169,7 @@
         },
         "SupportsDBInstanceAutomatedBackupsReplication":{
           "shape":"Boolean",
-          "documentation":"<p>Whether the source Amazon Web Services Region supports replicating automated backups to the current Amazon Web Services Region.</p>"
+          "documentation":"<p>Indicates whether the source Amazon Web Services Region supports replicating automated backups to the current Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>Contains an Amazon Web Services Region name as the result of a successful call to the <code>DescribeSourceRegions</code> action.</p>"
@@ -14364,7 +14364,7 @@
         },
         "ExportOnly":{
           "shape":"StringList",
-          "documentation":"<p>The data to be exported from the snapshot or cluster. If this parameter is not provided, all of the data is exported. Valid values are the following:</p> <ul> <li> <p> <code>database</code> - Export all the data from a specified database.</p> </li> <li> <p> <code>database.table</code> <i>table-name</i> - Export a table of the snapshot or cluster. This format is valid only for RDS for MySQL, RDS for MariaDB, and Aurora MySQL.</p> </li> <li> <p> <code>database.schema</code> <i>schema-name</i> - Export a database schema of the snapshot or cluster. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> <li> <p> <code>database.schema.table</code> <i>table-name</i> - Export a table of the database schema. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> </ul>"
+          "documentation":"<p>The data to be exported from the snapshot or cluster. If this parameter isn't provided, all of the data is exported.</p> <p>Valid Values:</p> <ul> <li> <p> <code>database</code> - Export all the data from a specified database.</p> </li> <li> <p> <code>database.table</code> <i>table-name</i> - Export a table of the snapshot or cluster. This format is valid only for RDS for MySQL, RDS for MariaDB, and Aurora MySQL.</p> </li> <li> <p> <code>database.schema</code> <i>schema-name</i> - Export a database schema of the snapshot or cluster. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> <li> <p> <code>database.schema.table</code> <i>table-name</i> - Export a table of the database schema. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.</p> </li> </ul>"
         }
       }
     },
@@ -14817,11 +14817,11 @@
         },
         "AutoUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether the target version is applied to any source DB instances that have <code>AutoMinorVersionUpgrade</code> set to true.</p>"
+          "documentation":"<p>Indicates whether the target version is applied to any source DB instances that have <code>AutoMinorVersionUpgrade</code> set to true.</p>"
         },
         "IsMajorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether upgrading to the target version requires upgrading the major version of the database engine.</p>"
+          "documentation":"<p>Indicates whether upgrading to the target version requires upgrading the major version of the database engine.</p>"
         },
         "SupportedEngineModes":{
           "shape":"EngineModeList",
@@ -14829,19 +14829,19 @@
         },
         "SupportsParallelQuery":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether you can use Aurora parallel query with the target engine version.</p>"
+          "documentation":"<p>Indicates whether you can use Aurora parallel query with the target engine version.</p>"
         },
         "SupportsGlobalDatabases":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether you can use Aurora global databases with the target engine version.</p>"
+          "documentation":"<p>Indicates whether you can use Aurora global databases with the target engine version.</p>"
         },
         "SupportsBabelfish":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether you can use Babelfish for Aurora PostgreSQL with the target engine version.</p>"
+          "documentation":"<p>Indicates whether you can use Babelfish for Aurora PostgreSQL with the target engine version.</p>"
         },
         "SupportsLocalWriteForwarding":{
           "shape":"BooleanOptional",
-          "documentation":"<p>A value that indicates whether the target engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
+          "documentation":"<p>Indicates whether the target engine version supports forwarding write operations from reader DB instances to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p>The version of the database engine that a DB instance can be upgraded to.</p>"
@@ -14867,7 +14867,7 @@
         },
         "IAMAuth":{
           "shape":"IAMAuthMode",
-          "documentation":"<p>Whether to require or disallow Amazon Web Services Identity and Access Management (IAM) authentication for connections to the proxy. The <code>ENABLED</code> value is valid only for proxies with RDS for Microsoft SQL Server.</p>"
+          "documentation":"<p>A value that indicates whether to require or disallow Amazon Web Services Identity and Access Management (IAM) authentication for connections to the proxy. The <code>ENABLED</code> value is valid only for proxies with RDS for Microsoft SQL Server.</p>"
         },
         "ClientPasswordAuthType":{
           "shape":"ClientPasswordAuthType",
@@ -14950,7 +14950,7 @@
         },
         "SupportsStorageAutoscaling":{
           "shape":"Boolean",
-          "documentation":"<p>Whether or not Amazon RDS can automatically scale storage for DB instances that use the new instance class.</p>"
+          "documentation":"<p>Indicates whether or not Amazon RDS can automatically scale storage for DB instances that use the new instance class.</p>"
         },
         "ProvisionedStorageThroughput":{
           "shape":"RangeList",

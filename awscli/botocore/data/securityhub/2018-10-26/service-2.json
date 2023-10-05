@@ -4296,6 +4296,200 @@
       },
       "documentation":"<p>Contains the cross-origin resource sharing (CORS) configuration for the API. CORS is only supported for HTTP APIs.</p>"
     },
+    "AwsDmsEndpointDetails":{
+      "type":"structure",
+      "members":{
+        "CertificateArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the SSL certificate that encrypts connections between the DMS endpoint and the replication instance. </p>"
+        },
+        "DatabaseName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the endpoint database.</p>"
+        },
+        "EndpointArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the endpoint. </p>"
+        },
+        "EndpointIdentifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The database endpoint identifier. </p>"
+        },
+        "EndpointType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of endpoint. Valid values are source and target. </p>"
+        },
+        "EngineName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of engine for the endpoint, depending on the <code>EndpointType</code> value. </p>"
+        },
+        "ExternalId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A value that can be used for cross-account validation. </p>"
+        },
+        "ExtraConnectionAttributes":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Additional attributes associated with the connection. </p>"
+        },
+        "KmsKeyId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> An DMS key identifier that is used to encrypt the connection parameters for the endpoint. If you don't specify a value for the <code>KmsKeyId</code> parameter, then DMS uses your default encryption key. KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p> The port used to access the endpoint. </p>"
+        },
+        "ServerName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the server where the endpoint database resides.</p>"
+        },
+        "SslMode":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The SSL mode used to connect to the endpoint. The default is none.</p>"
+        },
+        "Username":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The user name to be used to log in to the endpoint database. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Database Migration Service (DMS) endpoint. An endpoint provides connection, data store type, and location information about your data store. </p>"
+    },
+    "AwsDmsReplicationInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "AllocatedStorage":{
+          "shape":"Integer",
+          "documentation":"<p> The amount of storage (in gigabytes) that is allocated for the replication instance. </p>"
+        },
+        "AutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether minor engine upgrades are applied automatically to the replication instance during the maintenance window. </p>"
+        },
+        "AvailabilityZone":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Availability Zone that the replication instance is created in. The default value is a random, system-chosen Availability Zone in the endpoint's Amazon Web Services Region, such as <code>us-east-1d</code>.</p>"
+        },
+        "EngineVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The engine version number of the replication instance. If an engine version number is not specified when a replication instance is created, the default is the latest engine version available. </p>"
+        },
+        "KmsKeyId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> An KMS key identifier that is used to encrypt the data on the replication instance. If you don't specify a value for the <code>KmsKeyId</code> parameter, DMS uses your default encryption key. KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
+        },
+        "MultiAZ":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether the replication instance is deployed across multiple Availability Zones (AZs). You can't set the <code>AvailabilityZone</code> parameter if the <code>MultiAZ</code> parameter is set to <code>true</code>.</p>"
+        },
+        "PreferredMaintenanceWindow":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The maintenance window times for the replication instance. Upgrades to the replication instance are performed during this time.</p>"
+        },
+        "PubliclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies the accessibility options for the replication instance. A value of <code>true</code> represents an instance with a public IP address. A value of <code>false</code> represents an instance with a private IP address. The default value is <code>true</code>.</p>"
+        },
+        "ReplicationInstanceClass":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The compute and memory capacity of the replication instance as defined for the specified replication instance class. </p>"
+        },
+        "ReplicationInstanceIdentifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The replication instance identifier.</p>"
+        },
+        "ReplicationSubnetGroup":{
+          "shape":"AwsDmsReplicationInstanceReplicationSubnetGroupDetails",
+          "documentation":"<p> The subnet group for the replication instance.</p>"
+        },
+        "VpcSecurityGroups":{
+          "shape":"AwsDmsReplicationInstanceVpcSecurityGroupsList",
+          "documentation":"<p> The virtual private cloud (VPC) security group for the replication instance.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Database Migration Service (DMS) replication instance. DMS uses a replication instance to connect to your source data store, read the source data, and format the data for consumption by the target data store. </p>"
+    },
+    "AwsDmsReplicationInstanceReplicationSubnetGroupDetails":{
+      "type":"structure",
+      "members":{
+        "ReplicationSubnetGroupIdentifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the replication subnet group. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about the replication subnet group.</p>"
+    },
+    "AwsDmsReplicationInstanceVpcSecurityGroupsDetails":{
+      "type":"structure",
+      "members":{
+        "VpcSecurityGroupId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the VPC security group that’s associated with the replication instance. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about the virtual private cloud (VPC) security group that’s associated with the replication instance.</p>"
+    },
+    "AwsDmsReplicationInstanceVpcSecurityGroupsList":{
+      "type":"list",
+      "member":{"shape":"AwsDmsReplicationInstanceVpcSecurityGroupsDetails"}
+    },
+    "AwsDmsReplicationTaskDetails":{
+      "type":"structure",
+      "members":{
+        "CdcStartPosition":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates when you want a change data capture (CDC) operation to start. <code>CCdcStartPosition</code> or <code>CCdcStartTime</code> specifies when you want a CDC operation to start. Only a value for one of these fields is included.</p>"
+        },
+        "CdcStartTime":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates the start time for a CDC operation. <code>CdcStartPosition</code> or <code>CCdcStartTime</code> specifies when you want a CDC operation to start. Only a value for one of these fields is included.</p>"
+        },
+        "CdcStopPosition":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates when you want a CDC operation to stop. The value can be either server time or commit time.</p>"
+        },
+        "MigrationType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The migration type. </p>"
+        },
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the replication task.</p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A display name for the resource identifier at the end of the <code>EndpointArn</code> response parameter. If you don't specify a <code>ResourceIdentifier</code> value, DMS generates a default identifier value for the end of <code>EndpointArn</code>.</p>"
+        },
+        "ReplicationInstanceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of a replication instance. </p>"
+        },
+        "ReplicationTaskIdentifier":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The user-defined replication task identifier or name.</p>"
+        },
+        "ReplicationTaskSettings":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The settings for the replication task.</p>"
+        },
+        "SourceEndpointArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of the source endpoint.</p>"
+        },
+        "TableMappings":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The table mappings for the replication task, in JSON format.</p>"
+        },
+        "TargetEndpointArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of the target endpoint.</p>"
+        },
+        "TaskData":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Supplemental information that the task requires to migrate the data for certain source and target endpoints.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Database Migration Service (DMS) replication task. A replication task moves a set of data from the source endpoint to the target endpoint.</p>"
+    },
     "AwsDynamoDbTableAttributeDefinition":{
       "type":"structure",
       "members":{
@@ -7716,6 +7910,10 @@
         "Volumes":{
           "shape":"AwsEcsTaskDefinitionVolumesList",
           "documentation":"<p>The data volume definitions for the task.</p>"
+        },
+        "Status":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The status of the task definition. </p>"
         }
       },
       "documentation":"<p>Details about a task definition. A task definition describes the container and volume definitions of an Amazon Elastic Container Service task.</p>"
@@ -8919,6 +9117,142 @@
       },
       "documentation":"<p> A schema defines the structure of events that are sent to Amazon EventBridge. Schema registries are containers for schemas. They collect and organize schemas so that your schemas are in logical groups. </p>"
     },
+    "AwsEventsEndpointDetails":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the endpoint. </p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A description of the endpoint. </p>"
+        },
+        "EndpointId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The URL subdomain of the endpoint. For example, if <code>EndpointUrl</code> is <code>https://abcde.veo.endpoints.event.amazonaws.com</code>, then the <code>EndpointId</code> is <code>abcde.veo</code>.</p>"
+        },
+        "EndpointUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The URL of the endpoint.</p>"
+        },
+        "EventBuses":{
+          "shape":"AwsEventsEndpointEventBusesList",
+          "documentation":"<p> The event buses being used by the endpoint.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the endpoint.</p>"
+        },
+        "ReplicationConfig":{
+          "shape":"AwsEventsEndpointReplicationConfigDetails",
+          "documentation":"<p> Whether event replication was enabled or disabled for this endpoint. The default state is <code>ENABLED</code>, which means you must supply a <code>RoleArn</code>. If you don't have a <code>RoleArn</code> or you don't want event replication enabled, set the state to <code>DISABLED</code>.</p>"
+        },
+        "RoleArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of the role used by event replication for the endpoint.</p>"
+        },
+        "RoutingConfig":{
+          "shape":"AwsEventsEndpointRoutingConfigDetails",
+          "documentation":"<p> The routing configuration of the endpoint.</p>"
+        },
+        "State":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The current state of the endpoint.</p>"
+        },
+        "StateReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The reason the endpoint is in its current state.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Amazon EventBridge global endpoint. The endpoint can improve your application’s availability by making it Regional-fault tolerant. </p>"
+    },
+    "AwsEventsEndpointEventBusesDetails":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the event bus that the endpoint is associated with.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about the Amazon EventBridge event buses that the endpoint is associated with.</p>"
+    },
+    "AwsEventsEndpointEventBusesList":{
+      "type":"list",
+      "member":{"shape":"AwsEventsEndpointEventBusesDetails"}
+    },
+    "AwsEventsEndpointReplicationConfigDetails":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The state of event replication.</p>"
+        }
+      },
+      "documentation":"<p> Indicates whether replication is enabled or disabled for the endpoint. If enabled, the endpoint can replicate all events to a secondary Amazon Web Services Region.</p>"
+    },
+    "AwsEventsEndpointRoutingConfigDetails":{
+      "type":"structure",
+      "members":{
+        "FailoverConfig":{
+          "shape":"AwsEventsEndpointRoutingConfigFailoverConfigDetails",
+          "documentation":"<p> The failover configuration for an endpoint. This includes what triggers failover and what happens when it's triggered.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about the routing configuration of the endpoint.</p>"
+    },
+    "AwsEventsEndpointRoutingConfigFailoverConfigDetails":{
+      "type":"structure",
+      "members":{
+        "Primary":{
+          "shape":"AwsEventsEndpointRoutingConfigFailoverConfigPrimaryDetails",
+          "documentation":"<p> The main Region of the endpoint.</p>"
+        },
+        "Secondary":{
+          "shape":"AwsEventsEndpointRoutingConfigFailoverConfigSecondaryDetails",
+          "documentation":"<p> The Region that events are routed to when failover is triggered or event replication is enabled.</p>"
+        }
+      },
+      "documentation":"<p> The failover configuration for an endpoint. This includes what triggers failover and what happens when it's triggered.</p>"
+    },
+    "AwsEventsEndpointRoutingConfigFailoverConfigPrimaryDetails":{
+      "type":"structure",
+      "members":{
+        "HealthCheck":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the health check used by the endpoint to determine whether failover is triggered.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about the primary Amazon Web Services Region of the endpoint.</p>"
+    },
+    "AwsEventsEndpointRoutingConfigFailoverConfigSecondaryDetails":{
+      "type":"structure",
+      "members":{
+        "Route":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Defines the secondary Region.</p>"
+        }
+      },
+      "documentation":"<p> The Amazon Web Services Region that events are routed to when failover is triggered or event replication is enabled.</p>"
+    },
+    "AwsEventsEventbusDetails":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the account permitted to write events to the current account.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the event bus.</p>"
+        },
+        "Policy":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The policy that enables the external account to send events to your account.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about Amazon EventBridge event bus. An event bus is a router that receives events and delivers them to zero or more destinations, or targets. This can be a custom event bus which you can use to receive events from your custom applications and services, or it can be a partner event bus which can be matched to a partner event source.</p>"
+    },
     "AwsGuardDutyDetectorDataSourcesCloudTrailDetails":{
       "type":"structure",
       "members":{
@@ -9834,6 +10168,156 @@
       "type":"list",
       "member":{"shape":"AwsMountPoint"}
     },
+    "AwsMskClusterClusterInfoClientAuthenticationDetails":{
+      "type":"structure",
+      "members":{
+        "Sasl":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationSaslDetails",
+          "documentation":"<p> Provides details for client authentication using SASL.</p>"
+        },
+        "Unauthenticated":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails",
+          "documentation":"<p> Provides details for allowing no client authentication.</p>"
+        },
+        "Tls":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationTlsDetails",
+          "documentation":"<p> Provides details for client authentication using TLS.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about different modes of client authentication.</p>"
+    },
+    "AwsMskClusterClusterInfoClientAuthenticationSaslDetails":{
+      "type":"structure",
+      "members":{
+        "Iam":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationSaslIamDetails",
+          "documentation":"<p> Provides details for SASL client authentication using IAM. </p>"
+        },
+        "Scram":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationSaslScramDetails",
+          "documentation":"<p> Details for SASL client authentication using SCRAM.</p>"
+        }
+      },
+      "documentation":"<p> Provides details for client authentication using SASL.</p>"
+    },
+    "AwsMskClusterClusterInfoClientAuthenticationSaslIamDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether SASL/IAM authentication is enabled or not.</p>"
+        }
+      },
+      "documentation":"<p> Details for SASL/IAM client authentication.</p>"
+    },
+    "AwsMskClusterClusterInfoClientAuthenticationSaslScramDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether SASL/SCRAM authentication is enabled or not.</p>"
+        }
+      },
+      "documentation":"<p> Details for SASL/SCRAM client authentication.</p>"
+    },
+    "AwsMskClusterClusterInfoClientAuthenticationTlsDetails":{
+      "type":"structure",
+      "members":{
+        "CertificateAuthorityArnList":{
+          "shape":"StringList",
+          "documentation":"<p> List of Amazon Web Services Private CA Amazon Resource Names (ARNs). Amazon Web Services Private CA enables creation of private certificate authority (CA) hierarchies, including root and subordinate CAs, without the investment and maintenance costs of operating an on-premises CA.</p>"
+        },
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether TLS authentication is enabled or not.</p>"
+        }
+      },
+      "documentation":"<p> Provides details for client authentication using TLS.</p>"
+    },
+    "AwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether unauthenticated is allowed or not.</p>"
+        }
+      },
+      "documentation":"<p> Provides details for allowing no client authentication. </p>"
+    },
+    "AwsMskClusterClusterInfoDetails":{
+      "type":"structure",
+      "members":{
+        "EncryptionInfo":{
+          "shape":"AwsMskClusterClusterInfoEncryptionInfoDetails",
+          "documentation":"<p> Includes encryption-related information, such as the KMS key used for encrypting data at rest and whether you want Amazon MSK to encrypt your data in transit.</p>"
+        },
+        "CurrentVersion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The current version of the MSK cluster.</p>"
+        },
+        "NumberOfBrokerNodes":{
+          "shape":"Integer",
+          "documentation":"<p> The number of broker nodes in the cluster.</p>"
+        },
+        "ClusterName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the cluster.</p>"
+        },
+        "ClientAuthentication":{
+          "shape":"AwsMskClusterClusterInfoClientAuthenticationDetails",
+          "documentation":"<p> Provides information for different modes of client authentication.</p>"
+        }
+      },
+      "documentation":"<p> Provide details about an Amazon MSK cluster.</p>"
+    },
+    "AwsMskClusterClusterInfoEncryptionInfoDetails":{
+      "type":"structure",
+      "members":{
+        "EncryptionInTransit":{
+          "shape":"AwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails",
+          "documentation":"<p> The settings for encrypting data in transit.</p>"
+        },
+        "EncryptionAtRest":{
+          "shape":"AwsMskClusterClusterInfoEncryptionInfoEncryptionAtRestDetails",
+          "documentation":"<p> The data-volume encryption details. You can't update encryption at rest settings for existing clusters.</p>"
+        }
+      },
+      "documentation":"<p> Includes encryption-related information, such as the KMS key used for encrypting data at rest and whether you want MSK to encrypt your data in transit.</p>"
+    },
+    "AwsMskClusterClusterInfoEncryptionInfoEncryptionAtRestDetails":{
+      "type":"structure",
+      "members":{
+        "DataVolumeKMSKeyId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the KMS key for encrypting data at rest. If you don't specify a KMS key, MSK creates one for you and uses it.</p>"
+        }
+      },
+      "documentation":"<p> The data-volume encryption details. You can't update encryption at rest settings for existing clusters.</p>"
+    },
+    "AwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails":{
+      "type":"structure",
+      "members":{
+        "InCluster":{
+          "shape":"Boolean",
+          "documentation":"<p> When set to <code>true</code>, it indicates that data communication among the broker nodes of the cluster is encrypted. When set to <code>false</code>, the communication happens in plain text. The default value is <code>true</code>.</p>"
+        },
+        "ClientBroker":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates the encryption setting for data in transit between clients and brokers.</p>"
+        }
+      },
+      "documentation":"<p> The settings for encrypting data in transit.</p>"
+    },
+    "AwsMskClusterDetails":{
+      "type":"structure",
+      "members":{
+        "ClusterInfo":{
+          "shape":"AwsMskClusterClusterInfoDetails",
+          "documentation":"<p> Provides information about a cluster.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Amazon Managed Streaming for Apache Kafka (Amazon MSK) cluster. </p>"
+    },
     "AwsNetworkFirewallFirewallDetails":{
       "type":"structure",
       "members":{
@@ -10414,6 +10898,10 @@
         "IamDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether the mapping of IAM accounts to database accounts is enabled.</p>"
+        },
+        "AutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if minor version upgrades are automatically applied to the cluster.</p>"
         }
       },
       "documentation":"<p>Information about an Amazon RDS DB cluster.</p>"
@@ -11852,6 +12340,88 @@
     "AwsRedshiftClusterVpcSecurityGroups":{
       "type":"list",
       "member":{"shape":"AwsRedshiftClusterVpcSecurityGroup"}
+    },
+    "AwsRoute53HostedZoneConfigDetails":{
+      "type":"structure",
+      "members":{
+        "Comment":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Any comments that you include about the hosted zone. </p>"
+        }
+      },
+      "documentation":"<p> An object that contains an optional comment about your Amazon Route 53 hosted zone.</p>"
+    },
+    "AwsRoute53HostedZoneDetails":{
+      "type":"structure",
+      "members":{
+        "HostedZone":{
+          "shape":"AwsRoute53HostedZoneObjectDetails",
+          "documentation":"<p> An object that contains information about the specified hosted zone.</p>"
+        },
+        "Vpcs":{
+          "shape":"AwsRoute53HostedZoneVpcsList",
+          "documentation":"<p> An object that contains information about the Amazon Virtual Private Clouds (Amazon VPCs) that are associated with the specified hosted zone.</p>"
+        },
+        "NameServers":{
+          "shape":"AwsRoute53HostedZoneNameServersList",
+          "documentation":"<p> An object that contains a list of the authoritative name servers for a hosted zone or for a reusable delegation set.</p>"
+        },
+        "QueryLoggingConfig":{
+          "shape":"AwsRoute53QueryLoggingConfigDetails",
+          "documentation":"<p> An array that contains one <code>QueryLoggingConfig</code> element for each DNS query logging configuration that is associated with the current Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about a specified Amazon Route 53 hosted zone, including the four name servers assigned to the hosted zone. A hosted zone represents a collection of records that can be managed together, belonging to a single parent domain name.</p>"
+    },
+    "AwsRoute53HostedZoneNameServersList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"}
+    },
+    "AwsRoute53HostedZoneObjectDetails":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID that Route 53 assigns to the hosted zone when you create it. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the domain. For public hosted zones, this is the name that you have registered with your DNS registrar.</p>"
+        },
+        "Config":{
+          "shape":"AwsRoute53HostedZoneConfigDetails",
+          "documentation":"<p> An object that includes the <code>Comment</code> element.</p>"
+        }
+      },
+      "documentation":"<p> An object that contains information about an Amazon Route 53 hosted zone. </p>"
+    },
+    "AwsRoute53HostedZoneVpcDetails":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of an Amazon VPC. </p>"
+        },
+        "Region":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Web Services Region that an Amazon VPC was created in.</p>"
+        }
+      },
+      "documentation":"<p> For private hosted zones, this is a complex type that contains information about an Amazon VPC.</p>"
+    },
+    "AwsRoute53HostedZoneVpcsList":{
+      "type":"list",
+      "member":{"shape":"AwsRoute53HostedZoneVpcDetails"}
+    },
+    "AwsRoute53QueryLoggingConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogsLogGroupArn":{
+          "shape":"CloudWatchLogsLogGroupArnConfigDetails",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon CloudWatch Logs log group that Route 53 is publishing logs to.</p>"
+        }
+      },
+      "documentation":"<p> Provides details about a specified Amazon Route 53 configuration for DNS query logging.</p>"
     },
     "AwsS3AccountPublicAccessBlockDetails":{
       "type":"structure",
@@ -14632,6 +15202,24 @@
         }
       },
       "documentation":"<p>Provides details about the current status of the sensitive data detection.</p>"
+    },
+    "CloudWatchLogsLogGroupArnConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogsLogGroupArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ARN of the CloudWatch Logs log group that Route 53 is publishing logs to.</p>"
+        },
+        "HostedZoneId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the hosted zone that CloudWatch Logs is logging queries for. </p>"
+        },
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID for a DNS query logging configuration. </p>"
+        }
+      },
+      "documentation":"<p> The Amazon Resource Name (ARN) and other details of the Amazon CloudWatch Logs log group that Amazon Route 53 is publishing logs to.</p>"
     },
     "CodeVulnerabilitiesFilePath":{
       "type":"structure",
@@ -17753,6 +18341,34 @@
         "AwsAthenaWorkGroup":{
           "shape":"AwsAthenaWorkGroupDetails",
           "documentation":"<p> Provides information about an Amazon Athena workgroup. A workgroup helps you separate users, teams, applications, or workloads. It also helps you set limits on data processing and track costs. </p>"
+        },
+        "AwsEventsEventbus":{
+          "shape":"AwsEventsEventbusDetails",
+          "documentation":"<p> Provides details about Amazon EventBridge event bus for an endpoint. An event bus is a router that receives events and delivers them to zero or more destinations, or targets.</p>"
+        },
+        "AwsDmsEndpoint":{
+          "shape":"AwsDmsEndpointDetails",
+          "documentation":"<p> Provides details about an Database Migration Service (DMS) endpoint. An endpoint provides connection, data store type, and location information about your data store.</p>"
+        },
+        "AwsEventsEndpoint":{
+          "shape":"AwsEventsEndpointDetails",
+          "documentation":"<p> Provides details about an Amazon EventBridge global endpoint. The endpoint can improve your application’s availability by making it Regional-fault tolerant.</p>"
+        },
+        "AwsDmsReplicationTask":{
+          "shape":"AwsDmsReplicationTaskDetails",
+          "documentation":"<p> Provides details about an DMS replication task. A replication task moves a set of data from the source endpoint to the target endpoint.</p>"
+        },
+        "AwsDmsReplicationInstance":{
+          "shape":"AwsDmsReplicationInstanceDetails",
+          "documentation":"<p> Provides details about an DMS replication instance. DMS uses a replication instance to connect to your source data store, read the source data, and format the data for consumption by the target data store.</p>"
+        },
+        "AwsRoute53HostedZone":{
+          "shape":"AwsRoute53HostedZoneDetails",
+          "documentation":"<p> Provides details about an Amazon Route 53 hosted zone, including the four name servers assigned to the hosted zone. A hosted zone represents a collection of records that can be managed together, belonging to a single parent domain name.</p>"
+        },
+        "AwsMskCluster":{
+          "shape":"AwsMskClusterDetails",
+          "documentation":"<p> Provides details about an Amazon Managed Streaming for Apache Kafka (Amazon MSK) cluster.</p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"

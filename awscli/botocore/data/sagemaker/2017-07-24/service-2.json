@@ -3895,6 +3895,32 @@
       "max":15,
       "min":1
     },
+    "AdditionalS3DataSource":{
+      "type":"structure",
+      "required":[
+        "S3DataType",
+        "S3Uri"
+      ],
+      "members":{
+        "S3DataType":{
+          "shape":"AdditionalS3DataSourceDataType",
+          "documentation":"<p>The data type of the additional data source that you specify for use in inference or training. </p>"
+        },
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The uniform resource identifier (URI) used to identify an additional data source used in inference or training.</p>"
+        },
+        "CompressionType":{
+          "shape":"CompressionType",
+          "documentation":"<p>The type of compression used for an additional data source used in inference or training. Specify <code>None</code> if your additional data source is not compressed.</p>"
+        }
+      },
+      "documentation":"<p>A data source used for training or inference that is in addition to the input dataset or model data.</p>"
+    },
+    "AdditionalS3DataSourceDataType":{
+      "type":"string",
+      "enum":["S3Object"]
+    },
     "AgentVersion":{
       "type":"structure",
       "required":[
@@ -25150,6 +25176,10 @@
         "NearestModelName":{
           "shape":"String",
           "documentation":"<p>The name of a pre-trained machine learning benchmarked by Amazon SageMaker Inference Recommender model that matches your model. You can find a list of benchmarked models by calling <code>ListModelMetadata</code>.</p>"
+        },
+        "AdditionalS3DataSource":{
+          "shape":"AdditionalS3DataSource",
+          "documentation":"<p>The additional data source that is used during inference in the Docker container for your model package.</p>"
         }
       },
       "documentation":"<p>Describes the Docker container for the model package.</p>"
@@ -30600,7 +30630,7 @@
       "members":{
         "SourcePipelineExecutionArn":{
           "shape":"PipelineExecutionArn",
-          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p> <p>This field is required if the steps you specify for <code>SelectedSteps</code> depend on output collaterals from any non-specified pipeline steps. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-selective-ex.html\">Selective Execution for Pipeline Steps</a>.</p>"
+          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p>"
         },
         "SelectedSteps":{
           "shape":"SelectedStepList",
@@ -32598,6 +32628,10 @@
         "SupportedTuningJobObjectiveMetrics":{
           "shape":"HyperParameterTuningJobObjectives",
           "documentation":"<p>A list of the metrics that the algorithm emits that can be used as the objective metric in a hyperparameter tuning job.</p>"
+        },
+        "AdditionalS3DataSource":{
+          "shape":"AdditionalS3DataSource",
+          "documentation":"<p>The additional data source used during the training job.</p>"
         }
       },
       "documentation":"<p>Defines how the algorithm is used for a training job.</p>"

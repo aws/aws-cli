@@ -117,6 +117,22 @@
       "documentation":"<p>Create application.</p>",
       "idempotent":true
     },
+    "CreateConnector":{
+      "name":"CreateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateConnector",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConnectorRequest"},
+      "output":{"shape":"Connector"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Create Connector.</p>",
+      "idempotent":true
+    },
     "CreateLaunchConfigurationTemplate":{
       "name":"CreateLaunchConfigurationTemplate",
       "http":{
@@ -181,6 +197,22 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Delete application.</p>",
+      "idempotent":true
+    },
+    "DeleteConnector":{
+      "name":"DeleteConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteConnector",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConnectorRequest"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Delete Connector.</p>",
       "idempotent":true
     },
     "DeleteJob":{
@@ -502,6 +534,21 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Retrieves all applications or multiple applications by ID.</p>"
+    },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListConnectors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List Connectors.</p>"
     },
     "ListExportErrors":{
       "name":"ListExportErrors",
@@ -976,6 +1023,23 @@
       "documentation":"<p>Update application.</p>",
       "idempotent":true
     },
+    "UpdateConnector":{
+      "name":"UpdateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateConnector",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConnectorRequest"},
+      "output":{"shape":"Connector"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Update Connector.</p>",
+      "idempotent":true
+    },
     "UpdateLaunchConfiguration":{
       "name":"UpdateLaunchConfiguration",
       "http":{
@@ -1046,6 +1110,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates multiple ReplicationConfigurationTemplates by ID.</p>"
+    },
+    "UpdateSourceServer":{
+      "name":"UpdateSourceServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateSourceServer",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSourceServerRequest"},
+      "output":{"shape":"SourceServer"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update Source Server.</p>",
+      "idempotent":true
     },
     "UpdateSourceServerReplicationType":{
       "name":"UpdateSourceServerReplicationType",
@@ -1464,6 +1545,89 @@
       "type":"list",
       "member":{"shape":"ErrorDetails"}
     },
+    "Connector":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>Connector arn.</p>"
+        },
+        "connectorID":{
+          "shape":"ConnectorID",
+          "documentation":"<p>Connector ID.</p>"
+        },
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>Connector name.</p>"
+        },
+        "ssmCommandConfig":{
+          "shape":"ConnectorSsmCommandConfig",
+          "documentation":"<p>Connector SSM command config.</p>"
+        },
+        "ssmInstanceID":{
+          "shape":"SsmInstanceID",
+          "documentation":"<p>Connector SSM instance ID.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Connector tags.</p>"
+        }
+      }
+    },
+    "ConnectorArn":{
+      "type":"string",
+      "max":100,
+      "min":27,
+      "pattern":"^arn:[\\w-]+:mgn:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:connector\\/(connector-[0-9a-zA-Z]{17})$"
+    },
+    "ConnectorID":{
+      "type":"string",
+      "max":27,
+      "min":27,
+      "pattern":"^connector-[0-9a-zA-Z]{17}$"
+    },
+    "ConnectorIDsFilter":{
+      "type":"list",
+      "member":{"shape":"ConnectorID"},
+      "max":20,
+      "min":0
+    },
+    "ConnectorName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[A-Za-z0-9_-]+$"
+    },
+    "ConnectorSsmCommandConfig":{
+      "type":"structure",
+      "required":[
+        "cloudWatchOutputEnabled",
+        "s3OutputEnabled"
+      ],
+      "members":{
+        "cloudWatchLogGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>Connector SSM command config CloudWatch log group name.</p>"
+        },
+        "cloudWatchOutputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Connector SSM command config CloudWatch output enabled.</p>"
+        },
+        "outputS3BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>Connector SSM command config output S3 bucket name.</p>"
+        },
+        "s3OutputEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Connector SSM command config S3 output enabled.</p>"
+        }
+      },
+      "documentation":"<p>Connector SSM command config.</p>"
+    },
+    "ConnectorsList":{
+      "type":"list",
+      "member":{"shape":"Connector"}
+    },
     "Cpus":{
       "type":"list",
       "member":{"shape":"CPU"},
@@ -1489,6 +1653,31 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Application tags.</p>"
+        }
+      }
+    },
+    "CreateConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ssmInstanceID"
+      ],
+      "members":{
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>Create Connector request name.</p>"
+        },
+        "ssmCommandConfig":{
+          "shape":"ConnectorSsmCommandConfig",
+          "documentation":"<p>Create Connector request SSM command config.</p>"
+        },
+        "ssmInstanceID":{
+          "shape":"SsmInstanceID",
+          "documentation":"<p>Create Connector request SSM instance ID.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Create Connector request tags.</p>"
         }
       }
     },
@@ -1843,6 +2032,16 @@
     "DeleteApplicationResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteConnectorRequest":{
+      "type":"structure",
+      "required":["connectorID"],
+      "members":{
+        "connectorID":{
+          "shape":"ConnectorID",
+          "documentation":"<p>Delete Connector request connector ID.</p>"
+        }
       }
     },
     "DeleteJobRequest":{
@@ -3341,6 +3540,46 @@
         }
       }
     },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListConnectorsRequestFilters",
+          "documentation":"<p>List Connectors Request filters.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>List Connectors Request max results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List Connectors Request next token.</p>"
+        }
+      }
+    },
+    "ListConnectorsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "connectorIDs":{
+          "shape":"ConnectorIDsFilter",
+          "documentation":"<p>List Connectors Request Filters connector IDs.</p>"
+        }
+      },
+      "documentation":"<p>List Connectors Request Filters.</p>"
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ConnectorsList",
+          "documentation":"<p>List connectors response items.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>List connectors response next token.</p>"
+        }
+      }
+    },
     "ListExportErrorsRequest":{
       "type":"structure",
       "required":["exportID"],
@@ -4363,6 +4602,12 @@
       "max":63,
       "min":3
     },
+    "SecretArn":{
+      "type":"string",
+      "max":100,
+      "min":20,
+      "pattern":"^arn:[\\w-]+:secretsmanager:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:secret:(.+)$"
+    },
     "SecurityGroupID":{
       "type":"string",
       "max":255,
@@ -4455,6 +4700,10 @@
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Source server ARN.</p>"
+        },
+        "connectorAction":{
+          "shape":"SourceServerConnectorAction",
+          "documentation":"<p>Source Server connector action.</p>"
         },
         "dataReplicationInfo":{
           "shape":"DataReplicationInfo",
@@ -4571,6 +4820,20 @@
       },
       "documentation":"<p>Source server post migration custom action filters.</p>"
     },
+    "SourceServerConnectorAction":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>Source Server connector action connector arn.</p>"
+        },
+        "credentialsSecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>Source Server connector action credentials secret arn.</p>"
+        }
+      },
+      "documentation":"<p>Source Server connector action.</p>"
+    },
     "SourceServerID":{
       "type":"string",
       "max":19,
@@ -4664,6 +4927,12 @@
       },
       "documentation":"<p>AWS Systems Manager Document external parameter.</p>",
       "union":true
+    },
+    "SsmInstanceID":{
+      "type":"string",
+      "max":20,
+      "min":19,
+      "pattern":"(^i-[0-9a-zA-Z]{17}$)|(^mi-[0-9a-zA-Z]{17}$)"
     },
     "SsmParameterStoreParameter":{
       "type":"structure",
@@ -5132,6 +5401,24 @@
         }
       }
     },
+    "UpdateConnectorRequest":{
+      "type":"structure",
+      "required":["connectorID"],
+      "members":{
+        "connectorID":{
+          "shape":"ConnectorID",
+          "documentation":"<p>Update Connector request connector ID.</p>"
+        },
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>Update Connector request name.</p>"
+        },
+        "ssmCommandConfig":{
+          "shape":"ConnectorSsmCommandConfig",
+          "documentation":"<p>Update Connector request SSM command config.</p>"
+        }
+      }
+    },
     "UpdateLaunchConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -5400,6 +5687,24 @@
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>ID of source server on which to update replication type.</p>"
+        }
+      }
+    },
+    "UpdateSourceServerRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update Source Server request account ID.</p>"
+        },
+        "connectorAction":{
+          "shape":"SourceServerConnectorAction",
+          "documentation":"<p>Update Source Server request connector action.</p>"
+        },
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Update Source Server request source server ID.</p>"
         }
       }
     },

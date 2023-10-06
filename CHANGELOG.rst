@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.62
+=======
+
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``fsx``: After performing steps to repair the Active Directory configuration of a file system, use this action to initiate the process of attempting to recover to the file system.
+* api-change:``marketplace-catalog``: This release adds support for Document type as an alternative for stringified JSON for StartChangeSet, DescribeChangeSet and DescribeEntity APIs
+* api-change:``quicksight``: NullOption in FilterListConfiguration; Dataset schema/table max length increased; Support total placement for pivot table visual; Lenient mode relaxes the validation to create resources with definition; Data sources can be added to folders; Redshift data sources support IAM Role-based authentication
+* api-change:``transfer``: This release updates the max character limit of PreAuthenticationLoginBanner and PostAuthenticationLoginBanner to 4096 characters
+
+
 1.29.61
 =======
 

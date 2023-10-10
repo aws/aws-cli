@@ -27,9 +27,10 @@ LOG = logging.getLogger(__name__)
 class LogoutCommand(BasicCommand):
     NAME = 'logout'
     DESCRIPTION = (
-        'Removes all cached AWS SSO access tokens and any cached temporary '
-        'AWS credentials retrieved with SSO access tokens across all '
-        'profiles. To use these profiles again, run: ``aws sso login``'
+        'Removes all cached AWS IAM Identity Center access tokens and any '
+        'cached temporary AWS credentials retrieved with SSO access tokens '
+        'across all profiles. To use these profiles again, run: '
+        '``aws sso login``'
     )
     ARG_TABLE = []
 

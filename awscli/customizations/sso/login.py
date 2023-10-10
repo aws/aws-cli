@@ -19,13 +19,13 @@ from awscli.customizations.utils import uni_print
 class LoginCommand(BaseSSOCommand):
     NAME = 'login'
     DESCRIPTION = (
-        'Retrieves and caches an AWS SSO access token to exchange for AWS '
-        'credentials. To login, the requested profile must have first been '
-        'setup using ``aws configure sso``. Each time the ``login`` command '
-        'is called, a new SSO access token will be retrieved. Please note '
-        'that only one login session can be active for a given SSO Session '
-        'and creating multiple profiles does not allow for multiple users to '
-        'be authenticated against the same SSO Session.'
+        'Retrieves and caches an AWS IAM Identity Center access token to '
+        'exchange for AWS credentials. To login, the requested profile must '
+        'have first been setup using ``aws configure sso``. Each time the '
+        '``login`` command is called, a new SSO access token will be '
+        'retrieved. Please note that only one login session can be active for '
+        'a given SSO Session and creating multiple profiles does not allow for'
+        ' multiple users to be authenticated against the same SSO Session.'
     )
     ARG_TABLE = LOGIN_ARGS + [
         {

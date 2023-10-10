@@ -481,7 +481,9 @@ class TestMultipartCopy(BaseCopyTest):
         self.add_head_object_response(expected_params=head_params)
 
         self._add_params_to_expected_params(
-            add_copy_kwargs, ['create_mpu', 'copy'], self.extra_args
+            add_copy_kwargs,
+            ['create_mpu', 'copy', 'complete_mpu'],
+            self.extra_args,
         )
         self.add_successful_copy_responses(**add_copy_kwargs)
 

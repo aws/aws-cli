@@ -8,7 +8,7 @@
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# mock.ANY KIND, either express or implied. See the License for the specific
+# ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
 
@@ -40,7 +40,7 @@ class BaseTestCLIFollowParamURL(BaseAWSCommandParamsTest):
         # is what happened to the arguments before they were passed to botocore
         # which we get from the params={} key. For binary types we will fail in
         # python 3 with an rc of 255 and get an rc of 0 in python 2 where it
-        # can't tell the difference, so we pass mock.ANY here to ignore the rc.
+        # can't tell the difference, so we pass ANY here to ignore the rc.
         self.assert_params_for_cmd(cmd,
                                    params={'FunctionName': expected_param},
                                    expected_rc=mock.ANY)

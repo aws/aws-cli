@@ -521,7 +521,13 @@ class UploadSubmissionTask(SubmissionTask):
         'ExpectedBucketOwner',
     ]
 
-    COMPLETE_MULTIPART_ARGS = ['RequestPayer', 'ExpectedBucketOwner']
+    COMPLETE_MULTIPART_ARGS = [
+        'SSECustomerKey',
+        'SSECustomerAlgorithm',
+        'SSECustomerKeyMD5',
+        'RequestPayer',
+        'ExpectedBucketOwner',
+    ]
 
     def _get_upload_input_manager_cls(self, transfer_future):
         """Retrieves a class for managing input for an upload based on file type

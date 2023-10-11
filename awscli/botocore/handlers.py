@@ -1125,6 +1125,7 @@ BUILTIN_HANDLERS = [
     ('before-parameter-build.s3.UploadPart', sse_md5),
     ('before-parameter-build.s3.UploadPartCopy', sse_md5),
     ('before-parameter-build.s3.UploadPartCopy', copy_source_sse_md5),
+    ('before-parameter-build.s3.CompleteMultipartUpload', sse_md5),
     ('before-parameter-build.ec2.RunInstances', base64_encode_user_data),
     ('before-parameter-build.auto-scaling.CreateLaunchConfiguration',
      base64_encode_user_data),

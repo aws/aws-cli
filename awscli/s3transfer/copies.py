@@ -69,7 +69,13 @@ class CopySubmissionTask(SubmissionTask):
         'TaggingDirective',
     ]
 
-    COMPLETE_MULTIPART_ARGS = ['RequestPayer', 'ExpectedBucketOwner']
+    COMPLETE_MULTIPART_ARGS = [
+        'SSECustomerKey',
+        'SSECustomerAlgorithm',
+        'SSECustomerKeyMD5',
+        'RequestPayer',
+        'ExpectedBucketOwner',
+    ]
 
     def _submit(
         self, client, config, osutil, request_executor, transfer_future

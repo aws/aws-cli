@@ -599,3 +599,28 @@ class TestMultipartUpload(BaseUploadTest):
         )
         future.result()
         self.assert_expected_client_calls_were_correct()
+
+    def test_multipart_upload_with_ssec_args(self):
+        params = {
+            'RequestPayer': 'requester',
+            'SSECustomerKey': 'key',
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKeyMD5': 'key-hash',
+        }
+        self.extra_args.update(params)
+
+        self.add_create_multipart_response_with_default_expected_params(
+            extra_expected_params=params
+        )
+
+        self.add_upload_part_responses_with_default_expected_params(
+            extra_expected_params=params
+        )
+        self.add_complete_multipart_response_with_default_expected_params(
+            extra_expected_params=params
+        )
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        self.assert_expected_client_calls_were_correct()

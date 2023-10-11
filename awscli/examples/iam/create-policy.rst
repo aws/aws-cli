@@ -2,43 +2,43 @@
 
 The following command creates a customer managed policy named ``my-policy``. ::
 
-  aws iam create-policy 
-    --policy-name my-policy
-    --policy-document file://policy
+    aws iam create-policy \
+        --policy-name my-policy \
+        --policy-document file://policy
 
 The file ``policy`` is a JSON document in the current folder that grants read only access to the ``shared`` folder in an Amazon S3 bucket named ``my-bucket``::
 
-  {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "s3:Get*",
-                  "s3:List*"
-              ],
-              "Resource": [
-                  "arn:aws:s3:::my-bucket/shared/*"
-              ]
-          }
-      ]
-  }
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:Get*",
+                    "s3:List*"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::my-bucket/shared/*"
+                ]
+            }
+        ]
+    }
 
 Output::
 
-  {
-      "Policy": {
-          "PolicyName": "my-policy",
-          "CreateDate": "2015-06-01T19:31:18.620Z",
-          "AttachmentCount": 0,
-          "IsAttachable": true,
-          "PolicyId": "ZXR6A36LTYANPAI7NJ5UV",
-          "DefaultVersionId": "v1",
-          "Path": "/",
-          "Arn": "arn:aws:iam::0123456789012:policy/my-policy",
-          "UpdateDate": "2015-06-01T19:31:18.620Z"
-      }
-  }
+    {
+        "Policy": {
+            "PolicyName": "my-policy",
+            "CreateDate": "2015-06-01T19:31:18.620Z",
+            "AttachmentCount": 0,
+            "IsAttachable": true,
+            "PolicyId": "ZXR6A36LTYANPAI7NJ5UV",
+            "DefaultVersionId": "v1",
+            "Path": "/",
+            "Arn": "arn:aws:iam::0123456789012:policy/my-policy",
+            "UpdateDate": "2015-06-01T19:31:18.620Z"
+        }
+    }
 
 For more information on using files as input for string parameters, see `Specifying Parameter Values <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html>`_ in the *AWS CLI User Guide*.
 
@@ -120,7 +120,7 @@ The file ``policy.json`` is a JSON document in the current folder that grants ac
     }
 
 Output::
-    
+
     {
         "Policy": {
             "PolicyName": "my-policy",
@@ -141,12 +141,8 @@ Output::
                     "Key": "Location",
                     "Value": "Seattle"
                 {
-
             ]
         }
     }
 
-
 For more information on Tagging policies, see `Tagging customer managed policies <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags_customer-managed-policies.html>`__ in the *IAM User Guide*.
-
-

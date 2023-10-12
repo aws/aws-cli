@@ -6584,6 +6584,10 @@
         "Definition":{
           "shape":"AnalysisDefinition",
           "documentation":"<p>The definition of an analysis.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>The option to relax the validation needed to create an analysis with definition objects. This skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -6679,6 +6683,10 @@
         "Definition":{
           "shape":"DashboardVersionDefinition",
           "documentation":"<p>The definition of a dashboard.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>The option to relax the validation needed to create a dashboard with definition objects. This option skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -7448,6 +7456,10 @@
         "Definition":{
           "shape":"TemplateVersionDefinition",
           "documentation":"<p>The definition of a template.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>TThe option to relax the validation needed to create a template with definition objects. This skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -9474,6 +9486,22 @@
     "Database":{
       "type":"string",
       "max":128,
+      "min":1
+    },
+    "DatabaseGroup":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "DatabaseGroupList":{
+      "type":"list",
+      "member":{"shape":"DatabaseGroup"},
+      "max":50,
+      "min":1
+    },
+    "DatabaseUser":{
+      "type":"string",
+      "max":64,
       "min":1
     },
     "DatabricksParameters":{
@@ -14195,6 +14223,10 @@
         "SelectAllOptions":{
           "shape":"CategoryFilterSelectAllOptions",
           "documentation":"<p>Select all of the values. Null is not the assigned value of select all.</p> <ul> <li> <p> <code>FILTER_ALL_VALUES</code> </p> </li> </ul>"
+        },
+        "NullOption":{
+          "shape":"FilterNullOption",
+          "documentation":"<p>This option determines how null values should be treated when filtering data.</p> <ul> <li> <p> <code>ALL_VALUES</code>: Include null values in filtered results.</p> </li> <li> <p> <code>NULLS_ONLY</code>: Only include null values in filtered results.</p> </li> <li> <p> <code>NON_NULLS_ONLY</code>: Exclude null values from filtered results.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A list of filter configurations.</p>"
@@ -19515,6 +19547,7 @@
         "DASHBOARD",
         "ANALYSIS",
         "DATASET",
+        "DATASOURCE",
         "TOPIC"
       ]
     },
@@ -22025,6 +22058,32 @@
       "max":30,
       "min":7
     },
+    "RedshiftIAMParameters":{
+      "type":"structure",
+      "required":[
+        "RoleArn",
+        "DatabaseUser"
+      ],
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Use the <code>RoleArn</code> structure to allow Amazon QuickSight to call <code>redshift:GetClusterCredentials</code> on your cluster. The calling principal must have <code>iam:PassRole</code> access to pass the role to Amazon QuickSight. The role's trust policy must allow the Amazon QuickSight service principal to assume the role.</p>"
+        },
+        "DatabaseUser":{
+          "shape":"DatabaseUser",
+          "documentation":"<p>The user whose permissions and group memberships will be used by Amazon QuickSight to access the cluster. If this user already exists in your database, Amazon QuickSight is granted the same permissions that the user has. If the user doesn't exist, set the value of <code>AutoCreateDatabaseUser</code> to <code>True</code> to create a new user with PUBLIC permissions.</p>"
+        },
+        "DatabaseGroups":{
+          "shape":"DatabaseGroupList",
+          "documentation":"<p>A list of groups whose permissions will be granted to Amazon QuickSight to access the cluster. These permissions are combined with the permissions granted to Amazon QuickSight by the <code>DatabaseUser</code>. If you choose to include this parameter, the <code>RoleArn</code> must grant access to <code>redshift:JoinGroup</code>.</p>"
+        },
+        "AutoCreateDatabaseUser":{
+          "shape":"Boolean",
+          "documentation":"<p>Automatically creates a database user. If your database doesn't have a <code>DatabaseUser</code>, set this parameter to <code>True</code>. If there is no <code>DatabaseUser</code>, Amazon QuickSight can't connect to your cluster. The <code>RoleArn</code> that you use for this operation must grant access to <code>redshift:CreateClusterUser</code> to successfully create the user.</p>"
+        }
+      },
+      "documentation":"<p>A structure that grants Amazon QuickSight access to your cluster and make a call to the <code>redshift:GetClusterCredentials</code> API. For more information on the <code>redshift:GetClusterCredentials</code> API, see <a href=\"https://docs.aws.amazon.com/redshift/latest/APIReference/API_GetClusterCredentials.html\"> <code>GetClusterCredentials</code> </a>.</p>"
+    },
     "RedshiftParameters":{
       "type":"structure",
       "required":["Database"],
@@ -22044,6 +22103,10 @@
         "ClusterId":{
           "shape":"ClusterId",
           "documentation":"<p>Cluster ID. This field can be blank if the <code>Host</code> and <code>Port</code> are provided.</p>"
+        },
+        "IAMParameters":{
+          "shape":"RedshiftIAMParameters",
+          "documentation":"<p>An optional parameter that uses IAM authentication to grant Amazon QuickSight access to your cluster. This parameter can be used instead of <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DataSourceCredentials.html\">DataSourceCredentials</a>.</p>"
         }
       },
       "documentation":"<p>The parameters for Amazon Redshift. The <code>ClusterId</code> field can be blank if <code>Host</code> and <code>Port</code> are both set. The <code>Host</code> and <code>Port</code> fields can be blank if the <code>ClusterId</code> field is set.</p>"
@@ -22532,12 +22595,12 @@
     },
     "RelationalTableName":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":1
     },
     "RelationalTableSchema":{
       "type":"string",
-      "max":64
+      "max":256
     },
     "RelativeDateTimeControlDisplayOptions":{
       "type":"structure",
@@ -25785,7 +25848,8 @@
       "type":"string",
       "enum":[
         "START",
-        "END"
+        "END",
+        "AUTO"
       ]
     },
     "TableTotalsScrollStatus":{
@@ -28161,6 +28225,10 @@
         "Definition":{
           "shape":"AnalysisDefinition",
           "documentation":"<p>The definition of an analysis.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>The option to relax the validation needed to update an analysis with definition objects. This skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -28354,6 +28422,10 @@
         "Definition":{
           "shape":"DashboardVersionDefinition",
           "documentation":"<p>The definition of a dashboard.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>The option to relax the validation needed to update a dashboard with definition objects. This skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -29143,6 +29215,10 @@
         "Definition":{
           "shape":"TemplateVersionDefinition",
           "documentation":"<p>The definition of a template.</p> <p>A definition is the data model of all features in a Dashboard, Template, or Analysis.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"ValidationStrategy",
+          "documentation":"<p>The option to relax the validation needed to update a template with definition objects. This skips the validation step for specific errors.</p>"
         }
       }
     },
@@ -29908,6 +29984,24 @@
     "VPCConnectionSummaryList":{
       "type":"list",
       "member":{"shape":"VPCConnectionSummary"}
+    },
+    "ValidationStrategy":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"ValidationStrategyMode",
+          "documentation":"<p>The mode of validation for the asset to be creaed or updated. When you set this value to <code>STRICT</code>, strict validation for every error is enforced. When you set this value to <code>LENIENT</code>, validation is skipped for specific UI errors.</p>"
+        }
+      },
+      "documentation":"<p>The option to relax the validation that is required to create and update analyses, dashboards, and templates with definition objects. When you set this value to <code>LENIENT</code>, validation is skipped for specific errors.</p>"
+    },
+    "ValidationStrategyMode":{
+      "type":"string",
+      "enum":[
+        "STRICT",
+        "LENIENT"
+      ]
     },
     "ValueWhenUnsetOption":{
       "type":"string",

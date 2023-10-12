@@ -600,6 +600,21 @@
       "documentation":"<p>Returns an Amazon FSx for OpenZFS volume to the state saved by the specified snapshot.</p>",
       "idempotent":true
     },
+    "StartMisconfiguredStateRecovery":{
+      "name":"StartMisconfiguredStateRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartMisconfiguredStateRecoveryRequest"},
+      "output":{"shape":"StartMisconfiguredStateRecoveryResponse"},
+      "errors":[
+        {"shape":"BadRequest"},
+        {"shape":"FileSystemNotFound"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>After performing steps to repair the Active Directory configuration of an FSx for Windows File Server file system, use this action to initiate the process of Amazon FSx attempting to reconnect to the file system.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -858,7 +873,8 @@
         "VOLUME_RESTORE",
         "THROUGHPUT_OPTIMIZATION",
         "IOPS_OPTIMIZATION",
-        "STORAGE_TYPE_OPTIMIZATION"
+        "STORAGE_TYPE_OPTIMIZATION",
+        "MISCONFIGURED_STATE_RECOVERY"
       ]
     },
     "AdministrativeActions":{
@@ -1595,7 +1611,7 @@
           "documentation":"<p>The Lustre root squash configuration used when creating an Amazon FSx for Lustre file system. When enabled, root squash restricts root-level access from clients that try to access your file system as a root user.</p>"
         }
       },
-      "documentation":"<p>The Lustre configuration for the file system being created.</p> <note> <p>The following parameters are not supported for file systems with a data repository association created with .</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>ExportPath</code> </p> </li> <li> <p> <code>ImportedChunkSize</code> </p> </li> <li> <p> <code>ImportPath</code> </p> </li> </ul> </note>"
+      "documentation":"<p>The Lustre configuration for the file system being created.</p> <note> <p>The following parameters are not supported for file systems with a data repository association created with .</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>ExportPath</code> </p> </li> <li> <p> <code>ImportedFileChunkSize</code> </p> </li> <li> <p> <code>ImportPath</code> </p> </li> </ul> </note>"
     },
     "CreateFileSystemOntapConfiguration":{
       "type":"structure",
@@ -5055,6 +5071,23 @@
       },
       "documentation":"<p>The request was rejected because the lifecycle status of the source backup isn't <code>AVAILABLE</code>.</p>",
       "exception":true
+    },
+    "StartMisconfiguredStateRecoveryRequest":{
+      "type":"structure",
+      "required":["FileSystemId"],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "FileSystemId":{"shape":"FileSystemId"}
+      }
+    },
+    "StartMisconfiguredStateRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "FileSystem":{"shape":"FileSystem"}
+      }
     },
     "StartTime":{"type":"timestamp"},
     "Status":{

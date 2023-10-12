@@ -72,7 +72,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Copies a version of an Amazon Rekognition Custom Labels model from a source project to a destination project. The source and destination projects can be in different AWS accounts but must be in the same AWS Region. You can't copy a model to another AWS service. </p> <p>To copy a model version to a different AWS account, you need to create a resource-based policy known as a <i>project policy</i>. You attach the project policy to the source project by calling <a>PutProjectPolicy</a>. The project policy gives permission to copy the model version from a trusting AWS account to a trusted account.</p> <p>For more information creating and attaching a project policy, see Attaching a project policy (SDK) in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>If you are copying a model version to a project in the same AWS account, you don't need to create a project policy.</p> <note> <p>To copy a model, the destination project, source project, and source model version must already exist.</p> </note> <p>Copying a model version takes a while to complete. To get the current status, call <a>DescribeProjectVersions</a> and check the value of <code>Status</code> in the <a>ProjectVersionDescription</a> object. The copy operation has finished when the value of <code>Status</code> is <code>COPYING_COMPLETED</code>.</p> <p>This operation requires permissions to perform the <code>rekognition:CopyProjectVersion</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Copies a version of an Amazon Rekognition Custom Labels model from a source project to a destination project. The source and destination projects can be in different AWS accounts but must be in the same AWS Region. You can't copy a model to another AWS service. </p> <p>To copy a model version to a different AWS account, you need to create a resource-based policy known as a <i>project policy</i>. You attach the project policy to the source project by calling <a>PutProjectPolicy</a>. The project policy gives permission to copy the model version from a trusting AWS account to a trusted account.</p> <p>For more information creating and attaching a project policy, see Attaching a project policy (SDK) in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>If you are copying a model version to a project in the same AWS account, you don't need to create a project policy.</p> <note> <p>Copying project versions is supported only for Custom Labels models. </p> <p>To copy a model, the destination project, source project, and source model version must already exist.</p> </note> <p>Copying a model version takes a while to complete. To get the current status, call <a>DescribeProjectVersions</a> and check the value of <code>Status</code> in the <a>ProjectVersionDescription</a> object. The copy operation has finished when the value of <code>Status</code> is <code>COPYING_COMPLETED</code>.</p> <p>This operation requires permissions to perform the <code>rekognition:CopyProjectVersion</code> action.</p>"
     },
     "CreateCollection":{
       "name":"CreateCollection",
@@ -112,7 +112,7 @@
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a new Amazon Rekognition Custom Labels dataset. You can create a dataset by using an Amazon Sagemaker format manifest file or by copying an existing Amazon Rekognition Custom Labels dataset.</p> <p>To create a training dataset for a project, specify <code>TRAIN</code> for the value of <code>DatasetType</code>. To create the test dataset for a project, specify <code>TEST</code> for the value of <code>DatasetType</code>. </p> <p>The response from <code>CreateDataset</code> is the Amazon Resource Name (ARN) for the dataset. Creating a dataset takes a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset created successfully if the value of <code>Status</code> is <code>CREATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occurred, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset creation fails if a terminal error occurs (<code>Status</code> = <code>CREATE_FAILED</code>). Currently, you can't access the terminal error information. </p> <p>For more information, see Creating dataset in the <i>Amazon Rekognition Custom Labels Developer Guide</i>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateDataset</code> action. If you want to copy an existing dataset, you also require permission to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Creates a new Amazon Rekognition Custom Labels dataset. You can create a dataset by using an Amazon Sagemaker format manifest file or by copying an existing Amazon Rekognition Custom Labels dataset.</p> <p>To create a training dataset for a project, specify <code>TRAIN</code> for the value of <code>DatasetType</code>. To create the test dataset for a project, specify <code>TEST</code> for the value of <code>DatasetType</code>. </p> <p>The response from <code>CreateDataset</code> is the Amazon Resource Name (ARN) for the dataset. Creating a dataset takes a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset created successfully if the value of <code>Status</code> is <code>CREATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occurred, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset creation fails if a terminal error occurs (<code>Status</code> = <code>CREATE_FAILED</code>). Currently, you can't access the terminal error information. </p> <p>For more information, see Creating dataset in the <i>Amazon Rekognition Custom Labels Developer Guide</i>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateDataset</code> action. If you want to copy an existing dataset, you also require permission to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
     },
     "CreateFaceLivenessSession":{
       "name":"CreateFaceLivenessSession",
@@ -149,7 +149,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Creates a new Amazon Rekognition Custom Labels project. A project is a group of resources (datasets, model versions) that you use to create and manage Amazon Rekognition Custom Labels models. </p> <p>This operation requires permissions to perform the <code>rekognition:CreateProject</code> action.</p>"
+      "documentation":"<p>Creates a new Amazon Rekognition project. A project is a group of resources (datasets, model versions) that you use to create and manage a Amazon Rekognition Custom Labels Model or custom adapter. You can specify a feature to create the project with, if no feature is specified then Custom Labels is used by default. For adapters, you can also choose whether or not to have the project auto update by using the AutoUpdate argument. This operation requires permissions to perform the <code>rekognition:CreateProject</code> action.</p>"
     },
     "CreateProjectVersion":{
       "name":"CreateProjectVersion",
@@ -170,7 +170,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new version of a model and begins training. Models are managed as part of an Amazon Rekognition Custom Labels project. The response from <code>CreateProjectVersion</code> is an Amazon Resource Name (ARN) for the version of the model. </p> <p>Training uses the training and test datasets associated with the project. For more information, see Creating training and test dataset in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <note> <p>You can train a model in a project that doesn't have associated datasets by specifying manifest files in the <code>TrainingData</code> and <code>TestingData</code> fields. </p> <p>If you open the console after training a model with manifest files, Amazon Rekognition Custom Labels creates the datasets for you using the most recent manifest files. You can no longer train a model version for the project by specifying manifest files. </p> <p>Instead of training with a project without associated datasets, we recommend that you use the manifest files to create training and test datasets for the project.</p> </note> <p>Training takes a while to complete. You can get the current status by calling <a>DescribeProjectVersions</a>. Training completed successfully if the value of the <code>Status</code> field is <code>TRAINING_COMPLETED</code>.</p> <p>If training fails, see Debugging a failed model training in the <i>Amazon Rekognition Custom Labels</i> developer guide. </p> <p>Once training has successfully completed, call <a>DescribeProjectVersions</a> to get the training results and evaluate the model. For more information, see Improving a trained Amazon Rekognition Custom Labels model in the <i>Amazon Rekognition Custom Labels</i> developers guide. </p> <p>After evaluating the model, you start the model by calling <a>StartProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateProjectVersion</code> action.</p>"
+      "documentation":"<p>Creates a new version of Amazon Rekognition project (like a Custom Labels model or a custom adapter) and begins training. Models and adapters are managed as part of a Rekognition project. The response from <code>CreateProjectVersion</code> is an Amazon Resource Name (ARN) for the project version. </p> <p>The FeatureConfig operation argument allows you to configure specific model or adapter settings. You can provide a description to the project version by using the VersionDescription argment. Training can take a while to complete. You can get the current status by calling <a>DescribeProjectVersions</a>. Training completed successfully if the value of the <code>Status</code> field is <code>TRAINING_COMPLETED</code>. Once training has successfully completed, call <a>DescribeProjectVersions</a> to get the training results and evaluate the model.</p> <p>This operation requires permissions to perform the <code>rekognition:CreateProjectVersion</code> action.</p> <note> <p> <i>The following applies only to projects with Amazon Rekognition Custom Labels as the chosen feature:</i> </p> <p>You can train a model in a project that doesn't have associated datasets by specifying manifest files in the <code>TrainingData</code> and <code>TestingData</code> fields. </p> <p>If you open the console after training a model with manifest files, Amazon Rekognition Custom Labels creates the datasets for you using the most recent manifest files. You can no longer train a model version for the project by specifying manifest files. </p> <p>Instead of training with a project without associated datasets, we recommend that you use the manifest files to create training and test datasets for the project.</p> </note> <p/>"
     },
     "CreateStreamProcessor":{
       "name":"CreateStreamProcessor",
@@ -249,7 +249,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes an existing Amazon Rekognition Custom Labels dataset. Deleting a dataset might take while. Use <a>DescribeDataset</a> to check the current status. The dataset is still deleting if the value of <code>Status</code> is <code>DELETE_IN_PROGRESS</code>. If you try to access the dataset after it is deleted, you get a <code>ResourceNotFoundException</code> exception. </p> <p>You can't delete a dataset while it is creating (<code>Status</code> = <code>CREATE_IN_PROGRESS</code>) or if the dataset is updating (<code>Status</code> = <code>UPDATE_IN_PROGRESS</code>).</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteDataset</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Deletes an existing Amazon Rekognition Custom Labels dataset. Deleting a dataset might take while. Use <a>DescribeDataset</a> to check the current status. The dataset is still deleting if the value of <code>Status</code> is <code>DELETE_IN_PROGRESS</code>. If you try to access the dataset after it is deleted, you get a <code>ResourceNotFoundException</code> exception. </p> <p>You can't delete a dataset while it is creating (<code>Status</code> = <code>CREATE_IN_PROGRESS</code>) or if the dataset is updating (<code>Status</code> = <code>UPDATE_IN_PROGRESS</code>).</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteDataset</code> action.</p>"
     },
     "DeleteFaces":{
       "name":"DeleteFaces",
@@ -286,7 +286,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Deletes an Amazon Rekognition Custom Labels project. To delete a project you must first delete all models associated with the project. To delete a model, see <a>DeleteProjectVersion</a>.</p> <p> <code>DeleteProject</code> is an asynchronous operation. To check if the project is deleted, call <a>DescribeProjects</a>. The project is deleted when the project no longer appears in the response. Be aware that deleting a given project will also delete any <code>ProjectPolicies</code> associated with that project.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProject</code> action. </p>"
+      "documentation":"<p>Deletes a Amazon Rekognition project. To delete a project you must first delete all models or adapters associated with the project. To delete a model or adapter, see <a>DeleteProjectVersion</a>.</p> <p> <code>DeleteProject</code> is an asynchronous operation. To check if the project is deleted, call <a>DescribeProjects</a>. The project is deleted when the project no longer appears in the response. Be aware that deleting a given project will also delete any <code>ProjectPolicies</code> associated with that project.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProject</code> action. </p>"
     },
     "DeleteProjectPolicy":{
       "name":"DeleteProjectPolicy",
@@ -305,7 +305,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidPolicyRevisionIdException"}
       ],
-      "documentation":"<p>Deletes an existing project policy.</p> <p>To get a list of project policies attached to a project, call <a>ListProjectPolicies</a>. To attach a project policy to a project, call <a>PutProjectPolicy</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProjectPolicy</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Deletes an existing project policy.</p> <p>To get a list of project policies attached to a project, call <a>ListProjectPolicies</a>. To attach a project policy to a project, call <a>PutProjectPolicy</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProjectPolicy</code> action.</p>"
     },
     "DeleteProjectVersion":{
       "name":"DeleteProjectVersion",
@@ -324,7 +324,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Deletes an Amazon Rekognition Custom Labels model. </p> <p>You can't delete a model if it is running or if it is training. To check the status of a model, use the <code>Status</code> field returned from <a>DescribeProjectVersions</a>. To stop a running model call <a>StopProjectVersion</a>. If the model is training, wait until it finishes.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProjectVersion</code> action. </p>"
+      "documentation":"<p>Deletes a Rekognition project model or project version, like a Amazon Rekognition Custom Labels model or a custom adapter.</p> <p>You can't delete a project version if it is running or if it is training. To check the status of a project version, use the Status field returned from <a>DescribeProjectVersions</a>. To stop a project version call <a>StopProjectVersion</a>. If the project version is training, wait until it finishes.</p> <p>This operation requires permissions to perform the <code>rekognition:DeleteProjectVersion</code> action. </p>"
     },
     "DeleteStreamProcessor":{
       "name":"DeleteStreamProcessor",
@@ -399,7 +399,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Describes an Amazon Rekognition Custom Labels dataset. You can get information such as the current status of a dataset and statistics about the images and labels in a dataset. </p> <p>This operation requires permissions to perform the <code>rekognition:DescribeDataset</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p> Describes an Amazon Rekognition Custom Labels dataset. You can get information such as the current status of a dataset and statistics about the images and labels in a dataset. </p> <p>This operation requires permissions to perform the <code>rekognition:DescribeDataset</code> action.</p>"
     },
     "DescribeProjectVersions":{
       "name":"DescribeProjectVersions",
@@ -418,7 +418,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Lists and describes the versions of a model in an Amazon Rekognition Custom Labels project. You can specify up to 10 model versions in <code>ProjectVersionArns</code>. If you don't specify a value, descriptions for all model versions in the project are returned.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjectVersions</code> action.</p>"
+      "documentation":"<p>Lists and describes the versions of an Amazon Rekognition project. You can specify up to 10 model or adapter versions in <code>ProjectVersionArns</code>. If you don't specify a value, descriptions for all model/adapter versions in the project are returned.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjectVersions</code> action.</p>"
     },
     "DescribeProjects":{
       "name":"DescribeProjects",
@@ -436,7 +436,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Gets information about your Amazon Rekognition Custom Labels projects. </p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjects</code> action.</p>"
+      "documentation":"<p>Gets information about your Rekognition projects.</p> <p>This operation requires permissions to perform the <code>rekognition:DescribeProjects</code> action.</p>"
     },
     "DescribeStreamProcessor":{
       "name":"DescribeStreamProcessor",
@@ -477,7 +477,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidImageFormatException"}
       ],
-      "documentation":"<p>Detects custom labels in a supplied image by using an Amazon Rekognition Custom Labels model. </p> <p>You specify which version of a model version to use by using the <code>ProjectVersionArn</code> input parameter. </p> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> For each object that the model version detects on an image, the API returns a (<code>CustomLabel</code>) object in an array (<code>CustomLabels</code>). Each <code>CustomLabel</code> object provides the label name (<code>Name</code>), the level of confidence that the image contains the object (<code>Confidence</code>), and object location information, if it exists, for the label on the image (<code>Geometry</code>). </p> <p>To filter labels that are returned, specify a value for <code>MinConfidence</code>. <code>DetectCustomLabelsLabels</code> only returns labels with a confidence that's higher than the specified value. The value of <code>MinConfidence</code> maps to the assumed threshold values created during training. For more information, see <i>Assumed threshold</i> in the Amazon Rekognition Custom Labels Developer Guide. Amazon Rekognition Custom Labels metrics expresses an assumed threshold as a floating point value between 0-1. The range of <code>MinConfidence</code> normalizes the threshold value to a percentage value (0-100). Confidence responses from <code>DetectCustomLabels</code> are also returned as a percentage. You can use <code>MinConfidence</code> to change the precision and recall or your model. For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.</p> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectCustomLabels</code> action. </p> <p>For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Detects custom labels in a supplied image by using an Amazon Rekognition Custom Labels model. </p> <p>You specify which version of a model version to use by using the <code>ProjectVersionArn</code> input parameter. </p> <p>You pass the input image as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p> For each object that the model version detects on an image, the API returns a (<code>CustomLabel</code>) object in an array (<code>CustomLabels</code>). Each <code>CustomLabel</code> object provides the label name (<code>Name</code>), the level of confidence that the image contains the object (<code>Confidence</code>), and object location information, if it exists, for the label on the image (<code>Geometry</code>). </p> <p>To filter labels that are returned, specify a value for <code>MinConfidence</code>. <code>DetectCustomLabelsLabels</code> only returns labels with a confidence that's higher than the specified value. The value of <code>MinConfidence</code> maps to the assumed threshold values created during training. For more information, see <i>Assumed threshold</i> in the Amazon Rekognition Custom Labels Developer Guide. Amazon Rekognition Custom Labels metrics expresses an assumed threshold as a floating point value between 0-1. The range of <code>MinConfidence</code> normalizes the threshold value to a percentage value (0-100). Confidence responses from <code>DetectCustomLabels</code> are also returned as a percentage. You can use <code>MinConfidence</code> to change the precision and recall or your model. For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.</p> <p>This is a stateless API operation. That is, the operation does not persist any data.</p> <p>This operation requires permissions to perform the <code>rekognition:DetectCustomLabels</code> action. </p> <p>For more information, see <i>Analyzing an image</i> in the Amazon Rekognition Custom Labels Developer Guide. </p>"
     },
     "DetectFaces":{
       "name":"DetectFaces",
@@ -536,9 +536,11 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidImageFormatException"},
-        {"shape":"HumanLoopQuotaExceededException"}
+        {"shape":"HumanLoopQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p>Detects unsafe content in a specified JPEG or PNG format image. Use <code>DetectModerationLabels</code> to moderate images depending on your requirements. For example, you might want to filter images that contain nudity, but not images containing suggestive content.</p> <p>To filter images, use the labels returned by <code>DetectModerationLabels</code> to determine which types of content are appropriate.</p> <p>For information about moderation labels, see Detecting Unsafe Content in the Amazon Rekognition Developer Guide.</p> <p>You pass the input image either as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p>"
+      "documentation":"<p>Detects unsafe content in a specified JPEG or PNG format image. Use <code>DetectModerationLabels</code> to moderate images depending on your requirements. For example, you might want to filter images that contain nudity, but not images containing suggestive content.</p> <p>To filter images, use the labels returned by <code>DetectModerationLabels</code> to determine which types of content are appropriate.</p> <p>For information about moderation labels, see Detecting Unsafe Content in the Amazon Rekognition Developer Guide.</p> <p>You pass the input image either as base64-encoded image bytes or as a reference to an image in an Amazon S3 bucket. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. The image must be either a PNG or JPEG formatted file. </p> <p>You can specify an adapter to use when retrieving label predictions by providing a <code>ProjectVersionArn</code> to the <code>ProjectVersion</code> argument.</p>"
     },
     "DetectProtectiveEquipment":{
       "name":"DetectProtectiveEquipment",
@@ -617,7 +619,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p>Distributes the entries (images) in a training dataset across the training dataset and the test dataset for a project. <code>DistributeDatasetEntries</code> moves 20% of the training dataset images to the test dataset. An entry is a JSON Line that describes an image. </p> <p>You supply the Amazon Resource Names (ARN) of a project's training dataset and test dataset. The training dataset must contain the images that you want to split. The test dataset must be empty. The datasets must belong to the same project. To create training and test datasets for a project, call <a>CreateDataset</a>.</p> <p>Distributing a dataset takes a while to complete. To check the status call <code>DescribeDataset</code>. The operation is complete when the <code>Status</code> field for the training dataset and the test dataset is <code>UPDATE_COMPLETE</code>. If the dataset split fails, the value of <code>Status</code> is <code>UPDATE_FAILED</code>.</p> <p>This operation requires permissions to perform the <code>rekognition:DistributeDatasetEntries</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Distributes the entries (images) in a training dataset across the training dataset and the test dataset for a project. <code>DistributeDatasetEntries</code> moves 20% of the training dataset images to the test dataset. An entry is a JSON Line that describes an image. </p> <p>You supply the Amazon Resource Names (ARN) of a project's training dataset and test dataset. The training dataset must contain the images that you want to split. The test dataset must be empty. The datasets must belong to the same project. To create training and test datasets for a project, call <a>CreateDataset</a>.</p> <p>Distributing a dataset takes a while to complete. To check the status call <code>DescribeDataset</code>. The operation is complete when the <code>Status</code> field for the training dataset and the test dataset is <code>UPDATE_COMPLETE</code>. If the dataset split fails, the value of <code>Status</code> is <code>UPDATE_FAILED</code>.</p> <p>This operation requires permissions to perform the <code>rekognition:DistributeDatasetEntries</code> action.</p>"
     },
     "GetCelebrityInfo":{
       "name":"GetCelebrityInfo",
@@ -867,7 +869,7 @@
         {"shape":"InvalidPaginationTokenException"},
         {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p> Lists the entries (images) within a dataset. An entry is a JSON Line that contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-manifest-files.html\">Creating a manifest file</a>.</p> <p>JSON Lines in the response include information about non-terminal errors found in the dataset. Non terminal errors are reported in <code>errors</code> lists within each JSON Line. The same information is reported in the training and testing validation result manifests that Amazon Rekognition Custom Labels creates during model training. </p> <p>You can filter the response in variety of ways, such as choosing which labels to return and returning JSON Lines created after a specific date. </p> <p>This operation requires permissions to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p> Lists the entries (images) within a dataset. An entry is a JSON Line that contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-manifest-files.html\">Creating a manifest file</a>.</p> <p>JSON Lines in the response include information about non-terminal errors found in the dataset. Non terminal errors are reported in <code>errors</code> lists within each JSON Line. The same information is reported in the training and testing validation result manifests that Amazon Rekognition Custom Labels creates during model training. </p> <p>You can filter the response in variety of ways, such as choosing which labels to return and returning JSON Lines created after a specific date. </p> <p>This operation requires permissions to perform the <code>rekognition:ListDatasetEntries</code> action.</p>"
     },
     "ListDatasetLabels":{
       "name":"ListDatasetLabels",
@@ -888,7 +890,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceNotReadyException"}
       ],
-      "documentation":"<p>Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-labeling-images.html\">Labeling images</a>. </p> <p> Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see Labeling images in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see <a href=\"https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/md-labeling-images.html\">Labeling images</a>. </p> <p> Lists the labels in a dataset. Amazon Rekognition Custom Labels uses labels to describe images. For more information, see Labeling images in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>"
     },
     "ListFaces":{
       "name":"ListFaces",
@@ -926,7 +928,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"InvalidPaginationTokenException"}
       ],
-      "documentation":"<p>Gets a list of the project policies attached to a project.</p> <p>To attach a project policy to a project, call <a>PutProjectPolicy</a>. To remove a project policy from a project, call <a>DeleteProjectPolicy</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:ListProjectPolicies</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Gets a list of the project policies attached to a project.</p> <p>To attach a project policy to a project, call <a>PutProjectPolicy</a>. To remove a project policy from a project, call <a>DeleteProjectPolicy</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:ListProjectPolicies</code> action.</p>"
     },
     "ListStreamProcessors":{
       "name":"ListStreamProcessors",
@@ -1004,7 +1006,7 @@
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Attaches a project policy to a Amazon Rekognition Custom Labels project in a trusting AWS account. A project policy specifies that a trusted AWS account can copy a model version from a trusting AWS account to a project in the trusted AWS account. To copy a model version you use the <a>CopyProjectVersion</a> operation.</p> <p>For more information about the format of a project policy document, see Attaching a project policy (SDK) in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>The response from <code>PutProjectPolicy</code> is a revision ID for the project policy. You can attach multiple project policies to a project. You can also update an existing project policy by specifying the policy revision ID of the existing policy.</p> <p>To remove a project policy from a project, call <a>DeleteProjectPolicy</a>. To get a list of project policies attached to a project, call <a>ListProjectPolicies</a>. </p> <p>You copy a model version by calling <a>CopyProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:PutProjectPolicy</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Attaches a project policy to a Amazon Rekognition Custom Labels project in a trusting AWS account. A project policy specifies that a trusted AWS account can copy a model version from a trusting AWS account to a project in the trusted AWS account. To copy a model version you use the <a>CopyProjectVersion</a> operation. Only applies to Custom Labels projects.</p> <p>For more information about the format of a project policy document, see Attaching a project policy (SDK) in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>The response from <code>PutProjectPolicy</code> is a revision ID for the project policy. You can attach multiple project policies to a project. You can also update an existing project policy by specifying the policy revision ID of the existing policy.</p> <p>To remove a project policy from a project, call <a>DeleteProjectPolicy</a>. To get a list of project policies attached to a project, call <a>ListProjectPolicies</a>. </p> <p>You copy a model version by calling <a>CopyProjectVersion</a>.</p> <p>This operation requires permissions to perform the <code>rekognition:PutProjectPolicy</code> action.</p>"
     },
     "RecognizeCelebrities":{
       "name":"RecognizeCelebrities",
@@ -1256,7 +1258,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Starts the running of the version of a model. Starting a model takes a while to complete. To check the current state of the model, use <a>DescribeProjectVersions</a>.</p> <p>Once the model is running, you can detect custom labels in new images by calling <a>DetectCustomLabels</a>.</p> <note> <p>You are charged for the amount of time that the model is running. To stop a running model, call <a>StopProjectVersion</a>.</p> </note> <p>For more information, see <i>Running a trained Amazon Rekognition Custom Labels model</i> in the Amazon Rekognition Custom Labels Guide.</p> <p>This operation requires permissions to perform the <code>rekognition:StartProjectVersion</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Starts the running of the version of a model. Starting a model takes a while to complete. To check the current state of the model, use <a>DescribeProjectVersions</a>. </p> <p>Once the model is running, you can detect custom labels in new images by calling <a>DetectCustomLabels</a>.</p> <note> <p>You are charged for the amount of time that the model is running. To stop a running model, call <a>StopProjectVersion</a>.</p> </note> <p>This operation requires permissions to perform the <code>rekognition:StartProjectVersion</code> action.</p>"
     },
     "StartSegmentDetection":{
       "name":"StartSegmentDetection",
@@ -1338,7 +1340,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ProvisionedThroughputExceededException"}
       ],
-      "documentation":"<p>Stops a running model. The operation might take a while to complete. To check the current status, call <a>DescribeProjectVersions</a>. </p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Stops a running model. The operation might take a while to complete. To check the current status, call <a>DescribeProjectVersions</a>. Only applies to Custom Labels projects.</p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>"
     },
     "StopStreamProcessor":{
       "name":"StopStreamProcessor",
@@ -1414,7 +1416,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds or updates one or more entries (images) in a dataset. An entry is a JSON Line which contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see Image-Level labels in manifest files and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>If the <code>source-ref</code> field in the JSON line references an existing image, the existing image in the dataset is updated. If <code>source-ref</code> field doesn't reference an existing image, the image is added as a new image to the dataset. </p> <p>You specify the changes that you want to make in the <code>Changes</code> input parameter. There isn't a limit to the number JSON Lines that you can change, but the size of <code>Changes</code> must be less than 5MB.</p> <p> <code>UpdateDatasetEntries</code> returns immediatly, but the dataset update might take a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset updated successfully if the value of <code>Status</code> is <code>UPDATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occured, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset update fails if a terminal error occurs (<code>Status</code> = <code>UPDATE_FAILED</code>). Currently, you can't access the terminal error information from the Amazon Rekognition Custom Labels SDK. </p> <p>This operation requires permissions to perform the <code>rekognition:UpdateDatasetEntries</code> action.</p>"
+      "documentation":"<note> <p>This operation applies only to Amazon Rekognition Custom Labels.</p> </note> <p>Adds or updates one or more entries (images) in a dataset. An entry is a JSON Line which contains the information for a single image, including the image location, assigned labels, and object location bounding boxes. For more information, see Image-Level labels in manifest files and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p> <p>If the <code>source-ref</code> field in the JSON line references an existing image, the existing image in the dataset is updated. If <code>source-ref</code> field doesn't reference an existing image, the image is added as a new image to the dataset. </p> <p>You specify the changes that you want to make in the <code>Changes</code> input parameter. There isn't a limit to the number JSON Lines that you can change, but the size of <code>Changes</code> must be less than 5MB.</p> <p> <code>UpdateDatasetEntries</code> returns immediatly, but the dataset update might take a while to complete. Use <a>DescribeDataset</a> to check the current status. The dataset updated successfully if the value of <code>Status</code> is <code>UPDATE_COMPLETE</code>. </p> <p>To check if any non-terminal errors occured, call <a>ListDatasetEntries</a> and check for the presence of <code>errors</code> lists in the JSON Lines.</p> <p>Dataset update fails if a terminal error occurs (<code>Status</code> = <code>UPDATE_FAILED</code>). Currently, you can't access the terminal error information from the Amazon Rekognition Custom Labels SDK. </p> <p>This operation requires permissions to perform the <code>rekognition:UpdateDatasetEntries</code> action.</p>"
     },
     "UpdateStreamProcessor":{
       "name":"UpdateStreamProcessor",
@@ -2178,6 +2180,14 @@
         "ProjectName":{
           "shape":"ProjectName",
           "documentation":"<p>The name of the project to create.</p>"
+        },
+        "Feature":{
+          "shape":"CustomizationFeature",
+          "documentation":"<p>Specifies feature that is being customized. If no value is provided CUSTOM_LABELS is used as a default.</p>"
+        },
+        "AutoUpdate":{
+          "shape":"ProjectAutoUpdate",
+          "documentation":"<p>Specifies whether automatic retraining should be attempted for the versions of the project. Automatic retraining is done as a best effort. Required argument for Content Moderation. Applicable only to adapters.</p>"
         }
       }
     },
@@ -2200,31 +2210,39 @@
       "members":{
         "ProjectArn":{
           "shape":"ProjectArn",
-          "documentation":"<p>The ARN of the Amazon Rekognition Custom Labels project that manages the model that you want to train.</p>"
+          "documentation":"<p>The ARN of the Amazon Rekognition project that will manage the project version you want to train.</p>"
         },
         "VersionName":{
           "shape":"VersionName",
-          "documentation":"<p>A name for the version of the model. This value must be unique.</p>"
+          "documentation":"<p>A name for the version of the project version. This value must be unique.</p>"
         },
         "OutputConfig":{
           "shape":"OutputConfig",
-          "documentation":"<p>The Amazon S3 bucket location to store the results of training. The S3 bucket can be in any AWS account as long as the caller has <code>s3:PutObject</code> permissions on the S3 bucket.</p>"
+          "documentation":"<p>The Amazon S3 bucket location to store the results of training. The bucket can be any S3 bucket in your AWS account. You need <code>s3:PutObject</code> permission on the bucket. </p>"
         },
         "TrainingData":{
           "shape":"TrainingData",
-          "documentation":"<p>Specifies an external manifest that the services uses to train the model. If you specify <code>TrainingData</code> you must also specify <code>TestingData</code>. The project must not have any associated datasets. </p>"
+          "documentation":"<p>Specifies an external manifest that the services uses to train the project version. If you specify <code>TrainingData</code> you must also specify <code>TestingData</code>. The project must not have any associated datasets. </p>"
         },
         "TestingData":{
           "shape":"TestingData",
-          "documentation":"<p>Specifies an external manifest that the service uses to test the model. If you specify <code>TestingData</code> you must also specify <code>TrainingData</code>. The project must not have any associated datasets.</p>"
+          "documentation":"<p>Specifies an external manifest that the service uses to test the project version. If you specify <code>TestingData</code> you must also specify <code>TrainingData</code>. The project must not have any associated datasets.</p>"
         },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p> A set of tags (key-value pairs) that you want to attach to the model. </p>"
+          "documentation":"<p> A set of tags (key-value pairs) that you want to attach to the project version. </p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>"
+          "documentation":"<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training images, test images, and manifest files copied into the service for the project version. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>"
+        },
+        "VersionDescription":{
+          "shape":"VersionDescription",
+          "documentation":"<p>A description applied to the project version being created.</p>"
+        },
+        "FeatureConfig":{
+          "shape":"CustomizationFeatureConfig",
+          "documentation":"<p>Feature-specific configuration of the training job. If the job configuration does not match the feature type associated with the project, an InvalidParameterException is returned.</p>"
         }
       }
     },
@@ -2233,7 +2251,7 @@
       "members":{
         "ProjectVersionArn":{
           "shape":"ProjectVersionArn",
-          "documentation":"<p>The ARN of the model version that was created. Use <code>DescribeProjectVersion</code> to get the current status of the training operation.</p>"
+          "documentation":"<p>The ARN of the model or the project version that was created. Use <code>DescribeProjectVersion</code> to get the current status of the training operation.</p>"
         }
       }
     },
@@ -2343,6 +2361,39 @@
     "CustomLabels":{
       "type":"list",
       "member":{"shape":"CustomLabel"}
+    },
+    "CustomizationFeature":{
+      "type":"string",
+      "enum":[
+        "CONTENT_MODERATION",
+        "CUSTOM_LABELS"
+      ]
+    },
+    "CustomizationFeatureConfig":{
+      "type":"structure",
+      "members":{
+        "ContentModeration":{
+          "shape":"CustomizationFeatureContentModerationConfig",
+          "documentation":"<p>Configuration options for Custom Moderation training.</p>"
+        }
+      },
+      "documentation":"<p>Feature specific configuration for the training job. Configuration provided for the job must match the feature type parameter associated with project. If configuration and feature type do not match an InvalidParameterException is returned.</p>"
+    },
+    "CustomizationFeatureContentModerationConfig":{
+      "type":"structure",
+      "members":{
+        "ConfidenceThreshold":{
+          "shape":"Percent",
+          "documentation":"<p>The confidence level you plan to use to identify if unsafe content is present during inference.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for Content Moderation training.</p>"
+    },
+    "CustomizationFeatures":{
+      "type":"list",
+      "member":{"shape":"CustomizationFeature"},
+      "max":2,
+      "min":1
     },
     "DatasetArn":{
       "type":"string",
@@ -2660,7 +2711,7 @@
       "members":{
         "ProjectVersionArn":{
           "shape":"ProjectVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model version that you want to delete.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project version that you want to delete.</p>"
         }
       }
     },
@@ -2775,15 +2826,15 @@
       "members":{
         "ProjectArn":{
           "shape":"ProjectArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the project that contains the models you want to describe.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project that contains the model/adapter you want to describe.</p>"
         },
         "VersionNames":{
           "shape":"VersionNames",
-          "documentation":"<p>A list of model version names that you want to describe. You can add up to 10 model version names to the list. If you don't specify a value, all model descriptions are returned. A version name is part of a model (ProjectVersion) ARN. For example, <code>my-model.2020-01-21T09.10.15</code> is the version name in the following ARN. <code>arn:aws:rekognition:us-east-1:123456789012:project/getting-started/version/<i>my-model.2020-01-21T09.10.15</i>/1234567890123</code>.</p>"
+          "documentation":"<p>A list of model or project version names that you want to describe. You can add up to 10 model or project version names to the list. If you don't specify a value, all project version descriptions are returned. A version name is part of a project version ARN. For example, <code>my-model.2020-01-21T09.10.15</code> is the version name in the following ARN. <code>arn:aws:rekognition:us-east-1:123456789012:project/getting-started/version/<i>my-model.2020-01-21T09.10.15</i>/1234567890123</code>.</p>"
         },
         "NextToken":{
           "shape":"ExtendedPaginationToken",
-          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
         },
         "MaxResults":{
           "shape":"ProjectVersionsPageSize",
@@ -2796,11 +2847,11 @@
       "members":{
         "ProjectVersionDescriptions":{
           "shape":"ProjectVersionDescriptions",
-          "documentation":"<p>A list of model descriptions. The list is sorted by the creation date and time of the model versions, latest to earliest.</p>"
+          "documentation":"<p>A list of project version descriptions. The list is sorted by the creation date and time of the project versions, latest to earliest.</p>"
         },
         "NextToken":{
           "shape":"ExtendedPaginationToken",
-          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
         }
       }
     },
@@ -2809,7 +2860,7 @@
       "members":{
         "NextToken":{
           "shape":"ExtendedPaginationToken",
-          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
         },
         "MaxResults":{
           "shape":"ProjectsPageSize",
@@ -2817,7 +2868,11 @@
         },
         "ProjectNames":{
           "shape":"ProjectNames",
-          "documentation":"<p>A list of the projects that you want Amazon Rekognition Custom Labels to describe. If you don't specify a value, the response includes descriptions for all the projects in your AWS account.</p>"
+          "documentation":"<p>A list of the projects that you want Rekognition to describe. If you don't specify a value, the response includes descriptions for all the projects in your AWS account.</p>"
+        },
+        "Features":{
+          "shape":"CustomizationFeatures",
+          "documentation":"<p>Specifies the type of customization to filter projects by. If no value is specified, CUSTOM_LABELS is used as a default.</p>"
         }
       }
     },
@@ -2830,7 +2885,7 @@
         },
         "NextToken":{
           "shape":"ExtendedPaginationToken",
-          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
+          "documentation":"<p>If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. </p>"
         }
       }
     },
@@ -2911,7 +2966,7 @@
       "members":{
         "ProjectVersionArn":{
           "shape":"ProjectVersionArn",
-          "documentation":"<p>The ARN of the model version that you want to use.</p>"
+          "documentation":"<p>The ARN of the model version that you want to use. Only models associated with Custom Labels projects accepted by the operation. If a provided ARN refers to a model version associated with a project for a different feature type, then an InvalidParameterException is returned.</p>"
         },
         "Image":{"shape":"Image"},
         "MaxResults":{
@@ -3132,6 +3187,10 @@
         "HumanLoopConfig":{
           "shape":"HumanLoopConfig",
           "documentation":"<p>Sets up the configuration for human evaluation, including the FlowDefinition the image will be sent to.</p>"
+        },
+        "ProjectVersion":{
+          "shape":"ProjectVersionId",
+          "documentation":"<p>Identifier for the custom adapter. Expects the ProjectVersionArn as a value. Use the CreateProject or CreateProjectVersion APIs to create a custom adapter.</p>"
         }
       }
     },
@@ -3144,11 +3203,15 @@
         },
         "ModerationModelVersion":{
           "shape":"String",
-          "documentation":"<p>Version number of the moderation detection model that was used to detect unsafe content.</p>"
+          "documentation":"<p>Version number of the base moderation detection model that was used to detect unsafe content.</p>"
         },
         "HumanLoopActivationOutput":{
           "shape":"HumanLoopActivationOutput",
           "documentation":"<p>Shows the results of the human in the loop evaluation.</p>"
+        },
+        "ProjectVersion":{
+          "shape":"ProjectVersionId",
+          "documentation":"<p>Identifier of the custom adapter that was used during inference. If during inference the adapter was EXPIRED, then the parameter will not be returned, indicating that a base moderation detection project version was used.</p>"
         }
       }
     },
@@ -4912,7 +4975,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>An Amazon Rekognition service limit was exceeded. For example, if you start too many Amazon Rekognition Video jobs concurrently, calls to start operations (<code>StartLabelDetection</code>, for example) will raise a <code>LimitExceededException</code> exception (HTTP status code: 400) until the number of concurrently running jobs is below the Amazon Rekognition service limit. </p>",
+      "documentation":"<p>An Amazon Rekognition service limit was exceeded. For example, if you start too many jobs concurrently, subsequent calls to start operations (ex: <code>StartLabelDetection</code>) will raise a <code>LimitExceededException</code> exception (HTTP status code: 400) until the number of concurrently running jobs is below the Amazon Rekognition service limit. </p>",
       "exception":true
     },
     "ListCollectionsRequest":{
@@ -5511,6 +5574,13 @@
       "min":20,
       "pattern":"(^arn:[a-z\\d-]+:rekognition:[a-z\\d-]+:\\d{12}:project\\/[a-zA-Z0-9_.\\-]{1,255}\\/[0-9]+$)"
     },
+    "ProjectAutoUpdate":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ProjectDescription":{
       "type":"structure",
       "members":{
@@ -5529,6 +5599,14 @@
         "Datasets":{
           "shape":"DatasetMetadataList",
           "documentation":"<p> Information about the training and test datasets in the project. </p>"
+        },
+        "Feature":{
+          "shape":"CustomizationFeature",
+          "documentation":"<p>Specifies the project that is being customized.</p>"
+        },
+        "AutoUpdate":{
+          "shape":"ProjectAutoUpdate",
+          "documentation":"<p>Indicates whether automatic retraining will be attempted for the versions of the project. Applies only to adapters. </p>"
         }
       },
       "documentation":"<p>A description of an Amazon Rekognition Custom Labels project. For more information, see <a>DescribeProjects</a>.</p>"
@@ -5619,7 +5697,7 @@
       "members":{
         "ProjectVersionArn":{
           "shape":"ProjectVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model version. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project version. </p>"
         },
         "CreationTimestamp":{
           "shape":"DateTime",
@@ -5627,7 +5705,7 @@
         },
         "MinInferenceUnits":{
           "shape":"InferenceUnits",
-          "documentation":"<p>The minimum number of inference units used by the model. For more information, see <a>StartProjectVersion</a>.</p>"
+          "documentation":"<p>The minimum number of inference units used by the model. Applies only to Custom Labels projects. For more information, see <a>StartProjectVersion</a>.</p>"
         },
         "Status":{
           "shape":"ProjectVersionStatus",
@@ -5671,18 +5749,40 @@
         },
         "MaxInferenceUnits":{
           "shape":"InferenceUnits",
-          "documentation":"<p>The maximum number of inference units Amazon Rekognition Custom Labels uses to auto-scale the model. For more information, see <a>StartProjectVersion</a>.</p>"
+          "documentation":"<p>The maximum number of inference units Amazon Rekognition uses to auto-scale the model. Applies only to Custom Labels projects. For more information, see <a>StartProjectVersion</a>.</p>"
         },
         "SourceProjectVersionArn":{
           "shape":"ProjectVersionArn",
           "documentation":"<p>If the model version was copied from a different project, <code>SourceProjectVersionArn</code> contains the ARN of the source model version. </p>"
+        },
+        "VersionDescription":{
+          "shape":"VersionDescription",
+          "documentation":"<p>A user-provided description of the project version.</p>"
+        },
+        "Feature":{
+          "shape":"CustomizationFeature",
+          "documentation":"<p>The feature that was customized.</p>"
+        },
+        "BaseModelVersion":{
+          "shape":"String",
+          "documentation":"<p>The base detection model version used to create the project version.</p>"
+        },
+        "FeatureConfig":{
+          "shape":"CustomizationFeatureConfig",
+          "documentation":"<p>Feature specific configuration that was applied during training.</p>"
         }
       },
-      "documentation":"<p>A description of a version of an Amazon Rekognition Custom Labels model.</p>"
+      "documentation":"<p>A description of a version of a Amazon Rekognition project version.</p>"
     },
     "ProjectVersionDescriptions":{
       "type":"list",
       "member":{"shape":"ProjectVersionDescription"}
+    },
+    "ProjectVersionId":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"(^arn:[a-z\\d-]+:rekognition:[a-z\\d-]+:\\d{12}:project\\/[a-zA-Z0-9_.\\-]{1,255}\\/version\\/[a-zA-Z0-9_.\\-]{1,255}\\/[0-9]+$)"
     },
     "ProjectVersionStatus":{
       "type":"string",
@@ -5698,7 +5798,9 @@
         "DELETING",
         "COPYING_IN_PROGRESS",
         "COPYING_COMPLETED",
-        "COPYING_FAILED"
+        "COPYING_FAILED",
+        "DEPRECATED",
+        "EXPIRED"
       ]
     },
     "ProjectVersionsPageSize":{
@@ -6603,7 +6705,7 @@
         },
         "MinInferenceUnits":{
           "shape":"InferenceUnits",
-          "documentation":"<p>The minimum number of inference units to use. A single inference unit represents 1 hour of processing. </p> <p>For information about the number of transactions per second (TPS) that an inference unit can support, see <i>Running a trained Amazon Rekognition Custom Labels model</i> in the Amazon Rekognition Custom Labels Guide. </p> <p>Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. </p>"
+          "documentation":"<p>The minimum number of inference units to use. A single inference unit represents 1 hour of processing. </p> <p>Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. </p>"
         },
         "MaxInferenceUnits":{
           "shape":"InferenceUnits",
@@ -6775,7 +6877,7 @@
       "members":{
         "ProjectVersionArn":{
           "shape":"ProjectVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model version that you want to delete.</p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model version that you want to stop.</p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>"
         }
       }
     },
@@ -7044,10 +7146,10 @@
         },
         "AutoCreate":{
           "shape":"Boolean",
-          "documentation":"<p>If specified, Amazon Rekognition Custom Labels temporarily splits the training dataset (80%) to create a test dataset (20%) for the training job. After training completes, the test dataset is not stored and the training dataset reverts to its previous size.</p>"
+          "documentation":"<p>If specified, Rekognition splits training dataset to create a test dataset for the training job.</p>"
         }
       },
-      "documentation":"<p>The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition Custom Labels uses the training dataset to create a test dataset with a temporary split of the training dataset. </p>"
+      "documentation":"<p>The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition uses the training dataset to create a test dataset with a temporary split of the training dataset. </p>"
     },
     "TestingDataResult":{
       "type":"structure",
@@ -7141,7 +7243,7 @@
       "members":{
         "Assets":{
           "shape":"Assets",
-          "documentation":"<p>A Sagemaker GroundTruth manifest file that contains the training images (assets).</p>"
+          "documentation":"<p>A manifest file that contains references to the training images and ground-truth annotations.</p>"
         }
       },
       "documentation":"<p>The dataset used for training.</p>"
@@ -7151,18 +7253,18 @@
       "members":{
         "Input":{
           "shape":"TrainingData",
-          "documentation":"<p>The training assets that you supplied for training.</p>"
+          "documentation":"<p>The training data that you supplied.</p>"
         },
         "Output":{
           "shape":"TrainingData",
-          "documentation":"<p>The images (assets) that were actually trained by Amazon Rekognition Custom Labels. </p>"
+          "documentation":"<p>Reference to images (assets) that were actually used during training with trained model predictions.</p>"
         },
         "Validation":{
           "shape":"ValidationData",
-          "documentation":"<p>The location of the data validation manifest. The data validation manifest is created for the training dataset during model training.</p>"
+          "documentation":"<p>A manifest that you supplied for training, with validation results for each line.</p>"
         }
       },
-      "documentation":"<p>Sagemaker Groundtruth format manifest files for the input, output and validation datasets that are used and created during testing.</p>"
+      "documentation":"<p>The data validation manifest created for the training dataset during model training.</p>"
     },
     "UInteger":{
       "type":"integer",
@@ -7482,6 +7584,12 @@
         }
       },
       "documentation":"<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON Lines in the dataset. For more information, see <i>Debugging a Failed Model Training</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>"
+    },
+    "VersionDescription":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_. ()':,;?]+"
     },
     "VersionName":{
       "type":"string",

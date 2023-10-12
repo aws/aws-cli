@@ -4251,6 +4251,10 @@
         "DBSystemId":{
           "shape":"String",
           "documentation":"<p>The Oracle system identifier (SID), which is the name of the Oracle database instance that manages your database files. In this context, the term \"Oracle database instance\" refers exclusively to the system global area (SGA) and Oracle background processes. If you don't specify a SID, the value defaults to <code>RDSCDB</code>. The Oracle SID is also the name of your CDB.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       },
       "documentation":"<p/>"
@@ -4423,6 +4427,10 @@
         "SourceDBClusterIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the Multi-AZ DB cluster that will act as the source for the read replica. Each DB cluster can have up to 15 read replicas.</p> <p>Constraints:</p> <ul> <li> <p>Must be the identifier of an existing Multi-AZ DB cluster.</p> </li> <li> <p>Can't be specified if the <code>SourceDBInstanceIdentifier</code> parameter is also specified.</p> </li> <li> <p>The specified DB cluster must have automatic backups enabled, that is, its backup retention period must be greater than 0.</p> </li> <li> <p>The source DB cluster must be in the same Amazon Web Services Region as the read replica. Cross-Region replication isn't supported.</p> </li> </ul>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       }
     },
@@ -6411,6 +6419,10 @@
         "PercentProgress":{
           "shape":"String",
           "documentation":"<p>The progress of the storage optimization operation as a percentage.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -6546,6 +6558,10 @@
         "AwsBackupRecoveryPointArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       },
       "documentation":"<p>An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.</p>",
@@ -7492,6 +7508,10 @@
         "DBSystemId":{
           "shape":"String",
           "documentation":"<p>The Oracle system identifier (SID), which is the name of the Oracle database instance that manages your database files. The Oracle SID is also the name of your CDB.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB snapshot.</p> <p>This data type is used as a response element in the <code>DescribeDBSnapshots</code> action.</p>",
@@ -11150,6 +11170,10 @@
         "Engine":{
           "shape":"String",
           "documentation":"<p>The target Oracle DB engine when you convert a non-CDB to a CDB. This intermediate step is necessary to upgrade an Oracle Database 19c non-CDB to an Oracle Database 21c CDB.</p> <p>Note the following requirements:</p> <ul> <li> <p>Make sure that you specify <code>oracle-ee-cdb</code> or <code>oracle-se2-cdb</code>.</p> </li> <li> <p>Make sure that your DB engine runs Oracle Database 19c with an April 2021 or later RU.</p> </li> </ul> <p>Note the following limitations:</p> <ul> <li> <p>You can't convert a CDB to a non-CDB.</p> </li> <li> <p>You can't convert a replica database.</p> </li> <li> <p>You can't convert a non-CDB to a CDB and upgrade the engine version in the same command.</p> </li> <li> <p>You can't convert the existing custom parameter or option group when it has options or parameters that are permanent or persistent. In this situation, the DB instance reverts to the default option and parameter group. To avoid reverting to the default, specify a new parameter group with <code>--db-parameter-group-name</code> and a new option group with <code>--option-group-name</code>.</p> </li> </ul>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12066,6 +12090,10 @@
         "MaxStorageThroughputPerIops":{
           "shape":"DoubleOptional",
           "documentation":"<p>Maximum storage throughput to provisioned IOPS ratio for a DB instance.</p>"
+        },
+        "SupportsDedicatedLogVolume":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a DB instance supports using a dedicated log volume (DLV).</p>"
         }
       },
       "documentation":"<p>Contains a list of available options for a DB instance.</p> <p>This data type is used as a response element in the <code>DescribeOrderableDBInstanceOptions</code> action.</p>",
@@ -12310,6 +12338,10 @@
         "Engine":{
           "shape":"String",
           "documentation":"<p>The database engine of the DB instance.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.&gt;</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBInstance</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -13510,6 +13542,10 @@
         "AllocatedStorage":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -13723,6 +13759,10 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
         }
       }
     },
@@ -13904,6 +13944,10 @@
         "AllocatedStorage":{
           "shape":"IntegerOptional",
           "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+        },
+        "DedicatedLogVolume":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -14924,6 +14968,10 @@
         "ValidProcessorFeatures":{
           "shape":"AvailableProcessorFeatureList",
           "documentation":"<p>Valid processor features for your DB instance.</p>"
+        },
+        "SupportsDedicatedLogVolume":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a DB instance supports using a dedicated log volume (DLV).</p>"
         }
       },
       "documentation":"<p>Information about valid modifications that you can make to your DB instance. Contains the result of a successful call to the <code>DescribeValidDBInstanceModifications</code> action. You can use this information when you call <code>ModifyDBInstance</code>.</p>",

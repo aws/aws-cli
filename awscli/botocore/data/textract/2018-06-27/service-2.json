@@ -76,6 +76,97 @@
       ],
       "documentation":"<p>Analyzes identity documents for relevant information. This information is extracted and returned as <code>IdentityDocumentFields</code>, which records both the normalized field and value of the extracted text. Unlike other Amazon Textract operations, <code>AnalyzeID</code> doesn't return any Geometry data.</p>"
     },
+    "CreateAdapter":{
+      "name":"CreateAdapter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAdapterRequest"},
+      "output":{"shape":"CreateAdapterResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an adapter, which can be fine-tuned for enhanced performance on user provided documents. Takes an AdapterName and FeatureType. Currently the only supported feature type is <code>QUERIES</code>. You can also provide a Description, Tags, and a ClientRequestToken. You can choose whether or not the adapter should be AutoUpdated with the AutoUpdate argument. By default, AutoUpdate is set to DISABLED.</p>",
+      "idempotent":true
+    },
+    "CreateAdapterVersion":{
+      "name":"CreateAdapterVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAdapterVersionRequest"},
+      "output":{"shape":"CreateAdapterVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidS3ObjectException"},
+        {"shape":"InvalidKMSKeyException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a new version of an adapter. Operates on a provided AdapterId and a specified dataset provided via the DatasetConfig argument. Requires that you specify an Amazon S3 bucket with the OutputConfig argument. You can provide an optional KMSKeyId, an optional ClientRequestToken, and optional tags.</p>",
+      "idempotent":true
+    },
+    "DeleteAdapter":{
+      "name":"DeleteAdapter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAdapterRequest"},
+      "output":{"shape":"DeleteAdapterResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Textract adapter. Takes an AdapterId and deletes the adapter specified by the ID.</p>",
+      "idempotent":true
+    },
+    "DeleteAdapterVersion":{
+      "name":"DeleteAdapterVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAdapterVersionRequest"},
+      "output":{"shape":"DeleteAdapterVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Textract adapter version. Requires that you specify both an AdapterId and a AdapterVersion. Deletes the adapter version specified by the AdapterId and the AdapterVersion.</p>",
+      "idempotent":true
+    },
     "DetectDocumentText":{
       "name":"DetectDocumentText",
       "http":{
@@ -96,6 +187,44 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Detects text in the input document. Amazon Textract can detect lines of text and the words that make up a line of text. The input document must be in one of the following image formats: JPEG, PNG, PDF, or TIFF. <code>DetectDocumentText</code> returns the detected text in an array of <a>Block</a> objects. </p> <p>Each document page has as an associated <code>Block</code> of type PAGE. Each PAGE <code>Block</code> object is the parent of LINE <code>Block</code> objects that represent the lines of detected text on a page. A LINE <code>Block</code> object is a parent for each word that makes up the line. Words are represented by <code>Block</code> objects of type WORD.</p> <p> <code>DetectDocumentText</code> is a synchronous operation. To analyze documents asynchronously, use <a>StartDocumentTextDetection</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/how-it-works-detecting.html\">Document Text Detection</a>.</p>"
+    },
+    "GetAdapter":{
+      "name":"GetAdapter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAdapterRequest"},
+      "output":{"shape":"GetAdapterResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets configuration information for an adapter specified by an AdapterId, returning information on AdapterName, Description, CreationTime, AutoUpdate status, and FeatureTypes.</p>"
+    },
+    "GetAdapterVersion":{
+      "name":"GetAdapterVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAdapterVersionRequest"},
+      "output":{"shape":"GetAdapterVersionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets configuration information for the specified adapter version, including: AdapterId, AdapterVersion, FeatureTypes, Status, StatusMessage, DatasetConfig, KMSKeyId, OutputConfig, Tags and EvaluationMetrics.</p>"
     },
     "GetDocumentAnalysis":{
       "name":"GetDocumentAnalysis",
@@ -197,6 +326,62 @@
       ],
       "documentation":"<p>Gets summarized results for the <code>StartLendingAnalysis</code> operation, which analyzes text in a lending document. The returned summary consists of information about documents grouped together by a common document type. Information like detected signatures, page numbers, and split documents is returned with respect to the type of grouped document. </p> <p>You start asynchronous text analysis by calling <code>StartLendingAnalysis</code>, which returns a job identifier (<code>JobId</code>). When the text analysis operation finishes, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that's registered in the initial call to <code>StartLendingAnalysis</code>. </p> <p>To get the results of the text analysis operation, first check that the status value published to the Amazon SNS topic is SUCCEEDED. If so, call <code>GetLendingAnalysisSummary</code>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartLendingAnalysis</code>.</p>"
     },
+    "ListAdapterVersions":{
+      "name":"ListAdapterVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAdapterVersionsRequest"},
+      "output":{"shape":"ListAdapterVersionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>List all version of an adapter that meet the specified filtration criteria.</p>"
+    },
+    "ListAdapters":{
+      "name":"ListAdapters",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAdaptersRequest"},
+      "output":{"shape":"ListAdaptersResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all adapters that match the specified filtration criteria.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists all tags for an Amazon Textract resource.</p>"
+    },
     "StartDocumentAnalysis":{
       "name":"StartDocumentAnalysis",
       "http":{
@@ -292,6 +477,65 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Starts the classification and analysis of an input document. <code>StartLendingAnalysis</code> initiates the classification and analysis of a packet of lending documents. <code>StartLendingAnalysis</code> operates on a document file located in an Amazon S3 bucket.</p> <p> <code>StartLendingAnalysis</code> can analyze text in documents that are in one of the following formats: JPEG, PNG, TIFF, PDF. Use <code>DocumentLocation</code> to specify the bucket name and the file name of the document. </p> <p> <code>StartLendingAnalysis</code> returns a job identifier (<code>JobId</code>) that you use to get the results of the operation. When the text analysis is finished, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that you specify in <code>NotificationChannel</code>. To get the results of the text analysis operation, first check that the status value published to the Amazon SNS topic is SUCCEEDED. If the status is SUCCEEDED you can call either <code>GetLendingAnalysis</code> or <code>GetLendingAnalysisSummary</code> and provide the <code>JobId</code> to obtain the results of the analysis.</p> <p>If using <code>OutputConfig</code> to specify an Amazon S3 bucket, the output will be contained within the specified prefix in a directory labeled with the job-id. In the directory there are 3 sub-directories: </p> <ul> <li> <p>detailedResponse (contains the GetLendingAnalysis response)</p> </li> <li> <p>summaryResponse (for the GetLendingAnalysisSummary response)</p> </li> <li> <p>splitDocuments (documents split across logical boundaries)</p> </li> </ul>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Adds one or more tags to the specified resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes any tags with the specified keys from the specified resource.</p>"
+    },
+    "UpdateAdapter":{
+      "name":"UpdateAdapter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAdapterRequest"},
+      "output":{"shape":"UpdateAdapterResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Update the configuration for an adapter. FeatureTypes configurations cannot be updated. At least one new parameter must be specified as an argument.</p>"
     }
   },
   "shapes":{
@@ -301,6 +545,188 @@
       },
       "documentation":"<p>You aren't authorized to perform the action. Use the Amazon Resource Name (ARN) of an authorized user or IAM role to perform the operation.</p>",
       "exception":true
+    },
+    "Adapter":{
+      "type":"structure",
+      "required":[
+        "AdapterId",
+        "Version"
+      ],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A unique identifier for the adapter resource.</p>"
+        },
+        "Pages":{
+          "shape":"AdapterPages",
+          "documentation":"<p>Pages is a parameter that the user inputs to specify which pages to apply an adapter to. The following is a list of rules for using this parameter.</p> <ul> <li> <p>If a page is not specified, it is set to <code>[\"1\"]</code> by default.</p> </li> <li> <p>The following characters are allowed in the parameter's string: <code>0 1 2 3 4 5 6 7 8 9 - *</code>. No whitespace is allowed.</p> </li> <li> <p>When using * to indicate all pages, it must be the only element in the list.</p> </li> <li> <p>You can use page intervals, such as <code>[\"1-3\", \"1-1\", \"4-*\"]</code>. Where <code>*</code> indicates last page of document.</p> </li> <li> <p>Specified pages must be greater than 0 and less than or equal to the number of pages in the document.</p> </li> </ul>"
+        },
+        "Version":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>A string that identifies the version of the adapter.</p>"
+        }
+      },
+      "documentation":"<p>An adapter selected for use when analyzing documents. Contains an adapter ID and a version number. Contains information on pages selected for analysis when analyzing documents asychronously.</p>"
+    },
+    "AdapterDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><]+$"
+    },
+    "AdapterId":{
+      "type":"string",
+      "max":1011,
+      "min":12
+    },
+    "AdapterList":{
+      "type":"list",
+      "member":{"shape":"AdapterOverview"}
+    },
+    "AdapterName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "AdapterOverview":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A unique identifier for the adapter resource.</p>"
+        },
+        "AdapterName":{
+          "shape":"AdapterName",
+          "documentation":"<p>A string naming the adapter resource.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the adapter was created.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>The feature types that the adapter is operating on.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on the adapter, including the adapter ID, Name, Creation time, and feature types.</p>"
+    },
+    "AdapterPage":{
+      "type":"string",
+      "max":9,
+      "min":1,
+      "pattern":"^[0-9\\*\\-]+$"
+    },
+    "AdapterPages":{
+      "type":"list",
+      "member":{"shape":"AdapterPage"},
+      "min":1
+    },
+    "AdapterVersion":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "AdapterVersionDatasetConfig":{
+      "type":"structure",
+      "members":{
+        "ManifestS3Object":{"shape":"S3Object"}
+      },
+      "documentation":"<p>The dataset configuration options for a given version of an adapter. Can include an Amazon S3 bucket if specified.</p>"
+    },
+    "AdapterVersionEvaluationMetric":{
+      "type":"structure",
+      "members":{
+        "Baseline":{
+          "shape":"EvaluationMetric",
+          "documentation":"<p>The F1 score, precision, and recall metrics for the baseline model.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"EvaluationMetric",
+          "documentation":"<p>The F1 score, precision, and recall metrics for the baseline model.</p>"
+        },
+        "FeatureType":{
+          "shape":"FeatureType",
+          "documentation":"<p>Indicates the feature type being analyzed by a given adapter version.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on the metrics used to evalute the peformance of a given adapter version. Includes data for baseline model performance and individual adapter version perfromance.</p>"
+    },
+    "AdapterVersionEvaluationMetrics":{
+      "type":"list",
+      "member":{"shape":"AdapterVersionEvaluationMetric"}
+    },
+    "AdapterVersionList":{
+      "type":"list",
+      "member":{"shape":"AdapterVersionOverview"}
+    },
+    "AdapterVersionOverview":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A unique identifier for the adapter associated with a given adapter version.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>An identified for a given adapter version.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that a given adapter version was created.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>The feature types that the adapter version is operating on.</p>"
+        },
+        "Status":{
+          "shape":"AdapterVersionStatus",
+          "documentation":"<p>Contains information on the status of a given adapter version.</p>"
+        },
+        "StatusMessage":{
+          "shape":"AdapterVersionStatusMessage",
+          "documentation":"<p>A message explaining the status of a given adapter vesion.</p>"
+        }
+      },
+      "documentation":"<p>Summary info for an adapter version. Contains information on the AdapterId, AdapterVersion, CreationTime, FeatureTypes, and Status.</p>"
+    },
+    "AdapterVersionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "AT_RISK",
+        "DEPRECATED",
+        "CREATION_ERROR",
+        "CREATION_IN_PROGRESS"
+      ]
+    },
+    "AdapterVersionStatusMessage":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><]+$"
+    },
+    "Adapters":{
+      "type":"list",
+      "member":{"shape":"Adapter"},
+      "max":100,
+      "min":1
+    },
+    "AdaptersConfig":{
+      "type":"structure",
+      "required":["Adapters"],
+      "members":{
+        "Adapters":{
+          "shape":"Adapters",
+          "documentation":"<p>A list of adapters to be used when analyzing the specified document.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about adapters used when analyzing a document, with each adapter specified using an AdapterId and version</p>"
+    },
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1
     },
     "AnalyzeDocumentRequest":{
       "type":"structure",
@@ -315,7 +741,7 @@
         },
         "FeatureTypes":{
           "shape":"FeatureTypes",
-          "documentation":"<p>A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. Add SIGNATURES to return the locations of detected signatures. Add LAYOUT to the list to return information about the layout of the document. To perform both forms and table analysis, add TABLES and FORMS to <code>FeatureTypes</code>. To detect signatures within the document and within form data and table data, add SIGNATURES to either TABLES or FORMS. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). </p>"
+          "documentation":"<p>A list of the types of analysis to perform. Add TABLES to the list to return information about the tables that are detected in the input document. Add FORMS to return detected form data. Add SIGNATURES to return the locations of detected signatures. Add LAYOUT to the list to return information about the layout of the document. All lines and words detected in the document are included in the response (including text that isn't related to the value of <code>FeatureTypes</code>). </p>"
         },
         "HumanLoopConfig":{
           "shape":"HumanLoopConfig",
@@ -324,6 +750,10 @@
         "QueriesConfig":{
           "shape":"QueriesConfig",
           "documentation":"<p>Contains Queries and the alias for those Queries, as determined by the input. </p>"
+        },
+        "AdaptersConfig":{
+          "shape":"AdaptersConfig",
+          "documentation":"<p>Specifies the adapter to be used when analyzing a document.</p>"
         }
       }
     },
@@ -408,6 +838,13 @@
         }
       }
     },
+    "AutoUpdate":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "BadDocumentException":{
       "type":"structure",
       "members":{
@@ -420,7 +857,7 @@
       "members":{
         "BlockType":{
           "shape":"BlockType",
-          "documentation":"<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidence score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul>"
+          "documentation":"<p>The type of text item that's recognized. In operations for text detection, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of the LINE <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>WORD</i> - A word detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> </ul> <p>In text analysis operations, the following types are returned:</p> <ul> <li> <p> <i>PAGE</i> - Contains a list of child <code>Block</code> objects that are detected on a document page.</p> </li> <li> <p> <i>KEY_VALUE_SET</i> - Stores the KEY and VALUE <code>Block</code> objects for linked text that's detected on a document page. Use the <code>EntityType</code> field to determine if a KEY_VALUE_SET object is a KEY <code>Block</code> object or a VALUE <code>Block</code> object. </p> </li> <li> <p> <i>WORD</i> - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.</p> </li> <li> <p> <i>LINE</i> - A string of tab-delimited, contiguous words that are detected on a document page.</p> </li> <li> <p> <i>TABLE</i> - A table that's detected on a document page. A table is grid-based information with two or more rows or columns, with a cell span of one row and one column each. </p> </li> <li> <p> <i>TABLE_TITLE</i> - The title of a table. A title is typically a line of text above or below a table, or embedded as the first row of a table. </p> </li> <li> <p> <i>TABLE_FOOTER</i> - The footer associated with a table. A footer is typically a line or lines of text below a table or embedded as the last row of a table. </p> </li> <li> <p> <i>CELL</i> - A cell within a detected table. The cell is the parent of the block that contains the text in the cell.</p> </li> <li> <p> <i>MERGED_CELL</i> - A cell in a table whose content spans more than one row or column. The <code>Relationships</code> array for this cell contain data from individual cells.</p> </li> <li> <p> <i>SELECTION_ELEMENT</i> - A selection element such as an option button (radio button) or a check box that's detected on a document page. Use the value of <code>SelectionStatus</code> to determine the status of the selection element.</p> </li> <li> <p> <i>SIGNATURE</i> - The location and confidence score of a signature detected on a document page. Can be returned as part of a Key-Value pair or a detected cell.</p> </li> <li> <p> <i>QUERY</i> - A question asked during the call of AnalyzeDocument. Contains an alias and an ID that attaches it to its answer.</p> </li> <li> <p> <i>QUERY_RESULT</i> - A response to a question asked during the call of analyze document. Comes with an alias and ID for ease of locating in a response. Also contains location and confidence score.</p> </li> </ul> <p>The following BlockTypes are only returned for Amazon Textract Layout.</p> <ul> <li> <p> <code>LAYOUT_TITLE</code> - The main title of the document.</p> </li> <li> <p> <code>LAYOUT_HEADER</code> - Text located in the top margin of the document.</p> </li> <li> <p> <code>LAYOUT_FOOTER</code> - Text located in the bottom margin of the document.</p> </li> <li> <p> <code>LAYOUT_SECTION_HEADER</code> - The titles of sections within a document.</p> </li> <li> <p> <code>LAYOUT_PAGE_NUMBER</code> - The page number of the documents.</p> </li> <li> <p> <code>LAYOUT_LIST</code> - Any information grouped together in list form. </p> </li> <li> <p> <code>LAYOUT_FIGURE</code> - Indicates the location of an image in a document.</p> </li> <li> <p> <code>LAYOUT_TABLE</code> - Indicates the location of a table in the document.</p> </li> <li> <p> <code>LAYOUT_KEY_VALUE</code> - Indicates the location of form key-values in a document.</p> </li> <li> <p> <code>LAYOUT_TEXT</code> - Text that is present typically as a part of paragraphs in documents.</p> </li> </ul>"
         },
         "Confidence":{
           "shape":"Percent",
@@ -542,6 +979,13 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9-_]+$"
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
+      "exception":true
+    },
     "ContentClassifier":{
       "type":"string",
       "enum":[
@@ -553,6 +997,132 @@
       "type":"list",
       "member":{"shape":"ContentClassifier"},
       "max":256
+    },
+    "CreateAdapterRequest":{
+      "type":"structure",
+      "required":[
+        "AdapterName",
+        "FeatureTypes"
+      ],
+      "members":{
+        "AdapterName":{
+          "shape":"AdapterName",
+          "documentation":"<p>The name to be assigned to the adapter being created.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token is used to recognize the request. If the same token is used with multiple CreateAdapter requests, the same session is returned. This token is employed to avoid unintentionally creating the same session multiple times.</p>",
+          "idempotencyToken":true
+        },
+        "Description":{
+          "shape":"AdapterDescription",
+          "documentation":"<p>The description to be assigned to the adapter being created.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>The type of feature that the adapter is being trained on. Currrenly, supported feature types are: <code>QUERIES</code> </p>"
+        },
+        "AutoUpdate":{
+          "shape":"AutoUpdate",
+          "documentation":"<p>Controls whether or not the adapter should automatically update.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags to be added to the adapter.</p>"
+        }
+      }
+    },
+    "CreateAdapterResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing the unique ID for the adapter that has been created.</p>"
+        }
+      }
+    },
+    "CreateAdapterVersionRequest":{
+      "type":"structure",
+      "required":[
+        "AdapterId",
+        "DatasetConfig",
+        "OutputConfig"
+      ],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter that will receive a new version.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>Idempotent token is used to recognize the request. If the same token is used with multiple CreateAdapterVersion requests, the same session is returned. This token is employed to avoid unintentionally creating the same session multiple times.</p>",
+          "idempotencyToken":true
+        },
+        "DatasetConfig":{
+          "shape":"AdapterVersionDatasetConfig",
+          "documentation":"<p>Specifies a dataset used to train a new adapter version. Takes a ManifestS3Object as the value.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"KMSKeyId",
+          "documentation":"<p>The identifier for your AWS Key Management Service key (AWS KMS key). Used to encrypt your documents.</p>"
+        },
+        "OutputConfig":{"shape":"OutputConfig"},
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) that you want to attach to the adapter version. </p>"
+        }
+      }
+    },
+    "CreateAdapterVersionResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing the unique ID for the adapter that has received a new version.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>A string describing the new version of the adapter.</p>"
+        }
+      }
+    },
+    "DateTime":{"type":"timestamp"},
+    "DeleteAdapterRequest":{
+      "type":"structure",
+      "required":["AdapterId"],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteAdapterResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAdapterVersionRequest":{
+      "type":"structure",
+      "required":[
+        "AdapterId",
+        "AdapterVersion"
+      ],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter version that will be deleted.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>Specifies the adapter version to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteAdapterVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DetectDocumentTextRequest":{
       "type":"structure",
@@ -687,6 +1257,24 @@
       "member":{"shape":"EntityType"}
     },
     "ErrorCode":{"type":"string"},
+    "EvaluationMetric":{
+      "type":"structure",
+      "members":{
+        "F1Score":{
+          "shape":"Float",
+          "documentation":"<p>The F1 score for an adapter version.</p>"
+        },
+        "Precision":{
+          "shape":"Float",
+          "documentation":"<p>The Precision score for an adapter version.</p>"
+        },
+        "Recall":{
+          "shape":"Float",
+          "documentation":"<p>The Recall score for an adapter version.</p>"
+        }
+      },
+      "documentation":"<p>The evaluation metrics (F1 score, Precision, and Recall) for an adapter version.</p>"
+    },
     "ExpenseCurrency":{
       "type":"structure",
       "members":{
@@ -856,6 +1444,112 @@
         }
       },
       "documentation":"<p>Information about where the following items are located on a document page: detected page, text, key-value pairs, tables, table cells, and selection elements.</p>"
+    },
+    "GetAdapterRequest":{
+      "type":"structure",
+      "required":["AdapterId"],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter.</p>"
+        }
+      }
+    },
+    "GetAdapterResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string identifying the adapter that information has been retrieved for.</p>"
+        },
+        "AdapterName":{
+          "shape":"AdapterName",
+          "documentation":"<p>The name of the requested adapter.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the requested adapter was created at.</p>"
+        },
+        "Description":{
+          "shape":"AdapterDescription",
+          "documentation":"<p>The description for the requested adapter.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>List of the targeted feature types for the requested adapter.</p>"
+        },
+        "AutoUpdate":{
+          "shape":"AutoUpdate",
+          "documentation":"<p>Binary value indicating if the adapter is being automatically updated or not.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) associated with the adapter that has been retrieved.</p>"
+        }
+      }
+    },
+    "GetAdapterVersionRequest":{
+      "type":"structure",
+      "required":[
+        "AdapterId",
+        "AdapterVersion"
+      ],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string specifying a unique ID for the adapter version you want to retrieve information for.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>A string specifying the adapter version you want to retrieve information for.</p>"
+        }
+      }
+    },
+    "GetAdapterVersionResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter version being retrieved.</p>"
+        },
+        "AdapterVersion":{
+          "shape":"AdapterVersion",
+          "documentation":"<p>A string containing the adapter version that has been retrieved.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The time that the adapter version was created.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>List of the targeted feature types for the requested adapter version.</p>"
+        },
+        "Status":{
+          "shape":"AdapterVersionStatus",
+          "documentation":"<p>The status of the adapter version that has been requested.</p>"
+        },
+        "StatusMessage":{
+          "shape":"AdapterVersionStatusMessage",
+          "documentation":"<p>A message that describes the status of the requested adapter version.</p>"
+        },
+        "DatasetConfig":{
+          "shape":"AdapterVersionDatasetConfig",
+          "documentation":"<p>Specifies a dataset used to train a new adapter version. Takes a ManifestS3Objec as the value.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"KMSKeyId",
+          "documentation":"<p>The identifier for your AWS Key Management Service key (AWS KMS key). Used to encrypt your documents.</p>"
+        },
+        "OutputConfig":{"shape":"OutputConfig"},
+        "EvaluationMetrics":{
+          "shape":"AdapterVersionEvaluationMetrics",
+          "documentation":"<p>The evaluation metrics (F1 score, Precision, and Recall) for the requested version, grouped by baseline metrics and adapter version.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) that are associated with the adapter version.</p>"
+        }
+      }
     },
     "GetDocumentAnalysisRequest":{
       "type":"structure",
@@ -1428,6 +2122,97 @@
       "type":"list",
       "member":{"shape":"LineItemFields"}
     },
+    "ListAdapterVersionsRequest":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter to match for when listing adapter versions.</p>"
+        },
+        "AfterCreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>Specifies the lower bound for the ListAdapterVersions operation. Ensures ListAdapterVersions returns only adapter versions created after the specified creation time.</p>"
+        },
+        "BeforeCreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>Specifies the upper bound for the ListAdapterVersions operation. Ensures ListAdapterVersions returns only adapter versions created after the specified creation time.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return when listing adapter versions.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Identifies the next page of results to return when listing adapter versions.</p>"
+        }
+      }
+    },
+    "ListAdapterVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterVersions":{
+          "shape":"AdapterVersionList",
+          "documentation":"<p>Adapter versions that match the filtering criteria specified when calling ListAdapters.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Identifies the next page of results to return when listing adapter versions.</p>"
+        }
+      }
+    },
+    "ListAdaptersRequest":{
+      "type":"structure",
+      "members":{
+        "AfterCreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>Specifies the lower bound for the ListAdapters operation. Ensures ListAdapters returns only adapters created after the specified creation time.</p>"
+        },
+        "BeforeCreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>Specifies the upper bound for the ListAdapters operation. Ensures ListAdapters returns only adapters created before the specified creation time.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return when listing adapters.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Identifies the next page of results to return when listing adapters.</p>"
+        }
+      }
+    },
+    "ListAdaptersResponse":{
+      "type":"structure",
+      "members":{
+        "Adapters":{
+          "shape":"AdapterList",
+          "documentation":"<p>A list of adapters that matches the filtering criteria specified when calling ListAdapters.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Identifies the next page of results to return when listing adapters.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) that specifies the resource to list tags for.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) that are part of the requested resource.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "min":1
@@ -1511,7 +2296,7 @@
     },
     "PaginationToken":{
       "type":"string",
-      "max":255,
+      "max":1024,
       "min":1,
       "pattern":".*\\S.*"
     },
@@ -1647,6 +2432,13 @@
         "TABLE_FOOTER"
       ]
     },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> Returned when an operation tried to access a nonexistent resource. </p>",
+      "exception":true
+    },
     "RoleArn":{
       "type":"string",
       "max":2048,
@@ -1701,6 +2493,13 @@
         "SELECTED",
         "NOT_SELECTED"
       ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Returned when a request cannot be completed as it would exceed a maximum service quota.</p>",
+      "exception":true
     },
     "SignatureDetection":{
       "type":"structure",
@@ -1770,7 +2569,11 @@
           "shape":"KMSKeyId",
           "documentation":"<p>The KMS key used to encrypt the inference results. This can be in either Key ID or Key Alias format. When a KMS key is provided, the KMS key will be used for server-side encryption of the objects in the customer bucket. When this parameter is not enabled, the result will be encrypted server side,using SSE-S3.</p>"
         },
-        "QueriesConfig":{"shape":"QueriesConfig"}
+        "QueriesConfig":{"shape":"QueriesConfig"},
+        "AdaptersConfig":{
+          "shape":"AdaptersConfig",
+          "documentation":"<p>Specifies the adapter to be used when analyzing a document.</p>"
+        }
       }
     },
     "StartDocumentAnalysisResponse":{
@@ -1896,6 +2699,53 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) that specifies the resource to be tagged.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) that you want to assign to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
     "TextType":{
       "type":"string",
       "enum":[
@@ -1938,6 +2788,86 @@
       "members":{
       },
       "documentation":"<p>The format of the input document isn't supported. Documents for operations can be in PNG, JPEG, PDF, or TIFF format.</p>",
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) that specifies the resource to be untagged.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>Specifies the tags to be removed from the resource specified by the ResourceARN.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateAdapterRequest":{
+      "type":"structure",
+      "required":["AdapterId"],
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter that will be updated.</p>"
+        },
+        "Description":{
+          "shape":"AdapterDescription",
+          "documentation":"<p>The new description to be applied to the adapter.</p>"
+        },
+        "AdapterName":{
+          "shape":"AdapterName",
+          "documentation":"<p>The new name to be applied to the adapter.</p>"
+        },
+        "AutoUpdate":{
+          "shape":"AutoUpdate",
+          "documentation":"<p>The new auto-update status to be applied to the adapter.</p>"
+        }
+      }
+    },
+    "UpdateAdapterResponse":{
+      "type":"structure",
+      "members":{
+        "AdapterId":{
+          "shape":"AdapterId",
+          "documentation":"<p>A string containing a unique ID for the adapter that has been updated.</p>"
+        },
+        "AdapterName":{
+          "shape":"AdapterName",
+          "documentation":"<p>A string containing the name of the adapter that has been updated.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>An object specifying the creation time of the the adapter that has been updated.</p>"
+        },
+        "Description":{
+          "shape":"AdapterDescription",
+          "documentation":"<p>A string containing the description of the adapter that has been updated.</p>"
+        },
+        "FeatureTypes":{
+          "shape":"FeatureTypes",
+          "documentation":"<p>List of the targeted feature types for the updated adapter.</p>"
+        },
+        "AutoUpdate":{
+          "shape":"AutoUpdate",
+          "documentation":"<p>The auto-update status of the adapter that has been updated.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> Indicates that a request was not valid. Check request for proper formatting. </p>",
       "exception":true
     },
     "ValueType":{

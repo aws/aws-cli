@@ -46,7 +46,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a resource-based policy on an Entity that is identified by its resource ARN.</p>"
+      "documentation":"<p>Deletes a resource-based policy on an entity that is identified by its resource ARN.</p>"
     },
     "DescribeChangeSet":{
       "name":"DescribeChangeSet",
@@ -98,7 +98,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets a resource-based policy of an Entity that is identified by its resource ARN.</p>"
+      "documentation":"<p>Gets a resource-based policy of an entity that is identified by its resource ARN.</p>"
     },
     "ListChangeSets":{
       "name":"ListChangeSets",
@@ -165,7 +165,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Attaches a resource-based policy to an Entity. Examples of an entity include: <code>AmiProduct</code> and <code>ContainerProduct</code>.</p>"
+      "documentation":"<p>Attaches a resource-based policy to an entity. Examples of an entity include: <code>AmiProduct</code> and <code>ContainerProduct</code>.</p>"
     },
     "StartChangeSet":{
       "name":"StartChangeSet",
@@ -184,7 +184,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Allows you to request changes for your entities. Within a single <code>ChangeSet</code>, you can't start the same change type against the same entity multiple times. Additionally, when a <code>ChangeSet</code> is running, all the entities targeted by the different changes are locked until the change set has completed (either succeeded, cancelled, or failed). If you try to start a change set containing a change against an entity that is already locked, you will receive a <code>ResourceInUseException</code> error.</p> <p>For example, you can't start the <code>ChangeSet</code> described in the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_StartChangeSet.html#API_StartChangeSet_Examples\">example</a> later in this topic because it contains two changes to run the same change type (<code>AddRevisions</code>) against the same entity (<code>entity-id@1</code>).</p> <p>For more information about working with change sets, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#working-with-change-sets\"> Working with change sets</a>. For information on change types for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Als, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
+      "documentation":"<p>Allows you to request changes for your entities. Within a single <code>ChangeSet</code>, you can't start the same change type against the same entity multiple times. Additionally, when a <code>ChangeSet</code> is running, all the entities targeted by the different changes are locked until the change set has completed (either succeeded, cancelled, or failed). If you try to start a change set containing a change against an entity that is already locked, you will receive a <code>ResourceInUseException</code> error.</p> <p>For example, you can't start the <code>ChangeSet</code> described in the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_StartChangeSet.html#API_StartChangeSet_Examples\">example</a> later in this topic because it contains two changes to run the same change type (<code>AddRevisions</code>) against the same entity (<code>entity-id@1</code>).</p> <p>For more information about working with change sets, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html#working-with-change-sets\"> Working with change sets</a>. For information about change types for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information about change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -282,13 +282,12 @@
       "type":"structure",
       "required":[
         "ChangeType",
-        "Entity",
-        "Details"
+        "Entity"
       ],
       "members":{
         "ChangeType":{
           "shape":"ChangeType",
-          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
+          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information about change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
         },
         "Entity":{
           "shape":"Entity",
@@ -300,7 +299,11 @@
         },
         "Details":{
           "shape":"Json",
-          "documentation":"<p>This object contains details specific to the change type of the requested change. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information on change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
+          "documentation":"<p>This object contains details specific to the change type of the requested change. For more information about change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information about change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
+        },
+        "DetailsDocument":{
+          "shape":"JsonDocumentType",
+          "documentation":"<p>Alternative field that accepts a JSON value instead of a string for <code>ChangeType</code> details. You can use either <code>Details</code> or <code>DetailsDocument</code>, but not both.</p>"
         },
         "ChangeName":{
           "shape":"ChangeName",
@@ -392,6 +395,10 @@
           "shape":"Json",
           "documentation":"<p>This object contains details specific to the change type of the requested change.</p>"
         },
+        "DetailsDocument":{
+          "shape":"JsonDocumentType",
+          "documentation":"<p>The JSON value of the details specific to the change type of the requested change.</p>"
+        },
         "ErrorDetailList":{
           "shape":"ErrorDetailList",
           "documentation":"<p>An array of <code>ErrorDetail</code> objects associated with the change.</p>"
@@ -427,7 +434,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource that is associated with the resource policy.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the entity resource that is associated with the resource policy.</p>",
           "location":"querystring",
           "locationName":"resourceArn"
         }
@@ -543,6 +550,10 @@
         "Details":{
           "shape":"Json",
           "documentation":"<p>This stringified JSON object includes the details of the entity.</p>"
+        },
+        "DetailsDocument":{
+          "shape":"JsonDocumentType",
+          "documentation":"<p>The JSON value of the details specific to the entity.</p>"
         }
       }
     },
@@ -682,7 +693,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource that is associated with the resource policy.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the entity resource that is associated with the resource policy.</p>",
           "location":"querystring",
           "locationName":"resourceArn"
         }
@@ -718,6 +729,12 @@
       "max":16384,
       "min":2,
       "pattern":"^[\\s]*\\{[\\s\\S]*\\}[\\s]*$"
+    },
+    "JsonDocumentType":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "ListChangeSetsMaxResultInteger":{
       "type":"integer",
@@ -801,7 +818,10 @@
           "shape":"ListEntitiesMaxResultInteger",
           "documentation":"<p>Specifies the upper limit of the elements on a single page. If a value isn't provided, the default value is 20.</p>"
         },
-        "OwnershipType":{"shape":"OwnershipType"}
+        "OwnershipType":{
+          "shape":"OwnershipType",
+          "documentation":"<p>Filters the returned set of entities based on their owner. The default is <code>SELF</code>. To list entities shared with you through AWS Resource Access Manager (AWS RAM), set to <code>SHARED</code>. Entities shared through the AWS Marketplace Catalog API <code>PutResourcePolicy</code> operation can't be discovered through the <code>SHARED</code> parameter.</p>"
+        }
       }
     },
     "ListEntitiesResponse":{
@@ -862,7 +882,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity resource you want to associate with a resource policy. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the entity resource you want to associate with a resource policy.</p>"
         },
         "Policy":{
           "shape":"ResourcePolicyJson",
@@ -948,7 +968,7 @@
       "members":{
         "SortBy":{
           "shape":"SortBy",
-          "documentation":"<p>For <code>ListEntities</code>, supported attributes include <code>LastModifiedDate</code> (default), <code>Visibility</code>, <code>EntityId</code>, and <code>Name</code>.</p> <p>For <code>ListChangeSets</code>, supported attributes include <code>StartTime</code> and <code>EndTime</code>.</p>"
+          "documentation":"<p>For <code>ListEntities</code>, supported attributes include <code>LastModifiedDate</code> (default) and <code>EntityId</code>. In addition to <code>LastModifiedDate</code> and <code>EntityId</code>, each <code>EntityType</code> might support additional fields.</p> <p>For <code>ListChangeSets</code>, supported attributes include <code>StartTime</code> and <code>EndTime</code>.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",

@@ -6136,6 +6136,41 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.63
+=======
+
+* api-change:``auditmanager``: This release introduces a new limit to the awsAccounts parameter. When you create or update an assessment, there is now a limit of 200 AWS accounts that can be specified in the assessment scope.
+* api-change:``autoscaling``: Update the NotificationMetadata field to only allow visible ascii characters. Add paginators to DescribeInstanceRefreshes, DescribeLoadBalancers, and DescribeLoadBalancerTargetGroups
+* api-change:``config``: Add enums for resource types supported by Config
+* api-change:``controltower``: Added new EnabledControl resource details to ListEnabledControls API and added new GetEnabledControl API.
+* api-change:``customer-profiles``: Adds sensitive trait to various shapes in Customer Profiles Calculated Attribute API model.
+* api-change:``ec2``: This release adds Ubuntu Pro as a supported platform for On-Demand Capacity Reservations and adds support for setting an Amazon Machine Image (AMI) to disabled state. Disabling the AMI makes it private if it was previously shared, and prevents new EC2 instance launches from it.
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``glue``: Extending version control support to GitLab and Bitbucket from AWSGlue
+* api-change:``inspector2``: Add MacOs ec2 platform support
+* api-change:``ivs-realtime``: Update GetParticipant to return additional metadata.
+* api-change:``lambda``: Adds support for Lambda functions to access Dual-Stack subnets over IPv6, via an opt-in flag in CreateFunction and UpdateFunctionConfiguration APIs
+* api-change:``location``: This release adds endpoint updates for all AWS Location resource operations.
+* api-change:``machinelearning``: This release marks Password field as sensitive
+* api-change:``pricing``: Documentation updates for Price List
+* api-change:``rds``: This release adds support for adding a dedicated log volume to open-source RDS instances.
+* api-change:``rekognition``: Amazon Rekognition introduces support for Custom Moderation. This allows the enhancement of accuracy for detect moderation labels operations by creating custom adapters tuned on customer data.
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds KendraSettings and DirectDeploySettings support for CanvasAppSettings
+* api-change:``textract``: This release adds 9 new APIs for adapter and adapter version management, 3 new APIs for tagging, and updates AnalyzeDocument and StartDocumentAnalysis API parameters for using adapters.
+* api-change:``transcribe``: This release is to enable m4a format to customers
+* api-change:``workspaces``: Updated the CreateWorkspaces action documentation to clarify that the PCoIP protocol is only available for Windows bundles.
+
+
+1.29.62
+=======
+
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``fsx``: After performing steps to repair the Active Directory configuration of a file system, use this action to initiate the process of attempting to recover to the file system.
+* api-change:``marketplace-catalog``: This release adds support for Document type as an alternative for stringified JSON for StartChangeSet, DescribeChangeSet and DescribeEntity APIs
+* api-change:``quicksight``: NullOption in FilterListConfiguration; Dataset schema/table max length increased; Support total placement for pivot table visual; Lenient mode relaxes the validation to create resources with definition; Data sources can be added to folders; Redshift data sources support IAM Role-based authentication
+* api-change:``transfer``: This release updates the max character limit of PreAuthenticationLoginBanner and PostAuthenticationLoginBanner to 4096 characters
+
+
 1.29.61
 =======
 

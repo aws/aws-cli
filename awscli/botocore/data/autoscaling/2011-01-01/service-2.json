@@ -1273,6 +1273,12 @@
       },
       "exception":true
     },
+    "AnyPrintableAsciiStringMaxLen4000":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007e]+"
+    },
     "AsciiStringMaxLen255":{
       "type":"string",
       "max":255,
@@ -3677,7 +3683,7 @@
           "documentation":"<p>The ARN of the IAM role that allows the Auto Scaling group to publish to the specified notification target (an Amazon SNS topic or an Amazon SQS queue).</p>"
         },
         "NotificationMetadata":{
-          "shape":"XmlStringMaxLen1023",
+          "shape":"AnyPrintableAsciiStringMaxLen4000",
           "documentation":"<p>Additional information that is included any time Amazon EC2 Auto Scaling sends a message to the notification target.</p>"
         },
         "HeartbeatTimeout":{
@@ -3716,7 +3722,7 @@
           "documentation":"<p>The lifecycle transition. For Auto Scaling groups, there are two major lifecycle transitions.</p> <ul> <li> <p>To create a lifecycle hook for scale-out events, specify <code>autoscaling:EC2_INSTANCE_LAUNCHING</code>.</p> </li> <li> <p>To create a lifecycle hook for scale-in events, specify <code>autoscaling:EC2_INSTANCE_TERMINATING</code>.</p> </li> </ul>"
         },
         "NotificationMetadata":{
-          "shape":"XmlStringMaxLen1023",
+          "shape":"AnyPrintableAsciiStringMaxLen4000",
           "documentation":"<p>Additional information that you want to include any time Amazon EC2 Auto Scaling sends a message to the notification target.</p>"
         },
         "HeartbeatTimeout":{
@@ -4489,7 +4495,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the notification target that Amazon EC2 Auto Scaling uses to notify you when an instance is in a wait state for the lifecycle hook. You can specify either an Amazon SNS topic or an Amazon SQS queue.</p> <p>If you specify an empty string, this overrides the current ARN.</p> <p>This operation uses the JSON format when sending notifications to an Amazon SQS queue, and an email key-value pair format when sending notifications to an Amazon SNS topic.</p> <p>When you specify a notification target, Amazon EC2 Auto Scaling sends it a test message. Test messages contain the following additional key-value pair: <code>\"Event\": \"autoscaling:TEST_NOTIFICATION\"</code>.</p>"
         },
         "NotificationMetadata":{
-          "shape":"XmlStringMaxLen1023",
+          "shape":"AnyPrintableAsciiStringMaxLen4000",
           "documentation":"<p>Additional information that you want to include any time Amazon EC2 Auto Scaling sends a message to the notification target.</p>"
         },
         "HeartbeatTimeout":{

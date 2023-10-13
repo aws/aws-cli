@@ -319,7 +319,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Create a new <code>FeatureGroup</code>. A <code>FeatureGroup</code> is a group of <code>Features</code> defined in the <code>FeatureStore</code> to describe a <code>Record</code>. </p> <p>The <code>FeatureGroup</code> defines the schema and features contained in the FeatureGroup. A <code>FeatureGroup</code> definition is composed of a list of <code>Features</code>, a <code>RecordIdentifierFeatureName</code>, an <code>EventTimeFeatureName</code> and configurations for its <code>OnlineStore</code> and <code>OfflineStore</code>. Check <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html\">Amazon Web Services service quotas</a> to see the <code>FeatureGroup</code>s quota for your Amazon Web Services account.</p> <important> <p>You must include at least one of <code>OnlineStoreConfig</code> and <code>OfflineStoreConfig</code> to create a <code>FeatureGroup</code>.</p> </important>"
+      "documentation":"<p>Create a new <code>FeatureGroup</code>. A <code>FeatureGroup</code> is a group of <code>Features</code> defined in the <code>FeatureStore</code> to describe a <code>Record</code>. </p> <p>The <code>FeatureGroup</code> defines the schema and features contained in the <code>FeatureGroup</code>. A <code>FeatureGroup</code> definition is composed of a list of <code>Features</code>, a <code>RecordIdentifierFeatureName</code>, an <code>EventTimeFeatureName</code> and configurations for its <code>OnlineStore</code> and <code>OfflineStore</code>. Check <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html\">Amazon Web Services service quotas</a> to see the <code>FeatureGroup</code>s quota for your Amazon Web Services account.</p> <p>Note that it can take approximately 10-15 minutes to provision an <code>OnlineStore</code> <code>FeatureGroup</code> with the <code>InMemory</code> <code>StorageType</code>.</p> <important> <p>You must include at least one of <code>OnlineStoreConfig</code> and <code>OfflineStoreConfig</code> to create a <code>FeatureGroup</code>.</p> </important>"
     },
     "CreateFlowDefinition":{
       "name":"CreateFlowDefinition",
@@ -983,7 +983,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Delete the <code>FeatureGroup</code> and any data that was written to the <code>OnlineStore</code> of the <code>FeatureGroup</code>. Data cannot be accessed from the <code>OnlineStore</code> immediately after <code>DeleteFeatureGroup</code> is called. </p> <p>Data written into the <code>OfflineStore</code> will not be deleted. The Amazon Web Services Glue database and tables that are automatically created for your <code>OfflineStore</code> are not deleted. </p>"
+      "documentation":"<p>Delete the <code>FeatureGroup</code> and any data that was written to the <code>OnlineStore</code> of the <code>FeatureGroup</code>. Data cannot be accessed from the <code>OnlineStore</code> immediately after <code>DeleteFeatureGroup</code> is called. </p> <p>Data written into the <code>OfflineStore</code> will not be deleted. The Amazon Web Services Glue database and tables that are automatically created for your <code>OfflineStore</code> are not deleted. </p> <p>Note that it can take approximately 10-15 minutes to delete an <code>OnlineStore</code> <code>FeatureGroup</code> with the <code>InMemory</code> <code>StorageType</code>.</p>"
     },
     "DeleteFlowDefinition":{
       "name":"DeleteFlowDefinition",
@@ -5881,7 +5881,7 @@
       "members":{
         "TimeSeriesForecastingSettings":{
           "shape":"TimeSeriesForecastingSettings",
-          "documentation":"<p>Time series forecast settings for the Canvas application.</p>"
+          "documentation":"<p>Time series forecast settings for the SageMaker Canvas application.</p>"
         },
         "ModelRegisterSettings":{
           "shape":"ModelRegisterSettings",
@@ -5894,6 +5894,14 @@
         "IdentityProviderOAuthSettings":{
           "shape":"IdentityProviderOAuthSettings",
           "documentation":"<p>The settings for connecting to an external data source with OAuth.</p>"
+        },
+        "KendraSettings":{
+          "shape":"KendraSettings",
+          "documentation":"<p>The settings for document querying.</p>"
+        },
+        "DirectDeploySettings":{
+          "shape":"DirectDeploySettings",
+          "documentation":"<p>The model deployment settings for the SageMaker Canvas application.</p>"
         }
       },
       "documentation":"<p>The SageMaker Canvas application settings.</p>"
@@ -15222,6 +15230,16 @@
       "max":8192,
       "min":1
     },
+    "DirectDeploySettings":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Describes whether model deployment permissions are enabled or disabled in the Canvas application.</p>"
+        }
+      },
+      "documentation":"<p>The model deployment settings for the SageMaker Canvas application.</p> <note> <p>In order to enable model deployment for Canvas, the SageMaker Domain's or user profile's Amazon Web Services IAM execution role must have the <code>AmazonSageMakerCanvasDirectDeployAccess</code> policy attached. You can also turn on model deployment permissions through the SageMaker Domain's or user profile's settings in the SageMaker console.</p> </note>"
+    },
     "DirectInternetAccess":{
       "type":"string",
       "enum":[
@@ -18597,7 +18615,7 @@
           "documentation":"<p>The ARN of an Amazon Web Services Secrets Manager secret that stores the credentials from your identity provider, such as the client ID and secret, authorization URL, and token URL. </p>"
         }
       },
-      "documentation":"<p>The Amazon SageMaker Canvas app setting where you configure OAuth for connecting to an external data source, such as Snowflake.</p>"
+      "documentation":"<p>The Amazon SageMaker Canvas application setting where you configure OAuth for connecting to an external data source, such as Snowflake.</p>"
     },
     "IdentityProviderOAuthSettings":{
       "type":"list",
@@ -19600,6 +19618,16 @@
       "type":"integer",
       "max":3600,
       "min":0
+    },
+    "KendraSettings":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Describes whether the document querying feature is enabled or disabled in the Canvas application.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon SageMaker Canvas application setting where you configure document querying.</p>"
     },
     "KernelDisplayName":{
       "type":"string",
@@ -30630,7 +30658,7 @@
       "members":{
         "SourcePipelineExecutionArn":{
           "shape":"PipelineExecutionArn",
-          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p>"
+          "documentation":"<p>The ARN from a reference execution of the current pipeline. Used to copy input collaterals needed for the selected steps to run. The execution status of the pipeline can be either <code>Failed</code> or <code>Success</code>.</p> <p>This field is required if the steps you specify for <code>SelectedSteps</code> depend on output collaterals from any non-specified pipeline steps. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-selective-ex.html\">Selective Execution for Pipeline Steps</a>.</p>"
         },
         "SelectedSteps":{
           "shape":"SelectedStepList",
@@ -32155,7 +32183,7 @@
     "TrainingContainerEntrypoint":{
       "type":"list",
       "member":{"shape":"TrainingContainerEntrypointString"},
-      "max":10,
+      "max":100,
       "min":1
     },
     "TrainingContainerEntrypointString":{
@@ -32172,7 +32200,7 @@
       "type":"map",
       "key":{"shape":"TrainingEnvironmentKey"},
       "value":{"shape":"TrainingEnvironmentValue"},
-      "max":48
+      "max":100
     },
     "TrainingEnvironmentValue":{
       "type":"string",

@@ -752,9 +752,29 @@
           "shape":"ParticipantAttributes",
           "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information</i>.</p>"
         },
+        "browserName":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s browser.</p>"
+        },
+        "browserVersion":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s browser version.</p>"
+        },
         "firstJoinTime":{
           "shape":"Time",
           "documentation":"<p>ISO 8601 timestamp (returned as a string) when the participant first joined the stage session.</p>"
+        },
+        "ispName":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s Internet Service Provider.</p>"
+        },
+        "osName":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s operating system.</p>"
+        },
+        "osVersion":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s operating system version.</p>"
         },
         "participantId":{
           "shape":"ParticipantId",
@@ -763,6 +783,10 @@
         "published":{
           "shape":"Published",
           "documentation":"<p>Whether the participant ever published to the stage session.</p>"
+        },
+        "sdkVersion":{
+          "shape":"ParticipantClientAttribute",
+          "documentation":"<p>The participant’s SDK version.</p>"
         },
         "state":{
           "shape":"ParticipantState",
@@ -779,6 +803,12 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "ParticipantClientAttribute":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9-_.,:;\\s]*$"
     },
     "ParticipantId":{"type":"string"},
     "ParticipantList":{

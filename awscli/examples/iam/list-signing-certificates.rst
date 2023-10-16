@@ -19,4 +19,4 @@ Output::
         ]
     }
 
-For more information, see `Creating and Uploading a User Signing Certificate <https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_UploadCertificate.html>`__ in the *Using IAM* guide.
+For more information, see `Manage signing certificates <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-up-ami-tools.html#ami-tools-managing-certs>`__ in the *Amazon EC2 User Guide*.

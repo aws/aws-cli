@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.29.64
+=======
+
+* api-change:``cloudformation``: SDK and documentation updates for UpdateReplacePolicy
+* api-change:``drs``: Updated exsiting API to allow AWS Elastic Disaster Recovery support of launching recovery into existing EC2 instances.
+* api-change:``entityresolution``: This launch expands our matching techniques to include provider-based matching to help customer match, link, and enhance records with minimal data movement. With data service providers, we have removed the need for customers to build bespoke integrations,.
+* api-change:``managedblockchain-query``: This release introduces two new APIs: GetAssetContract and ListAssetContracts. This release also adds support for Bitcoin Testnet.
+* api-change:``mediapackagev2``: This release allows customers to manage MediaPackage v2 resource using CloudFormation.
+* api-change:``opensearch``: This release allows customers to list and associate optional plugin packages with compatible Amazon OpenSearch Service clusters for enhanced functionality.
+* api-change:``redshift-serverless``: Added support for managing credentials of serverless namespace admin using AWS Secrets Manager.
+* api-change:``redshift``: Added support for managing credentials of provisioned cluster admin using AWS Secrets Manager.
+* api-change:``sesv2``: This release provides enhanced visibility into your SES identity verification status. This will offer you more actionable insights, enabling you to promptly address any verification-related issues.
+* api-change:``transfer``: Documentation updates for AWS Transfer Family
+* api-change:``xray``: This releases enhances GetTraceSummaries API to support new TimeRangeType Service to query trace summaries by segment end time.
+
+
 1.29.63
 =======
 

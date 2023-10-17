@@ -56,8 +56,8 @@ _CMD_PROMPT_USAGE = (
 _CONFIG_EXTRA_INFO = (
     'Note: The configuration is saved in the shared configuration file. '
     'By default, ``~/.aws/config``. For more information, see the '
-    '"Configuring the AWS CLI to use AWS Single Sign-On" section in the AWS '
-    'CLI User Guide:'
+    '"Configuring the AWS CLI to use AWS IAM Identity Center" section in the '
+    'AWS CLI User Guide:'
     '\n\nhttps://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html'
 )
 
@@ -358,7 +358,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     DESCRIPTION = (
         'The ``aws configure sso`` command interactively prompts for the '
         'configuration values required to create a profile that sources '
-        'temporary AWS credentials from AWS Single Sign-On.\n\n'
+        'temporary AWS credentials from AWS IAM Identity Center.\n\n'
         f'{_CMD_PROMPT_USAGE}'
         'When providing the ``--profile`` parameter the named profile '
         'will be created or updated. When a profile is not explicitly set '

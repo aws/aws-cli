@@ -825,7 +825,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.sl</p>"
+      "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.</p>"
     },
     "UpdatePackage":{
       "name":"UpdatePackage",
@@ -2000,10 +2000,10 @@
       "members":{
         "SkipUnavailable":{
           "shape":"SkipUnavailableStatus",
-          "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p>"
+          "documentation":"<p>The status of the <code>SkipUnavailable</code> setting for the outbound connection. This feature allows you to specify some clusters as optional and ensure that your cross-cluster queries return partial results despite failures on one or more remote clusters.</p>"
         }
       },
-      "documentation":"<p>Cross cluster search specific connection properties.</p>"
+      "documentation":"<p>Cross-cluster search specific connection properties.</p>"
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -2355,7 +2355,7 @@
       "members":{
         "DomainNames":{
           "shape":"DomainNameList",
-          "documentation":"<p>Array of OpenSearch Service domain names that you want information about. If you don't specify any domains, OpenSearch Service returns information about all domains owned by the account.</p>"
+          "documentation":"<p>Array of OpenSearch Service domain names that you want information about. You must specify at least one domain name.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>DescribeDomains</code> operation.</p>"
@@ -2538,12 +2538,14 @@
       "enum":[
         "PackageID",
         "PackageName",
-        "PackageStatus"
+        "PackageStatus",
+        "PackageType",
+        "EngineVersion"
       ]
     },
     "DescribePackagesFilterValue":{
       "type":"string",
-      "pattern":"^[0-9a-zA-Z\\*\\.\\\\/\\?-]*$"
+      "pattern":"^[0-9a-zA-Z\\*\\.\\_\\\\\\/\\?-]+$"
     },
     "DescribePackagesFilterValues":{
       "type":"list",
@@ -3310,6 +3312,10 @@
         "OpenSearch",
         "Elasticsearch"
       ]
+    },
+    "EngineVersion":{
+      "type":"string",
+      "pattern":"^Elasticsearch_[0-9]{1}\\.[0-9]{1,2}$|^OpenSearch_[0-9]{1,2}\\.[0-9]{1,2}$"
     },
     "EnvironmentInfo":{
       "type":"structure",
@@ -4535,6 +4541,14 @@
         "ErrorDetails":{
           "shape":"ErrorDetails",
           "documentation":"<p>Additional information if the package is in an error state. Null otherwise.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>Version of OpenSearch or Elasticsearch, in the format Elasticsearch_X.Y or OpenSearch_X.Y. Defaults to the latest version of OpenSearch.</p>"
+        },
+        "AvailablePluginProperties":{
+          "shape":"PluginProperties",
+          "documentation":"<p>If the package is a <code>ZIP-PLUGIN</code> package, additional information about plugin properties.</p>"
         }
       },
       "documentation":"<p>Basic information about a package.</p>"
@@ -4543,10 +4557,13 @@
       "type":"list",
       "member":{"shape":"PackageDetails"}
     },
-    "PackageID":{"type":"string"},
+    "PackageID":{
+      "type":"string",
+      "pattern":"^([FG][0-9]+)$"
+    },
     "PackageName":{
       "type":"string",
-      "max":28,
+      "max":256,
       "min":3,
       "pattern":"[a-z][a-z0-9\\-]+"
     },
@@ -4579,7 +4596,10 @@
     },
     "PackageType":{
       "type":"string",
-      "enum":["TXT-DICTIONARY"]
+      "enum":[
+        "TXT-DICTIONARY",
+        "ZIP-PLUGIN"
+      ]
     },
     "PackageVersion":{"type":"string"},
     "PackageVersionHistory":{
@@ -4596,6 +4616,10 @@
         "CreatedAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The date and time when the package was created.</p>"
+        },
+        "PluginProperties":{
+          "shape":"PluginProperties",
+          "documentation":"<p>Additional information about plugin properties if the package is a <code>ZIP-PLUGIN</code> package.</p>"
         }
       },
       "documentation":"<p>Details about a package version.</p>"
@@ -4610,6 +4634,48 @@
       "min":8,
       "pattern":".*",
       "sensitive":true
+    },
+    "PluginClassName":{
+      "type":"string",
+      "max":1024
+    },
+    "PluginDescription":{
+      "type":"string",
+      "max":1024
+    },
+    "PluginName":{
+      "type":"string",
+      "max":1024
+    },
+    "PluginProperties":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"PluginName",
+          "documentation":"<p>The name of the plugin.</p>"
+        },
+        "Description":{
+          "shape":"PluginDescription",
+          "documentation":"<p>The description of the plugin.</p>"
+        },
+        "Version":{
+          "shape":"PluginVersion",
+          "documentation":"<p>The version of the plugin.</p>"
+        },
+        "ClassName":{
+          "shape":"PluginClassName",
+          "documentation":"<p>The name of the class to load.</p>"
+        },
+        "UncompressedSizeInBytes":{
+          "shape":"UncompressedPluginSizeInBytes",
+          "documentation":"<p>The uncompressed size of the plugin.</p>"
+        }
+      },
+      "documentation":"<p>Basic information about the plugin.</p>"
+    },
+    "PluginVersion":{
+      "type":"string",
+      "max":1024
     },
     "PolicyDocument":{
       "type":"string",
@@ -5155,7 +5221,7 @@
     },
     "SkipUnavailableStatus":{
       "type":"string",
-      "documentation":"<p>Status of SkipUnavailable param for outbound connection.</p> <ul> <li> <p> <b>ENABLED</b> - The SkipUnavailable param is enabled for the connection.</p> </li> <li> <p> <b>DISABLED</b> - The SkipUnavailable param is disabled for the connection.</p> </li> </ul>",
+      "documentation":"<p>The status of <code>SkipUnavailable</code> setting for the outbound connection.</p> <ul> <li> <p> <b>ENABLED</b> - The <code>SkipUnavailable</code> setting is enabled for the connection.</p> </li> <li> <p> <b>DISABLED</b> - The <code>SkipUnavailable</code> setting is disabled for the connection.</p> </li> </ul>",
       "enum":[
         "ENABLED",
         "DISABLED"
@@ -5377,6 +5443,7 @@
       "type":"integer",
       "min":0
     },
+    "UncompressedPluginSizeInBytes":{"type":"long"},
     "UpdateDomainConfigRequest":{
       "type":"structure",
       "required":["DomainName"],

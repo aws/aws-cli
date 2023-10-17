@@ -186,6 +186,56 @@
       ],
       "documentation": "\n            <p>Creates a new MSK configuration.</p>\n         "
     },
+    "CreateReplicator": {
+      "name": "CreateReplicator",
+      "http": {
+        "method": "POST",
+        "requestUri": "/replication/v1/replicators",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateReplicatorRequest"
+      },
+      "output": {
+        "shape": "CreateReplicatorResponse",
+        "documentation": "<p>HTTP Status Code 200: OK.</p>"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "<p>HTTP Status Code 409: Conflict. This replicator name already exists. Retry your request with another name.</p>"
+        }
+      ],
+      "documentation": "<p>Creates the replicator.</p>"
+    },
     "CreateVpcConnection": {
       "name": "CreateVpcConnection",
       "http": {
@@ -329,6 +379,51 @@
         }
       ],
       "documentation": "\n            <p>Deletes an MSK Configuration.</p>\n         "
+    },
+    "DeleteReplicator": {
+      "name": "DeleteReplicator",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/replication/v1/replicators/{replicatorArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteReplicatorRequest"
+      },
+      "output": {
+        "shape": "DeleteReplicatorResponse",
+        "documentation": "HTTP Status Code 200: OK."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        }, {
+          "shape": "UnauthorizedException",
+          "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "<p>Deletes a replicator.</p>"
     },
     "DeleteVpcConnection": {
       "name": "DeleteVpcConnection",
@@ -599,6 +694,52 @@
         }
       ],
       "documentation": "\n            <p>Returns a description of this revision of the configuration.</p>\n         "
+    },
+    "DescribeReplicator": {
+      "name": "DescribeReplicator",
+      "http": {
+        "method": "GET",
+        "requestUri": "/replication/v1/replicators/{replicatorArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeReplicatorRequest"
+      },
+      "output": {
+        "shape": "DescribeReplicatorResponse",
+        "documentation": "<p>HTTP Status Code 200: OK."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "<p>Describes a replicator.</p>"
     },
     "DescribeVpcConnection": {
       "name": "DescribeVpcConnection",
@@ -1085,6 +1226,52 @@
         }
       ],
       "documentation": "\n            <p>Returns a list of the broker nodes in the cluster.</p>\n         "
+    },
+    "ListReplicators": {
+      "name": "ListReplicators",
+      "http": {
+        "method": "GET",
+        "requestUri": "/replication/v1/replicators",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListReplicatorsRequest"
+      },
+      "output": {
+        "shape": "ListReplicatorsResponse",
+        "documentation": "HTTP Status Code 200: OK."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "<p>Lists the replicators.</p>"
     },
     "ListScramSecrets" : {
       "name" : "ListScramSecrets",
@@ -1722,6 +1909,52 @@
       } ],
       "documentation" : "\n            <p>Updates the monitoring settings for the cluster. You can use this operation to specify which Apache Kafka metrics you want Amazon MSK to send to Amazon CloudWatch. You can also specify settings for open monitoring with Prometheus.</p>\n         "
     },
+    "UpdateReplicationInfo": {
+      "name": "UpdateReplicationInfo",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/replication/v1/replicators/{replicatorArn}/replication-info",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateReplicationInfoRequest"
+      },
+      "output": {
+        "shape": "UpdateReplicationInfoResponse",
+        "documentation": "HTTP Status Code 200: OK."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "<p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "<p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "<p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "<p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "<p>Updates replication info of a replicator.</p>"
+    },
     "UpdateSecurity" : {
       "name" : "UpdateSecurity",
       "http" : {
@@ -1799,6 +2032,18 @@
     }
   },
   "shapes": {
+    "AmazonMskCluster": {
+      "type": "structure",
+      "members": {
+        "MskClusterArn": {
+          "shape": "__string",
+          "locationName": "mskClusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of an Amazon MSK cluster.</p>"
+        }
+      },
+      "documentation": "<p>Details of an Amazon MSK Cluster.</p>",
+      "required": ["MskClusterArn"]
+    },
     "BatchAssociateScramSecretRequest" : {
       "type" : "structure",
       "members" : {
@@ -2763,6 +3008,60 @@
       },
       "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
     },
+    "ConsumerGroupReplication": {
+      "type": "structure",
+      "members": {
+        "ConsumerGroupsToExclude": {
+          "shape": "__listOf__stringMax256",
+          "locationName": "consumerGroupsToExclude",
+          "documentation": "<p>List of regular expression patterns indicating the consumer groups that should not be replicated.</p>"
+        },
+        "ConsumerGroupsToReplicate": {
+          "shape": "__listOf__stringMax256",
+          "locationName": "consumerGroupsToReplicate",
+          "documentation": "<p>List of regular expression patterns indicating the consumer groups to copy.</p>"
+        },
+        "DetectAndCopyNewConsumerGroups": {
+            "shape": "__boolean",
+            "locationName": "detectAndCopyNewConsumerGroups",
+            "documentation": "<p>Enables synchronization of consumer groups to target cluster.</p>"
+        },
+        "SynchroniseConsumerGroupOffsets": {
+          "shape": "__boolean",
+          "locationName": "synchroniseConsumerGroupOffsets",
+          "documentation": "<p>Enables synchronization of consumer group offsets to target cluster. The translated offsets will be written to topic __consumer_offsets.</p>"
+          }
+        },
+        "documentation": "<p>Details about consumer group replication.</p>",
+        "required": ["ConsumerGroupsToReplicate"]
+    },
+    "ConsumerGroupReplicationUpdate": {
+      "type": "structure",
+      "members": {
+        "ConsumerGroupsToExclude": {
+          "shape": "__listOf__stringMax256",
+          "locationName": "consumerGroupsToExclude",
+          "documentation": "<p>List of regular expression patterns indicating the consumer groups that should not be replicated.</p>"
+        },
+        "ConsumerGroupsToReplicate": {
+          "shape": "__listOf__stringMax256",
+          "locationName": "consumerGroupsToReplicate",
+          "documentation": "<p>List of regular expression patterns indicating the consumer groups to copy.</p>"
+        },
+        "DetectAndCopyNewConsumerGroups": {
+          "shape": "__boolean",
+          "locationName": "detectAndCopyNewConsumerGroups",
+          "documentation": "<p>Enables synchronization of consumer groups to target cluster.</p>"
+        },
+        "SynchroniseConsumerGroupOffsets": {
+          "shape": "__boolean",
+          "locationName": "synchroniseConsumerGroupOffsets",
+          "documentation": "<p>Enables synchronization of consumer group offsets to target cluster. The translated offsets will be written to topic __consumer_offsets.</p>"
+        }
+      },
+      "documentation": "<p>Details about consumer group replication.</p>",
+      "required": ["ConsumerGroupsToReplicate", "ConsumerGroupsToExclude", "SynchroniseConsumerGroupOffsets", "DetectAndCopyNewConsumerGroups"]
+    },
     "CreateClusterV2Request": {
       "type": "structure",
       "members": {
@@ -2962,6 +3261,63 @@
           "shape": "ConfigurationState",
           "locationName": "state",
           "documentation": "\n            <p>The state of the configuration. The possible states are ACTIVE, DELETING, and DELETE_FAILED. </p>\n         "
+        }
+      }
+    },
+    "CreateReplicatorRequest": {
+      "type": "structure",
+      "members": {
+        "Description": {
+          "shape": "__stringMax1024",
+          "locationName": "description",
+          "documentation": "<p>A summary description of the replicator.</p>"
+        },
+        "KafkaClusters": {
+          "shape": "__listOfKafkaCluster",
+          "locationName": "kafkaClusters",
+          "documentation": "<p>Kafka Clusters to use in setting up sources / targets for replication.</p>"
+        },
+        "ReplicationInfoList": {
+          "shape": "__listOfReplicationInfo",
+          "locationName": "replicationInfoList",
+          "documentation": "<p>A list of replication configurations, where each configuration targets a given source cluster to target cluster replication flow.</p>"
+        },
+        "ReplicatorName": {
+          "shape": "__stringMin1Max128Pattern09AZaZ09AZaZ0",
+          "locationName": "replicatorName",
+          "documentation": "<p>The name of the replicator. Alpha-numeric characters with '-' are allowed.</p>"
+        },
+        "ServiceExecutionRoleArn": {
+          "shape": "__string",
+          "locationName": "serviceExecutionRoleArn",
+          "documentation": "<p>The ARN of the IAM role used by the replicator to access resources in the customer's account (e.g source and target clusters)</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>List of tags to attach to created Replicator.</p>"
+        }
+      },
+      "documentation": "<p>Creates a replicator using the specified configuration.</p>",
+      "required": ["ServiceExecutionRoleArn", "ReplicatorName", "ReplicationInfoList", "KafkaClusters"]
+    },
+    "CreateReplicatorResponse": {
+      "type": "structure",
+      "members": {
+        "ReplicatorArn": {
+          "shape": "__string",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator.</p>"
+        },
+        "ReplicatorName": {
+          "shape": "__string",
+          "locationName": "replicatorName",
+          "documentation": "<p>Name of the replicator provided by the customer.</p>"
+        },
+        "ReplicatorState": {
+          "shape": "ReplicatorState",
+          "locationName": "replicatorState",
+          "documentation": "<p>State of the replicator.</p>"
         }
       }
     },
@@ -3270,6 +3626,39 @@
         }
       }
     },
+    "DeleteReplicatorRequest": {
+      "type": "structure",
+      "members": {
+        "CurrentVersion": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "currentVersion",
+          "documentation": "<p>The current version of the replicator.</p>"
+        },
+        "ReplicatorArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be deleted.</p>"
+        }
+      },
+      "required": ["ReplicatorArn"]
+    },
+    "DeleteReplicatorResponse": {
+      "type": "structure",
+      "members": {
+        "ReplicatorArn": {
+          "shape": "__string",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator.</p>"
+        },
+        "ReplicatorState": {
+          "shape": "ReplicatorState",
+          "locationName": "replicatorState",
+          "documentation": "<p>The state of the replicator.</p>"
+        }
+      }
+    },
     "DeleteVpcConnectionRequest": {
       "type": "structure",
       "members": {
@@ -3511,6 +3900,88 @@
       "required": [
         "Arn"
       ]
+    },
+    "DescribeReplicatorRequest": {
+      "type": "structure",
+      "members": {
+        "ReplicatorArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be described.</p>"
+        }
+      },
+      "required": ["ReplicatorArn"]
+    },
+    "DescribeReplicatorResponse": {
+      "type": "structure",
+      "members": {
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>The time when the replicator was created.</p>"
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "<p>The current version number of the replicator.</p>"
+        },
+        "IsReplicatorReference": {
+          "shape": "__boolean",
+          "locationName": "isReplicatorReference",
+          "documentation": "<p>Whether this resource is a replicator reference.</p>"
+        },
+        "KafkaClusters": {
+          "shape": "__listOfKafkaClusterDescription",
+          "locationName": "kafkaClusters",
+          "documentation": "<p>Kafka Clusters used in setting up sources / targets for replication.</p>"
+        },
+        "ReplicationInfoList": {
+          "shape": "__listOfReplicationInfoDescription",
+          "locationName": "replicationInfoList",
+          "documentation": "<p>A list of replication configurations, where each configuration targets a given source cluster to target cluster replication flow.</p>"
+        },
+        "ReplicatorArn": {
+          "shape": "__string",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator.</p>"
+        },
+        "ReplicatorDescription": {
+          "shape": "__string",
+          "locationName": "replicatorDescription",
+          "documentation": "<p>The description of the replicator.</p>"
+        },
+        "ReplicatorName": {
+          "shape": "__string",
+          "locationName": "replicatorName",
+          "documentation": "<p>The name of the replicator.</p>"
+        },
+        "ReplicatorResourceArn": {
+          "shape": "__string",
+          "locationName": "replicatorResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator resource in the region where the replicator was created.</p>"
+        },
+        "ReplicatorState": {
+          "shape": "ReplicatorState",
+          "locationName": "replicatorState",
+          "documentation": "<p>State of the replicator.</p>"
+        },
+        "ServiceExecutionRoleArn": {
+          "shape": "__string",
+          "locationName": "serviceExecutionRoleArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM role used by the replicator to access resources in the customer's account (e.g source and target clusters)</p>"
+        },
+        "StateInfo": {
+          "shape": "ReplicationStateInfo",
+          "locationName": "stateInfo",
+          "documentation": "<p>Details about the state of the replicator.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>List of tags attached to the Replicator.</p>"
+        }
+      }
     },
     "DescribeVpcConnectionResponse": {
       "type": "structure",
@@ -3876,6 +4347,77 @@
         "httpStatusCode": 500
       }
     },
+    "KafkaCluster": {
+      "type": "structure",
+      "members": {
+        "AmazonMskCluster": {
+          "shape": "AmazonMskCluster",
+          "locationName": "amazonMskCluster",
+          "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
+        },
+        "VpcConfig": {
+          "shape": "KafkaClusterClientVpcConfig",
+          "locationName": "vpcConfig",
+          "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>"
+        }
+      },
+      "documentation": "<p>Information about Kafka Cluster to be used as source / target for replication.</p>",
+      "required": ["VpcConfig", "AmazonMskCluster"]
+    },
+    "KafkaClusterClientVpcConfig" : {
+      "type" : "structure",
+      "members" : {
+        "SecurityGroupIds" : {
+          "shape" : "__listOf__string",
+          "locationName" : "securityGroupIds",
+          "documentation" : "<p>The security groups to attach to the ENIs for the broker nodes.</p>"
+        },
+        "SubnetIds" : {
+          "shape" : "__listOf__string",
+          "locationName" : "subnetIds",
+          "documentation" : "<p>The list of subnets in the client VPC to connect to.</p>"
+        }
+      },
+      "documentation" : "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>",
+      "required" : [ "SubnetIds" ]
+    },
+    "KafkaClusterDescription": {
+      "type": "structure",
+      "members": {
+        "AmazonMskCluster": {
+          "shape": "AmazonMskCluster",
+          "locationName": "amazonMskCluster",
+          "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
+        },
+        "KafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "kafkaClusterAlias",
+          "documentation": "<p>The alias of the Kafka cluster. Used to prefix names of replicated topics.</p> "
+        },
+        "VpcConfig": {
+          "shape": "KafkaClusterClientVpcConfig",
+          "locationName": "vpcConfig",
+          "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>"
+        }
+      },
+      "documentation": "<p>Information about Kafka Cluster used as source / target for replication.</p>"
+    },
+    "KafkaClusterSummary": {
+      "type": "structure",
+      "members": {
+        "AmazonMskCluster": {
+          "shape": "AmazonMskCluster",
+          "locationName": "amazonMskCluster",
+          "documentation": "<p>Details of an Amazon MSK Cluster.</p>"
+        },
+        "KafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "kafkaClusterAlias",
+          "documentation": "<p>The alias of the Kafka cluster. Used to prefix names of replicated topics.</p> "
+        }
+      },
+      "documentation": "<p>Summarized information about Kafka Cluster used as source / target for replication.</p>"
+    },
     "KafkaVersion": {
       "type": "structure",
       "members": {
@@ -4199,6 +4741,44 @@
           "shape": "__listOfNodeInfo",
           "locationName": "nodeInfoList",
           "documentation": "\n            <p>List containing a NodeInfo object.</p>\n         "
+        }
+      }
+    },
+    "ListReplicatorsRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "<p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response of ListReplicators is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListReplicators.</p>"
+        },
+        "ReplicatorNameFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "replicatorNameFilter",
+          "documentation": "<p>Returns replicators starting with given name.</p>"
+        }
+      }
+    },
+    "ListReplicatorsResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response of ListReplicators is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListReplicators.</p>"
+        },
+        "Replicators": {
+          "shape": "__listOfReplicatorSummary",
+          "locationName": "replicators",
+          "documentation": "<p>List containing information of each of the replicators in the account.</p>"
         }
       }
     },
@@ -4807,6 +5387,157 @@
         "httpStatusCode": 404
       }
     },
+    "ReplicationInfo": {
+      "type": "structure",
+      "members": {
+        "ConsumerGroupReplication": {
+          "shape": "ConsumerGroupReplication",
+          "locationName": "consumerGroupReplication",
+          "documentation": "<p>Configuration relating to consumer group replication.</p>"
+        },
+        "SourceKafkaClusterArn": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterArn",
+          "documentation": "<p>The ARN of the source Kafka cluster.</p>"
+        },
+        "TargetCompressionType": {
+          "shape": "TargetCompressionType",
+          "locationName": "targetCompressionType",
+          "documentation": "<p>The compression type to use when producing records to target cluster.</p>"
+        },
+        "TargetKafkaClusterArn": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterArn",
+          "documentation": "<p>The ARN of the target Kafka cluster.</p>"
+        },
+        "TopicReplication": {
+          "shape": "TopicReplication",
+          "locationName": "topicReplication",
+          "documentation": "<p>Configuration relating to topic replication.</p>"
+        }
+      },
+      "documentation": "<p>Specifies configuration for replication between a source and target Kafka cluster.</p>",
+      "required": ["TargetCompressionType", "TopicReplication", "ConsumerGroupReplication", "SourceKafkaClusterArn", "TargetKafkaClusterArn"]
+    },
+    "ReplicationInfoDescription": {
+      "type": "structure",
+      "members": {
+        "ConsumerGroupReplication": {
+          "shape": "ConsumerGroupReplication",
+          "locationName": "consumerGroupReplication",
+          "documentation": "<p>Configuration relating to consumer group replication.</p>"
+        },
+        "SourceKafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterAlias",
+          "documentation": "<p>The alias of the source Kafka cluster.</p>"
+        },
+        "TargetCompressionType": {
+          "shape": "TargetCompressionType",
+          "locationName": "targetCompressionType",
+          "documentation": "<p>The compression type to use when producing records to target cluster.</p>"
+        },
+        "TargetKafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterAlias",
+          "documentation": "<p>The alias of the target Kafka cluster.</p>"
+        },
+        "TopicReplication": {
+          "shape": "TopicReplication",
+          "locationName": "topicReplication",
+          "documentation": "<p>Configuration relating to topic replication.</p>"
+        }
+      },
+      "documentation": "<p>Specifies configuration for replication between a source and target Kafka cluster (sourceKafkaClusterAlias -> targetKafkaClusterAlias)</p>"
+    },
+    "ReplicationInfoSummary": {
+      "type": "structure",
+      "members": {
+        "SourceKafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterAlias",
+          "documentation": "<p>The alias of the source Kafka cluster.</p>"
+        },
+        "TargetKafkaClusterAlias": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterAlias",
+          "documentation": "<p>The alias of the target Kafka cluster.</p>"
+        }
+      },
+      "documentation": "<p>Summarized information of replication between clusters.</p>"
+    },
+    "ReplicationStateInfo" : {
+      "type" : "structure",
+      "members" : {
+        "Code" : {
+          "shape" : "__string",
+          "locationName" : "code",
+          "documentation" : "Code that describes the current state of the replicator."
+        },
+        "Message" : {
+          "shape" : "__string",
+          "locationName" : "message",
+          "documentation" : "Message that describes the state of the replicator."
+        }
+      },
+      "documentation" : "Details about the state of a replicator"
+    },
+    "ReplicatorState": {
+      "type": "string",
+      "documentation": "<p>The state of a replicator.</p>",
+      "enum": ["RUNNING", "CREATING", "UPDATING", "DELETING", "FAILED"]
+    },
+    "ReplicatorSummary": {
+      "type": "structure",
+      "members": {
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>The time the replicator was created.</p>"
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "<p>The current version of the replicator.</p>"
+        },
+        "IsReplicatorReference": {
+          "shape": "__boolean",
+          "locationName": "isReplicatorReference",
+          "documentation": "<p>Whether this resource is a replicator reference.</p>"
+        },
+        "KafkaClustersSummary": {
+          "shape": "__listOfKafkaClusterSummary",
+          "locationName": "kafkaClustersSummary",
+          "documentation": "<p>Kafka Clusters used in setting up sources / targets for replication.</p>"
+        },
+        "ReplicationInfoSummaryList": {
+          "shape": "__listOfReplicationInfoSummary",
+          "locationName": "replicationInfoSummaryList",
+          "documentation": "<p>A list of summarized information of replications between clusters.</p>"
+        },
+        "ReplicatorArn": {
+          "shape": "__string",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator.</p>"
+        },
+        "ReplicatorName": {
+          "shape": "__string",
+          "locationName": "replicatorName",
+          "documentation": "<p>The name of the replicator.</p>"
+        },
+        "ReplicatorResourceArn": {
+          "shape": "__string",
+          "locationName": "replicatorResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator resource in the region where the replicator was created.</p>"
+        },
+        "ReplicatorState": {
+          "shape": "ReplicatorState",
+          "locationName": "replicatorState",
+          "documentation": "<p>State of the replicator.</p>"
+        }
+      },
+      "documentation": "<p>Information about a replicator.</p>"
+    },
     "ServiceUnavailableException": {
       "type": "structure",
       "members": {
@@ -4876,6 +5607,11 @@
         "Tags"
       ]
     },
+    "TargetCompressionType": {
+      "type": "string",
+      "documentation": "<p>The type of compression to use producing records to the target cluster.</p>",
+      "enum": ["NONE", "GZIP", "SNAPPY", "LZ4", "ZSTD"]
+    },
     "Tls": {
       "type": "structure",
       "members": {
@@ -4922,6 +5658,70 @@
       "error": {
         "httpStatusCode": 429
       }
+    },
+    "TopicReplication": {
+      "type": "structure",
+      "members": {
+        "CopyAccessControlListsForTopics": {
+          "shape": "__boolean",
+          "locationName": "copyAccessControlListsForTopics",
+          "documentation": "<p>Whether to periodically configure remote topic ACLs to match their corresponding upstream topics.</p>"
+        },
+        "CopyTopicConfigurations": {
+          "shape": "__boolean",
+          "locationName": "copyTopicConfigurations",
+          "documentation": "<p>Whether to periodically configure remote topics to match their corresponding upstream topics.</p>"
+        },
+        "DetectAndCopyNewTopics": {
+          "shape": "__boolean",
+          "locationName": "detectAndCopyNewTopics",
+          "documentation": "<p>Whether to periodically check for new topics and partitions.</p>"
+        },
+        "TopicsToExclude": {
+          "shape": "__listOf__stringMax249",
+          "locationName": "topicsToExclude",
+          "documentation": "<p>List of regular expression patterns indicating the topics that should not be replicated.</p>"
+        },
+        "TopicsToReplicate": {
+          "shape": "__listOf__stringMax249",
+          "locationName": "topicsToReplicate",
+          "documentation": "<p>List of regular expression patterns indicating the topics to copy.</p>"
+        }
+      },
+      "documentation": "<p>Details about topic replication.</p>",
+      "required": ["TopicsToReplicate"]
+    },
+    "TopicReplicationUpdate": {
+      "type": "structure",
+      "members": {
+        "CopyAccessControlListsForTopics": {
+          "shape": "__boolean",
+          "locationName": "copyAccessControlListsForTopics",
+          "documentation": "<p>Whether to periodically configure remote topic ACLs to match their corresponding upstream topics.</p>"
+        },
+        "CopyTopicConfigurations": {
+          "shape": "__boolean",
+          "locationName": "copyTopicConfigurations",
+          "documentation": "<p>Whether to periodically configure remote topics to match their corresponding upstream topics.</p>"
+        },
+        "DetectAndCopyNewTopics": {
+          "shape": "__boolean",
+          "locationName": "detectAndCopyNewTopics",
+          "documentation": "<p>Whether to periodically check for new topics and partitions.</p>"
+        },
+        "TopicsToExclude": {
+          "shape": "__listOf__stringMax249",
+          "locationName": "topicsToExclude",
+          "documentation": "<p>List of regular expression patterns indicating the topics that should not be replicated.</p>"
+        },
+        "TopicsToReplicate": {
+          "shape": "__listOf__stringMax249",
+          "locationName": "topicsToReplicate",
+          "documentation": "<p>List of regular expression patterns indicating the topics to copy.</p>"
+        }
+      },
+      "documentation": "<p>Details for updating the topic replication of a replicator.</p>",
+      "required": ["TopicsToReplicate", "TopicsToExclude", "CopyTopicConfigurations", "DetectAndCopyNewTopics", "CopyAccessControlListsForTopics"]
     },
     "Unauthenticated" : {
       "type" : "structure",
@@ -5245,6 +6045,59 @@
           "shape" : "__string",
           "locationName" : "clusterOperationArn",
           "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      }
+    },
+    "UpdateReplicationInfoRequest": {
+      "type": "structure",
+      "members": {
+        "ConsumerGroupReplication": {
+          "shape": "ConsumerGroupReplicationUpdate",
+          "locationName": "consumerGroupReplication",
+          "documentation": "<p>Updated consumer group replication information.</p>"
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "<p>Current replicator version.</p>"
+        },
+        "ReplicatorArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be updated.</p>"
+        },
+        "SourceKafkaClusterArn": {
+          "shape": "__string",
+          "locationName": "sourceKafkaClusterArn",
+          "documentation": "<p>The ARN of the source Kafka cluster.</p>"
+        },
+        "TargetKafkaClusterArn": {
+          "shape": "__string",
+          "locationName": "targetKafkaClusterArn",
+          "documentation": "<p>The ARN of the target Kafka cluster.</p>"
+        },
+        "TopicReplication": {
+          "shape": "TopicReplicationUpdate",
+          "locationName": "topicReplication",
+          "documentation": "<p>Updated topic replication information.</p>"
+        }
+      },
+      "documentation": "<p>Update information relating to replication between a given source and target Kafka cluster.</p>",
+      "required": ["ReplicatorArn", "SourceKafkaClusterArn", "CurrentVersion", "TargetKafkaClusterArn"]
+    },
+    "UpdateReplicationInfoResponse": {
+      "type": "structure",
+      "members": {
+        "ReplicatorArn": {
+          "shape": "__string",
+          "locationName": "replicatorArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the replicator.</p>"
+        },
+        "ReplicatorState": {
+          "shape": "ReplicatorState",
+          "locationName": "replicatorState",
+          "documentation": "<p>State of the replicator.</p>"
         }
       }
     },
@@ -5636,6 +6489,24 @@
         "shape": "KafkaVersion"
       }
     },
+    "__listOfKafkaCluster": {
+      "type": "list",
+      "member": {
+        "shape": "KafkaCluster"
+      }
+    },
+    "__listOfKafkaClusterDescription": {
+      "type": "list",
+      "member": {
+        "shape": "KafkaClusterDescription"
+      }
+    },
+    "__listOfKafkaClusterSummary": {
+      "type": "list",
+      "member": {
+        "shape": "KafkaClusterSummary"
+      }
+    },
     "__listOfNodeInfo": {
       "type": "list",
       "member": {
@@ -5646,6 +6517,30 @@
       "type": "list",
       "member": {
         "shape": "ClientVpcConnection"
+      }
+    },
+    "__listOfReplicationInfo": {
+      "type": "list",
+      "member": {
+        "shape": "ReplicationInfo"
+      }
+    },
+    "__listOfReplicationInfoDescription": {
+      "type": "list",
+      "member": {
+        "shape": "ReplicationInfoDescription"
+      }
+    },
+    "__listOfReplicationInfoSummary": {
+      "type": "list",
+      "member": {
+        "shape": "ReplicationInfoSummary"
+      }
+    },
+    "__listOfReplicatorSummary": {
+      "type": "list",
+      "member": {
+        "shape": "ReplicatorSummary"
       }
     },
     "__listOfVpcConnection": {
@@ -5678,8 +6573,32 @@
         "shape": "__string"
       }
     },
+    "__listOf__stringMax249": {
+      "type": "list",
+      "member": {
+        "shape": "__stringMax249"
+      }
+    },
+    "__listOf__stringMax256": {
+      "type": "list",
+      "member": {
+        "shape": "__stringMax256"
+      }
+    },
     "__string": {
       "type": "string"
+    },
+    "__stringMax1024": {
+      "type": "string",
+      "max": 1024
+    },
+    "__stringMax249": {
+      "type": "string",
+      "max": 249
+    },
+    "__stringMax256": {
+      "type": "string",
+      "max": 256
     },
     "__stringMin1Max128": {
       "type": "string",
@@ -5696,9 +6615,19 @@
       "min": 5,
       "max": 32
     },
+    "__stringMin1Max128Pattern09AZaZ09AZaZ0": {
+      "type": "string",
+      "min": 1,
+      "max": 128,
+      "pattern": "^[0-9A-Za-z][0-9A-Za-z-]{0,}$"
+    },
     "__timestampIso8601": {
       "type": "timestamp",
       "timestampFormat": "iso8601"
+    },
+    "__timestampUnix": {
+      "type": "timestamp",
+      "timestampFormat": "unixTimestamp"
     }
   },
   "documentation": "\n               <p>The operations for managing an Amazon MSK cluster.</p>\n            "

@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.13.27
+=======
+
+* api-change:``ecs``: Documentation only updates to address Amazon ECS tickets.
+* api-change:``drs``: Updated exsiting API to allow AWS Elastic Disaster Recovery support of launching recovery into existing EC2 instances.
+* api-change:``transfer``: Documentation updates for AWS Transfer Family
+* api-change:``redshift-serverless``: Added support for managing credentials of serverless namespace admin using AWS Secrets Manager.
+* api-change:``globalaccelerator``: Fixed error where ListCustomRoutingEndpointGroups did not have a paginator
+* api-change:``mediapackagev2``: This release allows customers to manage MediaPackage v2 resource using CloudFormation.
+* api-change:``sesv2``: This release provides enhanced visibility into your SES identity verification status. This will offer you more actionable insights, enabling you to promptly address any verification-related issues.
+* api-change:``kafka``: AWS Managed Streaming for Kafka is launching MSK Replicator, a new feature that enables customers to reliably replicate data across Amazon MSK clusters in same or different AWS regions. You can now use SDK to create, list, describe, delete, update, and manage tags of MSK Replicators.
+* api-change:``codepipeline``: Add retryMode ALL_ACTIONS to RetryStageExecution API that retries a failed stage starting from first action in the stage
+* api-change:``guardduty``: Add domainWithSuffix finding field to dnsRequestAction
+* api-change:``entityresolution``: This launch expands our matching techniques to include provider-based matching to help customer match, link, and enhance records with minimal data movement. With data service providers, we have removed the need for customers to build bespoke integrations,.
+* api-change:``managedblockchain-query``: This release introduces two new APIs: GetAssetContract and ListAssetContracts. This release also adds support for Bitcoin Testnet.
+* api-change:``cloudformation``: SDK and documentation updates for UpdateReplacePolicy
+* api-change:``route53-recovery-control-config``: Adds permissions for GetResourcePolicy to support returning details about AWS Resource Access Manager resource policies for shared resources.
+* api-change:``discovery``: This release introduces three new APIs: StartBatchDeleteConfigurationTask, DescribeBatchDeleteConfigurationTask, and BatchDeleteAgents.
+* api-change:``redshift``: Added support for managing credentials of provisioned cluster admin using AWS Secrets Manager.
+* api-change:``route53-recovery-cluster``: Adds Owner field to ListRoutingControls API.
+* api-change:``opensearch``: This release allows customers to list and associate optional plugin packages with compatible Amazon OpenSearch Service clusters for enhanced functionality.
+* api-change:``xray``: This releases enhances GetTraceSummaries API to support new TimeRangeType Service to query trace summaries by segment end time.
+
+
 2.13.26
 =======
 

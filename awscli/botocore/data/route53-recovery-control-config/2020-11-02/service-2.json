@@ -483,6 +483,32 @@
       ],
       "documentation": "<p>Returns information about a safety rule.</p>"
     },
+    "GetResourcePolicy": {
+      "name": "GetResourcePolicy",
+      "http": {
+        "method": "GET",
+        "requestUri": "/resourcePolicy/{ResourceArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetResourcePolicyRequest"
+      },
+      "output": {
+        "shape": "GetResourcePolicyResponse",
+        "documentation": "<p>200 response - Success.</p>"
+      },
+      "errors": [
+        {
+          "shape": "ResourceNotFoundException",
+          "documentation": "<p>404 response - MalformedQueryString. The query string contains a syntax error or resource not found.</p>"
+        },
+        {
+          "shape": "InternalServerException",
+          "documentation": "<p>500 response - InternalServiceError. Temporary service error. Retry the request.</p>"
+        }
+      ],
+      "documentation": "<p>Get information about the resource policy for a cluster.</p>"
+    },
     "ListAssociatedRoute53HealthChecks": {
       "name": "ListAssociatedRoute53HealthChecks",
       "http": {
@@ -918,6 +944,10 @@
         "WaitPeriodMs": {
           "shape": "__integer",
           "documentation": "<p>An evaluation period, in milliseconds (ms), during which any request against the target routing controls will fail. This helps prevent \"flapping\" of state. The wait period is 5000 ms by default, but you can choose a custom value.</p>"
+        },
+        "Owner": {
+          "shape": "__stringMin12Max12PatternD12",
+          "documentation": "<p>The Amazon Web Services account ID of the assertion rule owner.</p>"
         }
       },
       "documentation": "<p>An assertion rule enforces that, when you change a routing control state, that the criteria that you set in the rule configuration is met. Otherwise, the change to the routing control is not accepted. For example, the criteria might be that at least one routing control state is On after the transaction so that traffic continues to flow to at least one cell for the application. This ensures that you avoid a fail-open scenario.</p>",
@@ -972,6 +1002,10 @@
         "Status": {
           "shape": "Status",
           "documentation": "<p>Deployment status of a resource. Status can be one of the following: PENDING, DEPLOYED, PENDING_DELETION.</p>"
+        },
+        "Owner": {
+          "shape": "__stringMin12Max12PatternD12",
+          "documentation": "<p>The Amazon Web Services account ID of the cluster owner.</p>"
         }
       },
       "documentation": "<p>A set of five redundant Regional endpoints against which you can execute API calls to update or get the state of routing controls. You can host multiple control panels and routing controls on one cluster.</p>"
@@ -1033,6 +1067,10 @@
         "Status": {
           "shape": "Status",
           "documentation": "<p>The deployment status of control panel. Status can be one of the following: PENDING, DEPLOYED, PENDING_DELETION.</p>"
+        },
+        "Owner": {
+          "shape": "__stringMin12Max12PatternD12",
+          "documentation": "<p>The Amazon Web Services account ID of the control panel owner.</p>"
         }
       },
       "documentation": "<p>A control panel represents a group of routing controls that can be changed together in a single transaction.</p>"
@@ -1378,6 +1416,10 @@
         "WaitPeriodMs": {
           "shape": "__integer",
           "documentation": "<p>An evaluation period, in milliseconds (ms), during which any request against the target routing controls will fail. This helps prevent \"flapping\" of state. The wait period is 5000 ms by default, but you can choose a custom value.</p>"
+        },
+        "Owner": {
+          "shape": "__stringMin12Max12PatternD12",
+          "documentation": "<p>The Amazon Web Services account ID of the gating rule owner.</p>"
         }
       },
       "documentation": "<p>A gating rule verifies that a gating routing control or set of gating routing controls, evaluates as true, based on a rule configuration that you specify, which allows a set of routing control state changes to complete.</p> <p>For example, if you specify one gating routing control and you set the Type in the rule configuration to OR, that indicates that you must set the gating routing control to On for the rule to evaluate as true; that is, for the gating control \"switch\" to be \"On\". When you do that, then you can update the routing control states for the target routing controls that you specify in the gating rule.</p>",
@@ -1414,6 +1456,29 @@
         "WaitPeriodMs",
         "Name"
       ]
+    },
+    "GetResourcePolicyRequest": {
+      "type": "structure",
+      "members": {
+        "ResourceArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "ResourceArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ]
+    },
+    "GetResourcePolicyResponse": {
+      "type": "structure",
+      "members": {
+        "Policy": {
+          "shape": "__policy",
+          "documentation": "<p>The resource policy.</p>"
+        }
+      }
     },
     "InternalServerException": {
       "type": "structure",
@@ -1749,6 +1814,10 @@
         "Status": {
           "shape": "Status",
           "documentation": "<p>The deployment status of a routing control. Status can be one of the following: PENDING, DEPLOYED, PENDING_DELETION.</p>"
+        },
+        "Owner": {
+          "shape": "__stringMin12Max12PatternD12",
+          "documentation": "<p>The Amazon Web Services account ID of the routing control owner.</p>"
         }
       },
       "documentation": "<p>A routing control has one of two states: ON and OFF. You can map the routing control state to the state of an Amazon Route 53 health check, which can be used to control traffic routing.</p>"
@@ -2072,6 +2141,12 @@
       "max": 256,
       "pattern": "^\\S+$"
     },
+    "__stringMin12Max12PatternD12": {
+      "type": "string",
+      "min": 12,
+      "max": 12,
+      "pattern": "^\\d{12}$"
+    },
     "__stringMin1Max128PatternAZaZ09": {
       "type": "string",
       "min": 1,
@@ -2101,6 +2176,12 @@
       "min": 1,
       "max": 8096,
       "pattern": "[\\S]*"
+    },
+    "__policy": {
+      "type": "string",
+      "min": 2,
+      "max": 10240,
+      "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
     },
     "__timestampIso8601": {
       "type": "timestamp",

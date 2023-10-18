@@ -30,7 +30,26 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Gets the token balance for a batch of tokens by using the <code>GetTokenBalance</code> action for every token in the request.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
+      "documentation":"<p>Gets the token balance for a batch of tokens by using the <code>BatchGetTokenBalance</code> action for every token in the request.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
+    },
+    "GetAssetContract":{
+      "name":"GetAssetContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-asset-contract",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAssetContractInput"},
+      "output":{"shape":"GetAssetContractOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Gets the information about a specific contract deployed on the blockchain.</p> <note> <ul> <li> <p>The Bitcoin blockchain networks do not support this operation.</p> </li> <li> <p>Metadata is currently only available for some <code>ERC-20</code> contracts. Metadata will be available for additional contracts in the future.</p> </li> </ul> </note>"
     },
     "GetTokenBalance":{
       "name":"GetTokenBalance",
@@ -70,6 +89,24 @@
       ],
       "documentation":"<p>Get the details of a transaction.</p>"
     },
+    "ListAssetContracts":{
+      "name":"ListAssetContracts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-asset-contracts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetContractsInput"},
+      "output":{"shape":"ListAssetContractsOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Lists all the contracts for a given contract type deployed by an address (either a contract address or a wallet address).</p> <p>The Bitcoin blockchain networks do not support this operation.</p>"
+    },
     "ListTokenBalances":{
       "name":"ListTokenBalances",
       "http":{
@@ -86,7 +123,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>This action returns the following for a given a blockchain network:</p> <ul> <li> <p>Lists all token balances owned by an address (either a contact address or a wallet address).</p> </li> <li> <p>Lists all token balances for all tokens created by a contract.</p> </li> <li> <p>Lists all token balances for a given token.</p> </li> </ul> <note> <p>You must always specify the network property of the <code>tokenFilter</code> when using this operation.</p> </note>"
+      "documentation":"<p>This action returns the following for a given blockchain network:</p> <ul> <li> <p>Lists all token balances owned by an address (either a contract address or a wallet address).</p> </li> <li> <p>Lists all token balances for all tokens created by a contract.</p> </li> <li> <p>Lists all token balances for a given token.</p> </li> </ul> <note> <p>You must always specify the network property of the <code>tokenFilter</code> when using this operation.</p> </note>"
     },
     "ListTransactionEvents":{
       "name":"ListTransactionEvents",
@@ -142,6 +179,35 @@
       },
       "exception":true
     },
+    "AssetContract":{
+      "type":"structure",
+      "required":[
+        "contractIdentifier",
+        "tokenStandard",
+        "deployerAddress"
+      ],
+      "members":{
+        "contractIdentifier":{
+          "shape":"ContractIdentifier",
+          "documentation":"<p>The container for the contract identifier containing its blockchain network and address.</p>"
+        },
+        "tokenStandard":{
+          "shape":"QueryTokenStandard",
+          "documentation":"<p>The token standard of the contract.</p>"
+        },
+        "deployerAddress":{
+          "shape":"ChainAddress",
+          "documentation":"<p>The address of the contract deployer.</p>"
+        }
+      },
+      "documentation":"<p>This container contains information about an contract.</p>"
+    },
+    "AssetContractList":{
+      "type":"list",
+      "member":{"shape":"AssetContract"},
+      "max":250,
+      "min":0
+    },
     "BatchGetTokenBalanceErrorItem":{
       "type":"structure",
       "required":[
@@ -179,7 +245,7 @@
       "members":{
         "getTokenBalanceInputs":{
           "shape":"GetTokenBalanceInputList",
-          "documentation":"<p>An array of <code>GetTokenBalanceInput</code> objects whose balance is being requested.</p>"
+          "documentation":"<p>An array of <code>BatchGetTokenBalanceInputItem</code> objects whose balance is being requested.</p>"
         }
       }
     },
@@ -255,6 +321,65 @@
       "type":"string",
       "pattern":"[-A-Za-z0-9]{13,74}"
     },
+    "ContractFilter":{
+      "type":"structure",
+      "required":[
+        "network",
+        "tokenStandard",
+        "deployerAddress"
+      ],
+      "members":{
+        "network":{
+          "shape":"QueryNetwork",
+          "documentation":"<p>The blockchain network of the contract.</p>"
+        },
+        "tokenStandard":{
+          "shape":"QueryTokenStandard",
+          "documentation":"<p>The container for the token standard.</p>"
+        },
+        "deployerAddress":{
+          "shape":"ChainAddress",
+          "documentation":"<p>The network address of the deployer.</p>"
+        }
+      },
+      "documentation":"<p>The contract or wallet address by which to filter the request.</p>"
+    },
+    "ContractIdentifier":{
+      "type":"structure",
+      "required":[
+        "network",
+        "contractAddress"
+      ],
+      "members":{
+        "network":{
+          "shape":"QueryNetwork",
+          "documentation":"<p>The blockchain network of the contract.</p>"
+        },
+        "contractAddress":{
+          "shape":"ChainAddress",
+          "documentation":"<p>Container for the blockchain address about a contract.</p>"
+        }
+      },
+      "documentation":"<p>Container for the blockchain address and network information about a contract.</p>"
+    },
+    "ContractMetadata":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the token contract.</p>"
+        },
+        "symbol":{
+          "shape":"String",
+          "documentation":"<p>The symbol of the token contract.</p>"
+        },
+        "decimals":{
+          "shape":"Integer",
+          "documentation":"<p>The decimals used by the token contract.</p>"
+        }
+      },
+      "documentation":"<p>The metadata of the contract.</p>"
+    },
     "ErrorType":{
       "type":"string",
       "enum":[
@@ -265,6 +390,39 @@
     "ExceptionMessage":{
       "type":"string",
       "min":1
+    },
+    "GetAssetContractInput":{
+      "type":"structure",
+      "required":["contractIdentifier"],
+      "members":{
+        "contractIdentifier":{
+          "shape":"ContractIdentifier",
+          "documentation":"<p>Contains the blockchain address and network information about the contract.</p>"
+        }
+      }
+    },
+    "GetAssetContractOutput":{
+      "type":"structure",
+      "required":[
+        "contractIdentifier",
+        "tokenStandard",
+        "deployerAddress"
+      ],
+      "members":{
+        "contractIdentifier":{
+          "shape":"ContractIdentifier",
+          "documentation":"<p>Contains the blockchain address and network information about the contract.</p>"
+        },
+        "tokenStandard":{
+          "shape":"QueryTokenStandard",
+          "documentation":"<p>The token standard of the contract requested.</p>"
+        },
+        "deployerAddress":{
+          "shape":"ChainAddress",
+          "documentation":"<p>The address of the deployer of contract.</p>"
+        },
+        "metadata":{"shape":"ContractMetadata"}
+      }
     },
     "GetTokenBalanceInput":{
       "type":"structure",
@@ -362,6 +520,44 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "ListAssetContractsInput":{
+      "type":"structure",
+      "required":["contractFilter"],
+      "members":{
+        "contractFilter":{
+          "shape":"ContractFilter",
+          "documentation":"<p>Contains the filter parameter for the request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"ListAssetContractsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of contracts to list.</p>"
+        }
+      }
+    },
+    "ListAssetContractsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":250,
+      "min":1
+    },
+    "ListAssetContractsOutput":{
+      "type":"structure",
+      "required":["contracts"],
+      "members":{
+        "contracts":{
+          "shape":"AssetContractList",
+          "documentation":"<p>An array of contract objects that contain the properties for each contract.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve. </p>"
+        }
+      }
+    },
     "ListTokenBalancesInput":{
       "type":"structure",
       "required":["tokenFilter"],
@@ -372,7 +568,7 @@
         },
         "tokenFilter":{
           "shape":"TokenFilter",
-          "documentation":"<p>The contract address or a token identifier on the blockchain network by which to filter the request. You must specify the contractAddress property of this container when listing tokens minted by a contract.</p> <note> <p>You must always specify the network property of this container when using this operation.</p> </note>"
+          "documentation":"<p>The contract address or a token identifier on the blockchain network by which to filter the request. You must specify the <code>contractAddress</code> property of this container when listing tokens minted by a contract.</p> <note> <p>You must always specify the network property of this container when using this operation.</p> </note>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -553,12 +749,21 @@
       "type":"string",
       "enum":[
         "ETHEREUM_MAINNET",
-        "BITCOIN_MAINNET"
+        "BITCOIN_MAINNET",
+        "BITCOIN_TESTNET"
       ]
     },
     "QueryTokenId":{
       "type":"string",
       "pattern":"[a-zA-Z0-9]{1,66}"
+    },
+    "QueryTokenStandard":{
+      "type":"string",
+      "enum":[
+        "ERC20",
+        "ERC721",
+        "ERC1155"
+      ]
     },
     "QueryTransactionEventType":{
       "type":"string",
@@ -729,7 +934,7 @@
         },
         "lastUpdatedTime":{
           "shape":"BlockchainInstant",
-          "documentation":"<p>The <code>timestamp</code> of the last transaction at which the balance for the token in the wallet was updated.</p>"
+          "documentation":"<p>The <code>Timestamp</code> of the last transaction at which the balance for the token in the wallet was updated.</p>"
         }
       },
       "documentation":"<p>The balance of the token.</p>"
@@ -773,7 +978,7 @@
         },
         "tokenId":{
           "shape":"QueryTokenId",
-          "documentation":"<p>The unique identifier of the token.</p>"
+          "documentation":"<p>The unique identifier of the token.</p> <note> <p>You must specify this container with <code>btc</code> for the native BTC token, and <code>eth</code> for the native ETH token. For all other token types you must specify the <code>tokenId</code> in the 64 character hexadecimal <code>tokenid</code> format.</p> </note>"
         }
       },
       "documentation":"<p>The container for the identifier for the token including the unique token ID and its blockchain network.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
@@ -792,7 +997,7 @@
       "members":{
         "network":{
           "shape":"QueryNetwork",
-          "documentation":"<p>The blockchain network where the transaction occured.</p>"
+          "documentation":"<p>The blockchain network where the transaction occurred.</p>"
         },
         "blockHash":{
           "shape":"BlockHash",

@@ -1024,7 +1024,7 @@
         {"shape":"CustomDomainAssociationNotFoundFault"},
         {"shape":"UnsupportedOperationFault"}
       ],
-      "documentation":"<p>Contains information for custom domain associations for a cluster.</p>"
+      "documentation":"<p>Contains information about custom domain associations for a cluster.</p>"
     },
     "DescribeDataShares":{
       "name":"DescribeDataShares",
@@ -3050,6 +3050,14 @@
         "CustomDomainCertificateExpiryDate":{
           "shape":"TStamp",
           "documentation":"<p>The expiration date for the certificate associated with the custom domain name.</p>"
+        },
+        "MasterPasswordSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the cluster's admin user credentials secret.</p>"
+        },
+        "MasterPasswordSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -3798,8 +3806,7 @@
       "required":[
         "ClusterIdentifier",
         "NodeType",
-        "MasterUsername",
-        "MasterUserPassword"
+        "MasterUsername"
       ],
       "members":{
         "DBName":{
@@ -3823,8 +3830,8 @@
           "documentation":"<p>The user name associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 - 128 alphanumeric characters or hyphens. The user name can't be <code>PUBLIC</code>.</p> </li> <li> <p>Must contain only lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon (:) or a slash (/).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words</a> in the Amazon Redshift Database Developer Guide. </p> </li> </ul>"
         },
         "MasterUserPassword":{
-          "shape":"String",
-          "documentation":"<p>The password associated with the admin user account for the cluster that is being created.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
+          "shape":"SensitiveString",
+          "documentation":"<p>The password associated with the admin user account for the cluster that is being created.</p> <p>You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is <code>true</code>.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterSecurityGroups":{
           "shape":"ClusterSecurityGroupNameList",
@@ -3937,6 +3944,14 @@
         "LoadSampleData":{
           "shape":"String",
           "documentation":"<p>A flag that specifies whether to load sample data once the cluster is created.</p>"
+        },
+        "ManageMasterPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>If <code>true</code>, Amazon Redshift uses Secrets Manager to manage this cluster's admin credentials. You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is true. If <code>ManageMasterPassword</code> is false or not set, Amazon Redshift uses <code>MasterUserPassword</code> for the admin user account's password. </p>"
+        },
+        "MasterPasswordSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7484,8 +7499,8 @@
           "documentation":"<p>A list of virtual private cloud (VPC) security groups to be associated with the cluster. This change is asynchronously applied as soon as possible.</p>"
         },
         "MasterUserPassword":{
-          "shape":"String",
-          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
+          "shape":"SensitiveString",
+          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <p>You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is <code>true</code>.</p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterParameterGroupName":{
           "shape":"String",
@@ -7558,6 +7573,14 @@
         "Port":{
           "shape":"IntegerOptional",
           "documentation":"<p>The option to change the port of an Amazon Redshift cluster.</p>"
+        },
+        "ManageMasterPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>If <code>true</code>, Amazon Redshift uses Secrets Manager to manage this cluster's admin credentials. You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is true. If <code>ManageMasterPassword</code> is false or not set, Amazon Redshift uses <code>MasterUserPassword</code> for the admin user account's password. </p>"
+        },
+        "MasterPasswordSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8249,7 +8272,7 @@
       "type":"structure",
       "members":{
         "MasterUserPassword":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The pending or in-progress change of the admin user password for the cluster.</p>"
         },
         "NodeType":{
@@ -8986,6 +9009,14 @@
         "Encrypted":{
           "shape":"BooleanOptional",
           "documentation":"<p>Enables support for restoring an unencrypted snapshot to a cluster encrypted with Key Management Service (KMS) and a customer managed key.</p>"
+        },
+        "ManageMasterPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>If <code>true</code>, Amazon Redshift uses Secrets Manager to manage the restored cluster's admin credentials. If <code>ManageMasterPassword</code> is false or not set, Amazon Redshift uses the admin credentials the cluster had at the time the snapshot was taken.</p>"
+        },
+        "MasterPasswordSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
         }
       },
       "documentation":"<p/>"
@@ -9613,6 +9644,14 @@
         "SnapshotRetentionStartTime":{
           "shape":"TStamp",
           "documentation":"<p>A timestamp representing the start of the retention period for the snapshot.</p>"
+        },
+        "MasterPasswordSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the cluster's admin user credentials secret.</p>"
+        },
+        "MasterPasswordSecretKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret.</p>"
         }
       },
       "documentation":"<p>Describes a snapshot.</p>",

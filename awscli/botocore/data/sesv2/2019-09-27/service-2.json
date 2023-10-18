@@ -1484,6 +1484,7 @@
       "min":1,
       "sensitive":true
     },
+    "AdminEmail":{"type":"string"},
     "AlreadyExistsException":{
       "type":"structure",
       "members":{
@@ -3022,7 +3023,7 @@
         },
         "Raw":{
           "shape":"RawMessage",
-          "documentation":"<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that the Amazon SES API v2 supports. </p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can't exceed 1,000 characters. This restriction is defined in <a href=\"https://tools.ietf.org/html/rfc5321\">RFC 5321</a>.</p> </li> </ul>"
+          "documentation":"<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>If you include attachments, they must be in a file format that the Amazon SES API v2 supports. </p> </li> <li> <p>The raw data of the message needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an Amazon Web Services SDK, the SDK takes care of the base 64-encoding for you.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can't exceed 1,000 characters. This restriction is defined in <a href=\"https://tools.ietf.org/html/rfc5321\">RFC 5321</a>.</p> </li> </ul>"
         },
         "Template":{
           "shape":"Template",
@@ -3972,6 +3973,10 @@
         "VerificationStatus":{
           "shape":"VerificationStatus",
           "documentation":"<p>The verification status of the identity. The status can be one of the following:</p> <ul> <li> <p> <code>PENDING</code> – The verification process was initiated, but Amazon SES hasn't yet been able to verify the identity.</p> </li> <li> <p> <code>SUCCESS</code> – The verification process completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The verification process failed.</p> </li> <li> <p> <code>TEMPORARY_FAILURE</code> – A temporary issue is preventing Amazon SES from determining the verification status of the identity.</p> </li> <li> <p> <code>NOT_STARTED</code> – The verification process hasn't been initiated for the identity.</p> </li> </ul>"
+        },
+        "VerificationInfo":{
+          "shape":"VerificationInfo",
+          "documentation":"<p>An object that contains additional information about the verification status for the identity.</p>"
         }
       },
       "documentation":"<p>Details about an email identity.</p>"
@@ -4773,7 +4778,7 @@
         },
         "PageSize":{
           "shape":"MaxItems",
-          "documentation":"<p>The number of results to show in a single call to <code>ListEmailTemplates</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p> <p>The value you specify has to be at least 1, and can be no more than 10.</p>",
+          "documentation":"<p>The number of results to show in a single call to <code>ListEmailTemplates</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p> <p>The value you specify has to be at least 1, and can be no more than 100.</p>",
           "location":"querystring",
           "locationName":"PageSize"
         }
@@ -5415,6 +5420,7 @@
       "type":"string",
       "documentation":"<p>The name of a dedicated IP pool.</p>"
     },
+    "PrimaryNameServer":{"type":"string"},
     "PrivateKey":{
       "type":"string",
       "max":20480,
@@ -5946,7 +5952,7 @@
       "members":{
         "Data":{
           "shape":"RawMessageData",
-          "documentation":"<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be in a file format that the Amazon SES supports.</p> </li> <li> <p>The entire message must be Base64 encoded.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can't exceed 1,000 characters. This restriction is defined in <a href=\"https://tools.ietf.org/html/rfc5321\">RFC 5321</a>.</p> </li> </ul>"
+          "documentation":"<p>The raw email message. The message has to meet the following criteria:</p> <ul> <li> <p>The message has to contain a header and a body, separated by one blank line.</p> </li> <li> <p>All of the required header fields must be present in the message.</p> </li> <li> <p>Each part of a multipart MIME message must be formatted properly.</p> </li> <li> <p>Attachments must be in a file format that the Amazon SES supports.</p> </li> <li> <p>The raw data of the message needs to base64-encoded if you are accessing Amazon SES directly through the HTTPS interface. If you are accessing Amazon SES using an Amazon Web Services SDK, the SDK takes care of the base 64-encoding for you.</p> </li> <li> <p>If any of the MIME parts in your message contain content that is outside of the 7-bit ASCII character range, you should encode that content to ensure that recipients' email clients render the message properly.</p> </li> <li> <p>The length of any single line of text in the message can't exceed 1,000 characters. This restriction is defined in <a href=\"https://tools.ietf.org/html/rfc5321\">RFC 5321</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Represents the raw content of an email message.</p>"
@@ -6094,6 +6100,24 @@
       "type":"string",
       "documentation":"<p>An Amazon S3 URL in the format s3://<i>&lt;bucket_name&gt;</i>/<i>&lt;object&gt;</i> or a pre-signed URL.</p>",
       "pattern":"^s3:\\/\\/([^\\/]+)\\/(.*?([^\\/]+)\\/?)$"
+    },
+    "SOARecord":{
+      "type":"structure",
+      "members":{
+        "PrimaryNameServer":{
+          "shape":"PrimaryNameServer",
+          "documentation":"<p>Primary name server specified in the SOA record.</p>"
+        },
+        "AdminEmail":{
+          "shape":"AdminEmail",
+          "documentation":"<p>Administrative contact email from the SOA record.</p>"
+        },
+        "SerialNumber":{
+          "shape":"SerialNumber",
+          "documentation":"<p>Serial number from the SOA record.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information about the start of authority (SOA) record associated with the identity.</p>"
     },
     "ScalingMode":{
       "type":"string",
@@ -6295,6 +6319,7 @@
       "documentation":"<p>The name of the dedicated IP pool to associate with the configuration set.</p>"
     },
     "SentLast24Hours":{"type":"double"},
+    "SerialNumber":{"type":"long"},
     "SnsDestination":{
       "type":"structure",
       "required":["TopicArn"],
@@ -6907,6 +6932,38 @@
         }
       },
       "documentation":"<p>An object that defines the VDM settings that apply to emails that you send using the configuration set.</p>"
+    },
+    "VerificationError":{
+      "type":"string",
+      "enum":[
+        "SERVICE_ERROR",
+        "DNS_SERVER_ERROR",
+        "HOST_NOT_FOUND",
+        "TYPE_NOT_FOUND",
+        "INVALID_VALUE"
+      ]
+    },
+    "VerificationInfo":{
+      "type":"structure",
+      "members":{
+        "LastCheckedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time a verification attempt was made for this identity.</p>"
+        },
+        "LastSuccessTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time a successful verification was made for this identity.</p>"
+        },
+        "ErrorType":{
+          "shape":"VerificationError",
+          "documentation":"<p>Provides the reason for the failure describing why Amazon SES was not able to successfully verify the identity. Below are the possible values: </p> <ul> <li> <p> <code>INVALID_VALUE</code> – Amazon SES was able to find the record, but the value contained within the record was invalid. Ensure you have published the correct values for the record.</p> </li> <li> <p> <code>TYPE_NOT_FOUND</code> – The queried hostname exists but does not have the requested type of DNS record. Ensure that you have published the correct type of DNS record.</p> </li> <li> <p> <code>HOST_NOT_FOUND</code> – The queried hostname does not exist or was not reachable at the time of the request. Ensure that you have published the required DNS record(s). </p> </li> <li> <p> <code>SERVICE_ERROR</code> – A temporary issue is preventing Amazon SES from determining the verification status of the domain.</p> </li> <li> <p> <code>DNS_SERVER_ERROR</code> – The DNS server encountered an issue and was unable to complete the request.</p> </li> </ul>"
+        },
+        "SOARecord":{
+          "shape":"SOARecord",
+          "documentation":"<p>An object that contains information about the start of authority (SOA) record associated with the identity.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains additional information about the verification status for the identity.</p>"
     },
     "VerificationStatus":{
       "type":"string",

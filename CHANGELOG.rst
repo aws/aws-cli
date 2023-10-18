@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.66
+=======
+
+* api-change:``cloud9``: Update to imageId parameter behavior and dates updated.
+* api-change:``dynamodb``: Updating descriptions for several APIs.
+* api-change:``kendra``: Changes for a new feature in Amazon Kendra's Query API to Collapse/Expand query results
+* api-change:``rds``: This release adds support for upgrading the storage file system configuration on the DB instance using a blue/green deployment or a read replica.
+* api-change:``wisdom``: This release adds an max limit of 25 recommendation ids for NotifyRecommendationsReceived API.
+
+
 1.29.65
 =======
 

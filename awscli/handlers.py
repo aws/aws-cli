@@ -94,6 +94,8 @@ from awscli.customizations.dynamodb import register_dynamodb_paginator_fix
 from awscli.customizations.overridesslcommonname import register_override_ssl_common_name
 from awscli.customizations.kinesis import \
     register_kinesis_list_streams_pagination_backcompat
+from awscli.customizations.quicksight import \
+    register_quicksight_asset_bundle_customizations
 
 
 def awscli_initialize(event_handlers):
@@ -188,3 +190,4 @@ def awscli_initialize(event_handlers):
     register_dynamodb_paginator_fix(event_handlers)
     register_override_ssl_common_name(event_handlers)
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
+    register_quicksight_asset_bundle_customizations(event_handlers)

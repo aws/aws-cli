@@ -85,7 +85,7 @@ When you push to your remote, the output will contain a URL you can use to open 
 
 ## CLI Development Version
 
-If you are interested in using the latest released version of the AWS CLI, please see the [Installation](README.md#installation) section in the README. This section is for anyone who wants to install the development version of the CLI. You might need to do this if:
+If you are interested in using the latest released version of the AWS CLI, please see the [Installation](README.rst#Installation) section in the README. This section is for anyone who wants to install the development version of the CLI. You might need to do this if:
 
 - You are developing a feature for the CLI and plan on submitting a Pull Request.
 - You want to test the latest changes of the CLI before they make it into an official release.

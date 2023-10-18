@@ -117,6 +117,9 @@ def _fix_args(params, **kwargs):
             if 'Ipv6Addresses' in params:
                 interface['Ipv6Addresses'] = params['Ipv6Addresses']
                 del params['Ipv6Addresses']
+            if 'EnablePrimaryIpv6' in params:
+                interface['PrimaryIpv6'] = params['EnablePrimaryIpv6']
+                del params['EnablePrimaryIpv6']
 
 
 EVENTS = [

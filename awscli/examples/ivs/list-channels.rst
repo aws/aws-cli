@@ -14,16 +14,20 @@ Output::
                 "latencyMode": "LOW",
                 "authorized": false,
                 "insecureIngest": false,
+                "preset": "",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
-                "tags": {}
+                "tags": {},
+                "type": "STANDARD"
             },
             {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/efghEFGHijkl",
                 "name": "channel-2",
                 "latencyMode": "LOW",
                 "authorized": false,
+                "preset": "",
                 "recordingConfigurationArn": "",
-                "tags": {}
+                "tags": {},
+                "type": "STANDARD"
             }
         ]
     }
@@ -47,8 +51,10 @@ Output::
                 "latencyMode": "LOW",
                 "authorized": false,
                 "insecureIngest": false,
+                "preset": "",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
-                "tags": {}
+                "tags": {},
+                "type": "STANDARD"
             }
         ]
     }

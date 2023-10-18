@@ -307,3 +307,18 @@ class TestRunInstances(BaseAWSCommandParamsTest):
             'MinCount': 1
         }
         self.assert_run_instances_call(args, expected)
+
+    def test_enable_primary_ipv6_and_associate_public_ip_address(self):
+        args = ' --associate-public-ip-address'
+        args += ' --enable-primary-ipv6 --image-id ami-foobar --count 1'
+        expected = {
+            'NetworkInterfaces': [{
+                'DeviceIndex': 0,
+                'AssociatePublicIpAddress': True,
+                'PrimaryIpv6': True
+            }],
+            'ImageId': 'ami-foobar',
+            'MaxCount': 1,
+            'MinCount': 1
+        }
+        self.assert_run_instances_call(args, expected)

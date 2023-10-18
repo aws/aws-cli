@@ -50,6 +50,8 @@ def register_removals(event_handler):
                          remove_commands=['invoke-endpoint-with-response-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-runtime',
                          remove_commands=['invoke-model-with-response-stream'])
+    cmd_remover.remove(on_event='building-command-table.amazonbedrockagentruntime',
+                         remove_commands=['invoke-agent'])
 
 
 class CommandRemover(object):

@@ -29,7 +29,7 @@ CHANGELOG
 =======
 
 * api-change:``cloudformation``: SDK and documentation updates for UpdateReplacePolicy
-* api-change:``drs``: Updated exsiting API to allow AWS Elastic Disaster Recovery support of launching recovery into existing EC2 instances.
+* api-change:``drs``: Updated existing API to allow AWS Elastic Disaster Recovery support of launching recovery into existing EC2 instances.
 * api-change:``entityresolution``: This launch expands our matching techniques to include provider-based matching to help customer match, link, and enhance records with minimal data movement. With data service providers, we have removed the need for customers to build bespoke integrations,.
 * api-change:``managedblockchain-query``: This release introduces two new APIs: GetAssetContract and ListAssetContracts. This release also adds support for Bitcoin Testnet.
 * api-change:``mediapackagev2``: This release allows customers to manage MediaPackage v2 resource using CloudFormation.
@@ -1664,7 +1664,7 @@ CHANGELOG
 * api-change:``kms``: AWS KMS is deprecating the RSAES_PKCS1_V1_5 wrapping algorithm option in the GetParametersForImport API that is used in the AWS KMS Import Key Material feature. AWS KMS will end support for this wrapping algorithm by October 1, 2023.
 * api-change:``lightsail``: This release adds Lightsail for Research feature support, such as GUI session access, cost estimates, stop instance on idle, and disk auto mount.
 * api-change:``managedblockchain``: This release adds support for tagging to the accessor resource in Amazon Managed Blockchain
-* api-change:``omics``: Minor model changes to accomodate batch imports feature
+* api-change:``omics``: Minor model changes to accommodate batch imports feature
 
 
 1.27.80
@@ -2438,7 +2438,7 @@ CHANGELOG
 =======
 
 * api-change:``connect``: This release updates the APIs: UpdateInstanceAttribute, DescribeInstanceAttribute, and ListInstanceAttributes. You can use it to programmatically enable/disable enhanced contact monitoring using attribute type ENHANCED_CONTACT_MONITORING on the specified Amazon Connect instance.
-* api-change:``greengrassv2``: Adds new parent target ARN paramater to CreateDeployment, GetDeployment, and ListDeployments APIs for the new subdeployments feature.
+* api-change:``greengrassv2``: Adds new parent target ARN parameter to CreateDeployment, GetDeployment, and ListDeployments APIs for the new subdeployments feature.
 * api-change:``route53``: Amazon Route 53 now supports the Europe (Spain) Region (eu-south-2) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
 * api-change:``ssmsap``: AWS Systems Manager for SAP provides simplified operations and management of SAP applications such as SAP HANA. With this release, SAP customers and partners can automate and simplify their SAP system administration tasks such as backup/restore of SAP HANA.
 * api-change:``workspaces``: This release introduces ModifyCertificateBasedAuthProperties, a new API that allows control of certificate-based auth properties associated with a WorkSpaces directory. The DescribeWorkspaceDirectories API will now additionally return certificate-based auth properties in its responses.
@@ -4226,7 +4226,7 @@ CHANGELOG
 
 * api-change:``cloudformation``: This SDK release adds AWS CloudFormation Hooks HandlerErrorCodes
 * api-change:``lookoutvision``: This release makes CompilerOptions in Lookout for Vision's StartModelPackagingJob's Configuration object optional.
-* api-change:``pinpoint``: This SDK release adds a new paramater creation date for GetApp and GetApps Api call
+* api-change:``pinpoint``: This SDK release adds a new parameter creation date for GetApp and GetApps Api call
 * api-change:``sns``: Customer requested typo fix in API documentation.
 * api-change:``wafv2``: Adds support for AWS WAF Fraud Control account takeover prevention (ATP), with configuration options for the new managed rule group AWSManagedRulesATPRuleSet and support for application integration SDKs for Android and iOS mobile apps.
 
@@ -8586,7 +8586,7 @@ CHANGELOG
 1.18.29
 =======
 
-* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* enhancement:shorthand: The CLI now no longer allows a key to be specified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
 * api-change:``application-insights``: Update application-insights command to latest version
 * api-change:``detective``: Update detective command to latest version
 * api-change:``managedblockchain``: Update managedblockchain command to latest version
@@ -8896,7 +8896,7 @@ CHANGELOG
 * api-change:``mediaconvert``: Update mediaconvert command to latest version
 * api-change:``groundstation``: Update groundstation command to latest version
 * api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
-* bugfix:ec2: Fixed a paramter validation bug for the ec2 bundle-instance parameter --storage.
+* bugfix:ec2: Fixed a parameter validation bug for the ec2 bundle-instance parameter --storage.
 * api-change:``forecastquery``: Update forecastquery command to latest version
 
 
@@ -15042,7 +15042,7 @@ CHANGELOG
 ======
 
 * bug:``aws configure set``: Fix issue when adding entries to an empty profile section (`issue 1806 <https://github.com/aws/aws-cli/pull/1806>`__)
-* feature:``aws route53``: Add suport for SNI health checks
+* feature:``aws route53``: Add support for SNI health checks
 
 
 1.10.6

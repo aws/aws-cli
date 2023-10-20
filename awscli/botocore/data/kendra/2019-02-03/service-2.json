@@ -926,7 +926,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Searches an index given an input query.</p> <p>You can configure boosting or relevance tuning at the query level to override boosting at the index level, filter based on document fields/attributes and faceted search, and filter based on the user or their group access to documents. You can also include certain fields in the response that might provide useful additional information.</p> <p>A query response contains three types of results.</p> <ul> <li> <p>Relevant suggested answers. The answers can be either a text excerpt or table excerpt. The answer can be highlighted in the excerpt.</p> </li> <li> <p>Matching FAQs or questions-answer from your FAQ file.</p> </li> <li> <p>Relevant documents. This result type includes an excerpt of the document with the document title. The searched terms can be highlighted in the excerpt.</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeFilter</code> parameter. Each query returns the 100 most relevant results. If you filter result type to only question-answers, a maximum of four results are returned. If you filter result type to only answers, a maximum of three results are returned.</p>"
+      "documentation":"<p>Searches an index given an input query.</p> <note> <p>If you are working with large language models (LLMs) or implementing retrieval augmented generation (RAG) systems, you can use Amazon Kendra's <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Retrieve.html\">Retrieve</a> API, which can return longer semantically relevant passages. We recommend using the <code>Retrieve</code> API instead of filing a service limit increase to increase the <code>Query</code> API document excerpt length.</p> </note> <p>You can configure boosting or relevance tuning at the query level to override boosting at the index level, filter based on document fields/attributes and faceted search, and filter based on the user or their group access to documents. You can also include certain fields in the response that might provide useful additional information.</p> <p>A query response contains three types of results.</p> <ul> <li> <p>Relevant suggested answers. The answers can be either a text excerpt or table excerpt. The answer can be highlighted in the excerpt.</p> </li> <li> <p>Matching FAQs or questions-answer from your FAQ file.</p> </li> <li> <p>Relevant documents. This result type includes an excerpt of the document with the document title. The searched terms can be highlighted in the excerpt.</p> </li> </ul> <p>You can specify that the query return only one type of result using the <code>QueryResultTypeFilter</code> parameter. Each query returns the 100 most relevant results. If you filter result type to only question-answers, a maximum of four results are returned. If you filter result type to only answers, a maximum of three results are returned.</p>"
     },
     "Retrieve":{
       "name":"Retrieve",
@@ -945,7 +945,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves relevant passages or text excerpts given an input query.</p> <p>This API is similar to the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html\">Query</a> API. However, by default, the <code>Query</code> API only returns excerpt passages of up to 100 token words. With the <code>Retrieve</code> API, you can retrieve longer passages of up to 200 token words and up to 100 semantically relevant passages. This doesn't include question-answer or FAQ type responses from your index. The passages are text excerpts that can be semantically extracted from multiple documents and multiple parts of the same document. If in extreme cases your documents produce zero passages using the <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API and its types of responses.</p> <p>You can also do the following:</p> <ul> <li> <p>Override boosting at the index level</p> </li> <li> <p>Filter based on document fields or attributes</p> </li> <li> <p>Filter based on the user or their group access to documents</p> </li> </ul> <p>You can also include certain fields in the response that might provide useful additional information.</p> <p>The <code>Retrieve</code> API shares the number of <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_CapacityUnitsConfiguration.html\">query capacity units</a> that you set for your index. For more information on what's included in a single capacity unit and the default base capacity for an index, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/adjusting-capacity.html\">Adjusting capacity</a>.</p>"
+      "documentation":"<p>Retrieves relevant passages or text excerpts given an input query.</p> <p>This API is similar to the <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_Query.html\">Query</a> API. However, by default, the <code>Query</code> API only returns excerpt passages of up to 100 token words. With the <code>Retrieve</code> API, you can retrieve longer passages of up to 200 token words and up to 100 semantically relevant passages. This doesn't include question-answer or FAQ type responses from your index. The passages are text excerpts that can be semantically extracted from multiple documents and multiple parts of the same document. If in extreme cases your documents produce zero passages using the <code>Retrieve</code> API, you can alternatively use the <code>Query</code> API and its types of responses.</p> <p>You can also do the following:</p> <ul> <li> <p>Override boosting at the index level</p> </li> <li> <p>Filter based on document fields or attributes</p> </li> <li> <p>Filter based on the user or their group access to documents</p> </li> <li> <p>View the confidence score bucket for a retrieved passage result. The confidence bucket provides a relative ranking that indicates how confident Amazon Kendra is that the response is relevant to the query.</p> <note> <p>Confidence score buckets are currently available only for English.</p> </note> </li> </ul> <p>You can also include certain fields in the response that might provide useful additional information.</p> <p>The <code>Retrieve</code> API shares the number of <a href=\"https://docs.aws.amazon.com/kendra/latest/APIReference/API_CapacityUnitsConfiguration.html\">query capacity units</a> that you set for your index. For more information on what's included in a single capacity unit and the default base capacity for an index, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/adjusting-capacity.html\">Adjusting capacity</a>.</p>"
     },
     "StartDataSourceSyncJob":{
       "name":"StartDataSourceSyncJob",
@@ -1911,6 +1911,48 @@
       "max":100,
       "min":1
     },
+    "CollapseConfiguration":{
+      "type":"structure",
+      "required":["DocumentAttributeKey"],
+      "members":{
+        "DocumentAttributeKey":{
+          "shape":"DocumentAttributeKey",
+          "documentation":"<p>The document attribute used to group search results. You can use any attribute that has the <code>Sortable</code> flag set to true. You can also sort by any of the following built-in attributes:\"_category\",\"_created_at\", \"_last_updated_at\", \"_version\", \"_view_count\".</p>"
+        },
+        "SortingConfigurations":{
+          "shape":"SortingConfigurationList",
+          "documentation":"<p>A prioritized list of document attributes/fields that determine the primary document among those in a collapsed group.</p>"
+        },
+        "MissingAttributeKeyStrategy":{
+          "shape":"MissingAttributeKeyStrategy",
+          "documentation":"<p>Specifies the behavior for documents without a value for the collapse attribute.</p> <p>Amazon Kendra offers three customization options:</p> <ul> <li> <p>Choose to <code>COLLAPSE</code> all documents with null or missing values in one group. This is the default configuration.</p> </li> <li> <p>Choose to <code>IGNORE</code> documents with null or missing values. Ignored documents will not appear in query results.</p> </li> <li> <p>Choose to <code>EXPAND</code> each document with a null or missing value into a group of its own.</p> </li> </ul>"
+        },
+        "Expand":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to expand the collapsed results.</p>"
+        },
+        "ExpandConfiguration":{
+          "shape":"ExpandConfiguration",
+          "documentation":"<p>Provides configuration information to customize expansion options for a collapsed group.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how to group results by document attribute value, and how to display them collapsed/expanded under a designated primary document for each group.</p>"
+    },
+    "CollapsedResultDetail":{
+      "type":"structure",
+      "required":["DocumentAttribute"],
+      "members":{
+        "DocumentAttribute":{
+          "shape":"DocumentAttribute",
+          "documentation":"<p>The value of the document attribute that results are collapsed on.</p>"
+        },
+        "ExpandedResults":{
+          "shape":"ExpandedResultList",
+          "documentation":"<p>A list of results in the collapsed group.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about a collapsed group of search results.</p>"
+    },
     "ColumnConfiguration":{
       "type":"structure",
       "required":[
@@ -2520,7 +2562,7 @@
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role with permission to access <code>Query</code> API, <code>GetQuerySuggestions</code> API, and other required APIs. The role also must include permission to access IAM Identity Center (successor to Single Sign-On) that stores your user and group information. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM access roles for Amazon Kendra</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role with permission to access <code>Query</code> API, <code>GetQuerySuggestions</code> API, and other required APIs. The role also must include permission to access IAM Identity Center that stores your user and group information. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html\">IAM access roles for Amazon Kendra</a>.</p>"
         },
         "Configuration":{
           "shape":"ExperienceConfiguration",
@@ -2700,7 +2742,7 @@
         },
         "UserGroupResolutionConfiguration":{
           "shape":"UserGroupResolutionConfiguration",
-          "documentation":"<p>Gets users and groups from IAM Identity Center (successor to Single Sign-On) identity source. To configure this, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html\">UserGroupResolutionConfiguration</a>.</p>"
+          "documentation":"<p>Gets users and groups from IAM Identity Center identity source. To configure this, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html\">UserGroupResolutionConfiguration</a>.</p>"
         }
       }
     },
@@ -3789,7 +3831,7 @@
         },
         "UserGroupResolutionConfiguration":{
           "shape":"UserGroupResolutionConfiguration",
-          "documentation":"<p>Whether you have enabled the configuration for fetching access levels of groups and users from an IAM Identity Center (successor to Single Sign-On) identity source.</p>"
+          "documentation":"<p>Whether you have enabled the configuration for fetching access levels of groups and users from an IAM Identity Center identity source.</p>"
         }
       }
     },
@@ -4558,6 +4600,48 @@
       "member":{"shape":"UserAccount"},
       "max":100,
       "min":0
+    },
+    "ExpandConfiguration":{
+      "type":"structure",
+      "members":{
+        "MaxResultItemsToExpand":{
+          "shape":"Integer",
+          "documentation":"<p>The number of collapsed search result groups to expand. If you set this value to 10, for example, only the first 10 out of 100 result groups will have expand functionality. </p>"
+        },
+        "MaxExpandedResultsPerItem":{
+          "shape":"Integer",
+          "documentation":"<p>The number of expanded results to show per collapsed primary document. For instance, if you set this value to 3, then at most 3 results per collapsed group will be displayed.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration information needed to customize how collapsed search result groups expand.</p>"
+    },
+    "ExpandedResultItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ResultId",
+          "documentation":"<p>The identifier for the expanded result.</p>"
+        },
+        "DocumentId":{
+          "shape":"DocumentId",
+          "documentation":"<p>The idenitifier of the document.</p>"
+        },
+        "DocumentTitle":{"shape":"TextWithHighlights"},
+        "DocumentExcerpt":{"shape":"TextWithHighlights"},
+        "DocumentURI":{
+          "shape":"Url",
+          "documentation":"<p>The URI of the original location of the document.</p>"
+        },
+        "DocumentAttributes":{
+          "shape":"DocumentAttributeList",
+          "documentation":"<p>An array of document attributes assigned to a document in the search results. For example, the document author (\"_author\") or the source URI (\"_source_uri\") of the document.</p>"
+        }
+      },
+      "documentation":"<p> A single expanded result in a collapsed group of search results.</p> <p>An expanded result item contains information about an expanded result document within a collapsed group of search results. This includes the original location of the document, a list of attributes assigned to the document, and relevant text from the document that satisfies the query. </p>"
+    },
+    "ExpandedResultList":{
+      "type":"list",
+      "member":{"shape":"ExpandedResultItem"}
     },
     "ExperienceConfiguration":{
       "type":"structure",
@@ -6434,6 +6518,14 @@
       "max":10000,
       "min":1
     },
+    "MissingAttributeKeyStrategy":{
+      "type":"string",
+      "enum":[
+        "IGNORE",
+        "COLLAPSE",
+        "EXPAND"
+      ]
+    },
     "Mode":{
       "type":"string",
       "enum":[
@@ -6787,6 +6879,10 @@
           "shape":"SortingConfiguration",
           "documentation":"<p>Provides information that determines how the results of the query are sorted. You can set the field that Amazon Kendra should sort the results on, and specify whether the results should be sorted in ascending or descending order. In the case of ties in sorting the results, the results are sorted by relevance.</p> <p>If you don't provide sorting configuration, the results are sorted by the relevance that Amazon Kendra determines for the result.</p>"
         },
+        "SortingConfigurations":{
+          "shape":"SortingConfigurationList",
+          "documentation":"<p>Provides configuration information to determine how the results of a query are sorted.</p> <p>You can set upto 3 fields that Amazon Kendra should sort the results on, and specify whether the results should be sorted in ascending or descending order. The sort field quota can be increased.</p> <p>If you don't provide a sorting configuration, the results are sorted by the relevance that Amazon Kendra determines for the result. In the case of ties in sorting the results, the results are sorted by relevance. </p>"
+        },
         "UserContext":{
           "shape":"UserContext",
           "documentation":"<p>The user context token or user and group information.</p>"
@@ -6798,6 +6894,10 @@
         "SpellCorrectionConfiguration":{
           "shape":"SpellCorrectionConfiguration",
           "documentation":"<p>Enables suggested spell corrections for queries.</p>"
+        },
+        "CollapseConfiguration":{
+          "shape":"CollapseConfiguration",
+          "documentation":"<p>Provides configuration to determine how to group results by document attribute value, and how to display them (collapsed or expanded) under a designated primary document for each group.</p>"
         }
       }
     },
@@ -6891,6 +6991,10 @@
         "TableExcerpt":{
           "shape":"TableExcerpt",
           "documentation":"<p>An excerpt from a table within a document.</p>"
+        },
+        "CollapsedResultDetail":{
+          "shape":"CollapsedResultDetail",
+          "documentation":"<p>Provides details about a collapsed group of search results.</p>"
         }
       },
       "documentation":"<p>A single query result.</p> <p>A query result contains information about a document returned by the query. This includes the original location of the document, a list of attributes assigned to the document, and relevant text from the document that satisfies the query.</p>"
@@ -8047,6 +8151,11 @@
       },
       "documentation":"<p>Specifies the document attribute to use to sort the response to a Amazon Kendra query. You can specify a single attribute for sorting. The attribute must have the <code>Sortable</code> flag set to <code>true</code>, otherwise Amazon Kendra returns an exception.</p> <p>You can sort attributes of the following types.</p> <ul> <li> <p>Date value</p> </li> <li> <p>Long value</p> </li> <li> <p>String value</p> </li> </ul> <p>You can't sort attributes of the following type.</p> <ul> <li> <p>String list value</p> </li> </ul>"
     },
+    "SortingConfigurationList":{
+      "type":"list",
+      "member":{"shape":"SortingConfiguration"},
+      "min":1
+    },
     "SourceDocument":{
       "type":"structure",
       "members":{
@@ -8829,7 +8938,7 @@
         },
         "UserGroupResolutionConfiguration":{
           "shape":"UserGroupResolutionConfiguration",
-          "documentation":"<p>Enables fetching access levels of groups and users from an IAM Identity Center (successor to Single Sign-On) identity source. To configure this, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html\">UserGroupResolutionConfiguration</a>.</p>"
+          "documentation":"<p>Enables fetching access levels of groups and users from an IAM Identity Center identity source. To configure this, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html\">UserGroupResolutionConfiguration</a>.</p>"
         }
       }
     },
@@ -8991,10 +9100,10 @@
       "members":{
         "UserGroupResolutionMode":{
           "shape":"UserGroupResolutionMode",
-          "documentation":"<p>The identity store provider (mode) you want to use to get users and groups. IAM Identity Center (successor to Single Sign-On) is currently the only available mode. Your users and groups must exist in an IAM Identity Center identity source in order to use this mode.</p>"
+          "documentation":"<p>The identity store provider (mode) you want to use to get users and groups. IAM Identity Center is currently the only available mode. Your users and groups must exist in an IAM Identity Center identity source in order to use this mode.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information to get users and groups from an IAM Identity Center (successor to Single Sign-On) identity source. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents. You can also use the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping</a> API to map users to their groups so that you only need to provide the user ID when you issue the query.</p> <p>To set up an IAM Identity Center identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an IAM Identity Center identity source</a>. You must also grant the required permissions to use IAM Identity Center with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for IAM Identity Center</a>.</p> <p>Amazon Kendra currently does not support using <code>UserGroupResolutionConfiguration</code> with an Amazon Web Services organization member account for your IAM Identity Center identify source. You must create your index in the management account for the organization in order to use <code>UserGroupResolutionConfiguration</code>.</p>"
+      "documentation":"<p>Provides the configuration information to get users and groups from an IAM Identity Center identity source. This is useful for user context filtering, where search results are filtered based on the user or their group access to documents. You can also use the <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/API_PutPrincipalMapping.html\">PutPrincipalMapping</a> API to map users to their groups so that you only need to provide the user ID when you issue the query.</p> <p>To set up an IAM Identity Center identity source in the console to use with Amazon Kendra, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/getting-started-aws-sso.html\">Getting started with an IAM Identity Center identity source</a>. You must also grant the required permissions to use IAM Identity Center with Amazon Kendra. For more information, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-aws-sso\">IAM roles for IAM Identity Center</a>.</p> <p>Amazon Kendra currently does not support using <code>UserGroupResolutionConfiguration</code> with an Amazon Web Services organization member account for your IAM Identity Center identify source. You must create your index in the management account for the organization in order to use <code>UserGroupResolutionConfiguration</code>.</p>"
     },
     "UserGroupResolutionMode":{
       "type":"string",

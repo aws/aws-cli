@@ -3625,6 +3625,14 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags to assign to the blue/green deployment.</p>"
+        },
+        "TargetDBInstanceClass":{
+          "shape":"TargetDBInstanceClass",
+          "documentation":"<p>Specify the DB instance class for the databases in the green environment.</p>"
+        },
+        "UpgradeTargetStorageConfig":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Whether to upgrade the storage file system configuration on the green database. This option migrates the green DB instance from the older 32-bit file system to the preferred configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.UpgradeFileSystem\">Upgrading the storage file system for a DB instance</a>.</p>"
         }
       }
     },
@@ -4431,6 +4439,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "UpgradeStorageConfig":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Whether to upgrade the storage file system configuration on the read replica. This option migrates the read replica from the old storage file system layout to the preferred layout.</p>"
         }
       }
     },
@@ -6423,6 +6435,10 @@
         "DedicatedLogVolume":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "IsStorageConfigUpgradeAvailable":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether an upgrade is recommended for the storage file system configuration on the DB instance. To migrate to the preferred configuration, you can either create a blue/green deployment, or create a read replica from the DB instance. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.UpgradeFileSystem\">Upgrading the storage file system for a DB instance</a>.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -14761,6 +14777,12 @@
       "max":255,
       "min":1,
       "pattern":"[A-Za-z](?!.*--)[0-9A-Za-z-]*[^-]|^default(?!.*--)(?!.*\\.\\.)[0-9A-Za-z-.]*[^-]"
+    },
+    "TargetDBInstanceClass":{
+      "type":"string",
+      "max":20,
+      "min":5,
+      "pattern":"db\\.[0-9a-z]{2,6}\\.[0-9a-z]{4,9}"
     },
     "TargetDBParameterGroupName":{
       "type":"string",

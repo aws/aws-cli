@@ -56,7 +56,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Associates the specified principal ARN with the specified portfolio.</p> <p>If you share the portfolio with principal name sharing enabled, the <code>PrincipalARN</code> association is included in the share. </p> <p>The <code>PortfolioID</code>, <code>PrincipalARN</code>, and <code>PrincipalType</code> parameters are required. </p> <p>You can associate a maximum of 10 Principals with a portfolio using <code>PrincipalType</code> as <code>IAM_PATTERN</code> </p> <note> <p>When you associate a principal with portfolio, a potential privilege escalation path may occur when that portfolio is then shared with other accounts. For a user in a recipient account who is <i>not</i> an Service Catalog Admin, but still has the ability to create Principals (Users/Groups/Roles), that user could create a role that matches a principal name association for the portfolio. Although this user may not know which principal names are associated through Service Catalog, they may be able to guess the user. If this potential escalation path is a concern, then Service Catalog recommends using <code>PrincipalType</code> as <code>IAM</code>. With this configuration, the <code>PrincipalARN</code> must already exist in the recipient account before it can be associated. </p> </note>"
+      "documentation":"<p>Associates the specified principal ARN with the specified portfolio.</p> <p>If you share the portfolio with principal name sharing enabled, the <code>PrincipalARN</code> association is included in the share. </p> <p>The <code>PortfolioID</code>, <code>PrincipalARN</code>, and <code>PrincipalType</code> parameters are required. </p> <p>You can associate a maximum of 10 Principals with a portfolio using <code>PrincipalType</code> as <code>IAM_PATTERN</code>. </p> <note> <p>When you associate a principal with portfolio, a potential privilege escalation path may occur when that portfolio is then shared with other accounts. For a user in a recipient account who is <i>not</i> an Service Catalog Admin, but still has the ability to create Principals (Users/Groups/Roles), that user could create a role that matches a principal name association for the portfolio. Although this user may not know which principal names are associated through Service Catalog, they may be able to guess the user. If this potential escalation path is a concern, then Service Catalog recommends using <code>PrincipalType</code> as <code>IAM</code>. With this configuration, the <code>PrincipalARN</code> must already exist in the recipient account before it can be associated. </p> </note>"
     },
     "AssociateProductWithPortfolio":{
       "name":"AssociateProductWithPortfolio",
@@ -4580,7 +4580,8 @@
         "CLOUD_FORMATION_TEMPLATE",
         "MARKETPLACE",
         "TERRAFORM_OPEN_SOURCE",
-        "TERRAFORM_CLOUD"
+        "TERRAFORM_CLOUD",
+        "EXTERNAL"
       ],
       "max":8191
     },
@@ -4836,7 +4837,7 @@
         },
         "Type":{
           "shape":"ProvisionedProductType",
-          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.</p>"
+          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code>, <code>CFN_STACKSET</code>, <code>TERRAFORM_OPEN_SOURCE</code>, <code>TERRAFORM_CLOUD</code>, and <code>EXTERNAL</code>.</p>"
         },
         "Id":{
           "shape":"Id",
@@ -4922,7 +4923,7 @@
         },
         "Type":{
           "shape":"ProvisionedProductType",
-          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.</p>"
+          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code>, <code>CFN_STACKSET</code>, <code>TERRAFORM_OPEN_SOURCE</code>, <code>TERRAFORM_CLOUD</code>, and <code>EXTERNAL</code>.</p>"
         },
         "Id":{
           "shape":"ProvisionedProductId",
@@ -5186,7 +5187,7 @@
         },
         "Type":{
           "shape":"ProvisioningArtifactType",
-          "documentation":"<p>The type of provisioning artifact.</p> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p>"
+          "documentation":"<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>TERRAFORM_OPEN_SOURCE</code> - Terraform Open Source configuration file</p> </li> <li> <p> <code>TERRAFORM_CLOUD</code> - Terraform Cloud configuration file</p> </li> <li> <p> <code>EXTERNAL</code> - External configuration file</p> </li> </ul>"
         },
         "CreatedTime":{
           "shape":"CreationTime",
@@ -5321,7 +5322,7 @@
         },
         "Type":{
           "shape":"ProvisioningArtifactType",
-          "documentation":"<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>TERRAFORM_OPEN_SOURCE</code> - Terraform open source configuration file</p> </li> </ul>"
+          "documentation":"<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>TERRAFORM_OPEN_SOURCE</code> - Terraform Open Source configuration file</p> </li> <li> <p> <code>TERRAFORM_CLOUD</code> - Terraform Cloud configuration file</p> </li> <li> <p> <code>EXTERNAL</code> - External configuration file</p> </li> </ul>"
         },
         "DisableTemplateValidation":{
           "shape":"DisableTemplateValidation",
@@ -5372,7 +5373,8 @@
         "MARKETPLACE_AMI",
         "MARKETPLACE_CAR",
         "TERRAFORM_OPEN_SOURCE",
-        "TERRAFORM_CLOUD"
+        "TERRAFORM_CLOUD",
+        "EXTERNAL"
       ]
     },
     "ProvisioningArtifactView":{
@@ -5470,7 +5472,7 @@
         },
         "ProvisionedProductType":{
           "shape":"ProvisionedProductType",
-          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code>, <code>CFN_STACKSET</code>, <code>TERRAFORM_OPEN_SOURCE</code>, and <code>TERRAFORM_CLOUD</code>.</p>"
+          "documentation":"<p>The type of provisioned product. The supported values are <code>CFN_STACK</code>, <code>CFN_STACKSET</code>, <code>TERRAFORM_OPEN_SOURCE</code>, <code>TERRAFORM_CLOUD</code>, and <code>EXTERNAL</code>.</p>"
         },
         "RecordType":{
           "shape":"RecordType",

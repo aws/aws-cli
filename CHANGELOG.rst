@@ -6192,6 +6192,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.67
+=======
+
+* api-change:``gamesparks``: The gamesparks client has been removed following the deprecation of the service.
+* api-change:``ec2``: Amazon EC2 C7a instances, powered by 4th generation AMD EPYC processors, are ideal for high performance, compute-intensive workloads such as high performance computing. Amazon EC2 R7i instances are next-generation memory optimized and powered by custom 4th Generation Intel Xeon Scalable processors.
+* api-change:``managedblockchain-query``: This release adds support for Ethereum Sepolia network
+* api-change:``neptunedata``: Doc changes to add IAM action mappings for the data actions.
+* api-change:``omics``: This change enables customers to retrieve failure reasons with detailed status messages for their failed runs
+* api-change:``opensearch``: Added Cluster Administrative options for node restart, opensearch process restart and opensearch dashboard restart for Multi-AZ without standby domains
+* api-change:``quicksight``: This release adds the following: 1) Trino and Starburst Database Connectors 2) Custom total for tables and pivot tables 3) Enable restricted folders 4) Add rolling dates for time equality filters 5) Refine DataPathValue and introduce DataPathType 6) Add SeriesType to ReferenceLineDataConfiguration
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``servicecatalog``: Introduce support for EXTERNAL product and provisioning artifact type in CreateProduct and CreateProvisioningArtifact APIs.
+* api-change:``verifiedpermissions``: Improving Amazon Verified Permissions Create experience
+* api-change:``workspaces``: Documentation updates for WorkSpaces
+
+
+1.29.66
+=======
+
+* api-change:``cloud9``: Update to imageId parameter behavior and dates updated.
+* api-change:``dynamodb``: Updating descriptions for several APIs.
+* api-change:``kendra``: Changes for a new feature in Amazon Kendra's Query API to Collapse/Expand query results
+* api-change:``rds``: This release adds support for upgrading the storage file system configuration on the DB instance using a blue/green deployment or a read replica.
+* api-change:``wisdom``: This release adds an max limit of 25 recommendation ids for NotifyRecommendationsReceived API.
+
+
 1.29.65
 =======
 

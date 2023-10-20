@@ -6195,6 +6195,7 @@ CHANGELOG
 1.29.67
 =======
 
+* api-change:``gamesparks``: The gamesparks client has been removed following the deprecation of the service.
 * api-change:``ec2``: Amazon EC2 C7a instances, powered by 4th generation AMD EPYC processors, are ideal for high performance, compute-intensive workloads such as high performance computing. Amazon EC2 R7i instances are next-generation memory optimized and powered by custom 4th Generation Intel Xeon Scalable processors.
 * api-change:``managedblockchain-query``: This release adds support for Ethereum Sepolia network
 * api-change:``neptunedata``: Doc changes to add IAM action mappings for the data actions.

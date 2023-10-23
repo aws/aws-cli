@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.29.69
+=======
+
+* api-change:``marketplacecommerceanalytics``: The StartSupportDataExport operation has been deprecated as part of the Product Support Connection deprecation. As of December 2022, Product Support Connection is no longer supported.
+* api-change:``networkmanager``: This release adds API support for Tunnel-less Connect (NoEncap Protocol) for AWS Cloud WAN
+* api-change:``redshift-serverless``: This release adds support for customers to see the patch version and workgroup version in Amazon Redshift Serverless.
+* api-change:``rekognition``: Amazon Rekognition introduces StartMediaAnalysisJob, GetMediaAnalysisJob, and ListMediaAnalysisJobs operations to run a bulk analysis of images with a Detect Moderation model.
+
+
 1.29.68
 =======
 

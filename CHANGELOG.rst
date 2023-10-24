@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.29.70
+=======
+
+* api-change:``codepipeline``: Add ability to trigger pipelines from git tags, define variables at pipeline level and new pipeline type V2.
+* api-change:``ec2``: This release updates the documentation for InstanceInterruptionBehavior and HibernationOptionsRequest to more accurately describe the behavior of these two parameters when using Spot hibernation.
+* api-change:``eks``: Added support for Cluster Subnet and Security Group mutability.
+* api-change:``iam``: Add the partitional endpoint for IAM in iso-f.
+* api-change:``migrationhub-config``: This release introduces DeleteHomeRegionControl API that customers can use to delete the Migration Hub Home Region configuration
+* api-change:``migrationhubstrategy``: This release introduces multi-data-source feature in Migration Hub Strategy Recommendations. This feature now supports vCenter as a data source to fetch inventory in addition to ADS and Import from file workflow that is currently supported with MHSR collector.
+* api-change:``opensearchserverless``: This release includes the following new APIs: CreateLifecyclePolicy, UpdateLifecyclePolicy, BatchGetLifecyclePolicy, DeleteLifecyclePolicy, ListLifecyclePolicies and BatchGetEffectiveLifecyclePolicy to support the data lifecycle management feature.
+
+
 1.29.69
 =======
 

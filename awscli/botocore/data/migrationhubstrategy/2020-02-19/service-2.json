@@ -183,6 +183,23 @@
       ],
       "documentation":"<p> Retrieves recommended strategies and tools for the specified server. </p>"
     },
+    "ListAnalyzableServers":{
+      "name":"ListAnalyzableServers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-analyzable-servers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnalyzableServersRequest"},
+      "output":{"shape":"ListAnalyzableServersResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of all the servers fetched from customer vCenter using Strategy Recommendation Collector.</p>"
+    },
     "ListApplicationComponents":{
       "name":"ListApplicationComponents",
       "http":{
@@ -411,6 +428,32 @@
         "RUNTIME_ANALYSIS",
         "BINARY_ANALYSIS"
       ]
+    },
+    "AnalyzableServerSummary":{
+      "type":"structure",
+      "members":{
+        "hostname":{
+          "shape":"String",
+          "documentation":"<p>The host name of the analyzable server.</p>"
+        },
+        "ipAddress":{
+          "shape":"String",
+          "documentation":"<p>The ip address of the analyzable server.</p>"
+        },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The data source of the analyzable server.</p>"
+        },
+        "vmId":{
+          "shape":"String",
+          "documentation":"<p>The virtual machine id of the analyzable server.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an analyzable server.</p>"
+    },
+    "AnalyzableServerSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnalyzableServerSummary"}
     },
     "AnalyzerNameUnion":{
       "type":"structure",
@@ -711,6 +754,14 @@
         }
       },
       "documentation":"<p> Application preferences that you specify. </p>"
+    },
+    "AssessmentDataSourceType":{
+      "type":"string",
+      "enum":[
+        "StrategyRecommendationsApplicationDataCollector",
+        "ManualImport",
+        "ApplicationDiscoveryService"
+      ]
     },
     "AssessmentStatus":{
       "type":"string",
@@ -1050,7 +1101,8 @@
       "enum":[
         "ApplicationDiscoveryService",
         "MPA",
-        "Import"
+        "Import",
+        "StrategyRecommendationsApplicationDataCollector"
       ]
     },
     "DatabaseConfigDetail":{
@@ -1593,6 +1645,38 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "ListAnalyzableServersRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResult",
+          "documentation":"<p>The maximum number of items to include in the response. The maximum value is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token from a previous call that you use to retrieve the next set of results. For example, if a previous call to this action returned 100 items, but you set maxResults to 10. You'll receive a set of 10 results along with a token. You then use the returned token to retrieve the next set of 10.</p>"
+        },
+        "sort":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies whether to sort by ascending (ASC) or descending (DESC) order.</p>"
+        }
+      },
+      "documentation":"<p>Represents input for ListAnalyzableServers operation.</p>"
+    },
+    "ListAnalyzableServersResponse":{
+      "type":"structure",
+      "members":{
+        "analyzableServers":{
+          "shape":"AnalyzableServerSummaryList",
+          "documentation":"<p>The list of analyzable servers with summary information about each server.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token you use to retrieve the next set of results, or null if there are no more results.</p>"
+        }
+      },
+      "documentation":"<p>Represents output for ListAnalyzableServers operation.</p>"
     },
     "ListAntipatternSeveritySummary":{
       "type":"list",
@@ -2504,6 +2588,10 @@
     "StartAssessmentRequest":{
       "type":"structure",
       "members":{
+        "assessmentDataSourceType":{
+          "shape":"AssessmentDataSourceType",
+          "documentation":"<p>The data source type of an assessment to be started.</p>"
+        },
         "assessmentTargets":{
           "shape":"AssessmentTargets",
           "documentation":"<p>List of criteria for assessment.</p>"

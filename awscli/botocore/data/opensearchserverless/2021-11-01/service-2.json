@@ -27,6 +27,34 @@
       ],
       "documentation":"<p>Returns attributes for one or more collections, including the collection endpoint and the OpenSearch Dashboards endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>"
     },
+    "BatchGetEffectiveLifecyclePolicy":{
+      "name":"BatchGetEffectiveLifecyclePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetEffectiveLifecyclePolicyRequest"},
+      "output":{"shape":"BatchGetEffectiveLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of successful and failed retrievals for the OpenSearch Serverless indexes. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-list\">Viewing data lifecycle policies</a>.</p>"
+    },
+    "BatchGetLifecyclePolicy":{
+      "name":"BatchGetLifecyclePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetLifecyclePolicyRequest"},
+      "output":{"shape":"BatchGetLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns one or more configured OpenSearch Serverless lifecycle policies. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-list\">Viewing data lifecycle policies</a>.</p>"
+    },
     "BatchGetVpcEndpoint":{
       "name":"BatchGetVpcEndpoint",
       "http":{
@@ -74,6 +102,23 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a new OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
+      "idempotent":true
+    },
+    "CreateLifecyclePolicy":{
+      "name":"CreateLifecyclePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLifecyclePolicyRequest"},
+      "output":{"shape":"CreateLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a lifecyle policy to be applied to OpenSearch Serverless indexes. Lifecycle policies define the number of days or hours to retain the data on an OpenSearch Serverless index. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-create\">Creating data lifecycle policies</a>.</p>",
       "idempotent":true
     },
     "CreateSecurityConfig":{
@@ -159,6 +204,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes an OpenSearch Serverless collection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p>",
+      "idempotent":true
+    },
+    "DeleteLifecyclePolicy":{
+      "name":"DeleteLifecyclePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLifecyclePolicyRequest"},
+      "output":{"shape":"DeleteLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an OpenSearch Serverless lifecycle policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-delete\">Deleting data lifecycle policies</a>.</p>",
       "idempotent":true
     },
     "DeleteSecurityConfig":{
@@ -312,6 +374,20 @@
       ],
       "documentation":"<p>Lists all OpenSearch Serverless collections. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html\">Creating and managing Amazon OpenSearch Serverless collections</a>.</p> <note> <p>Make sure to include an empty request body {} if you don't include any collection filters in the request.</p> </note>"
     },
+    "ListLifecyclePolicies":{
+      "name":"ListLifecyclePolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListLifecyclePoliciesRequest"},
+      "output":{"shape":"ListLifecyclePoliciesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of OpenSearch Serverless lifecycle policies. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-list\">Viewing data lifecycle policies</a>.</p>"
+    },
     "ListSecurityConfigs":{
       "name":"ListSecurityConfigs",
       "http":{
@@ -449,6 +525,24 @@
       "documentation":"<p>Updates an OpenSearch Serverless collection.</p>",
       "idempotent":true
     },
+    "UpdateLifecyclePolicy":{
+      "name":"UpdateLifecyclePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLifecyclePolicyRequest"},
+      "output":{"shape":"UpdateLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates an OpenSearch Serverless access policy. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html#serverless-lifecycle-update\">Updating data lifecycle policies</a>.</p>",
+      "idempotent":true
+    },
     "UpdateSecurityConfig":{
       "name":"UpdateSecurityConfig",
       "http":{
@@ -575,7 +669,7 @@
         },
         "type":{
           "shape":"AccessPolicyType",
-          "documentation":"<p>The type of access policy. Currently the only available type is <code>data</code>.</p>"
+          "documentation":"<p>The type of access policy. Currently, the only available type is <code>data</code>.</p>"
         }
       },
       "documentation":"<p>A summary of the data access policy.</p>"
@@ -622,6 +716,52 @@
         }
       }
     },
+    "BatchGetEffectiveLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":["resourceIdentifiers"],
+      "members":{
+        "resourceIdentifiers":{
+          "shape":"LifecyclePolicyResourceIdentifiers",
+          "documentation":"<p>The unique identifiers of policy types and resource names.</p>"
+        }
+      }
+    },
+    "BatchGetEffectiveLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "effectiveLifecyclePolicyDetails":{
+          "shape":"EffectiveLifecyclePolicyDetails",
+          "documentation":"<p>A list of lifecycle policies applied to the OpenSearch Serverless indexes.</p>"
+        },
+        "effectiveLifecyclePolicyErrorDetails":{
+          "shape":"EffectiveLifecyclePolicyErrorDetails",
+          "documentation":"<p>A list of resources for which retrieval failed.</p>"
+        }
+      }
+    },
+    "BatchGetLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":["identifiers"],
+      "members":{
+        "identifiers":{
+          "shape":"LifecyclePolicyIdentifiers",
+          "documentation":"<p>The unique identifiers of policy types and policy names.</p>"
+        }
+      }
+    },
+    "BatchGetLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicyDetails":{
+          "shape":"LifecyclePolicyDetails",
+          "documentation":"<p>A list of lifecycle policies matched to the input policy name and policy type.</p>"
+        },
+        "lifecyclePolicyErrorDetails":{
+          "shape":"LifecyclePolicyErrorDetails",
+          "documentation":"<p>A list of lifecycle policy names and policy types for which retrieval failed.</p>"
+        }
+      }
+    },
     "BatchGetVpcEndpointRequest":{
       "type":"structure",
       "required":["ids"],
@@ -644,6 +784,10 @@
           "documentation":"<p>Error information for a failed request.</p>"
         }
       }
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "CapacityLimits":{
       "type":"structure",
@@ -756,7 +900,7 @@
           "documentation":"<p>The current status of the collection.</p>"
         }
       },
-      "documentation":"<p>List of filter keys that you can use for LIST, UPDATE, and DELETE requests to OpenSearch Serverless collections.</p>"
+      "documentation":"<p>A list of filter keys that you can use for LIST, UPDATE, and DELETE requests to OpenSearch Serverless collections.</p>"
     },
     "CollectionId":{
       "type":"string",
@@ -967,6 +1111,46 @@
         }
       }
     },
+    "CreateLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "policy",
+        "type"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the lifecycle policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The JSON policy document to use as the content for the lifecycle policy.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      }
+    },
+    "CreateLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicyDetail":{
+          "shape":"LifecyclePolicyDetail",
+          "documentation":"<p>Details about the created lifecycle policy.</p>"
+        }
+      }
+    },
     "CreateSecurityConfigRequest":{
       "type":"structure",
       "required":[
@@ -1173,6 +1357,33 @@
         }
       }
     },
+    "DeleteLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the policy to delete.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      }
+    },
+    "DeleteLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteSecurityConfigRequest":{
       "type":"structure",
       "required":["id"],
@@ -1268,6 +1479,66 @@
       },
       "document":true
     },
+    "EffectiveLifecyclePolicyDetail":{
+      "type":"structure",
+      "members":{
+        "noMinRetentionPeriod":{
+          "shape":"Boolean",
+          "documentation":"<p>The minimum number of index retention days set. That is an optional param that will return as <code>true</code> if the minimum number of days or hours is not set to a index resource.</p>"
+        },
+        "policyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The name of the OpenSearch Serverless index resource.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of OpenSearch Serverless resource. Currently, the only supported resource is <code>index</code>.</p>"
+        },
+        "retentionPeriod":{
+          "shape":"String",
+          "documentation":"<p>The minimum number of index retention in days or hours. This is an optional parameter that will return only if it’s set.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
+    },
+    "EffectiveLifecyclePolicyDetails":{
+      "type":"list",
+      "member":{"shape":"EffectiveLifecyclePolicyDetail"}
+    },
+    "EffectiveLifecyclePolicyErrorDetail":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the request.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. For example, <code>The specified Index resource is not found</code>.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The name of OpenSearch Serverless index resource.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
+    },
+    "EffectiveLifecyclePolicyErrorDetails":{
+      "type":"list",
+      "member":{"shape":"EffectiveLifecyclePolicyErrorDetail"}
+    },
     "GetAccessPolicyRequest":{
       "type":"structure",
       "required":[
@@ -1281,7 +1552,7 @@
         },
         "type":{
           "shape":"AccessPolicyType",
-          "documentation":"<p>Tye type of policy. Currently the only supported value is <code>data</code>.</p>"
+          "documentation":"<p>Tye type of policy. Currently, the only supported value is <code>data</code>.</p>"
         }
       }
     },
@@ -1319,6 +1590,10 @@
         "AccessPolicyStats":{
           "shape":"AccessPolicyStats",
           "documentation":"<p>Information about the data access policies in your account.</p>"
+        },
+        "LifecyclePolicyStats":{
+          "shape":"LifecyclePolicyStats",
+          "documentation":"<p>Information about the lifecycle policies in your account.</p>"
         },
         "SecurityConfigStats":{
           "shape":"SecurityConfigStats",
@@ -1393,6 +1668,167 @@
       "exception":true,
       "fault":true
     },
+    "LifecyclePolicyDetail":{
+      "type":"structure",
+      "members":{
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the lifecycle policy was created.</p>"
+        },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the lifecycle policy.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the lifecycle policy was last modified.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "policy":{
+          "shape":"Document",
+          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
+        },
+        "policyVersion":{
+          "shape":"PolicyVersion",
+          "documentation":"<p>The version of the lifecycle policy.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>Details about an OpenSearch Serverless lifecycle policy.</p>"
+    },
+    "LifecyclePolicyDetails":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyDetail"}
+    },
+    "LifecyclePolicyErrorDetail":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the request. For example, <code>NOT_FOUND</code>.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. For example, <code>The specified Lifecycle Policy is not found</code>.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
+    },
+    "LifecyclePolicyErrorDetails":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyErrorDetail"}
+    },
+    "LifecyclePolicyIdentifier":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>The unique identifiers of policy types and policy names.</p>"
+    },
+    "LifecyclePolicyIdentifiers":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyIdentifier"},
+      "max":40,
+      "min":1
+    },
+    "LifecyclePolicyResourceIdentifier":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "type"
+      ],
+      "members":{
+        "resource":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the OpenSearch Serverless ilndex resource.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>The unique identifiers of policy types and resource names.</p>"
+    },
+    "LifecyclePolicyResourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyResourceIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "LifecyclePolicyStats":{
+      "type":"structure",
+      "members":{
+        "RetentionPolicyCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of retention lifecycle policies in the current account.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for an OpenSearch Serverless lifecycle policy.</p>"
+    },
+    "LifecyclePolicySummaries":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicySummary"}
+    },
+    "LifecyclePolicySummary":{
+      "type":"structure",
+      "members":{
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the lifecycle policy was created.</p>"
+        },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the lifecycle policy.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the lifecycle policy was last modified.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "policyVersion":{
+          "shape":"PolicyVersion",
+          "documentation":"<p>The version of the lifecycle policy.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the lifecycle policy.</p>"
+    },
+    "LifecyclePolicyType":{
+      "type":"string",
+      "enum":["retention"]
+    },
+    "LifecycleResource":{"type":"string"},
     "ListAccessPoliciesRequest":{
       "type":"structure",
       "required":["type"],
@@ -1445,7 +1881,7 @@
       "members":{
         "collectionFilters":{
           "shape":"CollectionFilters",
-          "documentation":"<p>List of filter names and values that you can use for requests.</p>"
+          "documentation":"<p> A list of filter names and values that you can use for requests.</p>"
         },
         "maxResults":{
           "shape":"ListCollectionsRequestMaxResultsInteger",
@@ -1469,6 +1905,53 @@
         "collectionSummaries":{
           "shape":"CollectionSummaries",
           "documentation":"<p>Details about each collection.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
+        }
+      }
+    },
+    "ListLifecyclePoliciesRequest":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "maxResults":{
+          "shape":"ListLifecyclePoliciesRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use use <code>nextToken</code> to get the next page of results. The default is 10.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If your initial <code>ListLifecyclePolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListLifecyclePolicies</code> operations, which returns results in the next page.</p>"
+        },
+        "resources":{
+          "shape":"ListLifecyclePoliciesRequestResourcesList",
+          "documentation":"<p>Resource filters that policies can apply to. Currently, the only supported resource type is <code>index</code>.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
+        }
+      }
+    },
+    "ListLifecyclePoliciesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListLifecyclePoliciesRequestResourcesList":{
+      "type":"list",
+      "member":{"shape":"LifecycleResource"},
+      "max":1000,
+      "min":1
+    },
+    "ListLifecyclePoliciesResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicySummaries":{
+          "shape":"LifecyclePolicySummaries",
+          "documentation":"<p>Details about the requested lifecycle policies.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -1655,6 +2138,10 @@
       "pattern":"^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$"
     },
     "Resource":{"type":"string"},
+    "ResourceName":{
+      "type":"string",
+      "pattern":"^index/[a-z][a-z0-9-]{3,32}/([a-z;0-9&$%][+.~=\\-_a-z;0-9&$%]*|\\*)$"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1662,6 +2149,10 @@
       },
       "documentation":"<p>Thrown when accessing or deleting a resource that does not exist.</p>",
       "exception":true
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":["index"]
     },
     "SamlConfigOptions":{
       "type":"structure",
@@ -2140,6 +2631,50 @@
         "updateCollectionDetail":{
           "shape":"UpdateCollectionDetail",
           "documentation":"<p>Details about the updated collection.</p>"
+        }
+      }
+    },
+    "UpdateLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "policyVersion",
+        "type"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the lifecycle policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the policy.</p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The JSON policy document to use as the content for the lifecycle policy.</p>"
+        },
+        "policyVersion":{
+          "shape":"PolicyVersion",
+          "documentation":"<p>The version of the policy being updated.</p>"
+        },
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p> The type of lifecycle policy.</p>"
+        }
+      }
+    },
+    "UpdateLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicyDetail":{
+          "shape":"LifecyclePolicyDetail",
+          "documentation":"<p>Details about the updated lifecycle policy.</p>"
         }
       }
     },

@@ -14,6 +14,4 @@ Output::
         ]
     }
 
-For more information, see `Using the IAM Policy Simulator (AWS CLI and AWS API)`_ in the *Using IAM* guide.
-
-.. _`Using the IAM Policy Simulator (AWS CLI and AWS API)`: https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html#policies-simulator-using-api
+For more information, see `Using the IAM Policy Simulator (AWS CLI and AWS API) <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html#policies-simulator-using-api>`__ in the *AWS IAM User Guide*.

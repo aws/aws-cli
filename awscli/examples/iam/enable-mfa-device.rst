@@ -10,4 +10,4 @@ After you use the ``create-virtual-mfa-device`` command to create a new virtual 
 
 This command produces no output.
 
-For more information, see `Enabling a Virtual MFA Device <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html>`__ in the *AWS Identity and Access Management User Guide*.
+For more information, see `Enabling a virtual multi-factor authentication (MFA) device <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_virtual.html>`__ in the *AWS IAM User Guide*.

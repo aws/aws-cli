@@ -1,6 +1,6 @@
 **To retrieve information about the specified version of the specified managed policy**
 
-This example returns the policy document for the v2 version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyManagedPolicy`` ::
+This example returns the policy document for the v2 version of the policy whose ARN is ``arn:aws:iam::123456789012:policy/MyManagedPolicy``. ::
 
     aws iam get-policy-version \
         --policy-arn arn:aws:iam::123456789012:policy/MyPolicy \
@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Overview of IAM Policies <https://docs.aws.amazon.com/IAM/latest/UserGuide/policies_overview.html>`__ in the *IAM User Guide*.
+For more information, see `Policies and permissions in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html>`__ in the *AWS IAM User Guide*.

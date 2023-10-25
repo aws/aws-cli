@@ -31,6 +31,23 @@
       ],
       "documentation":"<p>This API sets up the home region for the calling account only.</p>"
     },
+    "DeleteHomeRegionControl":{
+      "name":"DeleteHomeRegionControl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteHomeRegionControlRequest"},
+      "output":{"shape":"DeleteHomeRegionControlResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>This operation deletes the home region configuration for the calling account. The operation does not delete discovery or migration tracking data in the home region.</p>"
+    },
     "DescribeHomeRegionControls":{
       "name":"DescribeHomeRegionControls",
       "http":{
@@ -109,6 +126,21 @@
           "shape":"HomeRegionControl",
           "documentation":"<p>This object is the <code>HomeRegionControl</code> object that's returned by a successful call to <code>CreateHomeRegionControl</code>.</p>"
         }
+      }
+    },
+    "DeleteHomeRegionControlRequest":{
+      "type":"structure",
+      "required":["ControlId"],
+      "members":{
+        "ControlId":{
+          "shape":"ControlId",
+          "documentation":"<p>A unique identifier that's generated for each home region control. It's always a string that begins with \"hrc-\" followed by 12 lowercase letters and numbers.</p>"
+        }
+      }
+    },
+    "DeleteHomeRegionControlResult":{
+      "type":"structure",
+      "members":{
       }
     },
     "DescribeHomeRegionControlsMaxResults":{

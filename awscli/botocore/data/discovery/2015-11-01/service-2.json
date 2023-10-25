@@ -29,6 +29,22 @@
       ],
       "documentation":"<p>Associates one or more configuration items with an application.</p>"
     },
+    "BatchDeleteAgents":{
+      "name":"BatchDeleteAgents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchDeleteAgentsRequest"},
+      "output":{"shape":"BatchDeleteAgentsResponse"},
+      "errors":[
+        {"shape":"AuthorizationErrorException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServerInternalErrorException"}
+      ],
+      "documentation":"<p> Deletes one or more agents or collectors as specified by ID. Deleting an agent or collector does not delete the previously discovered data. To delete the data collected, use <code>StartBatchDeleteConfigurationTask</code>. </p>"
+    },
     "BatchDeleteImportData":{
       "name":"BatchDeleteImportData",
       "http":{
@@ -132,6 +148,22 @@
         {"shape":"HomeRegionNotSetException"}
       ],
       "documentation":"<p>Lists agents or collectors as specified by ID or other filters. All agents/collectors associated with your user can be listed if you call <code>DescribeAgents</code> as is without passing any parameters.</p>"
+    },
+    "DescribeBatchDeleteConfigurationTask":{
+      "name":"DescribeBatchDeleteConfigurationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeBatchDeleteConfigurationTaskRequest"},
+      "output":{"shape":"DescribeBatchDeleteConfigurationTaskResponse"},
+      "errors":[
+        {"shape":"AuthorizationErrorException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServerInternalErrorException"},
+        {"shape":"HomeRegionNotSetException"}
+      ],
+      "documentation":"<p> Takes a unique deletion task identifier as input and returns metadata about a configuration deletion task.</p>"
     },
     "DescribeConfigurations":{
       "name":"DescribeConfigurations",
@@ -326,6 +358,24 @@
         {"shape":"HomeRegionNotSetException"}
       ],
       "documentation":"<p>Retrieves a list of servers that are one network hop away from a specified server.</p>"
+    },
+    "StartBatchDeleteConfigurationTask":{
+      "name":"StartBatchDeleteConfigurationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartBatchDeleteConfigurationTaskRequest"},
+      "output":{"shape":"StartBatchDeleteConfigurationTaskResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AuthorizationErrorException"},
+        {"shape":"ServerInternalErrorException"},
+        {"shape":"HomeRegionNotSetException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p> Takes a list of configurationId as input and starts an asynchronous deletion task to remove the configurationItems. Returns a unique deletion task identifier. </p>"
     },
     "StartContinuousExport":{
       "name":"StartContinuousExport",
@@ -617,6 +667,104 @@
       "documentation":"<p>The user does not have permission to perform the action. Check the IAM policy associated with this user.</p>",
       "exception":true
     },
+    "BatchDeleteAgentError":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "errorMessage",
+        "errorCode"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"AgentId",
+          "documentation":"<p> The ID of the agent or data collector to delete. </p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p> The description of the error that occurred for the delete failed agent. </p>"
+        },
+        "errorCode":{
+          "shape":"DeleteAgentErrorCode",
+          "documentation":"<p> The type of error that occurred for the delete failed agent. Valid status are: AGENT_IN_USE | NOT_FOUND | INTERNAL_SERVER_ERROR. </p>"
+        }
+      },
+      "documentation":"<p> An object representing the agent or data collector that failed to delete, each containing agentId, errorMessage, and errorCode. </p>"
+    },
+    "BatchDeleteAgentErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteAgentError"}
+    },
+    "BatchDeleteAgentsRequest":{
+      "type":"structure",
+      "required":["deleteAgents"],
+      "members":{
+        "deleteAgents":{
+          "shape":"DeleteAgents",
+          "documentation":"<p> The list of agents to delete. </p>"
+        }
+      }
+    },
+    "BatchDeleteAgentsResponse":{
+      "type":"structure",
+      "members":{
+        "errors":{
+          "shape":"BatchDeleteAgentErrors",
+          "documentation":"<p> A list of agent IDs that failed to delete during the deletion task, each paired with an error message. </p>"
+        }
+      }
+    },
+    "BatchDeleteConfigurationTask":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"UUID",
+          "documentation":"<p> The deletion task's unique identifier. </p>"
+        },
+        "status":{
+          "shape":"BatchDeleteConfigurationTaskStatus",
+          "documentation":"<p> The current execution status of the deletion task. Valid status are: INITIALIZING | VALIDATING | DELETING | COMPLETED | FAILED. </p>"
+        },
+        "startTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p> An epoch seconds timestamp (UTC) of when the deletion task was started. </p>"
+        },
+        "endTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p> An epoch seconds timestamp (UTC) of when the deletion task was completed or failed. </p>"
+        },
+        "configurationType":{
+          "shape":"DeletionConfigurationItemType",
+          "documentation":"<p> The type of configuration item to delete. Supported types are: SERVER. </p>"
+        },
+        "requestedConfigurations":{
+          "shape":"ConfigurationIdList",
+          "documentation":"<p> The list of configuration IDs that were originally requested to be deleted by the deletion task. </p>"
+        },
+        "deletedConfigurations":{
+          "shape":"ConfigurationIdList",
+          "documentation":"<p> The list of configuration IDs that were successfully deleted by the deletion task. </p>"
+        },
+        "failedConfigurations":{
+          "shape":"FailedConfigurationList",
+          "documentation":"<p> A list of configuration IDs that failed to delete during the deletion task, each paired with an error message. </p>"
+        },
+        "deletionWarnings":{
+          "shape":"DeletionWarningsList",
+          "documentation":"<p> A list of configuration IDs that produced warnings regarding their deletion, paired with a warning message. </p>"
+        }
+      },
+      "documentation":"<p> A metadata object that represents the deletion task being executed. </p>"
+    },
+    "BatchDeleteConfigurationTaskStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "VALIDATING",
+        "DELETING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
     "BatchDeleteImportDataError":{
       "type":"structure",
       "members":{
@@ -655,6 +803,10 @@
         "importTaskIds":{
           "shape":"ToDeleteIdentifierList",
           "documentation":"<p>The IDs for the import tasks that you want to delete.</p>"
+        },
+        "deleteHistory":{
+          "shape":"Boolean",
+          "documentation":"<p> Set to <code>true</code> to remove the deleted import task from <a>DescribeImportTasks</a>. </p>"
         }
       }
     },
@@ -1037,6 +1189,35 @@
       "max":252,
       "min":1
     },
+    "DeleteAgent":{
+      "type":"structure",
+      "required":["agentId"],
+      "members":{
+        "agentId":{
+          "shape":"AgentId",
+          "documentation":"<p> The ID of the agent or data collector to delete. </p>"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p> Optional flag used to force delete an agent or data collector. It is needed to delete any agent in HEALTHY/UNHEALTHY/RUNNING status. Note that deleting an agent that is actively reporting health causes it to be re-registered with a different agent ID after data collector re-connects with Amazon Web Services. </p>"
+        }
+      },
+      "documentation":"<p> An object representing the agent or data collector to be deleted along with the optional configurations for error handling. </p>"
+    },
+    "DeleteAgentErrorCode":{
+      "type":"string",
+      "enum":[
+        "NOT_FOUND",
+        "INTERNAL_SERVER_ERROR",
+        "AGENT_IN_USE"
+      ]
+    },
+    "DeleteAgents":{
+      "type":"list",
+      "member":{"shape":"DeleteAgent"},
+      "max":50,
+      "min":1
+    },
     "DeleteApplicationsRequest":{
       "type":"structure",
       "required":["configurationIds"],
@@ -1071,6 +1252,32 @@
       "members":{
       }
     },
+    "DeletionConfigurationItemType":{
+      "type":"string",
+      "enum":["SERVER"]
+    },
+    "DeletionWarning":{
+      "type":"structure",
+      "members":{
+        "configurationId":{
+          "shape":"ConfigurationId",
+          "documentation":"<p> The unique identifier of the configuration that produced a warning. </p>"
+        },
+        "warningCode":{
+          "shape":"WarningCode",
+          "documentation":"<p> The integer warning code associated with the warning message. </p>"
+        },
+        "warningText":{
+          "shape":"WarningText",
+          "documentation":"<p> A descriptive message of the warning the associated configuration ID produced. </p>"
+        }
+      },
+      "documentation":"<p> A configuration ID paired with a warning message. </p>"
+    },
+    "DeletionWarningsList":{
+      "type":"list",
+      "member":{"shape":"DeletionWarning"}
+    },
     "DescribeAgentsRequest":{
       "type":"structure",
       "members":{
@@ -1102,6 +1309,25 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>Token to retrieve the next set of results. For example, if you specified 100 IDs for <code>DescribeAgentsRequest$agentIds</code> but set <code>DescribeAgentsRequest$maxResults</code> to 10, you received a set of 10 results along with this token. Use this token in the next query to retrieve the next set of 10.</p>"
+        }
+      }
+    },
+    "DescribeBatchDeleteConfigurationTaskRequest":{
+      "type":"structure",
+      "required":["taskId"],
+      "members":{
+        "taskId":{
+          "shape":"UUID",
+          "documentation":"<p> The ID of the task to delete. </p>"
+        }
+      }
+    },
+    "DescribeBatchDeleteConfigurationTaskResponse":{
+      "type":"structure",
+      "members":{
+        "task":{
+          "shape":"BatchDeleteConfigurationTask",
+          "documentation":"<p> The <code>BatchDeleteConfigurationTask</code> that represents the deletion task being executed. </p>"
         }
       }
     },
@@ -1365,6 +1591,8 @@
       },
       "documentation":"<p> Indicates that the exported data must include EC2 instance type matches for on-premises servers that are discovered through Amazon Web Services Application Discovery Service. </p>"
     },
+    "ErrorMessage":{"type":"string"},
+    "ErrorStatusCode":{"type":"integer"},
     "ExcludedInstanceTypes":{
       "type":"list",
       "member":{"shape":"EC2InstanceType"}
@@ -1486,6 +1714,28 @@
     "ExportsInfo":{
       "type":"list",
       "member":{"shape":"ExportInfo"}
+    },
+    "FailedConfiguration":{
+      "type":"structure",
+      "members":{
+        "configurationId":{
+          "shape":"ConfigurationId",
+          "documentation":"<p> The unique identifier of the configuration the failed to delete. </p>"
+        },
+        "errorStatusCode":{
+          "shape":"ErrorStatusCode",
+          "documentation":"<p> The integer error code associated with the error message. </p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> A descriptive message indicating why the associated configuration failed to delete. </p>"
+        }
+      },
+      "documentation":"<p> A configuration ID paired with an error message. </p>"
+    },
+    "FailedConfigurationList":{
+      "type":"list",
+      "member":{"shape":"FailedConfiguration"}
     },
     "Filter":{
       "type":"structure",
@@ -1723,6 +1973,14 @@
       "documentation":"<p>The value of one or more parameters are either invalid or out of range. Verify the parameter values and try again.</p>",
       "exception":true
     },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"Message"}
+      },
+      "documentation":"<p> The limit of 200 configuration IDs per request has been exceeded. </p>",
+      "exception":true
+    },
     "ListConfigurationsRequest":{
       "type":"structure",
       "required":["configurationType"],
@@ -1945,6 +2203,32 @@
       "documentation":"<p>The server experienced an internal error. Try again.</p>",
       "exception":true,
       "fault":true
+    },
+    "StartBatchDeleteConfigurationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "configurationType",
+        "configurationIds"
+      ],
+      "members":{
+        "configurationType":{
+          "shape":"DeletionConfigurationItemType",
+          "documentation":"<p> The type of configuration item to delete. Supported types are: SERVER. </p>"
+        },
+        "configurationIds":{
+          "shape":"ConfigurationIdList",
+          "documentation":"<p> The list of configuration IDs that will be deleted by the task. </p>"
+        }
+      }
+    },
+    "StartBatchDeleteConfigurationTaskResponse":{
+      "type":"structure",
+      "members":{
+        "taskId":{
+          "shape":"UUID",
+          "documentation":"<p> The unique identifier associated with the newly started deletion task. </p>"
+        }
+      }
     },
     "StartContinuousExportRequest":{
       "type":"structure",
@@ -2180,6 +2464,10 @@
       "max":10,
       "min":1
     },
+    "UUID":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
     "UpdateApplicationRequest":{
       "type":"structure",
       "required":["configurationId"],
@@ -2232,6 +2520,8 @@
       "min":1,
       "pattern":"[a-z]{2}-[a-z\\-]+-[0-9]+"
     },
+    "WarningCode":{"type":"integer"},
+    "WarningText":{"type":"string"},
     "orderString":{
       "type":"string",
       "enum":[

@@ -17,7 +17,7 @@ Output::
         }
     }
 
-For more information, see `Adding a New User to Your AWS Account <https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_SettingUpUser.html>`_ in the *AWS IAM User Guide*.
+For more information, see `Creating an IAM user in your AWS account <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html>`__ in the *AWS IAM User Guide*.
 
 **Example 2: To create an IAM user at a specified path**
 
@@ -39,13 +39,12 @@ Output::
         }
     }
 
-For more information, see `IAM identifiers <https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html>`_ in the *AWS IAM User Guide*.
+For more information, see `IAM identifiers <https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html>`__ in the *AWS IAM User Guide*.
 
 **Example 3: To Create an IAM User with tags**
 
 The following ``create-user`` command creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following 
-JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` flag can be 
-used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``::
+JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` flag can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``. ::
 
     aws iam create-user \
         --user-name Bob \
@@ -77,7 +76,7 @@ For more information, see `Tagging IAM users <https://docs.aws.amazon.com/IAM/la
 
 **Example 3: To create an IAM user with a set permissions boundary**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` with the permissions boundary of AmazonS3FullAccess::
+The following ``create-user`` command creates an IAM user named ``Bob`` with the permissions boundary of AmazonS3FullAccess. ::
 
     aws iam create-user \
         --user-name Bob \
@@ -99,6 +98,4 @@ Output::
         }
     }
 
-For more information, see `Permissions boundaries for IAM entities <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html?icmpid=docs_iam_console>`__ in the *AWS IAM User Guide*
-
-
+For more information, see `Permissions boundaries for IAM entities <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html>`__ in the *AWS IAM User Guide*.

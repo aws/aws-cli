@@ -6,3 +6,5 @@ The following ``set-security-token-service-preferences`` example configures Amaz
         --global-endpoint-token-version v2Token
 
 This command produces no output.
+
+For more information, see `Managing AWS STS in an AWS Region <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html>`__ in the *AWS IAM User Guide*.

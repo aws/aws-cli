@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.13.29
+=======
+
+* api-change:``iam``: Add the partitional endpoint for IAM in iso-f.
+* api-change:``networkmanager``: This release adds API support for Tunnel-less Connect (NoEncap Protocol) for AWS Cloud WAN
+* api-change:``connect``: This release adds support for updating phone number metadata, such as phone number description.
+* api-change:``medical-imaging``: Updates on documentation links
+* api-change:``eks``: Added support for Cluster Subnet and Security Group mutability.
+* api-change:``discovery``: This release introduces three new APIs: StartBatchDeleteConfigurationTask, DescribeBatchDeleteConfigurationTask, and BatchDeleteAgents.
+* api-change:``migrationhubstrategy``: This release introduces multi-data-source feature in Migration Hub Strategy Recommendations. This feature now supports vCenter as a data source to fetch inventory in addition to ADS and Import from file workflow that is currently supported with MHSR collector.
+* api-change:``redshift-serverless``: This release adds support for customers to see the patch version and workgroup version in Amazon Redshift Serverless.
+* api-change:``codepipeline``: Add ability to trigger pipelines from git tags, define variables at pipeline level and new pipeline type V2.
+* api-change:``opensearchserverless``: This release includes the following new APIs: CreateLifecyclePolicy, UpdateLifecyclePolicy, BatchGetLifecyclePolicy, DeleteLifecyclePolicy, ListLifecyclePolicies and BatchGetEffectiveLifecyclePolicy to support the data lifecycle management feature.
+* api-change:``appintegrations``: Updated ScheduleConfig to be an optional input to CreateDataIntegration to support event driven downloading of files from sources such as Amazon s3 using Amazon Connect AppIntegrations.
+* api-change:``ssm``: This release introduces a new API: DeleteOpsItem. This allows deletion of an OpsItem.
+* api-change:``appconfig``: Update KmsKeyIdentifier constraints to support AWS KMS multi-Region keys.
+* api-change:``migrationhub-config``: This release introduces DeleteHomeRegionControl API that customers can use to delete the Migration Hub Home Region configuration
+* api-change:``ec2``: This release updates the documentation for InstanceInterruptionBehavior and HibernationOptionsRequest to more accurately describe the behavior of these two parameters when using Spot hibernation.
+* api-change:``rekognition``: Amazon Rekognition introduces StartMediaAnalysisJob, GetMediaAnalysisJob, and ListMediaAnalysisJobs operations to run a bulk analysis of images with a Detect Moderation model.
+* api-change:``marketplacecommerceanalytics``: The StartSupportDataExport operation has been deprecated as part of the Product Support Connection deprecation. As of December 2022, Product Support Connection is no longer supported.
+
+
 2.13.28
 =======
 

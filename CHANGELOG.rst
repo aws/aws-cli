@@ -6235,6 +6235,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.72
+=======
+
+* api-change:``appstream``: This release introduces multi-session fleets, allowing customers to provision more than one user session on a single fleet instance.
+* api-change:``ec2``: Launching GetSecurityGroupsForVpc API. This API gets security groups that can be associated by the AWS account making the request with network interfaces in the specified VPC.
+* api-change:``network-firewall``: Network Firewall now supports inspection of outbound SSL/TLS traffic.
+* api-change:``opensearch``: You can specify ipv4 or dualstack IPAddressType for cluster endpoints. If you specify IPAddressType as dualstack, the new endpoint will be visible under the 'EndpointV2' parameter and will support IPv4 and IPv6 requests. Whereas, the 'Endpoint' will continue to serve IPv4 requests.
+* api-change:``redshift``: Add Redshift APIs GetResourcePolicy, DeleteResourcePolicy, PutResourcePolicy and DescribeInboundIntegrations for the new Amazon Redshift Zero-ETL integration feature, which can be used to control data ingress into Redshift namespace, and view inbound integrations.
+* api-change:``sagemaker``: Amazon Sagemaker Autopilot now supports Text Generation jobs.
+* api-change:``sns``: Message Archiving and Replay is now supported in Amazon SNS for FIFO topics.
+* api-change:``ssm-sap``: AWS Systems Manager for SAP added support for registration and discovery of SAP ABAP applications
+* api-change:``transfer``: No API changes from previous release. This release migrated the model to Smithy keeping all features unchanged.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.29.71
+=======
+
+* api-change:``connectcases``: Increase maximum length of CommentBody to 3000, and increase maximum length of StringValue to 1500
+* api-change:``groundstation``: This release will allow KMS alias names to be used when creating Mission Profiles
+* api-change:``iam``: Updates to GetAccessKeyLastUsed action to replace NoSuchEntity error with AccessDeniedException error.
+
+
 1.29.70
 =======
 

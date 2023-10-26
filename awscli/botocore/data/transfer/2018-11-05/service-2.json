@@ -23,11 +23,11 @@
       "input":{"shape":"CreateAccessRequest"},
       "output":{"shape":"CreateAccessResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Used by administrators to choose which groups in the directory should have access to upload and download files over the enabled protocols using Transfer Family. For example, a Microsoft Active Directory might contain 50,000 users, but only a small fraction might need the ability to transfer files to the server. An administrator can use <code>CreateAccess</code> to limit the access to the correct set of users who need this ability.</p>"
     },
@@ -40,12 +40,12 @@
       "input":{"shape":"CreateAgreementRequest"},
       "output":{"shape":"CreateAgreementResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Creates an agreement. An agreement is a bilateral trading partner agreement, or partnership, between an Transfer Family server and an AS2 process. The agreement defines the file and message transfer relationship between the server and the AS2 process. To define an agreement, Transfer Family combines a server, local profile, partner profile, certificate, and other attributes.</p> <p>The partner is identified with the <code>PartnerProfileId</code>, and the AS2 process is identified with the <code>LocalProfileId</code>.</p>"
     },
@@ -58,12 +58,12 @@
       "input":{"shape":"CreateConnectorRequest"},
       "output":{"shape":"CreateConnectorResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Creates the connector, which captures the parameters for a connection for the AS2 or SFTP protocol. For AS2, the connector is required for sending files to an externally hosted AS2 server. For SFTP, the connector is required when sending files to an SFTP server or receiving files from an SFTP server. For more details about connectors, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/create-b2b-server.html#configure-as2-connector\">Create AS2 connectors</a> and <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/configure-sftp-connector.html\">Create SFTP connectors</a>.</p> <note> <p>You must specify exactly one configuration object: either for AS2 (<code>As2Config</code>) or SFTP (<code>SftpConfig</code>).</p> </note>"
     },
@@ -76,11 +76,11 @@
       "input":{"shape":"CreateProfileRequest"},
       "output":{"shape":"CreateProfileResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates the local or partner profile to use for AS2 transfers.</p>"
     },
@@ -93,13 +93,13 @@
       "input":{"shape":"CreateServerRequest"},
       "output":{"shape":"CreateServerResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Instantiates an auto-scaling virtual server based on the selected file transfer protocol in Amazon Web Services. When you make updates to your file transfer protocol-enabled server or when you work with users, use the service-generated <code>ServerId</code> property that is assigned to the newly created server.</p>"
     },
@@ -112,11 +112,11 @@
       "input":{"shape":"CreateUserRequest"},
       "output":{"shape":"CreateUserResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>"
     },
@@ -129,12 +129,12 @@
       "input":{"shape":"CreateWorkflowRequest"},
       "output":{"shape":"CreateWorkflowResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
         {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceExistsException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Allows you to create a workflow with specified steps and step details the workflow invokes after file transfer completes. After creating a workflow, you can associate the workflow created with any transfer servers by specifying the <code>workflow-details</code> field in <code>CreateServer</code> and <code>UpdateServer</code> operations. </p>"
     },
@@ -146,10 +146,10 @@
       },
       "input":{"shape":"DeleteAccessRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Allows you to delete the access specified in the <code>ServerID</code> and <code>ExternalID</code> parameters.</p>"
     },
@@ -161,10 +161,10 @@
       },
       "input":{"shape":"DeleteAgreementRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Delete the agreement that's specified in the provided <code>AgreementId</code>.</p>"
     },
@@ -176,10 +176,10 @@
       },
       "input":{"shape":"DeleteCertificateRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the certificate that's specified in the <code>CertificateId</code> parameter.</p>"
     },
@@ -191,10 +191,10 @@
       },
       "input":{"shape":"DeleteConnectorRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the connector that's specified in the provided <code>ConnectorId</code>.</p>"
     },
@@ -206,11 +206,11 @@
       },
       "input":{"shape":"DeleteHostKeyRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the host key that's specified in the <code>HostKeyId</code> parameter.</p>"
     },
@@ -222,10 +222,10 @@
       },
       "input":{"shape":"DeleteProfileRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the profile that's specified in the <code>ProfileId</code> parameter.</p>"
     },
@@ -237,11 +237,11 @@
       },
       "input":{"shape":"DeleteServerRequest"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the file transfer protocol-enabled server that you specify.</p> <p>No response returns from this operation.</p>"
     },
@@ -253,11 +253,11 @@
       },
       "input":{"shape":"DeleteSshPublicKeyRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes a user's Secure Shell (SSH) public key.</p>"
     },
@@ -269,10 +269,10 @@
       },
       "input":{"shape":"DeleteUserRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the user belonging to a file transfer protocol-enabled server you specify.</p> <p>No response returns from this operation.</p> <note> <p>When you delete a user from a server, the user's information is lost.</p> </note>"
     },
@@ -284,11 +284,11 @@
       },
       "input":{"shape":"DeleteWorkflowRequest"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified workflow.</p>"
     },
@@ -301,10 +301,10 @@
       "input":{"shape":"DescribeAccessRequest"},
       "output":{"shape":"DescribeAccessResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the access that is assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property and its <code>ExternalId</code>.</p> <p>The response from this call returns the properties of the access that is associated with the <code>ServerId</code> value that was specified.</p>"
     },
@@ -317,10 +317,10 @@
       "input":{"shape":"DescribeAgreementRequest"},
       "output":{"shape":"DescribeAgreementResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the agreement that's identified by the <code>AgreementId</code>.</p>"
     },
@@ -333,10 +333,10 @@
       "input":{"shape":"DescribeCertificateRequest"},
       "output":{"shape":"DescribeCertificateResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the certificate that's identified by the <code>CertificateId</code>.</p>"
     },
@@ -349,10 +349,10 @@
       "input":{"shape":"DescribeConnectorRequest"},
       "output":{"shape":"DescribeConnectorResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the connector that's identified by the <code>ConnectorId.</code> </p>"
     },
@@ -365,10 +365,10 @@
       "input":{"shape":"DescribeExecutionRequest"},
       "output":{"shape":"DescribeExecutionResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>You can use <code>DescribeExecution</code> to check the details of the execution of the specified workflow.</p> <note> <p>This API call only returns details for in-progress workflows.</p> <p> If you provide an ID for an execution that is not in progress, or if the execution doesn't match the specified workflow ID, you receive a <code>ResourceNotFound</code> exception.</p> </note>"
     },
@@ -381,10 +381,10 @@
       "input":{"shape":"DescribeHostKeyRequest"},
       "output":{"shape":"DescribeHostKeyResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns the details of the host key that's specified by the <code>HostKeyId</code> and <code>ServerId</code>.</p>"
     },
@@ -397,10 +397,10 @@
       "input":{"shape":"DescribeProfileRequest"},
       "output":{"shape":"DescribeProfileResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns the details of the profile that's specified by the <code>ProfileId</code>.</p>"
     },
@@ -413,10 +413,10 @@
       "input":{"shape":"DescribeSecurityPolicyRequest"},
       "output":{"shape":"DescribeSecurityPolicyResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the security policy that is attached to your file transfer protocol-enabled server. The response contains a description of the security policy's properties. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies</a>.</p>"
     },
@@ -429,10 +429,10 @@
       "input":{"shape":"DescribeServerRequest"},
       "output":{"shape":"DescribeServerResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes a file transfer protocol-enabled server that you specify by passing the <code>ServerId</code> parameter.</p> <p>The response contains a description of a server's properties. When you set <code>EndpointType</code> to VPC, the response will contain the <code>EndpointDetails</code>.</p>"
     },
@@ -445,10 +445,10 @@
       "input":{"shape":"DescribeUserRequest"},
       "output":{"shape":"DescribeUserResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the user assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property.</p> <p>The response from this call returns the properties of the user associated with the <code>ServerId</code> value that was specified.</p>"
     },
@@ -461,10 +461,10 @@
       "input":{"shape":"DescribeWorkflowRequest"},
       "output":{"shape":"DescribeWorkflowResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the specified workflow.</p>"
     },
@@ -477,10 +477,10 @@
       "input":{"shape":"ImportCertificateRequest"},
       "output":{"shape":"ImportCertificateResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Imports the signing and encryption certificates that you need to create local (AS2) profiles and partner profiles.</p>"
     },
@@ -493,12 +493,12 @@
       "input":{"shape":"ImportHostKeyRequest"},
       "output":{"shape":"ImportHostKeyResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Adds a host key to the server that's specified by the <code>ServerId</code> parameter.</p>"
     },
@@ -511,12 +511,12 @@
       "input":{"shape":"ImportSshPublicKeyRequest"},
       "output":{"shape":"ImportSshPublicKeyResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Adds a Secure Shell (SSH) public key to a Transfer Family user identified by a <code>UserName</code> value assigned to the specific file transfer protocol-enabled server, identified by <code>ServerId</code>.</p> <p>The response returns the <code>UserName</code> value, the <code>ServerId</code> value, and the name of the <code>SshPublicKeyId</code>.</p>"
     },
@@ -529,11 +529,11 @@
       "input":{"shape":"ListAccessesRequest"},
       "output":{"shape":"ListAccessesResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the details for all the accesses you have on your server.</p>"
     },
@@ -546,11 +546,11 @@
       "input":{"shape":"ListAgreementsRequest"},
       "output":{"shape":"ListAgreementsResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Returns a list of the agreements for the server that's identified by the <code>ServerId</code> that you supply. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for <code>NextToken</code>, you can supply that value to continue listing agreements from where you left off.</p>"
     },
@@ -563,11 +563,11 @@
       "input":{"shape":"ListCertificatesRequest"},
       "output":{"shape":"ListCertificatesResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Returns a list of the current certificates that have been imported into Transfer Family. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for the <code>NextToken</code> parameter, you can supply that value to continue listing certificates from where you left off.</p>"
     },
@@ -580,11 +580,11 @@
       "input":{"shape":"ListConnectorsRequest"},
       "output":{"shape":"ListConnectorsResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the connectors for the specified Region.</p>"
     },
@@ -597,11 +597,11 @@
       "input":{"shape":"ListExecutionsRequest"},
       "output":{"shape":"ListExecutionsResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists all in-progress executions for the specified workflow.</p> <note> <p>If the specified workflow ID cannot be found, <code>ListExecutions</code> returns a <code>ResourceNotFound</code> exception.</p> </note>"
     },
@@ -614,11 +614,11 @@
       "input":{"shape":"ListHostKeysRequest"},
       "output":{"shape":"ListHostKeysResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Returns a list of host keys for the server that's specified by the <code>ServerId</code> parameter.</p>"
     },
@@ -631,11 +631,11 @@
       "input":{"shape":"ListProfilesRequest"},
       "output":{"shape":"ListProfilesResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Returns a list of the profiles for your system. If you want to limit the results to a certain number, supply a value for the <code>MaxResults</code> parameter. If you ran the command previously and received a value for <code>NextToken</code>, you can supply that value to continue listing profiles from where you left off.</p>"
     },
@@ -648,10 +648,10 @@
       "input":{"shape":"ListSecurityPoliciesRequest"},
       "output":{"shape":"ListSecurityPoliciesResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the security policies that are attached to your file transfer protocol-enabled servers.</p>"
     },
@@ -664,10 +664,10 @@
       "input":{"shape":"ListServersRequest"},
       "output":{"shape":"ListServersResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the file transfer protocol-enabled servers that are associated with your Amazon Web Services account.</p>"
     },
@@ -680,10 +680,10 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists all of the tags associated with the Amazon Resource Name (ARN) that you specify. The resource can be a user, server, or role.</p>"
     },
@@ -696,11 +696,11 @@
       "input":{"shape":"ListUsersRequest"},
       "output":{"shape":"ListUsersResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the users for a file transfer protocol-enabled server that you specify by passing the <code>ServerId</code> parameter.</p>"
     },
@@ -713,10 +713,10 @@
       "input":{"shape":"ListWorkflowsRequest"},
       "output":{"shape":"ListWorkflowsResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"},
-        {"shape":"InvalidNextTokenException"},
-        {"shape":"InvalidRequestException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists all workflows associated with your Amazon Web Services account for your current region.</p>"
     },
@@ -729,12 +729,12 @@
       "input":{"shape":"SendWorkflowStepStateRequest"},
       "output":{"shape":"SendWorkflowStepStateResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Sends a callback for asynchronous custom steps.</p> <p> The <code>ExecutionId</code>, <code>WorkflowId</code>, and <code>Token</code> are passed to the target resource during execution of a custom step of a workflow. You must include those with their callback as well as providing a status. </p>"
     },
@@ -747,11 +747,11 @@
       "input":{"shape":"StartFileTransferRequest"},
       "output":{"shape":"StartFileTransferResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetreiveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
     },
@@ -763,11 +763,11 @@
       },
       "input":{"shape":"StartServerRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Changes the state of a file transfer protocol-enabled server from <code>OFFLINE</code> to <code>ONLINE</code>. It has no impact on a server that is already <code>ONLINE</code>. An <code>ONLINE</code> server can accept and process file transfer jobs.</p> <p>The state of <code>STARTING</code> indicates that the server is in an intermediate state, either not fully able to respond, or not fully online. The values of <code>START_FAILED</code> can indicate an error condition.</p> <p>No response is returned from this call.</p>"
     },
@@ -779,11 +779,11 @@
       },
       "input":{"shape":"StopServerRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Changes the state of a file transfer protocol-enabled server from <code>ONLINE</code> to <code>OFFLINE</code>. An <code>OFFLINE</code> server cannot accept and process file transfer jobs. Information tied to your server, such as server and user properties, are not affected by stopping your server.</p> <note> <p>Stopping the server does not reduce or impact your file transfer protocol endpoint billing; you must delete the server to stop being billed.</p> </note> <p>The state of <code>STOPPING</code> indicates that the server is in an intermediate state, either not fully able to respond, or not fully offline. The values of <code>STOP_FAILED</code> can indicate an error condition.</p> <p>No response is returned from this call.</p>"
     },
@@ -795,10 +795,10 @@
       },
       "input":{"shape":"TagResourceRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Attaches a key-value pair to a resource, as identified by its Amazon Resource Name (ARN). Resources are users, servers, roles, and other entities.</p> <p>There is no response returned from this call.</p>"
     },
@@ -811,10 +811,10 @@
       "input":{"shape":"TestConnectionRequest"},
       "output":{"shape":"TestConnectionResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Tests whether your SFTP connector is set up successfully. We highly recommend that you call this operation to test your ability to transfer files between local Amazon Web Services storage and a trading partner's SFTP server.</p>"
     },
@@ -827,10 +827,10 @@
       "input":{"shape":"TestIdentityProviderRequest"},
       "output":{"shape":"TestIdentityProviderResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>If the <code>IdentityProviderType</code> of a file transfer protocol-enabled server is <code>AWS_DIRECTORY_SERVICE</code> or <code>API_Gateway</code>, tests whether your identity provider is set up successfully. We highly recommend that you call this operation to test your authentication method as soon as you create your server. By doing so, you can troubleshoot issues with the identity provider integration to ensure that your users can successfully use the service.</p> <p> The <code>ServerId</code> and <code>UserName</code> parameters are required. The <code>ServerProtocol</code>, <code>SourceIp</code>, and <code>UserPassword</code> are all optional. </p> <p>Note the following:</p> <ul> <li> <p> You cannot use <code>TestIdentityProvider</code> if the <code>IdentityProviderType</code> of your server is <code>SERVICE_MANAGED</code>.</p> </li> <li> <p> <code>TestIdentityProvider</code> does not work with keys: it only accepts passwords.</p> </li> <li> <p> <code>TestIdentityProvider</code> can test the password operation for a custom Identity Provider that handles keys and passwords.</p> </li> <li> <p> If you provide any incorrect values for any parameters, the <code>Response</code> field is empty. </p> </li> <li> <p> If you provide a server ID for a server that uses service-managed users, you get an error: </p> <p> <code> An error occurred (InvalidRequestException) when calling the TestIdentityProvider operation: s-<i>server-ID</i> not configured for external auth </code> </p> </li> <li> <p> If you enter a Server ID for the <code>--server-id</code> parameter that does not identify an actual Transfer server, you receive the following error: </p> <p> <code>An error occurred (ResourceNotFoundException) when calling the TestIdentityProvider operation: Unknown server</code>. </p> <p>It is possible your sever is in a different region. You can specify a region by adding the following: <code>--region region-code</code>, such as <code>--region us-east-2</code> to specify a server in <b>US East (Ohio)</b>.</p> </li> </ul>"
     },
@@ -842,10 +842,10 @@
       },
       "input":{"shape":"UntagResourceRequest"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Detaches a key-value pair from a resource, as identified by its Amazon Resource Name (ARN). Resources are users, servers, roles, and other entities.</p> <p>No response is returned from this call.</p>"
     },
@@ -858,12 +858,12 @@
       "input":{"shape":"UpdateAccessRequest"},
       "output":{"shape":"UpdateAccessResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Allows you to update parameters for the access specified in the <code>ServerID</code> and <code>ExternalID</code> parameters.</p>"
     },
@@ -876,12 +876,12 @@
       "input":{"shape":"UpdateAgreementRequest"},
       "output":{"shape":"UpdateAgreementResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Updates some of the parameters for an existing agreement. Provide the <code>AgreementId</code> and the <code>ServerId</code> for the agreement that you want to update, along with the new values for the parameters to update.</p>"
     },
@@ -894,11 +894,11 @@
       "input":{"shape":"UpdateCertificateRequest"},
       "output":{"shape":"UpdateCertificateResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates the active and inactive dates for a certificate.</p>"
     },
@@ -911,12 +911,12 @@
       "input":{"shape":"UpdateConnectorRequest"},
       "output":{"shape":"UpdateConnectorResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"}
       ],
       "documentation":"<p>Updates some of the parameters for an existing connector. Provide the <code>ConnectorId</code> for the connector that you want to update, along with the new values for the parameters to update.</p>"
     },
@@ -929,11 +929,11 @@
       "input":{"shape":"UpdateHostKeyRequest"},
       "output":{"shape":"UpdateHostKeyResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates the description for the host key that's specified by the <code>ServerId</code> and <code>HostKeyId</code> parameters.</p>"
     },
@@ -946,11 +946,11 @@
       "input":{"shape":"UpdateProfileRequest"},
       "output":{"shape":"UpdateProfileResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates some of the parameters for an existing profile. Provide the <code>ProfileId</code> for the profile that you want to update, along with the new values for the parameters to update.</p>"
     },
@@ -963,14 +963,14 @@
       "input":{"shape":"UpdateServerRequest"},
       "output":{"shape":"UpdateServerResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ServiceUnavailableException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
-        {"shape":"ResourceExistsException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates the file transfer protocol-enabled server's properties after that server has been created.</p> <p>The <code>UpdateServer</code> call returns the <code>ServerId</code> of the server you updated.</p>"
     },
@@ -983,11 +983,11 @@
       "input":{"shape":"UpdateUserRequest"},
       "output":{"shape":"UpdateUserResponse"},
       "errors":[
-        {"shape":"ServiceUnavailableException"},
-        {"shape":"InternalServiceError"},
-        {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Assigns new properties to a user. Parameters you pass modify any or all of the following: the home directory, role, and policy for the <code>UserName</code> and <code>ServerId</code> you specify.</p> <p>The response returns the <code>ServerId</code> and the <code>UserName</code> for the updated user.</p>"
     }
@@ -999,8 +999,7 @@
         "Message":{"shape":"ServiceErrorMessage"}
       },
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
-      "exception":true,
-      "synthetic":true
+      "exception":true
     },
     "AddressAllocationId":{"type":"string"},
     "AddressAllocationIds":{
@@ -1011,7 +1010,7 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^a-([0-9a-f]{17})$"
+      "pattern":"a-([0-9a-f]{17})"
     },
     "AgreementStatusType":{
       "type":"string",
@@ -1077,7 +1076,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[\\p{Print}\\s]*"
+      "pattern":"[\\p{Print}\\s]*"
     },
     "As2Transport":{
       "type":"string",
@@ -1100,31 +1099,32 @@
       "type":"string",
       "max":48,
       "min":0,
-      "pattern":"^[\\p{XDigit}{2}:?]*"
+      "pattern":"[\\p{XDigit}{2}:?]*"
     },
     "Certificate":{
       "type":"string",
-      "max":1600
+      "max":1600,
+      "min":0
     },
     "CertificateBodyType":{
       "type":"string",
       "max":16384,
       "min":1,
-      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
       "sensitive":true
     },
     "CertificateChainType":{
       "type":"string",
       "max":2097152,
       "min":1,
-      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
       "sensitive":true
     },
     "CertificateId":{
       "type":"string",
       "max":22,
       "min":22,
-      "pattern":"^cert-([0-9a-f]{17})$"
+      "pattern":"cert-([0-9a-f]{17})"
     },
     "CertificateIds":{
       "type":"list",
@@ -1172,7 +1172,7 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^c-([0-9a-f]{17})$"
+      "pattern":"c-([0-9a-f]{17})"
     },
     "CopyStepDetails":{
       "type":"structure",
@@ -1416,7 +1416,7 @@
           "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
-          "shape":"Role",
+          "shape":"NullableRole",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
@@ -1594,10 +1594,12 @@
     "CustomStepTarget":{
       "type":"string",
       "max":170,
-      "pattern":"arn:[a-z-]+:lambda:.*$"
+      "min":0,
+      "pattern":"arn:[a-z-]+:lambda:.*"
     },
     "CustomStepTimeoutSeconds":{
       "type":"integer",
+      "box":true,
       "max":1800,
       "min":1
     },
@@ -2415,7 +2417,7 @@
           "documentation":"<p>The mode of authentication for a server. The default value is <code>SERVICE_MANAGED</code>, which allows you to store and access user credentials within the Transfer Family service.</p> <p>Use <code>AWS_DIRECTORY_SERVICE</code> to provide access to Active Directory groups in Directory Service for Microsoft Active Directory or Microsoft Active Directory in your on-premises environment or in Amazon Web Services using AD Connector. This option also requires you to provide a Directory ID by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>API_GATEWAY</code> value to integrate with an identity provider of your choosing. The <code>API_GATEWAY</code> setting requires you to provide an Amazon API Gateway endpoint URL to call for authentication by using the <code>IdentityProviderDetails</code> parameter.</p> <p>Use the <code>AWS_LAMBDA</code> value to directly use an Lambda function as your identity provider. If you choose this value, you must specify the ARN for the Lambda function in the <code>Function</code> parameter for the <code>IdentityProviderDetails</code> data type.</p>"
         },
         "LoggingRole":{
-          "shape":"Role",
+          "shape":"NullableRole",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that allows a server to turn on Amazon CloudWatch logging for Amazon S3 or Amazon EFSevents. When set, you can view user activity in your CloudWatch logs.</p>"
         },
         "PostAuthenticationLoginBanner":{
@@ -2543,13 +2545,13 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"^[\\p{Graph}]+"
+      "pattern":"[\\p{Graph}]+"
     },
     "DirectoryId":{
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^d-[0-9a-f]{10}$"
+      "pattern":"d-[0-9a-f]{10}"
     },
     "Domain":{
       "type":"string",
@@ -2575,13 +2577,14 @@
     "EfsFileSystemId":{
       "type":"string",
       "max":128,
-      "pattern":"^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:(access-point/fsap|file-system/fs)-[0-9a-f]{8,40}|fs(ap)?-[0-9a-f]{8,40})$"
+      "min":0,
+      "pattern":"(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:(access-point/fsap|file-system/fs)-[0-9a-f]{8,40}|fs(ap)?-[0-9a-f]{8,40})"
     },
     "EfsPath":{
       "type":"string",
       "max":65536,
       "min":1,
-      "pattern":"^[^\\x00]+$"
+      "pattern":"[^\\x00]+"
     },
     "EncryptionAlg":{
       "type":"string",
@@ -2666,7 +2669,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":"^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}$"
+      "pattern":"[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
     },
     "ExecutionResults":{
       "type":"structure",
@@ -2719,7 +2722,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^S-1-[\\d-]+$"
+      "pattern":"S-1-[\\d-]+"
     },
     "FileLocation":{
       "type":"structure",
@@ -2739,7 +2742,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^(.)+"
+      "pattern":"(.)+"
     },
     "FilePaths":{
       "type":"list",
@@ -2747,17 +2750,21 @@
       "max":10,
       "min":1
     },
-    "Fips":{"type":"boolean"},
+    "Fips":{
+      "type":"boolean",
+      "box":true
+    },
     "Function":{
       "type":"string",
       "max":170,
       "min":1,
-      "pattern":"^arn:[a-z-]+:lambda:.*$"
+      "pattern":"arn:[a-z-]+:lambda:.*"
     },
     "HomeDirectory":{
       "type":"string",
       "max":1024,
-      "pattern":"^$|/.*"
+      "min":0,
+      "pattern":"$|/.*"
     },
     "HomeDirectoryMapEntry":{
       "type":"structure",
@@ -2793,20 +2800,21 @@
     "HostKey":{
       "type":"string",
       "max":4096,
+      "min":0,
       "sensitive":true
     },
     "HostKeyDescription":{
       "type":"string",
       "max":200,
       "min":0,
-      "pattern":"^[\\p{Print}]*$"
+      "pattern":"[\\p{Print}]*"
     },
     "HostKeyFingerprint":{"type":"string"},
     "HostKeyId":{
       "type":"string",
       "max":25,
       "min":25,
-      "pattern":"^hostkey-[0-9a-f]{17}$"
+      "pattern":"hostkey-[0-9a-f]{17}"
     },
     "HostKeyType":{"type":"string"},
     "IdentityProviderDetails":{
@@ -3752,15 +3760,18 @@
     "MapEntry":{
       "type":"string",
       "max":1024,
-      "pattern":"^/.*"
+      "min":0,
+      "pattern":"/.*"
     },
     "MapTarget":{
       "type":"string",
       "max":1024,
-      "pattern":"^/.*"
+      "min":0,
+      "pattern":"/.*"
     },
     "MaxResults":{
       "type":"integer",
+      "box":true,
       "max":1000,
       "min":1
     },
@@ -3787,7 +3798,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^[\\p{Print}\\p{Blank}]+"
+      "pattern":"[\\p{Print}\\p{Blank}]+"
     },
     "NextToken":{
       "type":"string",
@@ -3797,17 +3808,20 @@
     "NullableRole":{
       "type":"string",
       "max":2048,
-      "pattern":"^$|arn:.*role/.*"
+      "min":0,
+      "pattern":"$|arn:.*role/.*"
     },
     "OnPartialUploadWorkflowDetails":{
       "type":"list",
       "member":{"shape":"WorkflowDetail"},
-      "max":1
+      "max":1,
+      "min":0
     },
     "OnUploadWorkflowDetails":{
       "type":"list",
       "member":{"shape":"WorkflowDetail"},
-      "max":1
+      "max":1,
+      "min":0
     },
     "OverwriteExisting":{
       "type":"string",
@@ -3818,14 +3832,17 @@
     },
     "PassiveIp":{
       "type":"string",
-      "max":15
+      "max":15,
+      "min":0
     },
     "Policy":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "min":0
     },
     "PosixId":{
       "type":"long",
+      "box":true,
       "max":4294967295,
       "min":0
     },
@@ -3854,25 +3871,27 @@
     "PostAuthenticationLoginBanner":{
       "type":"string",
       "max":4096,
+      "min":0,
       "pattern":"[\\x09-\\x0D\\x20-\\x7E]*"
     },
     "PreAuthenticationLoginBanner":{
       "type":"string",
       "max":4096,
+      "min":0,
       "pattern":"[\\x09-\\x0D\\x20-\\x7E]*"
     },
     "PrivateKeyType":{
       "type":"string",
       "max":16384,
       "min":1,
-      "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
       "sensitive":true
     },
     "ProfileId":{
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^p-([0-9a-f]{17})$"
+      "pattern":"p-([0-9a-f]{17})"
     },
     "ProfileType":{
       "type":"string",
@@ -3962,13 +3981,13 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+      "pattern":"[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
     },
     "S3Etag":{
       "type":"string",
       "max":65536,
       "min":1,
-      "pattern":"^.+$"
+      "pattern":".+"
     },
     "S3FileLocation":{
       "type":"structure",
@@ -4009,6 +4028,7 @@
     "S3Key":{
       "type":"string",
       "max":1024,
+      "min":0,
       "pattern":"[\\P{M}\\p{M}]*"
     },
     "S3Tag":{
@@ -4033,12 +4053,13 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "S3TagValue":{
       "type":"string",
       "max":256,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "S3Tags":{
       "type":"list",
@@ -4050,7 +4071,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^.+$"
+      "pattern":".+"
     },
     "SecondaryGids":{
       "type":"list",
@@ -4067,7 +4088,7 @@
       "type":"string",
       "max":20,
       "min":11,
-      "pattern":"^sg-[0-9a-f]{8,17}$"
+      "pattern":"sg-[0-9a-f]{8,17}"
     },
     "SecurityGroupIds":{
       "type":"list",
@@ -4076,6 +4097,7 @@
     "SecurityPolicyName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"TransferSecurityPolicy-.+"
     },
     "SecurityPolicyNames":{
@@ -4084,7 +4106,8 @@
     },
     "SecurityPolicyOption":{
       "type":"string",
-      "max":50
+      "max":50,
+      "min":0
     },
     "SecurityPolicyOptions":{
       "type":"list",
@@ -4126,7 +4149,7 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^s-([0-9a-f]{17})$"
+      "pattern":"s-([0-9a-f]{17})"
     },
     "ServiceErrorMessage":{"type":"string"},
     "ServiceMetadata":{
@@ -4147,14 +4170,13 @@
       },
       "documentation":"<p>The request has failed because the Amazon Web ServicesTransfer Family service is not available.</p>",
       "exception":true,
-      "fault":true,
-      "synthetic":true
+      "fault":true
     },
     "SessionId":{
       "type":"string",
       "max":32,
       "min":3,
-      "pattern":"^[\\w-]*$"
+      "pattern":"[\\w-]*"
     },
     "SetStatOption":{
       "type":"string",
@@ -4177,7 +4199,7 @@
       "members":{
         "UserSecretId":{
           "shape":"SecretId",
-          "documentation":"<p>The identifier for the secret (in Amazon Web Services Secrets Manager) that contains the SFTP user's private key, password, or both. The identifier can be either the Amazon Resource Name (ARN) or the name of the secret.</p>"
+          "documentation":"<p>The identifier for the secret (in Amazon Web Services Secrets Manager) that contains the SFTP user's private key, password, or both. The identifier must be the Amazon Resource Name (ARN) of the secret.</p>"
         },
         "TrustedHostKeys":{
           "shape":"SftpConnectorTrustedHostKeyList",
@@ -4210,12 +4232,14 @@
     "SourceFileLocation":{
       "type":"string",
       "max":256,
-      "pattern":"^\\$\\{(\\w+.)+\\w+\\}$"
+      "min":0,
+      "pattern":"\\$\\{(\\w+.)+\\w+\\}"
     },
     "SourceIp":{
       "type":"string",
       "max":32,
-      "pattern":"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+      "min":0,
+      "pattern":"\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}"
     },
     "SshPublicKey":{
       "type":"structure",
@@ -4242,19 +4266,24 @@
     },
     "SshPublicKeyBody":{
       "type":"string",
-      "max":2048
+      "max":2048,
+      "min":0
     },
-    "SshPublicKeyCount":{"type":"integer"},
+    "SshPublicKeyCount":{
+      "type":"integer",
+      "box":true
+    },
     "SshPublicKeyId":{
       "type":"string",
       "max":21,
       "min":21,
-      "pattern":"^key-[0-9a-f]{17}$"
+      "pattern":"key-[0-9a-f]{17}"
     },
     "SshPublicKeys":{
       "type":"list",
       "member":{"shape":"SshPublicKey"},
-      "max":5
+      "max":5,
+      "min":0
     },
     "StartFileTransferRequest":{
       "type":"structure",
@@ -4318,7 +4347,8 @@
     "StatusCode":{"type":"integer"},
     "StepResultOutputsJson":{
       "type":"string",
-      "max":65536
+      "max":65536,
+      "min":0
     },
     "StopServerRequest":{
       "type":"structure",
@@ -4361,7 +4391,8 @@
     },
     "TagKey":{
       "type":"string",
-      "max":128
+      "max":128,
+      "min":0
     },
     "TagKeys":{
       "type":"list",
@@ -4406,7 +4437,8 @@
     },
     "TagValue":{
       "type":"string",
-      "max":256
+      "max":256,
+      "min":0
     },
     "Tags":{
       "type":"list",
@@ -4515,7 +4547,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^[0-9a-zA-Z./-]+$"
+      "pattern":"[0-9a-zA-Z./-]+"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -4908,9 +4940,13 @@
     },
     "Url":{
       "type":"string",
-      "max":255
+      "max":255,
+      "min":0
     },
-    "UserCount":{"type":"integer"},
+    "UserCount":{
+      "type":"integer",
+      "box":true
+    },
     "UserDetails":{
       "type":"structure",
       "required":[
@@ -4937,24 +4973,26 @@
       "type":"string",
       "max":100,
       "min":3,
-      "pattern":"^[\\w][\\w@.-]{2,99}$"
+      "pattern":"[\\w][\\w@.-]{2,99}"
     },
     "UserPassword":{
       "type":"string",
       "max":1024,
+      "min":0,
       "sensitive":true
     },
     "VpcEndpointId":{
       "type":"string",
       "max":22,
       "min":22,
-      "pattern":"^vpce-[0-9a-f]{17}$"
+      "pattern":"vpce-[0-9a-f]{17}"
     },
     "VpcId":{"type":"string"},
     "WorkflowDescription":{
       "type":"string",
       "max":256,
-      "pattern":"^[\\w- ]*$"
+      "min":0,
+      "pattern":"[\\w- ]*"
     },
     "WorkflowDetail":{
       "type":"structure",
@@ -4992,7 +5030,7 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^w-([a-z0-9]{17})$"
+      "pattern":"w-([a-z0-9]{17})"
     },
     "WorkflowStep":{
       "type":"structure",
@@ -5027,7 +5065,8 @@
     "WorkflowStepName":{
       "type":"string",
       "max":30,
-      "pattern":"^[\\w-]*$"
+      "min":0,
+      "pattern":"[\\w-]*"
     },
     "WorkflowStepType":{
       "type":"string",
@@ -5042,7 +5081,8 @@
     "WorkflowSteps":{
       "type":"list",
       "member":{"shape":"WorkflowStep"},
-      "max":8
+      "max":8,
+      "min":0
     }
   },
   "documentation":"<p>Transfer Family is a fully managed service that enables the transfer of files over the File Transfer Protocol (FTP), File Transfer Protocol over SSL (FTPS), or Secure Shell (SSH) File Transfer Protocol (SFTP) directly into and out of Amazon Simple Storage Service (Amazon S3) or Amazon EFS. Additionally, you can use Applicability Statement 2 (AS2) to transfer files into and out of Amazon S3. Amazon Web Services helps you seamlessly migrate your file transfer workflows to Transfer Family by integrating with existing authentication systems, and providing DNS routing with Amazon Route 53 so nothing changes for your customers and partners, or their applications. With your data in Amazon S3, you can use it with Amazon Web Services for processing, analytics, machine learning, and archiving. Getting started with Transfer Family is easy since there is no infrastructure to buy and set up.</p>"

@@ -4427,6 +4427,16 @@
       "output":{"shape":"GetReservedInstancesExchangeQuoteResult"},
       "documentation":"<p>Returns a quote and exchange information for exchanging one or more specified Convertible Reserved Instances for a new Convertible Reserved Instance. If the exchange cannot be performed, the reason is returned in the response. Use <a>AcceptReservedInstancesExchangeQuote</a> to perform the exchange.</p>"
     },
+    "GetSecurityGroupsForVpc":{
+      "name":"GetSecurityGroupsForVpc",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSecurityGroupsForVpcRequest"},
+      "output":{"shape":"GetSecurityGroupsForVpcResult"},
+      "documentation":"<p>Gets security groups that can be associated by the Amazon Web Services account making the request with network interfaces in the specified VPC.</p>"
+    },
     "GetSerialConsoleAccessStatus":{
       "name":"GetSerialConsoleAccessStatus",
       "http":{
@@ -30409,6 +30419,53 @@
       },
       "documentation":"<p>Contains the output of GetReservedInstancesExchangeQuote.</p>"
     },
+    "GetSecurityGroupsForVpcRequest":{
+      "type":"structure",
+      "required":["VpcId"],
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The VPC ID where the security group can be used.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "MaxResults":{
+          "shape":"GetSecurityGroupsForVpcRequestMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters. If using multiple filters, the results include security groups which match all filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>description</code>: The security group's description.</p> </li> <li> <p> <code>group-name</code>: The security group name.</p> </li> <li> <p> <code>owner-id</code>: The security group owner ID.</p> </li> <li> <p> <code>primary-vpc-id</code>: The VPC ID in which the security group was created.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetSecurityGroupsForVpcRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "GetSecurityGroupsForVpcResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "SecurityGroupForVpcs":{
+          "shape":"SecurityGroupForVpcList",
+          "documentation":"<p>The security group that can be used by interfaces in the VPC.</p>",
+          "locationName":"securityGroupForVpcSet"
+        }
+      }
+    },
     "GetSerialConsoleAccessStatusRequest":{
       "type":"structure",
       "members":{
@@ -50421,6 +50478,49 @@
         }
       },
       "documentation":"<p>Describes a security group.</p>"
+    },
+    "SecurityGroupForVpc":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The security group's description.</p>",
+          "locationName":"description"
+        },
+        "GroupName":{
+          "shape":"String",
+          "documentation":"<p>The security group name.</p>",
+          "locationName":"groupName"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The security group owner ID.</p>",
+          "locationName":"ownerId"
+        },
+        "GroupId":{
+          "shape":"String",
+          "documentation":"<p>The security group ID.</p>",
+          "locationName":"groupId"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The security group tags.</p>",
+          "locationName":"tagSet"
+        },
+        "PrimaryVpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID in which the security group was created.</p>",
+          "locationName":"primaryVpcId"
+        }
+      },
+      "documentation":"<p>A security group that can be used by interfaces in the VPC.</p>"
+    },
+    "SecurityGroupForVpcList":{
+      "type":"list",
+      "member":{
+        "shape":"SecurityGroupForVpc",
+        "locationName":"item"
+      }
     },
     "SecurityGroupId":{"type":"string"},
     "SecurityGroupIdList":{

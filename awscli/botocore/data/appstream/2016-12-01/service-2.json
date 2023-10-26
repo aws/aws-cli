@@ -1782,11 +1782,14 @@
     },
     "ComputeCapacity":{
       "type":"structure",
-      "required":["DesiredInstances"],
       "members":{
         "DesiredInstances":{
           "shape":"Integer",
           "documentation":"<p>The desired number of streaming instances.</p>"
+        },
+        "DesiredSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The desired number of user sessions for a multi-session fleet. This is not allowed for single-session fleets.</p> <p>When you create a fleet, you must set either the DesiredSessions or DesiredInstances attribute, based on the type of fleet you create. You can’t define both attributes or leave both attributes blank.</p>"
         }
       },
       "documentation":"<p>Describes the capacity for a fleet.</p>"
@@ -1810,6 +1813,22 @@
         "Available":{
           "shape":"Integer",
           "documentation":"<p>The number of currently available instances that can be used to stream sessions.</p>"
+        },
+        "DesiredUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of sessions slots that are either running or pending. This represents the total number of concurrent streaming sessions your fleet can support in a steady state.</p> <p>DesiredUserSessionCapacity = ActualUserSessionCapacity + PendingUserSessionCapacity</p> <p>This only applies to multi-session fleets.</p>"
+        },
+        "AvailableUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of idle session slots currently available for user sessions.</p> <p>AvailableUserSessionCapacity = ActualUserSessionCapacity - ActiveUserSessions</p> <p>This only applies to multi-session fleets.</p>"
+        },
+        "ActiveUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The number of user sessions currently being used for streaming sessions. This only applies to multi-session fleets.</p>"
+        },
+        "ActualUserSessions":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of session slots that are available for streaming or are currently streaming.</p> <p>ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions</p> <p>This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes the capacity status for a fleet.</p>"
@@ -2165,7 +2184,7 @@
         },
         "MaxUserDurationInSeconds":{
           "shape":"Integer",
-          "documentation":"<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 360000.</p>"
+          "documentation":"<p>The maximum amount of time that a streaming session can remain active, in seconds. If users are still connected to a streaming instance five minutes before this limit is reached, they are prompted to save any open documents before being disconnected. After this time elapses, the instance is terminated and replaced by a new instance.</p> <p>Specify a value between 600 and 432000.</p>"
         },
         "DisconnectTimeoutInSeconds":{
           "shape":"Integer",
@@ -2218,6 +2237,10 @@
         "SessionScriptS3Location":{
           "shape":"S3Location",
           "documentation":"<p>The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.</p>"
+        },
+        "MaxSessionsPerInstance":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
         }
       }
     },
@@ -3106,11 +3129,11 @@
       ],
       "members":{
         "StackName":{
-          "shape":"String",
+          "shape":"Name",
           "documentation":"<p>The name of the stack. This value is case-sensitive.</p>"
         },
         "FleetName":{
-          "shape":"String",
+          "shape":"Name",
           "documentation":"<p>The name of the fleet. This value is case-sensitive.</p>"
         },
         "UserId":{
@@ -3128,6 +3151,10 @@
         "AuthenticationType":{
           "shape":"AuthenticationType",
           "documentation":"<p>The authentication method. Specify <code>API</code> for a user authenticated using a streaming URL or <code>SAML</code> for a SAML federated user. The default is to authenticate users using a streaming URL.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the instance hosting the session.</p>"
         }
       }
     },
@@ -3727,6 +3754,10 @@
         "SessionScriptS3Location":{
           "shape":"S3Location",
           "documentation":"<p>The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets.</p>"
+        },
+        "MaxSessionsPerInstance":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
         }
       },
       "documentation":"<p>Describes a fleet.</p>"
@@ -3740,7 +3771,8 @@
         "DOMAIN_JOIN_INFO",
         "IAM_ROLE_ARN",
         "USB_DEVICE_FILTER_STRINGS",
-        "SESSION_SCRIPT_S3_LOCATION"
+        "SESSION_SCRIPT_S3_LOCATION",
+        "MAX_SESSIONS_PER_INSTANCE"
       ]
     },
     "FleetAttributes":{
@@ -4528,6 +4560,10 @@
         "NetworkAccessConfiguration":{
           "shape":"NetworkAccessConfiguration",
           "documentation":"<p>The network details for the streaming session.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the instance hosting the session.</p>"
         }
       },
       "documentation":"<p>Describes a streaming session.</p>"
@@ -5118,7 +5154,7 @@
           "documentation":"<p>The ARN of the public, private, or shared image to use.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"Name",
           "documentation":"<p>A unique name for the fleet.</p>"
         },
         "InstanceType":{
@@ -5193,6 +5229,10 @@
         "SessionScriptS3Location":{
           "shape":"S3Location",
           "documentation":"<p>The S3 location of the session scripts configuration zip file. This only applies to Elastic fleets. </p>"
+        },
+        "MaxSessionsPerInstance":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
         }
       }
     },

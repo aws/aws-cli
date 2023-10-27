@@ -68,7 +68,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <note> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/note&gt; </code></pre>",
+      "documentation":"<p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
       "idempotent":true
     },
     "CreateDomain":{
@@ -425,7 +425,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>API for adding case event publishing configuration</p>"
+      "documentation":"<p>Adds case event publishing configuration. For a complete list of fields you can add to the event message, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html\">Create case fields</a> in the <i>Amazon Connect Administrator Guide</i> </p>"
     },
     "SearchCases":{
       "name":"SearchCases",
@@ -805,7 +805,7 @@
     },
     "CommentBody":{
       "type":"string",
-      "max":1000,
+      "max":3000,
       "min":1
     },
     "CommentBodyTextType":{
@@ -1576,7 +1576,7 @@
     },
     "FieldValueUnionStringValueString":{
       "type":"string",
-      "max":500,
+      "max":1500,
       "min":0
     },
     "GetCaseEventConfigurationRequest":{
@@ -2891,7 +2891,7 @@
       "members":{
         "content":{
           "shape":"LayoutContent",
-          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields, and a read-only attribute of the field. </p>"
+          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields.</p>"
         },
         "domainId":{
           "shape":"DomainId",

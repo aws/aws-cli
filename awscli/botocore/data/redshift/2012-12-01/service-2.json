@@ -764,6 +764,19 @@
       ],
       "documentation":"<p>Deletes a partner integration from a cluster. Data can still flow to the cluster until the integration is deleted at the partner's website.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyMessage"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Deletes the resource policy for a specified resource.</p>"
+    },
     "DeleteScheduledAction":{
       "name":"DeleteScheduledAction",
       "http":{
@@ -1199,6 +1212,24 @@
       ],
       "documentation":"<p>Returns information about the specified Amazon Redshift HSM configuration. If no configuration ID is specified, returns information about all the HSM configurations owned by your Amazon Web Services account.</p> <p>If you specify both tag keys and tag values in the same request, Amazon Redshift returns all HSM connections that match any combination of the specified keys and values. For example, if you have <code>owner</code> and <code>environment</code> for tag keys, and <code>admin</code> and <code>test</code> for tag values, all HSM connections that have any combination of those values are returned.</p> <p>If both tag keys and values are omitted from the request, HSM connections are returned regardless of whether they have tag keys or values associated with them.</p>"
     },
+    "DescribeInboundIntegrations":{
+      "name":"DescribeInboundIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInboundIntegrationsMessage"},
+      "output":{
+        "shape":"InboundIntegrationsMessage",
+        "resultWrapper":"DescribeInboundIntegrationsResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"InvalidNamespaceFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Returns a list of inbound integrations.</p>"
+    },
     "DescribeLoggingStatus":{
       "name":"DescribeLoggingStatus",
       "http":{
@@ -1623,6 +1654,24 @@
       ],
       "documentation":"<p>Returns an array of DC2 ReservedNodeOfferings that matches the payment type, term, and usage price of the given DC1 reserved node.</p>"
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyMessage"},
+      "output":{
+        "shape":"GetResourcePolicyResult",
+        "resultWrapper":"GetResourcePolicyResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidPolicyFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Get the resource policy for a specified resource.</p>"
+    },
     "ModifyAquaConfiguration":{
       "name":"ModifyAquaConfiguration",
       "http":{
@@ -1991,6 +2040,25 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Allows you to purchase reserved nodes. Amazon Redshift offers a predefined set of reserved node offerings. You can purchase one or more of the offerings. You can call the <a>DescribeReservedNodeOfferings</a> API to obtain the available reserved node offerings. You can call this API by providing a specific reserved node offering and the number of nodes you want to reserve. </p> <p> For more information about reserved node offerings, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/purchase-reserved-node-instance.html\">Purchasing Reserved Nodes</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyMessage"},
+      "output":{
+        "shape":"PutResourcePolicyResult",
+        "resultWrapper":"PutResourcePolicyResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidPolicyFault"},
+        {"shape":"ConflictPolicyUpdateFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Updates the resource policy for a specified resource.</p>"
     },
     "RebootCluster":{
       "name":"RebootCluster",
@@ -3727,6 +3795,18 @@
       },
       "documentation":"<p>Contains the output from the <a>DescribeClusters</a> action. </p>"
     },
+    "ConflictPolicyUpdateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>There is a conflict while updating the resource policy.</p>",
+      "error":{
+        "code":"ConflictPolicyUpdateFault",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "CopyClusterSnapshotMessage":{
       "type":"structure",
       "required":[
@@ -4840,6 +4920,16 @@
       },
       "documentation":"<p/>"
     },
+    "DeleteResourcePolicyMessage":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource of which its resource policy is deleted.</p>"
+        }
+      }
+    },
     "DeleteScheduledActionMessage":{
       "type":"structure",
       "required":["ScheduledActionName"],
@@ -5510,6 +5600,27 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DescribeInboundIntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inbound integration.</p>"
+        },
+        "TargetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeInboundIntegrations</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p>"
+        }
+      }
     },
     "DescribeLoggingStatusMessage":{
       "type":"structure",
@@ -6609,6 +6720,25 @@
         }
       }
     },
+    "GetResourcePolicyMessage":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource of which its resource policy is fetched.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The content of the resource policy.</p>"
+        }
+      }
+    },
     "HsmClientCertificate":{
       "type":"structure",
       "members":{
@@ -6843,6 +6973,56 @@
       },
       "exception":true
     },
+    "InboundIntegration":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an inbound integration.</p>"
+        },
+        "SourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source of an inbound integration.</p>"
+        },
+        "TargetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
+        },
+        "Status":{
+          "shape":"ZeroETLIntegrationStatus",
+          "documentation":"<p>The status of an inbound integration.</p>"
+        },
+        "Errors":{
+          "shape":"IntegrationErrorList",
+          "documentation":"<p>The outstanding errors of an inbound integration. Each item is an \"IntegrationError\". This is null if there is no error.</p>"
+        },
+        "CreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The creation time of an inbound integration.</p>"
+        }
+      },
+      "documentation":"<p>The content of an inbound integration.</p>"
+    },
+    "InboundIntegrationList":{
+      "type":"list",
+      "member":{
+        "shape":"InboundIntegration",
+        "locationName":"InboundIntegration"
+      }
+    },
+    "InboundIntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request. </p>"
+        },
+        "InboundIntegrations":{
+          "shape":"InboundIntegrationList",
+          "documentation":"<p>A list of <a>InboundIntegration</a> instances.</p>"
+        }
+      }
+    },
     "IncompatibleOrderableOptions":{
       "type":"structure",
       "members":{
@@ -6881,6 +7061,40 @@
     },
     "Integer":{"type":"integer"},
     "IntegerOptional":{"type":"integer"},
+    "IntegrationError":{
+      "type":"structure",
+      "required":["ErrorCode"],
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code of an inbound integration error.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message of an inbound integration error.</p>"
+        }
+      },
+      "documentation":"<p>The error of an inbound integration.</p>"
+    },
+    "IntegrationErrorList":{
+      "type":"list",
+      "member":{
+        "shape":"IntegrationError",
+        "locationName":"IntegrationError"
+      }
+    },
+    "IntegrationNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The integration can't be found.</p>",
+      "error":{
+        "code":"IntegrationNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "InvalidAuthenticationProfileRequestFault":{
       "type":"structure",
       "members":{
@@ -7068,6 +7282,18 @@
       "documentation":"<p>The namespace isn't valid because the namespace doesn't exist. Provide a valid namespace.</p>",
       "error":{
         "code":"InvalidNamespaceFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "InvalidPolicyFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The resource policy isn't valid.</p>",
+      "error":{
+        "code":"InvalidPolicyFault",
         "httpStatusCode":400,
         "senderFault":true
       },
@@ -8339,6 +8565,32 @@
         "ReservedNode":{"shape":"ReservedNode"}
       }
     },
+    "PutResourcePolicyMessage":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource of which its resource policy is updated.</p>"
+        },
+        "Policy":{
+          "shape":"String",
+          "documentation":"<p>The content of the resource policy being updated.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The content of the updated resource policy.</p>"
+        }
+      }
+    },
     "RebootClusterMessage":{
       "type":"structure",
       "required":["ClusterIdentifier"],
@@ -8866,6 +9118,20 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourcePolicy":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The resources that a policy is attached to.</p>"
+        },
+        "Policy":{
+          "shape":"String",
+          "documentation":"<p>The content of a resource policy.</p>"
+        }
+      },
+      "documentation":"<p>The policy that is attached to a resource.</p>"
     },
     "RestorableNodeTypeList":{
       "type":"list",
@@ -10632,6 +10898,18 @@
         "shape":"VpcSecurityGroupMembership",
         "locationName":"VpcSecurityGroup"
       }
+    },
+    "ZeroETLIntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "creating",
+        "active",
+        "modifying",
+        "failed",
+        "deleting",
+        "syncing",
+        "needs_attention"
+      ]
     }
   },
   "documentation":"<fullname>Amazon Redshift</fullname> <p> <b>Overview</b> </p> <p>This is an interface reference for Amazon Redshift. It contains documentation for one of the programming or command line interfaces you can use to manage Amazon Redshift clusters. Note that Amazon Redshift is asynchronous, which means that some interfaces may require techniques, such as polling or asynchronous callback handlers, to determine when a command has been applied. In this reference, the parameter descriptions indicate whether a change is applied immediately, on the next instance reboot, or during the next maintenance window. For a summary of the Amazon Redshift cluster management interfaces, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/using-aws-sdk.html\">Using the Amazon Redshift Management Interfaces</a>.</p> <p>Amazon Redshift manages all the work of setting up, operating, and scaling a data warehouse: provisioning capacity, monitoring and backing up the cluster, and applying patches and upgrades to the Amazon Redshift engine. You can focus on using your data to acquire new insights for your business and customers.</p> <p>If you are a first-time user of Amazon Redshift, we recommend that you begin by reading the <a href=\"https://docs.aws.amazon.com/redshift/latest/gsg/getting-started.html\">Amazon Redshift Getting Started Guide</a>.</p> <p>If you are a database developer, the <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/welcome.html\">Amazon Redshift Database Developer Guide</a> explains how to design, build, query, and maintain the databases that make up your data warehouse. </p>"

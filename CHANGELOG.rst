@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.73
+=======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``neptune``: Update TdeCredentialPassword type to SensitiveString
+* api-change:``pinpoint``: Updated documentation to describe the case insensitivity for EndpointIds.
+* api-change:``redshift``: added support to create a dual stack cluster
+* api-change:``wafv2``: Updates the descriptions for the calls that manage web ACL associations, to provide information for customer-managed IAM policies.
+
+
 1.29.72
 =======
 

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.29.74
+=======
+
+* api-change:``connect``: This release adds InstanceId field for phone number APIs.
+* api-change:``dataexchange``: We added a new API action: SendDataSetNotification.
+* api-change:``datasync``: Platform version changes to support AL1 deprecation initiative.
+* api-change:``finspace``: Introducing new API UpdateKxClusterCodeConfiguration, introducing new cache types for clusters and introducing new deployment modes for updating clusters.
+* api-change:``mediapackagev2``: This feature allows customers to create a combination of manifest filtering, startover and time delay configuration that applies to all egress requests by default.
+* api-change:``rds``: This release launches the CreateIntegration, DeleteIntegration, and DescribeIntegrations APIs to manage zero-ETL Integrations.
+* api-change:``redshift-serverless``: Added support for custom domain names for Amazon Redshift Serverless workgroups. This feature enables customers to create a custom domain name and use ACM to generate fully secure connections to it.
+* api-change:``resiliencehub``: Introduced the ability to filter applications by their last assessment date and time and have included metrics for the application's estimated workload Recovery Time Objective (RTO) and estimated workload Recovery Point Objective (RPO).
+* api-change:``s3outposts``: Updated ListOutpostsWithS3 API response to include S3OutpostArn for use with AWS RAM.
+* api-change:``wisdom``: This release added necessary API documents on creating a Wisdom knowledge base to integrate with S3.
+
+
 1.29.73
 =======
 

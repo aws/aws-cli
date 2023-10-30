@@ -11,11 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import glob
+import io
 import os
 
 from s3transfer.subscribers import BaseSubscriber
 from s3transfer.utils import OSUtils
-from tests import HAS_CRT, assert_files_equal, requires_crt
+from tests import (
+    HAS_CRT,
+    NonSeekableReader,
+    NonSeekableWriter,
+    assert_files_equal,
+    requires_crt,
+)
 from tests.integration.s3transfer import BaseTransferManagerIntegTest
 
 if HAS_CRT:
@@ -44,6 +51,11 @@ class RecordingSubscriber(BaseSubscriber):
 class TestCRTS3Transfers(BaseTransferManagerIntegTest):
     """Tests for the high level s3transfer based on CRT implementation."""
 
+    def setUp(self):
+        super().setUp()
+        self.s3_key = 's3key.txt'
+        self.download_path = os.path.join(self.files.rootdir, 'download.txt')
+
     def _create_s3_transfer(self):
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
             self.session, client_kwargs={'region_name': self.region}
@@ -57,6 +69,40 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         return s3transfer.crt.CRTTransferManager(
             self.s3_crt_client, self.request_serializer
         )
+
+    def _upload_with_crt_transfer_manager(self, fileobj, key=None):
+        if key is None:
+            key = self.s3_key
+        self.addCleanup(self.delete_object, key)
+        with self._create_s3_transfer() as transfer:
+            future = transfer.upload(
+                fileobj,
+                self.bucket_name,
+                key,
+                subscribers=[self.record_subscriber],
+            )
+            future.result()
+
+    def _download_with_crt_transfer_manager(self, fileobj, key=None):
+        if key is None:
+            key = self.s3_key
+        self.addCleanup(self.delete_object, key)
+        with self._create_s3_transfer() as transfer:
+            future = transfer.download(
+                self.bucket_name,
+                key,
+                fileobj,
+                subscribers=[self.record_subscriber],
+            )
+            future.result()
+
+    def _assert_expected_s3_object(self, key, expected_size=None):
+        self.assertTrue(self.object_exists(key))
+        if expected_size is not None:
+            response = self.client.head_object(
+                Bucket=self.bucket_name, Key=key
+            )
+            self.assertEqual(response['ContentLength'], expected_size)
 
     def _assert_has_public_read_acl(self, response):
         grants = response['Grants']
@@ -176,6 +222,43 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         self.assertEqual(response['SSECustomerAlgorithm'], 'AES256')
         self._assert_subscribers_called(file_size)
 
+    def test_upload_seekable_stream(self):
+        size = 1024 * 1024
+        self._upload_with_crt_transfer_manager(io.BytesIO(b'0' * size))
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
+    def test_multipart_upload_seekable_stream(self):
+        size = 20 * 1024 * 1024
+        self._upload_with_crt_transfer_manager(io.BytesIO(b'0' * size))
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
+    def test_upload_nonseekable_stream(self):
+        size = 1024 * 1024
+        self._upload_with_crt_transfer_manager(NonSeekableReader(b'0' * size))
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
+    def test_multipart_upload_nonseekable_stream(self):
+        size = 20 * 1024 * 1024
+        self._upload_with_crt_transfer_manager(NonSeekableReader(b'0' * size))
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
+    def test_upload_empty_file(self):
+        size = 0
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self._upload_with_crt_transfer_manager(filename)
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
+    def test_upload_empty_stream(self):
+        size = 0
+        self._upload_with_crt_transfer_manager(io.BytesIO(b''))
+        self._assert_expected_s3_object(self.s3_key, expected_size=size)
+        self._assert_subscribers_called(size)
+
     def test_can_send_extra_params_on_download(self):
         # We're picking the customer provided sse feature
         # of S3 to test the extra_args functionality of
@@ -243,6 +326,65 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         assert_files_equal(filename, download_path)
         file_size = self.osutil.get_file_size(download_path)
         self._assert_subscribers_called(file_size)
+
+    def test_download_seekable_stream(self):
+        size = 1024 * 1024
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        with open(self.download_path, 'wb') as f:
+            self._download_with_crt_transfer_manager(f)
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
+
+    def test_multipart_download_seekable_stream(self):
+        size = 20 * 1024 * 1024
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        with open(self.download_path, 'wb') as f:
+            self._download_with_crt_transfer_manager(f)
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
+
+    def test_download_nonseekable_stream(self):
+        size = 1024 * 1024
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        with open(self.download_path, 'wb') as f:
+            self._download_with_crt_transfer_manager(NonSeekableWriter(f))
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
+
+    def test_multipart_download_nonseekable_stream(self):
+        size = 20 * 1024 * 1024
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        with open(self.download_path, 'wb') as f:
+            self._download_with_crt_transfer_manager(NonSeekableWriter(f))
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
+
+    def test_download_empty_file(self):
+        size = 0
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        self._download_with_crt_transfer_manager(self.download_path)
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
+
+    def test_download_empty_stream(self):
+        size = 0
+        filename = self.files.create_file_with_size(self.s3_key, filesize=size)
+        self.upload_file(filename, self.s3_key)
+
+        with open(self.download_path, 'wb') as f:
+            self._download_with_crt_transfer_manager(f)
+        self._assert_subscribers_called(size)
+        assert_files_equal(filename, self.download_path)
 
     def test_delete(self):
         transfer = self._create_s3_transfer()

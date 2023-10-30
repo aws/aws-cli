@@ -2116,25 +2116,38 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(self.get_crt_make_request_calls(), [])
         self.assert_no_remaining_botocore_responses()
 
-    def test_does_not_use_crt_client_for_streaming_upload(self):
+    def test_streaming_upload_using_crt_client(self):
         cmdline = [
             's3', 'cp', '-', 's3://bucket/key'
         ]
-        self.add_botocore_put_object_response()
         with mock.patch('sys.stdin', BufferedBytesIO(b'foo')):
             self.run_command(cmdline)
-        self.assertEqual(self.get_crt_make_request_calls(), [])
-        self.assert_no_remaining_botocore_responses()
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_body_content=b'foo',
+        )
 
-    def test_does_not_use_crt_client_for_streaming_download(self):
+    def test_streaming_download_using_crt_client(self):
         cmdline = [
             's3', 'cp', 's3://bucket/key', '-'
         ]
-        self.add_botocore_head_object_response()
-        self.add_botocore_get_object_response()
-        self.run_command(cmdline)
-        self.assertEqual(self.get_crt_make_request_calls(), [])
-        self.assert_no_remaining_botocore_responses()
+        result = self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+        )
+        self.assertEqual(
+            result.stdout, self.expected_download_content.decode('utf-8')
+        )
 
     def test_respects_region_parameter(self):
         filename = self.files.create_file('myfile', 'mycontent')

@@ -297,9 +297,6 @@ files to and from S3. Valid choices are:
 
   * S3 to S3 copies - Falls back to using the ``default`` transfer client
 
-  * Streaming uploads from standard input and downloads to standard output -
-    Falls back to using ``default`` transfer client.
-
   * Region redirects - Transfers fail for requests sent to a region that does
     not match the region of the targeted S3 bucket.
 

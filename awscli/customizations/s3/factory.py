@@ -70,8 +70,6 @@ class TransferManagerFactory:
     def _compute_transfer_client_type(self, params, runtime_config):
         if params.get('paths_type') == 's3s3':
             return constants.DEFAULT_TRANSFER_CLIENT
-        if params.get('is_stream'):
-            return constants.DEFAULT_TRANSFER_CLIENT
         return runtime_config.get(
             'preferred_transfer_client', constants.DEFAULT_TRANSFER_CLIENT)
 

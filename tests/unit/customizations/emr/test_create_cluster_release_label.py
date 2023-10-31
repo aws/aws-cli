@@ -1385,6 +1385,38 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_ebs_root_volume_iops(self):
+        cmd = (self.prefix + '--release-label emr-6.15.0 --security-configuration MySecurityConfig '+
+               ' --ebs-root-volume-iops 3000' +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-6.15.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'EbsRootVolumeIops': 3000,
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_ebs_root_volume_throughput(self):
+        cmd = (self.prefix + '--release-label emr-6.15.0 --security-configuration MySecurityConfig '+
+               ' --ebs-root-volume-throughput 125' +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+             {
+                 'Name': DEFAULT_CLUSTER_NAME,
+                 'Instances': DEFAULT_INSTANCES,
+                 'ReleaseLabel': 'emr-6.15.0',
+                 'VisibleToAllUsers': True,
+                 'Tags': [],
+                 'EbsRootVolumeThroughput': 125,
+                 'SecurityConfiguration': 'MySecurityConfig'
+             }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_repo_upgrade_on_boot(self):
         cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+
                ' --repo-upgrade-on-boot NONE' +
@@ -1434,7 +1466,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                        'MaximumCapacityUnits': 4,
                        'UnitType': 'Instances',
                        'MaximumCoreCapacityUnits': 1
-                   } 
+                   }
                 },
                 'SecurityConfiguration': 'MySecurityConfig'
             }
@@ -1498,8 +1530,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_create_cluster_with_os_release_label(self):
         test_os_release_label = '2.0.20220406.1'
-        cmd = (self.prefix + '--release-label emr-6.6.0' 
-                + ' --os-release-label ' + test_os_release_label 
+        cmd = (self.prefix + '--release-label emr-6.6.0'
+                + ' --os-release-label ' + test_os_release_label
                 + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
              {

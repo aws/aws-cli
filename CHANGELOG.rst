@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.29.75
+=======
+
+* api-change:``amplify``: Add backend field to CreateBranch and UpdateBranch requests. Add pagination support for ListApps, ListDomainAssociations, ListBranches, and ListJobs
+* api-change:``application-insights``: Automate attaching managed policies
+* api-change:``ec2``: Capacity Blocks for ML are a new EC2 purchasing option for reserving GPU instances on a future date to support short duration machine learning (ML) workloads. Capacity Blocks automatically place instances close together inside Amazon EC2 UltraClusters for low-latency, high-throughput networking.
+* api-change:``m2``: Added name filter ability for ListDataSets API, added ForceUpdate for Updating environment and BatchJob submission using S3BatchJobIdentifier
+* api-change:``neptunedata``: Minor change to not retry CancelledByUserException
+* api-change:``translate``: Added support for Brevity translation settings feature.
+
+
 1.29.74
 =======
 

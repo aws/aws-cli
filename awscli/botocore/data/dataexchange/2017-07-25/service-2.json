@@ -391,6 +391,25 @@
       "documentation":"<p>This operation invokes an API Gateway API asset. The request is proxied to the provider’s API Gateway API.</p>",
       "endpoint":{"hostPrefix":"api-fulfill."}
     },
+    "SendDataSetNotification":{
+      "name":"SendDataSetNotification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/data-sets/{DataSetId}/notification",
+        "responseCode":202
+      },
+      "input":{"shape":"SendDataSetNotificationRequest"},
+      "output":{"shape":"SendDataSetNotificationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>The type of event associated with the data set.</p>"
+    },
     "StartJob":{
       "name":"StartJob",
       "http":{
@@ -758,6 +777,12 @@
           "locationName":"JobId"
         }
       }
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]{1,64}"
     },
     "Code":{
       "type":"string",
@@ -1145,6 +1170,16 @@
       },
       "documentation":"<p>A data set is an AWS resource with one or more revisions.</p>"
     },
+    "DataUpdateRequestDetails":{
+      "type":"structure",
+      "members":{
+        "DataUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>A datetime in the past when the data was updated. This typically means that the underlying resource supporting the data set was updated.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to a data update type notification.</p>"
+    },
     "DatabaseLFTagPolicy":{
       "type":"structure",
       "required":["Expression"],
@@ -1250,6 +1285,17 @@
           "locationName":"RevisionId"
         }
       }
+    },
+    "DeprecationRequestDetails":{
+      "type":"structure",
+      "required":["DeprecationAt"],
+      "members":{
+        "DeprecationAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>A datetime in the future when the data set will be deprecated.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to a deprecation type notification.</p>"
     },
     "Description":{"type":"string"},
     "Details":{
@@ -2384,6 +2430,20 @@
       "type":"string",
       "enum":["LFTagPolicy"]
     },
+    "LakeFormationTagPolicyDetails":{
+      "type":"structure",
+      "members":{
+        "Database":{
+          "shape":"__string",
+          "documentation":"<p>The underlying Glue database that the notification is referring to.</p>"
+        },
+        "Table":{
+          "shape":"__string",
+          "documentation":"<p>The underlying Glue table that the notification is referring to.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to the affected scope in this LF data set.</p>"
+    },
     "LimitName":{
       "type":"string",
       "enum":[
@@ -2618,9 +2678,17 @@
       "type":"list",
       "member":{"shape":"LFTag"}
     },
+    "ListOfLakeFormationTagPolicies":{
+      "type":"list",
+      "member":{"shape":"LakeFormationTagPolicyDetails"}
+    },
     "ListOfRedshiftDataShareAssetSourceEntry":{
       "type":"list",
       "member":{"shape":"RedshiftDataShareAssetSourceEntry"}
+    },
+    "ListOfRedshiftDataShares":{
+      "type":"list",
+      "member":{"shape":"RedshiftDataShareDetails"}
     },
     "ListOfRevisionDestinationEntry":{
       "type":"list",
@@ -2629,6 +2697,14 @@
     "ListOfRevisionEntry":{
       "type":"list",
       "member":{"shape":"RevisionEntry"}
+    },
+    "ListOfS3DataAccesses":{
+      "type":"list",
+      "member":{"shape":"S3DataAccessDetails"}
+    },
+    "ListOfSchemaChangeDetails":{
+      "type":"list",
+      "member":{"shape":"SchemaChangeDetails"}
     },
     "ListOfTableTagPolicyLFPermissions":{
       "type":"list",
@@ -2718,6 +2794,33 @@
     },
     "Name":{"type":"string"},
     "NextToken":{"type":"string"},
+    "NotificationDetails":{
+      "type":"structure",
+      "members":{
+        "DataUpdate":{
+          "shape":"DataUpdateRequestDetails",
+          "documentation":"<p>Extra details specific to a data update type notification.</p>"
+        },
+        "Deprecation":{
+          "shape":"DeprecationRequestDetails",
+          "documentation":"<p>Extra details specific to a deprecation type notification.</p>"
+        },
+        "SchemaChange":{
+          "shape":"SchemaChangeRequestDetails",
+          "documentation":"<p>Extra details specific to a schema change type notification.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to this notification.</p>"
+    },
+    "NotificationType":{
+      "type":"string",
+      "enum":[
+        "DATA_DELAY",
+        "DATA_UPDATE",
+        "DEPRECATION",
+        "SCHEMA_CHANGE"
+      ]
+    },
     "Origin":{
       "type":"string",
       "enum":[
@@ -2761,6 +2864,40 @@
         }
       },
       "documentation":"<p>The source of the Amazon Redshift datashare asset.</p>"
+    },
+    "RedshiftDataShareDetails":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Database"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"__string",
+          "documentation":"<p>The ARN of the underlying Redshift data share that is being affected by this notification.</p>"
+        },
+        "Database":{
+          "shape":"__string",
+          "documentation":"<p>The database name in the Redshift data share that is being affected by this notification.</p>"
+        },
+        "Function":{
+          "shape":"__string",
+          "documentation":"<p>A function name in the Redshift database that is being affected by this notification.</p>"
+        },
+        "Table":{
+          "shape":"__string",
+          "documentation":"<p>A table name in the Redshift database that is being affected by this notification.</p>"
+        },
+        "Schema":{
+          "shape":"__string",
+          "documentation":"<p>A schema name in the Redshift database that is being affected by this notification.</p>"
+        },
+        "View":{
+          "shape":"__string",
+          "documentation":"<p>A view name in the Redshift database that is being affected by this notification.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to the affected scope in this Redshift data set.</p>"
     },
     "RequestDetails":{
       "type":"structure",
@@ -3103,6 +3240,20 @@
       },
       "documentation":"<p>Source details for an Amazon S3 data access asset.</p>"
     },
+    "S3DataAccessDetails":{
+      "type":"structure",
+      "members":{
+        "KeyPrefixes":{
+          "shape":"ListOf__string",
+          "documentation":"<p>A list of the key prefixes affected by this notification. This can have up to 50 entries.</p>"
+        },
+        "Keys":{
+          "shape":"ListOf__string",
+          "documentation":"<p>A list of the keys affected by this notification. This can have up to 50 entries.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to the affected scope in this S3 Data Access data set.</p>"
+    },
     "S3SnapshotAsset":{
       "type":"structure",
       "required":["Size"],
@@ -3113,6 +3264,69 @@
         }
       },
       "documentation":"<p>The Amazon S3 object that is the asset.</p>"
+    },
+    "SchemaChangeDetails":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"__string",
+          "documentation":"<p>Name of the changing field. This value can be up to 255 characters long.</p>"
+        },
+        "Type":{
+          "shape":"SchemaChangeType",
+          "documentation":"<p>Is the field being added, removed, or modified?</p>"
+        },
+        "Description":{
+          "shape":"__string",
+          "documentation":"<p>Description of what's changing about this field. This value can be up to 512 characters long.</p>"
+        }
+      },
+      "documentation":"<p>Object encompassing information about a schema change to a single, particular field, a notification can have up to 100 of these.</p>"
+    },
+    "SchemaChangeRequestDetails":{
+      "type":"structure",
+      "required":["SchemaChangeAt"],
+      "members":{
+        "Changes":{
+          "shape":"ListOfSchemaChangeDetails",
+          "documentation":"<p>List of schema changes happening in the scope of this notification. This can have up to 100 entries.</p>"
+        },
+        "SchemaChangeAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>A date in the future when the schema change is taking effect.</p>"
+        }
+      },
+      "documentation":"<p>Extra details specific to this schema change type notification.</p>"
+    },
+    "SchemaChangeType":{
+      "type":"string",
+      "enum":[
+        "ADD",
+        "REMOVE",
+        "MODIFY"
+      ]
+    },
+    "ScopeDetails":{
+      "type":"structure",
+      "members":{
+        "LakeFormationTagPolicies":{
+          "shape":"ListOfLakeFormationTagPolicies",
+          "documentation":"<p>Underlying LF resources that will be affected by this notification.</p>"
+        },
+        "RedshiftDataShares":{
+          "shape":"ListOfRedshiftDataShares",
+          "documentation":"<p>Underlying Redshift resources that will be affected by this notification.</p>"
+        },
+        "S3DataAccesses":{
+          "shape":"ListOfS3DataAccesses",
+          "documentation":"<p>Underlying S3 resources that will be affected by this notification.</p>"
+        }
+      },
+      "documentation":"<p>Details about the scope of the notifications such as the affected resources.</p>"
     },
     "SendApiAssetRequest":{
       "type":"structure",
@@ -3185,6 +3399,47 @@
         }
       },
       "payload":"Body"
+    },
+    "SendDataSetNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "DataSetId",
+        "Type"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"ScopeDetails",
+          "documentation":"<p>Affected scope of this notification such as the underlying resources affected by the notification event.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Idempotency key for the notification, this key allows us to deduplicate notifications that are sent in quick succession erroneously.</p>",
+          "idempotencyToken":true
+        },
+        "Comment":{
+          "shape":"__stringMin0Max16384",
+          "documentation":"<p>Free-form text field for providers to add information about their notifications.</p>"
+        },
+        "DataSetId":{
+          "shape":"__string",
+          "documentation":"<p>Affected data set of the notification.</p>",
+          "location":"uri",
+          "locationName":"DataSetId"
+        },
+        "Details":{
+          "shape":"NotificationDetails",
+          "documentation":"<p>Extra details specific to this notification type.</p>"
+        },
+        "Type":{
+          "shape":"NotificationType",
+          "documentation":"<p>The type of the notification. Describing the kind of event the notification is alerting you to.</p>"
+        }
+      }
+    },
+    "SendDataSetNotificationResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ServerSideEncryptionTypes":{
       "type":"string",

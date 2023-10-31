@@ -1278,7 +1278,7 @@
         },
         "FeatureName":{
           "shape":"String",
-          "documentation":"<p>The name of the feature for the Neptune DB cluster that the IAM role is to be associated with. For the list of supported feature names, see <a href=\"neptune/latest/userguide/api-other-apis.html#DBEngineVersion\">DBEngineVersion</a>.</p>"
+          "documentation":"<p>The name of the feature for the Neptune DB cluster that the IAM role is to be associated with. For the list of supported feature names, see <a>DBEngineVersion</a>.</p>"
         }
       }
     },
@@ -1729,11 +1729,11 @@
         },
         "PreferredBackupWindow":{
           "shape":"String",
-          "documentation":"<p>The daily time range during which automated backups are created if automated backups are enabled using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region. To see the time blocks available, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html\"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>"
+          "documentation":"<p>The daily time range during which automated backups are created if automated backups are enabled using the <code>BackupRetentionPeriod</code> parameter.</p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region. To see the time blocks available, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-maintaining.html#manage-console-maintaining-window\">Neptune Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Constraints:</p> <ul> <li> <p>Must be in the format <code>hh24:mi-hh24:mi</code>.</p> </li> <li> <p>Must be in Universal Coordinated Time (UTC).</p> </li> <li> <p>Must not conflict with the preferred maintenance window.</p> </li> <li> <p>Must be at least 30 minutes.</p> </li> </ul>"
         },
         "PreferredMaintenanceWindow":{
           "shape":"String",
-          "documentation":"<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week. To see the time blocks available, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AdjustingTheMaintenanceWindow.html\"> Adjusting the Preferred Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>"
+          "documentation":"<p>The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).</p> <p>Format: <code>ddd:hh24:mi-ddd:hh24:mi</code> </p> <p>The default is a 30-minute window selected at random from an 8-hour block of time for each Amazon Region, occurring on a random day of the week. To see the time blocks available, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-maintaining.html#manage-console-maintaining-window\">Neptune Maintenance Window</a> in the <i>Amazon Neptune User Guide.</i> </p> <p>Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.</p> <p>Constraints: Minimum 30-minute window.</p>"
         },
         "ReplicationSourceIdentifier":{
           "shape":"String",
@@ -1767,7 +1767,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is enabled.</p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
           "documentation":"<p>The ID of the Neptune global database to which this new DB cluster should be added.</p>"
@@ -1962,7 +1965,7 @@
           "documentation":"<p>The ARN from the key store with which to associate the instance for TDE encryption.</p>"
         },
         "TdeCredentialPassword":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The password for the given ARN from the key store in order to access the device.</p>"
         },
         "StorageEncrypted":{
@@ -2339,13 +2342,16 @@
           "shape":"TStamp",
           "documentation":"<p>Time at which the DB cluster will be automatically restarted.</p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfigurationInfo"},
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfigurationInfo",
+          "documentation":"<p>Shows the scaling configuration for a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
           "documentation":"<p>Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.</p>"
         }
       },
-      "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a> action.</p>",
+      "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a>.</p>",
       "wrapper":true
     },
     "DBClusterAlreadyExistsFault":{
@@ -2647,7 +2653,7 @@
         },
         "FeatureName":{
           "shape":"String",
-          "documentation":"<p>The name of the feature associated with the Amazon Identity and Access Management (IAM) role. For the list of supported feature names, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions\">DescribeDBEngineVersions</a>. </p>"
+          "documentation":"<p>The name of the feature associated with the Amazon Identity and Access Management (IAM) role. For the list of supported feature names, see <a>DescribeDBEngineVersions</a>. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon Identity and Access Management (IAM) role that is associated with a DB cluster.</p>"
@@ -5074,7 +5080,7 @@
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the database engine to which you want to upgrade. Changing this parameter results in an outage. The change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to true.</p> <p>For a list of valid engine versions, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html\">Engine Releases for Amazon Neptune</a>, or call <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions\">DescribeDBEngineVersions</a>.</p>"
+          "documentation":"<p>The version number of the database engine to which you want to upgrade. Changing this parameter results in an outage. The change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is set to true.</p> <p>For a list of valid engine versions, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html\">Engine Releases for Amazon Neptune</a>, or call <a>DescribeDBEngineVersions</a>.</p>"
         },
         "AllowMajorVersionUpgrade":{
           "shape":"Boolean",
@@ -5092,7 +5098,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p> <i>If set to <code>true</code>, tags are copied to any snapshot of the DB cluster that is created.</i> </p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        }
       }
     },
     "ModifyDBClusterParameterGroupMessage":{
@@ -5242,7 +5251,7 @@
           "documentation":"<p>The ARN from the key store with which to associate the instance for TDE encryption.</p>"
         },
         "TdeCredentialPassword":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The password for the given ARN from the key store in order to access the device.</p>"
         },
         "CACertificateIdentifier":{
@@ -5886,7 +5895,7 @@
         },
         "FeatureName":{
           "shape":"String",
-          "documentation":"<p>The name of the feature for the DB cluster that the IAM role is to be disassociated from. For the list of supported feature names, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions\">DescribeDBEngineVersions</a>.</p>"
+          "documentation":"<p>The name of the feature for the DB cluster that the IAM role is to be disassociated from. For the list of supported feature names, see <a>DescribeDBEngineVersions</a>.</p>"
         }
       }
     },
@@ -6069,7 +6078,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p> <i>If set to <code>true</code>, tags are copied to any snapshot of the restored DB cluster that is created.</i> </p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        }
       }
     },
     "RestoreDBClusterFromSnapshotResult":{
@@ -6145,7 +6157,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>A value that indicates whether the DB cluster has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection is disabled. </p>"
         },
-        "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"}
+        "ServerlessV2ScalingConfiguration":{
+          "shape":"ServerlessV2ScalingConfiguration",
+          "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        }
       }
     },
     "RestoreDBClusterToPointInTimeResult":{
@@ -6189,6 +6204,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",

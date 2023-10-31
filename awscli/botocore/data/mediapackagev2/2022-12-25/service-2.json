@@ -290,7 +290,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves all channels in a specific channel group that are configured in AWS Elemental MediaPackage, including the origin endpoints that are associated with it.</p>"
     },
@@ -754,7 +755,8 @@
         "ProgramDateTimeIntervalSeconds":{
           "shape":"CreateHlsManifestConfigurationProgramDateTimeIntervalSecondsInteger",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
-        }
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"}
       },
       "documentation":"<p>Create an HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -794,7 +796,8 @@
         "ProgramDateTimeIntervalSeconds":{
           "shape":"CreateLowLatencyHlsManifestConfigurationProgramDateTimeIntervalSecondsInteger",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
-        }
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"}
       },
       "documentation":"<p>Create a low-latency HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -1163,6 +1166,39 @@
       },
       "documentation":"<p>The encryption type.</p>"
     },
+    "FilterConfiguration":{
+      "type":"structure",
+      "members":{
+        "ManifestFilter":{
+          "shape":"FilterConfigurationManifestFilterString",
+          "documentation":"<p>Optionally specify one or more manifest filters for all of your manifest egress requests. When you include a manifest filter, note that you cannot use an identical manifest filter query parameter for this manifest's endpoint URL.</p>"
+        },
+        "Start":{
+          "shape":"Timestamp",
+          "documentation":"<p>Optionally specify the start time for all of your manifest egress requests. When you include start time, note that you cannot use start time query parameters for this manifest's endpoint URL.</p>"
+        },
+        "End":{
+          "shape":"Timestamp",
+          "documentation":"<p>Optionally specify the end time for all of your manifest egress requests. When you include end time, note that you cannot use end time query parameters for this manifest's endpoint URL.</p>"
+        },
+        "TimeDelaySeconds":{
+          "shape":"FilterConfigurationTimeDelaySecondsInteger",
+          "documentation":"<p>Optionally specify the time delay for all of your manifest egress requests. Enter a value that is smaller than your endpoint's startover window. When you include time delay, note that you cannot use time delay query parameters for this manifest's endpoint URL.</p>"
+        }
+      },
+      "documentation":"<p>Filter configuration includes settings for manifest filtering, start and end times, and time delay that apply to all of your egress requests for this manifest. </p>"
+    },
+    "FilterConfigurationManifestFilterString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "FilterConfigurationTimeDelaySecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1209600,
+      "min":0
+    },
     "GetChannelGroupRequest":{
       "type":"structure",
       "required":["ChannelGroupName"],
@@ -1348,7 +1384,8 @@
           "shape":"Integer",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
-        "ScteHls":{"shape":"ScteHls"}
+        "ScteHls":{"shape":"ScteHls"},
+        "FilterConfiguration":{"shape":"FilterConfiguration"}
       },
       "documentation":"<p>Retrieve the HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -1383,7 +1420,8 @@
           "shape":"Integer",
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
-        "ScteHls":{"shape":"ScteHls"}
+        "ScteHls":{"shape":"ScteHls"},
+        "FilterConfiguration":{"shape":"FilterConfiguration"}
       },
       "documentation":"<p>Retrieve the low-latency HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -2484,7 +2522,10 @@
         "MEMBER_MIN_LENGTH",
         "MEMBER_MAX_LENGTH",
         "MEMBER_INVALID_ENUM_VALUE",
-        "MEMBER_DOES_NOT_MATCH_PATTERN"
+        "MEMBER_DOES_NOT_MATCH_PATTERN",
+        "INVALID_MANIFEST_FILTER",
+        "INVALID_TIME_DELAY_SECONDS",
+        "END_TIME_EARLIER_THAN_START_TIME"
       ]
     }
   },

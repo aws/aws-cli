@@ -235,8 +235,11 @@
       "output":{"shape":"GetDataSetDetailsResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ExecutionTimeoutException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
@@ -411,8 +414,11 @@
       "output":{"shape":"ListDataSetsResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ExecutionTimeoutException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
@@ -904,6 +910,10 @@
           "shape":"FileBatchJobIdentifier",
           "documentation":"<p>Specifies a file associated with a specific batch job.</p>"
         },
+        "s3BatchJobIdentifier":{
+          "shape":"S3BatchJobIdentifier",
+          "documentation":"<p>Specifies an Amazon S3 location that identifies the batch jobs that you want to run. Use this identifier to run ad hoc batch jobs.</p>"
+        },
         "scriptBatchJobIdentifier":{
           "shape":"ScriptBatchJobIdentifier",
           "documentation":"<p>A batch job identifier in which the batch job to run is identified by the script name.</p>"
@@ -931,14 +941,14 @@
     "BatchParamKey":{
       "type":"string",
       "documentation":"<p>See https://www.ibm.com/docs/en/workload-automation/9.3.0?topic=zos-coding-variables-in-jcl to get details about limits for both keys and values: 8 for keys (variable names), 44 for values (variable values) In addition, keys will be only alphabetic characters and digits, without any space or special characters (dash, underscore, etc ...)</p> <p>Parameter key: the first character must be alphabetic. Can be of up to 8 alphanumeric characters.</p>",
-      "max":8,
+      "max":32,
       "min":1,
       "pattern":"^[A-Za-z][A-Za-z0-9]{1,7}$"
     },
     "BatchParamValue":{
       "type":"string",
       "documentation":"<p>Parameter value can be of up to 44 alphanumeric characters.</p>",
-      "max":44,
+      "max":80,
       "min":0
     },
     "Boolean":{"type":"boolean"},
@@ -1174,7 +1184,7 @@
         },
         "preferredMaintenanceWindow":{
           "shape":"String50",
-          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "documentation":"<p>Configures the maintenance window that you want for the runtime environment. The maintenance window must have the format <code>ddd:hh24:mi-ddd:hh24:mi</code> and must be less than 24 hours. The following two examples are valid maintenance windows: <code>sun:23:45-mon:00:15</code> or <code>sat:01:00-sat:03:00</code>. </p> <p>If you do not provide a value, a random system-generated value will be assigned.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
@@ -1323,6 +1333,10 @@
           "shape":"DataSetTaskLifecycle",
           "documentation":"<p>The status of the data set import task.</p>"
         },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>If dataset import failed, the failure reason will show here.</p>"
+        },
         "summary":{
           "shape":"DataSetImportSummary",
           "documentation":"<p>A summary of the data set import task.</p>"
@@ -1374,7 +1388,8 @@
       "enum":[
         "Creating",
         "Running",
-        "Completed"
+        "Completed",
+        "Failed"
       ]
     },
     "DataSetsSummaryList":{
@@ -1529,7 +1544,8 @@
       "enum":[
         "Deploying",
         "Succeeded",
-        "Failed"
+        "Failed",
+        "Updating Deployment"
       ]
     },
     "DeploymentList":{
@@ -1707,6 +1723,18 @@
     "EnvironmentSummaryList":{
       "type":"list",
       "member":{"shape":"EnvironmentSummary"}
+    },
+    "ExecutionTimeoutException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> Failed to connect to server, or didn’t receive response within expected time period.</p>",
+      "error":{"httpStatusCode":504},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "ExternalLocation":{
       "type":"structure",
@@ -2086,6 +2114,10 @@
           "shape":"DatasetDetailOrgAttributes",
           "documentation":"<p>The type of data set. The only supported value is VSAM.</p>"
         },
+        "fileSize":{
+          "shape":"Long",
+          "documentation":"<p>File size of the dataset.</p>"
+        },
         "lastReferencedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The last time the data set was referenced.</p>"
@@ -2239,7 +2271,7 @@
       "members":{
         "actualCapacity":{
           "shape":"CapacityValue",
-          "documentation":"<p>The number of instances included in the runtime environment. A standalone runtime environment has a maxiumum of one instance. Currently, a high availability runtime environment has a maximum of two instances. </p>"
+          "documentation":"<p>The number of instances included in the runtime environment. A standalone runtime environment has a maximum of one instance. Currently, a high availability runtime environment has a maximum of two instances. </p>"
         },
         "creationTime":{
           "shape":"Timestamp",
@@ -2291,7 +2323,7 @@
         },
         "preferredMaintenanceWindow":{
           "shape":"String50",
-          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "documentation":"<p>The maintenance window for the runtime environment. If you don't provide a value for the maintenance window, the service assigns a random value.</p>"
         },
         "publiclyAccessible":{
           "shape":"Boolean",
@@ -2376,6 +2408,21 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "JobIdentifier":{
+      "type":"structure",
+      "members":{
+        "fileName":{
+          "shape":"String",
+          "documentation":"<p>The name of the file that contains the batch job definition.</p>"
+        },
+        "scriptName":{
+          "shape":"String",
+          "documentation":"<p>The name of the script that contains the batch job definition.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a specific batch job.</p>",
+      "union":true
     },
     "ListApplicationVersionsRequest":{
       "type":"structure",
@@ -2624,6 +2671,12 @@
           "location":"querystring",
           "locationName":"maxResults"
         },
+        "nameFilter":{
+          "shape":"String200",
+          "documentation":"<p>Filter dataset name matching the specified pattern. Can use * and % as wild cards.</p>",
+          "location":"querystring",
+          "locationName":"nameFilter"
+        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A pagination token returned from a previous call to this operation. This specifies the next item to return. To return to the beginning of the list, exclude this parameter.</p>",
@@ -2819,6 +2872,10 @@
       },
       "documentation":"<p>A subset of the attributes that describe a log group. In CloudWatch a log group is a group of log streams that share the same retention, monitoring, and access control settings.</p>"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MaintenanceSchedule":{
       "type":"structure",
       "members":{
@@ -2996,6 +3053,28 @@
       },
       "exception":true
     },
+    "S3BatchJobIdentifier":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "identifier"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 bucket that contains the batch job definitions.</p>"
+        },
+        "identifier":{
+          "shape":"JobIdentifier",
+          "documentation":"<p>Identifies the batch job definition. This identifier can also point to any batch job definition that already exists in the application or to one of the batch job definitions within the directory that is specified in <code>keyPrefix</code>.</p>"
+        },
+        "keyPrefix":{
+          "shape":"String",
+          "documentation":"<p>The key prefix that specifies the path to the folder in the S3 bucket that has the batch job definitions.</p>"
+        }
+      },
+      "documentation":"<p>A batch job identifier in which the batch jobs to run are identified by an Amazon S3 location.</p>"
+    },
     "ScriptBatchJobDefinition":{
       "type":"structure",
       "required":["scriptName"],
@@ -3046,6 +3125,18 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>Server cannot process the request at the moment.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "StartApplicationRequest":{
       "type":"structure",
@@ -3226,7 +3317,7 @@
         "message":{"shape":"String"},
         "quotaCode":{
           "shape":"String",
-          "documentation":"<p>The identifier of the throttled reuqest.</p>"
+          "documentation":"<p>The identifier of the throttled request.</p>"
         },
         "retryAfterSeconds":{
           "shape":"Integer",
@@ -3333,13 +3424,17 @@
           "location":"uri",
           "locationName":"environmentId"
         },
+        "forceUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>Forces the updates on the environment. This option is needed if the applications in the environment are not stopped or if there are ongoing application-related activities in the environment.</p> <p>If you use this option, be aware that it could lead to data corruption in the applications, and that you might need to perform repair and recovery procedures for the applications.</p> <p>This option is not needed if the attribute being updated is <code>preferredMaintenanceWindow</code>.</p>"
+        },
         "instanceType":{
           "shape":"String20",
           "documentation":"<p>The instance type for the runtime environment to update.</p>"
         },
         "preferredMaintenanceWindow":{
           "shape":"String",
-          "documentation":"<p>Configures the maintenance window you want for the runtime environment. If you do not provide a value, a random system-generated value will be assigned.</p>"
+          "documentation":"<p>Configures the maintenance window that you want for the runtime environment. The maintenance window must have the format <code>ddd:hh24:mi-ddd:hh24:mi</code> and must be less than 24 hours. The following two examples are valid maintenance windows: <code>sun:23:45-mon:00:15</code> or <code>sat:01:00-sat:03:00</code>. </p> <p>If you do not provide a value, a random system-generated value will be assigned.</p>"
         }
       }
     },

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.76
+=======
+
+* api-change:``connect``: Adds the BatchGetFlowAssociation API which returns flow associations (flow-resource) corresponding to the list of resourceArns supplied in the request. This release also adds IsDefault, LastModifiedRegion and LastModifiedTime fields to the responses of several Describe and List APIs.
+* api-change:``globalaccelerator``: Global Accelerator now support accelerators with cross account endpoints.
+* api-change:``rds``: This release adds support for customized networking resources to Amazon RDS Custom.
+* api-change:``redshift``: Added support for Multi-AZ deployments for Provisioned RA3 clusters that provide 99.99% SLA availability.
+* api-change:``sagemaker``: Support for batch transform input in Model dashboard
+
+
 1.29.75
 =======
 

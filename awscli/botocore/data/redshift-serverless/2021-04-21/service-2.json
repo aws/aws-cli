@@ -31,6 +31,24 @@
       ],
       "documentation":"<p>Converts a recovery point to a snapshot. For more information about recovery points and snapshots, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-snapshots-recovery.html\">Working with snapshots and recovery points</a>.</p>"
     },
+    "CreateCustomDomainAssociation":{
+      "name":"CreateCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCustomDomainAssociationRequest"},
+      "output":{"shape":"CreateCustomDomainAssociationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a custom domain association for Amazon Redshift Serverless.</p>"
+    },
     "CreateEndpointAccess":{
       "name":"CreateEndpointAccess",
       "http":{
@@ -122,6 +140,24 @@
       ],
       "documentation":"<p>Creates an workgroup in Amazon Redshift Serverless.</p>",
       "idempotent":true
+    },
+    "DeleteCustomDomainAssociation":{
+      "name":"DeleteCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCustomDomainAssociationRequest"},
+      "output":{"shape":"DeleteCustomDomainAssociationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a custom domain association for Amazon Redshift Serverless.</p>"
     },
     "DeleteEndpointAccess":{
       "name":"DeleteEndpointAccess",
@@ -237,6 +273,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to Amazon Redshift Serverless.</p> <p>By default, the temporary credentials expire in 900 seconds. You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes).</p> <pre><code> &lt;p&gt;The Identity and Access Management (IAM) user or role that runs GetCredentials must have an IAM policy attached that allows access to all necessary actions and resources.&lt;/p&gt; &lt;p&gt;If the &lt;code&gt;DbName&lt;/code&gt; parameter is specified, the IAM policy must allow access to the resource dbname for the specified database name.&lt;/p&gt; </code></pre>"
+    },
+    "GetCustomDomainAssociation":{
+      "name":"GetCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCustomDomainAssociationRequest"},
+      "output":{"shape":"GetCustomDomainAssociationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets information about a specific custom domain association.</p>"
     },
     "GetEndpointAccess":{
       "name":"GetEndpointAccess",
@@ -359,6 +413,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns information about a specific workgroup.</p>"
+    },
+    "ListCustomDomainAssociations":{
+      "name":"ListCustomDomainAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCustomDomainAssociationsRequest"},
+      "output":{"shape":"ListCustomDomainAssociationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidPaginationException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> Lists custom domain associations for Amazon Redshift Serverless.</p>"
     },
     "ListEndpointAccess":{
       "name":"ListEndpointAccess",
@@ -581,6 +652,24 @@
       ],
       "documentation":"<p>Removes a tag or set of tags from a resource.</p>"
     },
+    "UpdateCustomDomainAssociation":{
+      "name":"UpdateCustomDomainAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCustomDomainAssociationRequest"},
+      "output":{"shape":"UpdateCustomDomainAssociationResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an Amazon Redshift Serverless certificate associated with a custom domain.</p>"
+    },
     "UpdateEndpointAccess":{
       "name":"UpdateEndpointAccess",
       "http":{
@@ -683,6 +772,32 @@
       "max":1011,
       "min":1
     },
+    "Association":{
+      "type":"structure",
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainCertificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time for the certificate.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the custom domain name association.</p>"
+    },
+    "AssociationList":{
+      "type":"list",
+      "member":{"shape":"Association"}
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -745,6 +860,49 @@
         "snapshot":{
           "shape":"Snapshot",
           "documentation":"<p>The snapshot converted from the recovery point.</p>"
+        }
+      }
+    },
+    "CreateCustomDomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "customDomainCertificateArn",
+        "customDomainName",
+        "workgroupName"
+      ],
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name to associate with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      }
+    },
+    "CreateCustomDomainAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainCertificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time for the certificate.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name to associate with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
         }
       }
     },
@@ -973,6 +1131,18 @@
         }
       }
     },
+    "CustomDomainCertificateArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[\\w+=/,.@-]+:acm:[\\w+=/,.@-]*:[0-9]+:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+    },
+    "CustomDomainName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"^(((?!-)[A-Za-z0-9-]{0,62}[A-Za-z0-9])\\.)+((?!-)[A-Za-z0-9-]{1,62}[A-Za-z0-9])$"
+    },
     "DbName":{"type":"string"},
     "DbPassword":{
       "type":"string",
@@ -981,6 +1151,28 @@
     "DbUser":{
       "type":"string",
       "sensitive":true
+    },
+    "DeleteCustomDomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "customDomainName",
+        "workgroupName"
+      ],
+      "members":{
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      }
+    },
+    "DeleteCustomDomainAssociationResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteEndpointAccessRequest":{
       "type":"structure",
@@ -1176,8 +1368,11 @@
     },
     "GetCredentialsRequest":{
       "type":"structure",
-      "required":["workgroupName"],
       "members":{
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup. The custom domain name or the workgroup name must be included in the request.</p>"
+        },
         "dbName":{
           "shape":"DbName",
           "documentation":"<p>The name of the database to get temporary authorization to log on to.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 64 alphanumeric characters or hyphens.</p> </li> <li> <p>Must contain only uppercase or lowercase letters, numbers, underscore, plus sign, period (dot), at symbol (@), or hyphen.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>Must not contain a colon ( : ) or slash ( / ).</p> </li> <li> <p>Cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words </a> in the Amazon Redshift Database Developer Guide</p> </li> </ul>"
@@ -1210,6 +1405,44 @@
         "nextRefreshTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time of when the <code>DbUser</code> and <code>DbPassword</code> authorization refreshes.</p>"
+        }
+      }
+    },
+    "GetCustomDomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "customDomainName",
+        "workgroupName"
+      ],
+      "members":{
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      }
+    },
+    "GetCustomDomainAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainCertificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time for the certificate.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
         }
       }
     },
@@ -1414,6 +1647,47 @@
       "exception":true
     },
     "KmsKeyId":{"type":"string"},
+    "ListCustomDomainAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "maxResults":{
+          "shape":"ListCustomDomainAssociationsRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to display the next page of results.</p>",
+          "box":true
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
+        }
+      }
+    },
+    "ListCustomDomainAssociationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCustomDomainAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "associations":{
+          "shape":"AssociationList",
+          "documentation":"<p>A list of Association objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
+        }
+      }
+    },
     "ListEndpointAccessRequest":{
       "type":"structure",
       "members":{
@@ -2399,6 +2673,49 @@
       "members":{
       }
     },
+    "UpdateCustomDomainAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "customDomainCertificateArn",
+        "customDomainName",
+        "workgroupName"
+      ],
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN). This is optional.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      }
+    },
+    "UpdateCustomDomainAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainCertificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time for the certificate.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
+        },
+        "workgroupName":{
+          "shape":"WorkgroupName",
+          "documentation":"<p>The name of the workgroup associated with the database.</p>"
+        }
+      }
+    },
     "UpdateEndpointAccessRequest":{
       "type":"structure",
       "required":["endpointName"],
@@ -2432,7 +2749,7 @@
         },
         "adminUserPassword":{
           "shape":"DbPassword",
-          "documentation":"<p>The password of the administrator for the first database created in the namespace. This parameter must be updated together with <code>adminUsername</code>.</p> <p>You can't use <code>adminUserPassword</code> if <code>manageAdminPassword</code> is true.</p>"
+          "documentation":"<p>The password of the administrator for the first database created in the namespace. This parameter must be updated together with <code>adminUsername</code>.</p> <p>You can't use <code>adminUserPassword</code> if <code>manageAdminPassword</code> is true. </p>"
         },
         "adminUsername":{
           "shape":"DbUser",
@@ -2703,6 +3020,18 @@
         "creationDate":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The creation date of the workgroup.</p>"
+        },
+        "customDomainCertificateArn":{
+          "shape":"CustomDomainCertificateArnString",
+          "documentation":"<p>The custom domain name’s certificate Amazon resource name (ARN).</p>"
+        },
+        "customDomainCertificateExpiryTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time for the certificate.</p>"
+        },
+        "customDomainName":{
+          "shape":"CustomDomainName",
+          "documentation":"<p>The custom domain name associated with the workgroup.</p>"
         },
         "endpoint":{
           "shape":"Endpoint",

@@ -466,7 +466,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Updates the monitoring configurations for the component. The configuration input parameter is an escaped JSON of the configuration and should match the schema of what is returned by <code>DescribeComponentConfigurationRecommendation</code>. </p>"
     },
@@ -650,6 +651,10 @@
         "DiscoveryType":{
           "shape":"DiscoveryType",
           "documentation":"<p> The method used by Application Insights to onboard your resources. </p>"
+        },
+        "AttachMissingPermission":{
+          "shape":"AttachMissingPermission",
+          "documentation":"<p>If set to true, the managed policies for SSM and CW will be attached to the instance roles if they are missing.</p>"
         }
       },
       "documentation":"<p>Describes the status of the application.</p>"
@@ -658,6 +663,7 @@
       "type":"list",
       "member":{"shape":"ApplicationInfo"}
     },
+    "AttachMissingPermission":{"type":"boolean"},
     "AutoConfigEnabled":{"type":"boolean"},
     "AutoCreate":{"type":"boolean"},
     "BadRequestException":{
@@ -794,6 +800,10 @@
         "GroupingType":{
           "shape":"GroupingType",
           "documentation":"<p>Application Insights can create applications based on a resource group or on an account. To create an account-based application using all of the resources in the account, set this parameter to <code>ACCOUNT_BASED</code>. </p>"
+        },
+        "AttachMissingPermission":{
+          "shape":"AttachMissingPermission",
+          "documentation":"<p>If set to true, the managed policies for SSM and CW will be attached to the instance roles if they are missing.</p>"
         }
       }
     },
@@ -990,6 +1000,10 @@
         "Tier":{
           "shape":"Tier",
           "documentation":"<p>The tier of the application component.</p>"
+        },
+        "WorkloadName":{
+          "shape":"WorkloadName",
+          "documentation":"<p>The name of the workload.</p>"
         },
         "RecommendationType":{
           "shape":"RecommendationType",
@@ -2256,6 +2270,10 @@
         "AutoConfigEnabled":{
           "shape":"AutoConfigEnabled",
           "documentation":"<p> Turns auto-configuration on or off. </p>"
+        },
+        "AttachMissingPermission":{
+          "shape":"AttachMissingPermission",
+          "documentation":"<p>If set to true, the managed policies for SSM and CW will be attached to the instance roles if they are missing.</p>"
         }
       }
     },

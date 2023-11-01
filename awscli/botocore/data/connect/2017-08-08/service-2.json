@@ -2218,7 +2218,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Returns a list of third party applications in a specific security profile.</p>"
+      "documentation":"<p>Returns a list of third-party applications in a specific security profile.</p>"
     },
     "ListSecurityProfilePermissions":{
       "name":"ListSecurityProfilePermissions",
@@ -2495,7 +2495,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>When a contact is being recorded, and the recording has been suspended using SuspendContactRecording, this API resumes recording the call or screen.</p> <p>Voice and screen recordings are supported.</p>"
+      "documentation":"<p>When a contact is being recorded, and the recording has been suspended using SuspendContactRecording, this API resumes recording whatever recording is selected in the flow configuration: call, screen, or both. If only call recording or only screen recording is enabled, then it would resume.</p> <p>Voice and screen recordings are supported.</p>"
     },
     "SearchAvailablePhoneNumbers":{
       "name":"SearchAvailablePhoneNumbers",
@@ -2850,7 +2850,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>When a contact is being recorded, this API suspends recording the call or screen. For example, you might suspend the call or screen recording while collecting sensitive information, such as a credit card number. Then use ResumeContactRecording to restart recording.</p> <p>The period of time that the recording is suspended is filled with silence in the final recording.</p> <p>Voice and screen recordings are supported.</p>"
+      "documentation":"<p>When a contact is being recorded, this API suspends recording whatever is selected in the flow configuration: call, screen, or both. If only call recording or only screen recording is enabled, then it would be suspended. For example, you might suspend the screen recording while collecting sensitive information, such as a credit card number. Then use ResumeContactRecording to restart recording the screen.</p> <p>The period of time that the recording is suspended is filled with silence in the final recording.</p> <p>Voice and screen recordings are supported.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3978,7 +3978,7 @@
           "documentation":"<p>The permissions that the agent is granted on the application. Only the <code>ACCESS</code> permission is supported.</p>"
         }
       },
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A third party application's metadata.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A third-party application's metadata.</p>"
     },
     "ApplicationPermissions":{
       "type":"list",
@@ -4456,14 +4456,15 @@
     },
     "ClaimPhoneNumberRequest":{
       "type":"structure",
-      "required":[
-        "TargetArn",
-        "PhoneNumber"
-      ],
+      "required":["PhoneNumber"],
       "members":{
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
         },
         "PhoneNumber":{
           "shape":"PhoneNumber",
@@ -4526,7 +4527,11 @@
         },
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -5635,7 +5640,7 @@
         },
         "Applications":{
           "shape":"Applications",
-          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of third party applications that the security profile will give access to.</p>"
+          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of third-party applications that the security profile will give access to.</p>"
         }
       }
     },
@@ -11027,7 +11032,11 @@
         },
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
         }
       },
       "documentation":"<p>Information about phone numbers that have been claimed to your Amazon Connect instance or traffic distribution group.</p>"
@@ -11041,7 +11050,11 @@
       "members":{
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to. If <code>TargetArn</code> input is not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same Amazon Web Services Region as the request.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through. If both <code>TargetArn</code> and <code>InstanceId</code> input are not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same Amazon Web Services Region as the request.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. If both <code>TargetArn</code> and <code>InstanceId</code> are not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same AWS Region as the request.</p>"
         },
         "MaxResults":{
           "shape":"MaxResult1000",
@@ -11434,19 +11447,19 @@
       "members":{
         "SecurityProfileId":{
           "shape":"SecurityProfileId",
-          "documentation":"<p>The security profile identifier.</p>",
+          "documentation":"<p>The identifier for the security profle.</p>",
           "location":"uri",
           "locationName":"SecurityProfileId"
         },
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The instance identifier.</p>",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. The next set of results can be retrieved by using the token value returned in the previous response when making the next request.</p>",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -11463,11 +11476,11 @@
       "members":{
         "Applications":{
           "shape":"Applications",
-          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third party application's metadata.</p>"
+          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third-party application's metadata.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. The next set of results can be retrieved by using the token value returned in the previous response when making the next request.</p>"
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -14080,14 +14093,17 @@
     "SearchAvailablePhoneNumbersRequest":{
       "type":"structure",
       "required":[
-        "TargetArn",
         "PhoneNumberCountryCode",
         "PhoneNumberType"
       ],
       "members":{
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
         },
         "PhoneNumberCountryCode":{
           "shape":"PhoneNumberCountryCode",
@@ -16580,10 +16596,7 @@
     },
     "UpdatePhoneNumberRequest":{
       "type":"structure",
-      "required":[
-        "PhoneNumberId",
-        "TargetArn"
-      ],
+      "required":["PhoneNumberId"],
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberId",
@@ -16593,7 +16606,11 @@
         },
         "TargetArn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone numbers are claimed to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for Amazon Connect instances or traffic distribution groups that phone number inbound traffic is routed through. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. You must enter <code>InstanceId</code> or <code>TargetArn</code>. </p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -17065,7 +17082,7 @@
         },
         "Applications":{
           "shape":"Applications",
-          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third party application's metadata.</p>"
+          "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third-party application's metadata.</p>"
         }
       }
     },
@@ -18264,5 +18281,5 @@
     },
     "timestamp":{"type":"timestamp"}
   },
-  "documentation":"<p>Amazon Connect is a cloud-based contact center solution that you use to set up and manage a customer contact center and provide reliable customer engagement at any scale.</p> <p>Amazon Connect provides metrics and real-time reporting that enable you to optimize contact routing. You can also resolve customer issues more efficiently by getting customers in touch with the appropriate agents.</p> <p>There are limits to the number of Amazon Connect resources that you can create. There are also limits to the number of requests that you can make per second. For more information, seeP98941055 <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect Service Quotas</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>You can connect programmatically to an Amazon Web Services service by using an endpoint. For a list of Amazon Connect endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect Endpoints</a>.</p>"
+  "documentation":"<p>Amazon Connect is a cloud-based contact center solution that you use to set up and manage a customer contact center and provide reliable customer engagement at any scale.</p> <p>Amazon Connect provides metrics and real-time reporting that enable you to optimize contact routing. You can also resolve customer issues more efficiently by getting customers in touch with the appropriate agents.</p> <p>There are limits to the number of Amazon Connect resources that you can create. There are also limits to the number of requests that you can make per second. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect Service Quotas</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>You can connect programmatically to an Amazon Web Services service by using an endpoint. For a list of Amazon Connect endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect Endpoints</a>.</p>"
 }

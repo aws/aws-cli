@@ -25,7 +25,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Adds an instance fleet to a running cluster.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x.</p> </note>"
+      "documentation":"<p>Adds an instance fleet to a running cluster.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x.</p> </note>"
     },
     "AddInstanceGroups":{
       "name":"AddInstanceGroups",
@@ -79,7 +79,7 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Cancels a pending step or steps in a running cluster. Available only in Amazon EMR versions 4.8.0 and later, excluding version 5.0.0. A maximum of 256 steps are allowed in each CancelSteps request. CancelSteps is idempotent but asynchronous; it does not guarantee that a step will be canceled, even if the request is successfully submitted. When you use Amazon EMR releases 5.28.0 and later, you can cancel steps that are in a <code>PENDING</code> or <code>RUNNING</code> state. In earlier versions of Amazon EMR, you can only cancel steps that are in a <code>PENDING</code> state. </p>"
+      "documentation":"<p>Cancels a pending step or steps in a running cluster. Available only in Amazon EMR versions 4.8.0 and higher, excluding version 5.0.0. A maximum of 256 steps are allowed in each CancelSteps request. CancelSteps is idempotent but asynchronous; it does not guarantee that a step will be canceled, even if the request is successfully submitted. When you use Amazon EMR releases 5.28.0 and higher, you can cancel steps that are in a <code>PENDING</code> or <code>RUNNING</code> state. In earlier versions of Amazon EMR, you can only cancel steps that are in a <code>PENDING</code> state. </p>"
     },
     "CreateSecurityConfiguration":{
       "name":"CreateSecurityConfiguration",
@@ -362,7 +362,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Lists all available details about the instance fleets in a cluster.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Lists all available details about the instance fleets in a cluster.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "ListInstanceGroups":{
       "name":"ListInstanceGroups",
@@ -515,7 +515,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Modifies the target On-Demand and target Spot capacities for the instance fleet with the specified InstanceFleetID within the cluster specified using ClusterID. The call either succeeds or fails atomically.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Modifies the target On-Demand and target Spot capacities for the instance fleet with the specified InstanceFleetID within the cluster specified using ClusterID. The call either succeeds or fails atomically.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "ModifyInstanceGroups":{
       "name":"ModifyInstanceGroups",
@@ -547,7 +547,7 @@
       },
       "input":{"shape":"PutAutoTerminationPolicyInput"},
       "output":{"shape":"PutAutoTerminationPolicyOutput"},
-      "documentation":"<note> <p>Auto-termination is supported in Amazon EMR releases 5.30.0 and 6.1.0 and later. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-auto-termination-policy.html\">Using an auto-termination policy</a>.</p> </note> <p>Creates or updates an auto-termination policy for an Amazon EMR cluster. An auto-termination policy defines the amount of idle time in seconds after which a cluster automatically terminates. For alternative cluster termination options, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html\">Control cluster termination</a>.</p>"
+      "documentation":"<note> <p>Auto-termination is supported in Amazon EMR releases 5.30.0 and 6.1.0 and higher. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-auto-termination-policy.html\">Using an auto-termination policy</a>.</p> </note> <p>Creates or updates an auto-termination policy for an Amazon EMR cluster. An auto-termination policy defines the amount of idle time in seconds after which a cluster automatically terminates. For alternative cluster termination options, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-termination.html\">Control cluster termination</a>.</p>"
     },
     "PutBlockPublicAccessConfiguration":{
       "name":"PutBlockPublicAccessConfiguration",
@@ -628,7 +628,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>RunJobFlow creates and starts running a new cluster (job flow). The cluster runs the steps specified. After the steps complete, the cluster stops and the HDFS partition is lost. To prevent loss of data, configure the last step of the job flow to store results in Amazon S3. If the <a>JobFlowInstancesConfig</a> <code>KeepJobFlowAliveWhenNoSteps</code> parameter is set to <code>TRUE</code>, the cluster transitions to the WAITING state rather than shutting down after the steps have completed. </p> <p>For additional protection, you can set the <a>JobFlowInstancesConfig</a> <code>TerminationProtected</code> parameter to <code>TRUE</code> to lock the cluster and prevent it from being terminated by API call, user intervention, or in the event of a job flow error.</p> <p>A maximum of 256 steps are allowed in each job flow.</p> <p>If your cluster is long-running (such as a Hive data warehouse) or complex, you may require more than 256 steps to process your data. You can bypass the 256-step limitation in various ways, including using the SSH shell to connect to the master node and submitting queries directly to the software running on the master node, such as Hive and Hadoop.</p> <p>For long-running clusters, we recommend that you periodically store your results.</p> <note> <p>The instance fleets configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. The RunJobFlow request can contain InstanceFleets parameters or InstanceGroups parameters, but not both.</p> </note>"
+      "documentation":"<p>RunJobFlow creates and starts running a new cluster (job flow). The cluster runs the steps specified. After the steps complete, the cluster stops and the HDFS partition is lost. To prevent loss of data, configure the last step of the job flow to store results in Amazon S3. If the <a>JobFlowInstancesConfig</a> <code>KeepJobFlowAliveWhenNoSteps</code> parameter is set to <code>TRUE</code>, the cluster transitions to the WAITING state rather than shutting down after the steps have completed. </p> <p>For additional protection, you can set the <a>JobFlowInstancesConfig</a> <code>TerminationProtected</code> parameter to <code>TRUE</code> to lock the cluster and prevent it from being terminated by API call, user intervention, or in the event of a job flow error.</p> <p>A maximum of 256 steps are allowed in each job flow.</p> <p>If your cluster is long-running (such as a Hive data warehouse) or complex, you may require more than 256 steps to process your data. You can bypass the 256-step limitation in various ways, including using the SSH shell to connect to the master node and submitting queries directly to the software running on the master node, such as Hive and Hadoop.</p> <p>For long-running clusters, we recommend that you periodically store your results.</p> <note> <p>The instance fleets configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions. The RunJobFlow request can contain InstanceFleets parameters or InstanceGroups parameters, but not both.</p> </note>"
     },
     "SetTerminationProtection":{
       "name":"SetTerminationProtection",
@@ -884,7 +884,7 @@
           "documentation":"<p>This option is for advanced users only. This is meta information about third-party applications that third-party vendors use for testing purposes.</p>"
         }
       },
-      "documentation":"<p>With Amazon EMR release version 4.0 and later, the only accepted parameter is the application name. To pass arguments to applications, you use configuration classifications specified using configuration JSON objects. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html\">Configuring Applications</a>.</p> <p>With earlier Amazon EMR releases, the application is any Amazon or third-party software that you can add to the cluster. This structure contains a list of strings that indicates the software to use with the cluster and accepts a user argument list. Amazon EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action argument.</p>"
+      "documentation":"<p>With Amazon EMR release version 4.0 and higher, the only accepted parameter is the application name. To pass arguments to applications, you use configuration classifications specified using configuration JSON objects. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html\">Configuring Applications</a>.</p> <p>With earlier Amazon EMR releases, the application is any Amazon or third-party software that you can add to the cluster. This structure contains a list of strings that indicates the software to use with the cluster and accepts a user argument list. Amazon EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action argument.</p>"
     },
     "ApplicationList":{
       "type":"list",
@@ -1082,7 +1082,7 @@
           "documentation":"<p>The reason for the failure if the CancelSteps request fails.</p>"
         }
       },
-      "documentation":"<p>Specification of the status of a CancelSteps request. Available only in Amazon EMR version 4.8.0 and later, excluding version 5.0.0.</p>"
+      "documentation":"<p>Specification of the status of a CancelSteps request. Available only in Amazon EMR version 4.8.0 and higher, excluding version 5.0.0.</p>"
     },
     "CancelStepsInfoList":{
       "type":"list",
@@ -1196,7 +1196,7 @@
         },
         "InstanceCollectionType":{
           "shape":"InstanceCollectionType",
-          "documentation":"<note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>The instance group configuration of the cluster. A value of <code>INSTANCE_GROUP</code> indicates a uniform instance group configuration. A value of <code>INSTANCE_FLEET</code> indicates an instance fleets configuration.</p>"
+          "documentation":"<note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note> <p>The instance group configuration of the cluster. A value of <code>INSTANCE_GROUP</code> indicates a uniform instance group configuration. A value of <code>INSTANCE_FLEET</code> indicates an instance fleets configuration.</p>"
         },
         "LogUri":{
           "shape":"String",
@@ -1204,7 +1204,7 @@
         },
         "LogEncryptionKmsKeyId":{
           "shape":"String",
-          "documentation":"<p> The KMS key used for encrypting log files. This attribute is only available with Amazon EMR 5.30.0 and later, excluding Amazon EMR 6.0.0. </p>"
+          "documentation":"<p> The KMS key used for encrypting log files. This attribute is only available with Amazon EMR 5.30.0 and higher, excluding Amazon EMR 6.0.0. </p>"
         },
         "RequestedAmiVersion":{
           "shape":"String",
@@ -1216,7 +1216,7 @@
         },
         "ReleaseLabel":{
           "shape":"String",
-          "documentation":"<p>The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.</p>"
+          "documentation":"<p>The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and higher. Earlier versions use <code>AmiVersion</code>.</p>"
         },
         "AutoTerminate":{
           "shape":"Boolean",
@@ -1252,7 +1252,7 @@
         },
         "Configurations":{
           "shape":"ConfigurationList",
-          "documentation":"<p>Applies only to Amazon EMR releases 4.x and later. The list of configurations that are supplied to the Amazon EMR cluster.</p>"
+          "documentation":"<p>Applies only to Amazon EMR releases 4.x and higher. The list of configurations that are supplied to the Amazon EMR cluster.</p>"
         },
         "SecurityConfiguration":{
           "shape":"XmlString",
@@ -1264,15 +1264,15 @@
         },
         "ScaleDownBehavior":{
           "shape":"ScaleDownBehavior",
-          "documentation":"<p>The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> is available only in Amazon EMR releases 4.1.0 and later, and is the default for versions of Amazon EMR earlier than 5.1.0.</p>"
+          "documentation":"<p>The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and higher and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> is available only in Amazon EMR releases 4.1.0 and higher, and is the default for versions of Amazon EMR earlier than 5.1.0.</p>"
         },
         "CustomAmiId":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>Available only in Amazon EMR releases 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI if the cluster uses a custom AMI.</p>"
+          "documentation":"<p>Available only in Amazon EMR releases 5.7.0 and higher. The ID of a custom Amazon EBS-backed Linux AMI if the cluster uses a custom AMI.</p>"
         },
         "EbsRootVolumeSize":{
           "shape":"Integer",
-          "documentation":"<p>The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each Amazon EC2 instance. Available in Amazon EMR releases 4.x and later.</p>"
+          "documentation":"<p>The size, in GiB, of the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 4.x and higher.</p>"
         },
         "RepoUpgradeOnBoot":{
           "shape":"RepoUpgradeOnBoot",
@@ -1301,6 +1301,14 @@
         "OSReleaseLabel":{
           "shape":"String",
           "documentation":"<p>The Amazon Linux release specified in a cluster launch RunJobFlow request. If no Amazon Linux release was specified, the default Amazon Linux release is shown in the response.</p>"
+        },
+        "EbsRootVolumeIops":{
+          "shape":"Integer",
+          "documentation":"<p>The IOPS, of the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 6.15.0 and higher.</p>"
+        },
+        "EbsRootVolumeThroughput":{
+          "shape":"Integer",
+          "documentation":"<p>The throughput, in MiB/s, of the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 6.15.0 and higher.</p>"
         }
       },
       "documentation":"<p>The detailed description of the cluster.</p>"
@@ -1509,7 +1517,7 @@
           "documentation":"<p>A set of properties specified within a configuration classification.</p>"
         }
       },
-      "documentation":"<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>An optional configuration specification to be used when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html\">Configuring Applications</a>.</p>"
+      "documentation":"<note> <p>Amazon EMR releases 4.x or higher.</p> </note> <p>An optional configuration specification to be used when provisioning cluster instances, which can include configurations for applications and software bundled with Amazon EMR. A configuration consists of a classification, properties, and optional nested configurations. A classification refers to an application-specific configuration file. Properties are the settings you want to change in that file. For more information, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html\">Configuring Applications</a>.</p>"
     },
     "ConfigurationList":{
       "type":"list",
@@ -2148,7 +2156,7 @@
       "members":{
         "BlockPublicAccessConfiguration":{
           "shape":"BlockPublicAccessConfiguration",
-          "documentation":"<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. You can change this by updating the block public access configuration to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an Amazon EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>"
+          "documentation":"<p>A configuration for Amazon EMR block public access. The configuration applies to all clusters created in your account for the current Region. The configuration specifies whether block public access is enabled. If block public access is enabled, security groups associated with the cluster cannot have rules that allow inbound traffic from 0.0.0.0/0 or ::/0 on a port, unless the port is specified as an exception using <code>PermittedPublicSecurityGroupRuleRanges</code> in the <code>BlockPublicAccessConfiguration</code>. By default, Port 22 (SSH) is an exception, and public access is allowed on this port. To change this, update the block public access configuration to remove the exception.</p> <note> <p>For accounts that created clusters in a Region before November 25, 2019, block public access is disabled by default in that Region. To use this feature, you must manually enable and configure it. For accounts that did not create an Amazon EMR cluster in a Region before this date, block public access is enabled by default in that Region.</p> </note>"
         },
         "BlockPublicAccessConfigurationMetadata":{
           "shape":"BlockPublicAccessConfigurationMetadata",
@@ -2406,7 +2414,7 @@
           "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
-      "documentation":"<p>Describes an instance fleet, which is a group of Amazon EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Describes an instance fleet, which is a group of Amazon EC2 instances that host a particular node type (master, core, or task) in an Amazon EMR cluster. Instance fleets can consist of a mix of instance types and On-Demand and Spot Instances, which are provisioned to meet a defined target capacity. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetConfig":{
       "type":"structure",
@@ -2441,7 +2449,7 @@
           "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
-      "documentation":"<p>The configuration that defines an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>The configuration that defines an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetConfigList":{
       "type":"list",
@@ -2473,7 +2481,7 @@
           "documentation":"<p>The resize specification for the instance fleet.</p>"
         }
       },
-      "documentation":"<p>Configuration parameters for an instance fleet modification request.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Configuration parameters for an instance fleet modification request.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetProvisioningSpecifications":{
       "type":"structure",
@@ -2484,10 +2492,10 @@
         },
         "OnDemandSpecification":{
           "shape":"OnDemandProvisioningSpecification",
-          "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and later.</p> </note>"
+          "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and higher.</p> </note>"
         }
       },
-      "documentation":"<p>The launch specification for Spot Instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand and Spot instance allocation strategies are available in Amazon EMR releases 5.12.1 and later.</p> </note>"
+      "documentation":"<p>The launch specification for Spot Instances in the fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions. On-Demand and Spot instance allocation strategies are available in Amazon EMR releases 5.12.1 and higher.</p> </note>"
     },
     "InstanceFleetResizingSpecifications":{
       "type":"structure",
@@ -2527,7 +2535,7 @@
           "documentation":"<p>An explanatory message.</p>"
         }
       },
-      "documentation":"<p>Provides status change reason details for the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Provides status change reason details for the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetStateChangeReasonCode":{
       "type":"string",
@@ -2554,7 +2562,7 @@
           "documentation":"<p>Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.</p>"
         }
       },
-      "documentation":"<p>The status of the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>The status of the instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetTimeline":{
       "type":"structure",
@@ -2572,7 +2580,7 @@
           "documentation":"<p>The time and date the instance fleet terminated.</p>"
         }
       },
-      "documentation":"<p>Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>Provides historical timestamps for the instance fleet, including the time of creation, the time it became ready to run jobs, and the time of termination.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceFleetType":{
       "type":"string",
@@ -2623,7 +2631,7 @@
         },
         "Configurations":{
           "shape":"ConfigurationList",
-          "documentation":"<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>"
+          "documentation":"<note> <p>Amazon EMR releases 4.x or higher.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>"
         },
         "ConfigurationsVersion":{
           "shape":"Long",
@@ -2694,7 +2702,7 @@
         },
         "Configurations":{
           "shape":"ConfigurationList",
-          "documentation":"<note> <p>Amazon EMR releases 4.x or later.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>"
+          "documentation":"<note> <p>Amazon EMR releases 4.x or higher.</p> </note> <p>The list of configurations supplied for an Amazon EMR cluster instance group. You can specify a separate configuration for each instance group (master, core, and task).</p>"
         },
         "EbsConfiguration":{
           "shape":"EbsConfiguration",
@@ -3069,7 +3077,7 @@
           "documentation":"<p>The custom AMI ID to use for the instance type.</p>"
         }
       },
-      "documentation":"<p>An instance type configuration for each instance type in an instance fleet, which determines the Amazon EC2 instances Amazon EMR attempts to provision to fulfill On-Demand and Spot target capacities. When you use an allocation strategy, you can include a maximum of 30 instance type configurations for a fleet. For more information about how to use an allocation strategy, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html\">Configure Instance Fleets</a>. Without an allocation strategy, you may specify a maximum of five instance type configurations for a fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>An instance type configuration for each instance type in an instance fleet, which determines the Amazon EC2 instances Amazon EMR attempts to provision to fulfill On-Demand and Spot target capacities. When you use an allocation strategy, you can include a maximum of 30 instance type configurations for a fleet. For more information about how to use an allocation strategy, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html\">Configure Instance Fleets</a>. Without an allocation strategy, you may specify a maximum of five instance type configurations for a fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceTypeConfigList":{
       "type":"list",
@@ -3111,7 +3119,7 @@
           "documentation":"<p>The custom AMI ID to use for the instance type.</p>"
         }
       },
-      "documentation":"<p>The configuration specification for each instance type in an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+      "documentation":"<p>The configuration specification for each instance type in an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
     },
     "InstanceTypeSpecificationList":{
       "type":"list",
@@ -3175,11 +3183,11 @@
         },
         "LogEncryptionKmsKeyId":{
           "shape":"XmlString",
-          "documentation":"<p>The KMS key used for encrypting log files. This attribute is only available with Amazon EMR 5.30.0 and later, excluding 6.0.0.</p>"
+          "documentation":"<p>The KMS key used for encrypting log files. This attribute is only available with Amazon EMR 5.30.0 and higher, excluding 6.0.0.</p>"
         },
         "AmiVersion":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.</p>"
+          "documentation":"<p>Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and higher, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.</p>"
         },
         "ExecutionStatusDetail":{
           "shape":"JobFlowExecutionStatusDetail",
@@ -3219,7 +3227,7 @@
         },
         "ScaleDownBehavior":{
           "shape":"ScaleDownBehavior",
-          "documentation":"<p>The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR releases 4.1.0 and later, and is the default for releases of Amazon EMR earlier than 5.1.0.</p>"
+          "documentation":"<p>The way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and higher and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR releases 4.1.0 and higher, and is the default for releases of Amazon EMR earlier than 5.1.0.</p>"
         }
       },
       "documentation":"<p>A description of a cluster (job flow).</p>"
@@ -3301,7 +3309,7 @@
         },
         "InstanceFleets":{
           "shape":"InstanceFleetConfigList",
-          "documentation":"<note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note> <p>Describes the Amazon EC2 instances and instance configurations for clusters that use the instance fleet configuration.</p>"
+          "documentation":"<note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note> <p>Describes the Amazon EC2 instances and instance configurations for clusters that use the instance fleet configuration.</p>"
         },
         "Ec2KeyName":{
           "shape":"XmlStringMaxLen256",
@@ -3329,7 +3337,7 @@
         },
         "Ec2SubnetIds":{
           "shape":"XmlStringMaxLen256List",
-          "documentation":"<p>Applies to clusters that use the instance fleet configuration. When multiple Amazon EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+          "documentation":"<p>Applies to clusters that use the instance fleet configuration. When multiple Amazon EC2 subnet IDs are specified, Amazon EMR evaluates them and launches instances in the optimal subnet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
         },
         "EmrManagedMasterSecurityGroup":{
           "shape":"XmlStringMaxLen256",
@@ -4168,7 +4176,7 @@
           "documentation":"<p>The launch specification for On-Demand instances in the instance fleet, which determines the allocation strategy.</p>"
         }
       },
-      "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and later.</p> </note>"
+      "documentation":"<p> The launch specification for On-Demand Instances in the instance fleet, which determines the allocation strategy. </p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions. On-Demand Instances allocation strategy is available in Amazon EMR releases 5.12.1 and higher.</p> </note>"
     },
     "OnDemandResizingSpecification":{
       "type":"structure",
@@ -4255,7 +4263,7 @@
         },
         "AvailabilityZones":{
           "shape":"XmlStringMaxLen256List",
-          "documentation":"<p>When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances in the optimal Availability Zone. <code>AvailabilityZones</code> is used for instance fleets, while <code>AvailabilityZone</code> (singular) is used for uniform instance groups.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
+          "documentation":"<p>When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances in the optimal Availability Zone. <code>AvailabilityZones</code> is used for instance fleets, while <code>AvailabilityZone</code> (singular) is used for uniform instance groups.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions.</p> </note>"
         }
       },
       "documentation":"<p>The Amazon EC2 Availability Zone configuration of the cluster (job flow).</p>"
@@ -4505,7 +4513,7 @@
         },
         "LogEncryptionKmsKeyId":{
           "shape":"XmlString",
-          "documentation":"<p>The KMS key used for encrypting log files. If a value is not provided, the logs remain encrypted by AES-256. This attribute is only available with Amazon EMR releases 5.30.0 and later, excluding Amazon EMR 6.0.0.</p>"
+          "documentation":"<p>The KMS key used for encrypting log files. If a value is not provided, the logs remain encrypted by AES-256. This attribute is only available with Amazon EMR releases 5.30.0 and higher, excluding Amazon EMR 6.0.0.</p>"
         },
         "AdditionalInfo":{
           "shape":"XmlString",
@@ -4513,11 +4521,11 @@
         },
         "AmiVersion":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and later, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.</p>"
+          "documentation":"<p>Applies only to Amazon EMR AMI versions 3.x and 2.x. For Amazon EMR releases 4.0 and higher, <code>ReleaseLabel</code> is used. To specify a custom AMI, use <code>CustomAmiID</code>.</p>"
         },
         "ReleaseLabel":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and later. Earlier versions use <code>AmiVersion</code>.</p>"
+          "documentation":"<p>The Amazon EMR release label, which determines the version of open-source application packages installed on the cluster. Release labels are in the form <code>emr-x.x.x</code>, where x.x.x is an Amazon EMR release version such as <code>emr-5.14.0</code>. For more information about Amazon EMR release versions and included application versions and features, see <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</a>. The release label applies only to Amazon EMR releases version 4.0 and higher. Earlier versions use <code>AmiVersion</code>.</p>"
         },
         "Instances":{
           "shape":"JobFlowInstancesConfig",
@@ -4533,19 +4541,19 @@
         },
         "SupportedProducts":{
           "shape":"SupportedProductsList",
-          "documentation":"<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use. For more information, see the <a href=\"https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf\">Amazon EMR Developer Guide</a>. Currently supported values are:</p> <ul> <li> <p>\"mapr-m3\" - launch the job flow using MapR M3 Edition.</p> </li> <li> <p>\"mapr-m5\" - launch the job flow using MapR M5 Edition.</p> </li> </ul>"
+          "documentation":"<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and higher, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use. For more information, see the <a href=\"https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf\">Amazon EMR Developer Guide</a>. Currently supported values are:</p> <ul> <li> <p>\"mapr-m3\" - launch the job flow using MapR M3 Edition.</p> </li> <li> <p>\"mapr-m5\" - launch the job flow using MapR M5 Edition.</p> </li> </ul>"
         },
         "NewSupportedProducts":{
           "shape":"NewSupportedProductsList",
-          "documentation":"<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and later, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use with the job flow that accepts a user argument list. Amazon EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action arguments. For more information, see \"Launch a Job Flow on the MapR Distribution for Hadoop\" in the <a href=\"https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf\">Amazon EMR Developer Guide</a>. Supported values are:</p> <ul> <li> <p>\"mapr-m3\" - launch the cluster using MapR M3 Edition.</p> </li> <li> <p>\"mapr-m5\" - launch the cluster using MapR M5 Edition.</p> </li> <li> <p>\"mapr\" with the user arguments specifying \"--edition,m3\" or \"--edition,m5\" - launch the job flow using MapR M3 or M5 Edition respectively.</p> </li> <li> <p>\"mapr-m7\" - launch the cluster using MapR M7 Edition.</p> </li> <li> <p>\"hunk\" - launch the cluster with the Hunk Big Data Analytics Platform.</p> </li> <li> <p>\"hue\"- launch the cluster with Hue installed.</p> </li> <li> <p>\"spark\" - launch the cluster with Apache Spark installed.</p> </li> <li> <p>\"ganglia\" - launch the cluster with the Ganglia Monitoring System installed.</p> </li> </ul>"
+          "documentation":"<note> <p>For Amazon EMR releases 3.x and 2.x. For Amazon EMR releases 4.x and higher, use Applications.</p> </note> <p>A list of strings that indicates third-party software to use with the job flow that accepts a user argument list. Amazon EMR accepts and forwards the argument list to the corresponding installation script as bootstrap action arguments. For more information, see \"Launch a Job Flow on the MapR Distribution for Hadoop\" in the <a href=\"https://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf\">Amazon EMR Developer Guide</a>. Supported values are:</p> <ul> <li> <p>\"mapr-m3\" - launch the cluster using MapR M3 Edition.</p> </li> <li> <p>\"mapr-m5\" - launch the cluster using MapR M5 Edition.</p> </li> <li> <p>\"mapr\" with the user arguments specifying \"--edition,m3\" or \"--edition,m5\" - launch the job flow using MapR M3 or M5 Edition respectively.</p> </li> <li> <p>\"mapr-m7\" - launch the cluster using MapR M7 Edition.</p> </li> <li> <p>\"hunk\" - launch the cluster with the Hunk Big Data Analytics Platform.</p> </li> <li> <p>\"hue\"- launch the cluster with Hue installed.</p> </li> <li> <p>\"spark\" - launch the cluster with Apache Spark installed.</p> </li> <li> <p>\"ganglia\" - launch the cluster with the Ganglia Monitoring System installed.</p> </li> </ul>"
         },
         "Applications":{
           "shape":"ApplicationList",
-          "documentation":"<p>Applies to Amazon EMR releases 4.0 and later. A case-insensitive list of applications for Amazon EMR to install and configure when launching the cluster. For a list of applications available for each Amazon EMR release version, see the <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">Amazon EMRRelease Guide</a>.</p>"
+          "documentation":"<p>Applies to Amazon EMR releases 4.0 and higher. A case-insensitive list of applications for Amazon EMR to install and configure when launching the cluster. For a list of applications available for each Amazon EMR release version, see the <a href=\"https://docs.aws.amazon.com/emr/latest/ReleaseGuide/\">Amazon EMRRelease Guide</a>.</p>"
         },
         "Configurations":{
           "shape":"ConfigurationList",
-          "documentation":"<p>For Amazon EMR releases 4.0 and later. The list of configurations supplied for the Amazon EMR cluster that you are creating.</p>"
+          "documentation":"<p>For Amazon EMR releases 4.0 and higher. The list of configurations supplied for the Amazon EMR cluster that you are creating.</p>"
         },
         "VisibleToAllUsers":{
           "shape":"Boolean",
@@ -4573,15 +4581,15 @@
         },
         "ScaleDownBehavior":{
           "shape":"ScaleDownBehavior",
-          "documentation":"<p>Specifies the way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and later and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR releases 4.1.0 and later, and is the default for releases of Amazon EMR earlier than 5.1.0.</p>"
+          "documentation":"<p>Specifies the way that individual Amazon EC2 instances terminate when an automatic scale-in activity occurs or an instance group is resized. <code>TERMINATE_AT_INSTANCE_HOUR</code> indicates that Amazon EMR terminates nodes at the instance-hour boundary, regardless of when the request to terminate the instance was submitted. This option is only available with Amazon EMR 5.1.0 and higher and is the default for clusters created using that version. <code>TERMINATE_AT_TASK_COMPLETION</code> indicates that Amazon EMR adds nodes to a deny list and drains tasks from nodes before terminating the Amazon EC2 instances, regardless of the instance-hour boundary. With either behavior, Amazon EMR removes the least active nodes first and blocks instance termination if it could lead to HDFS corruption. <code>TERMINATE_AT_TASK_COMPLETION</code> available only in Amazon EMR releases 4.1.0 and higher, and is the default for releases of Amazon EMR earlier than 5.1.0.</p>"
         },
         "CustomAmiId":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>Available only in Amazon EMR releases 5.7.0 and later. The ID of a custom Amazon EBS-backed Linux AMI. If specified, Amazon EMR uses this AMI when it launches cluster Amazon EC2 instances. For more information about custom AMIs in Amazon EMR, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html\">Using a Custom AMI</a> in the <i>Amazon EMR Management Guide</i>. If omitted, the cluster uses the base Linux AMI for the <code>ReleaseLabel</code> specified. For Amazon EMR releases 2.x and 3.x, use <code>AmiVersion</code> instead.</p> <p>For information about creating a custom AMI, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Creating an Amazon EBS-Backed Linux AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>. For information about finding an AMI ID, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html\">Finding a Linux AMI</a>. </p>"
+          "documentation":"<p>Available only in Amazon EMR releases 5.7.0 and higher. The ID of a custom Amazon EBS-backed Linux AMI. If specified, Amazon EMR uses this AMI when it launches cluster Amazon EC2 instances. For more information about custom AMIs in Amazon EMR, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html\">Using a Custom AMI</a> in the <i>Amazon EMR Management Guide</i>. If omitted, the cluster uses the base Linux AMI for the <code>ReleaseLabel</code> specified. For Amazon EMR releases 2.x and 3.x, use <code>AmiVersion</code> instead.</p> <p>For information about creating a custom AMI, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\">Creating an Amazon EBS-Backed Linux AMI</a> in the <i>Amazon Elastic Compute Cloud User Guide for Linux Instances</i>. For information about finding an AMI ID, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html\">Finding a Linux AMI</a>. </p>"
         },
         "EbsRootVolumeSize":{
           "shape":"Integer",
-          "documentation":"<p>The size, in GiB, of the Amazon EBS root device volume of the Linux AMI that is used for each Amazon EC2 instance. Available in Amazon EMR releases 4.x and later.</p>"
+          "documentation":"<p>The size, in GiB, of the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 4.x and higher.</p>"
         },
         "RepoUpgradeOnBoot":{
           "shape":"RepoUpgradeOnBoot",
@@ -4607,9 +4615,17 @@
         "OSReleaseLabel":{
           "shape":"XmlStringMaxLen256",
           "documentation":"<p>Specifies a particular Amazon Linux release for all nodes in a cluster launch RunJobFlow request. If a release is not specified, Amazon EMR uses the latest validated Amazon Linux release for cluster launch.</p>"
+        },
+        "EbsRootVolumeIops":{
+          "shape":"Integer",
+          "documentation":"<p>The IOPS for the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 6.15.0 and higher.</p>"
+        },
+        "EbsRootVolumeThroughput":{
+          "shape":"Integer",
+          "documentation":"<p>The throughput, in MiB/s, of the Amazon EBS root device volume for the Linux AMI that each Amazon EC2 instance uses. Available in Amazon EMR releases 6.15.0 and higher.</p>"
         }
       },
-      "documentation":"<p> Input to the <a>RunJobFlow</a> operation. </p>"
+      "documentation":"<p>Input to the <a>RunJobFlow</a> operation. </p>"
     },
     "RunJobFlowOutput":{
       "type":"structure",
@@ -4929,10 +4945,10 @@
         },
         "AllocationStrategy":{
           "shape":"SpotProvisioningAllocationStrategy",
-          "documentation":"<p> Specifies the strategy to use in launching Spot Instance fleets. Currently, the only option is capacity-optimized (the default), which launches instances from Spot Instance pools with optimal capacity for the number of instances that are launching. </p>"
+          "documentation":"<p>Specifies one of the following strategies to launch Spot Instance fleets: <code>price-capacity-optimized</code>, <code>capacity-optimized</code>, <code>lowest-price</code>, or <code>diversified</code>. For more information on the provisioning strategies, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html\">Allocation strategies for Spot Instances</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <note> <p>When you launch a Spot Instance fleet with the old console, it automatically launches with the <code>capacity-optimized</code> strategy. You can't change the allocation strategy from the old console.</p> </note>"
         }
       },
-      "documentation":"<p>The launch specification for Spot Instances in the instance fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. Spot Instance allocation strategy is available in Amazon EMR releases 5.12.1 and later.</p> </note> <note> <p>Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022. </p> </note>"
+      "documentation":"<p>The launch specification for Spot Instances in the instance fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and higher, excluding 5.0.x versions. Spot Instance allocation strategy is available in Amazon EMR releases 5.12.1 and higher.</p> </note> <note> <p>Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022. </p> </note>"
     },
     "SpotProvisioningTimeoutAction":{
       "type":"string",

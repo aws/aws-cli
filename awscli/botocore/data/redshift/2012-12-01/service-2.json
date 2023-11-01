@@ -269,7 +269,8 @@
         {"shape":"DependentServiceRequestThrottlingFault"},
         {"shape":"InvalidClusterTrackFault"},
         {"shape":"SnapshotScheduleNotFoundFault"},
-        {"shape":"InvalidRetentionPeriodFault"}
+        {"shape":"InvalidRetentionPeriodFault"},
+        {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
       "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -1740,7 +1741,8 @@
         {"shape":"InvalidClusterTrackFault"},
         {"shape":"InvalidRetentionPeriodFault"},
         {"shape":"UnsupportedOperationFault"},
-        {"shape":"CustomCnameAssociationFault"}
+        {"shape":"CustomCnameAssociationFault"},
+        {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
       "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -2183,7 +2185,8 @@
         {"shape":"ReservedNodeOfferingNotFoundFault"},
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"ReservedNodeAlreadyExistsFault"},
-        {"shape":"UnsupportedOperationFault"}
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
       "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
@@ -3126,6 +3129,10 @@
         "MasterPasswordSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret.</p>"
+        },
+        "IpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The IP address type for the cluster. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -3668,6 +3675,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The list of tags for the cluster subnet group.</p>"
+        },
+        "SupportedClusterIpAddressTypes":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IP address types supported by this cluster subnet group. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         }
       },
       "documentation":"<p>Describes a subnet group.</p>",
@@ -4032,6 +4043,10 @@
         "MasterPasswordSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
+        },
+        "IpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The IP address types that the cluster supports. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7467,6 +7482,18 @@
       },
       "exception":true
     },
+    "Ipv6CidrBlockNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>There are no subnets in your VPC with associated IPv6 CIDR blocks. To use dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.</p>",
+      "error":{
+        "code":"Ipv6CidrBlockNotFoundFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "LimitExceededFault":{
       "type":"structure",
       "members":{
@@ -7807,6 +7834,10 @@
         "MasterPasswordSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
+        },
+        "IpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The IP address types that the cluster supports. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8118,6 +8149,10 @@
         "AvailabilityZone":{
           "shape":"String",
           "documentation":"<p>The Availability Zone. </p>"
+        },
+        "Ipv6Address":{
+          "shape":"String",
+          "documentation":"<p>The IPv6 address of the network interface within the subnet. </p>"
         }
       },
       "documentation":"<p>Describes a network interface. </p>"
@@ -9283,6 +9318,10 @@
         "MasterPasswordSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The ID of the Key Management Service (KMS) key used to encrypt and store the cluster's admin credentials secret. You can only use this parameter if <code>ManageMasterPassword</code> is true.</p>"
+        },
+        "IpAddressType":{
+          "shape":"String",
+          "documentation":"<p>The IP address type for the cluster. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         }
       },
       "documentation":"<p/>"

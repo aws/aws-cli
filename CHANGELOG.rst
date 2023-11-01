@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+2.13.31
+=======
+
+* api-change:``mediapackagev2``: This feature allows customers to create a combination of manifest filtering, startover and time delay configuration that applies to all egress requests by default.
+* api-change:``neptunedata``: Minor change to not retry CancelledByUserException
+* api-change:``s3outposts``: Updated ListOutpostsWithS3 API response to include S3OutpostArn for use with AWS RAM.
+* api-change:``redshift``: added support to create a dual stack cluster
+* api-change:``neptune``: Update TdeCredentialPassword type to SensitiveString
+* api-change:``finspace``: Introducing new API UpdateKxClusterCodeConfiguration, introducing new cache types for clusters and introducing new deployment modes for updating clusters.
+* api-change:``amplify``: Add backend field to CreateBranch and UpdateBranch requests. Add pagination support for ListApps, ListDomainAssociations, ListBranches, and ListJobs
+* api-change:``translate``: Added support for Brevity translation settings feature.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``rds``: This release launches the CreateIntegration, DeleteIntegration, and DescribeIntegrations APIs to manage zero-ETL Integrations.
+* api-change:``m2``: Added name filter ability for ListDataSets API, added ForceUpdate for Updating environment and BatchJob submission using S3BatchJobIdentifier
+* api-change:``connect``: This release adds InstanceId field for phone number APIs.
+* api-change:``resiliencehub``: Introduced the ability to filter applications by their last assessment date and time and have included metrics for the application's estimated workload Recovery Time Objective (RTO) and estimated workload Recovery Point Objective (RPO).
+* api-change:``application-insights``: Automate attaching managed policies
+* api-change:``datasync``: Platform version changes to support AL1 deprecation initiative.
+* api-change:``wisdom``: This release added necessary API documents on creating a Wisdom knowledge base to integrate with S3.
+* api-change:``dataexchange``: We added a new API action: SendDataSetNotification.
+* api-change:``wafv2``: Updates the descriptions for the calls that manage web ACL associations, to provide information for customer-managed IAM policies.
+* api-change:``ec2``: Capacity Blocks for ML are a new EC2 purchasing option for reserving GPU instances on a future date to support short duration machine learning (ML) workloads. Capacity Blocks automatically place instances close together inside Amazon EC2 UltraClusters for low-latency, high-throughput networking.
+* api-change:``redshift-serverless``: Added support for custom domain names for Amazon Redshift Serverless workgroups. This feature enables customers to create a custom domain name and use ACM to generate fully secure connections to it.
+* api-change:``pinpoint``: Updated documentation to describe the case insensitivity for EndpointIds.
+
+
 2.13.30
 =======
 

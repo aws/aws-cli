@@ -436,6 +436,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         self.mock_crt_client.return_value.make_request.side_effect = \
             self.simulate_make_request_side_effect
         self.files = FileCreator()
+        self.expected_download_content = b'content'
 
     def tearDown(self):
         super(BaseCRTTransferClientTest, self).tearDown()
@@ -456,6 +457,8 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
     def simulate_make_request_side_effect(self, *args, **kwargs):
         if kwargs.get('recv_filepath'):
             self.simulate_file_download(kwargs['recv_filepath'])
+        elif kwargs.get('on_body'):
+            self.simulate_on_body(kwargs['on_body'])
         s3_request = FakeCRTS3Request(
             future=FakeCRTFuture(kwargs.get('on_done'))
         )
@@ -465,11 +468,14 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         parent_dir = os.path.dirname(recv_filepath)
         if not os.path.isdir(parent_dir):
             os.makedirs(parent_dir)
-        with open(recv_filepath, 'w') as f:
+        with open(recv_filepath, 'wb') as f:
             # The content is arbitrary as most functional tests are just going
             # to assert the file exists since it is the CRT writing the
             # data to the file.
-            f.write('content')
+            f.write(self.expected_download_content)
+
+    def simulate_on_body(self, on_body_callback):
+        on_body_callback(chunk=self.expected_download_content, offset=0)
 
     def get_crt_make_request_calls(self):
         return self.mock_crt_client.return_value.make_request.call_args_list
@@ -489,7 +495,8 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
             self, make_request_call, expected_type, expected_host,
             expected_path, expected_http_method=None,
             expected_send_filepath=None,
-            expected_recv_startswith=None):
+            expected_recv_startswith=None,
+            expected_body_content=None):
         make_request_kwargs = make_request_call[1]
         self.assertEqual(
             make_request_kwargs['type'], expected_type)
@@ -521,6 +528,15 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
                     f"{make_request_kwargs['recv_filepath']} does not "
                     f"start with {expected_recv_startswith}"
                 )
+            )
+        if expected_body_content is not None:
+            # Note: The underlying CRT awscrt.io.InputStream does not expose
+            # a public read method so we have to reach into the private,
+            # underlying stream to determine the content. We should update
+            # to use a public interface if a public interface is ever exposed.
+            self.assertEqual(
+                make_request_kwargs['request'].body_stream._stream.read(),
+                expected_body_content
             )
 
 

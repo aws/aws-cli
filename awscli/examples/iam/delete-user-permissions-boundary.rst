@@ -6,3 +6,5 @@ The following ``delete-user-permissions-boundary`` example deletes the permissio
         --user-name intern
 
 This command produces no output.
+
+For more information, see `Policies and permissions in IAM <https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html>`__ in the *AWS IAM User Guide*.

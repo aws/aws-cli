@@ -6280,6 +6280,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.77
+=======
+
+* api-change:``apprunner``: AWS App Runner now supports using dual-stack address type for the public endpoint of your incoming traffic.
+* api-change:``connect``: GetMetricDataV2 API: Update to include new metrics PERCENT_NON_TALK_TIME, PERCENT_TALK_TIME, PERCENT_TALK_TIME_AGENT, PERCENT_TALK_TIME_CUSTOMER
+* api-change:``gamelift``: Amazon GameLift adds support for shared credentials, which allows applications that are deployed on managed EC2 fleets to interact with other AWS resources.
+* api-change:``glue``: This release introduces Google BigQuery Source and Target in AWS Glue CodeGenConfigurationNode.
+* api-change:``network-firewall``: This release introduces the stateless rule analyzer, which enables you to analyze your stateless rules for asymmetric routing.
+* api-change:``quicksight``: Got confirmed from qmeixua@ about custom week features, and tested locally with aws cli and java sdk that the subtypes are showing up.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.29.76
+=======
+
+* api-change:``connect``: Adds the BatchGetFlowAssociation API which returns flow associations (flow-resource) corresponding to the list of resourceArns supplied in the request. This release also adds IsDefault, LastModifiedRegion and LastModifiedTime fields to the responses of several Describe and List APIs.
+* api-change:``globalaccelerator``: Global Accelerator now support accelerators with cross account endpoints.
+* api-change:``rds``: This release adds support for customized networking resources to Amazon RDS Custom.
+* api-change:``redshift``: Added support for Multi-AZ deployments for Provisioned RA3 clusters that provide 99.99% SLA availability.
+* api-change:``sagemaker``: Support for batch transform input in Model dashboard
+
+
 1.29.75
 =======
 

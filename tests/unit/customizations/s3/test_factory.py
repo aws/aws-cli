@@ -196,13 +196,13 @@ class TestTransferManagerFactory(unittest.TestCase):
             self.params, self.runtime_config)
         self.assert_is_default_manager(transfer_manager)
 
-    def test_creates_default_manager_when_streaming_operation(self):
+    def test_creates_crt_manager_when_streaming_operation(self):
         self.params['is_stream'] = True
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
-        self.assert_is_default_manager(transfer_manager)
+        self.assert_is_crt_manager(transfer_manager)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_region_parameter_for_crt_manager(self, mock_crt_client):

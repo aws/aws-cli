@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
+
 from botocore.credentials import CredentialResolver, ReadOnlyCredentials
 from botocore.session import Session
 
@@ -171,3 +173,12 @@ class TestCRTTransferFuture(unittest.TestCase):
         self.future.set_exception(CustomFutureException())
         with self.assertRaises(CustomFutureException):
             self.future.result()
+
+
+@requires_crt
+class TestOnBodyFileObjWriter(unittest.TestCase):
+    def test_call(self):
+        fileobj = io.BytesIO()
+        writer = s3transfer.crt.OnBodyFileObjWriter(fileobj)
+        writer(chunk=b'content')
+        self.assertEqual(fileobj.getvalue(), b'content')

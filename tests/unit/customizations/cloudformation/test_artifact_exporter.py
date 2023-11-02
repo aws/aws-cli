@@ -1095,11 +1095,21 @@ class TestArtifactExporter(unittest.TestCase):
             self.assertEqual(1, yaml_parse_mock.call_count)
 
             resource_type1_class.assert_called_with(self.s3_uploader_mock)
-            resource_type1_instance.export.assert_called_with(
-                "Resource${Identifier1}", mock.ANY, template_dir)
+            self.assertEqual(
+                resource_type1_instance.export.call_args_list,
+                [
+                    mock.call("Resource1", properties, template_dir),
+                    mock.call("Resource${Identifier1}", properties, template_dir)
+                ]
+            )
             resource_type2_class.assert_called_with(self.s3_uploader_mock)
-            resource_type2_instance.export.assert_called_with(
-                "Resource${Identifier1}${Identifier2}", mock.ANY, template_dir)
+            self.assertEqual(
+                resource_type2_instance.export.call_args_list,
+                [
+                    mock.call("Resource2", properties, template_dir),
+                    mock.call("Resource${Identifier1}${Identifier2}", properties, template_dir)
+                ]
+            )
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export_foreach_invalid(self, yaml_parse_mock):
@@ -1157,7 +1167,7 @@ class TestArtifactExporter(unittest.TestCase):
             template_exporter = Template(
                 template_path, parent_dir, self.s3_uploader_mock,
                 resources_to_export)
-            with self.assertRaises(ValueError):
+            with self.assertRaises(exceptions.InvalidForEachIntrinsicFunctionError):
                 template_exporter.export()
 
 

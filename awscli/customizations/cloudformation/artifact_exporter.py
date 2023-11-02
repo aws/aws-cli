@@ -666,16 +666,14 @@ class Template(object):
     def export_resources(self, resource_dict):
         for resource_id, resource in resource_dict.items():
 
-            if resource_id.startswith("Fn::ForEach"):
+            if resource_id.startswith("Fn::ForEach::"):
                 if not isinstance(resource, list) or len(resource) < 3:
-                    raise ValueError("Fn::ForEach with name {0} has invalid format".format(resource_id))
+                    raise exceptions.InvalidForEachIntrinsicFunctionError(resource_id=resource_id)
                 if isinstance(resource[2], dict):
                     self.export_resources(resource[2])
                 continue
 
             resource_type = resource.get("Type", None)
-            if resource_type is None:
-                continue
             resource_dict = resource.get("Properties", None)
 
             for exporter_class in self.resources_to_export:

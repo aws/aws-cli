@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.13.32
+=======
+
+* api-change:``sagemaker``: Support for batch transform input in Model dashboard
+* api-change:``network-firewall``: This release introduces the stateless rule analyzer, which enables you to analyze your stateless rules for asymmetric routing.
+* api-change:``quicksight``: This release introduces Float Decimal Type as SubType in QuickSight SPICE datasets and Custom week start and Custom timezone options in Analysis and Dashboard
+* api-change:``connect``: GetMetricDataV2 API: Update to include new metrics PERCENT_NON_TALK_TIME, PERCENT_TALK_TIME, PERCENT_TALK_TIME_AGENT, PERCENT_TALK_TIME_CUSTOMER
+* api-change:``rds``: This release adds support for customized networking resources to Amazon RDS Custom.
+* api-change:``apprunner``: AWS App Runner now supports using dual-stack address type for the public endpoint of your incoming traffic.
+* api-change:``globalaccelerator``: Global Accelerator now support accelerators with cross account endpoints.
+* api-change:``redshift``: Added support for Multi-AZ deployments for Provisioned RA3 clusters that provide 99.99% SLA availability.
+* api-change:``connect``: Adds the BatchGetFlowAssociation API which returns flow associations (flow-resource) corresponding to the list of resourceArns supplied in the request. This release also adds IsDefault, LastModifiedRegion and LastModifiedTime fields to the responses of several Describe and List APIs.
+* api-change:``glue``: This release introduces Google BigQuery Source and Target in AWS Glue CodeGenConfigurationNode.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``gamelift``: Amazon GameLift adds support for shared credentials, which allows applications that are deployed on managed EC2 fleets to interact with other AWS resources.
+
+
 2.13.31
 =======
 

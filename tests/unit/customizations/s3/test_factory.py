@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pytest
 from awscli.testutils import unittest, mock, FileCreator
 
 from awscrt.s3 import S3RequestTlsMode
@@ -19,10 +20,80 @@ from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 from s3transfer.crt import CRTTransferManager
 
+import awscli.customizations.s3.factory
 from awscli.customizations.s3.factory import (
-    ClientFactory, TransferManagerFactory
+    ClientFactory, TransferManagerFactory, acquire_crt_s3_process_lock
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
+
+
+@pytest.fixture
+def mock_crt_is_optimized_for_system():
+    with mock.patch('awscrt.s3.is_optimized_for_system') as mock_is_optimized:
+        mock_is_optimized.return_value = False
+        yield mock_is_optimized
+
+
+@pytest.fixture
+def mock_crt_process_lock(monkeypatch):
+    # The process lock is cached at the module layer whenever the
+    # cross process lock is successfully acquired. This patch ensures that
+    # test cases will start off with no previously cached process lock and
+    # if a cross process is instantiated/acquired it will be the mock that
+    # can be used for controlling lock behavior.
+    monkeypatch.setattr(
+        'awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK', None
+    )
+    with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
+        yield mock_lock
+
+
+@pytest.fixture
+def mock_crt_s3_client():
+    with mock.patch('s3transfer.crt.S3Client', spec=True) as mock_client:
+        yield mock_client
+
+
+@pytest.fixture
+def transfer_manager_factory():
+    session = mock.Mock(Session)
+    session.get_config_variable.return_value = None
+    session.get_default_client_config.return_value = None
+    return TransferManagerFactory(session)
+
+
+@pytest.fixture
+def s3_params():
+    return {
+        'region': 'us-west-2',
+        'endpoint_url': None,
+        'verify_ssl': None,
+    }
+
+
+class TestCRTProcessLock:
+    def test_acquire_crt_s3_process_lock(self, mock_crt_process_lock):
+        lock = acquire_crt_s3_process_lock()
+        assert lock is awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
+        assert lock is mock_crt_process_lock.return_value
+        mock_crt_process_lock.assert_called_once_with('aws-cli')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
+
+    def test_unable_to_acquire_lock_returns_none(self, mock_crt_process_lock):
+        mock_crt_process_lock.return_value.acquire.side_effect = RuntimeError
+        assert acquire_crt_s3_process_lock() is None
+        assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK is None
+        mock_crt_process_lock.assert_called_once_with('aws-cli')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
+
+    def test_multiple_acquires_return_same_lock(self, mock_crt_process_lock):
+        lock = acquire_crt_s3_process_lock()
+        assert acquire_crt_s3_process_lock() is lock
+        assert lock is awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
+
+        # The process lock should have only been instantiated and acquired once
+        mock_crt_process_lock.assert_called_once_with('aws-cli')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
 
 class TestClientFactory(unittest.TestCase):
@@ -95,7 +166,9 @@ class TestTransferManagerFactory(unittest.TestCase):
             'endpoint_url': None,
             'verify_ssl': None,
         }
-        self.runtime_config = self.get_runtime_config()
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='classic'
+        )
         self.files = FileCreator()
 
     def tearDown(self):
@@ -125,18 +198,18 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_connection_options
         )
 
-    def assert_is_default_manager(self, manager):
+    def assert_is_classic_manager(self, manager):
         self.assertIsInstance(manager, TransferManager)
 
     def assert_is_crt_manager(self, manager):
         self.assertIsInstance(manager, CRTTransferManager)
 
-    def test_create_transfer_manager_default(self):
+    def test_create_transfer_manager_classic(self):
         transfer_client = mock.Mock()
         self.session.create_client.return_value = transfer_client
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
-        self.assert_is_default_manager(transfer_manager)
+        self.assert_is_classic_manager(transfer_manager)
         self.session.create_client.assert_called_with(
             's3', region_name='us-west-2', endpoint_url=None,
             verify=None,
@@ -166,43 +239,13 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertEqual(
             transfer_manager.config.max_in_memory_upload_chunks, 6)
 
-    def test_can_provide_botocore_client_to_default_manager(self):
+    def test_can_provide_botocore_client_to_classic_manager(self):
         transfer_client = mock.Mock()
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config, botocore_client=transfer_client)
-        self.assert_is_default_manager(transfer_manager)
+        self.assert_is_classic_manager(transfer_manager)
         self.session.create_client.assert_not_called()
         self.assertIs(transfer_manager.client, transfer_client)
-
-    def test_creates_default_manager_when_explicitly_set_to_default(self):
-        self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='default')
-        transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
-        self.assert_is_default_manager(transfer_manager)
-
-    def test_creates_crt_manager_when_preferred_transfer_client_is_crt(self):
-        self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
-        transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
-        self.assert_is_crt_manager(transfer_manager)
-
-    def test_creates_default_manager_for_copies(self):
-        self.params['paths_type'] = 's3s3'
-        self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
-        transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
-        self.assert_is_default_manager(transfer_manager)
-
-    def test_creates_crt_manager_when_streaming_operation(self):
-        self.params['is_stream'] = True
-        self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
-        transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
-        self.assert_is_crt_manager(transfer_manager)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_region_parameter_for_crt_manager(self, mock_crt_client):
@@ -406,3 +449,133 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client.call_args[1]['part_size'],
             part_size
         )
+
+
+@pytest.mark.parametrize(
+    'preferred_transfer_client,extra_params,'
+    'crt_is_optimized_for_system,crt_running_in_other_process,'
+    'expected_transfer_manager_cls',
+    [
+        (None, {}, False, False, TransferManager),
+        ('auto', {}, False, False, TransferManager),
+        ('classic', {}, False, False, TransferManager),
+        ('crt', {}, False, False, CRTTransferManager),
+
+        # "default" is a supported alias for "classic"
+        ('default', {}, False, False, TransferManager),
+
+        # Cases when CRT is optimized for system
+        (None, {}, True, False, CRTTransferManager),
+        ('auto', {}, True, False, CRTTransferManager),
+        ('classic', {}, True, False, TransferManager),
+        ('crt', {}, True, False, CRTTransferManager),
+
+        # Cases when another AWS CLI process is running CRT
+        (None, {}, True, True, TransferManager),
+        ('auto', {}, True, True, TransferManager),
+        ('classic', {}, True, True, TransferManager),
+        ('crt', {}, True, True, CRTTransferManager),
+
+        # S3 copies always default to classic transfer manager
+        (None, {'paths_type': 's3s3'}, True, False, TransferManager),
+        ('auto', {'paths_type': 's3s3'}, True, False, TransferManager),
+        ('classic', {'paths_type': 's3s3'}, True, False, TransferManager),
+        ('crt', {'paths_type': 's3s3'}, True, False, TransferManager),
+
+        # Streaming operations use requested transfer client
+        (None, {'is_stream': True}, False, False, TransferManager),
+        ('auto', {'is_stream': True}, False, False, TransferManager),
+        ('classic', {'is_stream': True}, False, False, TransferManager),
+        ('crt', {'is_stream': True}, False, False, CRTTransferManager),
+    ]
+)
+def test_transfer_manager_cls_resolution(
+    preferred_transfer_client,
+    extra_params,
+    crt_is_optimized_for_system,
+    crt_running_in_other_process,
+    expected_transfer_manager_cls,
+    transfer_manager_factory,
+    s3_params,
+    mock_crt_is_optimized_for_system,
+    mock_crt_process_lock,
+    mock_crt_s3_client,
+):
+    s3_params.update(extra_params)
+    mock_crt_is_optimized_for_system.return_value = crt_is_optimized_for_system
+    if crt_running_in_other_process:
+        mock_crt_process_lock.return_value.acquire.side_effect = RuntimeError
+
+    transfer_manager = _create_transfer_manager_from_factory(
+        transfer_manager_factory, s3_params, preferred_transfer_client
+    )
+    assert isinstance(transfer_manager, expected_transfer_manager_cls)
+
+
+@pytest.mark.parametrize(
+    'preferred_transfer_client,crt_is_optimized_for_system',
+    [
+        ('auto', True),
+        ('crt', False),
+        ('crt', True),
+    ]
+)
+def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
+    preferred_transfer_client,
+    crt_is_optimized_for_system,
+    transfer_manager_factory,
+    s3_params,
+    mock_crt_is_optimized_for_system,
+    mock_crt_process_lock,
+    mock_crt_s3_client,
+):
+    mock_crt_is_optimized_for_system.return_value = crt_is_optimized_for_system
+    transfer_manager = _create_transfer_manager_from_factory(
+        transfer_manager_factory, s3_params, preferred_transfer_client
+    )
+    assert isinstance(transfer_manager, CRTTransferManager)
+    assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
+    mock_crt_process_lock.assert_called_once_with('aws-cli')
+    mock_crt_process_lock.return_value.acquire.assert_called_once_with()
+
+
+@pytest.mark.parametrize(
+    'preferred_transfer_client,crt_is_optimized_for_system',
+    [
+        ('auto', False),
+        ('classic', False),
+        ('classic', True),
+    ]
+)
+def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
+    preferred_transfer_client,
+    crt_is_optimized_for_system,
+    transfer_manager_factory,
+    s3_params,
+    mock_crt_is_optimized_for_system,
+    mock_crt_process_lock,
+    mock_crt_s3_client,
+):
+    mock_crt_is_optimized_for_system.return_value = crt_is_optimized_for_system
+    transfer_manager = _create_transfer_manager_from_factory(
+        transfer_manager_factory, s3_params, preferred_transfer_client
+    )
+    assert isinstance(transfer_manager, TransferManager)
+    assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK is None
+    mock_crt_process_lock.assert_not_called()
+    mock_crt_process_lock.return_value.acquire.assert_not_called()
+
+
+def _create_transfer_manager_from_factory(
+    transfer_manager_factory,
+    params,
+    preferred_transfer_client=None
+):
+    runtime_config_kwargs = {}
+    if preferred_transfer_client is not None:
+        runtime_config_kwargs[
+            'preferred_transfer_client'] = preferred_transfer_client
+    runtime_config = RuntimeConfig().build_config(**runtime_config_kwargs)
+    return transfer_manager_factory.create_transfer_manager(
+        params, runtime_config
+    )

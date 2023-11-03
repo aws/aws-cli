@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
+import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
@@ -26,6 +27,37 @@ from awscli.customizations.s3.transferconfig import \
 
 
 LOGGER = logging.getLogger(__name__)
+CRT_S3_PROCCESS_LOCK = None
+
+
+def acquire_crt_s3_process_lock():
+    # Currently, the CRT S3 client performs best when there is only one
+    # instance of it running on a host. This lock allows the CLI to signal
+    # across processes whether there is another AWS CLI process using
+    # the CRT S3 client so that when "auto" mode is used for the
+    # preferred_transfer_client, the AWS CLI will not spawn more than one
+    # CRT S3 client on the system.
+    #
+    # NOTE: When acquiring the CRT process lock, the lock automatically is
+    # released when the lock object is garbage collected. In general, the main
+    # CLI command invocation codepath is invoked only ever once per CLI
+    # process. So, it is not required to call release() on the CRT lock as the
+    # lock will be released as part of the CLI process shutting down.
+    # Furthermore, we set the CRT process lock as a global so that it is
+    # not unintentionally garbage collected/released if reference of the lock
+    # is lost.
+    global CRT_S3_PROCCESS_LOCK
+    if CRT_S3_PROCCESS_LOCK is None:
+        crt_lock = awscrt.s3.CrossProcessLock('aws-cli')
+        try:
+            crt_lock.acquire()
+        except RuntimeError:
+            # If there is another process that is holding the lock, the CRT
+            # returns a RuntimeError. We return None here to signal that our
+            # current process was not able to acquire the lock.
+            return None
+        CRT_S3_PROCCESS_LOCK = crt_lock
+    return CRT_S3_PROCCESS_LOCK
 
 
 class ClientFactory:
@@ -69,11 +101,42 @@ class TransferManagerFactory:
 
     def _compute_transfer_client_type(self, params, runtime_config):
         if params.get('paths_type') == 's3s3':
-            return constants.DEFAULT_TRANSFER_CLIENT
-        return runtime_config.get(
-            'preferred_transfer_client', constants.DEFAULT_TRANSFER_CLIENT)
+            return constants.CLASSIC_TRANSFER_CLIENT
+        preferred_transfer_client = runtime_config.get(
+            'preferred_transfer_client',
+            constants.AUTO_RESOLVE_TRANSFER_CLIENT
+        )
+        if preferred_transfer_client == constants.AUTO_RESOLVE_TRANSFER_CLIENT:
+            return self._resolve_transfer_client_type_for_system()
+        return preferred_transfer_client
+
+    def _resolve_transfer_client_type_for_system(self):
+        transfer_client_type = constants.CLASSIC_TRANSFER_CLIENT
+        is_optimized_for_system = awscrt.s3.is_optimized_for_system()
+        LOGGER.debug(
+            'S3 CRT client optimized for system: %s', is_optimized_for_system
+        )
+        if is_optimized_for_system:
+            is_running = self._is_crt_client_running_in_other_aws_cli_process()
+            LOGGER.debug(
+                'S3 CRT client running in different AWS CLI process: %s',
+                is_running
+            )
+            if not is_running:
+                transfer_client_type = constants.CRT_TRANSFER_CLIENT
+        LOGGER.debug(
+            'Auto resolved s3 transfer client to: %s', transfer_client_type
+        )
+        return transfer_client_type
+
+    def _is_crt_client_running_in_other_aws_cli_process(self):
+        # If None is returned from acquiring the CRT process lock, it
+        # means the CRT S3 client is currently being used in a different
+        # AWS CLI process.
+        return acquire_crt_s3_process_lock() is None
 
     def _create_crt_transfer_manager(self, params, runtime_config):
+        acquire_crt_s3_process_lock()
         return CRTTransferManager(
             self._create_crt_client(params, runtime_config),
             self._create_crt_request_serializer(params)

@@ -302,6 +302,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
         return (
             '[default]\n'
             's3 =\n'
+            '  preferred_transfer_client = classic\n'
             '  max_concurrent_requests = 1\n'
         )
 

@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+import pytest
 
 from awscli.customizations.s3 import transferconfig
 from awscli.compat import six
 
 
-class TestTransferConfig(unittest.TestCase):
+class TestTransferConfig:
 
     def build_config_with(self, **config_from_user):
         return transferconfig.RuntimeConfig().build_config(**config_from_user)
@@ -27,7 +27,7 @@ class TestTransferConfig(unittest.TestCase):
         # the module.
         config = transferconfig.RuntimeConfig()
         runtime_config = config.build_config()
-        self.assertEqual(runtime_config, transferconfig.DEFAULTS)
+        assert runtime_config == transferconfig.DEFAULTS
 
     def test_user_provides_partial_overrides(self):
         config_from_user = {
@@ -36,30 +36,32 @@ class TestTransferConfig(unittest.TestCase):
         }
         runtime_config = self.build_config_with(**config_from_user)
         # Our overrides were accepted.
-        self.assertEqual(runtime_config['multipart_threshold'],
-                         int(config_from_user['multipart_threshold']))
-        self.assertEqual(runtime_config['max_concurrent_requests'],
-                         int(config_from_user['max_concurrent_requests']))
+        assert runtime_config['multipart_threshold'] == int(
+            config_from_user['multipart_threshold']
+        )
+        assert runtime_config['max_concurrent_requests'] == int(
+            config_from_user['max_concurrent_requests']
+        )
         # And defaults were used for values not specified.
-        self.assertEqual(runtime_config['max_queue_size'],
-                         int(transferconfig.DEFAULTS['max_queue_size']))
+        assert runtime_config['max_queue_size'] == int(
+            transferconfig.DEFAULTS['max_queue_size']
+        )
 
     def test_validates_integer_types(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(max_concurrent_requests="not an int")
 
     def test_validates_positive_integers(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(max_concurrent_requests="-10")
 
     def test_min_value(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(max_concurrent_requests="0")
 
     def test_human_readable_sizes_converted_to_bytes(self):
         runtime_config = self.build_config_with(multipart_threshold="10MB")
-        self.assertEqual(runtime_config['multipart_threshold'],
-                         10 * 1024 * 1024)
+        assert runtime_config['multipart_threshold'] == 10 * 1024 * 1024
 
     def test_long_value(self):
         # MAXSIZE is the max size of an int on python 2 and the maximum size
@@ -68,45 +70,54 @@ class TestTransferConfig(unittest.TestCase):
         long_value = six.MAXSIZE + 1
         runtime_config = self.build_config_with(
             multipart_threshold=long_value)
-        self.assertEqual(runtime_config['multipart_threshold'], long_value)
+        assert runtime_config['multipart_threshold'] == long_value
 
-    def test_can_set_preferred_transfer_client(self):
-        runtime_config = self.build_config_with(
-            preferred_transfer_client='crt')
-        self.assertEqual(
-            runtime_config['preferred_transfer_client'], 'crt')
+    @pytest.mark.parametrize(
+        'provided,resolved', [
+            (None, 'auto'),
+            ('auto', 'auto'),
+            ('classic', 'classic'),
+            ('default', 'classic'),
+            ('crt', 'crt'),
+        ]
+    )
+    def test_set_preferred_transfer_client(self, provided, resolved):
+        config_kwargs = {}
+        if provided is not None:
+            config_kwargs['preferred_transfer_client'] = provided
+        runtime_config = self.build_config_with(**config_kwargs)
+        assert runtime_config['preferred_transfer_client'] == resolved
 
     def test_converts_max_bandwidth_as_string(self):
         runtime_config = self.build_config_with(max_bandwidth='1MB/s')
-        self.assertEqual(runtime_config['max_bandwidth'], 1024 * 1024)
+        assert runtime_config['max_bandwidth'] == 1024 * 1024
 
     def test_validates_max_bandwidth_no_seconds(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(max_bandwidth='1MB')
 
     def test_converts_max_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
         runtime_config = self.build_config_with(max_bandwidth='8Mb/s')
-        self.assertEqual(runtime_config['max_bandwidth'], 1024 * 1024)
+        assert runtime_config['max_bandwidth'] == 1024 * 1024
 
     def test_converts_target_bandwidth_as_string(self):
         runtime_config = self.build_config_with(target_bandwidth='5MB/s')
-        self.assertEqual(runtime_config['target_bandwidth'], 5 * 1024 * 1024)
+        assert runtime_config['target_bandwidth'] == 5 * 1024 * 1024
 
     def test_validates_target_bandwidth_no_seconds(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(target_bandwidth='1MB')
 
     def test_converts_target_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
         runtime_config = self.build_config_with(target_bandwidth='1Mb/s')
-        self.assertEqual(
-            runtime_config['target_bandwidth'], 1 * 1024 * 1024 / 8)
+        assert runtime_config['target_bandwidth'] == 1 * 1024 * 1024 / 8
 
     def test_validates_preferred_transfer_client_choices(self):
-        with self.assertRaises(transferconfig.InvalidConfigError):
+        with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(preferred_transfer_client='not-supported')
 
 
-class TestConvertToS3TransferConfig(unittest.TestCase):
+class TestConvertToS3TransferConfig:
     def test_convert(self):
         runtime_config = {
             'multipart_threshold': 1,
@@ -122,9 +133,9 @@ class TestConvertToS3TransferConfig(unittest.TestCase):
         }
         result = transferconfig.create_transfer_config_from_runtime_config(
             runtime_config)
-        self.assertEqual(result.multipart_threshold, 1)
-        self.assertEqual(result.multipart_chunksize, 2)
-        self.assertEqual(result.max_request_concurrency, 3)
-        self.assertEqual(result.max_request_queue_size, 4)
-        self.assertEqual(result.max_bandwidth, 1024 * 1024)
-        self.assertNotEqual(result.max_in_memory_upload_chunks, 1000)
+        assert result.multipart_threshold == 1
+        assert result.multipart_chunksize == 2
+        assert result.max_request_concurrency == 3
+        assert result.max_request_queue_size == 4
+        assert result.max_bandwidth == 1024 * 1024
+        assert result.max_in_memory_upload_chunks != 1000

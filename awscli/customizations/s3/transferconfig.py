@@ -18,13 +18,18 @@ from awscli.compat import six
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
 # commands.
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
+
 DEFAULTS = {
     'multipart_threshold': 8 * (1024 ** 2),
     'multipart_chunksize': 8 * (1024 ** 2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
     'max_bandwidth': None,
-    'preferred_transfer_client': constants.DEFAULT_TRANSFER_CLIENT,
+    'preferred_transfer_client': constants.AUTO_RESOLVE_TRANSFER_CLIENT,
     'target_bandwidth': int(5 * (1024 ** 3) / 8),  # which is 5 Gb/s
 }
 
@@ -42,9 +47,15 @@ class RuntimeConfig(object):
     HUMAN_READABLE_RATES = ['max_bandwidth', 'target_bandwidth']
     SUPPORTED_CHOICES = {
         'preferred_transfer_client': [
-            constants.DEFAULT_TRANSFER_CLIENT,
+            constants.AUTO_RESOLVE_TRANSFER_CLIENT,
+            constants.CLASSIC_TRANSFER_CLIENT,
             constants.CRT_TRANSFER_CLIENT,
         ]
+    }
+    CHOICE_ALIASES = {
+        'preferred_transfer_client': {
+            'default': constants.CLASSIC_TRANSFER_CLIENT
+        }
     }
 
     @staticmethod
@@ -67,6 +78,7 @@ class RuntimeConfig(object):
             runtime_config.update(kwargs)
         self._convert_human_readable_sizes(runtime_config)
         self._convert_human_readable_rates(runtime_config)
+        self._resolve_choice_aliases(runtime_config)
         self._validate_config(runtime_config)
         return runtime_config
 
@@ -92,6 +104,17 @@ class RuntimeConfig(object):
                         'as a rate in terms of bytes per second '
                         '(e.g. 10MB/s or 800KB/s) or bits per '
                         'second (e.g. 10Mb/s or 800Kb/s)' % value)
+
+    def _resolve_choice_aliases(self, runtime_config):
+        for attr in self.CHOICE_ALIASES:
+            current_value = runtime_config.get(attr)
+            if current_value in self.CHOICE_ALIASES[attr]:
+                resolved_value = self.CHOICE_ALIASES[attr][current_value]
+                LOGGER.debug(
+                    'Resolved %s configuration alias value "%s" to "%s"',
+                    attr, current_value, resolved_value
+                )
+                runtime_config[attr] = resolved_value
 
     def _validate_config(self, runtime_config):
         self._validate_positive_integers(runtime_config)

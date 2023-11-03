@@ -12,5 +12,6 @@
 # language governing permissions and limitations under the License.
 
 # Constants for preferred_transfer_client configuration
-DEFAULT_TRANSFER_CLIENT = 'default'
+AUTO_RESOLVE_TRANSFER_CLIENT = 'auto'
+CLASSIC_TRANSFER_CLIENT = 'classic'
 CRT_TRANSFER_CLIENT = 'crt'

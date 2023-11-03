@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.29.78
+=======
+
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in October 2023.
+* api-change:``connect``: Amazon Connect Chat introduces Create Persistent Contact Association API, allowing customers to choose when to resume previous conversations from previous chats, eliminating the need to repeat themselves and allowing agents to provide personalized service with access to entire conversation history.
+* api-change:``iotwireless``: Added LoRaWAN version 1.0.4 support
+* api-change:``launch-wizard``: AWS Launch Wizard is a service that helps reduce the time it takes to deploy applications to the cloud while providing a guided deployment experience.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.29.77
 =======
 
@@ -10,7 +20,7 @@ CHANGELOG
 * api-change:``gamelift``: Amazon GameLift adds support for shared credentials, which allows applications that are deployed on managed EC2 fleets to interact with other AWS resources.
 * api-change:``glue``: This release introduces Google BigQuery Source and Target in AWS Glue CodeGenConfigurationNode.
 * api-change:``network-firewall``: This release introduces the stateless rule analyzer, which enables you to analyze your stateless rules for asymmetric routing.
-* api-change:``quicksight``: Got confirmed from qmeixua@ about custom week features, and tested locally with aws cli and java sdk that the subtypes are showing up.
+* api-change:``quicksight``: This release introduces Float Decimal Type as SubType in QuickSight SPICE datasets and Custom week start and Custom timezone options in Analysis and Dashboard
 * api-change:``endpoint-rules``: Update endpoint-rules command to latest version
 
 

@@ -99,7 +99,7 @@
         {"shape":"TaggingFailedException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p>Creates a fleet of Amazon Elastic Compute Cloud (Amazon EC2) instances to host your custom game server or Realtime Servers. Use this operation to configure the computing resources for your fleet and provide instructions for running game servers on each instance.</p> <p>Most Amazon GameLift fleets can deploy instances to multiple locations, including the home Region (where the fleet is created) and an optional set of remote locations. Fleets that are created in the following Amazon Web Services Regions support multiple locations: us-east-1 (N. Virginia), us-west-2 (Oregon), eu-central-1 (Frankfurt), eu-west-1 (Ireland), ap-southeast-2 (Sydney), ap-northeast-1 (Tokyo), and ap-northeast-2 (Seoul). Fleets that are created in other Amazon GameLift Regions can deploy instances in the fleet's home Region only. All fleet instances use the same configuration regardless of location; however, you can adjust capacity settings and turn auto-scaling on/off for each location.</p> <p>To create a fleet, choose the hardware for your instances, specify a game server build or Realtime script to deploy, and provide a runtime configuration to direct Amazon GameLift how to start and run game servers on each instance in the fleet. Set permissions for inbound traffic to your game servers, and enable optional features as needed. When creating a multi-location fleet, provide a list of additional remote locations.</p> <p>If you need to debug your fleet, fetch logs, view performance metrics or other actions on the fleet, create the development fleet with port 22/3389 open. As a best practice, we recommend opening ports for remote access only when you need them and closing them when you're finished. </p> <p>If successful, this operation creates a new Fleet resource and places it in <code>NEW</code> status, which prompts Amazon GameLift to initiate the <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-all.html#fleets-creation-workflow\">fleet creation workflow</a>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug fleet creation issues</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Multi-location fleets</a> </p>"
+      "documentation":"<p>Creates a fleet of Amazon Elastic Compute Cloud (Amazon EC2) instances to host your custom game server or Realtime Servers. Use this operation to configure the computing resources for your fleet and provide instructions for running game servers on each instance.</p> <p>Most Amazon GameLift fleets can deploy instances to multiple locations, including the home Region (where the fleet is created) and an optional set of remote locations. Fleets that are created in the following Amazon Web Services Regions support multiple locations: us-east-1 (N. Virginia), us-west-2 (Oregon), eu-central-1 (Frankfurt), eu-west-1 (Ireland), ap-southeast-2 (Sydney), ap-northeast-1 (Tokyo), and ap-northeast-2 (Seoul). Fleets that are created in other Amazon GameLift Regions can deploy instances in the fleet's home Region only. All fleet instances use the same configuration regardless of location; however, you can adjust capacity settings and turn auto-scaling on/off for each location.</p> <p>To create a fleet, choose the hardware for your instances, specify a game server build or Realtime script to deploy, and provide a runtime configuration to direct Amazon GameLift how to start and run game servers on each instance in the fleet. Set permissions for inbound traffic to your game servers, and enable optional features as needed. When creating a multi-location fleet, provide a list of additional remote locations.</p> <p>If you need to debug your fleet, fetch logs, view performance metrics or other actions on the fleet, create the development fleet with port 22/3389 open. As a best practice, we recommend opening ports for remote access only when you need them and closing them when you're finished. </p> <p>If successful, this operation creates a new Fleet resource and places it in <code>NEW</code> status, which prompts Amazon GameLift to initiate the <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-all.html#fleets-creation-workflow\">fleet creation workflow</a>. You can track fleet creation by checking fleet status using <a>DescribeFleetAttributes</a> and <a>DescribeFleetLocationAttributes</a>/, or by monitoring fleet creation events using <a>DescribeFleetEvents</a>. </p> <p>When the fleet status changes to <code>ACTIVE</code>, you can enable automatic scaling with <a>PutScalingPolicy</a> and set capacity for the home Region with <a>UpdateFleetCapacity</a>. When the status of each remote location reaches <code>ACTIVE</code>, you can set capacity by location using <a>UpdateFleetCapacity</a>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html#fleets-creating-debug-creation\">Debug fleet creation issues</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Multi-location fleets</a> </p>"
     },
     "CreateFleetLocations":{
       "name":"CreateFleetLocations",
@@ -432,7 +432,7 @@
         {"shape":"NotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Deletes a custom location.</p> <p>Before deleting a custom location, review any fleets currently using the custom location and deregister the location if it is in use. For more information see, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DeregisterCompute.html\">DeregisterCompute</a>.</p>"
+      "documentation":"<p>Deletes a custom location.</p> <p>Before deleting a custom location, review any fleets currently using the custom location and deregister the location if it is in use. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DeregisterCompute.html\">DeregisterCompute</a>.</p>"
     },
     "DeleteMatchmakingConfiguration":{
       "name":"DeleteMatchmakingConfiguration",
@@ -1262,7 +1262,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InvalidRequestException"},
         {"shape":"ConflictException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Registers a compute resource to an Amazon GameLift Anywhere fleet. With Anywhere fleets you can incorporate your own computing hardware into an Amazon GameLift game hosting solution.</p> <p>To register a compute to a fleet, give the compute a name (must be unique within the fleet) and specify the compute resource's DNS name or IP address. Provide the Anywhere fleet ID and a fleet location to associate with the compute being registered. You can optionally include the path to a TLS certificate on the compute resource.</p> <p>If successful, this operation returns the compute details, including an Amazon GameLift SDK endpoint. Game server processes that run on the compute use this endpoint to communicate with the Amazon GameLift service. Each server process includes the SDK endpoint in its call to the Amazon GameLift server SDK action <code>InitSDK()</code>.</p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html\">Server SDK reference guides</a> (for version 5.x)</p> </li> </ul>"
     },
@@ -1747,7 +1748,7 @@
           "documentation":"<p>A unique identifier for a matchmaking ticket. The ticket must be in status <code>REQUIRES_ACCEPTANCE</code>; otherwise this request will fail.</p>"
         },
         "PlayerIds":{
-          "shape":"StringList",
+          "shape":"PlayerIdsForAcceptMatch",
           "documentation":"<p>A unique identifier for a player delivering the response. This parameter can include one or multiple player IDs.</p>"
         },
         "AcceptanceType":{
@@ -2234,11 +2235,11 @@
         },
         "BuildId":{
           "shape":"BuildIdOrArn",
-          "documentation":"<p>The unique identifier for a custom game server build to be deployed on fleet instances. You can use either the build ID or ARN. The build must be uploaded to Amazon GameLift and in <code>READY</code> status. This fleet property cannot be changed later.</p>"
+          "documentation":"<p>The unique identifier for a custom game server build to be deployed on fleet instances. You can use either the build ID or ARN. The build must be uploaded to Amazon GameLift and in <code>READY</code> status. This fleet property can't be changed after the fleet is created.</p>"
         },
         "ScriptId":{
           "shape":"ScriptIdOrArn",
-          "documentation":"<p>The unique identifier for a Realtime configuration script to be deployed on fleet instances. You can use either the script ID or ARN. Scripts must be uploaded to Amazon GameLift prior to creating the fleet. This fleet property cannot be changed later.</p>"
+          "documentation":"<p>The unique identifier for a Realtime configuration script to be deployed on fleet instances. You can use either the script ID or ARN. Scripts must be uploaded to Amazon GameLift prior to creating the fleet. This fleet property can't be changed after the fleet is created.</p>"
         },
         "ServerLaunchPath":{
           "shape":"LaunchPathStringModel",
@@ -2286,11 +2287,11 @@
         },
         "FleetType":{
           "shape":"FleetType",
-          "documentation":"<p>Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot\"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.</p>"
+          "documentation":"<p>Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot\"> On-Demand versus Spot Instances</a>. This fleet property can't be changed after the fleet is created.</p>"
         },
         "InstanceRoleArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role's ARN by using the <a href=\"https://console.aws.amazon.com/iam/\">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Access external resources from a game server</a>. This property cannot be changed after the fleet is created.</p>"
+          "documentation":"<p>A unique identifier for an IAM role with access permissions to other Amazon Web Services services. Any application that runs on an instance in the fleet--including install scripts, server processes, and other processes--can use these permissions to interact with Amazon Web Services resources that you own or have access to. For more information about using the role with your game server builds, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>. This fleet property can't be changed after the fleet is created.</p>"
         },
         "CertificateConfiguration":{
           "shape":"CertificateConfiguration",
@@ -2311,6 +2312,10 @@
         "AnywhereConfiguration":{
           "shape":"AnywhereConfiguration",
           "documentation":"<p>Amazon GameLift Anywhere configuration options.</p>"
+        },
+        "InstanceRoleCredentialsProvider":{
+          "shape":"InstanceRoleCredentialsProvider",
+          "documentation":"<p>Prompts Amazon GameLift to generate a shared credentials file for the IAM role defined in <code>InstanceRoleArn</code>. The shared credentials file is stored on each fleet instance and refreshed as needed. Use shared credentials for applications that are deployed along with the game server executable, if the game server is integrated with server SDK version 5.x. For more information about using shared credentials, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>.</p>"
         }
       }
     },
@@ -2679,7 +2684,7 @@
           "documentation":"<p>A unique identifier for the game session to add a player to.</p>"
         },
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player. Player IDs are developer-defined.</p>"
         },
         "PlayerData":{
@@ -3789,7 +3794,7 @@
           "documentation":"<p>A unique identifier for the game session to retrieve player sessions for.</p>"
         },
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player to retrieve player sessions for.</p>"
         },
         "PlayerSessionId":{
@@ -3936,7 +3941,7 @@
       "type":"structure",
       "members":{
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player to associate with the player session.</p>"
         },
         "PlayerData":{
@@ -4320,7 +4325,7 @@
         },
         "FleetType":{
           "shape":"FleetType",
-          "documentation":"<p>Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot\"> On-Demand versus Spot Instances</a>. This property cannot be changed after the fleet is created.</p>"
+          "documentation":"<p>Indicates whether to use On-Demand or Spot instances for this fleet. By default, this property is set to <code>ON_DEMAND</code>. Learn more about when to use <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-ec2-instances.html#gamelift-ec2-instances-spot\"> On-Demand versus Spot Instances</a>. This fleet property can't be changed after the fleet is created.</p>"
         },
         "InstanceType":{
           "shape":"EC2InstanceType",
@@ -4393,14 +4398,18 @@
         },
         "InstanceRoleArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A unique identifier for an IAM role that manages access to your Amazon Web Services services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role's ARN by using the <a href=\"https://console.aws.amazon.com/iam/\">IAM dashboard</a> in the Amazon Web Services Management Console. Learn more about using on-box credentials for your game servers at <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Access external resources from a game server</a>.</p>"
+          "documentation":"<p>A unique identifier for an IAM role with access permissions to other Amazon Web Services services. Any application that runs on an instance in the fleet--including install scripts, server processes, and other processes--can use these permissions to interact with Amazon Web Services resources that you own or have access to. For more information about using the role with your game server builds, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>.</p>"
         },
         "CertificateConfiguration":{"shape":"CertificateConfiguration"},
         "ComputeType":{
           "shape":"ComputeType",
           "documentation":"<p>The type of compute resource used to host your game servers. You can use your own compute resources with Amazon GameLift Anywhere or use Amazon EC2 instances with managed Amazon GameLift.</p>"
         },
-        "AnywhereConfiguration":{"shape":"AnywhereConfiguration"}
+        "AnywhereConfiguration":{"shape":"AnywhereConfiguration"},
+        "InstanceRoleCredentialsProvider":{
+          "shape":"InstanceRoleCredentialsProvider",
+          "documentation":"<p>Indicates that fleet instances maintain a shared credentials file for the IAM role defined in <code>InstanceRoleArn</code>. Shared credentials allow applications that are deployed with the game server executable to communicate with other Amazon Web Services resources. This property is used only when the game server is integrated with the server SDK version 5.x. For more information about using shared credentials, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>.</p>"
+        }
       },
       "documentation":"<p>Describes a Amazon GameLift fleet of game hosting resources.</p> <p> <b>Related actions</b> </p>"
     },
@@ -5521,6 +5530,10 @@
       "type":"list",
       "member":{"shape":"Instance"}
     },
+    "InstanceRoleCredentialsProvider":{
+      "type":"string",
+      "enum":["SHARED_CREDENTIAL_FILE"]
+    },
     "InstanceStatus":{
       "type":"string",
       "enum":[
@@ -5567,7 +5580,8 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[0-9A-Fa-f\\:\\.]+"
+      "pattern":"^[0-9A-Fa-f\\:\\.]+",
+      "sensitive":true
     },
     "IpPermission":{
       "type":"structure",
@@ -5587,7 +5601,7 @@
           "documentation":"<p>An ending value for a range of allowed port numbers. Port numbers are end-inclusive. This value must be equal to or greater than <code>FromPort</code>.</p> <p>For fleets using Linux builds, only ports <code>22</code> and <code>1026-60000</code> are valid.</p> <p>For fleets using Windows builds, only ports <code>1026-60000</code> are valid.</p>"
         },
         "IpRange":{
-          "shape":"NonBlankString",
+          "shape":"IpRange",
           "documentation":"<p>A range of allowed IP addresses. This value must be expressed in CIDR notation. Example: \"<code>000.000.000.000/[subnet mask]</code>\" or optionally the shortened version \"<code>0.0.0.0/[subnet mask]</code>\".</p>"
         },
         "Protocol":{
@@ -5608,6 +5622,11 @@
         "TCP",
         "UDP"
       ]
+    },
+    "IpRange":{
+      "type":"string",
+      "pattern":"[^\\s]+",
+      "sensitive":true
     },
     "LargeGameSessionData":{
       "type":"string",
@@ -6063,7 +6082,7 @@
       "type":"structure",
       "members":{
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player </p>"
         },
         "PlayerSessionId":{
@@ -6343,10 +6362,6 @@
       "min":1,
       "pattern":".*\\S.*"
     },
-    "NonBlankString":{
-      "type":"string",
-      "pattern":"[^\\s]+"
-    },
     "NonEmptyString":{
       "type":"string",
       "min":1
@@ -6396,7 +6411,7 @@
       "type":"structure",
       "members":{
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player that is associated with this player session.</p>"
         },
         "PlayerSessionId":{
@@ -6414,7 +6429,7 @@
       "type":"structure",
       "members":{
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player</p>"
         },
         "PlayerAttributes":{
@@ -6461,17 +6476,29 @@
       "key":{"shape":"NonZeroAndMaxString"},
       "value":{"shape":"PlayerData"}
     },
+    "PlayerId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
     "PlayerIdList":{
       "type":"list",
-      "member":{"shape":"NonZeroAndMaxString"},
+      "member":{"shape":"PlayerId"},
       "max":25,
-      "min":1
+      "min":1,
+      "sensitive":true
+    },
+    "PlayerIdsForAcceptMatch":{
+      "type":"list",
+      "member":{"shape":"PlayerId"},
+      "sensitive":true
     },
     "PlayerLatency":{
       "type":"structure",
       "members":{
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player associated with the latency data.</p>"
         },
         "RegionIdentifier":{
@@ -6519,7 +6546,7 @@
           "documentation":"<p>A unique identifier for a player session.</p>"
         },
         "PlayerId":{
-          "shape":"NonZeroAndMaxString",
+          "shape":"PlayerId",
           "documentation":"<p>A unique identifier for a player that is associated with this player session.</p>"
         },
         "GameSessionId":{
@@ -6599,7 +6626,8 @@
     "PortNumber":{
       "type":"integer",
       "max":60000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "PositiveInteger":{
       "type":"integer",

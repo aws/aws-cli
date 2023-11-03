@@ -3297,7 +3297,8 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        }
+        },
+        "Options":{"shape":"AssetOptions"}
       },
       "documentation":"<p>Metadata structure for an analysis in Amazon QuickSight</p>"
     },
@@ -3340,7 +3341,11 @@
           "shape":"ColumnConfigurationList",
           "documentation":"<p> An array of analysis-level column configurations. Column configurations can be used to set default formatting for a column to be used throughout an analysis. </p>"
         },
-        "AnalysisDefaults":{"shape":"AnalysisDefaults"}
+        "AnalysisDefaults":{"shape":"AnalysisDefaults"},
+        "Options":{
+          "shape":"AssetOptions",
+          "documentation":"<p>An array of option definitions for an analysis.</p>"
+        }
       },
       "documentation":"<p>The definition of an analysis.</p>"
     },
@@ -4374,6 +4379,20 @@
       "max":100,
       "min":1
     },
+    "AssetOptions":{
+      "type":"structure",
+      "members":{
+        "Timezone":{
+          "shape":"String",
+          "documentation":"<p>Determines the timezone for the analysis.</p>"
+        },
+        "WeekStart":{
+          "shape":"DayOfTheWeek",
+          "documentation":"<p>Determines the week start day for an analysis.</p>"
+        }
+      },
+      "documentation":"<p>An array of analysis level configurations.</p>"
+    },
     "AssignmentStatus":{
       "type":"string",
       "enum":[
@@ -5320,6 +5339,10 @@
           "shape":"ColumnDataType",
           "documentation":"<p>New column data type.</p>"
         },
+        "SubType":{
+          "shape":"ColumnDataSubType",
+          "documentation":"<p>The sub data type of the new column. Sub types are only available for decimal columns that are part of a SPICE dataset.</p>"
+        },
         "Format":{
           "shape":"TypeCastFormat",
           "documentation":"<p>When casting a column from string to datetime type, you can supply a string in a format supported by Amazon QuickSight to denote the source data format.</p>"
@@ -5642,6 +5665,13 @@
       "enum":[
         "DIMENSION",
         "MEASURE"
+      ]
+    },
+    "ColumnDataSubType":{
+      "type":"string",
+      "enum":[
+        "FLOAT",
+        "FIXED"
       ]
     },
     "ColumnDataType":{
@@ -8482,7 +8512,8 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        }
+        },
+        "Options":{"shape":"AssetOptions"}
       },
       "documentation":"<p>Dashboard version.</p>"
     },
@@ -8514,7 +8545,11 @@
           "shape":"ColumnConfigurationList",
           "documentation":"<p>An array of dashboard-level column configurations. Column configurations are used to set the default formatting for a column that is used throughout a dashboard. </p>"
         },
-        "AnalysisDefaults":{"shape":"AnalysisDefaults"}
+        "AnalysisDefaults":{"shape":"AnalysisDefaults"},
+        "Options":{
+          "shape":"AssetOptions",
+          "documentation":"<p>An array of option definitions for a dashboard.</p>"
+        }
       },
       "documentation":"<p>The contents of a dashboard.</p>"
     },
@@ -9922,6 +9957,18 @@
       "max":17,
       "min":1,
       "pattern":"^(?:LAST_DAY_OF_MONTH|1[0-9]|2[0-8]|[12]|[3-9])$"
+    },
+    "DayOfTheWeek":{
+      "type":"string",
+      "enum":[
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
     },
     "DayOfWeek":{
       "type":"string",
@@ -16728,6 +16775,10 @@
         "Type":{
           "shape":"InputColumnDataType",
           "documentation":"<p>The data type of the column.</p>"
+        },
+        "SubType":{
+          "shape":"ColumnDataSubType",
+          "documentation":"<p>The sub data type of the column. Sub types are only available for decimal columns that are part of a SPICE dataset.</p>"
         }
       },
       "documentation":"<p>Metadata for a column that is used as the input of a transform operation.</p>"
@@ -20325,7 +20376,7 @@
       "members":{
         "Name":{
           "shape":"ColumnName",
-          "documentation":"<p>A display name for the dataset.</p>"
+          "documentation":"<p>The display name of the column..</p>"
         },
         "Description":{
           "shape":"ColumnDescriptiveText",
@@ -20333,7 +20384,11 @@
         },
         "Type":{
           "shape":"ColumnDataType",
-          "documentation":"<p>The type.</p>"
+          "documentation":"<p>The data type of the column.</p>"
+        },
+        "SubType":{
+          "shape":"ColumnDataSubType",
+          "documentation":"<p>The sub data type of the column.</p>"
         }
       },
       "documentation":"<p>Output column.</p>"
@@ -26318,7 +26373,8 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        }
+        },
+        "Options":{"shape":"AssetOptions"}
       },
       "documentation":"<p>A version of a template.</p>"
     },
@@ -26350,7 +26406,11 @@
           "shape":"ColumnConfigurationList",
           "documentation":"<p> An array of template-level column configurations. Column configurations are used to set default formatting for a column that's used throughout a template. </p>"
         },
-        "AnalysisDefaults":{"shape":"AnalysisDefaults"}
+        "AnalysisDefaults":{"shape":"AnalysisDefaults"},
+        "Options":{
+          "shape":"AssetOptions",
+          "documentation":"<p>An array of option definitions for a template.</p>"
+        }
       },
       "documentation":"<p>The detailed definition of a template.</p>"
     },

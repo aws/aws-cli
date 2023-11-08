@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.13.33
+=======
+
+* api-change:``dataexchange``: Updated SendDataSetNotificationRequest Comment to be maximum length 4096.
+* api-change:``launch-wizard``: AWS Launch Wizard is a service that helps reduce the time it takes to deploy applications to the cloud while providing a guided deployment experience.
+* api-change:``dlm``: Added support for pre and post scripts in Amazon Data Lifecycle Manager EBS snapshot lifecycle policies.
+* api-change:``docdb``: Update the input of CreateDBInstance and ModifyDBInstance to support setting CA Certificates. Update the output of DescribeDBInstance and DescribeDBEngineVersions to show current and supported CA certificates.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``codebuild``: AWS CodeBuild now supports AWS Lambda compute.
+* api-change:``connect``: Added new API that allows Amazon Connect Outbound Campaigns to create contacts in Amazon Connect when ingesting your dial requests.
+* api-change:``ce``: This release extends the GetReservationPurchaseRecommendation API to support recommendations for Amazon MemoryDB reservations.
+* api-change:``iotwireless``: Added LoRaWAN version 1.0.4 support
+* api-change:``rds``: This Amazon RDS release adds support for the multi-tenant configuration. In this configuration, an RDS DB instance can contain multiple tenant databases. In RDS for Oracle, a tenant database is a pluggable database (PDB).
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``connect``: Amazon Connect Chat introduces Create Persistent Contact Association API, allowing customers to choose when to resume previous conversations from previous chats, eliminating the need to repeat themselves and allowing agents to provide personalized service with access to entire conversation history.
+* api-change:``config``: Updated ResourceType enum with new resource types onboarded by AWS Config in October 2023.
+* bugfix:``help``: Relax line length limit for rendered ``help`` pages
+* api-change:``mwaa``: This release adds support for Apache Airflow version 2.7.2. This version release includes support for deferrable operators and triggers.
+* api-change:``route53``: Add partitional endpoints for iso-e and iso-f.
+* api-change:``polly``: Amazon Polly adds new US English voices - Danielle and Gregory. Danielle and Gregory are available as Neural voices only.
+* api-change:``iam``: Add partitional endpoint for iso-e.
+
+
 2.13.32
 =======
 

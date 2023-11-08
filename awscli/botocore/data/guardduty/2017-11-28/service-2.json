@@ -1282,6 +1282,21 @@
           "shape":"RdsLoginAttemptAction",
           "documentation":"<p>Information about <code>RDS_LOGIN_ATTEMPT</code> action described in this finding.</p>",
           "locationName":"rdsLoginAttemptAction"
+        },
+        "KubernetesPermissionCheckedDetails":{
+          "shape":"KubernetesPermissionCheckedDetails",
+          "documentation":"<p>Information whether the user has the permission to use a specific Kubernetes API.</p>",
+          "locationName":"kubernetesPermissionCheckedDetails"
+        },
+        "KubernetesRoleBindingDetails":{
+          "shape":"KubernetesRoleBindingDetails",
+          "documentation":"<p>Information about the role binding that grants the permission defined in a Kubernetes role.</p>",
+          "locationName":"kubernetesRoleBindingDetails"
+        },
+        "KubernetesRoleDetails":{
+          "shape":"KubernetesRoleDetails",
+          "documentation":"<p>Information about the Kubernetes role name and role type.</p>",
+          "locationName":"kubernetesRoleDetails"
         }
       },
       "documentation":"<p>Contains information about actions.</p>"
@@ -1363,6 +1378,73 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "Anomaly":{
+      "type":"structure",
+      "members":{
+        "Profiles":{
+          "shape":"AnomalyProfiles",
+          "documentation":"<p>Information about the types of profiles.</p>",
+          "locationName":"profiles"
+        },
+        "Unusual":{
+          "shape":"AnomalyUnusual",
+          "documentation":"<p>Information about the behavior of the anomalies.</p>",
+          "locationName":"unusual"
+        }
+      },
+      "documentation":"<p>Contains information about the anomalies.</p>"
+    },
+    "AnomalyObject":{
+      "type":"structure",
+      "members":{
+        "ProfileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of behavior of the profile.</p>",
+          "locationName":"profileType"
+        },
+        "ProfileSubtype":{
+          "shape":"ProfileSubtype",
+          "documentation":"<p>The frequency of the anomaly.</p>",
+          "locationName":"profileSubtype"
+        },
+        "Observations":{
+          "shape":"Observations",
+          "documentation":"<p>The recorded value.</p>",
+          "locationName":"observations"
+        }
+      },
+      "documentation":"<p>Contains information about the unusual anomalies.</p>"
+    },
+    "AnomalyProfileFeatureObjects":{
+      "type":"list",
+      "member":{"shape":"AnomalyObject"}
+    },
+    "AnomalyProfileFeatures":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"AnomalyProfileFeatureObjects"}
+    },
+    "AnomalyProfiles":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"AnomalyProfileFeatures"}
+    },
+    "AnomalyUnusual":{
+      "type":"structure",
+      "members":{
+        "Behavior":{
+          "shape":"Behavior",
+          "documentation":"<p>The behavior of the anomalous activity that caused GuardDuty to generate the finding.</p>",
+          "locationName":"behavior"
+        }
+      },
+      "documentation":"<p>Contains information about the behavior of the anomaly that is new to GuardDuty.</p>"
+    },
+    "AnomalyUnusualBehaviorFeature":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"AnomalyObject"}
     },
     "ArchiveFindingsRequest":{
       "type":"structure",
@@ -1465,6 +1547,11 @@
       "documentation":"<p>A bad request exception object.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Behavior":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"AnomalyUnusualBehaviorFeature"}
     },
     "BlockPublicAccess":{
       "type":"structure",
@@ -2029,7 +2116,7 @@
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
-          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>id</p> </li> <li> <p>region</p> </li> <li> <p>severity</p> <p>To filter on the basis of severity, the API and CLI use the following input list for the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html\">FindingCriteria</a> condition:</p> <ul> <li> <p> <b>Low</b>: <code>[\"1\", \"2\", \"3\"]</code> </p> </li> <li> <p> <b>Medium</b>: <code>[\"4\", \"5\", \"6\"]</code> </p> </li> <li> <p> <b>High</b>: <code>[\"7\", \"8\", \"9\"]</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity\">Severity levels for GuardDuty findings</a>.</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.affiliated</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.kubernetesApiCallAction.requestUri</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.accountId</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>resource.eksClusterDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.namespace</p> </li> <li> <p>resource.kubernetesDetails.kubernetesUserDetails.username</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.image</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.imagePrefix</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.name</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.severity</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.filePaths.hash</p> </li> <li> <p>resource.ecsClusterDetails.name</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.containers.image</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.definitionArn</p> </li> <li> <p>resource.containerDetails.image</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbInstanceIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbClusterIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.engine</p> </li> <li> <p>resource.rdsDbUserDetails.user</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.key</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.value</p> </li> <li> <p>service.runtimeDetails.process.executableSha256</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>resource.lambdaDetails.functionName</p> </li> <li> <p>resource.lambdaDetails.functionArn</p> </li> <li> <p>resource.lambdaDetails.tags.key</p> </li> <li> <p>resource.lambdaDetails.tags.value</p> </li> </ul>",
+          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>id</p> </li> <li> <p>region</p> </li> <li> <p>severity</p> <p>To filter on the basis of severity, the API and CLI use the following input list for the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html\">FindingCriteria</a> condition:</p> <ul> <li> <p> <b>Low</b>: <code>[\"1\", \"2\", \"3\"]</code> </p> </li> <li> <p> <b>Medium</b>: <code>[\"4\", \"5\", \"6\"]</code> </p> </li> <li> <p> <b>High</b>: <code>[\"7\", \"8\", \"9\"]</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity\">Severity levels for GuardDuty findings</a>.</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.affiliated</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.kubernetesApiCallAction.namespace</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.kubernetesApiCallAction.requestUri</p> </li> <li> <p>service.action.kubernetesApiCallAction.statusCode</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.accountId</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>resource.eksClusterDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.namespace</p> </li> <li> <p>resource.kubernetesDetails.kubernetesUserDetails.username</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.image</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.imagePrefix</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.name</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.severity</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.filePaths.hash</p> </li> <li> <p>resource.ecsClusterDetails.name</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.containers.image</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.definitionArn</p> </li> <li> <p>resource.containerDetails.image</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbInstanceIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbClusterIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.engine</p> </li> <li> <p>resource.rdsDbUserDetails.user</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.key</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.value</p> </li> <li> <p>service.runtimeDetails.process.executableSha256</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>resource.lambdaDetails.functionName</p> </li> <li> <p>resource.lambdaDetails.functionArn</p> </li> <li> <p>resource.lambdaDetails.tags.key</p> </li> <li> <p>resource.lambdaDetails.tags.value</p> </li> </ul>",
           "locationName":"findingCriteria"
         },
         "ClientToken":{
@@ -2868,6 +2955,17 @@
     "Destinations":{
       "type":"list",
       "member":{"shape":"Destination"}
+    },
+    "Detection":{
+      "type":"structure",
+      "members":{
+        "Anomaly":{
+          "shape":"Anomaly",
+          "documentation":"<p>The details about the anomalous activity that caused GuardDuty to generate the finding.</p>",
+          "locationName":"anomaly"
+        }
+      },
+      "documentation":"<p>Contains information about the detected behavior.</p>"
     },
     "DetectorAdditionalConfiguration":{
       "type":"structure",
@@ -4385,6 +4483,22 @@
       },
       "documentation":"<p>Contains information about the EC2 instance profile.</p>"
     },
+    "ImpersonatedUser":{
+      "type":"structure",
+      "members":{
+        "Username":{
+          "shape":"String",
+          "documentation":"<p>Information about the <code>username</code> that was being impersonated.</p>",
+          "locationName":"username"
+        },
+        "Groups":{
+          "shape":"Groups",
+          "documentation":"<p>The <code>group</code> to which the user name belongs.</p>",
+          "locationName":"groups"
+        }
+      },
+      "documentation":"<p>Contains information about the impersonated user.</p>"
+    },
     "InstanceArn":{
       "type":"string",
       "pattern":"^arn:(aws|aws-cn|aws-us-gov):[a-z]+:[a-z]+(-[0-9]+|-[a-z]+)+:([0-9]{12}):[a-z\\-]+\\/[a-zA-Z0-9]*$"
@@ -4630,6 +4744,26 @@
           "shape":"String",
           "documentation":"<p>Parameters related to the Kubernetes API call action.</p>",
           "locationName":"parameters"
+        },
+        "Resource":{
+          "shape":"String",
+          "documentation":"<p>The resource component in the Kubernetes API call action.</p>",
+          "locationName":"resource"
+        },
+        "Subresource":{
+          "shape":"String",
+          "documentation":"<p>The name of the sub-resource in the Kubernetes API call action.</p>",
+          "locationName":"subresource"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The name of the namespace where the Kubernetes API call action takes place.</p>",
+          "locationName":"namespace"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource in the Kubernetes API call action.</p>",
+          "locationName":"resourceName"
         }
       },
       "documentation":"<p>Information about the Kubernetes API call action described in this finding.</p>"
@@ -4709,6 +4843,84 @@
       },
       "documentation":"<p>Details about Kubernetes resources such as a Kubernetes user or workload resource involved in a Kubernetes finding.</p>"
     },
+    "KubernetesPermissionCheckedDetails":{
+      "type":"structure",
+      "members":{
+        "Verb":{
+          "shape":"String",
+          "documentation":"<p>The verb component of the Kubernetes API call. For example, when you check whether or not you have the permission to call the <code>CreatePod</code> API, the verb component will be <code>Create</code>.</p>",
+          "locationName":"verb"
+        },
+        "Resource":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes resource with which your Kubernetes API call will interact.</p>",
+          "locationName":"resource"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace where the Kubernetes API action will take place.</p>",
+          "locationName":"namespace"
+        },
+        "Allowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Information whether the user has the permission to call the Kubernetes API.</p>",
+          "locationName":"allowed"
+        }
+      },
+      "documentation":"<p>Information about the Kubernetes API for which you check if you have permission to call.</p>"
+    },
+    "KubernetesRoleBindingDetails":{
+      "type":"structure",
+      "members":{
+        "Kind":{
+          "shape":"String",
+          "documentation":"<p>The kind of the role. For role binding, this value will be <code>RoleBinding</code>.</p>",
+          "locationName":"kind"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the <code>RoleBinding</code>.</p>",
+          "locationName":"name"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the role binding.</p>",
+          "locationName":"uid"
+        },
+        "RoleRefName":{
+          "shape":"String",
+          "documentation":"<p>The name of the role being referenced. This must match the name of the <code>Role</code> or <code>ClusterRole</code> that you want to bind to.</p>",
+          "locationName":"roleRefName"
+        },
+        "RoleRefKind":{
+          "shape":"String",
+          "documentation":"<p>The type of the role being referenced. This could be either <code>Role</code> or <code>ClusterRole</code>.</p>",
+          "locationName":"roleRefKind"
+        }
+      },
+      "documentation":"<p>Contains information about the role binding that grants the permission defined in a Kubernetes role.</p>"
+    },
+    "KubernetesRoleDetails":{
+      "type":"structure",
+      "members":{
+        "Kind":{
+          "shape":"String",
+          "documentation":"<p>The kind of role. For this API, the value of <code>kind</code> will be <code>Role</code>.</p>",
+          "locationName":"kind"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the Kubernetes role.</p>",
+          "locationName":"name"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the Kubernetes role name.</p>",
+          "locationName":"uid"
+        }
+      },
+      "documentation":"<p>Information about the Kubernetes role name and role type.</p>"
+    },
     "KubernetesUserDetails":{
       "type":"structure",
       "members":{
@@ -4731,6 +4943,11 @@
           "shape":"SessionNameList",
           "documentation":"<p>Entity that assumes the IAM role when Kubernetes RBAC permissions are assigned to that role.</p>",
           "locationName":"sessionName"
+        },
+        "ImpersonatedUser":{
+          "shape":"ImpersonatedUser",
+          "documentation":"<p>Information about the impersonated user.</p>",
+          "locationName":"impersonatedUser"
         }
       },
       "documentation":"<p>Details about the Kubernetes user involved in a Kubernetes finding.</p>"
@@ -4772,6 +4989,21 @@
           "shape":"Volumes",
           "documentation":"<p>Volumes used by the Kubernetes workload.</p>",
           "locationName":"volumes"
+        },
+        "ServiceAccountName":{
+          "shape":"String",
+          "documentation":"<p>The service account name that is associated with a Kubernetes workload.</p>",
+          "locationName":"serviceAccountName"
+        },
+        "HostIPC":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the host IPC flag is enabled for the pods in the workload.</p>",
+          "locationName":"hostIPC"
+        },
+        "HostPID":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the host PID flag is enabled for the pods in the workload. </p>",
+          "locationName":"hostPID"
         }
       },
       "documentation":"<p>Details about the Kubernetes workload involved in a Kubernetes finding.</p>"
@@ -5158,7 +5390,7 @@
       "members":{
         "Members":{
           "shape":"Members",
-          "documentation":"<p>A list of members.</p>",
+          "documentation":"<p>A list of members.</p> <note> <p>The values for <code>email</code> and <code>invitedAt</code> are available only if the member accounts are added by invitation.</p> </note>",
           "locationName":"members"
         },
         "NextToken":{
@@ -5758,6 +5990,21 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ObservationTexts":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "Observations":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"ObservationTexts",
+          "documentation":"<p>The text that was unusual.</p>",
+          "locationName":"text"
+        }
+      },
+      "documentation":"<p>Contains information about the observed behavior.</p>"
+    },
     "OrderBy":{
       "type":"string",
       "enum":[
@@ -6267,6 +6514,19 @@
     "ProductCodes":{
       "type":"list",
       "member":{"shape":"ProductCode"}
+    },
+    "ProfileSubtype":{
+      "type":"string",
+      "enum":[
+        "FREQUENT",
+        "INFREQUENT",
+        "UNSEEN",
+        "RARE"
+      ]
+    },
+    "ProfileType":{
+      "type":"string",
+      "enum":["FREQUENCY"]
     },
     "PublicAccess":{
       "type":"structure",
@@ -7030,6 +7290,11 @@
           "shape":"Boolean",
           "documentation":"<p>Whether the container is privileged.</p>",
           "locationName":"privileged"
+        },
+        "AllowPrivilegeEscalation":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not a container or a Kubernetes pod is allowed to gain more privileges than its parent process.</p>",
+          "locationName":"allowPrivilegeEscalation"
         }
       },
       "documentation":"<p>Container security context.</p>"
@@ -7126,6 +7391,11 @@
           "shape":"RuntimeDetails",
           "documentation":"<p>Information about the process and any required context values for a specific finding</p>",
           "locationName":"runtimeDetails"
+        },
+        "Detection":{
+          "shape":"Detection",
+          "documentation":"<p>Contains information about the detected unusual behavior.</p>",
+          "locationName":"detection"
         }
       },
       "documentation":"<p>Contains additional information about the generated finding.</p>"

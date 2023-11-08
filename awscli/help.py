@@ -115,6 +115,8 @@ class PosixHelpRenderer(PagingHelpRenderer):
     PAGER = 'less -R'
 
     def _convert_doc_content(self, contents):
+        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
+        settings_overrides["report_level"] = 3
         man_contents = publish_string(
             contents, writer=manpage.Writer(),
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,

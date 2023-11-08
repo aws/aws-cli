@@ -6297,6 +6297,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.29.81
+=======
+
+* api-change:``connect``: This release clarifies in our public documentation that InstanceId is a requirement for SearchUsers API requests.
+* api-change:``connectcases``: This release adds the ability to add/view comment authors through CreateRelatedItem and SearchRelatedItems API. For more information see https://docs.aws.amazon.com/cases/latest/APIReference/Welcome.html
+* api-change:``datasync``: This change allows for 0 length access keys and secret keys for object storage locations. Users can now pass in empty string credentials.
+* api-change:``guardduty``: Added API support for new GuardDuty EKS Audit Log finding types.
+* api-change:``lambda``: Add Node 20 (nodejs20.x) support to AWS Lambda.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``omics``: Adding Run UUID and Run Output URI: GetRun and StartRun API response has two new fields "uuid" and "runOutputUri".
+* api-change:``rds``: This Amazon RDS release adds support for patching the OS of an RDS Custom for Oracle DB instance. You can now upgrade the database or operating system using the modify-db-instance command.
+* api-change:``redshift-serverless``: Added a new parameter in the workgroup that helps you control your cost for compute resources. This feature provides a ceiling for RPUs that Amazon Redshift Serverless can scale up to. When automatic compute scaling is required, having a higher value for MaxRPU can enhance query throughput.
+* api-change:``resiliencehub``: AWS Resilience Hub enhances Resiliency Score, providing actionable recommendations to improve application resilience. Amazon Elastic Kubernetes Service (EKS) operational recommendations have been added to help improve the resilience posture of your applications.
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.29.80
 =======
 

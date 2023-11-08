@@ -1109,6 +1109,10 @@
     },
     "Boolean":{"type":"boolean"},
     "BooleanOptional":{"type":"boolean"},
+    "CACertificateIdentifiersList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Certificate":{
       "type":"structure",
       "members":{
@@ -1139,6 +1143,20 @@
       },
       "documentation":"<p>A certificate authority (CA) certificate for an Amazon Web Services account.</p>",
       "wrapper":true
+    },
+    "CertificateDetails":{
+      "type":"structure",
+      "members":{
+        "CAIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA identifier of the CA certificate used for the DB instance's server certificate.</p>"
+        },
+        "ValidTill":{
+          "shape":"TStamp",
+          "documentation":"<p>The expiration date of the DB instance’s server certificate.</p>"
+        }
+      },
+      "documentation":"<p>Returns the details of the DB instance’s server certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html\">Updating Your Amazon DocumentDB TLS Certificates</a> and <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html\"> Encrypting Data in Transit</a> in the <i>Amazon DocumentDB Developer Guide</i>.</p>"
     },
     "CertificateList":{
       "type":"list",
@@ -1472,6 +1490,10 @@
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
           "documentation":"<p>The KMS key identifier for encryption of Performance Insights data.</p> <p>The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you do not specify a value for PerformanceInsightsKMSKeyId, then Amazon DocumentDB uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services region.</p>"
+        },
+        "CACertificateIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA certificate identifier to use for the DB instance's server certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html\">Updating Your Amazon DocumentDB TLS Certificates</a> and <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html\"> Encrypting Data in Transit</a> in the <i>Amazon DocumentDB Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the input to <a>CreateDBInstance</a>.</p>"
@@ -2113,6 +2135,14 @@
         "SupportsLogExportsToCloudwatchLogs":{
           "shape":"Boolean",
           "documentation":"<p>A value that indicates whether the engine version supports exporting the log types specified by <code>ExportableLogTypes</code> to CloudWatch Logs.</p>"
+        },
+        "SupportedCACertificateIdentifiers":{
+          "shape":"CACertificateIdentifiersList",
+          "documentation":"<p>A list of the supported CA certificate identifiers.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html\">Updating Your Amazon DocumentDB TLS Certificates</a> and <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html\"> Encrypting Data in Transit</a> in the <i>Amazon DocumentDB Developer Guide</i>.</p>"
+        },
+        "SupportsCertificateRotationWithoutRestart":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the engine version supports rotating the server certificate without rebooting the DB instance.</p>"
         }
       },
       "documentation":"<p> Detailed information about an engine version. </p>"
@@ -2248,6 +2278,10 @@
         "EnabledCloudwatchLogsExports":{
           "shape":"LogTypeList",
           "documentation":"<p>A list of log types that this instance is configured to export to CloudWatch Logs.</p>"
+        },
+        "CertificateDetails":{
+          "shape":"CertificateDetails",
+          "documentation":"<p>The details of the DB instance's server certificate.</p>"
         }
       },
       "documentation":"<p>Detailed information about an instance. </p>",
@@ -3861,6 +3895,10 @@
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
           "documentation":"<p>The KMS key identifier for encryption of Performance Insights data.</p> <p>The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you do not specify a value for PerformanceInsightsKMSKeyId, then Amazon DocumentDB uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services region.</p>"
+        },
+        "CertificateRotationRestart":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the DB instance is restarted when you rotate your SSL/TLS certificate.</p> <p>By default, the DB instance is restarted when you rotate your SSL/TLS certificate. The certificate is not updated until the DB instance is restarted.</p> <important> <p>Set this parameter only if you are <i>not</i> using SSL/TLS to connect to the DB instance.</p> </important> <p>If you are using SSL/TLS to connect to the DB instance, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html\">Updating Your Amazon DocumentDB TLS Certificates</a> and <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html\"> Encrypting Data in Transit</a> in the <i>Amazon DocumentDB Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the input to <a>ModifyDBInstance</a>.</p>"

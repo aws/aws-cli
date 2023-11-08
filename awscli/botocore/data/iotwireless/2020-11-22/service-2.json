@@ -4130,7 +4130,7 @@
         "TraceContent":{"shape":"TraceContent"},
         "WirelessDevices":{
           "shape":"WirelessDeviceList",
-          "documentation":"<p>List of wireless gateway resources that have been added to the network analyzer configuration.</p>"
+          "documentation":"<p>List of wireless device resources that have been added to the network analyzer configuration.</p>"
         },
         "WirelessGateways":{
           "shape":"WirelessGatewayList",
@@ -4250,7 +4250,7 @@
       "members":{
         "GeoJsonPayload":{
           "shape":"GeoJsonPayload",
-          "documentation":"<p>The position information of the resource, displayed as a JSON payload. The payload uses the GeoJSON format, which a format that's used to encode geographic data structures. For more information, see <a href=\"https://geojson.org/\">GeoJSON</a>.</p>"
+          "documentation":"<p>The position information of the resource, displayed as a JSON payload. The payload is of type blob and uses the <a href=\"https://geojson.org/\">GeoJSON</a> format, which a format that's used to encode geographic data structures. A sample payload contains the timestamp information, the WGS84 coordinates of the location, and the accuracy and confidence level. For more information and examples, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/location-resolve-console.html\">Resolve device location (console)</a>.</p>"
         }
       },
       "payload":"GeoJsonPayload"
@@ -5890,7 +5890,7 @@
         },
         "MaxDutyCycle":{
           "shape":"MaxDutyCycle",
-          "documentation":"<p>The MaxDutyCycle value.</p>"
+          "documentation":"<p>The MaxDutyCycle value. It ranges from 0 to 15.</p>"
         },
         "RfRegion":{
           "shape":"RfRegion",
@@ -6472,7 +6472,7 @@
     },
     "MulticastFrameInfo":{
       "type":"string",
-      "documentation":"<p> <code>FrameInfo</code> of your multicast group resources for the trace content. Use FrameInfo to debug the multicast communication between your LoRaWAN end devices and the network server.</p>",
+      "documentation":"<p> <code>FrameInfo</code> of your multicast group resources for the trace content. Use FrameInfo to debug the multicast communication between your multicast groups and the network server.</p>",
       "enum":[
         "ENABLED",
         "DISABLED"
@@ -6631,6 +6631,10 @@
         "AppEui":{
           "shape":"AppEui",
           "documentation":"<p>The AppEUI value.</p>"
+        },
+        "JoinEui":{
+          "shape":"JoinEui",
+          "documentation":"<p>The JoinEUI value.</p>"
         },
         "GenAppKey":{
           "shape":"GenAppKey",
@@ -7979,7 +7983,7 @@
         "LogLevel":{"shape":"LogLevel"},
         "MulticastFrameInfo":{"shape":"MulticastFrameInfo"}
       },
-      "documentation":"<p>Trace content for your wireless gateway and wireless device resources.</p>"
+      "documentation":"<p>Trace content for your wireless devices, gateways, and multicast groups.</p>"
     },
     "TransmissionInterval":{
       "type":"integer",
@@ -8232,7 +8236,7 @@
         },
         "MulticastGroupsToRemove":{
           "shape":"NetworkAnalyzerMulticastGroupList",
-          "documentation":"<p>Multicast group resources to remove from the network analyzer configuration. Provide the <code>MulticastGroupId</code> of the resource to remove in the input array.</p>"
+          "documentation":"<p>Multicast group resources to remove from the network analyzer configuration. Provide the <code>MulticastGroupId</code> of the resources to remove in the input array.</p>"
         }
       }
     },

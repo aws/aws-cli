@@ -22,9 +22,12 @@ at the man output, we look one step before at the generated rst output
 
 """
 import io
+import os
 
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
+from awscli.testutils import mock
+from tests import CLIRunner
 
 from awscli.compat import six
 from awscli.alias import AliasLoader
@@ -477,3 +480,18 @@ class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'get-object', 'help'])
         self.assert_not_contains('outfile <value>')
         self.assert_contains('<outfile>')
+
+
+# Use this test class for "help" cases that require the default renderer
+# (i.e. renderer from get_render()) instead of a mocked version.
+class TestHelpOutputDefaultRenderer:
+    def test_line_lengths_do_not_break_create_launch_template_version_cmd(self):
+        runner = CLIRunner()
+        # Add the PATH to the environment variables so that that posix help
+        # renderers can find either the groff or mandoc executables required to
+        # render the help pages for posix environments
+        if "PATH" in os.environ:
+            runner.env["PATH"] = os.environ["PATH"]
+
+        result = runner.run(["ec2", "create-launch-template-version", "help"])
+        assert 'exceeds the line-length-limit' not in result.stderr

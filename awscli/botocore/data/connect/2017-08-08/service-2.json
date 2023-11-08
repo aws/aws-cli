@@ -242,6 +242,25 @@
       ],
       "documentation":"<p>Retrieve the flow associations for the given resources.</p>"
     },
+    "BatchPutContact":{
+      "name":"BatchPutContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/batch/{InstanceId}"
+      },
+      "input":{"shape":"BatchPutContactRequest"},
+      "output":{"shape":"BatchPutContactResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"IdempotencyException"}
+      ],
+      "documentation":"<note> <p>Only the Amazon Connect outbound campaigns service principal is allowed to assume a role in your account and call this API.</p> </note> <p>Allows you to create a batch of contacts in Amazon Connect. The outbound campaigns capability ingests dial requests via the <a href=\"https://docs.aws.amazon.com/connect-outbound/latest/APIReference/API_PutDialRequestBatch.html\">PutDialRequestBatch</a> API. It then uses BatchPutContact to create contacts corresponding to those dial requests. If agents are available, the dial requests are dialed out, which results in a voice call. The resulting voice call uses the same contactId that was created by BatchPutContact. </p>",
+      "idempotent":true
+    },
     "ClaimPhoneNumber":{
       "name":"ClaimPhoneNumber",
       "http":{
@@ -409,6 +428,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Adds a new participant into an on-going chat contact. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-customize-flow.html\">Customize chat flow experiences by integrating custom participants</a>.</p>"
+    },
+    "CreatePersistentContactAssociation":{
+      "name":"CreatePersistentContactAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/persistent-contact-association/{InstanceId}/{InitialContactId}"
+      },
+      "input":{"shape":"CreatePersistentContactAssociationRequest"},
+      "output":{"shape":"CreatePersistentContactAssociationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Enables rehydration of chats for the lifespan of a contact. For more information about chat rehydration, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
     "CreatePrompt":{
       "name":"CreatePrompt",
@@ -4419,6 +4456,43 @@
         }
       }
     },
+    "BatchPutContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactDataRequestList"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactDataRequestList":{
+          "shape":"ContactDataRequestList",
+          "documentation":"<p>List of individual contact requests.</p>"
+        }
+      }
+    },
+    "BatchPutContactResponse":{
+      "type":"structure",
+      "members":{
+        "SuccessfulRequestList":{
+          "shape":"SuccessfulRequestList",
+          "documentation":"<p>List of requests for which contact was successfully created.</p>"
+        },
+        "FailedRequestList":{
+          "shape":"FailedRequestList",
+          "documentation":"<p>List of requests for which contact creation failed.</p>"
+        }
+      }
+    },
     "BehaviorType":{
       "type":"string",
       "enum":[
@@ -4436,6 +4510,16 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "Campaign":{
+      "type":"structure",
+      "members":{
+        "CampaignId":{
+          "shape":"CampaignId",
+          "documentation":"<p>A unique identifier for a campaign.</p>"
+        }
+      },
+      "documentation":"<p>Information associated with a campaign.</p>"
     },
     "CampaignId":{
       "type":"string",
@@ -4697,6 +4781,42 @@
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
+    },
+    "ContactDataRequest":{
+      "type":"structure",
+      "members":{
+        "SystemEndpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>Endpoint associated with the Amazon Connect instance from which outbound contact will be initiated for the campaign.</p>"
+        },
+        "CustomerEndpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>Endpoint of the customer for which contact will be initiated.</p>"
+        },
+        "RequestIdentifier":{
+          "shape":"RequestIdentifier",
+          "documentation":"<p>Identifier to uniquely identify individual requests in the batch.</p>"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier of the queue associated with the Amazon Connect instance in which contacts that are created will be queued.</p>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>List of attributes to be stored in a contact.</p>"
+        },
+        "Campaign":{
+          "shape":"Campaign",
+          "documentation":"<p>Structure to store information associated with a campaign.</p>"
+        }
+      },
+      "documentation":"<p>Request object with information to create a contact.</p>"
+    },
+    "ContactDataRequestList":{
+      "type":"list",
+      "member":{"shape":"ContactDataRequest"},
+      "max":25,
+      "min":1
     },
     "ContactFilter":{
       "type":"structure",
@@ -5390,6 +5510,50 @@
         "ParticipantId":{
           "shape":"ParticipantId",
           "documentation":"<p>The identifier for a chat participant. The participantId for a chat participant is the same throughout the chat lifecycle.</p>"
+        }
+      }
+    },
+    "CreatePersistentContactAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "InitialContactId",
+        "RehydrationType",
+        "SourceContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "InitialContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>This is the contactId of the current contact that the <code>CreatePersistentContactAssociation</code> API is being called from.</p>",
+          "location":"uri",
+          "locationName":"InitialContactId"
+        },
+        "RehydrationType":{
+          "shape":"RehydrationType",
+          "documentation":"<p>The contactId chosen for rehydration depends on the type chosen.</p> <ul> <li> <p> <code>ENTIRE_PAST_SESSION</code>: Rehydrates a chat from the most recently terminated past chat contact of the specified past ended chat session. To use this type, provide the <code>initialContactId</code> of the past ended chat session in the <code>sourceContactId</code> field. In this type, Amazon Connect determines what the most recent chat contact on the past ended chat session and uses it to start a persistent chat. </p> </li> <li> <p> <code>FROM_SEGMENT</code>: Rehydrates a chat from the specified past chat contact provided in the <code>sourceContactId</code> field. </p> </li> </ul> <p>The actual contactId used for rehydration is provided in the response of this API.</p> <p>To illustrate how to use rehydration type, consider the following example: A customer starts a chat session. Agent a1 accepts the chat and a conversation starts between the customer and Agent a1. This first contact creates a contact ID <b>C1</b>. Agent a1 then transfers the chat to Agent a2. This creates another contact ID <b>C2</b>. At this point Agent a2 ends the chat. The customer is forwarded to the disconnect flow for a post chat survey that creates another contact ID <b>C3</b>. After the chat survey, the chat session ends. Later, the customer returns and wants to resume their past chat session. At this point, the customer can have following use cases: </p> <ul> <li> <p> <b>Use Case 1</b>: The customer wants to continue the past chat session but they want to hide the post chat survey. For this they will use the following configuration:</p> <ul> <li> <p> <b>Configuration</b> </p> <ul> <li> <p>SourceContactId = \"C2\"</p> </li> <li> <p>RehydrationType = \"FROM_SEGMENT\"</p> </li> </ul> </li> <li> <p> <b>Expected behavior</b> </p> <ul> <li> <p>This starts a persistent chat session from the specified past ended contact (C2). Transcripts of past chat sessions C2 and C1 are accessible in the current persistent chat session. Note that chat segment C3 is dropped from the persistent chat session.</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Use Case 2</b>: The customer wants to continue the past chat session and see the transcript of the entire past engagement, including the post chat survey. For this they will use the following configuration:</p> <ul> <li> <p> <b>Configuration</b> </p> <ul> <li> <p>SourceContactId = \"C1\"</p> </li> <li> <p>RehydrationType = \"ENTIRE_PAST_SESSION\"</p> </li> </ul> </li> <li> <p> <b>Expected behavior</b> </p> <ul> <li> <p>This starts a persistent chat session from the most recently ended chat contact (C3). Transcripts of past chat sessions C3, C2 and C1 are accessible in the current persistent chat session.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "SourceContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The contactId from which a persistent chat session must be started.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        }
+      }
+    },
+    "CreatePersistentContactAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContinuedFromContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The contactId from which a persistent chat session is started. This field is populated only for persistent chat.</p>"
         }
       }
     },
@@ -7837,6 +8001,17 @@
       "members":{
       }
     },
+    "DisconnectReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"DisconnectReasonCode",
+          "documentation":"<p>A code that indicates how the contact was terminated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about why a contact was disconnected. Only Amazon Connect outbound campaigns can provide this field.</p>"
+    },
+    "DisconnectReasonCode":{"type":"string"},
     "DismissUserContactRequest":{
       "type":"structure",
       "required":[
@@ -7940,6 +8115,33 @@
     "EncryptionType":{
       "type":"string",
       "enum":["KMS"]
+    },
+    "Endpoint":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"EndpointType",
+          "documentation":"<p>Type of the endpoint.</p>"
+        },
+        "Address":{
+          "shape":"EndpointAddress",
+          "documentation":"<p>Address of the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Information about the endpoint.</p>"
+    },
+    "EndpointAddress":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "EndpointType":{
+      "type":"string",
+      "enum":[
+        "TELEPHONE_NUMBER",
+        "VOIP",
+        "CONTACT_FLOW"
+      ]
     },
     "Evaluation":{
       "type":"structure",
@@ -8815,6 +9017,43 @@
         "OnSalesforceCaseCreate",
         "OnContactEvaluationSubmit",
         "OnMetricDataUpdate"
+      ]
+    },
+    "FailedRequest":{
+      "type":"structure",
+      "members":{
+        "RequestIdentifier":{
+          "shape":"RequestIdentifier",
+          "documentation":"<p>Request identifier provided in the API call in the ContactDataRequest to create a contact.</p>"
+        },
+        "FailureReasonCode":{
+          "shape":"FailureReasonCode",
+          "documentation":"<p>Reason code for the failure.</p>"
+        },
+        "FailureReasonMessage":{
+          "shape":"String",
+          "documentation":"<p>Why the request to create a contact failed.</p>"
+        }
+      },
+      "documentation":"<p>Request for which contact failed to be generated.</p>"
+    },
+    "FailedRequestList":{
+      "type":"list",
+      "member":{"shape":"FailedRequest"}
+    },
+    "FailureReasonCode":{
+      "type":"string",
+      "enum":[
+        "INVALID_ATTRIBUTE_KEY",
+        "INVALID_CUSTOMER_ENDPOINT",
+        "INVALID_SYSTEM_ENDPOINT",
+        "INVALID_QUEUE",
+        "MISSING_CAMPAIGN",
+        "MISSING_CUSTOMER_ENDPOINT",
+        "MISSING_QUEUE_ID_AND_SYSTEM_ENDPOINT",
+        "REQUEST_THROTTLED",
+        "IDEMPOTENCY_EXCEPTION",
+        "INTERNAL_ERROR"
       ]
     },
     "FilterV2":{
@@ -13755,6 +13994,10 @@
         }
       }
     },
+    "RequestIdentifier":{
+      "type":"string",
+      "max":80
+    },
     "RequiredFieldInfo":{
       "type":"structure",
       "members":{
@@ -15467,6 +15710,10 @@
         "InstanceId":{
           "shape":"InstanceId",
           "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "DisconnectReason":{
+          "shape":"DisconnectReason",
+          "documentation":"<p>The reason a contact can be disconnected. Only Amazon Connect outbound campaigns can provide this field.</p>"
         }
       }
     },
@@ -15607,6 +15854,24 @@
           "documentation":"<p>The Amazon Resource Name (ARN) for the contact evaluation resource.</p>"
         }
       }
+    },
+    "SuccessfulRequest":{
+      "type":"structure",
+      "members":{
+        "RequestIdentifier":{
+          "shape":"RequestIdentifier",
+          "documentation":"<p>Request identifier provided in the API call in the ContactDataRequest to create a contact.</p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The contactId of the contact that was created successfully.</p>"
+        }
+      },
+      "documentation":"<p>Request for which contact was successfully created.</p>"
+    },
+    "SuccessfulRequestList":{
+      "type":"list",
+      "member":{"shape":"SuccessfulRequest"}
     },
     "SupportedMessagingContentType":{
       "type":"string",

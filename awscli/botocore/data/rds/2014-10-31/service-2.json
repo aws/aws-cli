@@ -73,7 +73,9 @@
         {"shape":"DBProxyNotFoundFault"},
         {"shape":"DBProxyTargetGroupNotFoundFault"},
         {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"IntegrationNotFoundFault"}
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"DBSnapshotTenantDatabaseNotFoundFault"}
       ],
       "documentation":"<p>Adds metadata tags to an Amazon RDS resource. These tags can also be used with cost allocation reporting to track cost associated with Amazon RDS resources, or used in a Condition statement in an IAM policy for Amazon RDS.</p> <p>For an overview on tagging Amazon RDS resources, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html\">Tagging Amazon RDS Resources</a>.</p>"
     },
@@ -413,7 +415,8 @@
         {"shape":"DomainNotFoundFault"},
         {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
-        {"shape":"CertificateNotFoundFault"}
+        {"shape":"CertificateNotFoundFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB instance.</p> <p>The new DB instance can be an RDS DB instance, or it can be a DB instance in an Aurora DB cluster. For an Aurora DB cluster, you can call this operation multiple times to add more than one DB instance to the cluster.</p> <p>For more information about creating an RDS DB instance, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html\"> Creating an Amazon RDS DB instance</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about creating a DB instance in an Aurora DB cluster, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.CreateInstance.html\"> Creating an Amazon Aurora DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -450,7 +453,8 @@
         {"shape":"StorageTypeNotSupportedFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB instance that acts as a read replica for an existing source DB instance or Multi-AZ DB cluster. You can create a read replica for a DB instance running MySQL, MariaDB, Oracle, PostgreSQL, or SQL Server. You can create a read replica for a Multi-AZ DB cluster running MySQL or PostgreSQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html\">Working with read replicas</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html#multi-az-db-clusters-migrating-to-instance-with-read-replica\">Migrating from a Multi-AZ DB cluster to a DB instance using a read replica</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Amazon Aurora doesn't support this operation. To create a DB instance for an Aurora DB cluster, use the <code>CreateDBInstance</code> operation.</p> <p>All read replica DB instances are created with backups disabled. All other attributes (including DB security groups and DB parameter groups) are inherited from the source DB instance or cluster, except as specified.</p> <important> <p>Your source DB instance or cluster must have backup retention enabled.</p> </important>"
     },
@@ -644,6 +648,25 @@
         {"shape":"OptionGroupQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new option group. You can create up to 20 option groups.</p> <p>This command doesn't apply to RDS Custom.</p>"
+    },
+    "CreateTenantDatabase":{
+      "name":"CreateTenantDatabase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTenantDatabaseMessage"},
+      "output":{
+        "shape":"CreateTenantDatabaseResult",
+        "resultWrapper":"CreateTenantDatabaseResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"TenantDatabaseAlreadyExistsFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
+      ],
+      "documentation":"<p>Creates a tenant database in a DB instance that uses the multi-tenant configuration. Only RDS for Oracle container database (CDB) instances are supported.</p>"
     },
     "DeleteBlueGreenDeployment":{
       "name":"DeleteBlueGreenDeployment",
@@ -958,6 +981,24 @@
         {"shape":"InvalidOptionGroupStateFault"}
       ],
       "documentation":"<p>Deletes an existing option group.</p>"
+    },
+    "DeleteTenantDatabase":{
+      "name":"DeleteTenantDatabase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTenantDatabaseMessage"},
+      "output":{
+        "shape":"DeleteTenantDatabaseResult",
+        "resultWrapper":"DeleteTenantDatabaseResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
+      ],
+      "documentation":"<p>Deletes a tenant database from your DB instance. This command only applies to RDS for Oracle container database (CDB) instances.</p> <p>You can't delete a tenant database when it is the only tenant in the DB instance.</p>"
     },
     "DeregisterDBProxyTargets":{
       "name":"DeregisterDBProxyTargets",
@@ -1347,6 +1388,22 @@
       ],
       "documentation":"<p>Returns a list of DB snapshot attribute names and values for a manual DB snapshot.</p> <p>When sharing snapshots with other Amazon Web Services accounts, <code>DescribeDBSnapshotAttributes</code> returns the <code>restore</code> attribute and a list of IDs for the Amazon Web Services accounts that are authorized to copy or restore the manual DB snapshot. If <code>all</code> is included in the list of values for the <code>restore</code> attribute, then the manual DB snapshot is public and can be copied or restored by all Amazon Web Services accounts.</p> <p>To add or remove access for an Amazon Web Services account to copy or restore a manual DB snapshot, or to make the manual DB snapshot public or private, use the <code>ModifyDBSnapshotAttribute</code> API action.</p>"
     },
+    "DescribeDBSnapshotTenantDatabases":{
+      "name":"DescribeDBSnapshotTenantDatabases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDBSnapshotTenantDatabasesMessage"},
+      "output":{
+        "shape":"DBSnapshotTenantDatabasesMessage",
+        "resultWrapper":"DescribeDBSnapshotTenantDatabasesResult"
+      },
+      "errors":[
+        {"shape":"DBSnapshotNotFoundFault"}
+      ],
+      "documentation":"<p>Describes the tenant databases that exist in a DB snapshot. This command only applies to RDS for Oracle DB instances in the multi-tenant configuration.</p> <p>You can use this command to inspect the tenant databases within a snapshot before restoring it. You can't directly interact with the tenant databases in a DB snapshot. If you restore a snapshot that was taken from DB instance using the multi-tenant configuration, you restore all its tenant databases.</p>"
+    },
     "DescribeDBSnapshots":{
       "name":"DescribeDBSnapshots",
       "http":{
@@ -1598,6 +1655,22 @@
       },
       "documentation":"<p>Returns a list of the source Amazon Web Services Regions where the current Amazon Web Services Region can create a read replica, copy a DB snapshot from, or replicate automated backups from.</p> <p>Use this operation to determine whether cross-Region features are supported between other Regions and your current Region. This operation supports pagination.</p> <p>To return information about the Regions that are enabled for your account, or all Regions, use the EC2 operation <code>DescribeRegions</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeRegions.html\"> DescribeRegions</a> in the <i>Amazon EC2 API Reference</i>.</p>"
     },
+    "DescribeTenantDatabases":{
+      "name":"DescribeTenantDatabases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTenantDatabasesMessage"},
+      "output":{
+        "shape":"TenantDatabasesMessage",
+        "resultWrapper":"DescribeTenantDatabasesResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"}
+      ],
+      "documentation":"<p>Describes the tenant databases in a DB instance that uses the multi-tenant configuration. Only RDS for Oracle CDB instances are supported.</p>"
+    },
     "DescribeValidDBInstanceModifications":{
       "name":"DescribeValidDBInstanceModifications",
       "http":{
@@ -1687,7 +1760,9 @@
         {"shape":"DBProxyNotFoundFault"},
         {"shape":"DBProxyTargetGroupNotFoundFault"},
         {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"IntegrationNotFoundFault"}
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"DBSnapshotTenantDatabaseNotFoundFault"}
       ],
       "documentation":"<p>Lists all tags on an Amazon RDS resource.</p> <p>For an overview on tagging an Amazon RDS resource, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -1875,7 +1950,8 @@
         {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Modifies settings for a DB instance. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. To learn what modifications you can make to your DB instance, call <code>DescribeValidDBInstanceModifications</code> before you call <code>ModifyDBInstance</code>.</p>"
     },
@@ -2061,6 +2137,25 @@
         {"shape":"OptionGroupNotFoundFault"}
       ],
       "documentation":"<p>Modifies an existing option group.</p>"
+    },
+    "ModifyTenantDatabase":{
+      "name":"ModifyTenantDatabase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTenantDatabaseMessage"},
+      "output":{
+        "shape":"ModifyTenantDatabaseResult",
+        "resultWrapper":"ModifyTenantDatabaseResult"
+      },
+      "errors":[
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"TenantDatabaseAlreadyExistsFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
+      ],
+      "documentation":"<p>Modifies an existing tenant database in a DB instance. You can change the tenant database name or the master user password. This operation is supported only for RDS for Oracle CDB instances using the multi-tenant configuration.</p>"
     },
     "PromoteReadReplica":{
       "name":"PromoteReadReplica",
@@ -2250,7 +2345,9 @@
         {"shape":"DBProxyNotFoundFault"},
         {"shape":"DBProxyTargetGroupNotFoundFault"},
         {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"IntegrationNotFoundFault"}
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"DBSnapshotTenantDatabaseNotFoundFault"}
       ],
       "documentation":"<p>Removes metadata tags from an Amazon RDS resource.</p> <p>For an overview on tagging an Amazon RDS resource, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2421,7 +2518,8 @@
         {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
-        {"shape":"DBClusterSnapshotNotFoundFault"}
+        {"shape":"DBClusterSnapshotNotFoundFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the RestoreDBInstanceFromDBSnapshot action. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the DBInstanceIdentifier in the call to the RestoreDBInstanceFromDBSnapshot action. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
     },
@@ -2492,7 +2590,8 @@
         {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"DBInstanceAutomatedBackupNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Restores a DB instance to an arbitrary point in time. You can restore to any point in time before the time identified by the <code>LatestRestorableTime</code> property. You can restore to a point up to the number of days specified by the <code>BackupRetentionPeriod</code> property.</p> <p>The target database is created with most of the original configuration, but in a system-selected Availability Zone, with the default security group, the default subnet group, and the default DB parameter group. By default, the new DB instance is created as a single-AZ deployment except when the instance is a SQL Server instance that has an option group that is associated with mirroring; in this case, the instance becomes a mirrored deployment and not a single-AZ deployment.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterToPointInTime</code>.</p> </note>"
     },
@@ -4334,6 +4433,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to use the multi-tenant configuration or the single-tenant configuration (default). This parameter only applies to RDS for Oracle container database (CDB) engines.</p> <p>Note the following restrictions: </p> <ul> <li> <p>The DB engine that you specify in the request must support the multi-tenant configuration. If you attempt to enable the multi-tenant configuration on a DB engine that doesn't support it, the request fails.</p> </li> <li> <p>If you specify the multi-tenant configuration when you create your DB instance, you can't later modify this DB instance to use the single-tenant configuration.</p> </li> </ul>"
         }
       },
       "documentation":"<p/>"
@@ -4896,6 +4999,48 @@
       "type":"structure",
       "members":{
         "OptionGroup":{"shape":"OptionGroup"}
+      }
+    },
+    "CreateTenantDatabaseMessage":{
+      "type":"structure",
+      "required":[
+        "DBInstanceIdentifier",
+        "TenantDBName",
+        "MasterUsername",
+        "MasterUserPassword"
+      ],
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied DB instance identifier. RDS creates your tenant database in this DB instance. This parameter isn't case-sensitive.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied name of the tenant database that you want to create in your DB instance. This parameter has the same constraints as <code>DBName</code> in <code>CreateDBInstance</code>.</p>"
+        },
+        "MasterUsername":{
+          "shape":"String",
+          "documentation":"<p>The name for the master user account in your tenant database. RDS creates this user account in the tenant database and grants privileges to the master user. This parameter is case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 16 letters, numbers, or underscores.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't be a reserved word for the chosen database engine.</p> </li> </ul>"
+        },
+        "MasterUserPassword":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The password for the master user in your tenant database.</p> <p>Constraints:</p> <ul> <li> <p>Must be 8 to 30 characters.</p> </li> <li> <p>Can include any printable ASCII character except forward slash (<code>/</code>), double quote (<code>\"</code>), at symbol (<code>@</code>), ampersand (<code>&amp;</code>), or single quote (<code>'</code>).</p> </li> </ul>"
+        },
+        "CharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The character set for your tenant database. If you don't specify a value, the character set name defaults to <code>AL32UTF8</code>.</p>"
+        },
+        "NcharCharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The <code>NCHAR</code> value for the tenant database.</p>"
+        },
+        "Tags":{"shape":"TagList"}
+      }
+    },
+    "CreateTenantDatabaseResult":{
+      "type":"structure",
+      "members":{
+        "TenantDatabase":{"shape":"TenantDatabase"}
       }
     },
     "CustomAvailabilityZoneNotFoundFault":{
@@ -6243,7 +6388,7 @@
         },
         "DBName":{
           "shape":"String",
-          "documentation":"<p>Contains the initial database name that you provided (if required) when you created the DB instance. This name is returned for the life of your DB instance. For an RDS for Oracle CDB instance, the name identifies the PDB rather than the CDB.</p>"
+          "documentation":"<p>The initial database name that you provided (if required) when you created the DB instance. This name is returned for the life of your DB instance. For an RDS for Oracle CDB instance, the name identifies the PDB rather than the CDB.</p>"
         },
         "Endpoint":{
           "shape":"Endpoint",
@@ -6549,6 +6694,10 @@
         "IsStorageConfigUpgradeAvailable":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether an upgrade is recommended for the storage file system configuration on the DB instance. To migrate to the preferred configuration, you can either create a blue/green deployment, or create a read replica from the DB instance. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.UpgradeFileSystem\">Upgrading the storage file system for a DB instance</a>.</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the DB instance is in the multi-tenant configuration (TRUE) or the single-tenant configuration (FALSE).</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -6688,6 +6837,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the automatic backup is for a DB instance in the multi-tenant configuration (TRUE) or the single-tenant configuration (FALSE). </p>"
         }
       },
       "documentation":"<p>An automated backup of a DB instance. It consists of system backups, transaction logs, and the database instance properties that existed at the time you deleted the source instance.</p>",
@@ -6858,7 +7011,7 @@
         },
         "Normal":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean value that is true if the instance is operating normally, or false if the instance is in an error state.</p>"
+          "documentation":"<p>Indicates whether the instance is operating normally (TRUE) or is in an error state (FALSE).</p>"
         },
         "Status":{
           "shape":"String",
@@ -7638,6 +7791,10 @@
         "DedicatedLogVolume":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the snapshot is of a DB instance using the multi-tenant configuration (TRUE) or the single-tenant configuration (FALSE).</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB snapshot.</p> <p>This data type is used as a response element in the <code>DescribeDBSnapshots</code> action.</p>",
@@ -7724,6 +7881,94 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "DBSnapshotTenantDatabase":{
+      "type":"structure",
+      "members":{
+        "DBSnapshotIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the snapshot of the DB instance.</p>"
+        },
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID for the DB instance that contains the tenant databases.</p>"
+        },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource identifier of the source CDB instance. This identifier can't be changed and is unique to an Amazon Web Services Region.</p>"
+        },
+        "EngineName":{
+          "shape":"String",
+          "documentation":"<p>The name of the database engine.</p>"
+        },
+        "SnapshotType":{
+          "shape":"String",
+          "documentation":"<p>The type of DB snapshot.</p>"
+        },
+        "TenantDatabaseCreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time the DB snapshot was taken, specified in Coordinated Universal Time (UTC). If you copy the snapshot, the creation time changes.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The name of the tenant database.</p>"
+        },
+        "MasterUsername":{
+          "shape":"String",
+          "documentation":"<p>The master username of the tenant database.</p>"
+        },
+        "TenantDatabaseResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource ID of the tenant database.</p>"
+        },
+        "CharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The name of the character set of a tenant database.</p>"
+        },
+        "DBSnapshotTenantDatabaseARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the snapshot tenant database.</p>"
+        },
+        "NcharCharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The <code>NCHAR</code> character set name of the tenant database.</p>"
+        },
+        "TagList":{"shape":"TagList"}
+      },
+      "documentation":"<p>Contains the details of a tenant database in a snapshot of a DB instance.</p>",
+      "wrapper":true
+    },
+    "DBSnapshotTenantDatabaseNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified snapshot tenant database wasn't found.</p>",
+      "error":{
+        "code":"DBSnapshotTenantDatabaseNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DBSnapshotTenantDatabasesList":{
+      "type":"list",
+      "member":{
+        "shape":"DBSnapshotTenantDatabase",
+        "locationName":"DBSnapshotTenantDatabase"
+      }
+    },
+    "DBSnapshotTenantDatabasesMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "DBSnapshotTenantDatabases":{
+          "shape":"DBSnapshotTenantDatabasesList",
+          "documentation":"<p>A list of DB snapshot tenant databases.</p>"
+        }
+      }
     },
     "DBSubnetGroup":{
       "type":"structure",
@@ -8181,6 +8426,37 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DeleteTenantDatabaseMessage":{
+      "type":"structure",
+      "required":[
+        "DBInstanceIdentifier",
+        "TenantDBName"
+      ],
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied identifier for the DB instance that contains the tenant database that you want to delete.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied name of the tenant database that you want to remove from your DB instance. Amazon RDS deletes the tenant database with this name. This parameter isn’t case-sensitive.</p>"
+        },
+        "SkipFinalSnapshot":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to skip the creation of a final DB snapshot before removing the tenant database from your DB instance. If you enable this parameter, RDS doesn't create a DB snapshot. If you don't enable this parameter, RDS creates a DB snapshot before it deletes the tenant database. By default, RDS doesn't skip the final snapshot. If you don't enable this parameter, you must specify the <code>FinalDBSnapshotIdentifier</code> parameter.</p>"
+        },
+        "FinalDBSnapshotIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The <code>DBSnapshotIdentifier</code> of the new <code>DBSnapshot</code> created when the <code>SkipFinalSnapshot</code> parameter is disabled.</p> <note> <p>If you enable this parameter and also enable <code>SkipFinalShapshot</code>, the command results in an error.</p> </note>"
+        }
+      }
+    },
+    "DeleteTenantDatabaseResult":{
+      "type":"structure",
+      "members":{
+        "TenantDatabase":{"shape":"TenantDatabase"}
+      }
     },
     "DeregisterDBProxyTargetsRequest":{
       "type":"structure",
@@ -8890,6 +9166,39 @@
         "DBSnapshotAttributesResult":{"shape":"DBSnapshotAttributesResult"}
       }
     },
+    "DescribeDBSnapshotTenantDatabasesMessage":{
+      "type":"structure",
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the DB instance used to create the DB snapshots. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match the identifier of an existing <code>DBInstance</code>.</p> </li> </ul>"
+        },
+        "DBSnapshotIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of a DB snapshot that contains the tenant databases to describe. This value is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>If you specify this parameter, the value must match the ID of an existing DB snapshot.</p> </li> <li> <p>If you specify an automatic snapshot, you must also specify <code>SnapshotType</code>.</p> </li> </ul>"
+        },
+        "SnapshotType":{
+          "shape":"String",
+          "documentation":"<p>The type of DB snapshots to be returned. You can specify one of the following values:</p> <ul> <li> <p> <code>automated</code> – All DB snapshots that have been automatically taken by Amazon RDS for my Amazon Web Services account.</p> </li> <li> <p> <code>manual</code> – All DB snapshots that have been taken by my Amazon Web Services account.</p> </li> <li> <p> <code>shared</code> – All manual DB snapshots that have been shared to my Amazon Web Services account.</p> </li> <li> <p> <code>public</code> – All DB snapshots that have been marked as public.</p> </li> <li> <p> <code>awsbackup</code> – All DB snapshots managed by the Amazon Web Services Backup service.</p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies one or more tenant databases to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>tenant-db-name</code> - Tenant database names. The results list only includes information about the tenant databases that match these tenant DB names.</p> </li> <li> <p> <code>tenant-database-resource-id</code> - Tenant database resource identifiers. The results list only includes information about the tenant databases contained within the DB snapshots.</p> </li> <li> <p> <code>dbi-resource-id</code> - DB instance resource identifiers. The results list only includes information about snapshots containing tenant databases contained within the DB instances identified by these resource identifiers.</p> </li> <li> <p> <code>db-instance-id</code> - Accepts DB instance identifiers and DB instance Amazon Resource Names (ARNs).</p> </li> <li> <p> <code>db-snapshot-id</code> - Accepts DB snapshot identifiers.</p> </li> <li> <p> <code>snapshot-type</code> - Accepts types of DB snapshots.</p> </li> </ul>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that you can retrieve the remaining results.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeDBSnapshotTenantDatabases</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>A specific DB resource identifier to describe.</p>"
+        }
+      }
+    },
     "DescribeDBSnapshotsMessage":{
       "type":"structure",
       "members":{
@@ -9410,6 +9719,31 @@
       },
       "documentation":"<p/>"
     },
+    "DescribeTenantDatabasesMessage":{
+      "type":"structure",
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied DB instance identifier, which must match the identifier of an existing instance owned by the Amazon Web Services account. This parameter isn't case-sensitive.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied tenant database name, which must match the name of an existing tenant database on the specified DB instance owned by your Amazon Web Services account. This parameter isn’t case-sensitive.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies one or more database tenants to describe.</p> <p>Supported filters:</p> <ul> <li> <p> <code>tenant-db-name</code> - Tenant database names. The results list only includes information about the tenant databases that match these tenant DB names.</p> </li> <li> <p> <code>tenant-database-resource-id</code> - Tenant database resource identifiers.</p> </li> <li> <p> <code>dbi-resource-id</code> - DB instance resource identifiers. The results list only includes information about the tenants contained within the DB instances identified by these resource identifiers.</p> </li> </ul>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeTenantDatabases</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that you can retrieve the remaining results.</p>"
+        }
+      }
+    },
     "DescribeValidDBInstanceModificationsMessage":{
       "type":"structure",
       "required":["DBInstanceIdentifier"],
@@ -9761,7 +10095,7 @@
         },
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>A Boolean value indicating if the subscription is enabled. True indicates the subscription is enabled.</p>"
+          "documentation":"<p>Specifies whether the subscription is enabled. True indicates the subscription is enabled.</p>"
         },
         "EventSubscriptionArn":{
           "shape":"String",
@@ -9996,7 +10330,7 @@
       "members":{
         "Status":{
           "shape":"FailoverStatus",
-          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#x96; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#x96; This status covers the range of Aurora internal operations that take place during the switchover or failover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing replicas.</p> </li> <li> <p>cancelling &#x96; The request to switch over or fail over the global cluster was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> </ul>"
+          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#x96; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#x96; Aurora is promoting the chosen secondary Aurora DB cluster to become the new primary DB cluster to fail over the global cluster.</p> </li> <li> <p>cancelling &#x96; The request to switch over or fail over the global cluster was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> <li> <p>switching-over &#x96; This status covers the range of Aurora internal operations that take place during the switchover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing replicas.</p> </li> </ul>"
         },
         "FromDbClusterArn":{
           "shape":"String",
@@ -11291,7 +11625,7 @@
         },
         "DBInstanceClass":{
           "shape":"String",
-          "documentation":"<p>The new compute and memory capacity of the DB instance, for example <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html\">Aurora DB instance classes</a> in the <i>Amazon Aurora User Guide</i>. For RDS Custom, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits.html#custom-reqs-limits.instances\">DB instance class support for RDS Custom for Oracle</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html#custom-reqs-limits.instancesMS\"> DB instance class support for RDS Custom for SQL Server</a>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless you specify <code>ApplyImmediately</code> in your request. </p> <p>Default: Uses existing setting</p> <p>Constraints:</p> <ul> <li> <p>If you are modifying the DB instance class and upgrading the engine version at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to modify the DB instance class, and then run it again to upgrade the engine version.</p> </li> </ul>"
+          "documentation":"<p>The new compute and memory capacity of the DB instance, for example <code>db.m4.large</code>. Not all DB instance classes are available in all Amazon Web Services Regions, or for all database engines. For the full list of DB instance classes, and availability for your engine, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html\">DB Instance Class</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html\">Aurora DB instance classes</a> in the <i>Amazon Aurora User Guide</i>. For RDS Custom, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits.html#custom-reqs-limits.instances\">DB instance class support for RDS Custom for Oracle</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-reqs-limits-MS.html#custom-reqs-limits.instancesMS\"> DB instance class support for RDS Custom for SQL Server</a>.</p> <p>If you modify the DB instance class, an outage occurs during the change. The change is applied during the next maintenance window, unless you specify <code>ApplyImmediately</code> in your request. </p> <p>Default: Uses existing setting</p> <p>Constraints:</p> <ul> <li> <p>If you are modifying the DB instance class and upgrading the engine version at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to upgrade the engine version, and then run it again to modify the DB instance class.</p> </li> </ul>"
         },
         "DBSubnetGroupName":{
           "shape":"String",
@@ -11335,7 +11669,7 @@
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the database engine to upgrade to. Changing this parameter results in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is enabled for this request.</p> <p>For major version upgrades, if a nondefault DB parameter group is currently in use, a new DB parameter group in the DB parameter group family for the new engine version must be specified. The new DB parameter group can be the default for that DB parameter group family.</p> <p>If you specify only a major version, Amazon RDS updates the DB instance to the default minor version if the current minor version is lower. For information about valid engine versions, see <code>CreateDBInstance</code>, or call <code>DescribeDBEngineVersions</code>.</p> <p>If the instance that you're modifying is acting as a read replica, the engine version that you specify must be the same or higher than the version that the source DB instance or cluster is running.</p> <p>In RDS Custom for Oracle, this parameter is supported for read replicas only if they are in the <code>PATCH_DB_FAILURE</code> lifecycle.</p> <p>Constraints:</p> <ul> <li> <p>If you are upgrading the engine version and modifying the DB instance class at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to modify the DB instance class, and then run it again to upgrade the engine version.</p> </li> </ul>"
+          "documentation":"<p>The version number of the database engine to upgrade to. Changing this parameter results in an outage and the change is applied during the next maintenance window unless the <code>ApplyImmediately</code> parameter is enabled for this request.</p> <p>For major version upgrades, if a nondefault DB parameter group is currently in use, a new DB parameter group in the DB parameter group family for the new engine version must be specified. The new DB parameter group can be the default for that DB parameter group family.</p> <p>If you specify only a major version, Amazon RDS updates the DB instance to the default minor version if the current minor version is lower. For information about valid engine versions, see <code>CreateDBInstance</code>, or call <code>DescribeDBEngineVersions</code>.</p> <p>If the instance that you're modifying is acting as a read replica, the engine version that you specify must be the same or higher than the version that the source DB instance or cluster is running.</p> <p>In RDS Custom for Oracle, this parameter is supported for read replicas only if they are in the <code>PATCH_DB_FAILURE</code> lifecycle.</p> <p>Constraints:</p> <ul> <li> <p>If you are upgrading the engine version and modifying the DB instance class at the same time, the currently running engine version must be supported on the specified DB instance class. Otherwise, the operation returns an error. In this case, first run the operation to upgrade the engine version, and then run it again to modify the DB instance class.</p> </li> </ul>"
         },
         "AllowMajorVersionUpgrade":{
           "shape":"Boolean",
@@ -11516,6 +11850,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the to convert your DB instance from the single-tenant conﬁguration to the multi-tenant conﬁguration. This parameter is supported only for RDS for Oracle CDB instances.</p> <p>During the conversion, RDS creates an initial tenant database and associates the DB name, master user name, character set, and national character set metadata with this database. The tags associated with the instance also propagate to the initial tenant database. You can add more tenant databases to your DB instance by using the <code>CreateTenantDatabase</code> operation.</p> <important> <p>The conversion to the multi-tenant configuration is permanent and irreversible, so you can't later convert back to the single-tenant configuration. When you specify this parameter, you must also specify <code>ApplyImmediately</code>.</p> </important>"
         }
       },
       "documentation":"<p/>"
@@ -11827,6 +12165,37 @@
       "type":"structure",
       "members":{
         "OptionGroup":{"shape":"OptionGroup"}
+      }
+    },
+    "ModifyTenantDatabaseMessage":{
+      "type":"structure",
+      "required":[
+        "DBInstanceIdentifier",
+        "TenantDBName"
+      ],
+      "members":{
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the DB instance that contains the tenant database that you are modifying. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing DB instance.</p> </li> </ul>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied name of the tenant database that you want to modify. This parameter isn’t case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing tenant database.</p> </li> </ul>"
+        },
+        "MasterUserPassword":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The new password for the master user of the specified tenant database in your DB instance.</p> <note> <p>Amazon RDS operations never return the password, so this action provides a way to regain access to a tenant database user if the password is lost. This includes restoring privileges that might have been accidentally revoked.</p> </note> <p>Constraints:</p> <ul> <li> <p>Can include any printable ASCII character except <code>/</code>, <code>\"</code> (double quote), <code>@</code>, <code>&amp;</code> (ampersand), and <code>'</code> (single quote).</p> </li> </ul> <p>Length constraints:</p> <ul> <li> <p>Must contain between 8 and 30 characters. </p> </li> </ul>"
+        },
+        "NewTenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The new name of the tenant database when renaming a tenant database. This parameter isn’t case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Can't be the string null or any other reserved word.</p> </li> <li> <p>Can't be longer than 8 characters.</p> </li> </ul>"
+        }
+      }
+    },
+    "ModifyTenantDatabaseResult":{
+      "type":"structure",
+      "members":{
+        "TenantDatabase":{"shape":"TenantDatabase"}
       }
     },
     "NetworkTypeNotSupported":{
@@ -12684,6 +13053,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.&gt;</p>"
+        },
+        "MultiTenant":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance will change to the multi-tenant configuration (TRUE) or the single-tenant configuration (FALSE). </p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBInstance</code> operation and contains changes that will be applied during the next maintenance window.</p>"
@@ -14465,6 +14838,10 @@
       },
       "documentation":"<p>The scaling configuration for an Aurora DB cluster in <code>serverless</code> DB engine mode.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html\">Using Amazon Aurora Serverless v1</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
+    },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",
       "members":{
@@ -15209,6 +15586,132 @@
         "RDS_SERVERLESS_ENDPOINT",
         "TRACKED_CLUSTER"
       ]
+    },
+    "TenantDatabase":{
+      "type":"structure",
+      "members":{
+        "TenantDatabaseCreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The creation time of the tenant database.</p>"
+        },
+        "DBInstanceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the DB instance that contains the tenant database.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The database name of the tenant database.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the tenant database.</p>"
+        },
+        "MasterUsername":{
+          "shape":"String",
+          "documentation":"<p>The master username of the tenant database.</p>"
+        },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the DB instance.</p>"
+        },
+        "TenantDatabaseResourceId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the tenant database.</p>"
+        },
+        "TenantDatabaseARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the tenant database.</p>"
+        },
+        "CharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The character set of the tenant database.</p>"
+        },
+        "NcharCharacterSetName":{
+          "shape":"String",
+          "documentation":"<p>The <code>NCHAR</code> character set name of the tenant database.</p>"
+        },
+        "DeletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled for the DB instance.</p>"
+        },
+        "PendingModifiedValues":{
+          "shape":"TenantDatabasePendingModifiedValues",
+          "documentation":"<p>Information about pending changes for a tenant database.</p>"
+        },
+        "TagList":{"shape":"TagList"}
+      },
+      "documentation":"<p>A tenant database in the DB instance. This data type is an element in the response to the <code>DescribeTenantDatabases</code> action.</p>",
+      "wrapper":true
+    },
+    "TenantDatabaseAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You attempted to either create a tenant database that already exists or modify a tenant database to use the name of an existing tenant database.</p>",
+      "error":{
+        "code":"TenantDatabaseAlreadyExists",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "TenantDatabaseNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified tenant database wasn't found in the DB instance.</p>",
+      "error":{
+        "code":"TenantDatabaseNotFound",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "TenantDatabasePendingModifiedValues":{
+      "type":"structure",
+      "members":{
+        "MasterUserPassword":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The master password for the tenant database.</p>"
+        },
+        "TenantDBName":{
+          "shape":"String",
+          "documentation":"<p>The name of the tenant database.</p>"
+        }
+      },
+      "documentation":"<p>A response element in the <code>ModifyTenantDatabase</code> operation that describes changes that will be applied. Specific changes are identified by subelements.</p>"
+    },
+    "TenantDatabaseQuotaExceededFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You attempted to create more tenant databases than are permitted in your Amazon Web Services account.</p>",
+      "error":{
+        "code":"TenantDatabaseQuotaExceeded",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "TenantDatabasesList":{
+      "type":"list",
+      "member":{
+        "shape":"TenantDatabase",
+        "locationName":"TenantDatabase"
+      }
+    },
+    "TenantDatabasesMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeTenantDatabases</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "TenantDatabases":{
+          "shape":"TenantDatabasesList",
+          "documentation":"<p>An array of the tenant databases requested by the <code>DescribeTenantDatabases</code> operation.</p>"
+        }
+      }
     },
     "Timezone":{
       "type":"structure",

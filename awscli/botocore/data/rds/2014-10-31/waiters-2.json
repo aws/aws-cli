@@ -341,6 +341,55 @@
         }
       ]
     },
+    "TenantDatabaseAvailable": {
+      "delay": 30,
+      "operation": "DescribeTenantDatabases",
+      "maxAttempts": 60,
+      "acceptors": [
+        {
+          "expected": "available",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "TenantDatabases[].Status"
+        },
+        {
+          "expected": "deleted",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "TenantDatabases[].Status"
+        },
+        {
+          "expected": "incompatible-parameters",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "TenantDatabases[].Status"
+        },
+        {
+          "expected": "incompatible-restore",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "TenantDatabases[].Status"
+        }
+      ]
+    },
+    "TenantDatabaseDeleted": {
+      "delay": 30,
+      "operation": "DescribeTenantDatabases",
+      "maxAttempts": 60,
+      "acceptors": [
+        {
+          "expected": true,
+          "matcher": "path",
+          "state": "success",
+          "argument": "length(TenantDatabases) == `0`"
+        },
+        {
+          "expected": "DBInstanceNotFoundFault",
+          "matcher": "error",
+          "state": "success"
+        }
+      ]
+    },
     "DBSnapshotCompleted": {
       "delay": 15,
       "operation": "DescribeDBSnapshots",

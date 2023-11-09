@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.29.83
+=======
+
+* api-change:``cloudformation``: Added new ConcurrencyMode feature for AWS CloudFormation StackSets for faster deployments to target accounts.
+* api-change:``cloudtrail``: The Insights in Lake feature lets customers enable CloudTrail Insights on a source CloudTrail Lake event data store and create a destination event data store to collect Insights events based on unusual management event activity in the source event data store.
+* api-change:``comprehend``: This release adds support for toxicity detection and prompt safety classification.
+* api-change:``connect``: This release adds the ability to integrate customer lambda functions with Connect attachments for scanning and updates the ListIntegrationAssociations API to support filtering on IntegrationArn.
+* api-change:``ec2``: AWS EBS now supports Block Public Access for EBS Snapshots. This release introduces the EnableSnapshotBlockPublicAccess, DisableSnapshotBlockPublicAccess and GetSnapshotBlockPublicAccessState APIs to manage account-level public access settings for EBS Snapshots in an AWS Region.
+* api-change:``eks``: Adding EKS Anywhere subscription related operations.
+* api-change:``lambda``: Add Custom runtime on Amazon Linux 2023 (provided.al2023) support to AWS Lambda.
+* api-change:``logs``: Update to support new APIs for delivery of logs from AWS services.
+* api-change:``omics``: Support UBAM filetype for Omics Storage and make referenceArn optional
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.29.82
 =======
 

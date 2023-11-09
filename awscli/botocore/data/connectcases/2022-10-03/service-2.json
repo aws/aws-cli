@@ -149,7 +149,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </note>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <ul> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> </ul> <pre><code> &lt;/note&gt; </code></pre>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -1111,6 +1111,10 @@
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the creator of the related item.</p>"
         },
         "type":{
           "shape":"RelatedItemType",
@@ -2607,6 +2611,10 @@
           "shape":"RelatedItemContent",
           "documentation":"<p>Represents the content of a particular type of related item.</p>"
         },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the creator of the related item.</p>"
+        },
         "relatedItemId":{
           "shape":"RelatedItemId",
           "documentation":"<p>Unique identifier of a related item.</p>"
@@ -2961,6 +2969,22 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UserArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "UserUnion":{
+      "type":"structure",
+      "members":{
+        "userArn":{
+          "shape":"UserArn",
+          "documentation":"<p>Represents the Amazon Connect ARN of the user.</p>"
+        }
+      },
+      "documentation":"<p>Represents the identity of the person who performed the action.</p>",
+      "union":true
     },
     "ValidationException":{
       "type":"structure",

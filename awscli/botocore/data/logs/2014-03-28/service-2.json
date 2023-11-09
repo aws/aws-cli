@@ -42,6 +42,25 @@
       ],
       "documentation":"<p>Cancels the specified export task.</p> <p>The task must be in the <code>PENDING</code> or <code>RUNNING</code> state.</p>"
     },
+    "CreateDelivery":{
+      "name":"CreateDelivery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDeliveryRequest"},
+      "output":{"shape":"CreateDeliveryResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a <i>delivery</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i> that you have already created.</p> <p>Only some Amazon Web Services services support being configured as a delivery source using this operation. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>A delivery destination can represent a log group in CloudWatch Logs, an Amazon S3 bucket, or a delivery stream in Kinesis Data Firehose.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>You can't update an existing delivery. You can only create and delete deliveries.</p>"
+    },
     "CreateExportTask":{
       "name":"CreateExportTask",
       "http":{
@@ -120,6 +139,72 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the data protection policy from the specified log group. </p> <p>For more information about data protection policies, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html\">PutDataProtectionPolicy</a>.</p>"
+    },
+    "DeleteDelivery":{
+      "name":"DeleteDelivery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDeliveryRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes s <i>delivery</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i>. Deleting a delivery only deletes the connection between the delivery source and delivery destination. It does not delete the delivery destination or the delivery source.</p>"
+    },
+    "DeleteDeliveryDestination":{
+      "name":"DeleteDeliveryDestination",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDeliveryDestinationRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a <i>delivery destination</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i>.</p> <p>You can't delete a delivery destination if any current deliveries are associated with it. To find whether any deliveries are associated with this delivery destination, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveries.html\">DescribeDeliveries</a> operation and check the <code>deliveryDestinationArn</code> field in the results.</p>"
+    },
+    "DeleteDeliveryDestinationPolicy":{
+      "name":"DeleteDeliveryDestinationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDeliveryDestinationPolicyRequest"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a delivery destination policy. For more information about these policies, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html\">PutDeliveryDestinationPolicy</a>.</p>"
+    },
+    "DeleteDeliverySource":{
+      "name":"DeleteDeliverySource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDeliverySourceRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a <i>delivery source</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i>.</p> <p>You can't delete a delivery source if any current deliveries are associated with it. To find whether any deliveries are associated with this delivery source, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveries.html\">DescribeDeliveries</a> operation and check the <code>deliverySourceName</code> field in the results.</p>"
     },
     "DeleteDestination":{
       "name":"DeleteDestination",
@@ -255,6 +340,54 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns a list of all CloudWatch Logs account policies in the account.</p>"
+    },
+    "DescribeDeliveries":{
+      "name":"DescribeDeliveries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDeliveriesRequest"},
+      "output":{"shape":"DescribeDeliveriesResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a list of the deliveries that have been created in the account.</p>"
+    },
+    "DescribeDeliveryDestinations":{
+      "name":"DescribeDeliveryDestinations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDeliveryDestinationsRequest"},
+      "output":{"shape":"DescribeDeliveryDestinationsResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a list of the delivery destinations that have been created in the account.</p>"
+    },
+    "DescribeDeliverySources":{
+      "name":"DescribeDeliverySources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDeliverySourcesRequest"},
+      "output":{"shape":"DescribeDeliverySourcesResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a list of the delivery sources that have been created in the account.</p>"
     },
     "DescribeDestinations":{
       "name":"DescribeDestinations",
@@ -432,6 +565,72 @@
       ],
       "documentation":"<p>Returns information about a log group data protection policy.</p>"
     },
+    "GetDelivery":{
+      "name":"GetDelivery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeliveryRequest"},
+      "output":{"shape":"GetDeliveryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns complete information about one <i>delivery</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i> </p> <p>You need to specify the delivery <code>id</code> in this operation. You can find the IDs of the deliveries in your account with the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveries.html\">DescribeDeliveries</a> operation.</p>"
+    },
+    "GetDeliveryDestination":{
+      "name":"GetDeliveryDestination",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeliveryDestinationRequest"},
+      "output":{"shape":"GetDeliveryDestinationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves complete information about one delivery destination.</p>"
+    },
+    "GetDeliveryDestinationPolicy":{
+      "name":"GetDeliveryDestinationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeliveryDestinationPolicyRequest"},
+      "output":{"shape":"GetDeliveryDestinationPolicyResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the delivery destination policy assigned to the delivery destination that you specify. For more information about delivery destinations and their policies, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationPolicy.html\">PutDeliveryDestinationPolicy</a>.</p>"
+    },
+    "GetDeliverySource":{
+      "name":"GetDeliverySource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeliverySourceRequest"},
+      "output":{"shape":"GetDeliverySourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves complete information about one delivery source.</p>"
+    },
     "GetLogEvents":{
       "name":"GetLogEvents",
       "http":{
@@ -492,7 +691,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
+      "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -557,6 +756,58 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates a data protection policy for the specified log group. A data protection policy can help safeguard sensitive data that's ingested by the log group by auditing and masking the sensitive log data.</p> <important> <p>Sensitive data is detected and masked when it is ingested into the log group. When you set a data protection policy, log events ingested into the log group before that time are not masked.</p> </important> <p>By default, when a user views a log event that includes masked data, the sensitive data is replaced by asterisks. A user who has the <code>logs:Unmask</code> permission can use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_FilterLogEvents.html\">FilterLogEvents</a> operation with the <code>unmask</code> parameter set to <code>true</code> to view the unmasked log events. Users with the <code>logs:Unmask</code> can also view unmasked data in the CloudWatch Logs console by running a CloudWatch Logs Insights query with the <code>unmask</code> query command.</p> <p>For more information, including a list of types of data that can be audited and masked, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Protect sensitive log data with masking</a>.</p> <p>The <code>PutDataProtectionPolicy</code> operation applies to only the specified log group. You can also use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a> to create an account-level data protection policy that applies to all log groups in the account, including both existing log groups and log groups that are created level. If a log group has its own data protection policy and the account also has an account-level data protection policy, then the two policies are cumulative. Any sensitive term specified in either policy is masked.</p>"
+    },
+    "PutDeliveryDestination":{
+      "name":"PutDeliveryDestination",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDeliveryDestinationRequest"},
+      "output":{"shape":"PutDeliveryDestinationResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates or updates a logical <i>delivery destination</i>. A delivery destination is an Amazon Web Services resource that represents an Amazon Web Services service that logs can be sent to. CloudWatch Logs, Amazon S3, and Kinesis Data Firehose are supported as logs delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery destination, all the current delivery destination parameters are overwritten with the new parameter values that you specify.</p>"
+    },
+    "PutDeliveryDestinationPolicy":{
+      "name":"PutDeliveryDestinationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDeliveryDestinationPolicyRequest"},
+      "output":{"shape":"PutDeliveryDestinationPolicyResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates and assigns an IAM policy that grants permissions to CloudWatch Logs to deliver logs cross-account to a specified destination in this account. To configure the delivery of logs from an Amazon Web Services service in another account to a logs delivery destination in the current account, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>Use this operation in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>The contents of the policy must include two statements. One statement enables general logs delivery, and the other allows delivery to the chosen destination. See the examples for the needed policies.</p>"
+    },
+    "PutDeliverySource":{
+      "name":"PutDeliverySource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDeliverySourceRequest"},
+      "output":{"shape":"PutDeliverySourceResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates a logical <i>delivery source</i>. A delivery source represents an Amazon Web Services resource that sends logs to an logs delivery destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>To configure logs delivery between a delivery destination and an Amazon Web Services service that is supported as a delivery source, you must do the following:</p> <ul> <li> <p>Use <code>PutDeliverySource</code> to create a delivery source, which is a logical object that represents the resource that is actually sending the logs. </p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery source, all the current delivery source parameters are overwritten with the new parameter values that you specify.</p>"
     },
     "PutDestination":{
       "name":"PutDestination",
@@ -789,6 +1040,13 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You don't have sufficient permissions to perform this action.</p>",
+      "exception":true
+    },
     "AccessPolicy":{
       "type":"string",
       "min":1
@@ -880,6 +1138,43 @@
       "max":128,
       "min":36,
       "pattern":"\\S{36,128}"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>This operation attempted to create a resource that already exists.</p>",
+      "exception":true
+    },
+    "CreateDeliveryRequest":{
+      "type":"structure",
+      "required":[
+        "deliverySourceName",
+        "deliveryDestinationArn"
+      ],
+      "members":{
+        "deliverySourceName":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>The name of the delivery source to use for this delivery.</p>"
+        },
+        "deliveryDestinationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the delivery destination to use for this delivery.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        }
+      }
+    },
+    "CreateDeliveryResponse":{
+      "type":"structure",
+      "members":{
+        "delivery":{
+          "shape":"Delivery",
+          "documentation":"<p>A structure that contains information about the delivery that you just created.</p>"
+        }
+      }
     },
     "CreateExportTaskRequest":{
       "type":"structure",
@@ -1014,6 +1309,46 @@
         }
       }
     },
+    "DeleteDeliveryDestinationPolicyRequest":{
+      "type":"structure",
+      "required":["deliveryDestinationName"],
+      "members":{
+        "deliveryDestinationName":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of the delivery destination that you want to delete the policy for.</p>"
+        }
+      }
+    },
+    "DeleteDeliveryDestinationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of the delivery destination that you want to delete. You can find a list of delivery destionation names by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveryDestinations.html\">DescribeDeliveryDestinations</a> operation.</p>"
+        }
+      }
+    },
+    "DeleteDeliveryRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"DeliveryId",
+          "documentation":"<p>The unique ID of the delivery to delete. You can find the ID of a delivery with the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeDeliveries.html\">DescribeDeliveries</a> operation.</p>"
+        }
+      }
+    },
+    "DeleteDeliverySourceRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>The name of the delivery source that you want to delete.</p>"
+        }
+      }
+    },
     "DeleteDestinationRequest":{
       "type":"structure",
       "required":["destinationName"],
@@ -1123,6 +1458,150 @@
         }
       }
     },
+    "Deliveries":{
+      "type":"list",
+      "member":{"shape":"Delivery"}
+    },
+    "Delivery":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"DeliveryId",
+          "documentation":"<p>The unique ID that identifies this delivery in your account.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies this delivery.</p>"
+        },
+        "deliverySourceName":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>The name of the delivery source that is associated with this delivery.</p>"
+        },
+        "deliveryDestinationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the delivery destination that is associated with this delivery.</p>"
+        },
+        "deliveryDestinationType":{
+          "shape":"DeliveryDestinationType",
+          "documentation":"<p>Displays whether the delivery destination associated with this delivery is CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags that have been assigned to this delivery.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one <i>delivery</i> in your account. </p> <p>A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> <p>You can't update an existing delivery. You can only create and delete deliveries.</p>"
+    },
+    "DeliveryDestination":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of this delivery destination.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies this delivery destination.</p>"
+        },
+        "deliveryDestinationType":{
+          "shape":"DeliveryDestinationType",
+          "documentation":"<p>Displays whether this delivery destination is CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p>"
+        },
+        "outputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>The format of the logs that are sent to this delivery destination. </p>"
+        },
+        "deliveryDestinationConfiguration":{
+          "shape":"DeliveryDestinationConfiguration",
+          "documentation":"<p>A structure that contains the ARN of the Amazon Web Services resource that will receive the logs.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags that have been assigned to this delivery destination.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one <i>delivery destination</i> in your account. A delivery destination is an Amazon Web Services resource that represents an shared id=\"AWS\"/&gt; service that logs can be sent to. CloudWatch Logs, Amazon S3, are supported as Kinesis Data Firehose delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+    },
+    "DeliveryDestinationConfiguration":{
+      "type":"structure",
+      "required":["destinationResourceArn"],
+      "members":{
+        "destinationResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the Amazon Web Services destination that this delivery destination represents. That Amazon Web Services destination can be a log group in CloudWatch Logs, an Amazon S3 bucket, or a delivery stream in Kinesis Data Firehose.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about one logs delivery destination.</p>"
+    },
+    "DeliveryDestinationName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"[\\w-]*"
+    },
+    "DeliveryDestinationPolicy":{
+      "type":"string",
+      "max":51200,
+      "min":1
+    },
+    "DeliveryDestinationType":{
+      "type":"string",
+      "enum":[
+        "S3",
+        "CWL",
+        "FH"
+      ]
+    },
+    "DeliveryDestinations":{
+      "type":"list",
+      "member":{"shape":"DeliveryDestination"}
+    },
+    "DeliveryId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[0-9A-Za-z]+$"
+    },
+    "DeliverySource":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>The unique name of the delivery source.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies this delivery source.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>This array contains the ARN of the Amazon Web Services resource that sends logs and is represented by this delivery source. Currently, only one ARN can be in the array.</p>"
+        },
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The Amazon Web Services service that is sending logs.</p>"
+        },
+        "logType":{
+          "shape":"LogType",
+          "documentation":"<p>The type of log that the source is sending. For valid values for this parameter, see the documentation for the source service.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags that have been assigned to this delivery source.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one <i>delivery source</i> in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+    },
+    "DeliverySourceName":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"[\\w-]*"
+    },
+    "DeliverySources":{
+      "type":"list",
+      "member":{"shape":"DeliverySource"}
+    },
     "Descending":{"type":"boolean"},
     "DescribeAccountPoliciesRequest":{
       "type":"structure",
@@ -1149,6 +1628,66 @@
           "shape":"AccountPolicies",
           "documentation":"<p>An array of structures that contain information about the CloudWatch Logs account policies that match the specified filters.</p>"
         }
+      }
+    },
+    "DescribeDeliveriesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{"shape":"NextToken"},
+        "limit":{
+          "shape":"DescribeLimit",
+          "documentation":"<p>Optionally specify the maximum number of deliveries to return in the response.</p>"
+        }
+      }
+    },
+    "DescribeDeliveriesResponse":{
+      "type":"structure",
+      "members":{
+        "deliveries":{
+          "shape":"Deliveries",
+          "documentation":"<p>An array of structures. Each structure contains information about one delivery in the account.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "DescribeDeliveryDestinationsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{"shape":"NextToken"},
+        "limit":{
+          "shape":"DescribeLimit",
+          "documentation":"<p>Optionally specify the maximum number of delivery destinations to return in the response.</p>"
+        }
+      }
+    },
+    "DescribeDeliveryDestinationsResponse":{
+      "type":"structure",
+      "members":{
+        "deliveryDestinations":{
+          "shape":"DeliveryDestinations",
+          "documentation":"<p>An array of structures. Each structure contains information about one delivery destination in the account.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "DescribeDeliverySourcesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{"shape":"NextToken"},
+        "limit":{
+          "shape":"DescribeLimit",
+          "documentation":"<p>Optionally specify the maximum number of delivery sources to return in the response.</p>"
+        }
+      }
+    },
+    "DescribeDeliverySourcesResponse":{
+      "type":"structure",
+      "members":{
+        "deliverySources":{
+          "shape":"DeliverySources",
+          "documentation":"<p>An array of structures. Each structure contains information about one delivery source in the account.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
       }
     },
     "DescribeDestinationsRequest":{
@@ -1784,6 +2323,82 @@
         }
       }
     },
+    "GetDeliveryDestinationPolicyRequest":{
+      "type":"structure",
+      "required":["deliveryDestinationName"],
+      "members":{
+        "deliveryDestinationName":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of the delivery destination that you want to retrieve the policy of.</p>"
+        }
+      }
+    },
+    "GetDeliveryDestinationPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "policy":{
+          "shape":"Policy",
+          "documentation":"<p>The IAM policy for this delivery destination.</p>"
+        }
+      }
+    },
+    "GetDeliveryDestinationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of the delivery destination that you want to retrieve.</p>"
+        }
+      }
+    },
+    "GetDeliveryDestinationResponse":{
+      "type":"structure",
+      "members":{
+        "deliveryDestination":{
+          "shape":"DeliveryDestination",
+          "documentation":"<p>A structure containing information about the delivery destination.</p>"
+        }
+      }
+    },
+    "GetDeliveryRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"DeliveryId",
+          "documentation":"<p>The ID of the delivery that you want to retrieve.</p>"
+        }
+      }
+    },
+    "GetDeliveryResponse":{
+      "type":"structure",
+      "members":{
+        "delivery":{
+          "shape":"Delivery",
+          "documentation":"<p>A structure that contains information about the delivery.</p>"
+        }
+      }
+    },
+    "GetDeliverySourceRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>The name of the delivery source that you want to retrieve.</p>"
+        }
+      }
+    },
+    "GetDeliverySourceResponse":{
+      "type":"structure",
+      "members":{
+        "deliverySource":{
+          "shape":"DeliverySource",
+          "documentation":"<p>A structure containing information about the delivery source.</p>"
+        }
+      }
+    },
     "GetLogEventsRequest":{
       "type":"structure",
       "required":["logStreamName"],
@@ -2183,6 +2798,12 @@
       "type":"list",
       "member":{"shape":"LogStream"}
     },
+    "LogType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\w]*"
+    },
     "MalformedQueryException":{
       "type":"structure",
       "members":{
@@ -2317,6 +2938,16 @@
         "LastEventTime"
       ]
     },
+    "OutputFormat":{
+      "type":"string",
+      "enum":[
+        "json",
+        "plain",
+        "w3c",
+        "raw",
+        "parquet"
+      ]
+    },
     "OutputLogEvent":{
       "type":"structure",
       "members":{
@@ -2343,6 +2974,16 @@
       "type":"integer",
       "max":100,
       "min":0
+    },
+    "Policy":{
+      "type":"structure",
+      "members":{
+        "deliveryDestinationPolicy":{
+          "shape":"DeliveryDestinationPolicy",
+          "documentation":"<p>The contents of the delivery destination policy.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about one delivery destination policy.</p>"
     },
     "PolicyDocument":{
       "type":"string",
@@ -2420,6 +3061,101 @@
         "lastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that this policy was most recently updated.</p>"
+        }
+      }
+    },
+    "PutDeliveryDestinationPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "deliveryDestinationName",
+        "deliveryDestinationPolicy"
+      ],
+      "members":{
+        "deliveryDestinationName":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>The name of the delivery destination to assign this policy to.</p>"
+        },
+        "deliveryDestinationPolicy":{
+          "shape":"DeliveryDestinationPolicy",
+          "documentation":"<p>The contents of the policy.</p>"
+        }
+      }
+    },
+    "PutDeliveryDestinationPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "policy":{
+          "shape":"Policy",
+          "documentation":"<p>The contents of the policy that you just created.</p>"
+        }
+      }
+    },
+    "PutDeliveryDestinationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "deliveryDestinationConfiguration"
+      ],
+      "members":{
+        "name":{
+          "shape":"DeliveryDestinationName",
+          "documentation":"<p>A name for this delivery destination. This name must be unique for all delivery destinations in your account.</p>"
+        },
+        "outputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>The format for the logs that this delivery destination will receive.</p>"
+        },
+        "deliveryDestinationConfiguration":{
+          "shape":"DeliveryDestinationConfiguration",
+          "documentation":"<p>A structure that contains the ARN of the Amazon Web Services resource that will receive the logs.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        }
+      }
+    },
+    "PutDeliveryDestinationResponse":{
+      "type":"structure",
+      "members":{
+        "deliveryDestination":{
+          "shape":"DeliveryDestination",
+          "documentation":"<p>A structure containing information about the delivery destination that you just created or updated.</p>"
+        }
+      }
+    },
+    "PutDeliverySourceRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "resourceArn",
+        "logType"
+      ],
+      "members":{
+        "name":{
+          "shape":"DeliverySourceName",
+          "documentation":"<p>A name for this delivery source. This name must be unique for all delivery sources in your account.</p>"
+        },
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the Amazon Web Services resource that is generating and sending logs. For example, <code>arn:aws:workmail:us-east-1:123456789012:organization/m-1234EXAMPLEabcd1234abcd1234abcd1234</code> </p>"
+        },
+        "logType":{
+          "shape":"LogType",
+          "documentation":"<p>Defines the type of log that the source is sending. For valid values for this parameter, see the documentation for the source service.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        }
+      }
+    },
+    "PutDeliverySourceResponse":{
+      "type":"structure",
+      "members":{
+        "deliverySource":{
+          "shape":"DeliverySource",
+          "documentation":"<p>A structure containing information about the delivery source that was just created or updated.</p>"
         }
       }
     },
@@ -2828,6 +3564,10 @@
       "documentation":"<p>The specified resource already exists.</p>",
       "exception":true
     },
+    "ResourceArns":{
+      "type":"list",
+      "member":{"shape":"Arn"}
+    },
     "ResourceIdentifier":{
       "type":"string",
       "max":2048,
@@ -2910,6 +3650,19 @@
     "SequenceToken":{
       "type":"string",
       "min":1
+    },
+    "Service":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\w]*"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>This request exceeds a service quota.</p>",
+      "exception":true
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -3154,6 +3907,13 @@
         }
       }
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was throttled because of quota limits.</p>",
+      "exception":true
+    },
     "Timestamp":{
       "type":"long",
       "min":0
@@ -3214,6 +3974,13 @@
           "documentation":"<p>The list of tag keys to remove from the resource.</p>"
         }
       }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>One of the parameters for the request is not valid.</p>",
+      "exception":true
     },
     "Value":{"type":"string"}
   },

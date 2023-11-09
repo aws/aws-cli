@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.29.82
+=======
+
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol and bug fix.
+
+
 1.29.81
 =======
 

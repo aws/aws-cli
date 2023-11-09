@@ -335,21 +335,30 @@ files to and from S3. Valid choices are:
 target_bandwidth
 ----------------
 .. note::
-   This experimental configuration option is only supported when
-   ``preferred_transfer_client`` is set to ``crt``. The ``default`` transfer
-   client does not support it.
+   This configuration option is only supported when the ``preferred_transfer_client``
+   configuration value is set to or resolves to ``crt``. The ``classic`` transfer
+   client does not support this configuration option.
 
-**Default** - ``5Gb/s``
+**Default** - Automatically derived based on system
 
 Controls the target bandwidth that the transfer client will try to reach
-for S3 uploads and downloads. The value can be specified as:
+for S3 uploads and downloads. By default, the AWS CLI will automatically
+attempt to choose a target bandwidth that matches the system's maximum
+network bandwidth. Currently, if the AWS CLI is unable to determine the
+maximum network bandwith, the AWS CLI falls back to a target bandwidth of
+ten gigabits per second (i.e. equivalent to setting the ``target_bandwidth``
+configuration option to ``10000000000b/s``). To guarantee a specific target bandwith,
+explicitly configure the ``target_bandwidth`` configuration option. Its
+value can be specified as:
 
 * An integer in terms of **bytes** per second. For example,
-  ``1073741824`` would set the target bandwidth to 1 GB per second.
+  ``1073741824`` would set the target bandwidth to 1 gibibyte per second.
 * A rate suffix. This can be expressed in terms of either bytes per second
   (``B/s``) or bits per second (``b/s``). You can specify rate suffixes
   using: ``KB/s``, ``MB/s``, ``GB/s``, ``Kb/s``, ``Mb/s``, ``Gb/s`` etc.
-  For example: ``200MB/s``, ``10GB/s``, ``200Mb/s``, ``10Gb/s``.
+  For example: ``200MB/s``, ``10GB/s``, ``200Mb/s``, ``10Gb/s``. When specifying
+  rate suffixes, values are expanded using powers of 2 instead of 10. For example,
+  specifying ``1KB/s`` is equivalent to specifying ``1024B/s`` instead of ``1000B/s``.
 
 This difference between ``target_bandwidth`` and the ``max_bandwidth`` is that
 ``max_bandwidth`` is purely for rate limiting and makes no adjustments to

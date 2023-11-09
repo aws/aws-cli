@@ -26,6 +26,11 @@ if HAS_CRT:
     import s3transfer.crt
 
 
+requires_crt_pytest = pytest.mark.skipif(
+    not HAS_CRT, reason="Test requires awscrt to be installed."
+)
+
+
 @pytest.fixture
 def mock_crt_process_lock(monkeypatch):
     # The process lock is cached at the module layer whenever the
@@ -38,13 +43,25 @@ def mock_crt_process_lock(monkeypatch):
         yield mock_lock
 
 
+@pytest.fixture
+def mock_s3_crt_client():
+    with mock.patch('s3transfer.crt.S3Client', spec=True) as mock_client:
+        yield mock_client
+
+
+@pytest.fixture
+def mock_get_recommended_throughput_target_gbps():
+    with mock.patch(
+        's3transfer.crt.get_recommended_throughput_target_gbps'
+    ) as mock_get_target_gbps:
+        yield mock_get_target_gbps
+
+
 class CustomFutureException(Exception):
     pass
 
 
-@pytest.mark.skipif(
-    not HAS_CRT, reason="Test requires awscrt to be installed."
-)
+@requires_crt_pytest
 class TestCRTProcessLock:
     def test_acquire_crt_s3_process_lock(self, mock_crt_process_lock):
         lock = s3transfer.crt.acquire_crt_s3_process_lock('app-name')
@@ -223,3 +240,38 @@ class TestOnBodyFileObjWriter(unittest.TestCase):
         writer = s3transfer.crt.OnBodyFileObjWriter(fileobj)
         writer(chunk=b'content')
         self.assertEqual(fileobj.getvalue(), b'content')
+
+
+@requires_crt_pytest
+class TestCreateS3CRTClient:
+    @pytest.mark.parametrize(
+        'provided_bytes_per_sec,recommended_gbps,expected_gbps',
+        [
+            (None, 100.0, 100.0),
+            (None, None, 10.0),
+            # NOTE: create_s3_crt_client() accepts target throughput as bytes
+            # per second and it is converted to gigabits per second for the
+            # CRT client instantiation.
+            (1_000_000_000, None, 8.0),
+            (1_000_000_000, 100.0, 8.0),
+        ],
+    )
+    def test_target_throughput(
+        self,
+        provided_bytes_per_sec,
+        recommended_gbps,
+        expected_gbps,
+        mock_s3_crt_client,
+        mock_get_recommended_throughput_target_gbps,
+    ):
+        mock_get_recommended_throughput_target_gbps.return_value = (
+            recommended_gbps
+        )
+        s3transfer.crt.create_s3_crt_client(
+            'us-west-2',
+            target_throughput=provided_bytes_per_sec,
+        )
+        assert (
+            mock_s3_crt_client.call_args[1]['throughput_target_gbps']
+            == expected_gbps
+        )

@@ -197,6 +197,13 @@ class TestTransferManagerFactory(unittest.TestCase):
     def assert_is_crt_manager(self, manager):
         self.assertIsInstance(manager, CRTTransferManager)
 
+    def assert_expected_throughput_target_gbps(
+            self, mock_crt_client, expected_throughput_target_gbps):
+        self.assertEqual(
+            mock_crt_client.call_args[1]['throughput_target_gbps'],
+            expected_throughput_target_gbps
+        )
+
     def test_create_transfer_manager_classic(self):
         transfer_client = mock.Mock()
         self.session.create_client.return_value = transfer_client
@@ -416,17 +423,41 @@ class TestTransferManagerFactory(unittest.TestCase):
     @mock.patch('s3transfer.crt.S3Client')
     def test_target_bandwidth_configure_for_crt_manager(
             self, mock_crt_client):
-        GB = 1024 ** 3
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt',
-            target_bandwidth=1*GB)
+            target_bandwidth=1_000_000_000)
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
         self.assert_is_crt_manager(transfer_manager)
-        self.assertEqual(
-            mock_crt_client.call_args[1]['throughput_target_gbps'],
-            8
+        self.assert_expected_throughput_target_gbps(mock_crt_client, 8)
+
+    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_target_bandwidth_uses_crt_recommended_throughput(
+            self, mock_crt_client, mock_get_target_gbps):
+        mock_get_target_gbps.return_value = 100
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
         )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assert_expected_throughput_target_gbps(mock_crt_client, 100)
+
+    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_crt_recommended_target_throughput_default(
+            self, mock_crt_client, mock_get_target_gbps):
+        mock_get_target_gbps.return_value = None
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        # Default when CRT is unable to recommend a throughput
+        # should be 10 gbps
+        self.assert_expected_throughput_target_gbps(mock_crt_client, 10)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_multipart_chunksize_configure_for_crt_manager(

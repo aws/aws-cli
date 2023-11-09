@@ -119,6 +119,8 @@ class ConfigureCommand(BasicCommand):
             current_value = config.get(config_name)
             new_value = self._prompter.get_value(current_value, config_name,
                                                  prompt_text)
+            if new_value == 'None':
+              new_value = None
             if new_value is not None and new_value != current_value:
                 new_values[config_name] = new_value
         config_filename = os.path.expanduser(

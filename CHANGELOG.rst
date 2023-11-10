@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+2.13.34
+=======
+
+* api-change:``connectcases``: This release adds the ability to add/view comment authors through CreateRelatedItem and SearchRelatedItems API. For more information see https://docs.aws.amazon.com/cases/latest/APIReference/Welcome.html
+* api-change:``datasync``: This change allows for 0 length access keys and secret keys for object storage locations. Users can now pass in empty string credentials.
+* api-change:``ec2``: AWS EBS now supports Block Public Access for EBS Snapshots. This release introduces the EnableSnapshotBlockPublicAccess, DisableSnapshotBlockPublicAccess and GetSnapshotBlockPublicAccessState APIs to manage account-level public access settings for EBS Snapshots in an AWS Region.
+* api-change:``connect``: This release adds the ability to integrate customer lambda functions with Connect attachments for scanning and updates the ListIntegrationAssociations API to support filtering on IntegrationArn.
+* api-change:``omics``: Adding Run UUID and Run Output URI: GetRun and StartRun API response has two new fields "uuid" and "runOutputUri".
+* api-change:``lambda``: Add Node 20 (nodejs20.x) support to AWS Lambda.
+* api-change:``connect``: This release clarifies in our public documentation that InstanceId is a requirement for SearchUsers API requests.
+* api-change:``omics``: Support UBAM filetype for Omics Storage and make referenceArn optional
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``comprehend``: This release adds support for toxicity detection and prompt safety classification.
+* api-change:``cloudformation``: Added new ConcurrencyMode feature for AWS CloudFormation StackSets for faster deployments to target accounts.
+* api-change:``logs``: Update to support new APIs for delivery of logs from AWS services.
+* api-change:``eks``: Adding EKS Anywhere subscription related operations.
+* api-change:``lambda``: Add Custom runtime on Amazon Linux 2023 (provided.al2023) support to AWS Lambda.
+* api-change:``resiliencehub``: AWS Resilience Hub enhances Resiliency Score, providing actionable recommendations to improve application resilience. Amazon Elastic Kubernetes Service (EKS) operational recommendations have been added to help improve the resilience posture of your applications.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``rds``: This Amazon RDS release adds support for patching the OS of an RDS Custom for Oracle DB instance. You can now upgrade the database or operating system using the modify-db-instance command.
+* api-change:``guardduty``: Added API support for new GuardDuty EKS Audit Log finding types.
+* api-change:``cloudtrail``: The Insights in Lake feature lets customers enable CloudTrail Insights on a source CloudTrail Lake event data store and create a destination event data store to collect Insights events based on unusual management event activity in the source event data store.
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol and bug fix.
+* api-change:``redshift-serverless``: Added a new parameter in the workgroup that helps you control your cost for compute resources. This feature provides a ceiling for RPUs that Amazon Redshift Serverless can scale up to. When automatic compute scaling is required, having a higher value for MaxRPU can enhance query throughput.
+* enhancement:awscrt: Update awscrt version range ceiling to 0.19.10
+* api-change:``sqs``: This release enables customers to call SQS using AWS JSON-1.0 protocol.
+
+
 2.13.33
 =======
 

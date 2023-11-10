@@ -3772,6 +3772,16 @@
       "output":{"shape":"DisableSerialConsoleAccessResult"},
       "documentation":"<p>Disables access to the EC2 serial console of all instances for your account. By default, access to the EC2 serial console is disabled for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configure-access-to-serial-console.html#serial-console-account-access\">Manage account access to the EC2 serial console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "DisableSnapshotBlockPublicAccess":{
+      "name":"DisableSnapshotBlockPublicAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableSnapshotBlockPublicAccessRequest"},
+      "output":{"shape":"DisableSnapshotBlockPublicAccessResult"},
+      "documentation":"<p>Disables the <i>block public access for snapshots</i> setting at the account level for the specified Amazon Web Services Region. After you disable block public access for snapshots in a Region, users can publicly share snapshots in that Region.</p> <p>If block public access is enabled in <code>block-all-sharing</code> mode, and you disable block public access, all snapshots that were previously publicly shared are no longer treated as private and they become publicly accessible again.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-public-access-snapshots.html\"> Block public access for snapshots</a> in the <i>Amazon Elastic Compute Cloud User Guide</i> .</p> <p/>"
+    },
     "DisableTransitGatewayRouteTablePropagation":{
       "name":"DisableTransitGatewayRouteTablePropagation",
       "http":{
@@ -4058,6 +4068,16 @@
       "input":{"shape":"EnableSerialConsoleAccessRequest"},
       "output":{"shape":"EnableSerialConsoleAccessResult"},
       "documentation":"<p>Enables access to the EC2 serial console of all instances for your account. By default, access to the EC2 serial console is disabled for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configure-access-to-serial-console.html#serial-console-account-access\">Manage account access to the EC2 serial console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "EnableSnapshotBlockPublicAccess":{
+      "name":"EnableSnapshotBlockPublicAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableSnapshotBlockPublicAccessRequest"},
+      "output":{"shape":"EnableSnapshotBlockPublicAccessResult"},
+      "documentation":"<p>Enables or modifies the <i>block public access for snapshots</i> setting at the account level for the specified Amazon Web Services Region. After you enable block public access for snapshots in a Region, users can no longer request public sharing for snapshots in that Region. Snapshots that are already publicly shared are either treated as private or they remain publicly shared, depending on the <b>State</b> that you specify.</p> <p>If block public access is enabled in <code>block-all-sharing</code> mode, and you change the mode to <code>block-new-sharing</code>, all snapshots that were previously publicly shared are no longer treated as private and they become publicly accessible again.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-public-access-snapshots.html\"> Block public access for snapshots</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "EnableTransitGatewayRouteTablePropagation":{
       "name":"EnableTransitGatewayRouteTablePropagation",
@@ -4456,6 +4476,16 @@
       "input":{"shape":"GetSerialConsoleAccessStatusRequest"},
       "output":{"shape":"GetSerialConsoleAccessStatusResult"},
       "documentation":"<p>Retrieves the access status of your account to the EC2 serial console of all instances. By default, access to the EC2 serial console is disabled for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configure-access-to-serial-console.html#serial-console-account-access\">Manage account access to the EC2 serial console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "GetSnapshotBlockPublicAccessState":{
+      "name":"GetSnapshotBlockPublicAccessState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSnapshotBlockPublicAccessStateRequest"},
+      "output":{"shape":"GetSnapshotBlockPublicAccessStateResult"},
+      "documentation":"<p>Gets the current state of <i>block public access for snapshots</i> setting for the account and Region.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-public-access-snapshots.html\"> Block public access for snapshots</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     },
     "GetSpotPlacementScores":{
       "name":"GetSpotPlacementScores",
@@ -25506,6 +25536,25 @@
         }
       }
     },
+    "DisableSnapshotBlockPublicAccessRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableSnapshotBlockPublicAccessResult":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"SnapshotBlockPublicAccessState",
+          "documentation":"<p>Returns <code>unblocked</code> if the request succeeds.</p>",
+          "locationName":"state"
+        }
+      }
+    },
     "DisableTransitGatewayRouteTablePropagationRequest":{
       "type":"structure",
       "required":["TransitGatewayRouteTableId"],
@@ -27306,6 +27355,30 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, access to the EC2 serial console of all instances is enabled for your account. If <code>false</code>, access to the EC2 serial console of all instances is disabled for your account.</p>",
           "locationName":"serialConsoleAccessEnabled"
+        }
+      }
+    },
+    "EnableSnapshotBlockPublicAccessRequest":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"SnapshotBlockPublicAccessState",
+          "documentation":"<p>The mode in which to enable block public access for snapshots for the Region. Specify one of the following values:</p> <ul> <li> <p> <code>block-all-sharing</code> - Prevents all public sharing of snapshots in the Region. Users in the account will no longer be able to request new public sharing. Additionally, snapshots that are already publicly shared are treated as private and they are no longer publicly available.</p> <note> <p>If you enable block public access for snapshots in <code>block-all-sharing</code> mode, it does not change the permissions for snapshots that are already publicly shared. Instead, it prevents these snapshots from be publicly visible and publicly accessible. Therefore, the attributes for these snapshots still indicate that they are publicly shared, even though they are not publicly available.</p> </note> </li> <li> <p> <code>block-new-sharing</code> - Prevents only new public sharing of snapshots in the Region. Users in the account will no longer be able to request new public sharing. However, snapshots that are already publicly shared, remain publicly available.</p> </li> </ul>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableSnapshotBlockPublicAccessResult":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"SnapshotBlockPublicAccessState",
+          "documentation":"<p>The state of block public access for snapshots for the account and Region. Returns either <code>block-all-sharing</code> or <code>block-new-sharing</code> if the request succeeds.</p>",
+          "locationName":"state"
         }
       }
     },
@@ -30643,6 +30716,25 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, access to the EC2 serial console of all instances is enabled for your account. If <code>false</code>, access to the EC2 serial console of all instances is disabled for your account.</p>",
           "locationName":"serialConsoleAccessEnabled"
+        }
+      }
+    },
+    "GetSnapshotBlockPublicAccessStateRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetSnapshotBlockPublicAccessStateResult":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"SnapshotBlockPublicAccessState",
+          "documentation":"<p>The current state of block public access for snapshots. Possible values include:</p> <ul> <li> <p> <code>block-all-sharing</code> - All public sharing of snapshots is blocked. Users in the account can't request new public sharing. Additionally, snapshots that were already publicly shared are treated as private and are not publicly available.</p> </li> <li> <p> <code>block-new-sharing</code> - Only new public sharing of snapshots is blocked. Users in the account can't request new public sharing. However, snapshots that were already publicly shared, remain publicly available.</p> </li> <li> <p> <code>unblocked</code> - Public sharing is not blocked. Users can publicly share snapshots.</p> </li> </ul>",
+          "locationName":"state"
         }
       }
     },
@@ -51368,6 +51460,14 @@
       "enum":[
         "productCodes",
         "createVolumePermission"
+      ]
+    },
+    "SnapshotBlockPublicAccessState":{
+      "type":"string",
+      "enum":[
+        "block-all-sharing",
+        "block-new-sharing",
+        "unblocked"
       ]
     },
     "SnapshotDetail":{

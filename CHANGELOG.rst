@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.29.84
+=======
+
+* api-change:``controltower``: AWS Control Tower supports tagging for enabled controls. This release introduces TagResource, UntagResource and ListTagsForResource APIs to manage tags in existing enabled controls. It updates EnabledControl API to tag resources at creation time.
+* api-change:``cur``: This release adds support for tagging and customers can now tag report definitions. Additionally, ReportStatus is now added to report definition to show when the last delivered time stamp and if it succeeded or not.
+* api-change:``ec2``: EC2 adds API updates to enable ENA Express at instance launch time.
+* api-change:``fms``: Adds optimizeUnassociatedWebACL flag to ManagedServiceData, updates third-party firewall examples, and other minor documentation updates.
+* api-change:``marketplace-entitlement``: Update marketplace-entitlement command to latest version
+* api-change:``mediaconvert``: This release includes the ability to specify any input source as the primary input for corresponding follow modes, and allows users to specify fit and fill behaviors without resizing content.
+* api-change:``rds``: Updates Amazon RDS documentation for zero-ETL integrations.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.29.83
 =======
 

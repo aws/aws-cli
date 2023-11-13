@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.13.35
+=======
+
+* enhancement:awscrt: Update awscrt version range ceiling to 0.19.12. Fixes `#8320 <https://github.com/aws/aws-cli/issues/8320>`__
+
+
 2.13.34
 =======
 

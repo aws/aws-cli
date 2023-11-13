@@ -236,11 +236,11 @@ class CRTTransferManager:
         checksum_algorithm = extra_args.get('ChecksumAlgorithm')
         if checksum_algorithm is None:
             return
-        if checksum_algorithm not in awscrt.s3.S3ChecksumAlgorithm.__members__:
+        supported_algorithms = list(awscrt.s3.S3ChecksumAlgorithm.__members__)
+        if checksum_algorithm.upper() not in supported_algorithms:
             raise ValueError(
                 f'ChecksumAlgorithm: {checksum_algorithm} not supported. '
-                f'Supported algorithms are: '
-                f'{list(awscrt.s3.S3ChecksumAlgorithm.__members__)}'
+                f'Supported algorithms are: {supported_algorithms}'
             )
 
     def _cancel_transfers(self):
@@ -637,7 +637,7 @@ class S3ClientArgsCreator:
 
         checksum_algorithm = call_args.extra_args.pop(
             'ChecksumAlgorithm', 'CRC32'
-        )
+        ).upper()
         checksum_config = awscrt.s3.S3ChecksumConfig(
             algorithm=awscrt.s3.S3ChecksumAlgorithm[checksum_algorithm],
             location=awscrt.s3.S3ChecksumLocation.TRAILER,

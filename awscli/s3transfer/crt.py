@@ -206,6 +206,7 @@ class CRTTransferManager:
             extra_args = {}
         if subscribers is None:
             subscribers = {}
+        self._validate_checksum_algorithm_supported(extra_args)
         callargs = CallArgs(
             bucket=bucket,
             key=key,
@@ -230,6 +231,17 @@ class CRTTransferManager:
 
     def shutdown(self, cancel=False):
         self._shutdown(cancel)
+
+    def _validate_checksum_algorithm_supported(self, extra_args):
+        checksum_algorithm = extra_args.get('ChecksumAlgorithm')
+        if checksum_algorithm is None:
+            return
+        supported_algorithms = list(awscrt.s3.S3ChecksumAlgorithm.__members__)
+        if checksum_algorithm.upper() not in supported_algorithms:
+            raise ValueError(
+                f'ChecksumAlgorithm: {checksum_algorithm} not supported. '
+                f'Supported algorithms are: {supported_algorithms}'
+            )
 
     def _cancel_transfers(self):
         for coordinator in self._future_coordinators:
@@ -623,11 +635,17 @@ class S3ClientArgsCreator:
         else:
             call_args.extra_args["Body"] = call_args.fileobj
 
+        checksum_algorithm = call_args.extra_args.pop(
+            'ChecksumAlgorithm', 'CRC32'
+        ).upper()
+        checksum_config = awscrt.s3.S3ChecksumConfig(
+            algorithm=awscrt.s3.S3ChecksumAlgorithm[checksum_algorithm],
+            location=awscrt.s3.S3ChecksumLocation.TRAILER,
+        )
         # Suppress botocore's automatic MD5 calculation by setting an override
         # value that will get deleted in the BotocoreCRTRequestSerializer.
-        # The CRT S3 client is able automatically compute checksums as part of
-        # requests it makes, and the intention is to configure automatic
-        # checksums in a future update.
+        # As part of the CRT S3 request, we request the CRT S3 client to
+        # automatically add trailing checksums to its uploads.
         call_args.extra_args["ContentMD5"] = "override-to-be-removed"
 
         make_request_args = self._default_get_make_request_args(
@@ -639,6 +657,7 @@ class S3ClientArgsCreator:
             on_done_after_calls=on_done_after_calls,
         )
         make_request_args['send_filepath'] = send_filepath
+        make_request_args['checksum_config'] = checksum_config
         return make_request_args
 
     def _get_make_request_args_get_object(
@@ -652,6 +671,7 @@ class S3ClientArgsCreator:
     ):
         recv_filepath = None
         on_body = None
+        checksum_config = awscrt.s3.S3ChecksumConfig(validate_response=True)
         if isinstance(call_args.fileobj, str):
             final_filepath = call_args.fileobj
             recv_filepath = self._os_utils.get_temp_filename(final_filepath)
@@ -673,6 +693,7 @@ class S3ClientArgsCreator:
         )
         make_request_args['recv_filepath'] = recv_filepath
         make_request_args['on_body'] = on_body
+        make_request_args['checksum_config'] = checksum_config
         return make_request_args
 
     def _default_get_make_request_args(

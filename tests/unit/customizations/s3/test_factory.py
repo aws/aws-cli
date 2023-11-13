@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import pytest
 from awscli.testutils import unittest, mock, FileCreator
 
+import awscrt.s3
 from awscrt.s3 import S3RequestTlsMode
 from botocore.session import Session
 from botocore.config import Config
@@ -20,6 +20,7 @@ from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 import s3transfer.crt
 from s3transfer.crt import CRTTransferManager
+import pytest
 
 from awscli.customizations.s3.factory import (
     ClientFactory, TransferManagerFactory
@@ -67,6 +68,25 @@ def s3_params():
         'endpoint_url': None,
         'verify_ssl': None,
     }
+
+
+def test_crt_get_optimized_platforms_match_expected_platforms():
+    expected_platforms = {
+        'p4d.24xlarge',
+        'p4de.24xlarge',
+        'p5.48xlarge',
+        'trn1n.32xlarge',
+        'trn1.32xlarge',
+    }
+    actual_platforms = set(awscrt.s3.get_optimized_platforms())
+    assert expected_platforms == actual_platforms, (
+        'Expected set of CRT optimized platforms does not match result from '
+        'CRT. The result from CRT determines which platforms the CLI will '
+        'automatically use the S3 CRT client for. If the change in optimized '
+        'platforms is expected/appropriate, update the expected_platforms '
+        'set in this test and the list of CRT optimized platforms in the '
+        'documentation located at: awscli/topics/s3-config.rst'
+    )
 
 
 class TestClientFactory(unittest.TestCase):

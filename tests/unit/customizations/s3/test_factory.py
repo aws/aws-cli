@@ -18,11 +18,11 @@ from botocore.session import Session
 from botocore.config import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
+import s3transfer.crt
 from s3transfer.crt import CRTTransferManager
 
-import awscli.customizations.s3.factory
 from awscli.customizations.s3.factory import (
-    ClientFactory, TransferManagerFactory, acquire_crt_s3_process_lock
+    ClientFactory, TransferManagerFactory
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 
@@ -41,9 +41,7 @@ def mock_crt_process_lock(monkeypatch):
     # test cases will start off with no previously cached process lock and
     # if a cross process is instantiated/acquired it will be the mock that
     # can be used for controlling lock behavior.
-    monkeypatch.setattr(
-        'awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK', None
-    )
+    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCCESS_LOCK', None)
     with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
         yield mock_lock
 
@@ -69,31 +67,6 @@ def s3_params():
         'endpoint_url': None,
         'verify_ssl': None,
     }
-
-
-class TestCRTProcessLock:
-    def test_acquire_crt_s3_process_lock(self, mock_crt_process_lock):
-        lock = acquire_crt_s3_process_lock()
-        assert lock is awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
-        assert lock is mock_crt_process_lock.return_value
-        mock_crt_process_lock.assert_called_once_with('aws-cli')
-        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
-
-    def test_unable_to_acquire_lock_returns_none(self, mock_crt_process_lock):
-        mock_crt_process_lock.return_value.acquire.side_effect = RuntimeError
-        assert acquire_crt_s3_process_lock() is None
-        assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK is None
-        mock_crt_process_lock.assert_called_once_with('aws-cli')
-        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
-
-    def test_multiple_acquires_return_same_lock(self, mock_crt_process_lock):
-        lock = acquire_crt_s3_process_lock()
-        assert acquire_crt_s3_process_lock() is lock
-        assert lock is awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
-
-        # The process lock should have only been instantiated and acquired once
-        mock_crt_process_lock.assert_called_once_with('aws-cli')
-        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
 
 class TestClientFactory(unittest.TestCase):
@@ -534,7 +507,7 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, CRTTransferManager)
-    assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK
+    assert s3transfer.crt.CRT_S3_PROCCESS_LOCK
     mock_crt_process_lock.assert_called_once_with('aws-cli')
     mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
@@ -561,7 +534,7 @@ def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, TransferManager)
-    assert awscli.customizations.s3.factory.CRT_S3_PROCCESS_LOCK is None
+    assert s3transfer.crt.CRT_S3_PROCCESS_LOCK is None
     mock_crt_process_lock.assert_not_called()
     mock_crt_process_lock.return_value.acquire.assert_not_called()
 

@@ -307,6 +307,42 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self._assert_subscribers_called(future)
 
+    def test_upload_override_checksum_algorithm_accepts_lowercase(self):
+        future = self.transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {'ChecksumAlgorithm': 'crc32c'},
+            [self.record_subscriber],
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': self.filename,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': self._get_expected_upload_checksum_config(
+                    algorithm=awscrt.s3.S3ChecksumAlgorithm.CRC32C
+                ),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_content_length=len(self.expected_content),
+            expected_missing_headers=[
+                'Content-MD5',
+                'x-amz-sdk-checksum-algorithm',
+                'X-Amz-Trailer',
+            ],
+        )
+        self._assert_subscribers_called(future)
+
     def test_upload_throws_error_for_unsupported_checksum(self):
         with self.assertRaisesRegex(
             ValueError, 'ChecksumAlgorithm: UNSUPPORTED not supported'

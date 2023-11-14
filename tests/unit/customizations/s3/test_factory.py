@@ -42,7 +42,7 @@ def mock_crt_process_lock(monkeypatch):
     # test cases will start off with no previously cached process lock and
     # if a cross process is instantiated/acquired it will be the mock that
     # can be used for controlling lock behavior.
-    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCCESS_LOCK', None)
+    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
     with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
         yield mock_lock
 
@@ -527,7 +527,7 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, CRTTransferManager)
-    assert s3transfer.crt.CRT_S3_PROCCESS_LOCK
+    assert s3transfer.crt.CRT_S3_PROCESS_LOCK
     mock_crt_process_lock.assert_called_once_with('aws-cli')
     mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
@@ -554,7 +554,7 @@ def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
         transfer_manager_factory, s3_params, preferred_transfer_client
     )
     assert isinstance(transfer_manager, TransferManager)
-    assert s3transfer.crt.CRT_S3_PROCCESS_LOCK is None
+    assert s3transfer.crt.CRT_S3_PROCESS_LOCK is None
     mock_crt_process_lock.assert_not_called()
     mock_crt_process_lock.return_value.acquire.assert_not_called()
 

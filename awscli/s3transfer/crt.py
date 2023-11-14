@@ -38,7 +38,7 @@ from s3transfer.utils import CallArgs, OSUtils, get_callbacks
 
 logger = logging.getLogger(__name__)
 
-CRT_S3_PROCCESS_LOCK = None
+CRT_S3_PROCESS_LOCK = None
 
 
 def acquire_crt_s3_process_lock(name):
@@ -52,8 +52,8 @@ def acquire_crt_s3_process_lock(name):
     # released when the lock object is garbage collected. So, the CRT process
     # lock is set as a global so that it is not unintentionally garbage
     # collected/released if reference of the lock is lost.
-    global CRT_S3_PROCCESS_LOCK
-    if CRT_S3_PROCCESS_LOCK is None:
+    global CRT_S3_PROCESS_LOCK
+    if CRT_S3_PROCESS_LOCK is None:
         crt_lock = awscrt.s3.CrossProcessLock(name)
         try:
             crt_lock.acquire()
@@ -62,8 +62,8 @@ def acquire_crt_s3_process_lock(name):
             # returns a RuntimeError. We return None here to signal that our
             # current process was not able to acquire the lock.
             return None
-        CRT_S3_PROCCESS_LOCK = crt_lock
-    return CRT_S3_PROCCESS_LOCK
+        CRT_S3_PROCESS_LOCK = crt_lock
+    return CRT_S3_PROCESS_LOCK
 
 
 class CRTCredentialProviderAdapter:

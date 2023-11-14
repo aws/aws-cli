@@ -88,29 +88,51 @@ class TestTransferConfig:
         runtime_config = self.build_config_with(**config_kwargs)
         assert runtime_config['preferred_transfer_client'] == resolved
 
-    def test_converts_max_bandwidth_as_string(self):
-        runtime_config = self.build_config_with(max_bandwidth='1MB/s')
-        assert runtime_config['max_bandwidth'] == 1024 * 1024
+    @pytest.mark.parametrize(
+        'config_name,provided,expected',
+        [
+            # max_bandwidth cases
+            ('max_bandwidth', '1MB/s', 1024 * 1024),
+            ('max_bandwidth', '8Mb/s', 1024 * 1024),
+            ('max_bandwidth', '1000', 1000),
+            ('max_bandwidth', '1000B/s', 1000),
+            ('max_bandwidth', '8000b/s', 1000),
 
-    def test_validates_max_bandwidth_no_seconds(self):
+            # target_bandwidth cases
+            ('target_bandwidth', '5MB/s', 5 * 1024 * 1024),
+            ('target_bandwidth', '1Mb/s', 1 * 1024 * 1024 / 8),
+            ('target_bandwidth', '1000', 1000),
+            ('target_bandwidth', '1000B/s', 1000),
+            ('target_bandwidth', '8000b/s', 1000),
+        ]
+    )
+    def test_rate_conversions(self, config_name, provided, expected):
+        params = {config_name: provided}
+        runtime_config = self.build_config_with(**params)
+        assert runtime_config[config_name] == expected
+
+    @pytest.mark.parametrize(
+        'config_name,provided',
+        [
+            # max_bandwidth cases
+            ('max_bandwidth', '1MB'),
+            ('max_bandwidth', '1B'),
+            ('max_bandwidth', '1b'),
+            ('max_bandwidth', '100/s'),
+            ('max_bandwidth', ''),
+
+            # target_bandwidth cases
+            ('target_bandwidth', '1MB'),
+            ('target_bandwidth', '1B'),
+            ('target_bandwidth', '1b'),
+            ('target_bandwidth', '100/s'),
+            ('target_bandwidth', ''),
+        ]
+    )
+    def test_invalid_rate_values(self, config_name, provided):
+        params = {config_name: provided}
         with pytest.raises(transferconfig.InvalidConfigError):
-            self.build_config_with(max_bandwidth='1MB')
-
-    def test_converts_max_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
-        runtime_config = self.build_config_with(max_bandwidth='8Mb/s')
-        assert runtime_config['max_bandwidth'] == 1024 * 1024
-
-    def test_converts_target_bandwidth_as_string(self):
-        runtime_config = self.build_config_with(target_bandwidth='5MB/s')
-        assert runtime_config['target_bandwidth'] == 5 * 1024 * 1024
-
-    def test_validates_target_bandwidth_no_seconds(self):
-        with pytest.raises(transferconfig.InvalidConfigError):
-            self.build_config_with(target_bandwidth='1MB')
-
-    def test_converts_target_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
-        runtime_config = self.build_config_with(target_bandwidth='1Mb/s')
-        assert runtime_config['target_bandwidth'] == 1 * 1024 * 1024 / 8
+            self.build_config_with(**params)
 
     def test_validates_preferred_transfer_client_choices(self):
         with pytest.raises(transferconfig.InvalidConfigError):

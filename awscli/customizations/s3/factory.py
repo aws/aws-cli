@@ -54,7 +54,7 @@ class ClientFactory:
 
 class TransferManagerFactory:
     _MAX_IN_MEMORY_CHUNKS = 6
-    _CRT_PROCCESS_LOCK_NAME = 'aws-cli'
+    _CRT_PROCESS_LOCK_NAME = 'aws-cli'
 
     def __init__(self, session):
         self._session = session
@@ -107,7 +107,7 @@ class TransferManagerFactory:
         return self._acquire_crt_s3_process_lock() is None
 
     def _acquire_crt_s3_process_lock(self):
-        return acquire_crt_s3_process_lock(self._CRT_PROCCESS_LOCK_NAME)
+        return acquire_crt_s3_process_lock(self._CRT_PROCESS_LOCK_NAME)
 
     def _create_crt_transfer_manager(self, params, runtime_config):
         self._acquire_crt_s3_process_lock()

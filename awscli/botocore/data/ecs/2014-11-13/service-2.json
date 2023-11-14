@@ -670,7 +670,8 @@
         {"shape":"PlatformUnknownException"},
         {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"BlockedException"}
+        {"shape":"BlockedException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Starts a new task using the specified task definition.</p> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <a>StartTask</a> to use your own scheduler or place tasks manually on specific container instances.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul>"
     },
@@ -1251,7 +1252,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>These errors are usually caused by a client action. This client action might be using an action or resource on behalf of a user that doesn't have permissions to use the action or resource,. Or, it might be specifying an identifier that isn't valid.</p>",
+      "documentation":"<p>These errors are usually caused by a client action. This client action might be using an action or resource on behalf of a user that doesn't have permissions to use the action or resource. Or, it might be specifying an identifier that isn't valid.</p>",
       "exception":true
     },
     "Cluster":{
@@ -1434,6 +1435,17 @@
     "CompatibilityList":{
       "type":"list",
       "member":{"shape":"Compatibility"}
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "resourceIds":{
+          "shape":"ResourceIds",
+          "documentation":"<p>The existing task ARNs which are already associated with the <code>clientToken</code>.</p>"
+        }
+      },
+      "documentation":"<p>The <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul>",
+      "exception":true
     },
     "Connectivity":{
       "type":"string",
@@ -2020,7 +2032,7 @@
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 32 ASCII characters are allowed.</p>"
+          "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 36 ASCII characters in the range of 33-126 (inclusive) are allowed.</p>"
         },
         "launchType":{
           "shape":"LaunchType",
@@ -2151,7 +2163,7 @@
         },
         "clientToken":{
           "shape":"String",
-          "documentation":"<p>The identifier that you provide to ensure the idempotency of the request. It's case sensitive and must be unique. It can be up to 32 ASCII characters are allowed.</p>"
+          "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 36 ASCII characters in the range of 33-126 (inclusive) are allowed.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -4234,7 +4246,7 @@
         },
         "protocol":{
           "shape":"TransportProtocol",
-          "documentation":"<p>The protocol used for the port mapping. Valid values are <code>tcp</code> and <code>udp</code>. The default is <code>tcp</code>.</p>"
+          "documentation":"<p>The protocol used for the port mapping. Valid values are <code>tcp</code> and <code>udp</code>. The default is <code>tcp</code>. <code>protocol</code> is immutable in a Service Connect service. Updating this field requires a service deletion and redeployment. </p>"
         },
         "name":{
           "shape":"String",
@@ -4242,7 +4254,7 @@
         },
         "appProtocol":{
           "shape":"ApplicationProtocol",
-          "documentation":"<p>The application protocol that's used for the port mapping. This parameter only applies to Service Connect. We recommend that you set this parameter to be consistent with the protocol that your application uses. If you set this parameter, Amazon ECS adds protocol-specific connection handling to the Service Connect proxy. If you set this parameter, Amazon ECS adds protocol-specific telemetry in the Amazon ECS console and CloudWatch.</p> <p>If you don't set a value for this parameter, then TCP is used. However, Amazon ECS doesn't add protocol-specific telemetry for TCP.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+          "documentation":"<p>The application protocol that's used for the port mapping. This parameter only applies to Service Connect. We recommend that you set this parameter to be consistent with the protocol that your application uses. If you set this parameter, Amazon ECS adds protocol-specific connection handling to the Service Connect proxy. If you set this parameter, Amazon ECS adds protocol-specific telemetry in the Amazon ECS console and CloudWatch.</p> <p>If you don't set a value for this parameter, then TCP is used. However, Amazon ECS doesn't add protocol-specific telemetry for TCP.</p> <p> <code>appProtocol</code> is immutable in a Service Connect service. Updating this field requires a service deletion and redeployment.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "containerPortRange":{
           "shape":"String",
@@ -4613,6 +4625,10 @@
       },
       "documentation":"<p>Describes the resources available for a container instance.</p>"
     },
+    "ResourceIds":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ResourceInUseException":{
       "type":"structure",
       "members":{
@@ -4722,7 +4738,7 @@
         },
         "startedBy":{
           "shape":"String",
-          "documentation":"<p>An optional tag specified when a task is started. For example, if you automatically trigger a task to run a batch process job, you could apply a unique identifier for that job to your task with the <code>startedBy</code> parameter. You can then identify which tasks belong to that job by filtering the results of a <a>ListTasks</a> call with the <code>startedBy</code> value. Up to 36 letters (uppercase and lowercase), numbers, hyphens (-), and underscores (_) are allowed.</p> <p>If a task is started by an Amazon ECS service, then the <code>startedBy</code> parameter contains the deployment ID of the service that starts it.</p>"
+          "documentation":"<p>An optional tag specified when a task is started. For example, if you automatically trigger a task to run a batch process job, you could apply a unique identifier for that job to your task with the <code>startedBy</code> parameter. You can then identify which tasks belong to that job by filtering the results of a <a>ListTasks</a> call with the <code>startedBy</code> value. Up to 128 letters (uppercase and lowercase), numbers, hyphens (-), and underscores (_) are allowed.</p> <p>If a task is started by an Amazon ECS service, then the <code>startedBy</code> parameter contains the deployment ID of the service that starts it.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -4731,6 +4747,11 @@
         "taskDefinition":{
           "shape":"String",
           "documentation":"<p>The <code>family</code> and <code>revision</code> (<code>family:revision</code>) or full ARN of the task definition to run. If a <code>revision</code> isn't specified, the latest <code>ACTIVE</code> revision is used.</p> <p>When you create a policy for run-task, you can set the resource to be the latest task definition revision, or a specific revision.</p> <p>The full ARN value must match the value that you specified as the <code>Resource</code> of the principal's permissions policy.</p> <p>When you specify the policy resource as the latest task definition version (by setting the <code>Resource</code> in the policy to <code>arn:aws:ecs:us-east-1:111122223333:task-definition/TaskFamilyName</code>), then set this value to <code>arn:aws:ecs:us-east-1:111122223333:task-definition/TaskFamilyName</code>.</p> <p>When you specify the policy resource as a specific task definition version (by setting the <code>Resource</code> in the policy to <code>arn:aws:ecs:us-east-1:111122223333:task-definition/TaskFamilyName:1</code> or <code>arn:aws:ecs:us-east-1:111122223333:task-definition/TaskFamilyName:*</code>), then set this value to <code>arn:aws:ecs:us-east-1:111122223333:task-definition/TaskFamilyName:1</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security_iam_service-with-iam.html#security_iam_service-with-iam-id-based-policies-resources\">Policy Resources for Amazon ECS</a> in the Amazon Elastic Container Service developer Guide.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 64 characters are allowed. The valid characters are characters in the range of 33-126, inclusive. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/ECS_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -4739,7 +4760,7 @@
       "members":{
         "tasks":{
           "shape":"Tasks",
-          "documentation":"<p>A full description of the tasks that were run. The tasks that were successfully placed on your cluster are described here.</p>"
+          "documentation":"<p>A full description of the tasks that were run. The tasks that were successfully placed on your cluster are described here.</p> <p/>"
         },
         "failures":{
           "shape":"Failures",

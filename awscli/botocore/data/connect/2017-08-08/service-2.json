@@ -15220,6 +15220,31 @@
       "type":"string",
       "sensitive":true
     },
+    "SegmentAttributeName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SegmentAttributeValue":{
+      "type":"structure",
+      "members":{
+        "ValueString":{
+          "shape":"SegmentAttributeValueString",
+          "documentation":"<p>The value of a segment attribute.</p>"
+        }
+      },
+      "documentation":"<p>A value for a segment attribute. This is structured as a map where the key is <code>valueString</code> and the value is a string.</p>"
+    },
+    "SegmentAttributeValueString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "SegmentAttributes":{
+      "type":"map",
+      "key":{"shape":"SegmentAttributeName"},
+      "value":{"shape":"SegmentAttributeValue"}
+    },
     "SendNotificationActionDefinition":{
       "type":"structure",
       "required":[
@@ -15402,6 +15427,10 @@
         "RelatedContactId":{
           "shape":"ContactId",
           "documentation":"<p>The unique identifier for an Amazon Connect contact. This identifier is related to the chat starting.</p> <note> <p>You cannot provide data for both RelatedContactId and PersistentChat. </p> </note>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <p>Attribute keys can include only alphanumeric, -, and _.</p> <p>This field can be used to show channel subtype, such as <code>connect:Guide</code>.</p> <note> <p>The types <code>application/vnd.amazonaws.connect.message.interactive</code> and <code>application/vnd.amazonaws.connect.message.interactive.response</code> must be present in the SupportedMessagingContentTypes field of this API in order to set <code>SegmentAttributes</code> as {<code> \"connect:Subtype\": {\"valueString\" : \"connect:Guide\" }}</code>.</p> </note>"
         }
       }
     },

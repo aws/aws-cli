@@ -1502,7 +1502,7 @@
         "SampleRate": {
           "shape": "__integerMin8000Max192000",
           "locationName": "sampleRate",
-          "documentation": "Sample rate in hz."
+          "documentation": "Sample rate in Hz."
         }
       },
       "documentation": "Required when you set Codec to the value AIFF."
@@ -1601,7 +1601,7 @@
     },
     "AudioChannelTag": {
       "type": "string",
-      "documentation": "You can add a tag for this mono-channel audio track to mimic its placement in a multi-channel layout. For example, if this track is the left surround channel, choose Left surround (LS).",
+      "documentation": "Specify the QuickTime audio channel layout tags for the audio channels in this audio track. Enter channel layout tags in the same order as your output's audio channel order. For example, if your output audio track has a left and a right channel, enter Left (L) for the first channel and Right (R) for the second. If your output has multiple single-channel audio tracks, enter a single channel layout tag for each track.",
       "enum": [
         "L",
         "R",
@@ -1639,10 +1639,15 @@
         "ChannelTag": {
           "shape": "AudioChannelTag",
           "locationName": "channelTag",
-          "documentation": "You can add a tag for this mono-channel audio track to mimic its placement in a multi-channel layout. For example, if this track is the left surround channel, choose Left surround (LS)."
+          "documentation": "Specify the QuickTime audio channel layout tags for the audio channels in this audio track. Enter channel layout tags in the same order as your output's audio channel order. For example, if your output audio track has a left and a right channel, enter Left (L) for the first channel and Right (R) for the second. If your output has multiple single-channel audio tracks, enter a single channel layout tag for each track."
+        },
+        "ChannelTags": {
+          "shape": "__listOfAudioChannelTag",
+          "locationName": "channelTags",
+          "documentation": "Specify the QuickTime audio channel layout tags for the audio channels in this audio track. Enter channel layout tags in the same order as your output's audio channel order. For example, if your output audio track has a left and a right channel, enter Left (L) for the first channel and Right (R) for the second. If your output has multiple single-channel audio tracks, enter a single channel layout tag for each track."
         }
       },
-      "documentation": "When you mimic a multi-channel audio layout with multiple mono-channel tracks, you can tag each channel layout manually. For example, you would tag the tracks that contain your left, right, and center audio with Left (L), Right (R), and Center (C), respectively. When you don't specify a value, MediaConvert labels your track as Center (C) by default. To use audio layout tagging, your output must be in a QuickTime (.mov) container; your audio codec must be AAC, WAV, or AIFF; and you must set up your audio track to have only one channel."
+      "documentation": "Specify the QuickTime audio channel layout tags for the audio channels in this audio track. When you don't specify a value, MediaConvert labels your track as Center (C) by default. To use Audio layout tagging, your output must be in a QuickTime (MOV) container and your audio codec must be AAC, WAV, or AIFF."
     },
     "AudioCodec": {
       "type": "string",
@@ -1742,7 +1747,7 @@
         "AudioChannelTaggingSettings": {
           "shape": "AudioChannelTaggingSettings",
           "locationName": "audioChannelTaggingSettings",
-          "documentation": "When you mimic a multi-channel audio layout with multiple mono-channel tracks, you can tag each channel layout manually. For example, you would tag the tracks that contain your left, right, and center audio with Left (L), Right (R), and Center (C), respectively. When you don't specify a value, MediaConvert labels your track as Center (C) by default. To use audio layout tagging, your output must be in a QuickTime (.mov) container; your audio codec must be AAC, WAV, or AIFF; and you must set up your audio track to have only one channel."
+          "documentation": "Specify the QuickTime audio channel layout tags for the audio channels in this audio track. When you don't specify a value, MediaConvert labels your track as Center (C) by default. To use Audio layout tagging, your output must be in a QuickTime (MOV) container and your audio codec must be AAC, WAV, or AIFF."
         },
         "AudioNormalizationSettings": {
           "shape": "AudioNormalizationSettings",
@@ -5358,7 +5363,7 @@
     },
     "F4vMoovPlacement": {
       "type": "string",
-      "documentation": "If set to PROGRESSIVE_DOWNLOAD, the MOOV atom is relocated to the beginning of the archive as required for progressive downloading. Otherwise it is placed normally at the end.",
+      "documentation": "To place the MOOV atom at the beginning of your output, which is useful for progressive downloading: Leave blank or choose Progressive download. To place the MOOV at the end of your output: Choose Normal.",
       "enum": [
         "PROGRESSIVE_DOWNLOAD",
         "NORMAL"
@@ -5370,7 +5375,7 @@
         "MoovPlacement": {
           "shape": "F4vMoovPlacement",
           "locationName": "moovPlacement",
-          "documentation": "If set to PROGRESSIVE_DOWNLOAD, the MOOV atom is relocated to the beginning of the archive as required for progressive downloading. Otherwise it is placed normally at the end."
+          "documentation": "To place the MOOV atom at the beginning of your output, which is useful for progressive downloading: Leave blank or choose Progressive download. To place the MOOV at the end of your output: Choose Normal."
         }
       },
       "documentation": "Settings for F4v container"
@@ -5459,7 +5464,7 @@
         "SampleRate": {
           "shape": "__integerMin22050Max48000",
           "locationName": "sampleRate",
-          "documentation": "Sample rate in hz."
+          "documentation": "Sample rate in Hz."
         }
       },
       "documentation": "Required when you set Codec, under AudioDescriptions>CodecSettings, to the value FLAC."
@@ -7984,6 +7989,11 @@
           "locationName": "extendedDataServices",
           "documentation": "If your source content has EIA-608 Line 21 Data Services, enable this feature to specify what MediaConvert does with the Extended Data Services (XDS) packets. You can choose to pass through XDS packets, or remove them from the output. For more information about XDS, see EIA-608 Line Data Services, section 9.5.1.5 05h Content Advisory."
         },
+        "FollowSource": {
+          "shape": "__integerMin1Max150",
+          "locationName": "followSource",
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+        },
         "Inputs": {
           "shape": "__listOfInput",
           "locationName": "inputs",
@@ -8144,6 +8154,11 @@
           "shape": "ExtendedDataServices",
           "locationName": "extendedDataServices",
           "documentation": "If your source content has EIA-608 Line 21 Data Services, enable this feature to specify what MediaConvert does with the Extended Data Services (XDS) packets. You can choose to pass through XDS packets, or remove them from the output. For more information about XDS, see EIA-608 Line Data Services, section 9.5.1.5 05h Content Advisory."
+        },
+        "FollowSource": {
+          "shape": "__integerMin1Max150",
+          "locationName": "followSource",
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -9375,7 +9390,7 @@
         "SampleRate": {
           "shape": "__integerMin32000Max48000",
           "locationName": "sampleRate",
-          "documentation": "Sample rate in hz."
+          "documentation": "Sample rate in Hz."
         }
       },
       "documentation": "Required when you set Codec to the value MP2."
@@ -9409,7 +9424,7 @@
         "SampleRate": {
           "shape": "__integerMin22050Max48000",
           "locationName": "sampleRate",
-          "documentation": "Sample rate in hz."
+          "documentation": "Sample rate in Hz."
         },
         "VbrQuality": {
           "shape": "__integerMin0Max9",
@@ -9437,7 +9452,7 @@
     },
     "Mp4MoovPlacement": {
       "type": "string",
-      "documentation": "If set to PROGRESSIVE_DOWNLOAD, the MOOV atom is relocated to the beginning of the archive as required for progressive downloading. Otherwise it is placed normally at the end.",
+      "documentation": "To place the MOOV atom at the beginning of your output, which is useful for progressive downloading: Leave blank or choose Progressive download. To place the MOOV at the end of your output: Choose Normal.",
       "enum": [
         "PROGRESSIVE_DOWNLOAD",
         "NORMAL"
@@ -9469,7 +9484,7 @@
         "MoovPlacement": {
           "shape": "Mp4MoovPlacement",
           "locationName": "moovPlacement",
-          "documentation": "If set to PROGRESSIVE_DOWNLOAD, the MOOV atom is relocated to the beginning of the archive as required for progressive downloading. Otherwise it is placed normally at the end."
+          "documentation": "To place the MOOV atom at the beginning of your output, which is useful for progressive downloading: Leave blank or choose Progressive download. To place the MOOV at the end of your output: Choose Normal."
         },
         "Mp4MajorBrand": {
           "shape": "__string",
@@ -10388,7 +10403,7 @@
         "SampleRate": {
           "shape": "__integerMin16000Max48000",
           "locationName": "sampleRate",
-          "documentation": "Optional. Sample rate in hz. Valid values are 16000, 24000, and 48000. The default value is 48000."
+          "documentation": "Optional. Sample rate in Hz. Valid values are 16000, 24000, and 48000. The default value is 48000."
         }
       },
       "documentation": "Required when you set Codec, under AudioDescriptions>CodecSettings, to the value OPUS."
@@ -11260,10 +11275,13 @@
     },
     "ScalingBehavior": {
       "type": "string",
-      "documentation": "Specify how the service handles outputs that have a different aspect ratio from the input aspect ratio. Choose Stretch to output to have the service stretch your video image to fit. Keep the setting Default to have the service letterbox your video instead. This setting overrides any value that you specify for the setting Selection placement in this output.",
+      "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html",
       "enum": [
         "DEFAULT",
-        "STRETCH_TO_OUTPUT"
+        "STRETCH_TO_OUTPUT",
+        "FIT",
+        "FIT_NO_UPSCALE",
+        "FILL"
       ]
     },
     "SccDestinationFramerate": {
@@ -12074,7 +12092,7 @@
         "ScalingBehavior": {
           "shape": "ScalingBehavior",
           "locationName": "scalingBehavior",
-          "documentation": "Specify how the service handles outputs that have a different aspect ratio from the input aspect ratio. Choose Stretch to output to have the service stretch your video image to fit. Keep the setting Default to have the service letterbox your video instead. This setting overrides any value that you specify for the setting Selection placement in this output."
+          "documentation": "Specify the video Scaling behavior when your output has a different resolution than your input. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-scaling.html"
         },
         "Sharpness": {
           "shape": "__integerMin0Max100",
@@ -12134,7 +12152,7 @@
           "documentation": "Enter the start timecode in the underlying input video for this overlay. Your overlay will be active starting with this frame. To display your video overlay starting at the beginning of the underlying video: Leave blank. Use the format HH:MM:SS:FF or HH:MM:SS;FF, where HH is the hour, MM is the minute, SS is the second, and FF is the frame number. When entering this value, take into account your choice for the underlying Input timecode source. For example, if you have embedded timecodes that start at 01:00:00:00 and you want your overlay to begin five minutes into the video, enter 01:05:00:00."
         }
       },
-      "documentation": "Overlay one or more videos on top of your input video."
+      "documentation": "Overlay one or more videos on top of your input video. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/video-overlays.html"
     },
     "VideoOverlayInput": {
       "type": "structure",
@@ -12152,7 +12170,7 @@
         "TimecodeSource": {
           "shape": "InputTimecodeSource",
           "locationName": "timecodeSource",
-          "documentation": "Specify the starting timecode for your video overlay. To use the timecode present in your video overlay: Choose Embedded. To use a zerobased timecode: Choose Start at 0. To choose a timecode: Choose Specified start. When you do, enter the starting timecode in Start timecode. If you don't specify a value for Timecode source, MediaConvert uses Embedded by default."
+          "documentation": "Specify the timecode source for your video overlay input clips. To use the timecode present in your video overlay: Choose Embedded. To use a zerobased timecode: Choose Start at 0. To choose a timecode: Choose Specified start. When you do, enter the starting timecode in Start timecode. If you don't specify a value for Timecode source, MediaConvert uses Embedded by default."
         },
         "TimecodeStart": {
           "shape": "__stringMin11Max11Pattern01D20305D205D",
@@ -13322,6 +13340,11 @@
       "min": 1,
       "max": 1001
     },
+    "__integerMin1Max150": {
+      "type": "integer",
+      "min": 1,
+      "max": 150
+    },
     "__integerMin1Max17895697": {
       "type": "integer",
       "min": 1,
@@ -13581,6 +13604,12 @@
       "type": "list",
       "member": {
         "shape": "AllowedRenditionSize"
+      }
+    },
+    "__listOfAudioChannelTag": {
+      "type": "list",
+      "member": {
+        "shape": "AudioChannelTag"
       }
     },
     "__listOfAudioDescription": {

@@ -50,7 +50,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This API call activates a control. It starts an asynchronous operation that creates AWS resources on the specified organizational unit and the accounts it contains. The resources created will vary according to the control that you specify. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a> </p>"
+      "documentation":"<p>This API call activates a control. It starts an asynchronous operation that creates AWS resources on the specified organizational unit and the accounts it contains. The resources created will vary according to the control that you specify. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
     },
     "GetControlOperation":{
       "name":"GetControlOperation",
@@ -68,7 +68,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the status of a particular <code>EnableControl</code> or <code>DisableControl</code> operation. Displays a message in case of error. Details for an operation are available for 90 days. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a> </p>"
+      "documentation":"<p>Returns the status of a particular <code>EnableControl</code> or <code>DisableControl</code> operation. Displays a message in case of error. Details for an operation are available for 90 days. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
     },
     "GetEnabledControl":{
       "name":"GetEnabledControl",
@@ -86,7 +86,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Provides details about the enabled control. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p> <p class=\"title\"> <b>Returned values</b> </p> <ul> <li> <p>TargetRegions: Shows target AWS Regions where the enabled control is available to be deployed.</p> </li> <li> <p>StatusSummary: Provides a detailed summary of the deployment status.</p> </li> <li> <p>DriftSummary: Provides a detailed summary of the drifted status.</p> </li> </ul>"
+      "documentation":"<p>Retrieves details about an enabled control. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
     },
     "ListEnabledControls":{
       "name":"ListEnabledControls",
@@ -104,7 +104,55 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the controls enabled by AWS Control Tower on the specified organizational unit and the accounts it contains. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a> </p>"
+      "documentation":"<p>Lists the controls enabled by AWS Control Tower on the specified organizational unit and the accounts it contains. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of tags associated with the resource. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Applies tags to a resource. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes tags from a resource. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the AWS Control Tower User Guide</i> </a>.</p>"
     }
   },
   "shapes":{
@@ -244,6 +292,10 @@
           "shape":"ControlIdentifier",
           "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
         },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags to be applied to the <code>EnabledControl</code> resource.</p>"
+        },
         "targetIdentifier":{
           "shape":"TargetIdentifier",
           "documentation":"<p>The ARN of the organizational unit. For information on how to find the <code>targetIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
@@ -254,6 +306,10 @@
       "type":"structure",
       "required":["operationIdentifier"],
       "members":{
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the <code>EnabledControl</code> resource.</p>"
+        },
         "operationIdentifier":{
           "shape":"OperationIdentifier",
           "documentation":"<p>The ID of the asynchronous operation, which is used to track status. The operation is available for 90 days.</p>"
@@ -265,56 +321,56 @@
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p> The ARN of the enabled control. </p>"
+          "documentation":"<p>The ARN of the enabled control.</p>"
         },
         "controlIdentifier":{
           "shape":"ControlIdentifier",
-          "documentation":"<p> The control identifier of the enabled control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>. </p>"
+          "documentation":"<p>The control identifier of the enabled control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
         },
         "driftStatusSummary":{
           "shape":"DriftStatusSummary",
-          "documentation":"<p> The drift status of the enabled control. </p>"
+          "documentation":"<p>The drift status of the enabled control.</p>"
         },
         "statusSummary":{
           "shape":"EnablementStatusSummary",
-          "documentation":"<p> The deployment summary of the enabled control. </p>"
+          "documentation":"<p>The deployment summary of the enabled control.</p>"
         },
         "targetIdentifier":{
           "shape":"TargetIdentifier",
-          "documentation":"<p> The ARN of the organizational unit. For information on how to find the <code>targetIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>. </p>"
+          "documentation":"<p>The ARN of the organizational unit. For information on how to find the <code>targetIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
         },
         "targetRegions":{
           "shape":"TargetRegions",
-          "documentation":"<p> Target AWS Regions for the enabled control. </p>"
+          "documentation":"<p>Target AWS Regions for the enabled control.</p>"
         }
       },
-      "documentation":"<p> Information about the enabled control. </p>"
+      "documentation":"<p>Information about the enabled control.</p>"
     },
     "EnabledControlSummary":{
       "type":"structure",
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p> The ARN of the enabled control. </p>"
+          "documentation":"<p>The ARN of the enabled control.</p>"
         },
         "controlIdentifier":{
           "shape":"ControlIdentifier",
-          "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
+          "documentation":"<p>The <code>controlIdentifier</code> of the enabled control.</p>"
         },
         "driftStatusSummary":{
           "shape":"DriftStatusSummary",
-          "documentation":"<p> The drift status of the enabled control. </p>"
+          "documentation":"<p>The drift status of the enabled control.</p>"
         },
         "statusSummary":{
           "shape":"EnablementStatusSummary",
-          "documentation":"<zonbook></zonbook><xhtml></xhtml>"
+          "documentation":"<p>A short description of the status of the enabled control.</p>"
         },
         "targetIdentifier":{
           "shape":"TargetIdentifier",
           "documentation":"<p> The ARN of the organizational unit. </p>"
         }
       },
-      "documentation":"<p>A summary of enabled controls.</p>"
+      "documentation":"<p>Returns a summary of information about an enabled control.</p>"
     },
     "EnabledControls":{
       "type":"list",
@@ -333,14 +389,14 @@
       "members":{
         "lastOperationIdentifier":{
           "shape":"OperationIdentifier",
-          "documentation":"<p> The last operation identifier for the enabled control. </p>"
+          "documentation":"<p>The last operation identifier for the enabled control.</p>"
         },
         "status":{
           "shape":"EnablementStatus",
           "documentation":"<p> The deployment status of the enabled control.</p> <p>Valid values:</p> <ul> <li> <p> <code>SUCCEEDED</code>: The <code>enabledControl</code> configuration was deployed successfully.</p> </li> <li> <p> <code>UNDER_CHANGE</code>: The <code>enabledControl</code> configuration is changing. </p> </li> <li> <p> <code>FAILED</code>: The <code>enabledControl</code> configuration failed to deploy.</p> </li> </ul>"
         }
       },
-      "documentation":"<p> The deployment summary of the enabled control. </p>"
+      "documentation":"<p>The deployment summary of the enabled control.</p>"
     },
     "GetControlOperationInput":{
       "type":"structure",
@@ -368,7 +424,7 @@
       "members":{
         "enabledControlIdentifier":{
           "shape":"Arn",
-          "documentation":"<p> The ARN of the enabled control. </p>"
+          "documentation":"<p>The <code>controlIdentifier</code> of the enabled control.</p>"
         }
       }
     },
@@ -378,7 +434,7 @@
       "members":{
         "enabledControlDetails":{
           "shape":"EnabledControlDetails",
-          "documentation":"<p> Information about the enabled control. </p>"
+          "documentation":"<p>Information about the enabled control.</p>"
         }
       }
     },
@@ -430,6 +486,28 @@
         }
       }
     },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p> The ARN of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "required":["tags"],
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags, as <code>key:value</code> strings.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -447,7 +525,7 @@
       "members":{
         "name":{
           "shape":"RegionName",
-          "documentation":"<p> The AWS Region name. </p>"
+          "documentation":"<p>The AWS Region name.</p>"
         }
       },
       "documentation":"<p>An AWS Region in which AWS Control Tower expects to find the control deployed. </p> <p>The expected Regions are based on the Regions that are governed by the landing zone. In certain cases, a control is not actually enabled in the Region as expected, such as during drift, or <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/region-how.html#mixed-governance\">mixed governance</a>.</p>"
@@ -488,6 +566,53 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to be tagged.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags to be applied to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "TargetIdentifier":{
       "type":"string",
       "max":2048,
@@ -526,6 +651,32 @@
       "exception":true,
       "retryable":{"throttling":true}
     },
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>Tag keys to be removed from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "ValidationException":{
       "type":"structure",
       "required":["message"],
@@ -540,5 +691,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>These interfaces allow you to apply the AWS library of pre-defined <i>controls</i> to your organizational units, programmatically. In AWS Control Tower, the terms \"control\" and \"guardrail\" are synonyms. .</p> <p>To call these APIs, you'll need to know:</p> <ul> <li> <p>the <code>controlIdentifier</code> for the control--or guardrail--you are targeting.</p> </li> <li> <p>the ARN associated with the target organizational unit (OU), which we call the <code>targetIdentifier</code>.</p> </li> </ul> <p> <b>To get the <code>controlIdentifier</code> for your AWS Control Tower control:</b> </p> <p>The <code>controlIdentifier</code> is an ARN that is specified for each control. You can view the <code>controlIdentifier</code> in the console on the <b>Control details</b> page, as well as in the documentation.</p> <p>The <code>controlIdentifier</code> is unique in each AWS Region for each control. You can find the <code>controlIdentifier</code> for each Region and control in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Tables of control metadata</a> in the <i>AWS Control Tower User Guide.</i> </p> <p>A quick-reference list of control identifers for the AWS Control Tower legacy <i>Strongly recommended</i> and <i>Elective</i> controls is given in <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html.html\">Resource identifiers for APIs and guardrails</a> in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">Controls reference guide section</a> of the <i>AWS Control Tower User Guide</i>. Remember that <i>Mandatory</i> controls cannot be added or removed.</p> <note> <p> <b>ARN format:</b> <code>arn:aws:controltower:{REGION}::control/{CONTROL_NAME}</code> </p> <p> <b>Example:</b> </p> <p> <code>arn:aws:controltower:us-west-2::control/AWS-GR_AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED</code> </p> </note> <p> <b>To get the <code>targetIdentifier</code>:</b> </p> <p>The <code>targetIdentifier</code> is the ARN for an OU.</p> <p>In the AWS Organizations console, you can find the ARN for the OU on the <b>Organizational unit details</b> page associated with that OU.</p> <note> <p> <b>OU ARN format:</b> </p> <p> <code>arn:${Partition}:organizations::${MasterAccountId}:ou/o-${OrganizationId}/ou-${OrganizationalUnitId}</code> </p> </note> <p class=\"title\"> <b>Details and examples</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\">Control API input and output examples with CLI</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/enable-controls.html\">Enable controls with CloudFormation</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Control metadata tables</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">List of identifiers for legacy controls</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls.html\">Controls reference guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls-reference.html\">Controls library groupings</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/creating-resources-with-cloudformation.html\">Creating AWS Control Tower resources with AWS CloudFormation</a> </p> </li> </ul> <p>To view the open source resource repository on GitHub, see <a href=\"https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-controltower\">aws-cloudformation/aws-cloudformation-resource-providers-controltower</a> </p> <p> <b>Recording API Requests</b> </p> <p>AWS Control Tower supports AWS CloudTrail, a service that records AWS API calls for your AWS account and delivers log files to an Amazon S3 bucket. By using information collected by CloudTrail, you can determine which requests the AWS Control Tower service received, who made the request and when, and so on. For more about AWS Control Tower and its support for CloudTrail, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/logging-using-cloudtrail.html\">Logging AWS Control Tower Actions with AWS CloudTrail</a> in the AWS Control Tower User Guide. To learn more about CloudTrail, including how to turn it on and find your log files, see the AWS CloudTrail User Guide.</p>"
+  "documentation":"<p>These interfaces allow you to apply the AWS library of pre-defined <i>controls</i> to your organizational units, programmatically. In AWS Control Tower, the terms \"control\" and \"guardrail\" are synonyms.</p> <p>To call these APIs, you'll need to know:</p> <ul> <li> <p>the <code>controlIdentifier</code> for the control--or guardrail--you are targeting.</p> </li> <li> <p>the ARN associated with the target organizational unit (OU), which we call the <code>targetIdentifier</code>.</p> </li> <li> <p>the ARN associated with a resource that you wish to tag or untag.</p> </li> </ul> <p> <b>To get the <code>controlIdentifier</code> for your AWS Control Tower control:</b> </p> <p>The <code>controlIdentifier</code> is an ARN that is specified for each control. You can view the <code>controlIdentifier</code> in the console on the <b>Control details</b> page, as well as in the documentation.</p> <p>The <code>controlIdentifier</code> is unique in each AWS Region for each control. You can find the <code>controlIdentifier</code> for each Region and control in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Tables of control metadata</a> in the <i>AWS Control Tower User Guide.</i> </p> <p>A quick-reference list of control identifers for the AWS Control Tower legacy <i>Strongly recommended</i> and <i>Elective</i> controls is given in <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html.html\">Resource identifiers for APIs and controls</a> in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">Controls reference guide section</a> of the <i>AWS Control Tower User Guide</i>. Remember that <i>Mandatory</i> controls cannot be added or removed.</p> <note> <p> <b>ARN format:</b> <code>arn:aws:controltower:{REGION}::control/{CONTROL_NAME}</code> </p> <p> <b>Example:</b> </p> <p> <code>arn:aws:controltower:us-west-2::control/AWS-GR_AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED</code> </p> </note> <p> <b>To get the <code>targetIdentifier</code>:</b> </p> <p>The <code>targetIdentifier</code> is the ARN for an OU.</p> <p>In the AWS Organizations console, you can find the ARN for the OU on the <b>Organizational unit details</b> page associated with that OU.</p> <note> <p> <b>OU ARN format:</b> </p> <p> <code>arn:${Partition}:organizations::${MasterAccountId}:ou/o-${OrganizationId}/ou-${OrganizationalUnitId}</code> </p> </note> <p class=\"title\"> <b>Details and examples</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\">Control API input and output examples with CLI</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/enable-controls.html\">Enable controls with CloudFormation</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Control metadata tables</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">List of identifiers for legacy controls</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls.html\">Controls reference guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls-reference.html\">Controls library groupings</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/creating-resources-with-cloudformation.html\">Creating AWS Control Tower resources with AWS CloudFormation</a> </p> </li> </ul> <p>To view the open source resource repository on GitHub, see <a href=\"https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-controltower\">aws-cloudformation/aws-cloudformation-resource-providers-controltower</a> </p> <p> <b>Recording API Requests</b> </p> <p>AWS Control Tower supports AWS CloudTrail, a service that records AWS API calls for your AWS account and delivers log files to an Amazon S3 bucket. By using information collected by CloudTrail, you can determine which requests the AWS Control Tower service received, who made the request and when, and so on. For more about AWS Control Tower and its support for CloudTrail, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/logging-using-cloudtrail.html\">Logging AWS Control Tower Actions with AWS CloudTrail</a> in the AWS Control Tower User Guide. To learn more about CloudTrail, including how to turn it on and find your log files, see the AWS CloudTrail User Guide.</p>"
 }

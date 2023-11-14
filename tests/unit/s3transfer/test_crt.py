@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import io
 
+import pytest
 from botocore.credentials import CredentialResolver, ReadOnlyCredentials
 from botocore.session import Session
 
@@ -25,8 +26,48 @@ if HAS_CRT:
     import s3transfer.crt
 
 
+@pytest.fixture
+def mock_crt_process_lock(monkeypatch):
+    # The process lock is cached at the module layer whenever the
+    # cross process lock is successfully acquired. This patch ensures that
+    # test cases will start off with no previously cached process lock and
+    # if a cross process is instantiated/acquired it will be the mock that
+    # can be used for controlling lock behavior.
+    monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
+    with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
+        yield mock_lock
+
+
 class CustomFutureException(Exception):
     pass
+
+
+@pytest.mark.skipif(
+    not HAS_CRT, reason="Test requires awscrt to be installed."
+)
+class TestCRTProcessLock:
+    def test_acquire_crt_s3_process_lock(self, mock_crt_process_lock):
+        lock = s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+        assert lock is s3transfer.crt.CRT_S3_PROCESS_LOCK
+        assert lock is mock_crt_process_lock.return_value
+        mock_crt_process_lock.assert_called_once_with('app-name')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
+
+    def test_unable_to_acquire_lock_returns_none(self, mock_crt_process_lock):
+        mock_crt_process_lock.return_value.acquire.side_effect = RuntimeError
+        assert s3transfer.crt.acquire_crt_s3_process_lock('app-name') is None
+        assert s3transfer.crt.CRT_S3_PROCESS_LOCK is None
+        mock_crt_process_lock.assert_called_once_with('app-name')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
+
+    def test_multiple_acquires_return_same_lock(self, mock_crt_process_lock):
+        lock = s3transfer.crt.acquire_crt_s3_process_lock('app-name')
+        assert s3transfer.crt.acquire_crt_s3_process_lock('app-name') is lock
+        assert lock is s3transfer.crt.CRT_S3_PROCESS_LOCK
+
+        # The process lock should have only been instantiated and acquired once
+        mock_crt_process_lock.assert_called_once_with('app-name')
+        mock_crt_process_lock.return_value.acquire.assert_called_once_with()
 
 
 @requires_crt

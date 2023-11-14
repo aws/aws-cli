@@ -38,6 +38,33 @@ from s3transfer.utils import CallArgs, OSUtils, get_callbacks
 
 logger = logging.getLogger(__name__)
 
+CRT_S3_PROCESS_LOCK = None
+
+
+def acquire_crt_s3_process_lock(name):
+    # Currently, the CRT S3 client performs best when there is only one
+    # instance of it running on a host. This lock allows an application to
+    # signal across processes whether there is another process of the same
+    # application using the CRT S3 client and prevent spawning more than one
+    # CRT S3 clients running on the system for that application.
+    #
+    # NOTE: When acquiring the CRT process lock, the lock automatically is
+    # released when the lock object is garbage collected. So, the CRT process
+    # lock is set as a global so that it is not unintentionally garbage
+    # collected/released if reference of the lock is lost.
+    global CRT_S3_PROCESS_LOCK
+    if CRT_S3_PROCESS_LOCK is None:
+        crt_lock = awscrt.s3.CrossProcessLock(name)
+        try:
+            crt_lock.acquire()
+        except RuntimeError:
+            # If there is another process that is holding the lock, the CRT
+            # returns a RuntimeError. We return None here to signal that our
+            # current process was not able to acquire the lock.
+            return None
+        CRT_S3_PROCESS_LOCK = crt_lock
+    return CRT_S3_PROCESS_LOCK
+
 
 class CRTCredentialProviderAdapter:
     def __init__(self, botocore_credential_provider):

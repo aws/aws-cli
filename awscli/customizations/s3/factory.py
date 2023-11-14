@@ -12,11 +12,13 @@
 # language governing permissions and limitations under the License.
 import logging
 
+import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 from s3transfer.crt import (
-    create_s3_crt_client, BotocoreCRTRequestSerializer, CRTTransferManager
+    acquire_crt_s3_process_lock, create_s3_crt_client,
+    BotocoreCRTRequestSerializer, CRTTransferManager
 )
 
 from awscli.compat import urlparse
@@ -52,6 +54,7 @@ class ClientFactory:
 
 class TransferManagerFactory:
     _MAX_IN_MEMORY_CHUNKS = 6
+    _CRT_PROCESS_LOCK_NAME = 'aws-cli'
 
     def __init__(self, session):
         self._session = session
@@ -64,16 +67,50 @@ class TransferManagerFactory:
         if client_type == constants.CRT_TRANSFER_CLIENT:
             return self._create_crt_transfer_manager(params, runtime_config)
         else:
-            return self._create_default_transfer_manager(
+            return self._create_classic_transfer_manager(
                 params, runtime_config, botocore_client)
 
     def _compute_transfer_client_type(self, params, runtime_config):
         if params.get('paths_type') == 's3s3':
-            return constants.DEFAULT_TRANSFER_CLIENT
-        return runtime_config.get(
-            'preferred_transfer_client', constants.DEFAULT_TRANSFER_CLIENT)
+            return constants.CLASSIC_TRANSFER_CLIENT
+        preferred_transfer_client = runtime_config.get(
+            'preferred_transfer_client',
+            constants.AUTO_RESOLVE_TRANSFER_CLIENT
+        )
+        if preferred_transfer_client == constants.AUTO_RESOLVE_TRANSFER_CLIENT:
+            return self._resolve_transfer_client_type_for_system()
+        return preferred_transfer_client
+
+    def _resolve_transfer_client_type_for_system(self):
+        transfer_client_type = constants.CLASSIC_TRANSFER_CLIENT
+        is_optimized_for_system = awscrt.s3.is_optimized_for_system()
+        LOGGER.debug(
+            'S3 CRT client optimized for system: %s', is_optimized_for_system
+        )
+        if is_optimized_for_system:
+            is_running = self._is_crt_client_running_in_other_aws_cli_process()
+            LOGGER.debug(
+                'S3 CRT client running in different AWS CLI process: %s',
+                is_running
+            )
+            if not is_running:
+                transfer_client_type = constants.CRT_TRANSFER_CLIENT
+        LOGGER.debug(
+            'Auto resolved s3 transfer client to: %s', transfer_client_type
+        )
+        return transfer_client_type
+
+    def _is_crt_client_running_in_other_aws_cli_process(self):
+        # If None is returned from acquiring the CRT process lock, it
+        # means the CRT S3 client is currently being used in a different
+        # AWS CLI process.
+        return self._acquire_crt_s3_process_lock() is None
+
+    def _acquire_crt_s3_process_lock(self):
+        return acquire_crt_s3_process_lock(self._CRT_PROCESS_LOCK_NAME)
 
     def _create_crt_transfer_manager(self, params, runtime_config):
+        self._acquire_crt_s3_process_lock()
         return CRTTransferManager(
             self._create_crt_client(params, runtime_config),
             self._create_crt_request_serializer(params)
@@ -109,7 +146,7 @@ class TransferManagerFactory:
             }
         )
 
-    def _create_default_transfer_manager(self, params, runtime_config,
+    def _create_classic_transfer_manager(self, params, runtime_config,
                                          client=None):
         if client is None:
             client = self._botocore_client_factory.create_client(params)

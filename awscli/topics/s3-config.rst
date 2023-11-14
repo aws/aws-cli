@@ -279,23 +279,50 @@ Experimental Configuration Values
 preferred_transfer_client
 -------------------------
 
-**Default** - ``default``
+**Default** - ``auto``
 
 Determines the underlying Amazon S3 transfer client to use for transferring
 files to and from S3. Valid choices are:
 
-* ``default`` -  Use the builtin, Python-based transfer client that supports
-  all ``s3`` commands, parameters, and non-experimental configuration values.
+* ``auto`` - Auto resolve the Amazon S3 transfer client to use. Currently,
+  it resolves to ``crt`` when all of the following criteria is met:
+
+  * The ``s3`` command used is not an S3 to S3 copy transfer. The ``crt``
+    transfer client currently only supports uploads to S3, downloads from
+    S3, and deletion of S3 objects.
+
+  * The host running the AWS CLI is optimized for the ``crt`` transfer client.
+    Currently, the ``crt`` transfer client is optimized for Amazon EC2 instances
+    that are of any of these instance types:
+
+    * ``p4d.24xlarge``
+    * ``p4de.24xlarge``
+    * ``p5.48xlarge``
+    * ``trn1n.32xlarge``
+    * ``trn1.32xlarge``
+
+  * There are no other running processes of the AWS CLI using the CRT S3 transfer
+    client. To force multiple concurrently running processes of the AWS CLI to use
+    the CRT S3 transfer client, set the ``preferred_transfer_client`` configuration
+    variable to ``crt``.
+
+  Otherwise, it resolves to ``classic``. Between versions of the AWS CLI, auto
+  resolution criteria may change. To guarantee use of a specific transfer client,
+  set the ``preferred_transfer_client`` configuration variable to the
+  appropriate transfer client listed below.
+
+* ``classic`` -  Use the builtin, Python-based transfer client that supports
+  all ``s3`` commands, parameters, and most configuration values.
 
 * ``crt`` - Use the AWS Common Runtime (CRT) transfer client when
   possible. It is a C-based S3 transfer client that can improve transfer
   throughput. Currently, the CRT transfer client does not support all of the
-  functionality available in the ``default`` transfer client. The list below
-  details what functionality is not supported by the ``crt`` transfer client
-  option and the corresponding behavior of the AWS CLI if it is configured to
-  prefer the ``crt`` transfer client:
+  functionality available in the ``classic`` transfer client. The list below
+  details what functionality is currently not supported by the ``crt``
+  transfer client option and the corresponding behavior of the AWS CLI if it
+  is configured to prefer the ``crt`` transfer client:
 
-  * S3 to S3 copies - Falls back to using the ``default`` transfer client
+  * S3 to S3 copies - Falls back to using the ``classic`` transfer client
 
   * Region redirects - Transfers fail for requests sent to a region that does
     not match the region of the targeted S3 bucket.

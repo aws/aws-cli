@@ -347,7 +347,7 @@ attempt to choose a target bandwidth that matches the system's maximum
 network bandwidth. Currently, if the AWS CLI is unable to determine the
 maximum network bandwith, the AWS CLI falls back to a target bandwidth of
 ten gigabits per second (i.e. equivalent to setting the ``target_bandwidth``
-configuration option to ``10000000000b/s``). To guarantee a specific target bandwith,
+configuration option to ``10000000000b/s``). To set a specific target bandwith,
 explicitly configure the ``target_bandwidth`` configuration option. Its
 value can be specified as:
 

@@ -120,6 +120,7 @@ class TestTransferConfig:
             ('max_bandwidth', '1b'),
             ('max_bandwidth', '100/s'),
             ('max_bandwidth', ''),
+            ('max_bandwidth', 'value-with-no-digits'),
 
             # target_bandwidth cases
             ('target_bandwidth', '1MB'),
@@ -127,6 +128,7 @@ class TestTransferConfig:
             ('target_bandwidth', '1b'),
             ('target_bandwidth', '100/s'),
             ('target_bandwidth', ''),
+            ('target_bandwidth', 'value-with-no-digits'),
         ]
     )
     def test_invalid_rate_values(self, config_name, provided):
